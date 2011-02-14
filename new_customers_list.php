@@ -44,6 +44,7 @@ $js_files=array(
 
 		'common.js.php',
 		'table_common.js.php',
+		'common_customers.js.php',
 		'new_customers_list.js.php',
 		'js/edit_common.js'
 		);
@@ -73,6 +74,9 @@ $smarty->assign('dont_have_options',$dont_have_options);
 //$smarty->assign('view',$_SESSION['state']['customers']['list']['view']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+$product_ordered_or='∀';
+$smarty->assign('product_ordered_or',$product_ordered_or);
 
 $smarty->display('new_customers_lists.tpl');
 ?>

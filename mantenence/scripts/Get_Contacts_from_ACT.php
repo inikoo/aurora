@@ -84,7 +84,7 @@ $contacts_date=array();
 if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
-//   print_r($data);
+//  print_r($data);
         print "$num $row\r";
 
         //    if($row>1000)
@@ -182,8 +182,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-      //      if($row>500)
-      //    break;
+        //    if($row>1000)
+        //  break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -348,8 +348,7 @@ foreach($contacts as $act_data) {
         if ($_key=='email')
             $key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
         if ($_key=='telephone')
-            $key=preg_replace('/^telephone$/','
-            Customer Main Pain Telephone',$_key);
+            $key=preg_replace('/^telephone$/','Customer Main Plain Telephone',$_key);
         if ($_key=='fax')
             $key=preg_replace('/^fax$/','Customer Main Plain FAX',$_key);
         if ($_key=='mobile')
@@ -388,6 +387,7 @@ foreach($contacts as $act_data) {
     }
     $shipping_addresses=array();
     $customer_data['Customer Delivery Address Link']='Contact';
+    $customer_data['Customer Billing Address Link']='Contact';
 
     if ($customer_data['Customer Main Contact Name']!='' or $customer_data['Customer Company Name']!='' ) {
         //print_r($_customer_data);
@@ -401,7 +401,7 @@ foreach($contacts as $act_data) {
     //    continue;
 //print_r($customer_data);
 
-    $customer = new Customer ( 'find create fast',  $customer_data);
+    $customer = new Customer ( 'find create',  $customer_data);
 //exit;
 //print_r($customer);
 
@@ -410,7 +410,7 @@ foreach($contacts as $act_data) {
     //  print_r($act_data['history']);
     // }
 
-    $store->update_customers_data();
+   // $store->update_customers_data();
     foreach($act_data['history'] as $h_tipo=>$histories) {
 
         //print_r($histories);

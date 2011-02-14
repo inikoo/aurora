@@ -237,13 +237,15 @@ function customers_data_completeness_pie($data) {
 
 
     $sql=sprintf("select  count(*) as total,
-                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as e ,
-                 sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as t ,
-                 sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as a,
-                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as ae,
-                 sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as at,
-                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as et,
-                 sum(if(ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as aet
+                     sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as ok ,
+
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as e ,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as t ,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='Yes'  ,1,0)) as a,
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='Yes'  ,1,0)) as ae,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='Yes'  ,1,0)) as at,
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as et,
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as aet
                  from `Customer Dimension` %s",
                  $where
                 );
