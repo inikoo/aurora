@@ -82,12 +82,20 @@
 
 
 
-		foreach($selectBox as $key=>$value) { ?>
+		foreach($selectBox as $key=>$value) { 
+			if((isset($tt[$j]) == TRUE))
+			{
+		?>
+		<option value="<?php echo $key;?>" <?php if($tt[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
+		<?php
+			}
+			else
+			{
+		?>
+		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
+		<?php 	} 
 
-		   
-	<option value="<?php echo $key;?>" <?php if($tt[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
-		
-		<?php } ?>
+		}?>
 		</select>
 		</td>
 		<td>
