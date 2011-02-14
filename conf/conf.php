@@ -1346,7 +1346,7 @@ $default_state=array(
                                                'nr'=>25,
                                                'type'=>'all_contacts',
 
-                                               'where'=>'where true',
+                                               'where'=>'',
                                                'f_field'=>'customer name',
                                                'f_value'=>'',
 

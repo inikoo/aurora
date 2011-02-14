@@ -83,7 +83,7 @@ class Company extends DB_Table {
 
     }
 
-function find_fuzzy(){
+    function find_fuzzy() {
 
         //Timer::timing_milestone('begin  find  contact');
         $this->find_contact=new Contact("find in company $find_fuzzy ",$raw_data);
@@ -226,10 +226,10 @@ function find_fuzzy(){
 
         $this->number_candidate_companies=count($this->candidate_companies);
 
-}
+    }
 
 
-function find_complete($raw_data){
+    function find_complete($raw_data) {
 
 
 
@@ -268,6 +268,7 @@ function find_complete($raw_data){
                     $this->candidate_companies[$company_key]=$score;
             }
         }
+//print_r($this->candidate_companies);
 
         if ($raw_data['Company Name']!='') {
 
@@ -275,45 +276,48 @@ function find_complete($raw_data){
             $score_plus_for_match=40;
 
 
-          
-            
 
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
-                             ,prepare_mysql($raw_data['Company Name'])
-                            );
 
-                $result=mysql_query($sql);
-                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-                    $score=$max_score;
-                    $extra_score=0;
-                    $company_key=$row['Company Key'];
+            $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
+                         ,prepare_mysql($raw_data['Company Name'])
+                        );
 
-                    foreach($this->candidate as $candidate_key=>$candidate_score) {
-                        $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
-                                     ,$candidate_key
-                                     ,$company_key
-                                    );
-                        $res=mysql_query($sql);
-                        $match_data=mysql_fetch_array($res);
-                        if ($match_data['matched']>0) {
-                            $this->candidate[$candidate_key]+=$score_plus_for_match;
-                            $extra_score=$score_plus_for_match;
-                        }
+            $result=mysql_query($sql);
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+                $score=$max_score;
+                $extra_score=0;
+                $company_key=$row['Company Key'];
+
+                foreach($this->candidate as $candidate_key=>$candidate_score) {
+                    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+                                 ,$candidate_key
+                                 ,$company_key
+                                );
+                    $res=mysql_query($sql);
+                    $match_data=mysql_fetch_array($res);
+                    if ($match_data['matched']>0) {
+                        $this->candidate[$candidate_key]+=$score_plus_for_match;
+                        $extra_score=$score_plus_for_match;
                     }
 
-
-                    if (isset($this->candidate_companies[$company_key]))
-                        $this->candidate_companies[$company_key]+=$score+$extra_score;
-                    else
-                        $this->candidate_companies[$company_key]=$score+$extra_score;
                 }
 
 
-            
+                if (isset($this->candidate_companies[$company_key]))
+                    $this->candidate_companies[$company_key]+=$score+$extra_score;
+                else
+                    $this->candidate_companies[$company_key]=$score+$extra_score;
+            }
+
+
+
 
         }
+
+
+//print_r($this->candidate_companies);
 
         if (!empty($this->candidate_companies)) {
             arsort($this->candidate_companies);
@@ -331,42 +335,42 @@ function find_complete($raw_data){
 
         $this->number_candidate_companies=count($this->candidate_companies);
 
-}
+    }
 
 
 
 
 
 
-function find_fast($raw_data) {
+    function find_fast($raw_data) {
 
-    $this->find_contact=new Contact("find in company fast ",$raw_data);
+        $this->find_contact=new Contact("find in company fast ",$raw_data);
 
- $this->found_details=array();
-    $this->found=false;
-    $this->found_key=false;
-    $email=$raw_data['Company Main Plain Email'];
+        $this->found_details=array();
+        $this->found=false;
+        $this->found_key=false;
+        $email=$raw_data['Company Main Plain Email'];
 
-    if (!$email)
-        return;
+        if (!$email)
+            return;
 
-    $sql=sprintf("select E.`Email Key`,`Subject Type`,`Subject Key` from `Email Dimension` E left join `Email Bridge` B on (E.`Email Key`=B.`Email Key`)where `Email`=%s",prepare_mysql($email));
+        $sql=sprintf("select E.`Email Key`,`Subject Type`,`Subject Key` from `Email Dimension` E left join `Email Bridge` B on (E.`Email Key`=B.`Email Key`)where `Email`=%s",prepare_mysql($email));
 
-    $res=mysql_query($sql);
-   
-    while ($row=mysql_fetch_assoc($res)) {
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
 
 
-        $this->found_details[$row['Email Key']]=array('Subject Type'=>$row['Subject Type'],'Subject Key'=>$row['Subject Key']);
+            $this->found_details[$row['Email Key']]=array('Subject Type'=>$row['Subject Type'],'Subject Key'=>$row['Subject Key']);
 
-        if ($row['Subject Type']=='Company') {
-            $this->found=true;
-            $this->found_key=$row['Subject Key'];
+            if ($row['Subject Type']=='Company') {
+                $this->found=true;
+                $this->found_key=$row['Subject Key'];
+
+            }
 
         }
-
     }
-}
 
 
     /*
@@ -379,16 +383,17 @@ function find_fast($raw_data) {
     function find($raw_data,$options) {
         $find_fuzzy=false;
 
-       
+
         //print "XXX------------------> $options <-----------\n";
-           	$find_type='complete';
+        $find_type='complete';
         if (preg_match('/fuzzy/i',$options)) {
             $find_type='fuzzy';
-        }elseif (preg_match('/fast/i',$options)) {
+        }
+        elseif (preg_match('/fast/i',$options)) {
             $find_type='fast';
         }
-        
-        
+
+
 
         //Timer::timing_milestone('start find');
 
@@ -459,68 +464,68 @@ function find_fast($raw_data) {
         }
 
 
-	switch($find_type){
-		case 'fast':
-			$this->find_fast($raw_data);
-			break;
-		case 'complete':
-		
-		
-			$this->find_complete($raw_data);
-			 break;
-		case 'fuzzy':
-		exit("try find complete");
-			$this->find_fuzzy();
-			 break;
-		}
+        switch ($find_type) {
+        case 'fast':
+            $this->find_fast($raw_data);
+            break;
+        case 'complete':
+
+
+            $this->find_complete($raw_data);
+            break;
+        case 'fuzzy':
+            exit("try find complete");
+            $this->find_fuzzy();
+            break;
+        }
 
         if ($this->found )
             $this->get_data('id',$this->found_key);
 
 
-$contact_created=false;
+        $contact_created=false;
 
         if ($create or $update) {
-/*
-            if ($raw_data['Company Main Contact Name']=='' and $this->found and !$this->find_contact->found) {
-                foreach($this->find_contact->candidate as $key=>$value) {
-                    if ($value>100) {
-                        $contactx=new Contact($key);
-                        $contactx->set_scope('Company',$this->found_key);
-                        //print_r($contact);
-                        if ($contactx->associated_with_scope) {
-                            $raw_data['Company Main Contact Name']=$this->find_contact->display('name');
-                            $contactx->found=true;;
-                            $contactx->found_key=$this->find_contact->id;
-                            break;
-                        }
-                    }
+            /*
+                        if ($raw_data['Company Main Contact Name']=='' and $this->found and !$this->find_contact->found) {
+                            foreach($this->find_contact->candidate as $key=>$value) {
+                                if ($value>100) {
+                                    $contactx=new Contact($key);
+                                    $contactx->set_scope('Company',$this->found_key);
+                                    //print_r($contact);
+                                    if ($contactx->associated_with_scope) {
+                                        $raw_data['Company Main Contact Name']=$this->find_contact->display('name');
+                                        $contactx->found=true;;
+                                        $contactx->found_key=$this->find_contact->id;
+                                        break;
+                                    }
+                                }
 
-                }
-            }
-*/
+                            }
+                        }
+            */
 
             //    print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$this->find_contact->found." ".$this->find_contact->found_key."  \n";
 
 
-/*
+            /*
 
-            if (!$this->find_contact->found and $this->found) {
+                        if (!$this->find_contact->found and $this->found) {
 
-                // try to find again the contact now that we now the company
-                $contact=new Contact("find in company ".$this->found_key,$raw_data);
+                            // try to find again the contact now that we now the company
+                            $contact=new Contact("find in company ".$this->found_key,$raw_data);
 
-                $this->candidate=array();
-                foreach($this->find_contact->candidate as $key=>$val) {
-                    if (isset($this->candidate[$key]))
-                        $this->candidate[$key]+=$val;
-                    else
-                        $this->candidate[$key]=$val;
-                }
+                            $this->candidate=array();
+                            foreach($this->find_contact->candidate as $key=>$val) {
+                                if (isset($this->candidate[$key]))
+                                    $this->candidate[$key]+=$val;
+                                else
+                                    $this->candidate[$key]=$val;
+                            }
 
 
-            }
-*/
+                        }
+            */
             // print "Company founded ".$this->found_key."  \n";
 
             //   print "Contact founded ".$this->find_contact->found."  \n";
@@ -552,13 +557,9 @@ $contact_created=false;
 
             if ($update and $this->found) {
                 if (!$this->find_contact->found) {
-
                     $contact_new=new Contact("find in company create",$raw_data);
-
                     $this->create_contact_bridge($contact_new->id);
-$contact_created=false;
-
-
+                    $contact_created=true;
                 } else {
 
                     $contact_keys=$this->get_contact_keys();
@@ -571,7 +572,6 @@ $contact_created=false;
                         if (isset($raw_data['Company Main Plain Email'])) {
                             $update_data['Contact Main Plain Email']=$raw_data['Company Main Plain Email'];
                         }
-
                         $this->find_contact->update($update_data,$find_type);
 
                     } else {
@@ -599,7 +599,7 @@ $contact_created=false;
 
                 unset($raw_data['Company Main Plain Email']);
 
-             
+
 
                 $this->update_principal_contact($this->find_contact->id);
 
@@ -715,8 +715,8 @@ $contact_created=false;
 
 
     function create($raw_data,$raw_address_data=array(),$options='') {
-       
-       //print "create company ****** ".$options."\n";
+
+        //print "create company ****** ".$options."\n";
         // print_r($raw_data);
 
 
@@ -794,10 +794,10 @@ $contact_created=false;
 
 
             $address_data['editor']=$this->editor;
-            
-           // print "xxx crete company address $options";
+
+            // print "xxx crete company address $options";
             //print_r($address_data);
-            
+
             $address=new Address("find in company ".$this->id." $options create",$address_data);
             $address->editor=$this->editor;
             //print_r($address);
@@ -1131,7 +1131,8 @@ $contact_created=false;
         elseif($affected==0) {
             $this->msg.=' '._('Same value as the old record');
 
-        } else {
+        }
+        else {
             $this->msg.=' '._('Company name updated')."\n";
             $this->msg_updated=_('Company name updated');
             $this->updated=true;
@@ -1180,13 +1181,13 @@ $contact_created=false;
             mysql_free_result($res);
 
 
-$sql=sprintf("select * from `Corporation Dimension` where `Corporation Company Key`=%d  ",$this->id);
+            $sql=sprintf("select * from `Corporation Dimension` where `Corporation Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $corporation=new Corporation ();
-                    $corporation->editor=$this->editor;
-                    $corporation->update_name($this->data['Company Name']);
-                 
+                $corporation->editor=$this->editor;
+                $corporation->update_name($this->data['Company Name']);
+
             }
             mysql_free_result($res);
 
@@ -2360,8 +2361,8 @@ $sql=sprintf("select * from `Corporation Dimension` where `Corporation Company K
     }
 
     function add_area($data) {
-$data1=$data;
-print_r($data1);
+        $data1=$data;
+        print_r($data1);
         include_once('class.CompanyArea.php');
         $data['Company Key']=$this->id;
         $data['editor']=$this->editor;
@@ -2383,7 +2384,7 @@ print_r($data1);
 
         }
     }
-   function add_position($data) {
+    function add_position($data) {
         include_once('class.CompanyPosition.php');
         $data['Company Key']=$this->id;
         $data['editor']=$this->editor;

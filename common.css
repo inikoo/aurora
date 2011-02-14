@@ -557,7 +557,7 @@ span.link{cursor:pointer}
 
 .match{font-weight:800}
 
-div.contact_card {text-align:right}
+div.contact_card {text-align:right;border:1px solid #ccc;padding:10px 10px 15px 10px;width: 250px;}
 div.contact_card div.tels{margin-top:3px;font-size:80%;color:#3b5998}
 div.contact_card div.address{margin-top:5px;font-size:70%}
 

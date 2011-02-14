@@ -406,6 +406,8 @@ function update_code($value){
             ,$this->id
             ,prepare_mysql($value)
             );
+            
+            
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 $this->msg=_('Other location has this code');

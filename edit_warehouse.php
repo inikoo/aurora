@@ -38,7 +38,7 @@ $units_tipo=array(
 		  ,'Drawer'=>array('fname'=>_('Drawer'))
 		  ,'Other'=>array('fname'=>_('Other'),'selected'=>true)
 		  );
-$smarty->assign('shelf_default_type','other');
+$smarty->assign('shelf_default_type','Other');
 
 $smarty->assign('shelf_types',$units_tipo);
 

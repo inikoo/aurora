@@ -201,514 +201,463 @@ class Address extends DB_Table {
 
 
 
-function find_fast(){
+    function find_fast() {
 
-}
-function find_complete($data,$subject_data){
-
-       
-       $subject_type=$subject_data['subject_type'];
-              $subject_object=$subject_data['subject_object'];
+    }
+    function find_complete($data,$subject_data) {
 
 
-            if ($subject_type!='') {
-
-                $address_keys=$subject_object->get_address_keys();
-                foreach($address_keys as $address_key) {
-                    $address=new Address($address_key);
-                    $same_address=true;
-                   
-                    foreach($data as $key=>$value ) {
-                 
-                        if ($value!='' and !preg_match('/World|Continent|Fuzzy|Location|Format|FAX|Telephone/',$key)) {
-                          
-                            if ($data[$key]!=$address->data[$key]) {
-                                
-                                $same_address=false;
-                                break;
-                            }
+        $subject_type=$subject_data['subject_type'];
+        $subject_object=$subject_data['subject_object'];
 
 
+        if ($subject_type!='') {
+
+            $address_keys=$subject_object->get_address_keys();
+            foreach($address_keys as $address_key) {
+                $address=new Address($address_key);
+                $same_address=true;
+
+                foreach($data as $key=>$value ) {
+
+                    if ($value!='' and !preg_match('/World|Continent|Fuzzy|Location|Format|FAX|Telephone/',$key)) {
+
+                        if ($data[$key]!=$address->data[$key]) {
+
+                            $same_address=false;
+                            break;
                         }
 
-                    }
-                   
-                    if($same_address){
-                      
-                       $this->found=true;
-                        $this->found_key=$address_key;
-                        $this->get_data('id',$address_key);
-                        $subject_contact_keys=$subject_object->get_contact_keys();
-                        foreach($subject_contact_keys as $contact_key)
-                        $this->candidate[$contact_key]=110;
-                         break;
-                    
-                    }
-                   
 
-                
-                
-           }
-           }
-           
-           if(!$this->found and $data['Address Fuzzy']!='Yes'){
-           
-           $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
-
-                    $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-                    foreach($fields as $field) {
-                        $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-                    }
-                    
-                    $result=mysql_query($sql);
-                    $num_results=mysql_num_rows($result);
-                    if ($num_results==1) {
-                        $row=mysql_fetch_array($result, MYSQL_ASSOC);
-                        $this->found=true;
-                        $this->found_key=$row['Address Key'];
-                        $this->get_data('id',$row['Address Key']);
-                        $this->candidate[$row['Subject Key']]=110;
                     }
 
-           
-           }
-           
-                
-           
+                }
+
+                if ($same_address) {
+
+                    $this->found=true;
+                    $this->found_key=$address_key;
+                    $this->get_data('id',$address_key);
+                    $subject_contact_keys=$subject_object->get_contact_keys();
+                    foreach($subject_contact_keys as $contact_key)
+                    $this->candidate[$contact_key]=110;
+                    break;
+
+                }
 
 
 
-    
-}
 
-function fund_fuzzy(){
+            }
+        }
 
-       
+        if (!$this->found and $data['Address Fuzzy']!='Yes') {
 
-            //special cases
-            // Only one data
-            $fields=array('Address Street Number','Address Building','Address Street Name','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Postal Code','Address Country Code');
-            $filled_fields=array();
+            $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+
+            $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
             foreach($fields as $field) {
-                if ($data[$field]!='')
-                    $filled_fields[$field]=$data[$field];
+                $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+            }
+
+            $result=mysql_query($sql);
+            $num_results=mysql_num_rows($result);
+            if ($num_results==1) {
+                $row=mysql_fetch_array($result, MYSQL_ASSOC);
+                $this->found=true;
+                $this->found_key=$row['Address Key'];
+                $this->get_data('id',$row['Address Key']);
+                $this->candidate[$row['Subject Key']]=110;
             }
 
 
-            $number_filled_fields=count($filled_fields);
-
-
-            if ($number_filled_fields==1) {
-
-
-            } elseif ($number_filled_fields==2) {
-                $column=false;
-                if (array_key_exists('Address Town',$filled_fields)) {
-                    $column='Address Town';
-                }
-                elseif(array_key_exists('Address Postal Code',$filled_fields)) {
-                    $column='Address Postal Code';
-                }
-
-                if ($column) {
-
-                    $sql=sprintf("select A.`Address Key` ,damlev(UPPER(`%s`),%s) as dist,  `Subject Key`as contact_key from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s and damlevlim(UPPER(`%s`),%s,2)<2  order by dist limit 20   "
-                                 ,$column
-                                 ,prepare_mysql(strtoupper($data[$column]))
-                                 ,prepare_mysql($data['Address Country Code'])
-                                 ,$column
-                                 ,prepare_mysql(strtoupper($data[$column]))
-                                );
-                    $result=mysql_query($sql);
-                    $len_keyword=strlen($data[$column]);
-
-                    // print $sql;
-                    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                        $contact_key=$row['contact_key'];
-                        $dif=$row['dist']/$len_keyword;
-                        if ($dif>1)
-                            $dif=1;
-                        $score=10.0*(1-$dif)*(1-$dif);
-                        if (isset($this->candidate[$contact_key])) {
-                            if ($this->candidate[$contact_key]<$score)
-                                $this->candidate[$contact_key]=$score;
-                        } else {
-                            // print "-- $score \n";
-                            $this->candidate[$contact_key]=$score;
-                        }
-
-                    }
-
-                    $sql=sprintf("select `Address Town`, A.`Address Key` ,damlev(UPPER(`%s`),%s) as dist,  `Subject Key` as contact_key from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`!=%s and damlevlim(UPPER(`%s`),%s,2)<2  order by dist limit 20   "
-                                 ,$column
-                                 ,prepare_mysql(strtoupper($data[$column]))
-                                 ,prepare_mysql($data['Address Country Code'])
-                                 ,$column
-                                 ,prepare_mysql(strtoupper($data[$column]))
-                                );
-                    $result=mysql_query($sql);
-                    $len_keyword=strlen($data[$column]);
-
-                    //	   print $sql;
-                    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                        $contact_key=$row['contact_key'];
-                        $dif=$row['dist']/$len_keyword;
-                        if ($dif>1)
-                            $dif=1;
-                        $score=2.5*(1-$dif)*(1-$dif);
-                        if (isset($this->candidate[$contact_key])) {
-                            if ($this->candidate[$contact_key]<$score)
-                                $this->candidate[$contact_key]=$score;
-                        } else {
-                            // print "-- $score \n";
-                            $this->candidate[$contact_key]=$score;
-                        }
-
-                    }
-
-
-                }
+        }
 
 
 
 
 
 
+
+    }
+
+    function fund_fuzzy() {
+
+
+
+        //special cases
+        // Only one data
+        $fields=array('Address Street Number','Address Building','Address Street Name','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Postal Code','Address Country Code');
+        $filled_fields=array();
+        foreach($fields as $field) {
+            if ($data[$field]!='')
+                $filled_fields[$field]=$data[$field];
+        }
+
+
+        $number_filled_fields=count($filled_fields);
+
+
+        if ($number_filled_fields==1) {
+
+
+        } elseif ($number_filled_fields==2) {
+            $column=false;
+            if (array_key_exists('Address Town',$filled_fields)) {
+                $column='Address Town';
             }
-            else {
+            elseif(array_key_exists('Address Postal Code',$filled_fields)) {
+                $column='Address Postal Code';
+            }
 
-                $nothing_found=true;
-                $found_item=array('Postal Code'=>false);
-                $postal_code_max_score=20;
-                $town_max_score=20;
-                $street_max_score=10;
-                $score_found_within_address=80;
-                $country_max_score=10;
-                $max_score=0;
+            if ($column) {
 
-                $sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` ");
-                $res=mysql_query($sql);
-                $address_multiplicity_data=mysql_fetch_array($res);
-                $address_multiplicity=$address_multiplicity_data['addresses'];
-
-                $sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` where   `Address Country Code`=%s "
+                $sql=sprintf("select A.`Address Key` ,damlev(UPPER(`%s`),%s) as dist,  `Subject Key`as contact_key from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s and damlevlim(UPPER(`%s`),%s,2)<2  order by dist limit 20   "
+                             ,$column
+                             ,prepare_mysql(strtoupper($data[$column]))
                              ,prepare_mysql($data['Address Country Code'])
+                             ,$column
+                             ,prepare_mysql(strtoupper($data[$column]))
                             );
-                $res=mysql_query($sql);
+                $result=mysql_query($sql);
+                $len_keyword=strlen($data[$column]);
 
-                $country_multiplicity_data=mysql_fetch_array($res);
-                $country_multiplicity=$country_multiplicity_data['addresses'];
-
-                if ($address_multiplicity>0) {
-
-                    if ($country_multiplicity==0)
-                        $same_country_bonus=0;
-                    else {
-                        $same_country_bonus=10*(1-($country_multiplicity/$address_multiplicity));
-                        //print "xxxx $country_multiplicity $address_multiplicity";
-
-
+                // print $sql;
+                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                    $contact_key=$row['contact_key'];
+                    $dif=$row['dist']/$len_keyword;
+                    if ($dif>1)
+                        $dif=1;
+                    $score=10.0*(1-$dif)*(1-$dif);
+                    if (isset($this->candidate[$contact_key])) {
+                        if ($this->candidate[$contact_key]<$score)
+                            $this->candidate[$contact_key]=$score;
+                    } else {
+                        // print "-- $score \n";
+                        $this->candidate[$contact_key]=$score;
                     }
-                } else {
-                    $same_country_bonus=0;
 
                 }
 
+                $sql=sprintf("select `Address Town`, A.`Address Key` ,damlev(UPPER(`%s`),%s) as dist,  `Subject Key` as contact_key from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`!=%s and damlevlim(UPPER(`%s`),%s,2)<2  order by dist limit 20   "
+                             ,$column
+                             ,prepare_mysql(strtoupper($data[$column]))
+                             ,prepare_mysql($data['Address Country Code'])
+                             ,$column
+                             ,prepare_mysql(strtoupper($data[$column]))
+                            );
+                $result=mysql_query($sql);
+                $len_keyword=strlen($data[$column]);
+
+                //	   print $sql;
+                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                    $contact_key=$row['contact_key'];
+                    $dif=$row['dist']/$len_keyword;
+                    if ($dif>1)
+                        $dif=1;
+                    $score=2.5*(1-$dif)*(1-$dif);
+                    if (isset($this->candidate[$contact_key])) {
+                        if ($this->candidate[$contact_key]<$score)
+                            $this->candidate[$contact_key]=$score;
+                    } else {
+                        // print "-- $score \n";
+                        $this->candidate[$contact_key]=$score;
+                    }
+
+                }
+
+
+            }
+
+
+
+
+
+
+        }
+        else {
+
+            $nothing_found=true;
+            $found_item=array('Postal Code'=>false);
+            $postal_code_max_score=20;
+            $town_max_score=20;
+            $street_max_score=10;
+            $score_found_within_address=80;
+            $country_max_score=10;
+            $max_score=0;
+
+            $sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` ");
+            $res=mysql_query($sql);
+            $address_multiplicity_data=mysql_fetch_array($res);
+            $address_multiplicity=$address_multiplicity_data['addresses'];
+
+            $sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` where   `Address Country Code`=%s "
+                         ,prepare_mysql($data['Address Country Code'])
+                        );
+            $res=mysql_query($sql);
+
+            $country_multiplicity_data=mysql_fetch_array($res);
+            $country_multiplicity=$country_multiplicity_data['addresses'];
+
+            if ($address_multiplicity>0) {
+
+                if ($country_multiplicity==0)
+                    $same_country_bonus=0;
+                else {
+                    $same_country_bonus=10*(1-($country_multiplicity/$address_multiplicity));
+                    //print "xxxx $country_multiplicity $address_multiplicity";
+
+
+                }
+            } else {
+                $same_country_bonus=0;
+
+            }
+
+            $max_score=-1;
+            unset($country_multiplicity_data);
+
+
+            if (  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ) {
+                $order='';
+                $sql_town='';
+                $sql_postal_code='';
+                $sql_where_postal_code='';
+                $sql_where_street_number='';
+                $sql_where_internal='';
+                $with_town=false;
+                $with_postal_code=false;
+                if ($data['Address Town']!='') {
+                    $sql_town=sprintf("damlev(UPPER(`Address Town`),%s) as dist_town,",prepare_mysql(strtoupper($data['Address Town'])));
+                    $order='dist_town';
+                    $with_town=true;
+                    $len_town=strlen($data['Address Town']);
+
+
+                }
+
+
+                if ($data['Address Postal Code']!='') {
+                    $sql_postal_code=sprintf("damlevlim(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
+                    $sql_where_postal_code=sprintf("and  damlevlim(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
+                    $order.=($order!=''?',':'').'dist_postal_code';
+                    $with_postal_code=true;
+                }
+                if ($data['Address Street Number']!='') {
+                    $sql_where_street_number=sprintf("and `Address Street Number`=%s ",prepare_mysql(strtoupper($data['Address Street Number'])));
+                }
+                elseif($data['Address Building']!='') {
+                    $sql_where_street_number=sprintf("and  damlevlim(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
+                }
+                if ($data['Address Internal']!='') {
+                    $sql_where_internal=sprintf("and `Address Internal`=%s"
+                                                ,prepare_mysql($data['Address Internal'],false)
+                                               );
+                }
+
+                $order=($order!=''?'order by ':'').$order;
+
+                $sql=sprintf("select `Address Town`,`Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
+                             ,$sql_postal_code
+                             ,$sql_town
+                             ,prepare_mysql(strtoupper($data['Address Country Code']))
+                             ,$sql_where_internal
+                             ,$sql_where_street_number
+                             ,$sql_where_postal_code
+                             ,$order
+                            );
+
+                //print "$sql<br>";
+
+                $result=mysql_query($sql);
                 $max_score=-1;
-                unset($country_multiplicity_data);
+                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+                    $wrong_town_factor=1;
+                    $found_postal_code_bonus=20;
+                    $found_town_bonus=10;
 
-                   if (  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ) {
-                    $order='';
-                    $sql_town='';
-                    $sql_postal_code='';
-                    $sql_where_postal_code='';
-                    $sql_where_street_number='';
-                    $sql_where_internal='';
-                    $with_town=false;
-                    $with_postal_code=false;
-                    if ($data['Address Town']!='') {
-                        $sql_town=sprintf("damlev(UPPER(`Address Town`),%s) as dist_town,",prepare_mysql(strtoupper($data['Address Town'])));
-                        $order='dist_town';
-                        $with_town=true;
-                        $len_town=strlen($data['Address Town']);
+                    $contact_key=$row['Subject Key'];
 
-
+                    $score=$score_found_within_address;
+                    $wrong_postal_code_factor=1;
+                    if ($with_postal_code) {
+                        if ($row['dist_postal_code']==0) {
+                            $score+=$found_postal_code_bonus;
+                            $wrong_postal_code_factor=1;
+                        }
+                        elseif($row['dist_postal_code']==1) {
+                            $wrong_postal_code_factor=.5;
+                        }
+                        else {
+                            $wrong_postal_code_factor=.25;
+                        }
                     }
 
+                    if ($with_town) {
+                        if ($row['dist_town']==0) {
+                            $score+=$found_town_bonus;
 
-                    if ($data['Address Postal Code']!='') {
-                        $sql_postal_code=sprintf("damlevlim(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
-                        $sql_where_postal_code=sprintf("and  damlevlim(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
-                        $order.=($order!=''?',':'').'dist_postal_code';
-                        $with_postal_code=true;
+                        }
+                        $dif=$row['dist_town']/$len_town;
+                        if ($dif>1)
+                            $dif=1;
+                        //print "xxxxx $dif\n";
+                        $wrong_town_factor=(1-$dif)*(1-$dif);
+
                     }
-                    if ($data['Address Street Number']!='') {
-                        $sql_where_street_number=sprintf("and `Address Street Number`=%s ",prepare_mysql(strtoupper($data['Address Street Number'])));
-                    }
-                    elseif($data['Address Building']!='') {
-                        $sql_where_street_number=sprintf("and  damlevlim(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
-                    }
-                    if ($data['Address Internal']!='') {
-                        $sql_where_internal=sprintf("and `Address Internal`=%s"
-                                                    ,prepare_mysql($data['Address Internal'],false)
-                                                   );
+                    $score=$score*$wrong_postal_code_factor*$wrong_town_factor;
+
+
+                    if (isset($this->candidate[$contact_key])) {
+                        if ($this->candidate[$contact_key]<$score)
+                            $this->candidate[$contact_key]=$score;
+                    } else {
+                        $this->candidate[$contact_key]=$score;
                     }
 
-                    $order=($order!=''?'order by ':'').$order;
+                    if ($this->candidate[$contact_key]>$max_score)
+                        $max_score=$this->candidate[$contact_key];
+                }
 
-                    $sql=sprintf("select `Address Town`,`Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
-                                 ,$sql_postal_code
-                                 ,$sql_town
-                                 ,prepare_mysql(strtoupper($data['Address Country Code']))
-                                 ,$sql_where_internal
-                                 ,$sql_where_street_number
-                                 ,$sql_where_postal_code
-                                 ,$order
+            }
+
+
+            if ($max_score>85)
+                $nothing_found=false;
+
+            if ($nothing_found) {
+
+                if ($data['Address Postal Code']!='') {
+                    $sql=sprintf("select   `Address Country Code`,`Address Postal Code`, A.`Address Key` ,damlev(UPPER(`Address Postal Code`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'  and   damlev(UPPER(`Address Postal Code`),%s) <3   order by dist1  limit 250 "
+                                 ,prepare_mysql(strtoupper($data['Address Postal Code']))
+                                 ,prepare_mysql(strtoupper($data['Address Postal Code']))
+                                );
+                    $result=mysql_query($sql);
+
+                    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                        $contact_key=$row['Subject Key'];
+                        if ($row['dist1']==0) {
+
+                            $found_item['Postal Code']=true;
+                            $factor=1;
+                        }
+                        elseif($row['dist1']==1) {
+                            $factor=.4;
+                        }
+                        else {
+                            $factor=.1;
+                        }
+                        $score=$factor*$postal_code_max_score;
+
+                        $bonus=0;
+                        if ($data['Address Country Code']==$row['Address Country Code'])
+                            $bonus=$same_country_bonus;
+
+
+                        //print "$factor $postal_code_max_score $same_country_bonus<br>";
+                        $score=$factor*($postal_code_max_score+$bonus);
+
+
+
+                        if (isset($this->candidate[$contact_key])) {
+                            if ($this->candidate[$contact_key]<$score)
+                                $this->candidate[$contact_key]=$score;
+                        } else
+                            $this->candidate[$contact_key]=$score;
+
+                    }
+                }
+
+
+
+
+
+                if ($data['Address Town']!='') {
+
+
+                    //Count if theres is a exacte match
+
+                    /* 	  $sql=sprintf('select count(*) as number from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s    ',prepare_mysql(data['Address Town'])); */
+                    /* 			  $result=mysql_query($sql); */
+                    /* 			  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
+
+                    /* 			  if($row['number_of_address']>20){ */
+                    /* 			      $sql=sprintf('select `Subject Key` from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s     and `Subject Key in`  ',prepare_mysql(data['Address Town'])); */
+
+                    /* 			  }else{ */
+
+                    $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Town`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
+                                 ,prepare_mysql(strtoupper($data['Address Town']))
+                                 ,prepare_mysql(strtoupper($data['Address Town']))
                                 );
 
-                    //print "$sql<br>";
 
                     $result=mysql_query($sql);
-                    $max_score=-1;
+                    $len_town=strlen($data['Address Town']);
                     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-                        $wrong_town_factor=1;
-                        $found_postal_code_bonus=20;
-                        $found_town_bonus=10;
-
                         $contact_key=$row['Subject Key'];
 
-                        $score=$score_found_within_address;
-                        $wrong_postal_code_factor=1;
-                        if ($with_postal_code) {
-                            if ($row['dist_postal_code']==0) {
-                                $score+=$found_postal_code_bonus;
-                                $wrong_postal_code_factor=1;
-                            }
-                            elseif($row['dist_postal_code']==1) {
-                                $wrong_postal_code_factor=.5;
-                            }
-                            else {
-                                $wrong_postal_code_factor=.25;
-                            }
+                        $dif=$row['dist1']/$len_town;
+                        if ($dif>=1)
+                            break;
+                        $factor=(1-$dif)*(1-$dif);
+                        $score=$factor*$town_max_score;
+
+                        if ($row['dist1']==0) {
+                            $found_item['Town']=true;
                         }
 
-                        if ($with_town) {
-                            if ($row['dist_town']==0) {
-                                $score+=$found_town_bonus;
 
-                            }
-                            $dif=$row['dist_town']/$len_town;
-                            if ($dif>1)
-                                $dif=1;
-                            //print "xxxxx $dif\n";
-                            $wrong_town_factor=(1-$dif)*(1-$dif);
+                        $bonus=0;
+                        if ($data['Address Country Code']=$row['Address Country Code'])
+                            $bonus=$same_country_bonus;
 
-                        }
-                        $score=$score*$wrong_postal_code_factor*$wrong_town_factor;
+                        $score=$factor*($town_max_score+$bonus);
 
 
-                        if (isset($this->candidate[$contact_key])) {
-                                  if ($this->candidate[$contact_key]<$score)
+
+                        if (isset($this->candidate[$contact_key]))
+                            if ($this->candidate[$contact_key]<$score)
                                 $this->candidate[$contact_key]=$score;
-                        } else {
-                            $this->candidate[$contact_key]=$score;
-                        }
-
-                        if ($this->candidate[$contact_key]>$max_score)
-                            $max_score=$this->candidate[$contact_key];
-                    }
-
-                }
-
-           
-                if ($max_score>85)
-                    $nothing_found=false;
-
-                if ($nothing_found) {
-
-                    if ($data['Address Postal Code']!='') {
-                        $sql=sprintf("select   `Address Country Code`,`Address Postal Code`, A.`Address Key` ,damlev(UPPER(`Address Postal Code`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'  and   damlev(UPPER(`Address Postal Code`),%s) <3   order by dist1  limit 250 "
-                                     ,prepare_mysql(strtoupper($data['Address Postal Code']))
-                                     ,prepare_mysql(strtoupper($data['Address Postal Code']))
-                                    );
-                        $result=mysql_query($sql);
-
-                        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                            $contact_key=$row['Subject Key'];
-                            if ($row['dist1']==0) {
-
-                                $found_item['Postal Code']=true;
-                                $factor=1;
-                            }
-                            elseif($row['dist1']==1) {
-                                $factor=.4;
-                            }
-                            else {
-                                $factor=.1;
-                            }
-                            $score=$factor*$postal_code_max_score;
-
-                            $bonus=0;
-                            if ($data['Address Country Code']==$row['Address Country Code'])
-                                $bonus=$same_country_bonus;
-
-
-                            //print "$factor $postal_code_max_score $same_country_bonus<br>";
-                            $score=$factor*($postal_code_max_score+$bonus);
-
-
-
-                            if (isset($this->candidate[$contact_key])) {
-                                if ($this->candidate[$contact_key]<$score)
-                                    $this->candidate[$contact_key]=$score;
-                            } else
+                            else
                                 $this->candidate[$contact_key]=$score;
 
-                        }
                     }
-
-
-
-
-
-                    if ($data['Address Town']!='') {
-
-
-                        //Count if theres is a exacte match
-
-                        /* 	  $sql=sprintf('select count(*) as number from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s    ',prepare_mysql(data['Address Town'])); */
-                        /* 			  $result=mysql_query($sql); */
-                        /* 			  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
-
-                        /* 			  if($row['number_of_address']>20){ */
-                        /* 			      $sql=sprintf('select `Subject Key` from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s     and `Subject Key in`  ',prepare_mysql(data['Address Town'])); */
-
-                        /* 			  }else{ */
-
-                        $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Town`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
-                                     ,prepare_mysql(strtoupper($data['Address Town']))
-                                     ,prepare_mysql(strtoupper($data['Address Town']))
-                                    );
-
-                       
-                        $result=mysql_query($sql);
-                        $len_town=strlen($data['Address Town']);
-                        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                            $contact_key=$row['Subject Key'];
-
-                            $dif=$row['dist1']/$len_town;
-                            if ($dif>=1)
-                                break;
-                            $factor=(1-$dif)*(1-$dif);
-                            $score=$factor*$town_max_score;
-
-                            if ($row['dist1']==0) {
-                                $found_item['Town']=true;
-                            }
-
-
-                            $bonus=0;
-                            if ($data['Address Country Code']=$row['Address Country Code'])
-                                $bonus=$same_country_bonus;
-
-                            $score=$factor*($town_max_score+$bonus);
-
-
-
-                            if (isset($this->candidate[$contact_key]))
-                                if ($this->candidate[$contact_key]<$score)
-                                    $this->candidate[$contact_key]=$score;
-                                else
-                                    $this->candidate[$contact_key]=$score;
-
-                        }
-                    }
-                  
-                    if ($data['Address Street Name']!='' ) {
-                        $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
-                                     ,prepare_mysql(strtoupper($data['Address Street Name']))
-                                    );
-                        $result=mysql_query($sql);
-                        $len_street=strlen($data['Address Street Name']);
-                        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                            $contact_key=$row['Subject Key'];
-
-                            $dif=$row['dist1']/$len_street;
-                            if ($dif>=1)
-                                break;
-                            $factor=(1-$dif)*(1-$dif);
-                            $score=$factor*$town_max_score;
-
-
-                            $bonus=0;
-                            if ($data['Address Country Code']=$row['Address Country Code'])
-                                $bonus=$same_country_bonus;
-
-                            $score=$factor*($street_max_score+$bonus);
-
-
-
-                            if (isset($this->candidate[$contact_key]))
-                                if ($this->candidate[$contact_key]<$score)
-                                    $this->candidate[$contact_key]=$score;
-                                else
-                                    $this->candidate[$contact_key]=$score;
-
-                        }
-                    }
-
                 }
 
-
-
-
-
-
-
-            }
-
-
-
-            if (!$this->found and count($this->candidate)==0) {
-                // foound 1 additions
-                if ($data['Address Fuzzy']=='No') {
-                    //Special cases
-                    //a) when same (st number,street,town,d1,d2) but postal code on / off
-                    $fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
-
-                    $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-                    foreach($fields as $field) {
-                        $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-                    }
+                if ($data['Address Street Name']!='' ) {
+                    $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
+                                 ,prepare_mysql(strtoupper($data['Address Street Name']))
+                                );
                     $result=mysql_query($sql);
-                    //print "No fuzzy $sql\n";
-                    $num_results=mysql_num_rows($result);
+                    $len_street=strlen($data['Address Street Name']);
+                    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                        $contact_key=$row['Subject Key'];
 
-                    if ($num_results==1) {
-                        $row=mysql_fetch_array($result, MYSQL_ASSOC);
-                        $this->found=true;
-                        $this->found_key=$row['Address Key'];
-                        $this->get_data('id',$row['Address Key']);
-                        if ($subject_type=='Contact' or $subject_type=='Company' or $subject_type=='Customer') {
-                            if (in_array($row['Subject Key'],$in_contact)) {
-                                $this->candidate[$row['Subject Key']]=100;
-                                $this->found_in=true;
-                                $this->found_out=false;
-                            } else {
-                                $this->candidate[$row['Subject Key']]=80;
-                                $this->found_in=false;
-                                $this->found_out=true;
-                            }
-                        } else
-                            $this->candidate[$row['Subject Key']]=90;
+                        $dif=$row['dist1']/$len_street;
+                        if ($dif>=1)
+                            break;
+                        $factor=(1-$dif)*(1-$dif);
+                        $score=$factor*$town_max_score;
+
+
+                        $bonus=0;
+                        if ($data['Address Country Code']=$row['Address Country Code'])
+                            $bonus=$same_country_bonus;
+
+                        $score=$factor*($street_max_score+$bonus);
+
+
+
+                        if (isset($this->candidate[$contact_key]))
+                            if ($this->candidate[$contact_key]<$score)
+                                $this->candidate[$contact_key]=$score;
+                            else
+                                $this->candidate[$contact_key]=$score;
 
                     }
-
-
                 }
-
 
             }
 
@@ -716,9 +665,60 @@ function fund_fuzzy(){
 
 
 
-        
 
-}
+
+        }
+
+
+
+        if (!$this->found and count($this->candidate)==0) {
+            // foound 1 additions
+            if ($data['Address Fuzzy']=='No') {
+                //Special cases
+                //a) when same (st number,street,town,d1,d2) but postal code on / off
+                $fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
+
+                $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+                foreach($fields as $field) {
+                    $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+                }
+                $result=mysql_query($sql);
+                //print "No fuzzy $sql\n";
+                $num_results=mysql_num_rows($result);
+
+                if ($num_results==1) {
+                    $row=mysql_fetch_array($result, MYSQL_ASSOC);
+                    $this->found=true;
+                    $this->found_key=$row['Address Key'];
+                    $this->get_data('id',$row['Address Key']);
+                    if ($subject_type=='Contact' or $subject_type=='Company' or $subject_type=='Customer') {
+                        if (in_array($row['Subject Key'],$in_contact)) {
+                            $this->candidate[$row['Subject Key']]=100;
+                            $this->found_in=true;
+                            $this->found_out=false;
+                        } else {
+                            $this->candidate[$row['Subject Key']]=80;
+                            $this->found_in=false;
+                            $this->found_out=true;
+                        }
+                    } else
+                        $this->candidate[$row['Subject Key']]=90;
+
+                }
+
+
+            }
+
+
+        }
+
+
+
+
+
+
+
+    }
 
 
     /*
@@ -727,7 +727,7 @@ function fund_fuzzy(){
     */
 
     function find($raw_data,$options='') {
-      
+
         $find_type='complete';
         if (preg_match('/fuzzy/i',$options)) {
             $find_type='fuzzy';
@@ -784,7 +784,7 @@ function fund_fuzzy(){
         $subject_key=0;
         $subject_type='';
         $in_contact=array();
-$subject_object=false;
+        $subject_object=false;
         if (preg_match('/in contact \d+/i',$options,$match)) {
             $subject_key=preg_replace('/[^\d]/','',$match[0]);
             $subject_type='Contact';
@@ -808,28 +808,28 @@ $subject_object=false;
 
         }
 
-$subject_data=array(
-'subject_key'=>$subject_type,
-'subject_type'=>$subject_type,
-'subject_object'=>$subject_object,
-'in_contact'=>$in_contact
-);
-  
+        $subject_data=array(
+                          'subject_key'=>$subject_type,
+                          'subject_type'=>$subject_type,
+                          'subject_object'=>$subject_object,
+                          'in_contact'=>$in_contact
+                      );
 
-switch($find_type){
-		case 'fast':
-			$this->find_fast();
-			break;
-		case 'complete':
-		
-		
-			$this->find_complete($data,$subject_data);
-			 break;
-		case 'fuzzy':
-		exit("try find complete");
-			$this->find_fuzzy();
-			 break;
-		}
+
+        switch ($find_type) {
+        case 'fast':
+            $this->find_fast();
+            break;
+        case 'complete':
+
+
+            $this->find_complete($data,$subject_data);
+            break;
+        case 'fuzzy':
+            exit("try find complete");
+            $this->find_fuzzy();
+            break;
+        }
 
         if ($update) {
             if ($this->found) {
@@ -840,7 +840,7 @@ switch($find_type){
         }
 
         if ($create and !$this->found) {
-     
+
             $this->create($data,$options);
 
         }
@@ -902,9 +902,9 @@ switch($find_type){
       <Address>
 
     */
-    
-    
-    
+
+
+
     function create($data) {
 
         //   print_r($data);
@@ -1347,11 +1347,11 @@ switch($find_type){
                 if ($ps_address!='')
                     $address.=$ps_address.$separator;
 
-              
-              
-              if($divisions=$this->display('Country Divisions')){
-              $address.=$divisions.$separator;
-              }
+
+
+                if ($divisions=$this->display('Country Divisions')) {
+                    $address.=$divisions.$separator;
+                }
 
                 $address.='<a class="ninja" href="region.php?country='.$this->data['Address Country Code'].'" >'.$this->data['Address Country Name'].'</a>';
             }
@@ -2112,18 +2112,18 @@ switch($find_type){
             if ($data['Address Country First Division']=='')
                 $data['Address Country First Division']='Réunion';
         }
-         if (preg_match('/Caledonia|Calédonie|Caledonie/i',$data['Address Country Name'])) {
+        if (preg_match('/Caledonia|Calédonie|Caledonie/i',$data['Address Country Name'])) {
             $data['Address Country Name']='France';
             if ($data['Address Country First Division']=='')
                 $data['Address Country First Division']='New Caledonia';
         }
-         if (preg_match('/Saint Martin|St Martin/i',$data['Address Country Name'])) {
+        if (preg_match('/Saint Martin|St Martin/i',$data['Address Country Name'])) {
             $data['Address Country Name']='France';
             if ($data['Address Country First Division']=='')
                 $data['Address Country First Division']='Saint Martin';
         }
         //print_r($data);
-        
+
         if (preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
             $data['Address Country Name']='United Kingdom';
         if (preg_match('/^england$|^inglaterra$/i',$data['Address Country Name'])) {
@@ -3592,7 +3592,7 @@ switch($find_type){
                 $data['Address Postal Code']='L-'.$data['Address Postal Code'];
             break;
         case(165)://France
-       // print_r($data);
+            // print_r($data);
             $data['Address Postal Code']=_trim($data['Address Postal Code']);
             $data['Address Postal Code']=preg_replace('/FRANCE|french republic/i','',$data['Address Postal Code']);
             if ($data['Address Postal Code']=='' and preg_match('/\s*\d{4,5}\s*/',$data['Address Town'],$match)) {
@@ -3645,10 +3645,10 @@ switch($find_type){
             $data['Address Postal Code']=_trim($data['Address Postal Code']);
             if (preg_match('/^\d{4}$/',$data['Address Postal Code']))
                 $data['Address Postal Code']='0'.$data['Address Postal Code'];
-                
-                        //print_r($data);
 
-                
+            //print_r($data);
+
+
             break;
 
         case(196)://Switzerland
@@ -4239,7 +4239,7 @@ switch($find_type){
 
 
         if ($data['Address Town']=='') {
-            $data['Address Fuzzy Type']='Country';
+            $data['Address Fuzzy Type']='Town';
             $data['Address Fuzzy']='Yes';
         }
         if ($data['Address Country Code']=='UNK') {
@@ -4256,7 +4256,7 @@ switch($find_type){
         $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
 
         $data['Address Location']=Address::location($data);
-       
+
         return $data;
     }
 
@@ -4478,135 +4478,161 @@ switch($find_type){
 
 
 
-function update_parents($parents=false) {
+    function update_parents($parents=false) {
 
-    if (!$parents) {
-        $parents=array('Contact','Company','Customer','Supplier');
-    }
-    elseif(is_string($parents)) {
-        $parents=array($parents);
-    }
-    foreach($parents as $parent) {
-
-
+        if (!$parents) {
+            $parents=array('Contact','Company','Customer','Supplier');
+        }
+        elseif(is_string($parents)) {
+            $parents=array($parents);
+        }
+        foreach($parents as $parent) {
 
 
 
 
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $principal_address_changed=false;
 
-            if ($parent=='Contact') {
-                $parent_object=new Contact($row['Parent Key']);
-                $parent_label=_('Contact');
-            }
-            elseif($parent=='Customer') {
-                $parent_object=new Customer($row['Parent Key']);
-                $parent_label=_('Customer');
 
-                $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
-                $res2=mysql_query($sql);
-                while ($row2=mysql_fetch_array($res2)) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_address_changed=false;
 
-                    $sql=sprintf('update `Customer Dimension` set `Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
-                                 , prepare_mysql($this->data['Address Town'])
-                                 ,prepare_mysql($this->data['Address Country Name'])
+                if ($parent=='Contact') {
+                    $parent_object=new Contact($row['Parent Key']);
+                    $parent_label=_('Contact');
+                }
+                elseif($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+
+
+                    $sql=sprintf('update `Customer Dimension` set `Customer Main Address Incomplete`=%s where `Customer Key`=%d ',
+                                 prepare_mysql(($this->data['Address Fuzzy'])),
+                                 $row['Parent Key']
+                                );
+                    mysql_query($sql);
+
+
+
+                    $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+                    $res2=mysql_query($sql);
+                    while ($row2=mysql_fetch_array($res2)) {
+
+                        $sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+                                     ,prepare_mysql($this->display('xhtml'))
+
+                                     ,prepare_mysql($this->data['Address Town'])
+                                     ,prepare_mysql($this->data['Address Country Name'])
+                                     ,prepare_mysql($this->data['Address Postal Code'])
+                                     ,prepare_mysql($this->data['Address Country Code'])
+                                     ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+                                     ,$this->data['Address Country Key']
+                                     ,$row2['Customer Key']
+                                    );
+                        mysql_query($sql);
+                    }
+
+
+                    $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Billing Address Key`=%d group by `Customer Key`",$this->id);
+                    $res2=mysql_query($sql);
+                    while ($row2=mysql_fetch_array($res2)) {
+
+                        $sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Town`=%s,`Customer Billing Address Country Code`=%s where `Customer Key`=%d '
+                                     ,prepare_mysql($this->display('xhtml'))
+
+                                     ,prepare_mysql($this->data['Address Town'])
+                                     ,prepare_mysql($this->data['Address Country Code'])
+                                     ,$row2['Customer Key']
+                                    );
+                        mysql_query($sql);
+                    }
+
+
+
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+                $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
+                $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
+                $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+                $parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
+                $parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
+                $parent_object->data[$parent.' Main Country Code']=$this->data['Address Country Code'];
+                $parent_object->data[$parent.' Main Location']=$this->location($this->data);
+
+
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Plain Address`=%s,`$parent Main XHTML Address`=%s,`$parent Main Country Key` =%d,`$parent Main Country` =%s,`$parent Main Country Code` =%s,`$parent Main Location` =%s where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$parent.' Main Plain Address'])
+                             ,prepare_mysql($parent_object->data[$parent.' Main XHTML Address'])
+                             ,$parent_object->data[$parent.' Main Country Key']
+                             ,prepare_mysql($parent_object->data[$parent.' Main Country'])
+                             ,prepare_mysql($parent_object->data[$parent.' Main Country Code'])
+                             ,prepare_mysql($parent_object->data[$parent.' Main Location'])
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+                if ($parent=='Customer') {
+
+
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
+                                 ,prepare_mysql($this->data['Address Town'])
                                  ,prepare_mysql($this->data['Address Postal Code'])
-                                 ,prepare_mysql($this->data['Address Country Code'])
+                                 ,prepare_mysql($this->data['Address Country First Division'])
                                  ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-                                 ,$this->data['Address Country Key']
-                                 ,$row2['Customer Key']
+
+                                 ,$parent_object->id
                                 );
                     mysql_query($sql);
                 }
 
 
 
-            }
-            elseif($parent=='Supplier') {
-                $parent_object=new Supplier($row['Parent Key']);
-                $parent_label=_('Supplier');
-            }
-            elseif($parent=='Company') {
-                $parent_object=new Company($row['Parent Key']);
-                $parent_label=_('Company');
-            }
-            $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
-            $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
-            $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
-            $parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
-            $parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
-            $parent_object->data[$parent.' Main Country Code']=$this->data['Address Country Code'];
-            $parent_object->data[$parent.' Main Location']=$this->location($this->data);
+                if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
+                    $principal_address_changed=true;
 
+                if ($principal_address_changed) {
 
-            $sql=sprintf("update `$parent Dimension` set `$parent Main Plain Address`=%s,`$parent Main XHTML Address`=%s,`$parent Main Country Key` =%d,`$parent Main Country` =%s,`$parent Main Country Code` =%s,`$parent Main Location` =%s where `$parent Key`=%d"
-                         ,prepare_mysql($parent_object->data[$parent.' Main Plain Address'])
-                         ,prepare_mysql($parent_object->data[$parent.' Main XHTML Address'])
-                         ,$parent_object->data[$parent.' Main Country Key']
-                         ,prepare_mysql($parent_object->data[$parent.' Main Country'])
-                         ,prepare_mysql($parent_object->data[$parent.' Main Country Code'])
-                         ,prepare_mysql($parent_object->data[$parent.' Main Location'])
-                         ,$parent_object->id
-                        );
-            mysql_query($sql);
-            if ($parent=='Customer') {
+                    if ($old_princial_address=='') {
 
+                        $history_data['History Abstract']='Address Associated';
+                        $history_data['History Details']=$this->display('xhtml')." "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['Action']='associated';
+                        $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object Key']=$parent_object->id;
+                        $history_data['Indirect Object']='Address';
+                        $history_data['Indirect Object Key']=$this->id;
 
-                $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
-                             ,prepare_mysql($this->data['Address Town'])
-                             ,prepare_mysql($this->data['Address Postal Code'])
-                             ,prepare_mysql($this->data['Address Country First Division'])
-                             ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+                        $this->add_history($history_data);
+                    } else {
+                        $history_data['History Abstract']='Address Changed';
+                        $history_data['History Details']=_('Address changed from').' '.$old_princial_address.' '._('to').' '.$this->display('xhtml')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['Action']='changed';
+                        $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object Key']=$parent_object->id;
+                        $history_data['Indirect Object']='Address';
+                        $history_data['Indirect Object Key']=$this->id;
 
-                             ,$parent_object->id
-                            );
-                mysql_query($sql);
-            }
+                        $this->add_history($history_data);
 
-
-
-            if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
-                $principal_address_changed=true;
-
-            if ($principal_address_changed) {
-
-                if ($old_princial_address=='') {
-
-                    $history_data['History Abstract']='Address Associated';
-                    $history_data['History Details']=$this->display('xhtml')." "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
-                    $history_data['Action']='associated';
-                    $history_data['Direct Object']=$parent;
-                    $history_data['Direct Object Key']=$parent_object->id;
-                    $history_data['Indirect Object']='Address';
-                    $history_data['Indirect Object Key']=$this->id;
-
-                    $this->add_history($history_data);
-                } else {
-                    $history_data['History Abstract']='Address Changed';
-                    $history_data['History Details']=_('Address changed from').' '.$old_princial_address.' '._('to').' '.$this->display('xhtml')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
-                    $history_data['Action']='changed';
-                    $history_data['Direct Object']=$parent;
-                    $history_data['Direct Object Key']=$parent_object->id;
-                    $history_data['Indirect Object']='Address';
-                    $history_data['Indirect Object Key']=$this->id;
-
-                    $this->add_history($history_data);
+                    }
 
                 }
 
             }
-
         }
+
+
+
+
+
     }
-
-
-
-
-
-}
 
     function xupdate_parents() {
 //       $this->data['Company Main Address Key']=$address->id;
@@ -4974,7 +5000,7 @@ function update_parents($parents=false) {
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
                 }
-      
+
                 //Assign automatically other address
 
                 $history_data['History Abstract']='Address Removed';
@@ -4985,11 +5011,11 @@ function update_parents($parents=false) {
                 $history_data['Indirect Object']='Address';
                 $history_data['Indirect Object Key']=$this->id;
                 $this->add_history($history_data);
-                     
-                     
-                     
-                     
-                     
+
+
+
+
+
                 $addresses=$parent_object->get_address_keys();
 
                 if (count($addresses)==0) {
@@ -5001,8 +5027,8 @@ function update_parents($parents=false) {
 
 
                 }
-                
-              //  $parent_object-> update_principal_address($address_key);
+
+                //  $parent_object-> update_principal_address($address_key);
 
 
 
@@ -5012,7 +5038,7 @@ function update_parents($parents=false) {
             }
         }
         $sql=sprintf("select `Customer Key`  ,`Customer Main Address Key` from  `Customer Dimension` where `Customer Billing Address Key`=%d ",$this->id);
-    $res=mysql_query($sql);
+        $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $customer=new Customer($row['Customer Key']);
             $address_key=$row['Customer Main Address Key'];
@@ -5039,23 +5065,23 @@ function update_parents($parents=false) {
 
 
     }
-    
-    
-    function get_parent_keys($type){
-$keys=array();
-if(!preg_match('/^(Contact|Company|Supplier|User|Customer)$/',$type)){
-    return $keys;
-}
- $sql=sprintf("select `Subject Key` from `Address Bridge` where `Subject Type`=%s and `Address Key`=%d  "
- ,prepare_mysql($type)
- ,$this->id);
+
+
+    function get_parent_keys($type) {
+        $keys=array();
+        if (!preg_match('/^(Contact|Company|Supplier|User|Customer)$/',$type)) {
+            return $keys;
+        }
+        $sql=sprintf("select `Subject Key` from `Address Bridge` where `Subject Type`=%s and `Address Key`=%d  "
+                     ,prepare_mysql($type)
+                     ,$this->id);
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $keys[$row['Subject Key']]= $row['Subject Key'];
 
         }
         return $keys;
-}
+    }
 
 
 }

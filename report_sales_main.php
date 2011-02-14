@@ -31,7 +31,6 @@ $js_files=array(
               'external_libs/amstock/amstock/swfobject.js',
               'common.js.php',
               'table_common.js.php',
-              'calendar_common.js.php',
 
               //		'report_sales.js.php',
               'report_sales_main.js.php',
@@ -103,7 +102,7 @@ $smarty->assign('store_keys',$store_keys);
 $smarty->assign('formated_store_keys',$formated_store_keys);
 $report_name='report_sales';
 
-include_once('report_dates.php');ITF.Iiiiiidddd
+include_once('report_dates.php');
 $smarty->assign('report_url','report_sales_main.php');
 
 $_SESSION['state']['report_sales']['to']=$to;

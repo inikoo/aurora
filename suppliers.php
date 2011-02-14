@@ -105,11 +105,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		//	'js/calendar_common.js.php',
-
 		'suppliers.js.php',
-                'js/edit_common.js',
-                'js/csv_common.js'
+        'js/edit_common.js',
+        'js/csv_common.js'
 
 		);
 

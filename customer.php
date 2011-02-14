@@ -68,7 +68,9 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/customer.css'
+
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -105,62 +107,65 @@ if(isset($_REQUEST['p'])){
   if($_REQUEST['p']=='cs'){
   
   $order=$_SESSION['state']['customers']['table']['order'];
-  if($order=='name')
-    $order='`Customer File As`';
-  elseif($order=='id')
+     if ($order=='name')
+        $order='`Customer File As`';
+    elseif($order=='id')
     $order='`Customer Key`';
-  elseif($order=='location')
-     $order='`Customer Main Location`';
-   elseif($order=='orders')
-     $order='`Customer Orders`';
-   elseif($order=='email')
-     $order='`Customer Email`';
-   elseif($order=='telephone')
-     $order='`Customer Main Telehone`';
-   elseif($order=='last_order')
-     $order='`Customer Last Order Date`';
-   elseif($order=='contact_name')
-     $order='`Customer Main Contact Name`';
-   elseif($order=='address')
-     $order='`Customer Main Location`';
-   elseif($order=='town')
-     $order='`Customer Main Town`';
-   elseif($order=='postcode')
-     $order='`Customer Main Postal Code`';
-   elseif($order=='region')
-     $order='`Customer Main Country First Division`';
-   elseif($order=='country')
-     $order='`Customer Main Country`';
-   //  elseif($order=='ship_address')
-   //  $order='`customer main ship to header`';
-   elseif($order=='ship_town')
-     $order='`Customer Main Delivery Address Town`';
-   elseif($order=='ship_postcode')
-     $order='`Customer Main Delivery Address Postal Code`';
-   elseif($order=='ship_region')
-     $order='`Customer Main Delivery Address Country Region`';
-   elseif($order=='ship_country')
-     $order='`Customer Main Delivery Address Country`';
-   elseif($order=='net_balance')
-     $order='`Customer Net Balance`';
-   elseif($order=='balance')
-     $order='`Customer Outstanding Net Balance`';
-   elseif($order=='total_profit')
-     $order='`Customer Profit`';
-   elseif($order=='total_payments')
-     $order='`Customer Total Payments`';
-   elseif($order=='top_profits')
-     $order='`Customer Profits Top Percentage`';
-   elseif($order=='top_balance')
-     $order='`Customer Balance Top Percentage`';
-   elseif($order=='top_orders')
-     $order='``Customer Orders Top Percentage`';
-   elseif($order=='top_invoices')
-     $order='``Customer Invoices Top Percentage`';
+    elseif($order=='location')
+    $order='`Customer Main Location`';
+    elseif($order=='orders')
+    $order='`Customer Orders`';
+    elseif($order=='email')
+    $order='`Customer Main Plain Email`';
+    elseif($order=='telephone')
+    $order='`Customer Main Plain Telephone`';
+    elseif($order=='last_order')
+    $order='`Customer Last Order Date`';
+    elseif($order=='contact_name')
+    $order='`Customer Main Contact Name`';
+    elseif($order=='address')
+    $order='`Customer Main Location`';
+    elseif($order=='town')
+    $order='`Customer Main Town`';
+    elseif($order=='postcode')
+    $order='`Customer Main Postal Code`';
+    elseif($order=='region')
+    $order='`Customer Main Country First Division`';
+    elseif($order=='country')
+    $order='`Customer Main Country`';
+    //  elseif($order=='ship_address')
+    //  $order='`customer main ship to header`';
+    elseif($order=='ship_town')
+    $order='`Customer Main Delivery Address Town`';
+    elseif($order=='ship_postcode')
+    $order='`Customer Main Delivery Address Postal Code`';
+    elseif($order=='ship_region')
+    $order='`Customer Main Delivery Address Country Region`';
+    elseif($order=='ship_country')
+    $order='`Customer Main Delivery Address Country`';
+    elseif($order=='net_balance')
+    $order='`Customer Net Balance`';
+    elseif($order=='balance')
+    $order='`Customer Outstanding Net Balance`';
+    elseif($order=='total_profit')
+    $order='`Customer Profit`';
+    elseif($order=='total_payments')
+    $order='`Customer Net Payments`';
+    elseif($order=='top_profits')
+    $order='`Customer Profits Top Percentage`';
+    elseif($order=='top_balance')
+    $order='`Customer Balance Top Percentage`';
+    elseif($order=='top_orders')
+    $order='``Customer Orders Top Percentage`';
+    elseif($order=='top_invoices')
+    $order='``Customer Invoices Top Percentage`';
     elseif($order=='total_refunds')
-     $order='`Customer Total Refunds`';
-else
-   $order='`Customer File As`';
+    $order='`Customer Total Refunds`';
+
+    elseif($order=='activity')
+    $order='`Customer Type by Activity`';
+    else
+        $order='`Customer File As`';
 
    $_order=preg_replace('/`/','',$order);
 $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($customer->get($_order)),$order);
@@ -202,9 +207,8 @@ $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
 
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('CSV Data'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer.php?id='.$customer->id,'label'=>_('Address Label'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer.php?id='.$customer->id,'label'=>_('Print Address Label'));
 
 
 $smarty->assign('general_options_list',$general_options_list);

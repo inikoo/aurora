@@ -3485,7 +3485,7 @@ function parse_tax_number($tax_number) {
 function is_person($name) {
     $company_suffix="L\.?T\.?D\.?";
     $company_prefix="The";
-    $company_words=array('Gifts','Chemist','Pharmacy','Company','Business');
+    $company_words=array('Gifts','Chemist','Pharmacy','Company','Business','Associates','Enterprises','hotel','shop','aromatheraphy');
     $name=_trim($name);
     $probability=1;
     if (preg_match('/\d/',$name)) {
@@ -3503,20 +3503,57 @@ function is_person($name) {
             $probability*=0.01;
         }
     }
+    
+    
+    
 
-
+if($probability>1)$probability=1;
     return $probability;
 
 }
-function is_company($name) {
+function is_company($name,$locale='en_GB') {
 
     $name=_trim($name);
-    global $person_prefix;
+    //global $person_prefix;
     $probability=1;
+    
+    
+    if($locale='en_GB'){
+        $person_prefixes=array("Mr","Miss","Ms");
+        $common_company_suffixes=array("L\.?t\.?d\.?");
+        $common_company_prefixes=array("the");
 
-    if (preg_match("/^".$person_prefix."\s+/",$name)) {
+        $common_company_compoments=array("Corporation","Limited");
+    }else{
+     $person_prefixes=array();
+        $common_company_suffixes=array();
+        $common_company_prefixes=array();
+
+        $common_company_compoments=array();
+    
+    }
+    
+ foreach($common_company_prefixes as $company_prefix){
+    if (preg_match("/^".$company_prefix."\s+/i",$name)) {
+        $probability*=10;
+        break;
+    }
+    }
+
+     foreach($common_company_suffixes as $company_suffix){
+    if (preg_match("/\s+".$company_suffix."$/i",$name)) {
+        $probability*=10;
+        break;
+    }
+    }
+    
+    
+    foreach($person_prefixes as $person_prefix){
+    if (preg_match("/^".$person_prefix."\s+/i",$name)) {
         $probability*=0.01;
     }
+    }
+    
     $components=preg_split('/\s/',$name);
 
 
@@ -3599,13 +3636,15 @@ function is_company($name) {
 
     }
 
+if($probability>1)$probability=1;
 
     return $probability;
 }
 function parse_company_person($posible_company_name,$posible_contact_name) {
     $company_name=$posible_company_name;
     $contact_name=$posible_contact_name;
-
+$person_person_factor=0;
+$person_company_factor=0;
     if ($posible_company_name!='' and $posible_contact_name!='') {
         $tipo_customer='Company';
         if ($posible_company_name==$posible_contact_name ) {
@@ -3622,12 +3661,28 @@ function parse_company_person($posible_company_name,$posible_contact_name) {
             }
 
         } else {
-            $company_person_factor=is_person($posible_company_name);
-            $company_company_factor=is_company($posible_company_name);
-            $person_company_factor=is_company($posible_contact_name);
-            $person_person_factor=is_person($posible_contact_name);
+            $company_person_factor=is_person($posible_company_name)+0.00001;
+            $company_company_factor=is_company($posible_company_name)+0.00001;
+            $person_company_factor=is_company($posible_contact_name)+0.00001;
+            $person_person_factor=is_person($posible_contact_name)+0.00001;
 
-            if ($person_company_factor>$person_person_factor or $company_person_factor>$company_company_factor) {
+
+            
+            $company_ratio=$company_company_factor/$company_person_factor;
+            $person_ratio=$person_person_factor/$person_company_factor;
+            
+            $ratio=($company_ratio+$person_ratio)/2;
+            
+            //print "** $company_ratio $person_ratio\n";
+
+            if($ratio<0.4)
+                $swap=true;
+              else  
+            $swap=false;
+
+
+
+            if ($swap) {
                 $_name=$posible_company_name;
                 $company_name=$posible_contact_name;
                 $contact_name=$_name;
@@ -3671,9 +3726,20 @@ function parse_company_person($posible_company_name,$posible_contact_name) {
         $tipo_customer='Person';
 
     }
+/*
+printf("Name: %s  ; Company: %s  \n is company a person %f is company a company %f\n is paerson a comapny %f  is person a person%f  \n$tipo_customer,\nName: $contact_name\nCompany:$company_name\n",
+    $posible_contact_name,
+        $posible_company_name,
 
-
-
+ $company_person_factor,
+            $company_company_factor,
+            $person_company_factor,
+            $person_person_factor
+    
+    
+    
+);
+*/
     return array($tipo_customer,$company_name,$contact_name);
 
 
