@@ -41,27 +41,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       	,{key:"contact_since", label:"<?php echo _('Contact Since')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       	,{key:"contact_since", label:"<?php echo _('Since')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"orders", label:"<?php echo _('Orders')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"activity", label:"<?php echo _('Status')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"contact_name", label:"<?php echo _('Contact Name')?>",width:160,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"email", label:"<?php echo _('Email')?>",width:210,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"telephone", label:"<?php echo _('Telephone')?>", width:160,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:"aright"}
+				       ,{key:"telephone", label:"<?php echo _('Telephone')?>", width:137,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:"aright"}
 				       ,{key:"address", label:"<?php echo _('Contact Address')?>", width:176,<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aleft"}
 				       ,{key:"billing_address", label:"<?php echo _('Billing Address')?>", width:170,<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aleft"}
 				       ,{key:"delivery_address", label:"<?php echo _('Delivery Address')?>", width:170,<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aleft"}
-				       ,{key:"total_payments", label:"<?php echo _('Payments')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total_refunds", label:"<?php echo _('Refunds')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"net_balance", label:"<?php echo _('Balance')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"balance", label:"<?php echo _('Outstanding')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total_profit", label:"<?php echo _('Profit')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"top_orders", label:"<?php echo _('Rank Orders')?>",<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"top_invoices", label:"<?php echo _('Rank Invoices')?>",<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_payments", label:"<?php echo _('Payments')?>",width:99,<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_refunds", label:"<?php echo _('Refunds')?>",width:90,<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"net_balance", label:"<?php echo _('Balance')?>",width:90,<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"balance", label:"<?php echo _('Outstanding')?>",width:90,<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_profit", label:"<?php echo _('Profit')?>",width:90,<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_orders", label:"<?php echo _('Rank Orders')?>",width:121,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_invoices", label:"<?php echo _('Rank Invoices')?>",width:121,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",width:120,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",width:120,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&where=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -148,6 +148,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+function change_table_type(){
+
+
+	var table_id=0;
+   
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    var request='&sf=0&type=' +this.getAttribute('table_type');
+    Dom.removeClass('restrictions_all_contacts','selected');
+      Dom.removeClass('restrictions_all_customers','selected');
+    Dom.removeClass('restrictions_active_customers','selected');
+
+  Dom.addClass(this.id,'selected');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
+
+}
+
 
 
  function init(){
@@ -179,130 +197,14 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
 
 
 
-function change_table_type(){
 
-
-	var table_id=0;
-   
-    var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-
-    var request='&sf=0&type=' +this.getAttribute('table_type');
-    Dom.removeClass('restrictions_all_contacts','selected');
-      Dom.removeClass('restrictions_all_customers','selected');
-    Dom.removeClass('restrictions_active_customers','selected');
-
-  Dom.addClass(this.id,'selected');
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
-
-}
-
-
-  var change_view=function(e){
-      var tipo=this.id;
-      var table=tables['table0'];
-      old_view=table.view;
-      
-      Dom.get('general').className='';
-      Dom.get('contact').className='';
-      Dom.get('address').className='';
-      Dom.get('balance').className='';
-      Dom.get('rank').className='';
-      
-      Dom.get(tipo).className='selected';
-      table.hideColumn('location');
-      table.hideColumn('last_order');
-      table.hideColumn('orders');
-      
-      table.hideColumn('email');
-      table.hideColumn('telephone');
-      table.hideColumn('contact_name');
-      
-      table.hideColumn('address');
-            table.hideColumn('billing_address');
-      table.hideColumn('delivery_address');
-
-
-    //  table.hideColumn('town');
-    //  table.hideColumn('postcode');
-    //  table.hideColumn('region');
-     // table.hideColumn('country');
-      //      table.hideColumn('ship_address');
-      //table.hideColumn('ship_town');
-      //table.hideColumn('ship_postcode');
-      //table.hideColumn('ship_region');
-      //table.hideColumn('ship_country');
-      
-      
-      table.hideColumn('total_payments');
-      table.hideColumn('net_balance');
-      table.hideColumn('total_refunds');
-      table.hideColumn('total_profit');
-
-      table.hideColumn('balance');
-      table.hideColumn('top_orders');
-      table.hideColumn('top_invoices');
-      table.hideColumn('top_balance');
-      table.hideColumn('top_profits');
-      table.hideColumn('activity');
-
-
-
-      if(tipo=='general'){
-	  table.showColumn('name');
-	  table.showColumn('location');
-	  table.showColumn('last_order');
-	  table.showColumn('orders');
-	  table.showColumn('activity');
-	  Dom.get('general').className='selected';
-      }else if(tipo=='contact'){
-	  table.showColumn('name');
-	  table.showColumn('contact_name');
-	  table.showColumn('email');
-	  table.showColumn('telephone');
-
-      }else if(tipo=='address'){
-	  table.showColumn('address');
-	  table.showColumn('billing_address');
-	  table.showColumn('delivery_address');
-	 // table.showColumn('region');
-	 // table.showColumn('country');
-	  Dom.get('address').className='selected';
-   //   }else if(tipo=='ship_to_address'){
-	//	  table.showColumn('ship_address');
-	 // table.showColumn('ship_town');
-	 // table.showColumn('ship_postcode');
-	 // table.showColumn('ship_region');
-	 // table.showColumn('ship_country');
-
-      }else if(tipo=='balance'){
-	     table.showColumn('name');
-	  table.showColumn('net_balance');
-	  table.showColumn('total_refunds');
-	  table.showColumn('total_payments');
-	  table.showColumn('total_profit');
-
-	  table.showColumn('balance');
-
-      }else if(tipo=='rank'){
-	     table.showColumn('name');
-	  table.showColumn('top_orders');
-	  table.showColumn('top_invoices');
-	  table.showColumn('top_balance');
-	  table.showColumn('top_profits');
-
-      }
-
-
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-view&value='+escape(tipo),{});
-  }
+ 
 
 
 
 YAHOO.util.Event.addListener('details', "click",change_details,'customers');
 
-var ids=['general','contact','address','ship_to_address','balance','rank'];
-YAHOO.util.Event.addListener(ids, "click",change_view);
+
 
 var ids=['restrictions_all_contacts','restrictions_all_customers','restrictions_active_customers'];
 YAHOO.util.Event.addListener(ids, "click",change_table_type);

@@ -93,6 +93,7 @@ $js_files=array(
 		'js/search.js',
 		'js/edit_common.js',
         'js/csv_common.js',
+        'common_customers.js.php',
 		'customers.js.php',
 		'js/import_csv.js'
 		);

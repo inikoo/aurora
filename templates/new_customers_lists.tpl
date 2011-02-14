@@ -42,7 +42,7 @@
     </tr>
     
 	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>
-      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" /></td><tr>
+      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="{$product_ordered_or}" style="width:500px" /></td><tr>
       <tr style="display:none"><td>{t}but didn't order this product(s){/t}</td><td><input id="product_not_ordered1" value="" style="width:400px" /></td><tr>
       <tr style="display:none"><td>{t}and did't receive this product(s){/t}</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
       <tr>
@@ -107,7 +107,7 @@
 
       
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
-     	<div  id="table0"   class="data_table_container dtable btable "> </div>
+     	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable "> </div>
       </div>
 
     </div>

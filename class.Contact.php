@@ -274,6 +274,7 @@ class Contact extends DB_Table {
             }
 
         }
+//print_r($this->candidate);
 
         //if(count($this->candidate)>0){
         //print "candidates after fax:\n";
@@ -393,7 +394,6 @@ class Contact extends DB_Table {
 
 
         }
-
 
 
 
@@ -1560,9 +1560,9 @@ class Contact extends DB_Table {
 
             if ($this->data['Contact Fuzzy']=='No') {
                 $history_data=array(
-                                  'History Abstract'=>_('Contact Created')
-                                                     ,'History Details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
-                                                                        ,'Action'=>'created'
+                                  'History Abstract'=>_('Contact Created'),
+                                                     'History Details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created')),
+                                                                        'Action'=>'created'
                               );
                 $this->add_history($history_data);
             }
@@ -3269,6 +3269,14 @@ class Contact extends DB_Table {
     public static function parse_name($raw_name) {
 
         //  print "--> $raw_name\n";
+
+		//fix common mistakes
+		
+		$raw_name=preg_replace('/\s*(\.|\,)\s*$/i','',$raw_name);
+		//$raw_name=preg_replace('/^mrs\.?\s+/i','Mrs ',$raw_name);
+
+		
+
 
         $name=array(
                   'prefix'=>'',

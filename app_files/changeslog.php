@@ -684,6 +684,12 @@ ALTER TABLE `Customer List Dimension` ADD UNIQUE (
 `Customer List Name`
 );
 ALTER TABLE  `Customer List Customer Bridge` ADD INDEX ( `Customer List Key` ) ;
+
+0.9.25
+
+ALTER TABLE `Customer Dimension` ADD `Customer Main Address Incomplete` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Customer Main Country 2 Alpha Code` ,
+ADD INDEX ( `Customer Main Address Incomplete` ) 
+
 */
 
 ?>

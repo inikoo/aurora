@@ -192,12 +192,13 @@ class Customer extends DB_Table {
 
             }
         }
-        
-         $type_of_search='complete';
+
+        $type_of_search='complete';
         if (preg_match('/fuzzy/i',$options)) {
-             $type_of_search='fuzzy';
-        }elseif(preg_match('/fast/i',$options)){
-              $type_of_search='fast';
+            $type_of_search='fuzzy';
+        }
+        elseif(preg_match('/fast/i',$options)) {
+            $type_of_search='fast';
         }
 
         $create='';
@@ -288,7 +289,7 @@ class Customer extends DB_Table {
 
 //print_r($raw_data);
 //print "A".$this->found."  B".$this->found_child."\n";
-
+//exit("in cust class\n");
         if ($create) {
 
             if ($this->found) {
@@ -314,15 +315,15 @@ class Customer extends DB_Table {
                         return;
                     }
 
-                
+
                     $child=new Contact ("find in customer $type_of_search create update",$raw_data);
-                
+
 
 
 
                 } else {// Bussiness
 
-
+        
 
                     $child=new Company ("find in customer $type_of_search create update",$raw_data);
 
@@ -340,7 +341,7 @@ class Customer extends DB_Table {
 
             } else {// customer not found
                 if ($this->found_child) {
-                  
+
                     if ($raw_data['Customer Type']=='Person') {
 
                         //print_r($raw_data);
@@ -559,244 +560,255 @@ class Customer extends DB_Table {
     }
 
 
-function create($raw_data,$args='') {
+    function create($raw_data,$args='') {
 //print_r($raw_data);
 
-    $main_telephone_key=false;
-    $main_fax_key=false;
-    $main_email_key=false;
+        $main_telephone_key=false;
+        $main_fax_key=false;
+        $main_email_key=false;
 
-    //print_r($raw_data);
+        //print_r($raw_data);
 
-    $this->data=$this->base_data();
-    foreach($raw_data as $key=>$value) {
-        if (array_key_exists($key,$this->data)) {
-            $this->data[$key]=_trim($value);
-        }
-    }
-
-    if ($this->data['Customer First Contacted Date']=='') {
-        $this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
-    }
-
-    $this->data['Customer Active Ship To Records']=0;
-    $this->data['Customer Total Ship To Records']=0;
-
-
-    // Ok see if we have a billing address!!!
-
-    $this->data['Customer Main Email Key']=0;
-    $this->data['Customer Main XHTML Email']='';
-    $this->data['Customer Main Plain Email']='';
-    $this->data['Customer Main Telephone Key']=0;
-    $this->data['Customer Main XHTML Telephone']='';
-    $this->data['Customer Main Plain Telephone']='';
-    $this->data['Customer Main FAX Key']=0;
-    $this->data['Customer Main XHTML FAX']='';
-    $this->data['Customer Main Plain FAX']='';
-
-
-    $keys='';
-    $values='';
-    foreach($this->data as $key=>$value) {
-        if (preg_match('/Customer Main|Customer Company/i',$key))
-            continue;
-        $keys.=",`".$key."`";
-
-        if (preg_match('/Key$/',$key))
-            $values.=','.prepare_mysql($value);
-        else
-            $values.=','.prepare_mysql($value,false);
-    }
-    $values=preg_replace('/^,/','',$values);
-    $keys=preg_replace('/^,/','',$keys);
-
-    $sql="insert into `Customer Dimension` ($keys) values ($values)";
-    //   print $sql;
-    if (mysql_query($sql)) {
-
-        $this->id=mysql_insert_id();
-
-
-        $history_data=array(
-                          'History Abstract'=>_('Customer Created'),
-                                             'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
-                                                                'Action'=>'created'
-                      );
-        $this->add_customer_history($history_data);
-        $this->new=true;
-
-
-
-        if ($this->data['Customer Type']=='Company') {
-
-            if (!$this->data['Customer Company Key']) {
-
-                $company=new company('find in customer fast create update',$raw_data);
-            } else {
-                $company=new company('id',$this->data['Customer Company Key']);
+        $this->data=$this->base_data();
+        foreach($raw_data as $key=>$value) {
+            if (array_key_exists($key,$this->data)) {
+                $this->data[$key]=_trim($value);
             }
+        }
 
-            // print_r($company);
-            $company_key=$company->id;
-            $this->data['Customer File As']=$company->data['Company File As'];
-            $this->data['Customer Name']=$company->data['Company Name'];
+        if ($this->data['Customer First Contacted Date']=='') {
+            $this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
+        }
 
-            if ($company->last_associated_contact_key)
-                $contact=new Contact($company->last_associated_contact_key);
+        $this->data['Customer Active Ship To Records']=0;
+        $this->data['Customer Total Ship To Records']=0;
+
+
+        // Ok see if we have a billing address!!!
+
+        $this->data['Customer Main Email Key']=0;
+        $this->data['Customer Main XHTML Email']='';
+        $this->data['Customer Main Plain Email']='';
+        $this->data['Customer Main Telephone Key']=0;
+        $this->data['Customer Main XHTML Telephone']='';
+        $this->data['Customer Main Plain Telephone']='';
+        $this->data['Customer Main FAX Key']=0;
+        $this->data['Customer Main XHTML FAX']='';
+        $this->data['Customer Main Plain FAX']='';
+
+
+        $keys='';
+        $values='';
+        foreach($this->data as $key=>$value) {
+            if (preg_match('/Customer Main|Customer Company/i',$key))
+                continue;
+            $keys.=",`".$key."`";
+
+            if (preg_match('/Key$/',$key))
+                $values.=','.prepare_mysql($value);
+            else
+                $values.=','.prepare_mysql($value,false);
+        }
+        $values=preg_replace('/^,/','',$values);
+        $keys=preg_replace('/^,/','',$keys);
+
+        $sql="insert into `Customer Dimension` ($keys) values ($values)";
+         //  print $sql;
+        if (mysql_query($sql)) {
+
+            $this->id=mysql_insert_id();
+
+
+            $history_data=array(
+                              'History Abstract'=>_('Customer Created'),
+                              'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
+                              'Action'=>'created'
+                          );
+            $this->add_customer_history($history_data);
+            $this->new=true;
+
+
+            if ($this->data['Customer Type']=='Company') {
+
+                if (!$this->data['Customer Company Key']) {
+
+                    $company=new company('find in customer fast create update',$raw_data);
+                } else {
+                    $company=new company('id',$this->data['Customer Company Key']);
+                }
+
+                // print_r($company);
+                $company_key=$company->id;
+                $this->data['Customer File As']=$company->data['Company File As'];
+                $this->data['Customer Name']=$company->data['Company Name'];
+
+                if ($company->last_associated_contact_key)
+                    $contact=new Contact($company->last_associated_contact_key);
+                else {
+                    $contact=new Contact($company->data['Company Main Contact Key']);
+
+                    $contact->editor=$this->editor;
+                }
+            }
+            elseif($this->data['Customer Type']=='Person') {
+
+
+                if (!$this->data['Customer Main Contact Key']) {
+
+                    $contact=new contact('find in customer fast create update',$raw_data);
+                } else {
+                    $contact=new contact('id',$this->data['Customer Main Contact Key']);
+                    $contact->editor=$this->editor;
+                }
+
+
+                $this->data['Customer Name']=$contact->display('name');
+                $this->data['Customer File As']=$contact->data['Contact File As'];
+
+                $this->data['Customer Company Key']=0;
+
+
+            }
             else {
-                $contact=new Contact($company->data['Company Main Contact Key']);
-
-                $contact->editor=$this->editor;
+                $this->error=true;
+                $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
             }
-        }
-        elseif($this->data['Customer Type']=='Person') {
 
 
-            if (!$this->data['Customer Main Contact Key']) {
+            if ($this->data['Customer Type']=='Company') {
+                //print "associate company: (acytaul contact name ".$this->data['Customer Main Contact Name'].") \n";
 
-                $contact=new contact('find in customer fast create update',$raw_data);
+                $this->associate_company($company->id);
+
+
+                $this->associate_contact($contact->id);
+
+                //$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+
+
+                $address=new Address($company->data['Company Main Address Key']);
+                $address->editor=$this->editor;
+                $address->new=true;
+
+                $this->create_contact_address_bridge($address->id);
+                // $address->update_parents();
+
+
+                $address->update_parents_principal_telecom_keys('Telephone');
+                $address->update_parents_principal_telecom_keys('FAX');
+
+                $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+                $tel->editor=$this->editor;
+                $tel->new=true;
+
+                if ($tel->id)
+                    $tel->update_parents();
+                $fax=new Telecom($address->get_principal_telecom_key('FAX'));
+                $fax->editor=$this->editor;
+                $fax->new=true;
+                if ($fax->id)
+                    $fax->update_parents();
+
             } else {
-                $contact=new contact('id',$this->data['Customer Main Contact Key']);
-                $contact->editor=$this->editor;
+                $this->associate_contact($contact->id);
+
+                //$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
+
+
+
+
+                $address=new Address($contact->data['Contact Main Address Key']);
+
+
+                $address->editor=$this->editor;
+                $address->new=true;
+
+                $this->create_contact_address_bridge($address->id);
+
+                $address->update_parents();
+
+                $this->get_data('id',$this->id);
+
+
+                //  exit;
+
+                $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+                $tel->editor=$this->editor;
+                $tel->new=true;
+                if ($tel->id)
+
+                    $tel->update_parents();
+                $fax=new Telecom($address->get_principal_telecom_key('FAX'));
+                $fax->editor=$this->editor;
+                $fax->new=true;
+                if ($fax->id)
+
+                    $fax->update_parents();
             }
 
-           
-            $this->data['Customer Name']=$contact->display('name');
-            $this->data['Customer File As']=$contact->data['Contact File As'];
-
-            $this->data['Customer Company Key']=0;
 
 
-        }
-        else {
-            $this->error=true;
-            $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
-        }
+            $contact->update_parents_principal_email_keys();
 
 
-        if ($this->data['Customer Type']=='Company') {
-            //print "associate company: (acytaul contact name ".$this->data['Customer Main Contact Name'].") \n";
+            $email=new Email($contact->get_principal_email_key());
+            $email->editor=$this->editor;
+            $email->new=true;
+            if ($email->id) {
+                $email->update_parents();
 
-            $this->associate_company($company->id);
+            }
+
+            $this->get_data('id',$this->id);
+
+          //  print_r($this->data);
+    //        exit;
+
+  //          if ($this->data['Customer Billing Address Link']!='None') {
+$this->data['Customer Billing Address Link']=='Contact';
+//}
+
+  // if( !($this->data['Customer Delivery Address Link']=='None'  or $this->data['Customer Delivery Address Link']=='Billing')   ) {
+$this->data['Customer Delivery Address Link']=='Contact';
+//}
 
 
-            $this->associate_contact($contact->id);
 
-            //$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
-
-
-
-            $address=new Address($company->data['Company Main Address Key']);
-            $address->editor=$this->editor;
-            $address->new=true;
-          
-            $this->create_contact_address_bridge($address->id);
-            // $address->update_parents();
+            if ($this->data['Customer Billing Address Link']=='Contact') {
+                $this->associate_delivery_address($address->id);
+                $this->get_data('id',$this->id);
 
 
-            $address->update_parents_principal_telecom_keys('Telephone');
-            $address->update_parents_principal_telecom_keys('FAX');
+            }
 
-            $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-            $tel->editor=$this->editor;
-            $tel->new=true;
 
-            if ($tel->id)
-                $tel->update_parents();
-            $fax=new Telecom($address->get_principal_telecom_key('FAX'));
-            $fax->editor=$this->editor;
-            $fax->new=true;
-            if ($fax->id)
-                $fax->update_parents();
+            if ($this->data['Customer Delivery Address Link']=='Billing') {
+
+
+                $this->associate_delivery_address($this->data['Customer Billing Address Key']);
+                $this->get_data('id',$this->id);
+
+            }
+
+
+
+            if ($this->data['Customer Delivery Address Link']=='Contact') {
+
+                $this->associate_delivery_address($address->id);
+                $this->get_data('id',$this->id);
+
+            }
+
 
         } else {
-
-            $this->associate_contact($contact->id);
-
-            //$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
-
-
-
-
-            $address=new Address($contact->data['Contact Main Address Key']);
-
-
-            $address->editor=$this->editor;
-            $address->new=true;
-            
-            $this->create_contact_address_bridge($address->id);
-            
-            $address->update_parents();
-            $this->get_data('id',$this->id);
-
-
-            //  exit;
-
-            $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-            $tel->editor=$this->editor;
-            $tel->new=true;
-            if ($tel->id)
-
-                $tel->update_parents();
-            $fax=new Telecom($address->get_principal_telecom_key('FAX'));
-            $fax->editor=$this->editor;
-            $fax->new=true;
-            if ($fax->id)
-
-                $fax->update_parents();
-        }
-        
-        
-       
-        $contact->update_parents_principal_email_keys();
-   
-        
-        $email=new Email($contact->get_principal_email_key());
-        $email->editor=$this->editor;
-        $email->new=true;
-        if ($email->id) {
-            $email->update_parents();
-
-        }
-
-        $this->get_data('id',$this->id);
-
-        if ($this->data['Customer Billing Address Link']=='Contact') {
-            $this->associate_delivery_address($address->id);
-            $this->get_data('id',$this->id);
-
-
-        }
-
-
-        if ($this->data['Customer Delivery Address Link']=='Billing') {
-
-
-            $this->associate_delivery_address($this->data['Customer Billing Address Key']);
-            $this->get_data('id',$this->id);
-
+            print "Error can not create customer $sql\n";
         }
 
 
 
-        if ($this->data['Customer Delivery Address Link']=='Contact') {
+        $this->update_full_search();
 
-            $this->associate_delivery_address($address->id);
-            $this->get_data('id',$this->id);
-
-        }
-
-
-    } else {
-        print "Error can not create customer $sql\n";
     }
-
-
-
-    $this->update_full_search();
-
-}
 
 
 
@@ -911,85 +923,85 @@ function create($raw_data,$args='') {
     function update_ship_to($data) {
 
 
-$ship_to_key=$data['Ship To Key'];
-$current_ship_to=$data['Current Ship To Is Other Key'];
-    
-    if($current_ship_to){
-        $principal='No';
-       
-    }else{
-       $principal='Yes';
-        $current_ship_to=$ship_to_key;
-    }
-    $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
-   
-    $from_date=$row['Ship To From Date'];
-    $to_date=$row['Ship To Last Used'];
-    
-    
-    if(strtotime($data['Date'])< strtotime($from_date))
-        $from_date=$data['Date'];
-    if(strtotime($data['Date'])> strtotime($to_date))
-        $to_date=$data['Date'];
-    
-    $sql=sprintf('update `Customer Ship To Bridge` set `Ship To From Date`=%s,`Ship To Last Used`=%s,`Is Principal`=%s,`Ship To Current Key`=%d where `Customer Key`=%d and `Ship To Key`=%d',
-   
-    prepare_mysql($from_date),
-    prepare_mysql($to_date),
-    prepare_mysql($principal),
-    $current_ship_to,
-    $this->id,
-    $ship_to_key
-    );
-     mysql_query($sql);
-    
-    }else{
-    $sql=sprintf("insert into `Customer Ship To Bridge` (`Customer Key`,`Ship To Key`,`Is Principal`,`Times Used`,`Ship To From Date`,`Ship To Last Used`,`Ship To Current Key`) values (%d,%d,%s,0,%s,%s,%d)",
-    $this->id,
-    $ship_to_key,
-    prepare_mysql($principal),
-    prepare_mysql($data['Date']),
-    prepare_mysql($data['Date']),
-    $current_ship_to
-    );
-    mysql_query($sql);
-    }
+        $ship_to_key=$data['Ship To Key'];
+        $current_ship_to=$data['Current Ship To Is Other Key'];
+
+        if ($current_ship_to) {
+            $principal='No';
+
+        } else {
+            $principal='Yes';
+            $current_ship_to=$ship_to_key;
+        }
+        $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $from_date=$row['Ship To From Date'];
+            $to_date=$row['Ship To Last Used'];
 
 
-$sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
-        $current_ship_to,
+            if (strtotime($data['Date'])< strtotime($from_date))
+                $from_date=$data['Date'];
+            if (strtotime($data['Date'])> strtotime($to_date))
+                $to_date=$data['Date'];
+
+            $sql=sprintf('update `Customer Ship To Bridge` set `Ship To From Date`=%s,`Ship To Last Used`=%s,`Is Principal`=%s,`Ship To Current Key`=%d where `Customer Key`=%d and `Ship To Key`=%d',
+
+                         prepare_mysql($from_date),
+                         prepare_mysql($to_date),
+                         prepare_mysql($principal),
+                         $current_ship_to,
+                         $this->id,
+                         $ship_to_key
+                        );
+            mysql_query($sql);
+
+        } else {
+            $sql=sprintf("insert into `Customer Ship To Bridge` (`Customer Key`,`Ship To Key`,`Is Principal`,`Times Used`,`Ship To From Date`,`Ship To Last Used`,`Ship To Current Key`) values (%d,%d,%s,0,%s,%s,%d)",
+                         $this->id,
+                         $ship_to_key,
+                         prepare_mysql($principal),
+                         prepare_mysql($data['Date']),
+                         prepare_mysql($data['Date']),
+                         $current_ship_to
+                        );
+            mysql_query($sql);
+        }
+
+
+        $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
+                     $current_ship_to,
                      $this->id
                     );
         mysql_query($sql);
 
 
-      
+
 
         $this->update_ship_to_stats();
     }
 
 
 
-function update_ship_to_stats() {
+    function update_ship_to_stats() {
 
-    $total_active_ship_to=0;
-    $total_ship_to=0;
-    $sql=sprintf('select sum(if(`Ship To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Ship To Bridge` where `Customer Key`=%d ',$this->id);
-    $res2=mysql_query($sql);
-    if ($row2=mysql_fetch_assoc($res2)) {
-        $total_active_ship_to=$row2['active'];
-        $total_ship_to=$row2['total'];
+        $total_active_ship_to=0;
+        $total_ship_to=0;
+        $sql=sprintf('select sum(if(`Ship To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Ship To Bridge` where `Customer Key`=%d ',$this->id);
+        $res2=mysql_query($sql);
+        if ($row2=mysql_fetch_assoc($res2)) {
+            $total_active_ship_to=$row2['active'];
+            $total_ship_to=$row2['total'];
+        }
+        $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
+
+                     ,$total_active_ship_to
+                     ,$total_ship_to
+                     ,$this->id
+                    );
+        mysql_query($sql);
     }
-    $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
-
-                 ,$total_active_ship_to
-                 ,$total_ship_to
-                 ,$this->id
-                );
-    mysql_query($sql);
-}
 
 
     function update_main_ship_to_old($ship_to_key=false) {
@@ -1091,19 +1103,19 @@ function update_ship_to_stats() {
 
 
         case('Customer Main Plain Email'):
-                $contact=new Contact($this->data['Customer Main Contact Key']);
-                $contact->update(array('Contact Main Plain Email'=>$value));
-                 $this->updated=$contact->updated;
+            $contact=new Contact($this->data['Customer Main Contact Key']);
+            $contact->update(array('Contact Main Plain Email'=>$value));
+            $this->updated=$contact->updated;
             $this->msg=$contact->msg;
             $this->new_value=$contact->new_value;
-                
+
 
             break;
         default:
             $base_data=$this->base_data();
             //print_r($base_data);
             if (array_key_exists($field,$base_data)) {
-            //print "*** $field\n";
+                //print "*** $field\n";
                 $this->update_field($field,$value,$options);
             }
         }
@@ -1112,7 +1124,7 @@ function update_ship_to_stats() {
 
 
     function update_name($value,$options='') {
-  if ($value=='') {
+        if ($value=='') {
             $this->error=true;
             $this->msg=_('Invalid Customer Name');
             return;
@@ -1130,7 +1142,7 @@ function update_ship_to_stats() {
 
 
     function update_main_contact_name($value,$options='') {
-      if ($value=='') {
+        if ($value=='') {
             $this->error=true;
             $this->msg=_('Invalid Customer Contact Name');
             return;
@@ -1143,13 +1155,13 @@ function update_ship_to_stats() {
 
 
     function update_child_main_contact_name($value) {
-    
-      if ($value=='') {
+
+        if ($value=='') {
             $this->error=true;
             $this->msg=_('Invalid Contact Name');
             return;
         }
-    
+
         $contact=new Contact($this->data['Customer Main Contact Key']);
         $contact->editor=$this->editor;
         $contact->update(array('Contact Name'=>$value));
@@ -1523,36 +1535,36 @@ function update_ship_to_stats() {
 
     }
 
-function update_temporal_data(){
-$umbral=3600*24*7;
+    function update_temporal_data() {
+        $umbral=3600*24*7;
 
 
-if(date('U')-strtotime($this->data['Customer First Contacted Date'])<$umbral){
-$this->data['New Customer']='Yes';
-}else{
-$this->data['New Customer']='No';
-}
-$this->data['New Served Customer']='No';
-if( $this->data['Customer First Order Date']!=''){
+        if (date('U')-strtotime($this->data['Customer First Contacted Date'])<$umbral) {
+            $this->data['New Customer']='Yes';
+        } else {
+            $this->data['New Customer']='No';
+        }
+        $this->data['New Served Customer']='No';
+        if ( $this->data['Customer First Order Date']!='') {
 
-if(  (date('U')-strtotime($this->data['Customer First Order Date'])<$umbral)){
-$this->data['New Served Customer']='Yes';
-}
-}
+            if (  (date('U')-strtotime($this->data['Customer First Order Date'])<$umbral)) {
+                $this->data['New Served Customer']='Yes';
+            }
+        }
 
-$sql=sprintf("update `Customer Dimension` set `New Customer`=%s ,`New Served Customer`=%s where `Customer Key`=%d",
-                             prepare_mysql($this->data['New Customer']),
-                             prepare_mysql($this->data['New Served Customer']),
-                             
-                             $this->id
-                            );
-                mysql_query($sql);
+        $sql=sprintf("update `Customer Dimension` set `New Customer`=%s ,`New Served Customer`=%s where `Customer Key`=%d",
+                     prepare_mysql($this->data['New Customer']),
+                     prepare_mysql($this->data['New Served Customer']),
 
-}
+                     $this->id
+                    );
+        mysql_query($sql);
+
+    }
 
     public function update_no_normal_data() {
 
-return;
+        return;
 
         $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;
         $result=mysql_query($sql);
@@ -1715,7 +1727,7 @@ return;
         $this->data['Customer Tax Payments']=0;
         $this->data['Customer Profit']=0;
 
-       // print "$sql\n";
+        // print "$sql\n";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -1932,15 +1944,15 @@ return;
 
 
             $this->add_customer_history(array(
-                                   'Date'=>$date
-                                          ,'Action'=>'wrote'
-                                                    ,'Direct Object'=>'Note'
-                                                                     ,'Preposition'=>'about'
-                                                                                    ,'Indirect Object'=>'Customer'
-                                                                                                       ,'Indirect Object Key'=>$this->id
-                                                                                                                              ,'History Abstract'=>$note
-                                                                                                                                                  ,'History Details'=>$details
-                               ));
+                                            'Date'=>$date
+                                                   ,'Action'=>'wrote'
+                                                             ,'Direct Object'=>'Note'
+                                                                              ,'Preposition'=>'about'
+                                                                                             ,'Indirect Object'=>'Customer'
+                                                                                                                ,'Indirect Object Key'=>$this->id
+                                                                                                                                       ,'History Abstract'=>$note
+                                                                                                                                                           ,'History Details'=>$details
+                                        ));
 
 
             $this->msg=_('Note Added');
@@ -2047,12 +2059,12 @@ return;
 
     function get($key,$arg1=false) {
 
-if($key=='Customer Tax Number' or $key=='Tax Number'){
-    return $this->get_tax_number();
-}
-if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
-    return $this->get_fiscal_name();
-}
+        if ($key=='Customer Tax Number' or $key=='Tax Number') {
+            return $this->get_tax_number();
+        }
+        if ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
+            return $this->get_fiscal_name();
+        }
         if (array_key_exists($key,$this->data)) {
             return $this->data[$key];
         }
@@ -2333,7 +2345,7 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
       Returns formated id
     */
     function get_formated_id() {
-       
+
         $customer_id_prefix='';
         $sql="select count(*) as num from `Customer Dimension`";
         $res=mysql_query($sql);
@@ -2355,97 +2367,97 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
 
 
 
-function update_fiscal_name($value){
-    if($this->data['Customer Type']=='Person'){
-    $this->msg=_("Can't update fiscal name of a person");
-$this->error=true;
-return;
-}else{
-$subject=new Company($this->data['Customer Company Key']);
-$subject->editor=$this->editor;
-$subject->update(array('Company Fiscal Name'=>$value));
+    function update_fiscal_name($value) {
+        if ($this->data['Customer Type']=='Person') {
+            $this->msg=_("Can't update fiscal name of a person");
+            $this->error=true;
+            return;
+        } else {
+            $subject=new Company($this->data['Customer Company Key']);
+            $subject->editor=$this->editor;
+            $subject->update(array('Company Fiscal Name'=>$value));
 
-}
-$this->updated=$subject->updated;
-$this->msg=$subject->msg;
-$this->error=$subject->error;
-$this->new_value=$subject->new_value;
-}
+        }
+        $this->updated=$subject->updated;
+        $this->msg=$subject->msg;
+        $this->error=$subject->error;
+        $this->new_value=$subject->new_value;
+    }
 
-function update_tax_number($value){
-    if($this->data['Customer Type']=='Person'){
-$subject=new Contact($this->data['Customer Main Contact Key']);
-$subject->editor=$this->editor;
+    function update_tax_number($value) {
+        if ($this->data['Customer Type']=='Person') {
+            $subject=new Contact($this->data['Customer Main Contact Key']);
+            $subject->editor=$this->editor;
 
-$subject->update(array('Contact Tax Number'=>$value));
+            $subject->update(array('Contact Tax Number'=>$value));
 
-}else{
-$subject=new Company($this->data['Customer Company Key']);
-$subject->editor=$this->editor;
+        } else {
+            $subject=new Company($this->data['Customer Company Key']);
+            $subject->editor=$this->editor;
 
-$subject->update(array('Company Tax Number'=>$value));
+            $subject->update(array('Company Tax Number'=>$value));
 
-}
-$this->updated=$subject->updated;
-$this->msg=$subject->msg;
-$this->error=$subject->error;
-$this->new_value=$subject->new_value;
-}
+        }
+        $this->updated=$subject->updated;
+        $this->msg=$subject->msg;
+        $this->error=$subject->error;
+        $this->new_value=$subject->new_value;
+    }
 
 
-function get_fiscal_name(){
-if($this->data['Customer Type']=='Person'){
-$this->data['Customer Fiscal Name']=$this->data['Customer Name'];
-return $this->data['Customer Fiscal Name'];
-}else{
-$subject='Company';
-$subject_key=$this->data['Customer Company Key'];
-}
+    function get_fiscal_name() {
+        if ($this->data['Customer Type']=='Person') {
+            $this->data['Customer Fiscal Name']=$this->data['Customer Name'];
+            return $this->data['Customer Fiscal Name'];
+        } else {
+            $subject='Company';
+            $subject_key=$this->data['Customer Company Key'];
+        }
 
-    $sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
-  $res=mysql_query($sql);
+        $sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+        $res=mysql_query($sql);
 
         if ($row=mysql_fetch_assoc($res)) {
-        $this->data['Customer Fiscal Name']=$row['fiscal_name'];
-       
-       return $this->data['Customer Fiscal Name'];
-       }else{
-        $this->error;
-        return '';
+            $this->data['Customer Fiscal Name']=$row['fiscal_name'];
+
+            return $this->data['Customer Fiscal Name'];
+        } else {
+            $this->error;
+            return '';
         }
 
 
-}
+    }
 
-function get_tax_number($reread=false){
-if($this->tax_number_read and $reread)
-return $this->data['Customer Tax Number'];
+    function get_tax_number($reread=false) {
+        if ($this->tax_number_read and $reread)
+            return $this->data['Customer Tax Number'];
 
-if($this->data['Customer Type']=='Person'){
-$subject='Contact';
-$subject_key=$this->data['Customer Main Contact Key'];
-}else{
-$subject='Company';
-$subject_key=$this->data['Customer Company Key'];
-}
+        if ($this->data['Customer Type']=='Person') {
+            $subject='Contact';
+            $subject_key=$this->data['Customer Main Contact Key'];
+        } else {
+            $subject='Company';
+            $subject_key=$this->data['Customer Company Key'];
+        }
 
-    $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
-    // print $sql;
-  $res=mysql_query($sql);
+        $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+        // print $sql;
+        $res=mysql_query($sql);
 
         if ($row=mysql_fetch_assoc($res)) {
-        $this->data['Customer Tax Number']=$row['tax_number'];
-        $this->tax_number_read=true;
-       return $this->data['Customer Tax Number'];
-       }else{
-        $this->error;
-        return '';
+            $this->data['Customer Tax Number']=$row['tax_number'];
+            $this->tax_number_read=true;
+            return $this->data['Customer Tax Number'];
+        } else {
+            $this->error;
+            return '';
         }
 
 
 
 
-}
+    }
 
 
 
@@ -2569,81 +2581,81 @@ $subject_key=$this->data['Customer Company Key'];
         return $order_key;
     }
 
-function add_note($note,$details='',$date=false) {
-    $note=_trim($note);
-    if ($note=='') {
-        $this->msg=_('Empty note');
-        return;
-    }
+    function add_note($note,$details='',$date=false) {
+        $note=_trim($note);
+        if ($note=='') {
+            $this->msg=_('Empty note');
+            return;
+        }
 
 
-    if ($details=='') {
+        if ($details=='') {
 
 
-        $details='';
-        if (strlen($note)>64) {
-            $words=preg_split('/\s/',$note);
-            $len=0;
-            $note='';
             $details='';
-            foreach($words as $word) {
-                $len+=strlen($word);
-                if ($note=='')
-                    $note=$word;
-                else {
-                    if ($len<64)
-                        $note.=' '.$word;
-                    else
-                        $details.=' '.$word;
+            if (strlen($note)>64) {
+                $words=preg_split('/\s/',$note);
+                $len=0;
+                $note='';
+                $details='';
+                foreach($words as $word) {
+                    $len+=strlen($word);
+                    if ($note=='')
+                        $note=$word;
+                    else {
+                        if ($len<64)
+                            $note.=' '.$word;
+                        else
+                            $details.=' '.$word;
 
+                    }
                 }
+
+
+
             }
-
-
 
         }
 
+
+
+
+
+        $history_data=array(
+                          'History Abstract'=>$note,
+                          'History Details'=>$details,
+                          'Action'=>'created',
+                          'Direct Object'=>'Note',
+                          'Prepostion'=>'about',
+                          'Indirect Object'=>'Customer',
+                          'Indirect Object Key'=>$this->id
+
+
+
+                      );
+
+        if ($date!='')
+            $history_data['Date']=$date;
+
+        $history_key=$this->add_customer_history($history_data,$force_save=true);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
+
+        $this->updated=true;
+        $this->new_value='';
     }
 
 
 
-
-
-    $history_data=array(
-                      'History Abstract'=>$note,
-                      'History Details'=>$details,
-                      'Action'=>'created',
-                      'Direct Object'=>'Note',
-                      'Prepostion'=>'about',
-                      'Indirect Object'=>'Customer',
-                      'Indirect Object Key'=>$this->id
+    function add_customer_history($history_data,$force_save=true) {
+        $history_key=$this->add_history($history_data,$force_save=true);
 
 
 
-                  );
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
 
-    if ($date!='')
-        $history_data['Date']=$date;
-
-    $history_key=$this->add_customer_history($history_data,$force_save=true);
-    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
-    
-    $this->updated=true;
-    $this->new_value='';
-}
-
-
-
-function add_customer_history($history_data,$force_save=true){
-  $history_key=$this->add_history($history_data,$force_save=true);
-  
-  
-  
-    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
-
-}
+    }
 
 
     function add_attach($file,$data) {
@@ -2682,35 +2694,36 @@ function add_customer_history($history_data,$force_save=true){
     function delivery_address_xhtml() {
 
         if ($this->data['Customer Delivery Address Link']=='None') {
-	  
-	  $address=new Address($this->data['Customer Main Delivery Address Key']);
-	  
-	}elseif ($this->data['Customer Delivery Address Link']=='Billing')
-            $address=new Address($this->data['Customer Billing Address Key']);
+
+            $address=new Address($this->data['Customer Main Delivery Address Key']);
+
+        }
+        elseif ($this->data['Customer Delivery Address Link']=='Billing')
+        $address=new Address($this->data['Customer Billing Address Key']);
         else
             $address=new Address($this->data['Customer Main Address Key']);
 
         return $address->display('xhtml');
 
     }
-    
-     function billing_address_xhtml() {
-     
+
+    function billing_address_xhtml() {
+
 
         if ($this->data['Customer Billing Address Link']=='None') {
-	 
-	  $address=new Address($this->data['Customer Billing Address Key']);
-	  
-	}else
+
+            $address=new Address($this->data['Customer Billing Address Key']);
+
+        } else
             $address=new Address($this->data['Customer Main Address Key']);
 
         return $address->display('xhtml');
 
     }
-    
-    
 
-   function get_address_keys() {
+
+
+    function get_address_keys() {
 
 
         $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
@@ -2724,7 +2737,7 @@ function add_customer_history($history_data,$force_save=true){
         return $address_keys;
 
     }
- function get_address_objects() {
+    function get_address_objects() {
 
 
         $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
@@ -2739,9 +2752,9 @@ function add_customer_history($history_data,$force_save=true){
 
     }
 
-function get_main_address_key(){
-return $this->data['Customer Main Address Key'];
-}   
+    function get_main_address_key() {
+        return $this->data['Customer Main Address Key'];
+    }
 
     function set_current_ship_to($return='key') {
         if (preg_match('/object/i',$return))
@@ -2755,10 +2768,11 @@ return $this->data['Customer Main Address Key'];
     function set_current_ship_to_get_key() {
 
         if ($this->data['Customer Delivery Address Link']=='None') {
-       
+
             $address=new Address($this->data['Customer Main Delivery Address Key']);
-        }elseif ($this->data['Customer Delivery Address Link']=='Billing')
-            $address=new Address($this->data['Customer Billing Address Key']);
+        }
+        elseif ($this->data['Customer Delivery Address Link']=='Billing')
+        $address=new Address($this->data['Customer Billing Address Key']);
         else
             $address=new Address($this->data['Customer Main Address Key']);
 
@@ -2767,26 +2781,26 @@ return $this->data['Customer Main Address Key'];
 
         $line=$address->display('3lines');
 
-/*
-Array
-(
-    [Ship To Contact Name] => 
-    [Ship To Company Name] => 
-    [Ship To Line 1] => 
-    [Ship To Line 2] => 
-    [Ship To Line 3] => 
-    [Ship To Town] => 
-    [Ship To Line 4] => 
-    [Ship To Postal Code] => 
-    [Ship To Country Name] => 
-    [Ship To XHTML Address] => 
-    [Ship To Telephone] => 
-    [Ship To Email] => 
-    [Ship To Country Key] => 
-    [Ship To Country Code] => UNK
-    [Ship To Country 2 Alpha Code] => XX
-)
-*/
+        /*
+        Array
+        (
+            [Ship To Contact Name] =>
+            [Ship To Company Name] =>
+            [Ship To Line 1] =>
+            [Ship To Line 2] =>
+            [Ship To Line 3] =>
+            [Ship To Town] =>
+            [Ship To Line 4] =>
+            [Ship To Postal Code] =>
+            [Ship To Country Name] =>
+            [Ship To XHTML Address] =>
+            [Ship To Telephone] =>
+            [Ship To Email] =>
+            [Ship To Country Key] =>
+            [Ship To Country Code] => UNK
+            [Ship To Country 2 Alpha Code] => XX
+        )
+        */
 
 
         $shipping_addresses['Ship To Line 1']=$line[1];
@@ -2802,10 +2816,10 @@ Array
 
         $shipping_addresses['Ship To Country First Division']=$address->data['Address Country First Division'];
         $shipping_addresses['Ship To Country Second Division']=$address->data['Address Country Second Division'];
-        
-      //  print_r($shipping_addresses);
-        
-      $ship_to= new Ship_To('find create',$shipping_addresses);
+
+        //  print_r($shipping_addresses);
+
+        $ship_to= new Ship_To('find create',$shipping_addresses);
 
 
 
@@ -3002,7 +3016,7 @@ Array
         if ($main_company_key!=$company_key) {
             $company=new Company($company_key);
             $company->editor=$this->editor;
-                        $company->new=$this->new;
+            $company->new=$this->new;
 
             $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
                          $this->id
@@ -3033,7 +3047,7 @@ Array
         if ($main_contact_key!=$contact_key) {
             $contact=new Contact($contact_key);
             $contact->editor=$this->editor;
-                                    $contact->new=$this->new;
+            $contact->new=$this->new;
 
             $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
                          $this->id
@@ -3051,7 +3065,7 @@ Array
 
 
             $this->data['Customer Main Contact Key']=$contact->id;
-            
+
             $contact->update_parents();
 
         }
@@ -3105,15 +3119,15 @@ Array
     }
 
 
-function get_contact_cards(){
-$cards=array();
+    function get_contact_cards() {
+        $cards=array();
 
-foreach($this->get_contact_keys() as $contact_key){
-$contact=new Contact($contact_key);
-$cards[]=$contact->display('card');
-}
-return $cards;
-}
+        foreach($this->get_contact_keys() as $contact_key) {
+            $contact=new Contact($contact_key);
+            $cards[]=$contact->display('card');
+        }
+        return $cards;
+    }
 
     function get_company_keys() {
 
@@ -3162,8 +3176,8 @@ return $cards;
 
 
     }
-    
-       function get_delivery_address_keys() {
+
+    function get_delivery_address_keys() {
 
 
         $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
@@ -3177,7 +3191,7 @@ return $cards;
         return $address_keys;
 
     }
-  function get_billing_address_keys() {
+    function get_billing_address_keys() {
 
 
         $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Billing' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
@@ -3191,23 +3205,23 @@ return $cards;
         return $address_keys;
 
     }
-    
-  function disassociate_email($email_key){
-  
-  
-  $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d  and `Email Key`=%d ",
-  $this->id,
-  $email_key
-  );
-  mysql_query($sql);
-  
-  }
-  
-  function associate_delivery_address($address_key) {
-        if (!$address_key){
+
+    function disassociate_email($email_key) {
+
+
+        $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d  and `Email Key`=%d ",
+                     $this->id,
+                     $email_key
+                    );
+        mysql_query($sql);
+
+    }
+
+    function associate_delivery_address($address_key) {
+        if (!$address_key) {
             return;
-            
-         }   
+
+        }
         $address_keys=$this->get_delivery_address_keys();
         if (!array_key_exists($address_key,$address_keys)) {
             $this->create_delivery_address_bridge($address_key);
@@ -3217,13 +3231,13 @@ return $cards;
 
 
     }
-    
-    
-       function associate_billing_address($address_key) {
-        if (!$address_key){
+
+
+    function associate_billing_address($address_key) {
+        if (!$address_key) {
             return;
-            
-         }   
+
+        }
         $address_keys=$this->get_billing_address_keys();
         if (!array_key_exists($address_key,$address_keys)) {
             $this->create_billing_address_bridge($address_key);
@@ -3233,7 +3247,7 @@ return $cards;
 
 
     }
-     function create_contact_address_bridge($address_key) {
+    function create_contact_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Contact',%d,%d)  ",
                      $this->id,
                      $address_key
@@ -3241,328 +3255,316 @@ return $cards;
         mysql_query($sql);
         //print $this->get_principal_contact_address_key()." $sql\n";
         if (
-            !$this->get_principal_contact_address_key()  
-            ) {
-            $this->update_principal_contact_address($address_key);
+            !$this->get_principal_contact_address_key()
+        ) {
+            $this->update_only_principal_contact_address($address_key);
         }
-    } 
+    }
 
-  function create_delivery_address_bridge($address_key) {
+    function create_delivery_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
                      $this->id,
                      $address_key
 
                     );
-                  //  print $sql;
+        //  print $sql;
         mysql_query($sql);
-       // print $this->get_principal_delivery_address_key()."<-\n";
+        // print $this->get_principal_delivery_address_key()."<-\n";
         if (
-            !$this->get_principal_delivery_address_key()  
-            or ! $this->data['Customer Main Delivery Address Key']  
-            ) {
-        
-      //  print "caca";
+            !$this->get_principal_delivery_address_key()
+            or ! $this->data['Customer Main Delivery Address Key']
+        ) {
+
+            //  print "caca";
             $this->update_principal_delivery_address($address_key);
         }
 
     }
-      function create_billing_address_bridge($address_key) {
+    function create_billing_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Billing',%d,%d)  ",
                      $this->id,
                      $address_key
 
                     );
         mysql_query($sql);
-      //print $sql;
+        //print $sql;
         if (
-            !$this->get_principal_billing_address_key()  
-            or ! $this->data['Customer Billing Address Key']  
-            ) {
-     
+            !$this->get_principal_billing_address_key()
+            or ! $this->data['Customer Billing Address Key']
+        ) {
+
             $this->update_principal_billing_address($address_key);
         }
 
     }
     
-    function update_principal_contact_address($address_key){
+    
+    function update_only_principal_contact_address($address_key) {
+                $this->update_principal_address($address_key,false);
+
+    }
+
+
+    function update_principal_contact_address($address_key) {
         $this->update_principal_address($address_key);
     }
-    
-    function update_principal_address($address_key){
-    
-   
-    
- 
-   $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
-                                 $this->id
-                                 ,$address_key
-                                );
-                    mysql_query($sql);
-                    $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
-                                 $this->id
-                                 ,$address_key
-                                );
-                    mysql_query($sql);
-                    $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d where `Customer Key`=%d"
-                                 ,$address_key
-                                 ,$this->id
-                                );
-                    mysql_query($sql);
-  
-  
-   if ($this->data['Customer Delivery Address Link']=='Contact') {
-                            $this->update_principal_delivery_address($address_key);
 
-                        }
-                        if ($this->data['Customer Billing Address Link']=='Contact') {
-                            $this->update_principal_billing_address($address_key);
+    function update_principal_address($address_key,$update_other_address_type=true) {
 
-                        }
-  
-  $address=new Address($address_key);
-  
-  //print_r($address);
 
-  $address->update_parents('Customer');
-  $this->updated=true;
-  $this->new_value=$address_key;
-  
-  
-  /*  
-            if ($this->data['Customer Type']=='Person') {
-                $subject=new Contact($this->data['Customer Main Contact Key']);
-                $subject_type='Contact';
-            } else {
-                $subject=new Company($this->data['Customer Company Key']);
-                $subject_type='Company';
+        $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
+                     $this->id
+                     ,$address_key
+                    );
+        mysql_query($sql);
+        $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
+                     $this->id
+                     ,$address_key
+                    );
+        mysql_query($sql);
+        $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d where `Customer Key`=%d"
+                     ,$address_key
+                     ,$this->id
+                    );
+        mysql_query($sql);
 
-            }
-            $subject->update_principal_address($address_key);
-               $this->get_data('id',$this->id);
-            $this->updated=$subject->updated;
-            $this->msg=$subject->msg;
-            $this->new_value=$subject->new_value;
-*/
-    
+        if($update_other_address_type){
+        if ($this->data['Customer Delivery Address Link']=='Contact') {
+            $this->update_principal_delivery_address($address_key);
+
+        }
+        if ($this->data['Customer Billing Address Link']=='Contact') {
+            $this->update_principal_billing_address($address_key);
+
+        }
+}
+        $address=new Address($address_key);
+        $address->update_parents('Customer');
+
+        $this->updated=true;
+        $this->new_value=$address_key;
+
+
     }
-    
-     function update_principal_delivery_address($address_key) {
 
-      //  $main_address_key=$this->get_principal_delivery_address_key();
+    function update_principal_delivery_address($address_key) {
+
+        //  $main_address_key=$this->get_principal_delivery_address_key();
         $main_address_key=$this->data['Customer Main Delivery Address Key'];
-        
-  
-        
-        if ($main_address_key!=$address_key 
-        or ( $this->data['Customer Delivery Address Link']='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )   
-        or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )   
-        or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key'] or $address_key==$this->data['Customer Main Address Key']  ) )   
 
-        ) {
-           
-           $address=new Address($address_key);
+
+        if ($main_address_key!=$address_key
+                or ( $this->data['Customer Delivery Address Link']='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
+                or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
+                or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key'] or $address_key==$this->data['Customer Main Address Key']  ) )
+
+           ) {
+
+            $address=new Address($address_key);
             $address->editor=$this->editor;
-                        $address->new=$this->new;
+            $address->new=$this->new;
 
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$main_address_key
                         );
             mysql_query($sql);
-  $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$address_key
                         );
             mysql_query($sql);
-            
-	    if($address->id==$this->data['Customer Main Address Key']){
-	      $this->data['Customer Delivery Address Link']='Contact';
-	    }elseif($address->id==$this->data['Customer Billing Address Key']){
-	      $this->data['Customer Delivery Address Link']='Billing';
-	    }else{
-	      $this->data['Customer Delivery Address Link']='None';
-	    }
 
-	    $sql=sprintf("update `Customer Dimension` set  `Customer Delivery Address Link`=%s,`Customer Main Delivery Address Key`=%d where `Customer Key`=%d"
-			 ,prepare_mysql($this->data['Customer Delivery Address Link'])
-			 ,$address->id
-			 ,$this->id);
+            if ($address->id==$this->data['Customer Main Address Key']) {
+                $this->data['Customer Delivery Address Link']='Contact';
+            }
+            elseif($address->id==$this->data['Customer Billing Address Key']) {
+                $this->data['Customer Delivery Address Link']='Billing';
+            }
+            else {
+                $this->data['Customer Delivery Address Link']='None';
+            }
+
+            $sql=sprintf("update `Customer Dimension` set  `Customer Delivery Address Link`=%s,`Customer Main Delivery Address Key`=%d where `Customer Key`=%d"
+                         ,prepare_mysql($this->data['Customer Delivery Address Link'])
+                         ,$address->id
+                         ,$this->id);
             $this->data['Customer Main Delivery Address Key']=$address->id;
             mysql_query($sql);
-        $address->update_parents();
-	    $this->get_data('id',$this->id);
-	    $this->updated=true;
-	    $this->new_value=$address->id;
+            $address->update_parents();
+            $this->get_data('id',$this->id);
+            $this->updated=true;
+            $this->new_value=$address->id;
         }
 
     }
 
-      function update_principal_billing_address($address_key) {
-      
-      
-      //  $main_address_key=$this->get_principal_billing_address_key();
-        $main_address_key=$this->data['Customer Billing Address Key'];
-        
-        
-       if ($main_address_key!=$address_key or  
-       ( $this->data['Customer Billing Address Link']=='Contact'  and $address_key!=$this->data['Customer Main Address Key'] )
-     or ( $this->data['Customer Billing Address Link']=='None'  and $address_key==$this->data['Customer Main Address Key'] )
+    function update_principal_billing_address($address_key) {
 
-       
-       
-       ) {
+
+        //  $main_address_key=$this->get_principal_billing_address_key();
+        $main_address_key=$this->data['Customer Billing Address Key'];
+
+
+        if ($main_address_key!=$address_key or
+                ( $this->data['Customer Billing Address Link']=='Contact'  and $address_key!=$this->data['Customer Main Address Key'] )
+                or ( $this->data['Customer Billing Address Link']=='None'  and $address_key==$this->data['Customer Main Address Key'] )
+
+
+
+           ) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
-                        $address->new=$this->new;
+            $address->new=$this->new;
 
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Billing' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$main_address_key
                         );
             mysql_query($sql);
-  $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Billing' and  `Subject Key`=%d  and `Address Key`=%d",
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Billing' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$address_key
                         );
             mysql_query($sql);
-            
-	    if($address->id==$this->data['Customer Main Address Key']){
-	      $this->data['Customer Billing Address Link']='Contact';
-	    }else{
-	      $this->data['Customer Billing Address Link']='None';
-	    }
 
-	    $sql=sprintf("update `Customer Dimension` set  `Customer Billing Address Link`=%s,`Customer Billing Address Key`=%d where `Customer Key`=%d"
-			 ,prepare_mysql($this->data['Customer Billing Address Link'])
-			 ,$address->id
-			 ,$this->id);
-            $this->data['Customer Billing Address Key']=$address->id;
-            mysql_query($sql);
- 
-            $address->update_parents();
-	    $this->get_data('id',$this->id);
-	    $this->updated=true;
-	    $this->new_value=$address->id;
-        }
-
-    }
-
-function get_principal_contact_address_key() {
-    $main_address_key=0;
-    $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-        $main_address_key=$row['Address Key'];
-    }
-    return $main_address_key;
-}
-
-
-function get_principal_billing_address_key() {
-
-    switch ($this->data['Customer Billing Address Link']) {
-    case 'Contact':
-        return $this->data['Customer Main Address Key'];
-        break;
-
-    default:
-        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Billing' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $main_address_key=$row['Address Key'];
-        } else {
-            $main_address_key=$this->data['Customer Main Address Key'];
-        }
-
-        return $main_address_key;
-        break;
-    }
-
-
-}
- function get_principal_delivery_address_key() {
-
-switch ($this->data['Customer Delivery Address Link']) {
-    case 'Contact':
-        return $this->data['Customer Main Address Key'];
-        break;
-    case 'Billing':
-     return $this->data['Customer Billing Address Key'];
-    default:
-          $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $main_address_key=$row['Address Key'];
-        } else {
-            $main_address_key=$this->data['Customer Main Address Key'];
-        }
-
-        return $main_address_key;
-        break;
-}
-
-
-    }
-    
-    
- function get_ship_to($date=false){
- 
- if(!$date){
- $date=date("Y-m-d H:i:s");
- }
-         if ($this->data['Customer Active Ship To Records']==0) {
-                $ship_to= $this->set_current_ship_to('return object');
-
-                $data_ship_to=array(
-                'Ship To Key'=>$ship_to->id,
-                'Current Ship To Is Other Key'=>false,
-                'Date'=>$date
-                );
-               
-                $this->update_ship_to($data_ship_to);
-            }else{
-
-            $ship_to= new Ship_To($this->data['Customer Last Ship To Key']);
+            if ($address->id==$this->data['Customer Main Address Key']) {
+                $this->data['Customer Billing Address Link']='Contact';
+            } else {
+                $this->data['Customer Billing Address Link']='None';
             }
 
-return $ship_to; 
- 
- }
+            $sql=sprintf("update `Customer Dimension` set  `Customer Billing Address Link`=%s,`Customer Billing Address Key`=%d where `Customer Key`=%d"
+                         ,prepare_mysql($this->data['Customer Billing Address Link'])
+                         ,$address->id
+                         ,$this->id);
+            $this->data['Customer Billing Address Key']=$address->id;
+            mysql_query($sql);
 
-function get_ship_to_data(){
-  $address=new address($this->data['Customer Main Delivery Address Key']);
-  if($address->id)
-     return $address->get_data_for_ship_to();
-  else
-       return array();
-}
+            $address->update_parents();
+            $this->get_data('id',$this->id);
+            $this->updated=true;
+            $this->new_value=$address->id;
+        }
 
-function display_delivery_address($tipo){
-switch ($tipo) {
+    }
 
-    case 'xhtml':
+    function get_principal_contact_address_key() {
+        $main_address_key=0;
+        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_address_key=$row['Address Key'];
+        }
+        return $main_address_key;
+    }
+
+
+    function get_principal_billing_address_key() {
+
+        switch ($this->data['Customer Billing Address Link']) {
+        case 'Contact':
+            return $this->data['Customer Main Address Key'];
+            break;
+
+        default:
+            $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Billing' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_array($res)) {
+                $main_address_key=$row['Address Key'];
+            } else {
+                $main_address_key=$this->data['Customer Main Address Key'];
+            }
+
+            return $main_address_key;
+            break;
+        }
+
+
+    }
+    function get_principal_delivery_address_key() {
+
+        switch ($this->data['Customer Delivery Address Link']) {
+        case 'Contact':
+            return $this->data['Customer Main Address Key'];
+            break;
+        case 'Billing':
+            return $this->data['Customer Billing Address Key'];
+        default:
+            $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_array($res)) {
+                $main_address_key=$row['Address Key'];
+            } else {
+                $main_address_key=$this->data['Customer Main Address Key'];
+            }
+
+            return $main_address_key;
+            break;
+        }
+
+
+    }
+
+
+    function get_ship_to($date=false) {
+
+        if (!$date) {
+            $date=date("Y-m-d H:i:s");
+        }
+        if ($this->data['Customer Active Ship To Records']==0) {
+            $ship_to= $this->set_current_ship_to('return object');
+
+            $data_ship_to=array(
+                              'Ship To Key'=>$ship_to->id,
+                              'Current Ship To Is Other Key'=>false,
+                              'Date'=>$date
+                          );
+
+            $this->update_ship_to($data_ship_to);
+        } else {
+
+            $ship_to= new Ship_To($this->data['Customer Last Ship To Key']);
+        }
+
+        return $ship_to;
+
+    }
+
+    function get_ship_to_data() {
         $address=new address($this->data['Customer Main Delivery Address Key']);
-        return $address->display('xhtml');
-        break;
-    default:
-     $address=new address($this->data['Customer Main Delivery Address Key']);
-        return $address->get($tipo);
-        break;
-}
+        if ($address->id)
+            return $address->get_data_for_ship_to();
+        else
+            return array();
+    }
 
-}
+    function display_delivery_address($tipo) {
+        switch ($tipo) {
 
-function get_address_bridge_data($address_key){
+        case 'xhtml':
+            $address=new address($this->data['Customer Main Delivery Address Key']);
+            return $address->display('xhtml');
+            break;
+        default:
+            $address=new address($this->data['Customer Main Delivery Address Key']);
+            return $address->get($tipo);
+            break;
+        }
 
-$sql=sprintf("select * from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Address Key`=%d",$this->id,$address_key);
-$res=mysql_query($sql);
-if($row=mysql_fetch_array($res)){
-    return array('Address Type'=>$row['Address Type'],'Address Function'=>$row['Address Function']);
-}
-return false;
-}
+    }
 
-function get_delivery_address_objects(){
+    function get_address_bridge_data($address_key) {
+
+        $sql=sprintf("select * from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Address Key`=%d",$this->id,$address_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            return array('Address Type'=>$row['Address Type'],'Address Function'=>$row['Address Function']);
+        }
+        return false;
+    }
+
+    function get_delivery_address_objects() {
 
         $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
         $address_objects=array();
@@ -3573,428 +3575,428 @@ function get_delivery_address_objects(){
             $address_objects[$row['Address Key']]= new Address($row['Address Key']);
         }
         return $address_objects;
-}
+    }
 
-function update_is_new(){
-if( (date('U')-strtotime($this->data['Customer First Contacted Date']))<2592000){
-
-
-}
-
-}
+    function update_is_new() {
+        if ( (date('U')-strtotime($this->data['Customer First Contacted Date']))<2592000) {
 
 
-function update_full_search(){
-$address=new Address($this->data['Customer Main Address Key']);
-$address_plain='';
-if($address->id){
-$address_plain=$address->display('Plain');
-}
-$address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'];
-$first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
-$second_full_search=$this->data['Customer Type'];
-
-
-$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)  
-values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key 
-update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
-,$this->data['Customer Store Key']
-,$this->id
-,prepare_mysql($first_full_search)
-,prepare_mysql($second_full_search)
-,prepare_mysql($this->data['Customer Name'])
-,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
-,"''"
-,prepare_mysql($first_full_search)
-,prepare_mysql($second_full_search)
-,prepare_mysql($this->data['Customer Name'])
-,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
-
-
-,"''"
-);
-mysql_query($sql);
-}
-function add_history_new_order($order) {
-
-date_default_timezone_set(TIMEZONE) ;
-$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
-
-date_default_timezone_set('GMT') ;
-
-
-    switch ($_SESSION ['lang']) {
-    default :
-        $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
-        if ($order->data['Order Original Data MIME Type']='application/kaktus') {
-
-            if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-                $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
-            } else {
-                $details = sprintf ( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
-                $this->get ( 'Customer Name' ), 
-                $this->id,$this->get('Formated ID'), 
-                $tz_date
-                );
-
-            }
-        } else {
-            $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', 
-            $this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
-            $tz_date
-            );
-        }
-        if ($order->data['Order Original Data MIME Type']='application/vnd.ms-excel') {
-            if ($order->data['Order Original Data Filename']!='') {
-
-                $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
-
-                $details .='<div>'._('Original Source Filename').": ".$order->data['Order Original Data Filename']."</div>";
-
-
-
-            }
         }
 
     }
-    $history_data=array(
-                      'Date'=>$order->data ['Order Date'],
-                      'Subject'=>'Customer',
-                      'Subject Key'=>$this->id,
-                      'Direct Object'=>'Order',
-                      'Direct Object Key'=>$order->data ['Order Key'],
-                      'History Details'=>$details,
-                      'History Abstract'=>$note,
-                      'Metadata'=>'Process'
-                  );
-   
-    $history_key=$order->add_history($history_data);
-  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
-
-}
-function add_history_order_cancelled($order) {
 
 
-date_default_timezone_set(TIMEZONE) ;
-$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Cancelled Date']." +00:00" ) );
-$tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+    function update_full_search() {
+        $address=new Address($this->data['Customer Main Address Key']);
+        $address_plain='';
+        if ($address->id) {
+            $address_plain=$address->display('Plain');
+        }
+        $address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'];
+        $first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
+        $second_full_search=$this->data['Customer Type'];
 
-date_default_timezone_set('GMT') ;
 
-if(!isset($_SESSION ['lang']))
-$lang=0;
-else
-$lang=$_SESSION ['lang'];
+        $sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
+                     values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key
+                     update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
+                     ,$this->data['Customer Store Key']
+                     ,$this->id
+                     ,prepare_mysql($first_full_search)
+                     ,prepare_mysql($second_full_search)
+                     ,prepare_mysql($this->data['Customer Name'])
+                     ,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
+                     ,"''"
+                     ,prepare_mysql($first_full_search)
+                     ,prepare_mysql($second_full_search)
+                     ,prepare_mysql($this->data['Customer Name'])
+                     ,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
 
-    switch ($lang) {
-    default :
-        $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (Cancelled)',$order->data ['Order Key'], $order->data ['Order Public ID'] );
-        if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+
+                     ,"''"
+                    );
+        mysql_query($sql);
+    }
+    function add_history_new_order($order) {
+
+        date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+        date_default_timezone_set('GMT') ;
+
+
+        switch ($_SESSION ['lang']) {
+        default :
+            $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+            if ($order->data['Order Original Data MIME Type']='application/kaktus') {
+
+                if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+                    $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
+                } else {
+                    $details = sprintf ( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
+                                         $this->get ( 'Customer Name' ),
+                                         $this->id,$this->get('Formated ID'),
+                                         $tz_date
+                                       );
+
+                }
+            } else {
+                $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s',
+                                     $this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
+                                     $tz_date
+                                   );
+            }
+            if ($order->data['Order Original Data MIME Type']='application/vnd.ms-excel') {
+                if ($order->data['Order Original Data Filename']!='') {
+
+                    $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
+
+                    $details .='<div>'._('Original Source Filename').": ".$order->data['Order Original Data Filename']."</div>";
+
+
+
+                }
+            }
+
+        }
+        $history_data=array(
+                          'Date'=>$order->data ['Order Date'],
+                          'Subject'=>'Customer',
+                          'Subject Key'=>$this->id,
+                          'Direct Object'=>'Order',
+                          'Direct Object Key'=>$order->data ['Order Key'],
+                          'History Details'=>$details,
+                          'History Abstract'=>$note,
+                          'Metadata'=>'Process'
+                      );
+
+        $history_key=$order->add_history($history_data);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
+
+    }
+    function add_history_order_cancelled($order) {
+
+
+        date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Cancelled Date']." +00:00" ) );
+        $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+        date_default_timezone_set('GMT') ;
+
+        if (!isset($_SESSION ['lang']))
+            $lang=0;
+        else
+            $lang=$_SESSION ['lang'];
+
+        switch ($lang) {
+        default :
+            $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (Cancelled)',$order->data ['Order Key'], $order->data ['Order Public ID'] );
+            if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
                 $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> cancel %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s',
-                $this->editor['Author Key'],
-                $this->editor['Author Alias'] ,
-                $this->get ( 'Customer Name' ), 
-                $this->id,
-                $this->get('Formated ID'), 
-                 $order->data ['Order Key'], 
-                $order->data ['Order Public ID'],
-               $tz_date 
-                );
+                                     $this->editor['Author Key'],
+                                     $this->editor['Author Alias'] ,
+                                     $this->get ( 'Customer Name' ),
+                                     $this->id,
+                                     $this->get('Formated ID'),
+                                     $order->data ['Order Key'],
+                                     $order->data ['Order Public ID'],
+                                     $tz_date
+                                   );
             } else {
                 $details = sprintf ( 'Someone cancel  %s (<a href="customer.php?id=%d">%s</a>)  order <a href="order.php?id=%d">%s</a>  on %s',
-               
-                $this->get ( 'Customer Name' ), 
-                $this->id,$this->get('Formated ID'), 
-                 $order->data ['Order Key'], 
-                $order->data ['Order Public ID'],
-                $tz_date
-                );
+
+                                     $this->get ( 'Customer Name' ),
+                                     $this->id,$this->get('Formated ID'),
+                                     $order->data ['Order Key'],
+                                     $order->data ['Order Public ID'],
+                                     $tz_date
+                                   );
 
             }
-        if($order->data ['Order Cancel Note']!='')    
-        $details.='<div> Note: '.$order->data ['Order Cancel Note'].'</div>';
-       
+            if ($order->data ['Order Cancel Note']!='')
+                $details.='<div> Note: '.$order->data ['Order Cancel Note'].'</div>';
 
-    }
-    $history_data=array(
-                      'Date'=>$order->data ['Order Cancelled Date'],
-                      'Subject'=>'Customer',
-                      'Subject Key'=>$this->id,
-                      'Direct Object'=>'Order',
-                      'Direct Object Key'=>$order->data ['Order Key'],
-                      'History Details'=>$details,
-                      'History Abstract'=>$note,
-                                            'Metadata'=>'Cancelled'
-
-                  );
-                  
-                    $sql=sprintf("update `History Dimension` set `Deep`=2 where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d ",
-        $this->id,
-        $order->id
-    );
-    mysql_query($sql);
-    $history_key=$order->add_history($history_data);
-  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
-    
-    
-    
-    switch ($lang) {
-    default :
-                $note_created = sprintf ( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
 
         }
-    $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
-        prepare_mysql($note_created),
-        $this->id,
-        $order->id
-    );
-    mysql_query($sql);
+        $history_data=array(
+                          'Date'=>$order->data ['Order Cancelled Date'],
+                          'Subject'=>'Customer',
+                          'Subject Key'=>$this->id,
+                          'Direct Object'=>'Order',
+                          'Direct Object Key'=>$order->data ['Order Key'],
+                          'History Details'=>$details,
+                          'History Abstract'=>$note,
+                          'Metadata'=>'Cancelled'
 
-}
+                      );
 
-function add_history_order_suspended($order) {
+        $sql=sprintf("update `History Dimension` set `Deep`=2 where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d ",
+                     $this->id,
+                     $order->id
+                    );
+        mysql_query($sql);
+        $history_key=$order->add_history($history_data);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
 
 
-date_default_timezone_set(TIMEZONE) ;
-$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Suspended Date']." +00:00" ) );
-$tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
 
-date_default_timezone_set('GMT') ;
+        switch ($lang) {
+        default :
+            $note_created = sprintf ( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
 
-if(!isset($_SESSION ['lang']))
-$lang=0;
-else
-$lang=$_SESSION ['lang'];
+        }
+        $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+                     prepare_mysql($note_created),
+                     $this->id,
+                     $order->id
+                    );
+        mysql_query($sql);
 
-    switch ($lang) {
-    default :
-        $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (Suspended)',$order->data ['Order Key'], $order->data ['Order Public ID'] );
-        if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+    }
+
+    function add_history_order_suspended($order) {
+
+
+        date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Suspended Date']." +00:00" ) );
+        $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+        date_default_timezone_set('GMT') ;
+
+        if (!isset($_SESSION ['lang']))
+            $lang=0;
+        else
+            $lang=$_SESSION ['lang'];
+
+        switch ($lang) {
+        default :
+            $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (Suspended)',$order->data ['Order Key'], $order->data ['Order Public ID'] );
+            if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
                 $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> suspended %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s',
-                $this->editor['Author Key'],
-                $this->editor['Author Alias'] ,
-                $this->get ( 'Customer Name' ), 
-                $this->id,
-                $this->get('Formated ID'), 
-                 $order->data ['Order Key'], 
-                $order->data ['Order Public ID'],
-               $tz_date 
-                );
+                                     $this->editor['Author Key'],
+                                     $this->editor['Author Alias'] ,
+                                     $this->get ( 'Customer Name' ),
+                                     $this->id,
+                                     $this->get('Formated ID'),
+                                     $order->data ['Order Key'],
+                                     $order->data ['Order Public ID'],
+                                     $tz_date
+                                   );
             } else {
                 $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>)  order <a href="order.php?id=%d">%s</a>  has been suspended on %s',
-               
-                $this->get ( 'Customer Name' ), 
-                $this->id,$this->get('Formated ID'), 
-                 $order->data ['Order Key'], 
-                $order->data ['Order Public ID'],
-                $tz_date
-                );
+
+                                     $this->get ( 'Customer Name' ),
+                                     $this->id,$this->get('Formated ID'),
+                                     $order->data ['Order Key'],
+                                     $order->data ['Order Public ID'],
+                                     $tz_date
+                                   );
 
             }
-        if($order->data ['Order Suspend Note']!='')    
-        $details.='<div> Note: '.$order->data ['Order Suspend Note'].'</div>';
-       
+            if ($order->data ['Order Suspend Note']!='')
+                $details.='<div> Note: '.$order->data ['Order Suspend Note'].'</div>';
 
-    }
-    $history_data=array(
-                      'Date'=>$order->data ['Order Suspended Date'],
-                      'Subject'=>'Customer',
-                      'Subject Key'=>$this->id,
-                      'Direct Object'=>'Order',
-                      'Direct Object Key'=>$order->data ['Order Key'],
-                      'History Details'=>$details,
-                      'History Abstract'=>$note,
-                      'Metadata'=>'Suspended'
-
-                  );
-                  
-    $sql=sprintf("update `History Dimension` set `Deep`=2 where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d ",
-        $this->id,
-        $order->id
-    );
-    mysql_query($sql);
-   $history_key=$order->add_history($history_data);
-  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
-    
-    
-    switch ($lang) {
-    default :
-                $note_created = sprintf ( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
 
         }
-    $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
-        prepare_mysql($note_created),
-        $this->id,
-        $order->id
-    );
-    mysql_query($sql);
+        $history_data=array(
+                          'Date'=>$order->data ['Order Suspended Date'],
+                          'Subject'=>'Customer',
+                          'Subject Key'=>$this->id,
+                          'Direct Object'=>'Order',
+                          'Direct Object Key'=>$order->data ['Order Key'],
+                          'History Details'=>$details,
+                          'History Abstract'=>$note,
+                          'Metadata'=>'Suspended'
 
-}
+                      );
 
-
-function add_history_post_order_in_warehouse($dn) {
-
-
-date_default_timezone_set(TIMEZONE) ;
-$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $dn->data ['Delivery Note Date Created']." +00:00" ) );
-$tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $dn->data ['Delivery Note Date Created']." +00:00" ) );
-
-date_default_timezone_set('GMT') ;
-
-if(!isset($_SESSION ['lang']))
-$lang=0;
-else
-$lang=$_SESSION ['lang'];
-
-    switch ($lang) {
-    default :
-    $state=$dn->data['Delivery Note State'];
-        $note = sprintf ( '%s <a href="dn.php?id=%d">%s</a> (%s)',$dn->data['Delivery Note Type'],$dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'],$state );
-        $details=$dn->data['Delivery Note Title'];
-        
-        if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-                $details.= '';
-            } else {
-                $details.= '';
-
-            }
-       
-       
-
-    }
-    $history_data=array(
-                      'Date'=>$dn->data ['Delivery Note Date Created'],
-                      'Subject'=>'Customer',
-                      'Subject Key'=>$this->id,
-                      'Direct Object'=>'After Sale',
-                      'Direct Object Key'=>$dn->data ['Delivery Note Key'],
-                      'History Details'=>$details,
-                      'History Abstract'=>$note,
-                      'Metadata'=>'Post Order'
-
-                  );
-                  
-  //   print_r($history_data);            
- 
-    $history_key=$dn->add_history($history_data);
-  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
-    
-    
-   
-
-}
-
-function update_history_order_in_warehouse($order) {
+        $sql=sprintf("update `History Dimension` set `Deep`=2 where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d ",
+                     $this->id,
+                     $order->id
+                    );
+        mysql_query($sql);
+        $history_key=$order->add_history($history_data);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
 
 
-    date_default_timezone_set(TIMEZONE) ;
-    $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Cancelled Date']." +00:00" ) );
-    $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+        switch ($lang) {
+        default :
+            $note_created = sprintf ( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
 
-    date_default_timezone_set('GMT') ;
-
-    if (!isset($_SESSION ['lang']))
-        $lang=0;
-    else
-        $lang=$_SESSION ['lang'];
-
-    switch ($lang) {
-    default :
-        $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (%s) %s %s' ,
-                          $order->data ['Order Key'],
-                          $order->data ['Order Public ID'],
-                          $order->data['Order Current XHTML State'],
-                          $order->get('Weight'),
-                          money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
-                          
-                        );
-
-
+        }
+        $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+                     prepare_mysql($note_created),
+                     $this->id,
+                     $order->id
+                    );
+        mysql_query($sql);
 
     }
 
-    $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
-                 prepare_mysql($note),
-                 $this->id,
-                 $order->id
-                );
-    mysql_query($sql);
-    //print "$sql\n";
 
-}
-function add_history_new_post_order($order,$type) {
-
-date_default_timezone_set(TIMEZONE) ;
-$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
-
-date_default_timezone_set('GMT') ;
+    function add_history_post_order_in_warehouse($dn) {
 
 
-    switch ($_SESSION ['lang']) {
-    default :
-        $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
-        if ($order->data['Order Original Data MIME Type']='application/kaktus') {
+        date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $dn->data ['Delivery Note Date Created']." +00:00" ) );
+        $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $dn->data ['Delivery Note Date Created']." +00:00" ) );
+
+        date_default_timezone_set('GMT') ;
+
+        if (!isset($_SESSION ['lang']))
+            $lang=0;
+        else
+            $lang=$_SESSION ['lang'];
+
+        switch ($lang) {
+        default :
+            $state=$dn->data['Delivery Note State'];
+            $note = sprintf ( '%s <a href="dn.php?id=%d">%s</a> (%s)',$dn->data['Delivery Note Type'],$dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'],$state );
+            $details=$dn->data['Delivery Note Title'];
 
             if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-                $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
+                $details.= '';
             } else {
-                $details = sprintf ( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
-                $this->get ( 'Customer Name' ), 
-                $this->id,$this->get('Formated ID'), 
-                $tz_date
-                );
+                $details.= '';
 
             }
-        } else {
-            $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', 
-            $this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
-            $tz_date
-            );
+
+
+
         }
-        if ($order->data['Order Original Data MIME Type']='application/vnd.ms-excel') {
-            if ($order->data['Order Original Data Filename']!='') {
+        $history_data=array(
+                          'Date'=>$dn->data ['Delivery Note Date Created'],
+                          'Subject'=>'Customer',
+                          'Subject Key'=>$this->id,
+                          'Direct Object'=>'After Sale',
+                          'Direct Object Key'=>$dn->data ['Delivery Note Key'],
+                          'History Details'=>$details,
+                          'History Abstract'=>$note,
+                          'Metadata'=>'Post Order'
 
-                $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
+                      );
 
-                $details .='<div>'._('Original Source Filename').": ".$order->data['Order Original Data Filename']."</div>";
+        //   print_r($history_data);
+
+        $history_key=$dn->add_history($history_data);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
 
 
 
-            }
-        }
 
     }
-    $history_data=array(
-                      'Date'=>$order->data ['Order Date'],
-                      'Subject'=>'Customer',
-                      'Subject Key'=>$this->id,
-                      'Direct Object'=>'Order',
-                      'Direct Object Key'=>$order->data ['Order Key'],
-                      'History Details'=>$details,
-                      'History Abstract'=>$note,
-                      'Metadata'=>'Process'
-                  );
-    $history_key=$order->add_history($history_data);
-  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-    mysql_query($sql);
 
-}
-
-function get_number_of_orders(){
-$sql=sprintf("select count(*) as number from `Order Dimension` where `Order Customer Key`=%d ",$this->id);
-$number=0;
-$res=mysql_query($sql);
-if($row=mysql_fetch_assoc($res)){
-$number=$row['number'];
-}
-return $number;
+    function update_history_order_in_warehouse($order) {
 
 
-}
+        date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Cancelled Date']." +00:00" ) );
+        $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+        date_default_timezone_set('GMT') ;
+
+        if (!isset($_SESSION ['lang']))
+            $lang=0;
+        else
+            $lang=$_SESSION ['lang'];
+
+        switch ($lang) {
+        default :
+            $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (%s) %s %s' ,
+                              $order->data ['Order Key'],
+                              $order->data ['Order Public ID'],
+                              $order->data['Order Current XHTML State'],
+                              $order->get('Weight'),
+                              money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+
+                            );
+
+
+
+        }
+
+        $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+                     prepare_mysql($note),
+                     $this->id,
+                     $order->id
+                    );
+        mysql_query($sql);
+        //print "$sql\n";
+
+    }
+    function add_history_new_post_order($order,$type) {
+
+        date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+        date_default_timezone_set('GMT') ;
+
+
+        switch ($_SESSION ['lang']) {
+        default :
+            $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+            if ($order->data['Order Original Data MIME Type']='application/kaktus') {
+
+                if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+                    $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
+                } else {
+                    $details = sprintf ( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
+                                         $this->get ( 'Customer Name' ),
+                                         $this->id,$this->get('Formated ID'),
+                                         $tz_date
+                                       );
+
+                }
+            } else {
+                $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s',
+                                     $this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
+                                     $tz_date
+                                   );
+            }
+            if ($order->data['Order Original Data MIME Type']='application/vnd.ms-excel') {
+                if ($order->data['Order Original Data Filename']!='') {
+
+                    $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
+
+                    $details .='<div>'._('Original Source Filename').": ".$order->data['Order Original Data Filename']."</div>";
+
+
+
+                }
+            }
+
+        }
+        $history_data=array(
+                          'Date'=>$order->data ['Order Date'],
+                          'Subject'=>'Customer',
+                          'Subject Key'=>$this->id,
+                          'Direct Object'=>'Order',
+                          'Direct Object Key'=>$order->data ['Order Key'],
+                          'History Details'=>$details,
+                          'History Abstract'=>$note,
+                          'Metadata'=>'Process'
+                      );
+        $history_key=$order->add_history($history_data);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        mysql_query($sql);
+
+    }
+
+    function get_number_of_orders() {
+        $sql=sprintf("select count(*) as number from `Order Dimension` where `Order Customer Key`=%d ",$this->id);
+        $number=0;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $number=$row['number'];
+        }
+        return $number;
+
+
+    }
 
 }
 ?>
