@@ -80,31 +80,36 @@ $js_files=array(
 	$count_rows = $csv->countRows();
 	
 	//count the removed array
-	$numIndex = count($_POST['hidden_array']);	
-	
-	
-	$new_arr = array();
-
-	for($y=0; $y<$count_rows; $y++)
+	if(isset($_POST['hidden_array']))
 	{
-		$total_row = $csv->getRow($y);
-		array_push($new_arr, $total_row);
-
-	}
+		$numIndex = count($_POST['hidden_array']);	
 	
+	
+		$new_arr = array();
 
-	if($_POST['hidden_array'] != '')
-	{
-		foreach($_POST['hidden_array'] as $value)
+		for($y=0; $y<$count_rows; $y++)
 		{
-
-
-			unset($new_arr[$value - 1]);
+			$total_row = $csv->getRow($y);
+			array_push($new_arr, $total_row);
 
 		}
+	
+
+		if($_POST['hidden_array'] != '')
+		{
+			foreach($_POST['hidden_array'] as $value)
+			{
+
+
+				unset($new_arr[$value - 1]);
+
+			}
+		}
+
+		print_r($new_arr);
 	}
 
-	print_r($new_arr);
+	
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
