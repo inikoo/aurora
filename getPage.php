@@ -90,10 +90,17 @@
 		<?php
 			}
 			else
-			{
+				if((isset($prev[$j]) == TRUE))
+				{
 		?>
 		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
-		<?php 	} 
+		<?php 		} 
+				else
+				{
+		?>
+		<option value="<?php echo $key;?>"><?php echo $value;?></option>
+		<?php
+				}
 
 		}?>
 		</select>
