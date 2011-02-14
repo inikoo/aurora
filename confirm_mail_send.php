@@ -81,7 +81,7 @@ $id = isset($_REQUEST['id'])?$_REQUEST['id']:'';
 		$row = mysql_fetch_array($res);
 	}
 
-
+$list_id = $row['Campaign Mailling List Id'];
 $plain = $row['Campaign Mailling Plain Text Click'];
 $click = $row['Campaign Mailling Track Click'];
 $open = $row['Campaign Mailling Track Open'];
@@ -120,6 +120,8 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+$smarty->assign('list_id',$list_id);
 
 $smarty->assign('list_name',$row['Campaign Mailling List Name']);
 

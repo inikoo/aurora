@@ -68,21 +68,29 @@ $js_files=array(
 }*/
 //$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
+$user_key = $_SESSION['user_key']; 
+
+
+
 $get_value = array();
 $rslt = '';
 
-$list_key = 'Email Campaign Mailing List Key';
-$list_name = 'Campaign Mailling List Name';
-$list_email = 'Campaign Mailling List Email';
-$recipient = 'Campaign Mailling List Recipients';
 
-	$query = "select * from `Campaign Mailling List` where 1";
+
+$list_key = 'Email Campaign Mailing List Key';
+$list_name = 'List Name';
+$list_email = 'Default Reply To Email';
+
+
+	$query = "select * from `Email Campaign Mailing List` WHERE `User Key` LIKE '$user_key'";
 	$res = mysql_query($query);
 	if(mysql_num_rows($res)>0)
 	{
 		while($print = mysql_fetch_assoc($res))
 		{
 			$get_value[] = $print;
+
+			
 		}
 	}
 	else
@@ -90,19 +98,26 @@ $recipient = 'Campaign Mailling List Recipients';
 		$rslt = 'No Result is found';
 	}
 
+
+//get the list id to edit
+$get_id = isset($_REQUEST['list_id'])?$_REQUEST['list_id']:'';
+
+
+
+
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Regular Campaign'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('value',$get_value);
 $smarty->assign('rslt',$rslt);
-
+$smarty->assign('get_id',$get_id);
 
 //assigning the database fields
 $smarty->assign('list_key',$list_key);
 $smarty->assign('list_name',$list_name);
 $smarty->assign('list_email',$list_email);
-$smarty->assign('recipient',$recipient);
+
 
 
 

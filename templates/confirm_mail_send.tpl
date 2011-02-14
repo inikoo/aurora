@@ -21,19 +21,19 @@ tr:hover{
 <br><br><hr style="color:#DDDDDD"><br><br><br>
 <table width=100%  border="0" cellpadding="10" cellspacing="10">
    <tr height="60px">
-	<td><b>List : </b><br><br>Your segment of list "{$list_name}" is empty ({$recipients} recipients). <span style="float:right;">Edit</span></td>
+	<td><b>List : </b><br><br>Your segment of list "{$list_name}" is empty ({$recipients} recipients). <a href="regular_campaign.php?list_id={$list_id}"><span style="float:right;">Edit</span></a></td>
    </tr>
 
    <tr height="60px">
-	<td><b>Subject Line :</b> <br><br>"{$default_name}" <span style="float:right;">Edit</span></td>
+	<td><b>Subject Line :</b> <br><br>"{$default_name}" <a href="campaign_use_segment.php?getID={$list_id}"><span style="float:right;">Edit</span></a></td>
    </tr>
 
     <tr height="60px">
-	<td><b>Replies :</b> <br><br>  All replies will go to Paromita Guharoy ({$email}).<span style="float:right;">Edit</span> </td>
+	<td><b>Replies :</b> <br><br>  All replies will go to Paromita Guharoy ({$email}).<a href="campaign_use_segment.php?getID={$list_id}"><span style="float:right;">Edit</span></a> </td>
    </tr>
 
  <tr height="60px">
-	<td><b>Tracking :</b> <br><br>  {$track} <span style="float:right;">Edit</span> </td>
+	<td><b>Tracking :</b> <br><br>  {$track} <a href="campaign_use_segment.php?trackID={$list_id}"<span style="float:right;">Edit</span></a></td>
    </tr>
 
    <tr height="60px">
