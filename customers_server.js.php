@@ -1,16 +1,11 @@
 <?php
 include_once('common.php');
 ?>
-    var Event = YAHOO.util.Event;
+var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
 
-function change_plot(o){
-  
-    
-    Dom.get('the_plot').src = 'plot.php?tipo='+o.id;
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-plot&value='+o.id);
-}
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -25,14 +20,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Store Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"contacts", label:"<?php echo _('Contacts')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"new_contacts", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"customers", label:"<?php echo _('Customers')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"active", label:"<?php echo _('Active')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"new", label:"<?php echo _('New')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"lost", label:"<?php echo _('Lost')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"contacts", label:"<?php echo _('Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"new_contacts", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"customers", label:"<?php echo _('Customers')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"active", label:"<?php echo _('Active')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"new", label:"<?php echo _('New')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"lost", label:"<?php echo _('Lost')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 
 					 ];
 	    //?tipo=customers&tid=0"
@@ -95,7 +90,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table0.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['stores']['customers']['view']?>';
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['stores']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['stores']['customers']['f_value']?>'};
 
@@ -139,123 +134,17 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers_per_
 
 
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
-
-
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
 
 
 
 
-
-  var change_view=function(e){
-      var tipo=this.id;
-      var table=tables['table0'];
-      old_view=table.view;
-      
-      Dom.get('general').className='';
-      Dom.get('contact').className='';
-      Dom.get('address').className='';
-      Dom.get('ship_to_address').className='';
-      Dom.get('balance').className='';
-      Dom.get('rank').className='';
-
-      Dom.get(tipo).className='selected';
-       table.hideColumn('location');
-     table.hideColumn('last_order');
-       table.hideColumn('orders');
-
-       table.hideColumn('email');
-       table.hideColumn('telephone');
-      table.hideColumn('contact_name');
-      table.hideColumn('name');
-      table.hideColumn('address');
-      table.hideColumn('town');
-      table.hideColumn('postcode');
-      table.hideColumn('region');
-      table.hideColumn('country');
-      //      table.hideColumn('ship_address');
-      table.hideColumn('ship_town');
-      table.hideColumn('ship_postcode');
-      table.hideColumn('ship_region');
-      table.hideColumn('ship_country');
-      table.hideColumn('total_payments');
-      table.hideColumn('net_balance');
-      table.hideColumn('total_refunds');
-      table.hideColumn('total_profit');
-
-      table.hideColumn('balance');
-      table.hideColumn('top_orders');
-      table.hideColumn('top_invoices');
-      table.hideColumn('top_balance');
-      table.hideColumn('top_profits');
-
-
-
-      if(tipo=='general'){
-	  table.showColumn('name');
-	  table.showColumn('location');
-	  table.showColumn('last_order');
-	  table.showColumn('orders');
-	  table.showColumn('total_payments');
-	  Dom.get('general').className='selected';
-      }else if(tipo=='contact'){
-	  table.showColumn('name');
-	  table.showColumn('contact_name');
-	  table.showColumn('email');
-	  table.showColumn('telephone');
-
-      }else if(tipo=='address'){
-	  table.showColumn('address');
-	  table.showColumn('town');
-	  table.showColumn('postcode');
-	  table.showColumn('region');
-	  table.showColumn('country');
-	  Dom.get('address').className='selected';
-      }else if(tipo=='ship_to_address'){
-	//	  table.showColumn('ship_address');
-	  table.showColumn('ship_town');
-	  table.showColumn('ship_postcode');
-	  table.showColumn('ship_region');
-	  table.showColumn('ship_country');
-
-      }else if(tipo=='balance'){
-	     table.showColumn('name');
-	  table.showColumn('net_balance');
-	  table.showColumn('total_refunds');
-	  table.showColumn('total_payments');
-	  table.showColumn('total_profit');
-
-	  table.showColumn('balance');
-
-      }else if(tipo=='rank'){
-	     table.showColumn('name');
-	  table.showColumn('top_orders');
-	  table.showColumn('top_invoices');
-	  table.showColumn('top_balance');
-	  table.showColumn('top_profits');
-
-      }
-
-
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-view&value='+escape(tipo));
-  }
+  
 
 
 
 YAHOO.util.Event.addListener('but_show_details', "click",show_details,'customers');
-var ids=['general','contact','address','ship_to_address','balance','rank'];
-YAHOO.util.Event.addListener(ids, "click",change_view);
+//var ids=['general','contact','address','ship_to_address','balance','rank'];
+//YAHOO.util.Event.addListener(ids, "click",change_view);
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 
 var search_data={tipo:'customer_name',container:'customer'};
@@ -267,16 +156,17 @@ Event.addListener('customer_search', "keydown", submit_search_on_enter,search_da
 
 YAHOO.util.Event.onDOMReady(init);
 
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
+
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
-
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
+    

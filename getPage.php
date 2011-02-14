@@ -67,6 +67,7 @@
 		
 		<?php //echo $h[$j]; 	$leftColumnArray = $h; ?>
 		</td>-->
+
 		<td align=center id="middle_column">
 		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>">
 		<?php 

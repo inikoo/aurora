@@ -240,7 +240,7 @@ function add_shelf(){
 	  Dom.get('shelf_type_dimensions_view').className='selected';
 	  Dom.get('shelf_type_general_view').className='';
       }
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=shelf_types-view&value='+escape(tipo));
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=shelf_types-view&value='+escape(tipo),{});
   }
 
 
@@ -325,6 +325,8 @@ function reset_shelf_type_data(){
     Dom.get('shelf_type_weight').value=Dom.get('shelf_type_weight').getAttribute('ovalue');
     Dom.get('shelf_type_volume').value=Dom.get('shelf_type_volume').getAttribute('ovalue');
     Dom.get('shelf_type_type').value=Dom.get('shelf_type_type').getAttribute('ovalue');
+    
+    
     swap_this_radio(Dom.get('radio_shelf_type_'+Dom.get('shelf_type_type').getAttribute('ovalue')))
 
 }

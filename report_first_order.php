@@ -33,7 +33,6 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'calendar_common.js.php',
 		
 		'report_first_order.js.php',
         'reports_calendar.js.php',

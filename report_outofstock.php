@@ -25,7 +25,6 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/calendar_common.js.php',
 
 		'js/report_outofstock.js.php'
 		);

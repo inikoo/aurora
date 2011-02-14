@@ -31,13 +31,9 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'calendar_common.js.php',
-		
 		'report_sales_with_no_tax.js.php',
         'reports_calendar.js.php',
-
 		'js/dropdown.js'
-
 		);
 
 $root_title=_('Sales Report');

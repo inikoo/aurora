@@ -24,6 +24,7 @@ mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
 
 $scope='contact';
+
 if(isset($_REQUEST['scope']) and preg_match('/supplier|customer/',$_REQUEST['scope']))
     $scope=$_REQUEST['scope'];
 $action_after_create=$_SESSION['state'][$scope]['action_after_create'];
@@ -202,9 +203,10 @@ var save_new_contact=function(e){
 
     get_data();
 
-    
+ scope='staff';   
     var json_value = YAHOO.lang.JSON.stringify(contact_data); 
-    var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
+  //  var request='ar_edit_contacts.php?tipo=new_'+scope+'&subject=Staff&subject_key='+'&values=' + encodeURIComponent(json_value); 
+var request='ar_edit_contacts.php?tipo=new_staff'+'&values=' + encodeURIComponent(json_value); 
     alert(request);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -216,7 +218,8 @@ var save_new_contact=function(e){
 
 
 		    }else{
-		        window.location=scope+'.php?id='+r.contact_key;
+		       // window.location=scope+'.php?id='+r.contact_key;
+			window.location=scope+'.php?id='+r.staff_key;
 		    }
 		    
 		}else if(r.action=='error'){

@@ -358,6 +358,16 @@ function radio_changed(o) {
 }
 
 
+function checkbox_changed(o){
+
+if(    Dom.hasClass(o,'selected')){
+    Dom.removeClass(o,'selected');
+}else{
+    Dom.addClass(o,'selected');
+}
+
+}
+
 function validate_scope(branch) {
     if (validate_scope_metadata[branch]['type']=='new') {
         validate_scope_new(branch)

@@ -62,7 +62,6 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'calendar_common.js.php',
 		'js/dropdown.js',
 		'js/search.js',
 		'warehouse.js.php'

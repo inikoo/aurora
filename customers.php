@@ -49,7 +49,10 @@ if($modify){
    $general_options_list[]=array('tipo'=>'js','id'=>'new_customer','label'=>_('Add Customer'));
 }
   
-   $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Advanced Search'));
+
+     $general_options_list[]=array('tipo'=>'js','id'=>'export_csv0','label'=>_('Export (CSV)'));
+
+//   $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Advanced Search'));
    $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php','label'=>_('Customers Lists'));
  $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
 
@@ -61,16 +64,7 @@ $smarty->assign('search_scope','customers');
 
  
 
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'build/assets/skins/sam/skin.css',
-		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css'
-		 );
+
 		 
 		 	 
 		 $css_files=array(
@@ -78,10 +72,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
-		
 		 'common.css',
 		 'button.css',
 		 'container.css',
@@ -101,7 +92,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'js/edit_common.js',
-                'js/csv_common.js',
+        'js/csv_common.js',
+        'common_customers.js.php',
 		'customers.js.php',
 		'js/import_csv.js'
 		);
