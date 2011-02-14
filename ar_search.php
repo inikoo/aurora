@@ -20,7 +20,13 @@ case('all'):
     $data['user']=$user;
     search_full_text($data);
     break;
-
+case('search'):
+    $data=prepare_values($_REQUEST,array(
+                             'q'=>array('type'=>'string')
+                         ));
+    $data['user']=$user;
+    search($data);
+    break;
 case('products'):
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
@@ -88,6 +94,152 @@ default:
     $response=array('state'=>404,'resp'=>"Operation not found $tipo");
     echo json_encode($response);
 
+}
+
+
+function search($data){
+
+
+$q=$data['q'];
+      $conf=$_SESSION['state']['search']['table'];
+     
+      $conf_table='search';
+
+
+      if(isset( $_REQUEST['sf'])){
+	$start_from=$_REQUEST['sf'];
+	
+	
+      }else
+	$start_from=$conf['sf'];
+      if(isset( $_REQUEST['nr'])){
+	$number_results=$_REQUEST['nr'];
+	if($start_from>0){
+	  $page=floor($start_from/$number_results);
+	  $start_from=$start_from-$page;
+	}
+	
+      }else
+	$number_results=$conf['nr'];
+      if(isset( $_REQUEST['o']))
+	$order=$_REQUEST['o'];
+      else
+	$order=$conf['order'];
+      if(isset( $_REQUEST['od']))
+	$order_dir=$_REQUEST['od'];
+      else
+	$order_dir=$conf['order_dir'];
+      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      if(isset( $_REQUEST['where']))
+	 
+      if(isset( $_REQUEST['f_field']))
+	$f_field=$_REQUEST['f_field'];
+      else
+	$f_field=$conf['f_field'];
+      
+      if(isset( $_REQUEST['f_value']))
+	$f_value=$_REQUEST['f_value'];
+      else
+	$f_value=$conf['f_value'];
+      
+      
+      if(isset( $_REQUEST['tableid']))
+	$tableid=$_REQUEST['tableid'];
+      else
+    $tableid=0;
+      
+      
+    $where='';
+
+      
+   
+      
+      $_SESSION['state'][$conf_table]['table']['order']=$order;
+      $_SESSION['state'][$conf_table]['table']['order_dir']=$order_direction;
+      $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+      $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+      $_SESSION['state'][$conf_table]['table']['where']=$where;
+      $_SESSION['state'][$conf_table]['table']['f_field']=$order;
+      $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+      
+   
+      $filter_msg='';
+      $wheref='';
+     
+     
+$sql=sprintf("select count(*) as total  from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) ",addslashes($q),addslashes($q));;
+
+     
+   
+   $res = mysql_query($sql); 
+   if($row=mysql_fetch_array($res)) {
+     $total=$row['total'];
+   }
+   mysql_free_result($res);
+//   if($wheref==''){
+     $filtered=0; $total_records=$total;
+ //  }
+   
+   
+ $rtext=$total_records." ".ngettext('match','matches',$total_records);
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+  else
+    $rtext_rpp=' ('._('Showing all').')';
+   $_dir=$order_direction;
+   $_order=$order;
+   
+        $sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
+
+   // print $sql;
+   $res = mysql_query($sql);
+   $adata=array();
+   
+
+   
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+   
+   switch ($row['Subject']) {
+       case 'Product':
+           $subject=_('Product');
+        $result_name=sprintf('<a href="product.php?id=%d">%s</a>',$row['Subject Key'],$row['Search Result Name']);
+           break;
+       default:
+              $subject=$row['Subject'];
+$result_name=$row['Search Result Name'];
+           break;
+   }
+   
+
+   
+   
+$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+    $adata[]=array(
+        'score'=>$row['score'],
+         'store'=>$store,
+            'subject'=>$subject,
+                        'result'=>$result_name,
+
+		   'description'=>$row['Search Result Description']
+		  
+		   );
+  }
+  mysql_free_result($res);
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		   );
+   echo json_encode($response);
 }
 
 function search_departments($data) {

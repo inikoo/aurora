@@ -6,29 +6,29 @@ $store_code='UK';
 
 $page_store_secton_data['Information']=array(
 'Page Store Section Content Data'=>array(
-'style'=>array('background-image'=>'sites_data/left_nav.png')
+'style'=>array('background-image'=>'site_gb_data/left_nav.png')
 ),
 'Page Store Section Header Data'=>array(
-'style'=>array('background-image'=>'sites_data/header_home.gb.jpg','background-color'=>'#f99013')
+'style'=>array('background-image'=>'site_gb_data/header_home.gb.jpg','background-color'=>'#f99013')
 )
 );
 
 $page_store_secton_data['Registration']=array(
 'Page Store Section Content Data'=>array(
-'style'=>array('background-image'=>'sites_data/left_nav.png','background-repeat'=>'no-repeat')
+'style'=>array('background-image'=>'site_gb_data/left_nav.png','background-repeat'=>'no-repeat')
 ),
 'Page Store Section Header Data'=>array(
-'style'=>array('background-image'=>'sites_data/header_home.gb.jpg','background-color'=>'#f99013')
+'style'=>array('background-image'=>'site_gb_data/header_home.gb.jpg','background-color'=>'#f99013')
 )
 );
 
 
 $page_store_secton_data['Department Catalogue']=array(
 'Page Store Section Content Data'=>array(
-'style'=>array('background-image'=>'sites_data/left_nav.png')
+'style'=>array('background-image'=>'site_gb_data/left_nav.png')
 ),
 'Page Store Section Header Data'=>array(
-'style'=>array('background-image'=>'sites_data/header_home.gb.jpg','background-color'=>'#f99013')
+'style'=>array('background-image'=>'site_gb_data/header_home.gb.jpg','background-color'=>'#f99013')
 )
 );
 
@@ -36,7 +36,7 @@ $page_store_secton_data['Family Catalogue']=array(
 
 'Page Store Section Header Data'=>array(
 'style'=>array(
-                'background-image'=>'sites_data/header_background.jpg',
+                'background-image'=>'site_gb_data/header_background.jpg',
                 'background-color'=>'#f29416',
                 'background-repeat'=>'no-repeat',
                 'border-bottom'=>'2px solid black'
@@ -59,11 +59,11 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>'Europe\'s Biggest Online Giftware Wholesaler'
 		  ,'Page Store Slogan'=>'Exotic & Esoteric'
 		  ,'Page Store Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
-		  ,'Page Store Header Data'=>array('style'=>array('background-image'=>'sites_data/header_home.gb.jpg','background-color'=>'#f99013'))
+		  ,'Page Store Header Data'=>array('style'=>array('background-image'=>'site_gb_data/header_home.gb.jpg','background-color'=>'#f99013'))
 		  ,'Page Store Content Data'=>array(
-		            'style'=>array('background-image'=>'sites_data/left_nav.png'),
+		            'style'=>array('background-image'=>'site_gb_data/left_nav.png'),
 		            'Showcases'=>array(
-		                                array('type'=>'banner','url'=>'page.php?name=romance','src'=>'sites_data/love_time.gif'),
+		                                array('type'=>'banner','url'=>'page.php?name=romance','src'=>'site_gb_data/love_time.gif'),
 		                                array(
 		                                'type'=>'div',
 		                                'innerHtml'=>'<div style="width:300px">
@@ -79,7 +79,7 @@ $page_data[$store_code]=array(
 		                                'font-size'=>'10px',
 		                                'border'=>'1px solid #ccc',
 		                                'margin'=>'5px 20px',
-		                                'background-image'=>'sites_data/mass-11.png',
+		                                'background-image'=>'site_gb_data/mass-11.png',
 		                                'background-repeat'=>'no-repeat',
 		                                'background-position'=>'100% 80px',
 		                                'padding-right'=>'60px'
@@ -87,7 +87,7 @@ $page_data[$store_code]=array(
 		                                
 		                                )
 		            ),
-          		                                array('type'=>'banner','url'=>'page.php?name=twiter','src'=>'sites_data/follow_aw.gif')
+          		                                array('type'=>'banner','url'=>'page.php?name=twiter','src'=>'site_gb_data/follow_aw.gif')
 
           )
 )
@@ -239,7 +239,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You know where we are'
 		  ,'Page Store Resume'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_contact.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_contact.html')
 
 		  )
 
@@ -255,7 +255,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You can visit us!'
 		  ,'Page Store Resume'=>'Why not visit us... we are always delighted to see our customers.'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_showroom.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_showroom.html')
 		  
 		  )	     
  ,array(
@@ -270,7 +270,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Shipping Worldwide'
 		  ,'Page Store Resume'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_export_guide.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_export_guide.html')
 		  )
 
 	      ,array(
@@ -285,7 +285,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'The small print'
 		  ,'Page Store Resume'=>''
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_terms_and_conditions.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_terms_and_conditions.html')
 
 		     ),
 	       array(
@@ -301,7 +301,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Slogan'=>'Not is everything about money'
 		  ,'Page Store Resume'=>'These are tricky subjects, but not one we choose to ignore as a company. On fact we take this very seriously'
 		  ,'Product Presentation Type'=>'Template'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_ethics.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_ethics.html')
 		 ),
 	    array(
 		  'Page Code'=>'faq'
@@ -315,7 +315,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>'(with answers)'
 		  ,'Page Store Slogan'=>'You ask we aswer'
 		  ,'Page Store Resume'=>'Here we recopilate the most common queries'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_faq.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_faq.html')
 		  ),
 	    array(
 		  'Page Code'=>'fob'
@@ -329,7 +329,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Just a little thank you'
 		  ,'Page Store Resume'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value). '
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_first_order_bonus.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_first_order_bonus.html')
 		  ),
 
 	    array(
@@ -344,7 +344,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Incentives for aur regular customers'
 		  ,'Page Store Resume'=>'Order within 30 days to receive a Discount Upgrade '
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_gold.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_gold.html')
 		  ),
  
 	    array(
@@ -359,7 +359,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'For that bargarian hunters'
 		  ,'Page Store Resume'=>'Sorry only one outer per customer.'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_ten_pence.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_ten_pence.html')
 		  ),
 	    array(
 		  'Page Code'=>'megaclearance'
@@ -373,7 +373,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"An offer you can't resists "
 		  ,'Page Store Resume'=>'Every week for just a week (or until it is gone) we clear out one product line'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_megaclearance.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_megaclearance.html')
 		  ),
 	    array(
 		  'Page Code'=>'bogof'
@@ -387,7 +387,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"Say BOGOFF to the credit crunch"
 		  ,'Page Store Resume'=>'No-one does a BOGOF quite like us. Offers available while stocks last. Great deals you can pass on to your customers - or simply give your profit margins a bit of a boost.'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_bogof.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_bogof.html')
 		  ),
 	    array(
 		  'Page Code'=>'special_deals'
@@ -401,7 +401,7 @@ $page_data[$store_code]=array(
 		   ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"Special Deals"
 		  ,'Page Store Resume'=>'Special Deals'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_special_deals.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_special_deals.html')
 		  ),
 	     array(
 		  'Page Code'=>'new_products'
@@ -415,7 +415,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Recent Additions'
 		  ,'Page Store Resume'=>'Recent Additions'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_new_products.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_new_products.html')
 		  ),
 	     array(
 		  'Page Code'=>'new_wsl_products'
@@ -429,7 +429,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Recent WSL Additions'
 		  ,'Page Store Resume'=>'Recent WSL Additions'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_new_wsl_products.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_new_wsl_products.html')
 		  ),
 	    array(
 		  'Page Code'=>'best_sellers'
@@ -443,7 +443,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Current Fast Moving Lines'
 		  ,'Page Store Resume'=>'Best Sellers'
-		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_best_sellers.html')
+		  ,'Product Presentation Template Data'=>file_get_contents('site_gb_data/gb_best_sellers.html')
 		  ),
 	       array(
 		  'Page Code'=>'newsletter'
@@ -468,11 +468,11 @@ $store_data[$store_code]=array(
 			      ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
 			      ,'site_data'=>array(
 			        'Site Name'=>'Ancient Wisdom',
-			        'Site Logo Data'=>array('image_filename'=>'sites_data/logo.gb.png'),
+			        'Site Logo Data'=>array('image_filename'=>'site_gb_data/logo.gb.png'),
 			        'Registration Type'=>'Steps',
 			        'Site Footer Data'=>array(
                     'style'=>array(
-                        'background-image'=>'sites_data/footer_background.jpg',
+                        'background-image'=>'site_gb_data/footer_background.jpg',
                        'background-color'=>'#fff',
                        'background-repeat'=>'no-repeat',
                         'color'=>'#fff',
