@@ -22,7 +22,7 @@
 
 <div style="clear:left;margin:2px 0px">
 
-  <div style="background-color:#f8d285;height:60px;">
+  <div style="background-color:#E6DDD5;height:60px;">
   <div class="campaign_head"></div>
   <table  style="margin-top:25px;" cellspacing="10" width="445">
   	<tr>
@@ -43,9 +43,9 @@
 <div class="campaign_create"><ul class="hover-list"><li><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a>
  <ul>
        <li>
-<a href="regular_campaign.php">regular ol' campaign</a></li> <li><a href="marketing_campaign_builder.php">plain-text campaign</a></li> 
+<a href="regular_campaign.php">regular ol' campaign</a></li>  
 <li><a href="">A/B split campaign</a></li> 
-<li><a href="">RSS-driven campaign</a></li> </ul> </li> </ul> 
+ </ul> </li> </ul> 
 
 <div>
 
