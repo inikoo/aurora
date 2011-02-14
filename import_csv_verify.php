@@ -46,6 +46,8 @@ $js_files=array(
 
 
 	
+	//print_r($_POST['assign_field']);
+	
 
 if(!isset($_REQUEST['tipo'])){
 exit("to do a page where the user can choose the correct options");

@@ -17,17 +17,16 @@ google.load("jquery", "1");
     <div class="campaign_cancel"> <a href="#">cancel &amp; exit</a> </div>
 </div>
 <br><br><hr style="color:#DDDDDD"><br><br><br>
-
+<div><span style="font-size:18px;padding:5px;">Untitled</span> <a style="float:right;" href="marketing_campaign_builder_setup.php"><img src="art/next-bottom.gif"</a> </div>
+<fieldset class="field_set"> <legend class="legend_part">which list would you like to send this campaign to?</legend>
 	<table border=0 width="900px">
 	<form action="campaign_use_segment.php" method="post">
 	<tr>	
-		<td colspan=2>which list would you like to send this campaign to? <span style="padding-left:480px;">
-	<a href="#"><img src="art/next-bottom.gif"></a></span></td>
-		</tr>
 		
 		{section name=value loop=$value}
 		<tr bgcolor="#f1ede0">
-		<td width="600">
+		<td style="width:600px;">
+		
 		<div id="container">
 		{literal}
 		<script type="text/javascript">
@@ -42,33 +41,34 @@ google.load("jquery", "1");
 		{/literal}
 		<input type="radio" name="rdb" id="rdb" value="{$value[value].$list_key}"> &nbsp; 
 		{$value[value].$list_name} ({$value[value].$recipient} recipients) 
-		<div id="slidingDiv{$value[value].$list_key}" style="display: none; height:150px; padding:20px;">
-		
+		<span style="float:right;padding-right:10px;padding-bottom:10px;">
+                <img src="art/icons/bullet_go.png" />
+		<a href="#" onClick="showSlidingDiv({$value[value].$list_key}); return false;">
+		<span style="color:#7080b1">Send to Segment</span> </a>&nbsp;&nbsp;&nbsp;
+		<input type="submit" name="entire_list" value="Send to Entire List"  style="background-color:#7080b1; color:#fff;"></span>
+		<br>
+		<div id="slidingDiv{$value[value].$list_key}" style="display: none; min-height:150px;width:880px; padding:20px;background-color:#ffffff;padding:15px;">
+		<span style="float:left;width:644px;min-height:100px;">
 			
 			<input type="hidden" value="0" id="theValue" />
 		<p><a href="javascript:;" onclick="addEvent({$value[value].$list_key});"><span style="font-size:10px; color:#CC66OD;">Add Condition</span></a></p>
 			<div id="myDiv{$value[value].$list_key}" style="font-size:10px; color:#CC66OD;"> </div>
 			
 			
+		</span>
 		
-		<br>
-		<br>
-		
-		
-		</div>
-		</div>
-		</td>
-		<td>
-		<img src="art/icons/bullet_go.png" />
-		<a href="#" onClick="showSlidingDiv({$value[value].$list_key}); return false;">
-		<span style="color:#7080b1">Send to Segment</span> </a>&nbsp;&nbsp;&nbsp;
-		<input type="submit" name="entire_list" value="Send to Entire List"  style="background-color:#7080b1; color:#fff">
-		
-	
-		
-		<span style="float:right"><br><br><a href="campaign_use_segment.php?getID={$value[value].$list_key}" name="use_segment"><img src="art/button1.png" /></a>&nbsp;&nbsp;<a href="" name="cancel"><img src="art/button2.png" /></a></span>
+		   <span style="float:right">
+               <div class="segment-count"><span style="margin:auto;">Campaign will go to<br></span><b style="margin:60px;font-size:16px; color:#FF0000;">0</b>
+			<span style="margin:20px;">in this segment</span>
 
+		</div>
+
+<a href="campaign_use_segment.php?getID={$value[value].$list_key}" name="use_segment"><img src="art/button1.png" /></a>&nbsp;&nbsp;<a href="" name="cancel"><img src="art/button2.png" /></a></span>
+		
+		</div>
+		</div>
 		</td>
+	
 		</tr>
 			
 		</div>
@@ -76,10 +76,10 @@ google.load("jquery", "1");
 		<tr>
 		<td>{$rslt}</td>
 		</tr>
-		{/section}
+		{/section}</div>
 		
 </form>	
-	</table>	
+	</table></fieldset>	
 	</div>
 </div>
 </div>
