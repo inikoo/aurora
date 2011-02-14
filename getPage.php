@@ -19,8 +19,7 @@
 	if(isset($_REQUEST['prevArray'])) { $prev = explode(',',$_REQUEST['prevArray']); }
 	
 	
-	print_r($tt);
-	print_r($prev);
+	
 
 ?>
 <table class="recordList">
