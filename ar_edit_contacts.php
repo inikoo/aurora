@@ -1989,9 +1989,7 @@ function new_contact($data) {
     switch ($data['subject']) {
     case('Company'):
         $company=new Company($data['subject_key']);
-
         $contact=new Contact('find create',$contact_data);
-
         $company->create_contact_bridge($contact->id);
         break;
     default:
