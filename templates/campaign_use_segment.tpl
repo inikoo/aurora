@@ -10,7 +10,7 @@
 </div>
 <br><br><hr style="color:#DDDDDD">
 
-<div><span style="font-size:18px;padding:5px;">Blank Subject</span> <div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a> <a href="confirm_mail_send.php?id={$list_id}"> <input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div> </div>
+<div><span style="font-size:18px;padding:5px;">Blank Subject</span> <div id="back-next-bottom"> <a href="regular_campaign.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a> <a href="confirm_mail_send.php?id={$list_id}"> <input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div> </div>
 <div style="height:420px;">
 <div style="float:left;">
 <fieldset class="field_set"> <legend class="legend_part">campaign info</legend>
@@ -51,11 +51,11 @@
 <div class="group-label">Email tracking</div>
 
 <form action ="" method="post">
-<input type="checkbox" name="open" id="open" value="open" style="-moz-user-select: none;">
+<input type="checkbox" name="open" id="open" value="open" {if $open==1 } checked="true" {/if} style="-moz-user-select: none;">
 	<label class="inline-label" for="track opens">track opens</label><br>
-<input type="checkbox" name="click" id="click" value="click" style="-moz-user-select: none;">
+<input type="checkbox" name="click" id="click" value="click" {if $click==1 } checked="true" {/if} style="-moz-user-select: none;">
 	<label class="inline-label" for="track opens">track click</label><br>
-<input type="checkbox" name="plain" id="plain" value="plain" style="-moz-user-select: none;" >
+<input type="checkbox" name="plain" id="plain" value="plain" {if $text_click==1 } checked="true" {/if} style="-moz-user-select: none;" >
 	<label class="inline-label" for="track opens">track plain-text clicks</label>
 </form>
 </div>
@@ -71,7 +71,7 @@
 
 </div>
 
-<div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <a href="#" onclick="trackvalue('{$list_id}')"><input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div><br>
+<div id="back-next-bottom"> <a href="regular_campaign.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <a href="#" onclick="trackvalue('{$list_id}')"><input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div><br>
 
 </div>
 	</div>

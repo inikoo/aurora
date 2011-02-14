@@ -88,4 +88,8 @@ xmlhttp.send();
 }
 
 
-
+function getRadioValue(mergeID)
+{
+	alert(mergeID):
+	alert(document.getElementById('rdb_'+mergeID).value);
+}

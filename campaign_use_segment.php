@@ -63,19 +63,39 @@ $js_files=array(
 
 
 
-$getID = $_GET['getID']; 
+$getID = isset($_REQUEST['getID'])?$_REQUEST['getID']:''; 
 
 
-$sql = "select `Campaign Mailling List Id`,`Campaign Mailling List Name`,`Campaign Mailling List Default Name`,`Campaign Mailling List Email` from `Campaign Mailling List` where `Campaign Mailling List Id` = '".$getID."'";
+$trackID = isset($_GET['trackID'])?$_GET['trackID']:'0';
+
+	if($trackID!=0)
+	{
+	
+	$sqlTrack = "select `Campaign Mailling List Id`,`Campaign Mailling Track Open`,`Campaign Mailling Track Click`,`Campaign Mailling Plain Text Click` from `Email Campaign Mailling List` where `Email Campaign Mailling List Key` = '".$trackID."'";
+		$ressqlTrack = mysql_query($sqlTrack);
+		$rowsqlTrack = mysql_fetch_assoc($ressqlTrack);
+
+	//tracking 
+	$smarty->assign('open',$rowsqlTrack['Campaign Mailling Track Open']);
+	$smarty->assign('click',$rowsqlTrack['Campaign Mailling Track Click']);
+	$smarty->assign('text_click',$rowsqlTrack['Campaign Mailling Plain Text Click']);
+
+		
+	}
+
+
+$sql = "select `Email Campaign Mailing List Key`,`List Name`,`Default Reply To Email`,`Default From Name` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key` = '".$getID."'";
 		$res = mysql_query($sql);
 		$row = mysql_fetch_assoc($res);
 	
 	//echo $sql; die();
 
-	$smarty->assign('list_id',$row['Campaign Mailling List Id']);
-	$smarty->assign('subject',$row['Campaign Mailling List Name']);
-	$smarty->assign('email',$row['Campaign Mailling List Email']);
-	$smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
+	$smarty->assign('list_id',$row['Email Campaign Mailling List Key']);
+	$smarty->assign('subject',$row['List Name']);
+	$smarty->assign('default_name',$row['Default From Name']);
+	$smarty->assign('email',$row['Default Reply To Email']);
+	
+	//$smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
 
 
 

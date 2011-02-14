@@ -93,7 +93,7 @@ if(isset($_POST['save_list'])){ // adding  new list
   $sql = "INSERT INTO `Email Campaign Mailing List` (`User Key`, `List Name` ,`Default From Name` ,`Default Reply To Email` ,`Default Subject` ,`Permission Reminder List` ,`Reminder Text` ,`People Subscribe` ,`People Unsubscribe` ,`Pick Email Format` ,`Activate Social Pro`)VALUES ('$user_key', '$list_name', '$default_from_name', '$default_reply_to_email ', '$default_subject ', '$permission_reminder_list', '$reminder_text', '$people_subscribe', '$people_unsubscribe', '$pick_email_format', '$activate_social_pro');";
 	
   mysql_query($sql); // new listed added
-
+	
 }
 
 /* CREATE GROUP */

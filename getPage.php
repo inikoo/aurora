@@ -70,12 +70,13 @@
 		<td align=center id="middle_column">
 		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>">
 		<?php 
+			$selectBox = array();
 			$selectBox = array(0=>'Ignore',1=>'Contact Name',2=>'Name',3=>'Type',4=>'Company Name',5=>'Email',6=>'Mobile',7=>'Telephone',8=>'FAX',9=>'Address',10=>'Address Line1',11=>'Address Line2',12=>'Address Line3',13=>'Town',14=>'Postal Code',15=>'Country Name',16=>'First Division',17=>'Second Division',18=>'Tax Number');
 
 		foreach($selectBox as $key=>$value) { ?>
 
 		   
-			<option value="<?php echo $key;?>" <?php if($key==$tt{$j} || $key==$prev{$j}) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
+	<option value="<?php echo $key;?>" <?php if($key==$tt{$j} || $key==$prev{$j}) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
 		
 		<?php } ?>
 		</select>
