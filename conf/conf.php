@@ -3402,8 +3402,22 @@ $default_state=array(
                                                                   'order_dir'=>'',
                                                                   'where'=>''
                                                               )
-                             )
+                             ),
+ 'search'=>array(
 
+                                    'table'=>array(
+                                                'order'=>'score',
+                                                'order_dir'=>'desc',
+                                                'sf'=>0,
+                                                'nr'=>50,
+                                                'where'=>'',
+                                                'f_field'=>'subject',
+                                                'f_value'=>'','f_show'=>false,
+                                                'elements'=>array()
+                                            )
+
+
+                                )
 
                );
 
