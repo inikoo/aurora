@@ -19,9 +19,9 @@
 	if(isset($_REQUEST['prevArray'])) { $prev = explode(',',$_REQUEST['prevArray']); }
 	
 	
-	
 
 ?>
+
 <table class="recordList">
 		<!--<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
 		    Column
@@ -106,7 +106,7 @@
 		</td>
 		<td>
 			<!-- Value Output -->
-			<?php echo $r[$j]; ?>
+			<h4 id="changecolor_<?php echo $j; ?>" ><?php echo $r[$j]; ?></h4>
 		</td>
 	</tr>
 		<input type="hidden" name="values[]" value="<?php echo $r[$j]; ?>">
@@ -118,3 +118,4 @@
 	?>
 	
 </table>
+<div id="display"><?php print_r($_REQUEST['color_array']); ?></div>
