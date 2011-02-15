@@ -73,6 +73,8 @@ foreach($store_data as $store_code=>$xdata) {
         if ($image->id) {
             $site_data['Site Logo Data']['Image Key']=$image->id;
             $site_data['Site Logo Data']['Image Source']=preg_replace('/^sites./','',$image->data['Image URL']);
+        }else{
+             exit("image not found\n");
         }
     }
 
@@ -130,7 +132,7 @@ foreach($store_data as $store_code=>$xdata) {
 
 
 
-//print_r($site_data);
+print_r($site_data);
 //print_r($data);
 //exit;
 
