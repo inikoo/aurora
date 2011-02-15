@@ -30,6 +30,7 @@ function getPrev(v,limit) {
  var v;
 	
 	
+	
 	var prevArray = new Array();
 	
 	for(var l=0; l<limit; l++)
@@ -56,6 +57,7 @@ function getPrev(v,limit) {
 function getNext(v,num) {
  var v;
  
+
  var myArray = new Array();
 	
 	for(var k=0; k<num; k++)
@@ -81,22 +83,38 @@ function getNext(v,num) {
 
 function getIgnore(v) {
  var v;
-
+  
 	
-// alert(v);
+	//create an array to insert the color change id 
+	var colorArray = new Array();
+	
+		if(v>=0){	
+			//v = v+1;
+			colorArray.push(v);
+				
+		}
+	
+
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
            if (req.status==200) {
+		
 		//alert(req.responseText);
 		
-                document.getElementById('show').innerHTML=req.responseText; 
+		var splitter = req.responseText;
+
+		var splitterResult = splitter.split("@");
+
+		//alert(splitterResult[1]);
+		document.getElementById('display').innerHTML=splitterResult[0]; 
+                document.getElementById('show').innerHTML=splitterResult[1]; 
            }
       }
  };
 	v=v+1;
  //req.open("GET", "getPage.php?data="+r+"&val="+val); 
-   req.open("GET", "removeResult.php?v="+v); 
+   req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
