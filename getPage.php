@@ -118,4 +118,4 @@
 	?>
 	
 </table>
-<div id="display"><?php print_r($_REQUEST['color_array']); ?></div>
+<div id="display"><?php if(isset($_REQUEST['color_array'])) { print_r($_REQUEST['color_array']); } ?></div>
