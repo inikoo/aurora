@@ -13,7 +13,7 @@
 	foreach($colorArray as $kk=>$vv)
 	{
 		
-		echo '<span style="color:red;">You have ignored '.$vv.' number data</span>';
+		echo '<span style="color:red;"> '.($vv+1).' number data will be ignored</span>';
 		echo '<br>';
 		
 		
