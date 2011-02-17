@@ -46,8 +46,11 @@ $js_files=array(
 		'table_common.js.php',
 		'common_customers.js.php',
 		'new_customers_list.js.php',
-		'js/edit_common.js'
+		'js/edit_common.js',
+		'js/list_function.js'
 		);
+
+
 
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
