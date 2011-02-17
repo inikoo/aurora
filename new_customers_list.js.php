@@ -40,7 +40,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-
+		
 
 	     //START OF THE TABLE=========================================================================================================================
 
@@ -48,7 +48,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				        {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       	,{key:"contact_since", label:"<?php echo _('Since')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -104,6 +104,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"total_paymants","total_refunds","net_balance","total_profit","balance","contact_since"
 			 ,"top_orders","top_invoices","top_balance","top_profits"
 			 ]};
+
+		
+		
 
 	    //__You shouls not change anything from here
 
@@ -190,15 +193,16 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
 
     var jsonStr = YAHOO.lang.JSON.stringify(data);
 
+	
     var table=tables.table0;
     var datasource=tables.dataSource0;
-
+	
     var request='&sf=0&where=' +jsonStr;
-    
+   
 
     Dom.get('the_table').style.display='none';
     Dom.get('searching').style.display='';
-   //alert(request)
+    //alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
