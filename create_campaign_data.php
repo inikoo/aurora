@@ -25,7 +25,7 @@ include_once('common.php');
 
 		
 		//select the customer mail from customer dimension
-		$QueryString = "select * from `Customer List Customer Bridge` where `Customer List Key` = '".$customer_list_key."'";
+		/*$QueryString = "select * from `Customer List Customer Bridge` where `Customer List Key` = '".$customer_list_key."'";
 		$QueryResult = mysql_query($QueryString);
 		while($row = mysql_fetch_assoc($QueryString))
 		{
@@ -36,7 +36,7 @@ include_once('common.php');
 
 			$insert_mail_key = "insert into `Email Campaign Mailing List` (`Customer Key`, `Email Campaign Key`, `Email Key `)values('".$row['Customer Key']."', '".$campaign_id."', '".$insert['Customer Main Email Key']."')";
 			$r = mysql_query($insert_mail_key);
-		}
+		}*/
 			
 		
 		//insert list key 
