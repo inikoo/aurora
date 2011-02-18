@@ -815,8 +815,9 @@ function list_customer_list_static() {
 
 
 
-    //$sql="select count(Distinct CLCB.`Customer List Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
+   
 $sql="select count(C.`Customer Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
+//$sql="select count(CLCB.`Customer List Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
 //print "$sql<br/>\n";
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -997,6 +998,7 @@ $sql="select count(C.`Customer Key`) as total from $table  right join `Customer 
 $order='CLD.`Customer List Key`';
   //  $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref  order by $order DESC $order_direction limit $start_from,$number_results";
+
  //print $sql;
     $adata=array();
 
@@ -1037,7 +1039,7 @@ $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Tota
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];
-
+$customer_list_key=" <a href='new_campaign.php?customer_list_key=".$data['Customer List Key']."'>"."Create Campaign".'</a>';
         $adata[]=array(
                      'id'=>$id,
                      'name'=>$name,
@@ -1067,7 +1069,7 @@ $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Tota
                     
 
                      'customer_list_name'=>$data['Customer List Name'],
-                     'customer_list_key'=>$data['Customer List Key'],
+                     'customer_list_key'=>$customer_list_key,
                      'customer_list_creation_date'=>$data['Customer List Creation Date'],
                      
                      //'town'=>$data['Customer Main Town'],
