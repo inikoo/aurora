@@ -25,8 +25,7 @@ $smarty->assign('store',$store);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 'common.css',
 		 'container.css',
 		 'table.css'
@@ -40,14 +39,12 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-				$yui_path.'calendar/calendar-min.js',
-
+		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
 		'common_customers.js.php',
-		'new_customers_list.js.php',
+		'new_customers_list.js.php?store_id='.$store_id,
 		'js/edit_common.js',
-		'js/list_function.js'
 		);
 
 
