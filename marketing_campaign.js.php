@@ -24,8 +24,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"date", label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"store", label:"<?php echo _('Store')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"name", label:"<?php echo _('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   
-
 				     ];
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_marketing.php?tipo=email_campaigns");

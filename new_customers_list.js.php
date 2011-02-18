@@ -1,16 +1,51 @@
 <?php
 include_once('common.php');
 ?>
+
     var Dom   = YAHOO.util.Dom;
+ var store_id=<?php echo $_REQUEST['store_id'];?>;
 
 var searched=false;
+function get_search_list()
+{
+	var textValue;
+	var typeValue;
+	textValue = document.getElementById('list_name').value;
+	if(document.getElementById('static').checked == true)
+	{
+		typeValue = document.getElementById('static').value;	
+	}
+	if(document.getElementById('dynamic').checked == true)
+	{
+		typeValue = document.getElementById('dynamic').value;	
+	}	
+if (window.XMLHttpRequest)
+  {
+  xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
+  }
+else
+  {
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); // code for IE6, IE5
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+	//alert(xmlhttp.responseText);
+    document.getElementById("showDiv").innerHTML=xmlhttp.responseText;
+    }
+  }
+xmlhttp.open("GET","ar_customers_list.php?tipo=customers&textValue="+textValue+'&typeValue='+typeValue+'&store_id='+store_id,true);
+xmlhttp.send();	
+}
+
+
 
 var data_returned=function(){
 	 if(searched){
 	     Dom.get('searching').style.display='none';
 	     Dom.get('the_table').style.display='';
-	 }
-	 
+	 }	 
     }
     
     
@@ -217,6 +252,8 @@ var submit_search_on_enter=function(e,tipo){
 	 submit_search(e,tipo);
 };
 
+
+
 function init(){
 YAHOO.util.Event.addListener('submit_search', "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
@@ -278,3 +315,4 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
     });
+
