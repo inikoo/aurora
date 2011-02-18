@@ -100,7 +100,6 @@ case('customers'):
     list_customers();
     break;
 case('company_areas'):
-
     list_company_areas();
     break;
 case('assets_dispatched_to_customer'):
@@ -2205,7 +2204,7 @@ function list_customers() {
                      //'postcode'=>$data['Customer Main Postal Code'],
                      //'region'=>$data['Customer Main Country First Division'],
                      //'country'=>$data['Customer Main Country'],
-                     //		   'ship_address'=>$data['customer main ship to header'],
+                     //'ship_address'=>$data['customer main ship to header'],
                      //'ship_town'=>$data['Customer Main Delivery Address Town'],
                      //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
                      //'ship_region'=>$data['Customer Main Delivery Address Region'],
@@ -2213,10 +2212,16 @@ function list_customers() {
                      'activity'=>$data['Customer Type by Activity']
 
                  );
-    }
+///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))
+///{
+///	$list_name=$_REQUEST['textValue'];
+///	$list_type=$_REQUEST['typeValue'];
+///}
+///$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type);//
+   }
     mysql_free_result($result);
 
-
+///print_r($dataid);//
 
 
     $response=array('resultset'=>

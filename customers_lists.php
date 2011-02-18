@@ -32,7 +32,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-	'customers_lists.js.php'
+	        'customers_lists.js.php'
 		);
 
 $store_options=array();
