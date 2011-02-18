@@ -545,5 +545,16 @@ function star_rating($score,$max_score){
 
 }
 
-
+/** Run with defaults **/
+  $(document).ready(function(){
+    $(document).idleTimeout();
+  });
+/** With Optional Overrides **/
+  $(document).ready(function(){
+    $(document).idleTimeout({
+      inactivity: 30000,
+      noconfirm: 10000,
+      sessionAlive: 10000
+    });
+  });
 
