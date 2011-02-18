@@ -66,12 +66,13 @@ function save(tipo){
     switch(tipo){
     case('note'):
         var value=encodeURIComponent(Dom.get(tipo+"_input").value);
+        var note_type=encodeURIComponent(Dom.get("note_type").getAttribute('value'));
 
-	var request="ar_edit_contacts.php?tipo=edit_customer&key=Note&customer_key="+customer_key+"&newvalue="+value;
-	//alert(request);
+	var request="ar_edit_contacts.php?tipo=customer_add_note&customer_key="+customer_key+"&note="+value+"&details=&note_type="+note_type;
+
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //	alert(o.responseText);
+			//alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
@@ -216,12 +217,13 @@ Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
-				    //  ,{key:"objeto", label:"<?php echo _('Details')?>", className:"aleft",width:450,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
 				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:450}
+				      ,{key:"delete", label:"",width:16,sortable:false,action:'delete',object:'customer_history'}
+
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&tid="+tableid);
@@ -240,8 +242,7 @@ Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		//fields: ["note","date","time","handle","objeto" ]};
-                  fields: ["note","date","time","handle" ]};
+                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key"]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
@@ -268,10 +269,16 @@ Event.addListener(window, "load", function() {
 								  }
 								   
 								 );
-	    	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    	this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	        this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	        this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		    this.table0.filter={key:'<?php echo$_SESSION['state']['customer']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['table']['f_value']?>'};
+
+	        this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table0.subscribe("cellClickEvent", onCellClick);            
+
+
 
 	    //   Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 

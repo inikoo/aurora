@@ -169,6 +169,9 @@ $_map_act['tel']=12;
 $_map_act['fax']=13;
 $_map_act['mob']=15;
 $_map_act['source']=25;
+$_map_act['business_type']=14;
+$_map_act['where_find_us']=28;
+
 $_map_act['act']=38;
 $_map_act['tax_number']=87;
 $_map_act['real_tax_number']=88;

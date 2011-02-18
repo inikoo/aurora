@@ -2581,7 +2581,7 @@ $this->data['Customer Delivery Address Link']=='Contact';
         return $order_key;
     }
 
-    function add_note($note,$details='',$date=false) {
+    function add_note($note,$details='',$date=false,$deleteable='No') {
         $note=_trim($note);
         if ($note=='') {
             $this->msg=_('Empty note');
@@ -2633,28 +2633,25 @@ $this->data['Customer Delivery Address Link']=='Contact';
 
 
                       );
-
         if ($date!='')
             $history_data['Date']=$date;
 
-        $history_key=$this->add_customer_history($history_data,$force_save=true);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-        mysql_query($sql);
 
+
+
+     $this->add_customer_history($history_data,$force_save=true,$deleteable);
+
+       
         $this->updated=true;
         $this->new_value='';
     }
 
 
 
-    function add_customer_history($history_data,$force_save=true) {
+    function add_customer_history($history_data,$force_save=true,$deleteable='No') {
         $history_key=$this->add_history($history_data,$force_save=true);
-
-
-
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
-        mysql_query($sql);
-
+       $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
+       mysql_query($sql);
     }
 
 
