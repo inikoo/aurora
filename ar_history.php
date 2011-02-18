@@ -275,7 +275,7 @@ function list_customer_history() {
 
 
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-    $sql="select `Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+    $sql="select `Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
     // print $sql;
     $result=mysql_query($sql);
     $data=array();
@@ -294,12 +294,15 @@ function list_customer_history() {
             $author=$row['Author Name'];
 
         $data[]=array(
-                    'id'=>$row['History Key'],
+                    'key'=>$row['History Key'],
                     'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
                     'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
                     'objeto'=>$objeto,
                     'note'=>$note,
                     'handle'=>$author,
+                    'delete'=>($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':''),
+                    'can_delete'=>($row['Deletable']=='Yes'?1:0),
+'delete_type'=>_('delete')
                 );
     }
     mysql_free_result($result);

@@ -81,6 +81,9 @@
 </div>
 
 </div>
+
+</div>
+
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
       <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
 
@@ -231,16 +234,23 @@
 
 <div id="dialog_note">
   <div id="note_msg"></div>
-  <table >
+  <table style="padding:10px;margin:10px" >
+  <tr id="note_type" class="options_list" prefix="note_type_" value="permanent">
+  <td class="selected" id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
+  </td>
+  <td class="" id="note_type_deletable" onclick="radio_changed(this)" name="deletable" >{t}Deletable{/t}
+  </td>
+  </tr>
+  
     <tr><td colspan=2>
-	<textarea id="note_input" onkeyup="change(event,this,'note')"></textarea>
+	<textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea>
       </td>
     <tr>
     <tr class="buttons" style="font-size:100%">
   <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
+    <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
-    <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+    <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
 </table>
 </div>
 

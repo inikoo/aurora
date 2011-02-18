@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='contacts_navigation.tpl'}
-
+<input type="hidden" value="{$customer->id}" id="customer_key"/>
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>{t}Edit Customer{/t}: <span id="title_name">{$customer->get('Customer Name')}</span></h1>
@@ -13,13 +13,87 @@
     <li> <span class="item {if $edit=='company'}selected{/if}" style="display:none"  id="company">  <span> {t}Company Details{/t}</span></span></li>
  {/if}
  <li> <span class="item {if $edit=='delivery'}selected{/if}"  id="delivery">  <span> {t}Delivery Options{/t}</span></span></li>
-    <li> <span class="item {if $edit=='marketing'}selected{/if}"  id="marketing">  <span> {t}Marketing Data{/t}</span></span></li>
+    <li> <span class="item {if $edit=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
+    <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
 
   </ul>
   
  <div class="tabbed_container" > 
    
+   
+    <div  class="edit_block" style="{if $edit!="communications"}display:none{/if};min-height:260px"  id="d_communications">
+<table class="edit">
+ <tr class="title"><td colspan=5>{t}Emails{/t}</td></tr>
  
+ <tr>
+ <td class="label">{t}Send Newsletter{/t}:</td>
+ <td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   
+   </div>
+ </td>
+ </tr>
+{*} 
+ {foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label">{t}{$cat.name}{/t}:</td>
+ <td>
+   {foreach from=$cat.teeth item=cat2 key=cat2_id name=foo2}
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+     {foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
+     <span  class="catbox {if $cat3.selected}selected{/if}" value="{$cat3.selected}" ovalue="{$cat3.selected}" onclick="save_radio(this)" cat_id="{$cat3_id}" id="cat{$cat3_id}" parent="{$cat3.parent}" position="{$cat3.position}" default="{$cat3.default}"  >{$cat3.name}</span>
+     {/foreach}
+    </div>
+   {/foreach}
+ </td>   
+</tr>
+{/foreach}
+{*}
+
+</table>
+</div>
+  
+   
+ <div  class="edit_block" style="{if $edit!="categories"}display:none{/if};min-height:260px"  id="d_categories">
+<table class="edit">
+ <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
+ {foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label">{t}{$cat.name}{/t}:</td>
+ <td>
+   {foreach from=$cat.teeth item=cat2 key=cat2_id name=foo2}
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0">
+    <table border=0 >
+    
+     {foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
+    
+        {if $cat3.mod5==0}<tr>{/if}
+            <td style="text-align:center;padding:5px 5px; ">   
+                <span  style="border:none"  class="catbox {if $cat3.selected}selected{/if}" 
+                    value="{$cat3.selected}" 
+                    ovalue="{$cat3.selected}" 
+                    onclick="save_radio(this)" 
+                    cat_id="{$cat3_id}" 
+                    id="cat{$cat3_id}" 
+                    parent="{$cat3.parent}" 
+                    position="{$cat3.position}" 
+                    default="{$cat3.default}"  >{$cat3.name}
+                </span>
+            </td>
+        {if $cat3.mod5==4}</tr>{/if}
+     {/foreach}
+     </table>
+    </div>
+   {/foreach}
+ </td>   
+</tr>
+{/foreach}
+
+
+</table>
+</div>
   
 <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if};min-height:260px"  id="d_delivery">
  {include file='edit_delivery_address_splinter.tpl'}

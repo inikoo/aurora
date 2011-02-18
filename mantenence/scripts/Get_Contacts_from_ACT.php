@@ -14,6 +14,9 @@ include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
+include_once('../../class.Category.php');
+include_once('../../class.Node.php');
+
 //include_once('map_order_functions.php');
 include_once('common_read_orders_functions.php');
 
@@ -58,22 +61,40 @@ $_SESSION['lang']=1;
 $convert_encoding=false;
 include_once('local_map.php');
 
+$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $data=array('Category Name'=>'Type of Business','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
+    $cat_type_business[$row['Store Key']]=new Category('find create',$data);
+    $data=array('Category Name'=>'Referrer','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
+    $cat_referrer[$row['Store Key']]=new Category('find create',$data);
 
-$store_data=array('Store Code'=>'UK',
-                  'Store Name'=>'Ancient Wisdom',
-                  'Store Locale'=>'en_GB',
-                  'Store Home Country Code 2 Alpha'=>'GB',
-                  'Store Currency Code'=>'GBP',
-                  'Store Home Country Name'=>'United Kingdom',
-                  'Store Home Country Short Name'=>'UK',
-                 );
-//$store=new Store('find',$store_data,'create');
-$store=new Store(1);
+    if ($row['Store Code']=='UK') {
+        $valid_sub_cats_referrals[$row['Store Key']]=array('StartUpPlus','Referral','Google','Ancient Wisdom','Other','Bing','Craft Focus Magazine','Facebook','Garden Shop Catalogue','Gift Focus Magazine','Gifts Today','Giftware Index','Giftware Review','Heritage Shop Catalogue','Market Times','MTN','Progressive Gifts','The Trader Magazine','The Trader Website','The Wholesaler Website','Twitter','Yahoo');
+        foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
+            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $subcat_type_referrer=new Category('find create',$data);
+        }
+    } else {
+        $valid_sub_cats_referrals[$row['Store Key']]=array('Referral','Google','Bing','Yahoo','Other');
+        foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
+            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $subcat_type_referrer=new Category('find create',$data);
+        }
 
-if (!$store->id) {
-//print_r($store);
-    exit("can not create store\n");
+    }
+
+    $valid_sub_cats_type_bussiness[$row['Store Key']]=array('Gift Shop','Internet Shop','Market Trader','Party Planner','Craft Fairs','Tourist Attraction','Wedding Planner','Wholesaler','Department Store','Florist','Ebay Seller','Garden Centre','NPO','Hospitality Industry','Therapist','Event','Other');
+foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_type_business) {
+            $data=array('Category Name'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $subcat_type_type_business=new Category('find create',$data);
+        }
+
+
 }
+
+
+
 $map_act=$_map_act;
 $map_act[90]='creation_date';
 
@@ -108,7 +129,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
                 $cols[$key]=$col;
         }
 
-
+//print_r($cols);
 
         $act_data=array();
         $act_data['name']=mb_ucwords($cols[$map_act['name']+3]);
@@ -118,6 +139,9 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         //if ($act_data['name']=='' and $act_data['contact']!='') // Fix only contact
         //    $act_data['name']=$act_data['contact'];
+
+        $act_data['business_type']=mb_ucwords($cols[$map_act['business_type']]);
+        $act_data['where_find_us']=mb_ucwords($cols[$map_act['where_find_us']]);
 
 
         $act_data['first_name']=mb_ucwords($cols[$map_act['first_name']+3]);
@@ -182,8 +206,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-            if($row>2000)
-          break;
+        //    if($row>2000)
+        //  break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -365,11 +389,6 @@ foreach($contacts as $act_data) {
 
     if (isset($_customer_data['address_data'])) {
 
-
-
-
-
-
         //continue;
         $customer_data['Customer First Contacted Date']=$act_data['creation_date'];
 
@@ -396,12 +415,88 @@ foreach($contacts as $act_data) {
     }
 
     // print_r($act_data);
-    
-  //  if($customer_data['Customer Main Plain Email']=='')
+
+    //  if($customer_data['Customer Main Plain Email']=='')
     //    continue;
 //print_r($customer_data);
 
     $customer = new Customer ( 'find create',  $customer_data);
+
+
+    if ($customer->data['Customer Store Key']==1) {
+
+        $act_data['business_type']=mb_ucwords($act_data['business_type']);
+        if (preg_match('/(school|church|charity)/i',$act_data['business_type']))
+            $act_data['business_type']='NPO';
+        if (preg_match('/(gifts? shop)/i',$act_data['business_type']))
+            $act_data['business_type']='Gift Shop';
+        if (!preg_match('/^wedding planner$/i',$act_data['business_type'])) {
+            if (preg_match('/^(wedding|Christening)$/i',$act_data['business_type']))
+                $act_data['business_type']='Event';
+
+        }
+        if (preg_match('/B\&b/i',$act_data['business_type'])) {
+            $act_data['business_type']='Hospitality Industry';
+
+        }
+
+
+
+        if ($act_data['business_type']!=''  and  in_array($act_data['business_type'],  $valid_sub_cats_type_bussiness[$customer->data['Customer Store Key']]) ) {
+            $data=array('Category Name'=>$act_data['business_type'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
+            $subcat_type_business=new Category('find create',$data);
+
+            $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                         $cat_type_business[$customer->data['Customer Store Key']]->id,
+                         prepare_mysql('Customer'),
+                         $customer->id
+                        );
+            mysql_query($sql);
+
+            $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+                         $subcat_type_business->id,
+                         prepare_mysql('Customer'),
+                         $customer->id
+                        );
+            mysql_query($sql);
+        }
+
+
+        $act_data['where_find_us']=mb_ucwords($act_data['where_find_us']);
+        if (preg_match('/(startup|starplus|Startsplus)/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='StartUpPlus';
+        if (preg_match('/(referal|referral|Refferal)/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Referral';
+        if (preg_match('/(Ancient Wisdiom|Ancien Wisdom|Ancient Wisdiom)/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Ancient Wisdom';
+        if (preg_match('/^Heritage$/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Heritage Shop Catalogue';
+        if (preg_match('/Giftwareindex/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Giftware Index';
+
+        if ($act_data['where_find_us']!=''   and  in_array($act_data['where_find_us'],  $valid_sub_cats_referrals[$customer->data['Customer Store Key']]) ) {
+            $data=array('Category Name'=>$act_data['where_find_us'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
+
+            $subcat_type_referrer=new Category('find create',$data);
+            if ($subcat_type_referrer->id) {
+                $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                             $cat_referrer[$customer->data['Customer Store Key']]->id,
+                             prepare_mysql('Customer'),
+                             $customer->id
+                            );
+                mysql_query($sql);
+
+                $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+                             $subcat_type_referrer->id,
+                             prepare_mysql('Customer'),
+                             $customer->id
+                            );
+                mysql_query($sql);
+            }
+
+        }
+    }
+    // print_r($act_data);
 //exit;
 //print_r($customer);
 
@@ -410,7 +505,7 @@ foreach($contacts as $act_data) {
     //  print_r($act_data['history']);
     // }
 
-   // $store->update_customers_data();
+    // $store->update_customers_data();
     foreach($act_data['history'] as $h_tipo=>$histories) {
 
         //print_r($histories);
@@ -534,9 +629,9 @@ function get_history_data($raw_history) {
 
     }
 
- //  print_r($history);
- // if(count($history)>2)
- // exit("**\n");
+//  print_r($history);
+// if(count($history)>2)
+// exit("**\n");
     return $history;
 
 }

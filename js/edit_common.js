@@ -238,7 +238,7 @@ var onCellClick = function(oArgs) {
 
 
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
-                if (column.object=='company' || column.object=='company_area')
+                if (column.object=='company' || column.object=='company_area' || column.object=='customer_history')
                     ar_file='ar_edit_contacts.php';
                 else if (column.object=='warehouse_area' || column.object=='location')
                     ar_file='ar_edit_warehouse.php';
@@ -247,21 +247,22 @@ var onCellClick = function(oArgs) {
                 else if (column.object=='supplier_product' || column.object=='supplier')
                     ar_file='ar_edit_suppliers.php';
                 else if (column.object=='ind_staff'  || column.object=='ind_positions' || column.object=='ind_department' )
-     		   ar_file='ar_edit_staff.php';
-		else if (column.object=='subcategory')
-     		   ar_file='ar_edit_categories.php';
-                else
+     		        ar_file='ar_edit_staff.php';
+		        else if (column.object=='subcategory')
+     		         ar_file='ar_edit_categories.php';
+               
+     		   else
                     ar_file='ar_edit_assets.php';
 
 
 
-           	//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
-
+  //         	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+//return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                    // alert(o.responseText);
+                   //  alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -349,7 +350,6 @@ var unhighlightEditableCell = function(oArgs) {
 };
 function radio_changed(o) {
     parent=o.parentNode;
-
     Dom.removeClass(parent.getAttribute('prefix')+parent.getAttribute('value'),'selected');
     Dom.addClass(o,'selected');
 
