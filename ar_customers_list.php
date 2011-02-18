@@ -10,9 +10,9 @@ require_once 'class.Timer.php';
 
 
 $list_name=$_REQUEST['textValue'];
-echo $list_name;
-$list_type=$_REQUEST['typeValue'];echo $list_type;
-echo "List ".$list_name." of type ".$list_type." is saved";
+
+$list_type=$_REQUEST['typeValue'];
+echo "List \"".$list_name."\" of type \"".$list_type."\" is saved";
 
 if (!isset($_REQUEST['tipo']))  {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -545,7 +545,7 @@ $list_sql2=sprintf("insert into `Customer List Customer Bridge` (`Customer List 
                          $customer_key
                         );
 $list_query2=mysql_query($list_sql2);
-echo $list_sql2;
+
 }
    }
     mysql_free_result($result);
