@@ -100,7 +100,6 @@ case('customers'):
     list_customers();
     break;
 case('company_areas'):
-
     list_company_areas();
     break;
 case('assets_dispatched_to_customer'):
