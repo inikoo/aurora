@@ -6,19 +6,20 @@ header('Location: index.php');
    exit;
  }
 
-/*if(isset($_REQUEST['customer_list_key']) and is_numeric($_REQUEST['customer_list_key']) ){
+if(isset($_REQUEST['customer_list_key']) and is_numeric($_REQUEST['customer_list_key']) ){
   $customer_list_key=$_REQUEST['customer_list_key'];
 
 }else{
 header('Location: index.php?error');
 
-}*/
+}
 
 /*if(! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
   header('Location: index.php?error_store='.$store_id);
    exit;
 }*/
-$customer_list_key='3';
+
+
 
 $smarty->assign('customer_list_key',$customer_list_key);
 
