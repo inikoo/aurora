@@ -19,8 +19,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
                                         ,{key:"id", label:"<?php echo _('Customer Id')?>",  width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"name", label:"<?php echo _('Customer Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                        ,{key:"customer_list_key", label:"<?php echo _('List Key')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      
-				       
 				   ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list.php?tipo=customer_list_static");
