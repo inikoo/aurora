@@ -2,7 +2,7 @@
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
 
-      <h2 style="clear:both">{t}Create Campaign{/t} (for the list LIST NAME)</h2>
+      <h2 style="clear:both">{t}Create Campaign{/t} (for the list {$listName})</h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div"></div>
       <table border="0" width="700">
@@ -16,7 +16,7 @@
 	</tr>
 
 	<tr>
-	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30"> </td>
+	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30" onblur="maxEmailNumber()"> </td>
 	</tr>
 
 	<tr>

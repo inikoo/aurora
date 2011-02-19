@@ -69,3 +69,11 @@ function getFormData()
 
 
 }
+
+function maxEmailNumber()
+{
+	alert(document.getElementById('campaign_mail').value);
+
+
+}
+

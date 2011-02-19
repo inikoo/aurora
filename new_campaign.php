@@ -54,6 +54,10 @@ $js_files=array(
 
 
 	
+		$sqlQuery = "select `Customer List Name` from `Customer List Dimension` where `Customer List Key` = '".$customer_list_key."'";
+		$queryResult = mysql_query($sqlQuery);
+		$row = mysql_fetch_array($queryResult);
+		$smarty->assign('listName',$row['Customer List Name']);
 
 
 $_SESSION['state']['customers']['list']['where']='';
