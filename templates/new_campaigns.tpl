@@ -16,7 +16,7 @@
 	</tr>
 
 	<tr>
-	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30" onblur="maxEmailNumber({$count})"> </td>
+	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30"> </td>
 	</tr>
 
 	<tr>
@@ -27,6 +27,7 @@
 	  <td colspan=3 align="right"> <input type="button" name="createCampaign" value="Create" onclick="getFormData()"> </td>
 	</tr>
 		<input type="hidden" name="customer_list_key" id="customer_list_key" value="{$customer_list_key}"> 
+		<input type="hidden" name="max_num_mail" id="max_num_mail" value="{$count}"> 		
 	</form>
       </table>
 

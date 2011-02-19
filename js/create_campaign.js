@@ -1,6 +1,6 @@
 function getFormData()
 {
-	
+	var totalNumber = document.getElementById('max_num_mail').value;
 	var campaign_name;
 	var campaign_obj;
 	var campaign_mail;
@@ -33,10 +33,16 @@ function getFormData()
 	{
 		if(isNaN(campaign_mail))	
 		{
-		   error= error+ 'Invalid data in mail\n';
+		   error= error+ 'Invalid entry in mail\n';
 		}
 	}
-	
+				
+	if(campaign_mail > totalNumber)
+	{
+		 error = error + 'You have '+totalNumber+' number of emails. Limit exceeded.\n';				
+		
+	}
+
 	if(campaign_content == '')
 	{
 	   error = error + 'Please enter the content for Campaign\n';
@@ -70,13 +76,4 @@ function getFormData()
 
 }
 
-function maxEmailNumber(count)
-{
-	var givenNumber = document.getElementById('campaign_mail').value;
-	if(givenNumber > count)
-	{
-		alert('You have '+count+' number of emails. Limit exceeded.');
-		return false;
-	}
-}
 
