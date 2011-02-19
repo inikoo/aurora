@@ -70,10 +70,13 @@ function getFormData()
 
 }
 
-function maxEmailNumber()
+function maxEmailNumber(count)
 {
-	alert(document.getElementById('campaign_mail').value);
-
-
+	var givenNumber = document.getElementById('campaign_mail').value;
+	if(givenNumber > count)
+	{
+		alert('You have '+count+' number of emails. Limit exceeded.');
+		return false;
+	}
 }
 
