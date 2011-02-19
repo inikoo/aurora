@@ -2,7 +2,7 @@
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
 
-      <h2 style="clear:both">{t}Create Campaign{/t} (for the list LIST NAME)</h2>
+      <h2 style="clear:both">{t}Create Campaign{/t} (for the list {$listName})</h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div"></div>
       <table border="0" width="700">
@@ -27,6 +27,7 @@
 	  <td colspan=3 align="right"> <input type="button" name="createCampaign" value="Create" onclick="getFormData()"> </td>
 	</tr>
 		<input type="hidden" name="customer_list_key" id="customer_list_key" value="{$customer_list_key}"> 
+		<input type="hidden" name="max_num_mail" id="max_num_mail" value="{$count}"> 		
 	</form>
       </table>
 
