@@ -421,7 +421,7 @@ color: #316D89;
 
 
 
-table.search {clear:both;float:right}
+table.search {clear:both;float:right;margin-bottom:5px}
 table.search td.label{width:100px;text-align:right;}
 table.search td.form{width:325px}
 table.search  search.input{  height:16px;color:#555;font-style: italic;padding-left:2px;width:300px}

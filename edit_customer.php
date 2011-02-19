@@ -188,7 +188,7 @@ $nodes=new nodes('`Category Dimension`');
 $nodes->sql_condition = "AND `Category Subject`='Customer' AND `Category Store Key`=".$customer->data['Customer Store Key'] ;
 $nodes->load_comb();
 $comb=$nodes->comb;
-print_r($comb);
+//print_r($comb);
 
 $sql=sprintf("select PCB.`Category Key`,`Category Position` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Customer'    " ,
 $customer->id);

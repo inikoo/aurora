@@ -693,6 +693,10 @@ ALTER TABLE `Order Dimension` CHANGE `Order Current Payment State` `Order Curren
 ALTER TABLE `Customer History Bridge` ADD `Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `History Key` ,ADD INDEX ( `Deletable` ); 
 
 ALTER TABLE `Category Dimension` ADD `Category Number Subjects` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Customer Dimension` ADD `Customer Account Operative` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD INDEX ( `Customer Account Operative` ) ;
+ALTER TABLE `Customer Dimension` ADD `Customer Send Postal Marketing` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Customer Send Email Marketing` ,ADD INDEX ( `Customer Send Postal Marketing` ) ;
+ALTER TABLE `Customer Dimension` ADD `Customer Sticky Note` TEXT NOT NULL ;
+
 */
 
 ?>

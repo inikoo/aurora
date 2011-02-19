@@ -2786,7 +2786,7 @@ function find_company($the_data) {
 
     $max_results=8;
 
-    $company=new company('find fuzzy',$data);
+    $company=new company('find complete',$data);
     $found_key=0;
     if ($company->found) {
         $action='found';
@@ -3062,7 +3062,7 @@ function find_contact($the_data) {
 
     $max_results=8;
 
-    $contact=new contact('find fuzzy',$data);
+    $contact=new contact('find complete',$data);
     $found_key=0;
     if ($contact->found) {
         $action='found';

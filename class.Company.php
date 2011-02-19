@@ -1470,45 +1470,29 @@ class Company extends DB_Table {
        Parameter:
        $args -     string  options
     */
-    function remove_address($address_key) {
-
-
-        if (!$address_key) {
-            $address_key=$this->data['Company Main Address Key'];
-        }
-
-
-        $address=new address($address_key);
-        if (!$address->id) {
-            $this->error=true;
-            $this->msg='Wrong address key when trying to remove it';
-            $this->msg_updated='Wrong address key when trying to remove it';
-        }
-
-        $address->set_scope('Company',$this->id);
-
-        if ( $address->associated_with_scope) {
-            $this->updated=true;
-            $sql=sprintf("delete from `Address Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
-                         $this->id
-
-                         ,$address->id
-                        );
-            mysql_query($sql);
+function remove_address($address_key) {
 
 
 
-            $this->update_main_address_key();
+    if (!$address_key) {
+        $address_key=$this->data['Company Main Address Key'];
+    }
 
 
+    $address=new address($address_key);
+    if (!$address->id) {
+        $this->error=true;
+        $this->msg='Wrong address key when trying to remove it';
+        $this->msg_updated='Wrong address key when trying to remove it';
+    }
 
+    $address_keys=$this->get_address_keys();
 
-        }
-
-
-
+    if (in_array($address->id,$address_keys)) {
+        $address->delete();
 
     }
+}
 
 
     /* Method: remove_email
@@ -1605,8 +1589,28 @@ class Company extends DB_Table {
             mysql_query($sql);
 
             $sql=sprintf("update `Company Dimension` set  `Company Main Address Key`=%s where `Company Key`=%d",$address->id,$this->id);
-            $this->data['Company Main Address Key']=$address->id;
+            
+            
+            $sql=sprintf("update `Company Dimension` set `Company Main XHTML Address`=%s , `Company Main Plain Address`=%s , `Company Main Address Key`=%d ,`Company Main Country Key`=%d ,`Company Main Country`=%s,`Company Main Location`=%s  where `Company Key`=%d"
+                         ,prepare_mysql($address->display('xhtml'))
+                         ,prepare_mysql($address->display('plain'))
+                         ,$address->id
+                         ,$address->data['Address Country Key']
+                         ,prepare_mysql($address->data['Address Country Name'])
+                         ,prepare_mysql($address->display('location'))
+                         ,$this->id
+                        );
+            //	print $sql;
             mysql_query($sql);
+            
+            $this->data['Company Main XHTML Address']=$address->display('xhtml');
+            $this->data['Company Main Plain Address']=$address->display('plain');
+            $this->data['Company Main Address Key']=$address->id;
+            $this->data['Company Main Country Key']=$address->data['Address Country Key'];
+            $this->data['Company Main Country']=$address->data['Address Country Name'];
+            $this->data['Company Main Location']=$address->display('location');
+           
+
 
             $this->update_parents_principal_address_keys($address_key);
 
@@ -2237,72 +2241,6 @@ class Company extends DB_Table {
     /*
 
      */
-
-    function update_main_address_key() {
-        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d and `Is Main`='Yes' ",$this->id);
-        $res=mysql_query($sql);
-        //  print $sql;
-        if ($row=mysql_fetch_array($res)) {
-            $address_key=$row['Address Key'];
-
-            $address= new Address($address_key);
-            if ($address->id) {
-                $sql=sprintf("update `Company Dimension` set `Company Main XHTML Address`=%s , `Company Main Plain Address`=%s , `Company Main Address Key`=%d ,`Company Main Country Key`=%d ,`Company Main Country`=%s,`Company Main Location`=%s  where `Company Key`=%d"
-                             ,prepare_mysql($address->display('xhtml'))
-                             ,prepare_mysql($address->display('plain'))
-                             ,$address->id
-                             ,$address->data['Address Country Key']
-                             ,prepare_mysql($address->data['Address Country Name'])
-                             ,prepare_mysql($address->display('location'))
-                             ,$this->id
-                            );
-                //	print $sql;
-                mysql_query($sql);
-                return;
-            }
-
-        }
-
-
-
-        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d  ",$this->id);
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $address_key=$row['Address Key'];
-            $address= new Address($address_key);
-            if ($address->id) {
-                $sql=sprintf("update `Company Dimension` set `Company Main XHTML Address`=%s , `Company Main Plain Address`=%s , `Company Main Address Key`=%d ,`Company Main Country Key`=%d ,`Company Main Country`=%s,`Company Main Location`=%s  where `Company Key`=%d"
-                             ,prepare_mysql($address->display('xhtml'))
-                             ,prepare_mysql($address->display('plain'))
-                             ,$address->id
-                             ,$address->data['Address Country Key']
-                             ,prepare_mysql($address->data['Address Country Name'])
-                             ,prepare_mysql($address->display('location'))
-                             ,$this->id
-                            );
-                mysql_query($sql);
-                return;
-            }
-
-        }
-
-
-
-
-        $this->set_main_address_as_unknown();
-
-
-    }
-
-
-    function set_main_address_as_unknown() {
-        $sql=sprintf("update `Company Dimension` set `Company Main XHTML Address`='' , `Company Main Plain Address`=''  ,`Company Main Country Key`='244' ,`Company Main Country`='Unknown',`Company Main Location`='' ,`Company Main Address Key`=0  where `Company Key`=%d"
-                     ,$this->id
-                    );
-
-        mysql_query($sql);
-
-    }
 
 
 

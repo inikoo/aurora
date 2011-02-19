@@ -1066,7 +1066,9 @@ $this->data['Customer Delivery Address Link']=='Contact';
         case('Customer Main XHTML Email'):
         case('Customer Main Email Key'):
             break;
-
+case('Customer Sticky Note'):
+            $this->update_field($field,$value,'no_null');
+            break;
         case('Note'):
             $this->add_note($value);
             break;
@@ -1898,165 +1900,7 @@ $this->data['Customer Delivery Address Link']=='Contact';
     }
 
 
-    function save($key,$history_data=false) {
-        switch ($key) {
-
-        case('tax_number'):
-        case('tax_number_valid'):
-        case('main_email'):
-            $sql=sprintf('update customer set %s=%s where id=%d',$key,prepare_mysql($this->data[$key]),$this->id);
-            //print "$sql\n";
-            mysql_query($sql);
-
-            if (is_array($history_data)) {
-                $this->save_history($key,$this->old[$key],$this->data['main']['email'],$history_data);
-            }
-
-
-            break;
-        }
-
-    }
-
-    function save_history($key,$old,$new,$data) {
-        if (isset($data['user_id']))
-            $user=$data['user_id'];
-        else
-            $user=0;
-
-        if (isset($data['date']))
-            $date=prepare_mysql($data['date']);
-        else
-            $date='NOW()';
-
-        switch ($key) {
-        case('new_note'):
-        case('add_note'):
-            if (preg_match('/^\s*$/',$data['note'])) {
-                $this->msg=_('Invalid value');
-                return false;
-
-            }
-
-            $tipo='NOTE';
-            $note=_trim($data['note']);
-            $details='';
-
-
-            $this->add_customer_history(array(
-                                            'Date'=>$date
-                                                   ,'Action'=>'wrote'
-                                                             ,'Direct Object'=>'Note'
-                                                                              ,'Preposition'=>'about'
-                                                                                             ,'Indirect Object'=>'Customer'
-                                                                                                                ,'Indirect Object Key'=>$this->id
-                                                                                                                                       ,'History Abstract'=>$note
-                                                                                                                                                           ,'History Details'=>$details
-                                        ));
-
-
-            $this->msg=_('Note Added');
-            return true;
-            break;
-
-        case('new_note'):
-        case('order'):
-            $tipo='ORDER';
-            $order=new order('order',$data['order_id']);
-            $action=$data['action'];
-
-            if (isset($data['display']))
-                $display=$data['display'];
-            else
-                $display='normal';
-
-            switch ($action) {
-            case('creation'):
-                $_action='DATE_CR';
-                $note=_('Customer place order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>';
-                break;
-            case('processed'):
-                $_action='DATE_PR';
-                $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('processed');
-
-                break;
-            case('invoiced'):
-                $_action='DATE_IN';
-                $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('for').' '.money((float)$order->get('total'));
-                break;
-            case('cancelled'):
-                $_action='DATE_CA';
-                $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('has been cancelled');
-                break;
-            case('sample'):
-                $_action='DATE_DI';
-                $note=_('Sample send').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)';
-                break;
-            case('donation'):
-                $_action='DATE_DI';
-                $note=_('Donation').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)';
-                break;
-            case('replacement'):
-                $_action='DATE_DI';
-                $parent_order='';
-                if ($order->get('parent_id')) {
-                    $parent=new Order($order->get('parent_id'));
-                    if ($parent->id)
-                        $parent_order=' '._('for order').' (<a href="order.php?id='.$parent->id.'">'.$parent->get('public_id').'</a>';
-                }
-                $note=_('Replacement').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)'.$parent_order;
-                break;
-            case('shortages'):
-                $_action='DATE_DI';
-                $parent_order='';
-                if ($order->get('parent_id')) {
-                    $parent=new Order($order->get('parent_id'));
-                    if ($parent->id)
-                        $parent_order=' '._('for order').' (<a href="order.php?id='.$parent->id.'">'.$parent->get('public_id').'</a>';
-                }
-                $note=_('shortages').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)'.$parent_order;
-                break;
-            case('followup'):
-                $_action='DATE_DI';
-                $parent_order='';
-                if ($order->get('parent_id')) {
-                    $parent=new Order($order->get('parent_id'));
-                    if ($parent->id)
-                        $parent_order=' '._('for order').' (<a href="order.php?id='.$parent->id.'">'.$parent->get('public_id').'</a>';
-                }
-                $note=_('Follow up').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)'.$parent_order;
-                break;
-            default:
-                $this->msg=_('Unknown action');
-                return false;
-            }
-
-
-
-
-
-            $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note,display) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                         ,$date
-                         ,prepare_mysql('CUST')
-                         ,prepare_mysql($this->id)
-                         ,prepare_mysql($tipo)
-                         ,$order->id
-                         ,prepare_mysql($_action)
-                         ,prepare_mysql($user)
-                         ,prepare_mysql($old)
-                         ,prepare_mysql($new)
-                         ,prepare_mysql($note)
-                         ,prepare_mysql($display)
-                        );
-            // print "$sql\n";
-            mysql_query($sql);
-            $this->msg=_('Note Added');
-            return true;
-
-        }
-    }
-
-
+  
     function get($key,$arg1=false) {
 
         if ($key=='Customer Tax Number' or $key=='Tax Number') {
@@ -2593,7 +2437,7 @@ $this->data['Customer Delivery Address Link']=='Contact';
 
 
             $details='';
-            if (strlen($note)>64) {
+            if (strlen($note)>1000) {
                 $words=preg_split('/\s/',$note);
                 $len=0;
                 $note='';
@@ -2603,7 +2447,7 @@ $this->data['Customer Delivery Address Link']=='Contact';
                     if ($note=='')
                         $note=$word;
                     else {
-                        if ($len<64)
+                        if ($len<1000)
                             $note.=' '.$word;
                         else
                             $details.=' '.$word;
@@ -3994,6 +3838,37 @@ $this->data['Customer Delivery Address Link']=='Contact';
 
 
     }
+
+function remove_principal_address(){
+
+$this->remove_address($this->data['Customer Main Address Key']);
+
+}
+
+
+function remove_address($address_key){
+
+
+    if($this->data['Customer Type']=='Person'){
+        $contact=new Contact($this->data['Customer Company Key']);
+        $contact->remove_address($address_key);
+
+    }elseif($this->data['Customer Type']=='Company'){
+     $company=new Company($this->data['Customer Company Key']);
+ 
+   $company->remove_address($address_key);
+    }
+
+
+}
+
+
+function close_account(){
+$sql=sprintf("update `Customer Dimension` set `Customer Account Operative`='No' where `Customer Key`=%d ",$this->id);
+mysql_query();
+
+}
+
 
 }
 ?>

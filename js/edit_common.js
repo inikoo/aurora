@@ -189,7 +189,7 @@ var CellEdit = function (callback, newValue) {
         'POST',
     ar_file, {
 success:function(o) {
-          alert(o.responseText);
+         // alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText)
            
@@ -438,7 +438,7 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
-alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
+//alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
     if (validate_scope_metadata[branch]['type']=='new') {  
         validate_general_new(branch,item,query)
     } else {
@@ -687,11 +687,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-             alert(request);
+          //   alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-                   	alert(o.responseText)
+            //       	alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 
