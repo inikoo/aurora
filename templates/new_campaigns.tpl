@@ -16,7 +16,7 @@
 	</tr>
 
 	<tr>
-	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30" onblur="maxEmailNumber()"> </td>
+	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30" onblur="maxEmailNumber({$count})"> </td>
 	</tr>
 
 	<tr>

@@ -53,11 +53,19 @@ $js_files=array(
 		);
 
 
-	
+		//fetch the customer list name
 		$sqlQuery = "select `Customer List Name` from `Customer List Dimension` where `Customer List Key` = '".$customer_list_key."'";
 		$queryResult = mysql_query($sqlQuery);
 		$row = mysql_fetch_array($queryResult);
 		$smarty->assign('listName',$row['Customer List Name']);
+	
+		//count the total number of emails
+		$sqlCount = "select `Customer List Key`,`Customer Key` from `Customer List Customer Bridge` where `Customer List Key` = '".$customer_list_key."'";
+		$queryCount = mysql_query($sqlCount);
+		$count = mysql_num_rows($queryCount);
+		$smarty->assign('count',$count);
+		
+		
 
 
 $_SESSION['state']['customers']['list']['where']='';
