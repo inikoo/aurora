@@ -8,7 +8,7 @@
     </div>
     
     <div >
-      <div id="results" style="margin-top:0px;xborder:1px solid #777;float:right;width:500px;xheight:800px">
+      <div id="results" style="margin-top:0px;float:right;width:500px;xheight:800px">
 	
       </div>
       
@@ -249,21 +249,21 @@
       <div id="Company_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has been found with the similar details{/t}.
 	<table style="margin:10px 0">
-	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit contact founded{/t} (<span id="founded_name"></span>)</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit the located contact{/t} (<span id="founded_name"></span>)</span></td></tr>
 	  <tr><td><span  style="cursor:pointer;text-decoration:underline"  id="save_when_founded" >{t}Confirm is new contact and Save{/t}</span></td></tr>
 	</table>
       </div>
       <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has the same email{/t}.
 	<table style="margin:10px 0">
-	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit contact founded{/t}</td></tr>
-	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Founded contact data will be deleted to avoid muliplicity{/t}</span></td></tr>
+	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the located contact{/t}</td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Previous contact data (email) will be deleted to avoid muliplicity{/t}</span></td></tr>
 	</table>
       </div>
 
       <div style="clear:both;padding:10px;" id="validation">
 
-	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_Company_found">{t}Company found{/t}</div>
+	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_Company_found">{t}Company has been found{/t}</div>
 	
 	<table class="form_state" style="display:none">
 	  <caption>{t}State of the form{/t}</caption>

@@ -26,13 +26,35 @@
  <tr class="title"><td colspan=5>{t}Emails{/t}</td></tr>
  
  <tr>
- <td class="label">{t}Send Newsletter{/t}:</td>
+ <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
  <td>
    <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   
+   <span class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if}">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if}">{t}No{/t}</span>
    </div>
  </td>
  </tr>
+  <tr>
+ <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
+ <td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <span class="{if $customer->get('Customer Send Email Marketing')=='Yes'}selected{/if}">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Email Marketing')=='No'}selected{/if}">{t}No{/t}</span>
+   </div>
+ </td>
+ </tr>
+ 
+  <tr class="title"><td colspan=5>{t}Post{/t}</td></tr>
+ 
+
+  <tr>
+ <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
+ <td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <span class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if}">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Postal Marketing')=='No'}selected{/if}">{t}No{/t}</span>
+   </div>
+ </td>
+ </tr>
+ 
+ 
 {*} 
  {foreach from=$categories item=cat key=cat_key name=foo  }
  <tr>
@@ -70,8 +92,8 @@
      {foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
     
         {if $cat3.mod5==0}<tr>{/if}
-            <td style="text-align:center;padding:5px 5px; ">   
-                <span  style="border:none"  class="catbox {if $cat3.selected}selected{/if}" 
+            <td style="text-align:center;padding:5px 5px; border:none">   
+                <span  style=""  class="catbox {if $cat3.selected}selected{/if}" 
                     value="{$cat3.selected}" 
                     ovalue="{$cat3.selected}" 
                     onclick="save_radio(this)" 

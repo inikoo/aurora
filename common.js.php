@@ -545,11 +545,13 @@ function star_rating($score,$max_score){
 
 }
 
-/** Run with defaults **/
+
+/** Run with defaults 
   $(document).ready(function(){
     $(document).idleTimeout();
   });
-/** With Optional Overrides **/
+**/  
+/** With Optional Overrides 
   $(document).ready(function(){
     $(document).idleTimeout({
       inactivity: 30000,
@@ -557,4 +559,4 @@ function star_rating($score,$max_score){
       sessionAlive: 10000
     });
   });
-
+**/

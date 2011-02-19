@@ -25,7 +25,7 @@ function microtime_float() {
     return ((float)$utime + (float)$time);
 }
 
-
+$encrypt=false;
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
@@ -41,6 +41,8 @@ if (!$db) {
 $tipo_his=array();
 $myFile = "act_timedata.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
+
+$filename="actdatatmp.txt";
 
 
 date_default_timezone_set('UTC');
@@ -98,7 +100,7 @@ foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_typ
 $map_act=$_map_act;
 $map_act[90]='creation_date';
 
-$filename="actdatatmp.txt";
+
 $row = 0;
 $contacts=array();
 $contacts_date=array();
@@ -106,7 +108,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
 //  print_r($data);
-        print "$num $row\r";
+       print "$num $row\r";
 
         //    if($row>1000)
         //       break;
@@ -129,7 +131,6 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
                 $cols[$key]=$col;
         }
 
-//print_r($cols);
 
         $act_data=array();
         $act_data['name']=mb_ucwords($cols[$map_act['name']+3]);
@@ -168,11 +169,14 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $act_data['history']=$cols[97];
         $act_data['creator']=$cols[68];
         $act_data['international_email']=$cols[$map_act['int_email']+3];
+        $act_data['alt_email']=$cols[$map_act['alt_email']];
+
+      
+        
         $act_data['tax_number']=parse_tax_number($cols[$map_act['real_tax_number']+3]);
 
 
-        //   print $cols[92]."\n";
-
+       
         $act_data['country_d1']='';
         //  $act_data['vat_number']=$cols[88+3];
         $tmp=preg_split('/\s/',$cols[0]);
@@ -284,7 +288,7 @@ foreach($contacts as $act_data) {
     $_customer_data['date_created']=$act_data['creation_date'];
     $_customer_data['contact_name']=$act_data['contact'];
     $_customer_data['company_name']=$act_data['name'];
-    $_customer_data['email']=encrypt_email($email_data['email']);
+    $_customer_data['email']=encrypt_email($email_data['email'],$encrypt);
 
     $fr_customer=false;
 
@@ -322,16 +326,26 @@ foreach($contacts as $act_data) {
 
 
 
-
+    $send_emails=true;
 
 
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
+    else{
+        if($_customer_data['email']=='' and $act_data['alt_email']!=''){
+            $email_data=guess_email($act_data['alt_email']);
+        
+        if($email_data['email']){
+        $_customer_data['email']=encrypt_email($email_data['email'],$encrypt);
+        $send_emails=false;
+        
+        }
+    }
+    }
 
-
-    $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']));
-    $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']));
-    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']));
+    $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']),$encrypt);
+    $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']),$encrypt);
+    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']),$encrypt);
     $_customer_data['address_data']=$shop_address_data;
     $_customer_data['address_data']['type']='3line';
 
@@ -351,9 +365,9 @@ foreach($contacts as $act_data) {
 
 
 
-
-    // print_r($_customer_data);
-
+//print_r($act_data);
+     //print_r($_customer_data);
+//exit;
 
     //if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
     //  $customer_data['Customer Tax Number']=$header_data['tax_number'];
@@ -418,24 +432,76 @@ foreach($contacts as $act_data) {
 
     //  if($customer_data['Customer Main Plain Email']=='')
     //    continue;
-//print_r($customer_data);
 
+$customer_data['Customer Sticky Note']='';
+
+$remove_customer=false;
+if(preg_match('/^(Closed Acc|Stopped Trading|Businees Closed Down|Closed Business|Not Trading-closed Down|Ceased Business|Bisiness Sold|Out OF Business|Closing Business|Blacklisted\! Ah|Fraud \- Dont Deal With|No Longer In Business|Close Down)/i',$act_data['business_type'])){
+$remove_customer=true;
+$customer_data['Customer Sticky Note']='Business Closed Down';
+}
+
+
+$customer_data['Customer Send Postal Marketing']='Yes';
+if(preg_match('/^(Don.t Send Catalogues)/i',$act_data['business_type']) or $remove_customer){
+$customer_data['Customer Send Postal Marketing']='No';
+}
+
+if($send_emails){
+$customer_data['Customer Send Newsletter']='Yes';
+$customer_data['Customer Send Email Marketing']='Yes';
+
+}else{
+$customer_data['Customer Send Newsletter']='No';
+$customer_data['Customer Send Email Marketing']='No';
+
+}
+
+$remove_address=false;
+if(preg_match('/(Poss Gone Away|Remove From Aw Mailing|Gone Away|Wrong Address|Unknown AT This Address)/i',$act_data['business_type'])){
+$remove_address=true;
+$customer_data['Customer Sticky Note']='Wrong Address';
+$customer_data['Customer Send Postal Marketing']='No';
+
+}
+
+
+if(preg_match('/(Difficult|Customer \- DIF|Very Fussy)/i',$act_data['business_type'])){
+$remove_address=true;
+$customer_data['Customer Sticky Note']='Difficult Customer';
+}
+if(preg_match('/(dishonest|Blacklisted)/i',$act_data['business_type'])){
+$remove_address=true;
+$customer_data['Customer Sticky Note']='Dishonest Customer';
+}
+
+//print_r($customer_data);
     $customer = new Customer ( 'find create',  $customer_data);
+
+
+
+
+
+
+
+
 
 
     if ($customer->data['Customer Store Key']==1) {
 
         $act_data['business_type']=mb_ucwords($act_data['business_type']);
+         if (preg_match('/(Carboot Sales)/i',$act_data['business_type']))
+            $act_data['business_type']='Market Trader';
         if (preg_match('/(school|church|charity)/i',$act_data['business_type']))
             $act_data['business_type']='NPO';
         if (preg_match('/(gifts? shop)/i',$act_data['business_type']))
             $act_data['business_type']='Gift Shop';
         if (!preg_match('/^wedding planner$/i',$act_data['business_type'])) {
-            if (preg_match('/^(wedding|Christening)$/i',$act_data['business_type']))
+            if (preg_match('/^(wedding|Christening|Special Occasion|For Event|One Off)$/i',$act_data['business_type']))
                 $act_data['business_type']='Event';
 
         }
-        if (preg_match('/B\&b/i',$act_data['business_type'])) {
+        if (preg_match('/B\&b|Restaurant/i',$act_data['business_type'])) {
             $act_data['business_type']='Hospitality Industry';
 
         }

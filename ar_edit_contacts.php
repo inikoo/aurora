@@ -2122,20 +2122,25 @@ function edit_customer() {
                      "ship_town"=>'Main Ship To Town',
                      "ship_postcode"=>'Main Ship To Postal Code',
                      "ship_region"=>'Main Ship To Country Region',
-                     "ship_country"=>'Main Ship To Country'
+                     "ship_country"=>'Main Ship To Country',
+                     "sticky_note"=>'Customer Sticky Note',
+                     "new_sticky_note"=>'Customer Sticky Note'
 
                  );
         if (array_key_exists($_REQUEST['key'],$key_dic))
             $key=$key_dic[$_REQUEST['key']];
+            
+            $the_new_value=_trim(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+            
 
         if ($key=='Customer Fiscal Name') {
-            $customer->update_fiscal_name(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+            $customer->update_fiscal_name($the_new_value );
         }
         elseif ($key=='Customer Tax Number') {
-            $customer->update_tax_number(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+            $customer->update_tax_number($the_new_value);
         }
         else
-            $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue'])  )  ));
+            $customer->update(array($key=>$the_new_value));
     }
 
 

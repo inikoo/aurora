@@ -6,6 +6,9 @@ include_once('common.php');
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_note;
+var dialog_new_sticky_note;
+var dialog_sticky_note;
+
 var dialog_link;
 var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
 
@@ -89,6 +92,47 @@ function save(tipo){
 	
 
 	break;
+	 case('sticky_note'):
+	  case('new_sticky_note'):
+
+    var value=encodeURIComponent(Dom.get(tipo+"_input").value);
+
+	var request="ar_edit_contacts.php?tipo=edit_customer&key="+tipo+"&customer_key="+customer_key+"&newvalue="+value;
+
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		//alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+		    
+		    Dom.get('sticky_note_content').innerHTML=r.newvalue;
+			
+			close_dialog(r.key);
+
+            if(r.newvalue==''){
+                Dom.setStyle('sticky_note_div','display','none');
+                Dom.setStyle('new_sticky_note_tr','display','');
+
+            }else{
+             Dom.setStyle('sticky_note_div','display','');
+                Dom.setStyle('new_sticky_note_tr','display','none');
+            }
+
+var table=tables['table0'];
+			var datasource=tables['dataSource0'];
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+			
+		    }else
+			Dom.get(tipo+'_msg').innerHTML=r.msg;
+		}
+	    });        
+	
+
+	
+
+	break;	
+	
    case('link'):
    var value='';
    if(Dom.get("link_note").value!='')
@@ -144,6 +188,14 @@ function change(e,o,tipo){
 	}else
 	    disable_save(tipo);
 	break;
+    case('new_sticky_note'):
+        if(o.value!=''){
+	    enable_save(tipo);
+	    }else{
+	    disable_save(tipo);
+	    }
+	    
+    break;
     }
 };
 
@@ -153,12 +205,18 @@ function enable_save(tipo){
     case('note'):
 	Dom.get(tipo+'_save').style.visibility='visible';
 	break;
+	 case('new_sticky_note'):
+	Dom.get(tipo+'_save').style.visibility='visible';
+	break;
     }
 };
 
 function disable_save(tipo){
     switch(tipo){
     case('note'):
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	break;
+	case('new_sticky_note'):
 	Dom.get(tipo+'_save').style.visibility='hidden';
 	break;
     }
@@ -185,6 +243,17 @@ function close_dialog(tipo){
 	Dom.get(tipo+"_input").value='';
 	Dom.get(tipo+'_save').style.visibility='hidden';
 	dialog_note.hide();
+
+ case('sticky_note'):
+	dialog_sticky_note.hide();
+	 Dom.get('sticky_note_input').value=Dom.get('sticky_note_content').innerHTML;
+	break;
+case('new_sticky_note'):
+	 Dom.get('sticky_note_input').value=Dom.get('sticky_note_content').innerHTML;
+
+	Dom.get(tipo+"_input").value='';
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_new_sticky_note.hide();
 
 	break;
     
@@ -534,6 +603,12 @@ Event.addListener('customer_search', "keydown", submit_search_on_enter,search_da
 dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_note.render();
 
+dialog_new_sticky_note = new YAHOO.widget.Dialog("dialog_new_sticky_note", {context:["new_sticky_note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_new_sticky_note.render();
+
+dialog_sticky_note = new YAHOO.widget.Dialog("dialog_sticky_note", {context:["sticky_note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_sticky_note.render();
+
 dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_attach.render();
 
@@ -543,6 +618,8 @@ dialog_link.render();
 dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_make_order.render();
 
+Event.addListener("new_sticky_note", "click", dialog_new_sticky_note.show,dialog_new_sticky_note , true);
+Event.addListener("sticky_note", "click", dialog_sticky_note.show,dialog_sticky_note , true);
 
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
@@ -555,13 +632,26 @@ Event.addListener("take_order", "click", take_order , true);
 Event.on('upload_attach', 'click', upload_attach);
 
 
+ if(Dom.get('sticky_note_content').innerHTML==''){
+ 
+
+                Dom.setStyle('sticky_note_div','display','none');
+                Dom.setStyle('new_sticky_note_tr','display','');
+
+            }else{
+
+             Dom.setStyle('sticky_note_div','display','');
+                Dom.setStyle('new_sticky_note_tr','display','none');
+            }
+
+/*
 dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_long_note.render();
 Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note , true);
 
 //Event.addListener("note", "click", dialog_note.hide,dialog_note , true);
 
-
+*/
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
