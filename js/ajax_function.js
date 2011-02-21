@@ -106,7 +106,8 @@ function getIgnore(v) {
 
 		var splitterResult = splitter.split("@");
 
-		//alert(splitterResult[1]);
+		//alert(splitterResult[0]);
+
 		document.getElementById('display').innerHTML=splitterResult[0]; 
                 document.getElementById('show').innerHTML=splitterResult[1]; 
            }

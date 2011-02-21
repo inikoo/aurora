@@ -1,14 +1,21 @@
 <?php
 	include('common.php');
+
 	require_once 'csvparser.php';
 	$csv = new CSV_PARSER;
+
 	//loading the CSV File
 	$csv->load($_SESSION['file_path']);
+
 	//extracting the HEADERS
 	$h = $csv->getHeaders();
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
-	$r = $csv->getRow($index);
+	
+	//$r =  $csv->getRow($index);
+	$raw = $csv->getrawArray();
+	
+	
 	
 	$tt = array();
 
@@ -75,8 +82,6 @@
 		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>">
 		<?php 
 			
-			//$selectBox = array('0'=>'Ignore','1'=>'Contact Name','2'=>'Name','3'=>'Type','4'=>'Company Name','5'=>'Email','6'=>'Mobile','7'=>'Telephone','8'=>'FAX','9'=>'Address','10'=>'Address Line1','11'=>'Address Line2','12'=>'Address Line3','13'=>'Town','14'=>'Postal Code','15'=>'Country Name','16'=>'First Division','17'=>'Second Division','18'=>'Tax Number');
-
 			$selectBox = array('Ignore'=>'Ignore','Customer Main Contact Name'=>'Contact Name','Customer Name'=>'Name','Customer Type'=>'Type','Customer Company Name'=>'Company Name','Customer Main Plain Email'=>'Email','Contact Main Plain Mobile'=>'Mobile','Customer Main Plain Telephone'=>'Telephone','Customer Main Plain FAX'=>'FAX','Customer Main Plain Address'=>'Address','Customer Address Line 1'=>'Address Line1','Customer Address Line 2'=>'Address Line2','Customer Address Line 3'=>'Address Line3','Customer Address Town'=>'Town','Customer Address Postal Code'=>'Postal Code','Customer Address Country Name'=>'Country Name','Customer Address Country First Division'=>'First Division','Customer Address Country Second Division'=>'Second Division','Customer Tax Number'=>'Tax Number');
 
 
@@ -106,10 +111,10 @@
 		</td>
 		<td>
 			<!-- Value Output -->
-			<h4 id="changecolor_<?php echo $j; ?>" ><?php echo $r[$j]; ?></h4>
+			<h4 id="changecolor_<?php echo $j; ?>" ><?php echo $raw[$index][$j]; ?></h4>
 		</td>
 	</tr>
-		<input type="hidden" name="values[]" value="<?php echo $r[$j]; ?>">
+		<input type="hidden" name="values[]" value="<?php echo $raw[$index][$j]; ?>">
 		
 	<?php
 		
@@ -118,4 +123,14 @@
 	?>
 	
 </table>
-<div id="display"><?php if(isset($_REQUEST['color_array'])) { print_r($_REQUEST['color_array']); } ?></div>
+<div id="display">
+<?php 
+	
+	if((isset($_REQUEST['color_array'])))
+		{ 
+		
+		$_SESSION['msg'][] = $_REQUEST['color_array'];
+		echo $_SESSION['msg'];
+		} 
+	?>
+</div>
