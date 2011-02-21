@@ -72,15 +72,15 @@ $scope_args='';
 }
 if(isset($_POST['final']))
 {
-  $col=array();
+ss
 $assign=array();
 $val=array();
-$col=$_POST['column'];
+
 $val=$_POST['val'];
 $assign=$_POST['assign_field'];
 
 $myvar = $val;
-
+$final=array();
 $myvar2 = $assign;
 
 for($i=0;$i<9;$i++)
