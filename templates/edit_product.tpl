@@ -23,7 +23,7 @@
      <div class="tabbed_container" > 
  
  
-      <div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
+      <div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;width:770px;" id="description_messages">
 	
 	<div id="info_name" style="float:left;width:260px;{if !( $edit=='pictures') }display:none{/if}">
 	  

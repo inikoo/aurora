@@ -725,7 +725,22 @@ $this->deleted=true;
 }
 
 
+function update_number_of_subjects(){
+ $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
+                 $this->id
+                );
+    $res=mysql_query($sql);
+    $num=0;
+    if($row=mysql_fetch_assoc($res)){
+        $num=$row['num'];
+    }
+ $sql=sprintf("update `Category Dimension` set `Category Number Subjects`=%d where `Category Key`=%d ",
+ $num,
+ $this->id
+ );   
+ mysql_query($sql);   
 
+}
 
 
 

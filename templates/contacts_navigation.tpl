@@ -15,7 +15,9 @@
 
  <span style="display:none" class="nav2 onleft"><a {if $nav_parent=='companies'}class="selected"{/if}  href="companies.php">{t}Companies{/t}</a></span>
 <span  style="display:none"  class="nav2 onleft"><a  {if $nav_parent=='contacts'}class="selected"{/if}   href="contacts.php">{t}Personal Contacts{/t}</a></span>
+{if $store_id}
 <span class="nav2 onleft"><a href="customer_categories.php?store_id={$store_id}&id=0">{t}Customer Categories{/t}</a></span>
+{/if}
 <span class="nav2 onright" style="padding:0px">      {if $next.id>0}<a class="next" href="customer.php?{$parent_info}id={$next.id}" ><img src="art/icons/next_white.png" style="padding:0px 10px" alt=">" title="{$next.name}"  /></a>{/if}</span>
 
 {if $parent_url}<span class="nav2 onright"><a   href="{$parent_url}">{$parent_title}</a></span>{/if}
@@ -40,6 +42,8 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
+
+
 <div style="clear:both;margin-top:0px;margin-right:0px;width:700px;float:right;margin-bottom:10px" class="right_box">
   <div class="general_options">
     {foreach from=$general_options_list item=options }

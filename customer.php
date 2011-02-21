@@ -87,6 +87,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
+		'js/edit_common.js',
 		'customer.js.php'
 		);
 $smarty->assign('css_files',$css_files);

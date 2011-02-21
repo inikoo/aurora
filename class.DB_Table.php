@@ -146,7 +146,12 @@ abstract class DB_Table {
     protected function update_field($field,$value,$options='') {
 
 
+$null_if_empty=true;
 
+if($options=='no_null'){
+$null_if_empty=false;
+
+}
 
         if (is_array($value))
             return;
@@ -170,9 +175,9 @@ abstract class DB_Table {
         }
 
 
-        $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
-
-        mysql_query($sql);
+        $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+    //print $sql;
+    mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {
             $this->msg.=' '._('Record can not be updated')."\n";
@@ -197,6 +202,7 @@ abstract class DB_Table {
             $save_history=true;
             if (preg_match('/no( |\_)history|nohistory/i',$options))
                 $save_history=false;
+                
             if (
                 preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
                 and !$this->new
@@ -214,8 +220,12 @@ abstract class DB_Table {
                 if ($this->table_name=='Product Department')
                     $history_data['direct_object']='Department';
 
-
-                $this->add_history($history_data);
+                $history_key=$this->add_history($history_data);
+                if($this->table_name=='Customer'){
+                 $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+                mysql_query($sql);
+              
+                }
 
             }
 
@@ -385,7 +395,9 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Metadata'])
                     );
         mysql_query($sql);
-        //print $sql;
+       // print $sql;
+        
+        
         return mysql_insert_id();
 
         

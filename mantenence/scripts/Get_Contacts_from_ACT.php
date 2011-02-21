@@ -14,6 +14,9 @@ include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
+include_once('../../class.Category.php');
+include_once('../../class.Node.php');
+
 //include_once('map_order_functions.php');
 include_once('common_read_orders_functions.php');
 
@@ -22,7 +25,7 @@ function microtime_float() {
     return ((float)$utime + (float)$time);
 }
 
-
+$encrypt=false;
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
@@ -38,6 +41,8 @@ if (!$db) {
 $tipo_his=array();
 $myFile = "act_timedata.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
+
+$filename="actdatatmp.txt";
 
 
 date_default_timezone_set('UTC');
@@ -58,26 +63,44 @@ $_SESSION['lang']=1;
 $convert_encoding=false;
 include_once('local_map.php');
 
+$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $data=array('Category Name'=>'Type of Business','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
+    $cat_type_business[$row['Store Key']]=new Category('find create',$data);
+    $data=array('Category Name'=>'Referrer','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
+    $cat_referrer[$row['Store Key']]=new Category('find create',$data);
 
-$store_data=array('Store Code'=>'UK',
-                  'Store Name'=>'Ancient Wisdom',
-                  'Store Locale'=>'en_GB',
-                  'Store Home Country Code 2 Alpha'=>'GB',
-                  'Store Currency Code'=>'GBP',
-                  'Store Home Country Name'=>'United Kingdom',
-                  'Store Home Country Short Name'=>'UK',
-                 );
-//$store=new Store('find',$store_data,'create');
-$store=new Store(1);
+    if ($row['Store Code']=='UK') {
+        $valid_sub_cats_referrals[$row['Store Key']]=array('StartUpPlus','Referral','Google','Ancient Wisdom','Other','Bing','Craft Focus Magazine','Facebook','Garden Shop Catalogue','Gift Focus Magazine','Gifts Today','Giftware Index','Giftware Review','Heritage Shop Catalogue','Market Times','MTN','Progressive Gifts','The Trader Magazine','The Trader Website','The Wholesaler Website','Twitter','Yahoo');
+        foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
+            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $subcat_type_referrer=new Category('find create',$data);
+        }
+    } else {
+        $valid_sub_cats_referrals[$row['Store Key']]=array('Referral','Google','Bing','Yahoo','Other');
+        foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
+            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $subcat_type_referrer=new Category('find create',$data);
+        }
 
-if (!$store->id) {
-//print_r($store);
-    exit("can not create store\n");
+    }
+
+    $valid_sub_cats_type_bussiness[$row['Store Key']]=array('Gift Shop','Internet Shop','Market Trader','Party Planner','Craft Fairs','Tourist Attraction','Wedding Planner','Wholesaler','Department Store','Florist','Ebay Seller','Garden Centre','NPO','Hospitality Industry','Therapist','Event','Other');
+foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_type_business) {
+            $data=array('Category Name'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $subcat_type_type_business=new Category('find create',$data);
+        }
+
+
 }
+
+
+
 $map_act=$_map_act;
 $map_act[90]='creation_date';
 
-$filename="actdatatmp.txt";
+
 $row = 0;
 $contacts=array();
 $contacts_date=array();
@@ -85,7 +108,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
 //  print_r($data);
-        print "$num $row\r";
+       print "$num $row\r";
 
         //    if($row>1000)
         //       break;
@@ -109,7 +132,6 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         }
 
 
-
         $act_data=array();
         $act_data['name']=mb_ucwords($cols[$map_act['name']+3]);
 
@@ -118,6 +140,9 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         //if ($act_data['name']=='' and $act_data['contact']!='') // Fix only contact
         //    $act_data['name']=$act_data['contact'];
+
+        $act_data['business_type']=mb_ucwords($cols[$map_act['business_type']]);
+        $act_data['where_find_us']=mb_ucwords($cols[$map_act['where_find_us']]);
 
 
         $act_data['first_name']=mb_ucwords($cols[$map_act['first_name']+3]);
@@ -144,11 +169,14 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $act_data['history']=$cols[97];
         $act_data['creator']=$cols[68];
         $act_data['international_email']=$cols[$map_act['int_email']+3];
+        $act_data['alt_email']=$cols[$map_act['alt_email']];
+
+      
+        
         $act_data['tax_number']=parse_tax_number($cols[$map_act['real_tax_number']+3]);
 
 
-        //   print $cols[92]."\n";
-
+       
         $act_data['country_d1']='';
         //  $act_data['vat_number']=$cols[88+3];
         $tmp=preg_split('/\s/',$cols[0]);
@@ -182,8 +210,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-            if($row>2000)
-          break;
+        //    if($row>2000)
+        //  break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -260,7 +288,7 @@ foreach($contacts as $act_data) {
     $_customer_data['date_created']=$act_data['creation_date'];
     $_customer_data['contact_name']=$act_data['contact'];
     $_customer_data['company_name']=$act_data['name'];
-    $_customer_data['email']=encrypt_email($email_data['email']);
+    $_customer_data['email']=encrypt_email($email_data['email'],$encrypt);
 
     $fr_customer=false;
 
@@ -298,16 +326,26 @@ foreach($contacts as $act_data) {
 
 
 
-
+    $send_emails=true;
 
 
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
+    else{
+        if($_customer_data['email']=='' and $act_data['alt_email']!=''){
+            $email_data=guess_email($act_data['alt_email']);
+        
+        if($email_data['email']){
+        $_customer_data['email']=encrypt_email($email_data['email'],$encrypt);
+        $send_emails=false;
+        
+        }
+    }
+    }
 
-
-    $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']));
-    $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']));
-    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']));
+    $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']),$encrypt);
+    $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']),$encrypt);
+    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']),$encrypt);
     $_customer_data['address_data']=$shop_address_data;
     $_customer_data['address_data']['type']='3line';
 
@@ -327,9 +365,9 @@ foreach($contacts as $act_data) {
 
 
 
-
-    // print_r($_customer_data);
-
+//print_r($act_data);
+     //print_r($_customer_data);
+//exit;
 
     //if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
     //  $customer_data['Customer Tax Number']=$header_data['tax_number'];
@@ -365,11 +403,6 @@ foreach($contacts as $act_data) {
 
     if (isset($_customer_data['address_data'])) {
 
-
-
-
-
-
         //continue;
         $customer_data['Customer First Contacted Date']=$act_data['creation_date'];
 
@@ -396,12 +429,140 @@ foreach($contacts as $act_data) {
     }
 
     // print_r($act_data);
-    
-  //  if($customer_data['Customer Main Plain Email']=='')
-    //    continue;
-//print_r($customer_data);
 
+    //  if($customer_data['Customer Main Plain Email']=='')
+    //    continue;
+
+$customer_data['Customer Sticky Note']='';
+
+$remove_customer=false;
+if(preg_match('/^(Closed Acc|Stopped Trading|Businees Closed Down|Closed Business|Not Trading-closed Down|Ceased Business|Bisiness Sold|Out OF Business|Closing Business|Blacklisted\! Ah|Fraud \- Dont Deal With|No Longer In Business|Close Down)/i',$act_data['business_type'])){
+$remove_customer=true;
+$customer_data['Customer Sticky Note']='Business Closed Down';
+}
+
+
+$customer_data['Customer Send Postal Marketing']='Yes';
+if(preg_match('/^(Don.t Send Catalogues)/i',$act_data['business_type']) or $remove_customer){
+$customer_data['Customer Send Postal Marketing']='No';
+}
+
+if($send_emails){
+$customer_data['Customer Send Newsletter']='Yes';
+$customer_data['Customer Send Email Marketing']='Yes';
+
+}else{
+$customer_data['Customer Send Newsletter']='No';
+$customer_data['Customer Send Email Marketing']='No';
+
+}
+
+$remove_address=false;
+if(preg_match('/(Poss Gone Away|Remove From Aw Mailing|Gone Away|Wrong Address|Unknown AT This Address)/i',$act_data['business_type'])){
+$remove_address=true;
+$customer_data['Customer Sticky Note']='Wrong Address';
+$customer_data['Customer Send Postal Marketing']='No';
+
+}
+
+
+if(preg_match('/(Difficult|Customer \- DIF|Very Fussy)/i',$act_data['business_type'])){
+$remove_address=true;
+$customer_data['Customer Sticky Note']='Difficult Customer';
+}
+if(preg_match('/(dishonest|Blacklisted)/i',$act_data['business_type'])){
+$remove_address=true;
+$customer_data['Customer Sticky Note']='Dishonest Customer';
+}
+
+//print_r($customer_data);
     $customer = new Customer ( 'find create',  $customer_data);
+
+
+
+
+
+
+
+
+
+
+    if ($customer->data['Customer Store Key']==1) {
+
+        $act_data['business_type']=mb_ucwords($act_data['business_type']);
+         if (preg_match('/(Carboot Sales)/i',$act_data['business_type']))
+            $act_data['business_type']='Market Trader';
+        if (preg_match('/(school|church|charity)/i',$act_data['business_type']))
+            $act_data['business_type']='NPO';
+        if (preg_match('/(gifts? shop)/i',$act_data['business_type']))
+            $act_data['business_type']='Gift Shop';
+        if (!preg_match('/^wedding planner$/i',$act_data['business_type'])) {
+            if (preg_match('/^(wedding|Christening|Special Occasion|For Event|One Off)$/i',$act_data['business_type']))
+                $act_data['business_type']='Event';
+
+        }
+        if (preg_match('/B\&b|Restaurant/i',$act_data['business_type'])) {
+            $act_data['business_type']='Hospitality Industry';
+
+        }
+
+
+
+        if ($act_data['business_type']!=''  and  in_array($act_data['business_type'],  $valid_sub_cats_type_bussiness[$customer->data['Customer Store Key']]) ) {
+            $data=array('Category Name'=>$act_data['business_type'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
+            $subcat_type_business=new Category('find create',$data);
+
+            $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                         $cat_type_business[$customer->data['Customer Store Key']]->id,
+                         prepare_mysql('Customer'),
+                         $customer->id
+                        );
+            mysql_query($sql);
+
+            $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+                         $subcat_type_business->id,
+                         prepare_mysql('Customer'),
+                         $customer->id
+                        );
+            mysql_query($sql);
+        }
+
+
+        $act_data['where_find_us']=mb_ucwords($act_data['where_find_us']);
+        if (preg_match('/(startup|starplus|Startsplus)/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='StartUpPlus';
+        if (preg_match('/(referal|referral|Refferal)/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Referral';
+        if (preg_match('/(Ancient Wisdiom|Ancien Wisdom|Ancient Wisdiom)/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Ancient Wisdom';
+        if (preg_match('/^Heritage$/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Heritage Shop Catalogue';
+        if (preg_match('/Giftwareindex/i',$act_data['where_find_us']))
+            $act_data['where_find_us']='Giftware Index';
+
+        if ($act_data['where_find_us']!=''   and  in_array($act_data['where_find_us'],  $valid_sub_cats_referrals[$customer->data['Customer Store Key']]) ) {
+            $data=array('Category Name'=>$act_data['where_find_us'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
+
+            $subcat_type_referrer=new Category('find create',$data);
+            if ($subcat_type_referrer->id) {
+                $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                             $cat_referrer[$customer->data['Customer Store Key']]->id,
+                             prepare_mysql('Customer'),
+                             $customer->id
+                            );
+                mysql_query($sql);
+
+                $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+                             $subcat_type_referrer->id,
+                             prepare_mysql('Customer'),
+                             $customer->id
+                            );
+                mysql_query($sql);
+            }
+
+        }
+    }
+    // print_r($act_data);
 //exit;
 //print_r($customer);
 
@@ -410,7 +571,7 @@ foreach($contacts as $act_data) {
     //  print_r($act_data['history']);
     // }
 
-   // $store->update_customers_data();
+    // $store->update_customers_data();
     foreach($act_data['history'] as $h_tipo=>$histories) {
 
         //print_r($histories);
@@ -534,9 +695,9 @@ function get_history_data($raw_history) {
 
     }
 
- //  print_r($history);
- // if(count($history)>2)
- // exit("**\n");
+//  print_r($history);
+// if(count($history)>2)
+// exit("**\n");
     return $history;
 
 }

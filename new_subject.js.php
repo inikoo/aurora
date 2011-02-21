@@ -52,7 +52,7 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 		
 		for(x in r.candidates_data){
 		    
-		    Dom.get("results").innerHTML+='<div style="width:100%;xborder:1px solid red;"><div style="xborder:1px solid blue;width:200px;margin:0px 0px 10px 0;float:left;margin-left:100px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:350px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div><div style="font-size:80%">'+r.candidates_data[x]['link']+'</div>  <div style="clear:both"></div><div style="clear:both"> </div>';
+		    Dom.get("results").innerHTML+='<div style="width:100%;"><div style="width:270px;margin:0px 0px 10px 0;float:left;margin-left:40px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:350px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div><div style="font-size:80%">'+r.candidates_data[x]['link']+'</div>  <div style="clear:both"></div><div style="clear:both"> </div>';
 		    
 		    var found_img='';
 		    // alert(r.candidates_data[x]['found']);return;
@@ -121,6 +121,7 @@ function update_save_button(){
 	    }
 	    
 	}else{
+	
 	    Dom.get('save_new_'+Subject).style.display='';
 	    Dom.get(Subject+'_found_dialog').style.display='none';
 	    Dom.get('email_found_dialog').style.display='none';

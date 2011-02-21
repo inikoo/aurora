@@ -2786,7 +2786,7 @@ function find_company($the_data) {
 
     $max_results=8;
 
-    $company=new company('find fuzzy',$data);
+    $company=new company('find complete',$data);
     $found_key=0;
     if ($company->found) {
         $action='found';
@@ -3062,7 +3062,7 @@ function find_contact($the_data) {
 
     $max_results=8;
 
-    $contact=new contact('find fuzzy',$data);
+    $contact=new contact('find complete',$data);
     $found_key=0;
     if ($contact->found) {
         $action='found';
@@ -4355,9 +4355,11 @@ function list_customer_categories() {
 
     $_dir=$order_direction;
     $_order=$order;
-
-    if ($order=='families')
+if ($order=='subjects')
+        $order='`Category Number Subjects`';
+    elseif ($order=='families')
         $order='`Product Category Families`';
+        
     elseif($order=='departments')
     $order='`Product Category Departments`';
     elseif($order=='code')
@@ -4412,7 +4414,7 @@ function list_customer_categories() {
 
 
 
-    $sql="select S.`Category Key`, `Category Name` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 // print $sql;
     $res = mysql_query($sql);
 
@@ -4731,6 +4733,7 @@ function list_customer_categories() {
                      //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
+                     'subjects'=>number($row['Category Number Subjects']),
 
                      /*  'departments'=>number($row['Product Category Departments']),
                        'families'=>number($row['Product Category Families']),
