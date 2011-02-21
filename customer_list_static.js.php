@@ -22,7 +22,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                                        ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list1.php?tipo=customer_list_static");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list.php?tipo=customer_list_static");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
