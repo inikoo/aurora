@@ -113,23 +113,11 @@ table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid 
 xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
 .prodinfo{font-size:120%}
 table.show_info_product td.number div{width:5em;text-align:right}
-
-
-.xprodinfo{border:1px solid #3b5998;padding:10px}
-.xprodinfo table, .prodinfo div {xborder:1px solid #ddd;float:left;}
-.xprodinfo table td {border-top:1px solid #ddd;padding:0 5px;vertical-align:top}
-.xprodinfo table td.noborder {border-top:none}
-.xprodinfo div {padding:10px}
-.xprodinfo .img{padding:5px 5px 7px 5px}
-.xprodinfo h2{padding:0}
-.xprodinfo img {padding:5px;border:1px solid #ccc;}
-.xprodinfo table td.stock{font-size:153.9%;font-weight:bold}
-.xprodinfo table td.price{font-size:110%;font-weight:bold}
+-
 
 .prod_info table.notes{clear:both;border:none;}
 
-.xprodinfo legend{background:#3b5998;color:#fff;margin-left:5px;padding:0px 10px 2px 10px;font-size:85%}
-
+-
 
 .newcontact{border:1px solid #3b5998;padding:10px}
 .newcontact table, .newcontact div {border:none;float:left;margin-right:10px}
@@ -194,7 +182,7 @@ input.normal_right{color:#000;text-align:right}
 img{vertical-align:bottom}
 
 .chooser {width:670px;bxorder:1px solid black;margin:0px auto}
-.chooser ul {;margin:0px auto;xborder:1px solid red;}
+.chooser ul {;margin:0px auto;}
 .chooser{padding:0px 0px 0 0px;}
 .chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
 .chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
@@ -206,7 +194,7 @@ img{vertical-align:bottom}
 
 
 .chooser2 {width:670px;border:0px solid black;margin:0px}
-.chooser2 ul {;margin:0px auto;xborder:1px solid red;}
+.chooser2 ul {;margin:0px auto;}
 .chooser2{padding:0px 0px 0 0px;}
 .chooser2 li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
 .chooser2 li:hover {opacity: .8;filter: alpha(opacity=80);}
@@ -306,9 +294,9 @@ table.plot_menu img.selected {opacity: 1.0;filter: alpha(opacity=100);}
 	filter: alpha(opacity=20);
 }
 
-input {border: 1px solid #777;xposition:relative;xbottom:-2px}
+input {border: 1px solid #777;xposition:relative}
 .changed{color:red}
-.error{xbackground:#fdafaf;color:red}
+.error{color:red}
 
 table.sbut {margin:5px;border-spacing:10px  10px;border-collapse: separate;width:100%}
 table.but{margin:5px 0 ;width:140px;border:none;clear:right;float:right;border-collapse: separate;;border-spacing:3px  3px;}
@@ -373,7 +361,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .show_options span.selected:hover {color:#ebe69f;}
 
 
-.edit_block{clear:both;margin:0 auto;xwidth:800px;padding:0px 0px;margin:0;xborder: 1px solid black}
+.edit_block{clear:both;margin:0 auto;xwidth:800px;padding:0px 0px;margin:0;}
 
 
 .plot_options{width:130px;float:right;text-align:right  }
@@ -415,14 +403,14 @@ color: #316D89;
 /*Products pages*/
 
 
-.top_bar{xborder:1px solid red;xmargin:15px 0 60px 0;padding:0 20px  }
+.top_bar{=padding:0 20px  }
 .top_bar h1{padding:0 0px 10px 20px;font-size:150%}
-.top_bar .nodetails{xmargin-top:10px;border:1px solid #ddd}
+.top_bar .nodetails{border:1px solid #ddd}
 .top_bar .details{clear:both;padding:10px 20px ;border:1px solid #ddd;margin:auto;}
 
 /*Common search div*/
 
-.right_boxs{xclear:right;sfloat:right;border: 0px solid #ddd;text-align:right;padding:0;margin-top:3px;xposition:relative;xbottom:12px}
+.right_boxs{xclear:right;sfloat:right;border: 0px solid #ddd;text-align:right;padding:0;margin-top:3px}
 .right_boxs form{ margin-bottom:5px }
 
 .right_boxs div{clear:right;float:right}
@@ -433,11 +421,11 @@ color: #316D89;
 
 
 
-table.search {clear:both;float:right}
+table.search {clear:both;float:right;margin-bottom:5px}
 table.search td.label{width:100px;text-align:right;}
 table.search td.form{width:325px}
 table.search  search.input{  height:16px;color:#555;font-style: italic;padding-left:2px;width:300px}
-table.search  .submitsearch {xbottom:-1px;cursor:pointer;z-index:2;right:2px;position:relative;left:305px}
+table.search  .submitsearch {cursor:pointer;z-index:2;right:2px;position:relative;left:305px}
 
 
 
@@ -454,7 +442,7 @@ table.locations td {margin:0;padding:0 2px;text-align:right ;vertical-align:top;
 table.locations img {height:12px;}
 
 /*Edit Locations/Stock on product.tpl*/
-.manage_stock {xborder:1px solid #ccc;padding:0 0px }
+.manage_stock {padding:0 0px }
 .manage_stock table{margin:0;padding:0  }
 table.edit_location{ margin-top:20px }
 .manage_stock .actions{  border-collapse: separate;;border-spacing:5px  0px;}
@@ -482,7 +470,7 @@ table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border
 table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
 
 
-span.but{ xbackground:#238546;color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
+span.but{color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
 
 span.xxxselected { background:#7296e1;color:#fff ;border:1px solid navy}
 span.xxxselected:hover { background:#7296e1;color:#fff ;border:1px solid navy}

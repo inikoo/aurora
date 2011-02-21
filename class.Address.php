@@ -122,7 +122,8 @@ class Address extends DB_Table {
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
             $this->id=$this->data['Address Key'];
         else {
-            print "$sql\n  address do not exists \n";
+            print "$sql\n  xaddress do not exists \n";
+            dfsdfsdfdsf();
 
             // exit(" $sql\n can not open address");
 
@@ -281,7 +282,7 @@ class Address extends DB_Table {
 
     }
 
-    function fund_fuzzy() {
+    function find_fuzzy() {
 
 
 
@@ -4966,21 +4967,10 @@ class Address extends DB_Table {
 
 
     function delete() {
-        $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
-        mysql_query($sql);
-        $sql=sprintf("delete from `Address Bridge`  where  `Address Key`=%d", $this->id);
-        mysql_query($sql);
-        $this->deleted=true;
-        $history_data['History Abstract']='Address Deleted';
-        $history_data['History Details']=_('Address').' '.$this->display('plain')." "._('has been deleted');
-        $history_data['Action']='deleted';
-        $history_data['Direct Object']='Address';
-        $history_data['Direct Object Key']=$this->id;
-        $history_data['Indirect Object']='';
-        $history_data['Indirect Object Key']='';
-        $this->add_history($history_data);
+       
 
 
+        $country_code=$this->data['Address Country Code'];
 
 
 
@@ -5019,7 +5009,7 @@ class Address extends DB_Table {
                 $addresses=$parent_object->get_address_keys();
 
                 if (count($addresses)==0) {
-                    $address=new Address('find create',array('Address Country Code'=>'UNK'));
+                    $address=new Address('find create',array('Address Country Code'=>$country_code));
                     $address_key=$address->id;
 
                 } else {
@@ -5063,6 +5053,20 @@ class Address extends DB_Table {
             $customer->update_principal_delivery_address($address_key);
         }
 
+
+ $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Address Bridge`  where  `Address Key`=%d", $this->id);
+        mysql_query($sql);
+        $this->deleted=true;
+        $history_data['History Abstract']='Address Deleted';
+        $history_data['History Details']=_('Address').' '.$this->display('plain')." "._('has been deleted');
+        $history_data['Action']='deleted';
+        $history_data['Direct Object']='Address';
+        $history_data['Direct Object Key']=$this->id;
+        $history_data['Indirect Object']='';
+        $history_data['Indirect Object Key']='';
+        $this->add_history($history_data);
 
     }
 

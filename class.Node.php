@@ -327,8 +327,10 @@ return $this->c_list;
 function has_children($position) // return TRUE if that position has sub-categories otherwise returns FALSE
 {
 $check_sql = "SELECT ".$this->table_fields['id']." FROM ".$this->table_name." WHERE ".$this->table_fields['position']." RLIKE  '^".$position."[0-9]+>$' ".$this->sql_condition;
-$check_res = mysql_query($check_sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$check_sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+$check_res = mysql_query($check_sql) ;
 $check = mysql_fetch_array($check_res);
+
+//print "--> $check_sql\n";
 if($check[preg_replace('/`/','',$this->table_fields['id'])] != "") return TRUE;
 else return FALSE;
 }
@@ -383,16 +385,17 @@ function get_children($position){
 
   $children=array();
 
-$sql = "SELECT * FROM ".$this->table_name." WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition." order by ".$this->table_fields['ord']." ";
+$sql = "SELECT * FROM ".$this->table_name." WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition." order by ".$this->table_fields['name']." ";
 $res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
 //print "$sql\n";
-while($child = mysql_fetch_array($res)){
+$contador=0;
+while($child = mysql_fetch_assoc($res)){
   $child["prefix"] = $this->get_prefix($child[ preg_replace('/`/','',$this->table_fields['position']) ]);
   $has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
   $child['has_children']= $has_children ;
   $child['position']= $child[preg_replace('/`/','',$this->table_fields['position'])] ;
   $child['is_default']= $child[preg_replace('/`/','',$this->table_fields['is_default'])] ;
-    
+    $child['contador']=$contador++;
   $children[$child[preg_replace('/`/','',$this->table_fields['id'])]] = $child;
 
 
@@ -802,11 +805,14 @@ function load_comb(){
   $this->comb=array();
   $this->root=array();
   foreach($this->get_children('')    as $child){
+  //print_r($child);
+  
     $this->root[]=$child[$id_field];
     $this->comb[$child[$id_field]]=
       array(
 	    'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
 	    ,'has_child'=>$child['has_children']
+	     ,'contador'=>$child['contador']
 	    );
     if($child['has_children']){
       $this->get_teeth($child[preg_replace('/`/','',$this->table_fields['position'])],$child[$id_field]);
@@ -842,6 +848,8 @@ function get_teeth($position,$father){
 											,'parent'=>$parent
 											,'position'=>$child[$position_field]
 											,'default'=>($child[$is_default_field]=='Yes'?1:0)
+											,'contador'=>$child['contador']
+											,'mod5'=>fmod($child['contador'],5)
 								      );
     
 

@@ -109,7 +109,7 @@ var save_new_contact=function(e){
    
    var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + encodeURIComponent(json_value); 
 
-    alert(request);
+   // alert(request);
    // var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
    
     YAHOO.util.Connect.asyncRequest('POST',request ,{

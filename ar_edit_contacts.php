@@ -16,6 +16,21 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('delete_customer_history'):
+$data=prepare_values($_REQUEST,array(
+                            'key'=>array('type'=>'key'),
+                         ));
+delete_customer_history($data);
+break;
+case('customer_add_note'):
+    $data=prepare_values($_REQUEST,array(
+                            'customer_key'=>array('type'=>'key'),
+                            'note'=>array('type'=>'string'),
+                            'details'=>array('type'=>'string'),
+                            'note_type'=>array('type'=>'string'),
+                         ));
+    customer_add_note($data);
+break;
 case('set_main_address'):
 
     update_main_address();
@@ -265,6 +280,7 @@ default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
     echo json_encode($response);
 }
+
 function edit_contact($data) {
     global $editor;
 
@@ -1626,6 +1642,25 @@ function delete_email() {
     $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_principal_email_key());
     echo json_encode($response);
 }
+
+function delete_customer_history($data){
+
+$history_key=$data['key'];
+$sql=sprintf("delete from `Customer History Bridge` where `History Key`=%d and `Deletable`='Yes'",$history_key);
+mysql_query($sql);
+if(mysql_affected_rows()){
+$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$history_key);
+mysql_query($sql);
+$action='deleted';
+$msg=_('History record Deleted');
+}else{
+$action='no_change';
+$msg='Record can not be deleted';
+}
+$response=array('state'=>200,'action'=>$action,'msg'=>$msg);
+    echo json_encode($response);
+}
+
 function delete_mobile() {
     global $editor;
     if ( !isset($_REQUEST['value'])  ) {
@@ -2016,6 +2051,37 @@ function new_contact($data) {
 
 
 
+function customer_add_note($data) {
+      global $editor;
+
+
+    $customer=new customer($data['customer_key']);
+  
+    $customer->editor=$editor;
+
+if( $data['note_type']=='deletable')
+$data['note_type']='Yes';
+else
+$data['note_type']='No';
+
+//print_r($data['note_type']);
+
+$customer->add_note($data['note'],$data['details'],false,$data['note_type']);
+
+
+
+   
+    if ($customer->updated) {
+        $response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>'note');
+
+    } else {
+        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+
+}
+
+
 function edit_customer() {
     $key=$_REQUEST['key'];
 
@@ -2056,20 +2122,25 @@ function edit_customer() {
                      "ship_town"=>'Main Ship To Town',
                      "ship_postcode"=>'Main Ship To Postal Code',
                      "ship_region"=>'Main Ship To Country Region',
-                     "ship_country"=>'Main Ship To Country'
+                     "ship_country"=>'Main Ship To Country',
+                     "sticky_note"=>'Customer Sticky Note',
+                     "new_sticky_note"=>'Customer Sticky Note'
 
                  );
         if (array_key_exists($_REQUEST['key'],$key_dic))
             $key=$key_dic[$_REQUEST['key']];
+            
+            $the_new_value=_trim(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+            
 
         if ($key=='Customer Fiscal Name') {
-            $customer->update_fiscal_name(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+            $customer->update_fiscal_name($the_new_value );
         }
         elseif ($key=='Customer Tax Number') {
-            $customer->update_tax_number(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+            $customer->update_tax_number($the_new_value);
         }
         else
-            $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue'])  )  ));
+            $customer->update(array($key=>$the_new_value));
     }
 
 

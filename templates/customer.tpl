@@ -4,9 +4,8 @@
 
  
 
-<div style="padding:0px 20px">
 
-<div style="padding:0px 20px"><span  id="export_csv0" style="float:right;margin-left:15px"  class="table_type state_details" tipo="delivery_notes" ><a href="pdf_customer.php?id={$customer->get('Customer Key')}">PDF Address</a></span>
+<div style="padding:0px 20px">
 
   {include file='contacts_navigation.tpl'}
 
@@ -19,51 +18,46 @@
 {if $customer->get('Customer Tax Number')!=''}<h2 style="padding:0">{$customer->get('Customer Tax Number')}</h2>{/if}    
   </div>
   
-  
+ 
      
-  
-  <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
+<table class="quick_button" style="clear:both;float:right;margin-top:0px;">
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
-    <tr><td  id="attach">{t}Attach File{/t}</td></tr>
+    <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
+
+    <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr><td id="take_order">{t}Take Order{/t}</td></tr>
-    
-
-
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
-  
     <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
-<tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
+    <tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
     <tr style="display:none"><td id="others" >{t}Other{/t}</td></tr>
-    
-  </table>
+</table>
        
 
      
      
      
-<table id="customer_data" style="width:500px" border=0>
-
-<tr>
-{if $customer->get('Customer Main Address Key')}<td valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
-<td  valign="top">
-<table border=0 style="padding:0">
-{if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
-{if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img src="art/icons/email.png"/></td></tr>{/if}
-
-{if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
-
-
-
-</table>
-</td>
-</tr>
-
+<table id="customer_data" style="width:430px;float:left" border=0>
+    <tr>
+        {if $customer->get('Customer Main Address Key')}<td valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
+        <td  valign="top">
+            <table border=0 style="padding:0">
+                {if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
+                {if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  src="art/icons/email.png"/></td></tr>{/if}
+                {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Telephone')}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" src="art/icons/telephone.png"/></td></tr>{/if}
+                {if $customer->get('Customer Main Fax Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Fax')}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td></tr>{/if}
+            </table>
+        </td>
+    </tr>
 </table>
 
+ <div id="sticky_note_div" style="border:1px solid #eee;background:#e0eefd;float:left;width:300px;padding:0;margin-right:20px">
+<img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
+<div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Customer Sticky Note')}</div>
+</div>
 
 
-<div >
+<div style="clear:both" >
   <h2 style="font-size:150%">{t}Orders Overview{/t}</h2>
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
     <tr><td>
@@ -81,14 +75,30 @@
 </div>
 
 </div>
-  <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-      <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
-  
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
- 
  </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
 
@@ -231,16 +241,58 @@
 
 <div id="dialog_note">
   <div id="note_msg"></div>
-  <table >
+  <table style="padding:10px;margin:10px" >
+  <tr id="note_type" class="options_list" prefix="note_type_" value="permanent">
+  <td class="selected" id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
+  </td>
+  <td class="" id="note_type_deletable" onclick="radio_changed(this)" name="deletable" >{t}Deletable{/t}
+  </td>
+  </tr>
+  
     <tr><td colspan=2>
-	<textarea id="note_input" onkeyup="change(event,this,'note')"></textarea>
+	<textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea>
       </td>
     <tr>
     <tr class="buttons" style="font-size:100%">
   <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
+    <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
-    <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+    <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
+</table>
+</div>
+
+
+
+<div id="dialog_new_sticky_note">
+  <div id="new_sticky_note_msg"></div>
+  <table style="padding:10px;margin:10px" >
+ 
+    <tr><td colspan=2>
+	<textarea style="width:200px;height:100px" id="new_sticky_note_input" onkeyup="change(event,this,'new_sticky_note')"></textarea>
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text button" onClick="close_dialog('new_sticky_note')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('new_sticky_note')" id="new_sticky_note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
+</table>
+</div>
+
+<div id="dialog_sticky_note">
+  <div id="sticky_note_msg"></div>
+  <table style="padding:10px;margin:10px" >
+ 
+    <tr><td colspan=2>
+    
+	<textarea style="width:260px;height:125px" id="sticky_note_input"  onkeyup="change(event,this,'sticky_note')">{$customer->get('Customer Sticky Note')}</textarea>
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text button" onClick="close_dialog('sticky_note')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('sticky_note')" id="sticky_note_save"  class="unselectable_text button"     style="" >{t}Save{/t}</span></td></tr>
 </table>
 </div>
 
@@ -295,7 +347,7 @@
 </table>
 </div>
 
-
+{*}
 <div id="dialog_long_note">
   <div id="long_note_msg"></div>
   <table >
@@ -311,7 +363,7 @@
     <span  onclick="save('long_note')" id="long_note_save"  class="unselectable_text button"   >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
 </table>
 </div>
-
+{*}
 
 <div id="dialog_make_order">
   <div id="long_note_msg"></div>

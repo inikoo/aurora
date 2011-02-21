@@ -11,6 +11,57 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('disassociate_subject_to_category'):
+ $data=prepare_values($_REQUEST,array(
+ 'cat_id'  =>array('type'=>'string'),
+                             'subject'  =>array('type'=>'string'),
+                             'subject_key'  =>array('type'=>'key'),
+                             'category_key'  =>array('type'=>'key')
+                         ));
+
+
+    disassociate_subject_to_category($data);
+
+break;
+case('disassociate_subject_to_category_radio'):
+ $data=prepare_values($_REQUEST,array(
+  'cat_id'  =>array('type'=>'string'),
+                             'subject'  =>array('type'=>'string'),
+                             'subject_key'  =>array('type'=>'key'),
+                             'category_key'  =>array('type'=>'key'),
+                              'parent_category_key'  =>array('type'=>'key')
+                         ));
+
+
+    disassociate_subject_to_category_radio($data);
+
+break;
+case('associate_subject_to_category'):
+ $data=prepare_values($_REQUEST,array(
+                                'cat_id'  =>array('type'=>'string'),
+                             'subject'  =>array('type'=>'string'),
+                             'subject_key'  =>array('type'=>'key'),
+                             'category_key'  =>array('type'=>'key'),
+                            
+                         ));
+
+
+    associate_subject_to_category($data);
+
+break;
+case('associate_subject_to_category_radio'):
+ $data=prepare_values($_REQUEST,array(
+  'cat_id'  =>array('type'=>'string'),
+                            'subject'  =>array('type'=>'string'),
+                            'subject_key'  =>array('type'=>'key'),
+                            'category_key'  =>array('type'=>'key'),
+                            'parent_category_key'  =>array('type'=>'key')
+                         ));
+
+
+    associate_subject_to_category_radio($data);
+
+break;
 case('new_category'):
     $data=prepare_values($_REQUEST,array(
                              'name'=>array('type'=>'string'),
@@ -907,3 +958,131 @@ function delete_categories($data) {
     $response=array('state'=>200,'action'=>$action);
     echo json_encode($response);
 }
+
+function disassociate_subject_to_category($data) {
+    $sql=sprintf("delete from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                 $data['parent_category_key'], 
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    mysql_query($sql);
+   // print($sql);
+    //print "-->".mysql_affected_rows()."<--  "    ;
+    if(mysql_affected_rows()>0){
+    $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id']);
+    echo json_encode($response);
+    }else{
+    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+    echo json_encode($response);
+    }
+    
+}
+
+
+function disassociate_subject_to_category_radio($data) {
+$found=false;
+    $sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                 $data['category_key'], 
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+        if($row['num']>0)
+            $found=true;
+    
+    }
+
+
+    if(!$found){
+     $response=array('state'=>200,'action'=>'nochange','msg'=>_('The Subject is not associated with the category'));
+    echo json_encode($response);
+    exit;
+    }
+
+
+    $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                 $data['parent_category_key'], 
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    mysql_query($sql);
+   //print($sql);
+    //print "-->".mysql_affected_rows()."<--  "    ;
+    if(mysql_affected_rows()>0){
+    $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id']);
+    echo json_encode($response);
+    }else{
+    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+    echo json_encode($response);
+    }
+    
+}
+
+
+function associate_subject_to_category($data) {
+    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+                 $data['category_key'],
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    mysql_query($sql);
+    
+    if(mysql_affected_rows()>0){
+    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
+    echo json_encode($response);
+    }else{
+    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
+    echo json_encode($response);
+    }
+    
+}
+
+
+function associate_subject_to_category_radio($data) {
+  
+  
+  $found=false;
+    $sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                 $data['category_key'], 
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+        if($row['num']>0)
+            $found=true;
+    
+    }
+
+
+    if($found){
+     $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+    echo json_encode($response);
+    exit;
+    }
+  
+  
+    $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                 $data['parent_category_key'], 
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    mysql_query($sql);
+    
+  $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+                 $data['category_key'],
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    mysql_query($sql);
+    
+    if(mysql_affected_rows()>0){
+    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
+    echo json_encode($response);
+    }else{
+    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
+    echo json_encode($response);
+    }
+  
+  }

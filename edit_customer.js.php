@@ -80,31 +80,18 @@ function validate_scope_old(){
 
 
 function change_block(e){
-    if(this.id=='delivery2')
-	id='delivery';
-    else
-	id=this.id;
+   var ids = ["details","company","delivery","categories","communications"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications"]; 
 
-     if(editing!=id){
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('d_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
 	
-
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id ,{});
 	
-
-
-	Dom.get('d_details').style.display='none';
-	Dom.get('d_company').style.display='none';
-	Dom.get('d_delivery').style.display='none';
-
-	Dom.get('d_'+id).style.display='';
-
-	//	alert(this.id);
-	Dom.removeClass(editing,'selected');
-	Dom.addClass(this, 'selected');
-	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+id ,{});
-	
-	editing=id;
-    }
+   
 
 
 
@@ -169,6 +156,93 @@ function reset_edit_customer(){
 }
 
 
+function save_checkout(o) {
+
+var category_key=o.getAttribute('cat_id')
+var subject='Customer';
+var subject_key=Dom.get('customer_key').value;
+if(Dom.hasClass(o,'selected'))
+    var operation_type='disassociate_subject_to_category';
+else
+    var operation_type='associate_subject_to_category';
+
+var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&cat_id="+o.id
+		
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				 
+            if (r.action=='deleted') {
+                Dom.removeClass(r.cat_id,'selected');
+
+            }else if(r.action=='added'){
+                            Dom.addClass(r.cat_id,'selected');
+
+            }else{
+                alert(r.msg)
+            }
+        }
+    }
+    });
+
+
+
+}
+
+function save_radio(o) {
+ 
+var parent_category_key=o.getAttribute('parent');
+var category_key=o.getAttribute('cat_id')
+var subject='Customer';
+var subject_key=Dom.get('customer_key').value;
+if(Dom.hasClass(o,'selected'))
+    var operation_type='disassociate_subject_to_category_radio';
+else
+    var operation_type='associate_subject_to_category_radio';
+
+var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
+		
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+			//	alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				 
+            if (r.action=='deleted') {
+                Dom.removeClass(r.cat_id,'selected');
+
+            }else if(r.action=='added'){
+                          
+                          cat_element=Dom.get(r.cat_id)
+                            parent=cat_element.parentNode;
+                            
+                            other_elements=Dom.getElementsByClassName('catbox', 'span', parent)
+                          //  for (i in other_elements){
+                           //     alert(other_elements[i].id)
+                           // }
+                        Dom.removeClass(other_elements,'selected');
+                        Dom.addClass(cat_element,'selected');
+                    parent.setAttribute('value',cat_element.getAttribute('name'));
+                          
+                          
+                          
+                        
+
+            }else{
+                
+            }
+
+
+        }
+    }
+                                                                 });
+
+
+
+}
+ 
+			
 
 function display_edit_billing_address(){
   billing_address_key=this.getAttribute('address_key');
@@ -207,7 +281,7 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
-    var ids = ["details","company","delivery","delivery2"]; 
+    var ids = ["details","company","delivery","categories","communications"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     Event.addListener("back_to_take_order", "click", back_to_take_order , true);
     
