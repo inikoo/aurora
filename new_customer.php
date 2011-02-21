@@ -34,12 +34,13 @@ $smarty->assign('scope','customer');
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-
+$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 'text_editor.css',
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/edit.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -57,8 +58,8 @@ $js_files=array(
 		'js/phpjs.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/search.js'
-	
+		'js/search.js',
+	    'new_subject.js.php'
 		);
 
 
@@ -78,15 +79,12 @@ $smarty->assign('prefix',$salutations);
 $editing_block='details';
 $smarty->assign('edit',$editing_block);
 
-$css_files[]='css/edit.css';
-$css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
 
 
 $tipo='company';
 if(isset($_REQUEST['tipo']) and $_REQUEST['tipo']=='person'){
   $tipo='person';
 }
-$js_files[]='new_subject.js.php';
 
 
 if($tipo=='company'){

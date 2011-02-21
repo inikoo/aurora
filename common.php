@@ -49,11 +49,11 @@ date_default_timezone_set(TIMEZONE) ;
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
 
+$max_session_time=$myconf['max_session_time'];
+$max_session_time_in_milliseconds=1000*$max_session_time;
+$session = new Session($max_session_time,1,100);
 
-
-$session = new Session($myconf['max_session_time'],1,100);
-
-//print_r($_SESSION);
+//print_r($session);
 //print '//'.session_id( );
 //print '//'.$_SESSION['state']['store']['plot'];
 require('external_libs/Smarty/Smarty.class.php');
@@ -83,7 +83,6 @@ $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']?
 
 
 if ($is_already_logged_in) {
-
     if ($_SESSION['logged_in_page']!=0) {
 
 
