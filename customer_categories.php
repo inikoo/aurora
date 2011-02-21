@@ -24,19 +24,24 @@ $general_options_list=array();
 
 $smarty->assign('view',$_SESSION['state']['customer_categories']['view']);
 
-
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
+
 		 'common.css',
 		 'container.css',
 		 'button.css',
 		 'table.css',
 		 'css/dropdown.css'
 		 );
+	
+		 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -48,8 +53,9 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'search.js',
+		'js/search.js',
 		'js/edit_category_common.js',
+		'common_customers.js.php',
 		'customer_categories.js.php',
 		'js/dropdown.js',
 		
@@ -57,6 +63,7 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('options_box_width','200px');
 
 if(isset($_REQUEST['id'])){
 $category_key=$_REQUEST['id'];

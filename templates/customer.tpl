@@ -174,7 +174,7 @@
 <table    class="show_info_product">
 
 		   <tr >
-		  		      <td>{t}Delivery Address{/t}:</td><td>{$customer->get('Customer XHTML Delivery Address')}</td>
+		  		      <td>{t}Delivery Address{/t}:</td><td>{$customer->get('Customer XHTML Main Delivery Address')}</td>
 
 		    </tr>
 		</table>

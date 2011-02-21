@@ -1758,20 +1758,7 @@ function list_customers() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    /* $_SESSION['state']['customers']['table']=array(
-     'order'=>$order,
-     'order_dir'=>$order_direction,
-     'nr'=>$number_results,
-     'sf'=>$start_from,
-     'where'=>$where,
-     'type'=>$type,
-
-     'f_field'=>$f_field,
-     'f_value'=>$f_value
-     );*/
-
-
-
+ 
 
     $_SESSION['state']['customers']['table']['order']=$order;
     $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
@@ -1791,41 +1778,78 @@ function list_customers() {
    
         $awhere=preg_replace('/\\\"/','"',$awhere);
         //    print "$awhere";
+        
+        
+        $where_data=array(
+        'product_ordered1'=>'∀',
+        'product_not_ordered1'=>'',
+        'product_not_received1'=>'',
+        'from1'=>'',
+        'to1'=>'',
+        'dont_have'=>array(),
+        'have'=>array(),
+        'categories'
+        );
+        
         $awhere=json_decode($awhere,TRUE);
 
+        
+        foreach ($awhere as $key=>$item) {
+            $where_data[$key]=$item;
+        }
+        
         
         $where='where true';
 
 
+//print_r($where_data);
 
-//print_r($awhere);
-
-
+ $use_categories =false;
         $use_otf =false;
 
-        if ($awhere['product_ordered1']!='') {
-            if ($awhere['product_ordered1']!='∀') {
+        $where_categories='';
+        if ($where_data['categories']!='') {
+        
+        $categories_keys=preg_split('/,/',$where_data['categories']);
+        $valid_categories_keys=array();
+        foreach ($categories_keys as $item) {
+            if(is_numeric($item))
+                $valid_categories_keys[]=$item;
+        }
+        $categories_keys=join($valid_categories_keys,',');
+        if($categories_keys){
+        $use_categories =true;
+        $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
+        }
+        
+        
+        } 
+        
+
+
+        if ($where_data['product_ordered1']!='') {
+            if ($where_data['product_ordered1']!='∀') {
                 $use_otf=true;
-                $where_product_ordered1=extract_product_groups($awhere['product_ordered1']);
+                $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
             } else
                 $where_product_ordered1='true';
         } else{
             $where_product_ordered1='false';
         }
         
-        if ($awhere['product_not_ordered1']!='') {
-            if ($awhere['product_not_ordered1']!='ALL') {
+        if ($where_data['product_not_ordered1']!='') {
+            if ($where_data['product_not_ordered1']!='ALL') {
                 $use_otf=true;
-                $where_product_not_ordered1=extract_product_groups($awhere['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
+                $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
             } else
                 $where_product_not_ordered1='false';
         } else
             $where_product_not_ordered1='true';
 
-        if ($awhere['product_not_received1']!='') {
-            if ($awhere['product_not_received1']!='∀') {
+        if ($where_data['product_not_received1']!='') {
+            if ($where_data['product_not_received1']!='∀') {
                 $use_otf=true;
-                $where_product_not_received1=extract_product_groups($awhere['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+                $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
             } else {
                 $use_otf=true;
                 $where_product_not_received1=' ((ordered-dispatched)>0)  ';
@@ -1833,24 +1857,29 @@ function list_customers() {
         } else
             $where_product_not_received1='true';
 
-        $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'`Invoice Date`','only_dates');
+        $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
         if ($date_interval1['mysql']) {
             $use_otf=true;
         }
 
-
+       
         if ($use_otf) {
             $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
         }
-
+        
+        
+     if ($use_categories) {
+         
+         $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
+        }
      
 
 
 
 
-        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ";
+        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
 
-        foreach($awhere['dont_have'] as $dont_have) {
+        foreach($where_data['dont_have'] as $dont_have) {
             switch ($dont_have) {
             case 'tel':
                 $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
@@ -1866,7 +1895,7 @@ function list_customers() {
                 break;
             }
         }
-        foreach($awhere['have'] as $dont_have) {
+        foreach($where_data['have'] as $dont_have) {
             switch ($dont_have) {
             case 'tel':
                 $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
@@ -1956,6 +1985,7 @@ function list_customers() {
 
     $sql="select count(Distinct C.`Customer Key`) as total from $table  $where $wheref";
 //print "$sql<br/>\n";
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 

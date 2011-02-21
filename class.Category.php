@@ -724,6 +724,69 @@ $this->deleted=true;
 
 }
 
+function get_all_descendants(){
+$sql = sprintf("SELECT COUNT(DISTINCT `Subject Key`)  as num  FROM `Category Dimension` WHERE `Category Position`	RLIKE '^%s[0-9]+>$' and `Subject`=%s ",
+$this->data['Category Position'],
+prepare_mysql($this->data['Subject'])
+);
+
+    $res=mysql_query($sql);
+    $number_of_children=0;
+    if($row=mysql_fetch_assoc($res)){
+        $number_of_children=$row['num'];
+    }
+
+}
+
+function update_children_data() {
+
+    $number_of_children=0;
+
+
+
+    $sql = sprintf("SELECT COUNT(*)  as num  FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Subject`=%s ",
+                   $this->id,
+                   prepare_mysql($this->data['Category Subject'])
+                  );
+    $res=mysql_query($sql);
+    $number_of_children=0;
+    if ($row=mysql_fetch_assoc($res)) {
+        $number_of_children=$row['num'];
+    }
+    
+    
+    
+$max_deep=0;
+if($number_of_children){
+
+$sql = sprintf("SELECT `Category Position`  FROM `Category Dimension` WHERE `Category Position`	RLIKE '^%s[0-9]+>$' and `Category Subject`=%s ",
+$this->data['Category Position'],
+prepare_mysql($this->data['Category Subject'])
+);
+
+
+
+    $res=mysql_query($sql);
+   
+    $max_deep=0;
+    while($row=mysql_fetch_assoc($res)){
+        $deep=count(preg_split('/\>/',$row['Category Position']))-2;
+        if($deep>$max_deep)
+            $max_deep=$deep;
+   
+   }
+
+}
+
+    $sql=sprintf("update `Category Dimension` set `Category Number Children`=%d ,`Category Children Deep`=%d where `Category Key`=%d ",
+                 $number_of_children,
+                $max_deep,
+                 $this->id
+                );
+    mysql_query($sql);
+   
+
+}
 
 function update_number_of_subjects(){
  $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
