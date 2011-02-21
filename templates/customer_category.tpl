@@ -14,8 +14,8 @@
   <h1>{t}Category{/t}: {$category->get('Category Name')}</h1>
 </div>
 
-
-
+sss
+{$category->get('Category Number Children')}
 <div class="data_table" style="{if $category->get('Category Number Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
     <span class="clean_table_title">Subcategories</span>
 

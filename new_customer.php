@@ -32,6 +32,14 @@ $smarty->assign('store_key',$store_key);
 $smarty->assign('scope','customer');
 
 
+$general_options_list=array();
+
+
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Go Back'));
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',

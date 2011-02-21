@@ -130,7 +130,7 @@ class Company extends DB_Table {
             $score_plus_for_match=40;
 
 
-            if ($find_fuzzy) {
+            
 
                 $len=strlen($raw_data['Company Name']);
                 if ($len<256) {
@@ -171,42 +171,7 @@ class Company extends DB_Table {
                             $this->candidate_companies[$company_key]=$score+$extra_score;
                     }
                 }
-            } else {
 
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
-                             ,prepare_mysql($raw_data['Company Name'])
-                            );
-
-                $result=mysql_query($sql);
-                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-                    $score=$max_score;
-                    $extra_score=0;
-                    $company_key=$row['Company Key'];
-
-                    foreach($this->candidate as $candidate_key=>$candidate_score) {
-                        $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
-                                     ,$candidate_key
-                                     ,$company_key
-                                    );
-                        $res=mysql_query($sql);
-                        $match_data=mysql_fetch_array($res);
-                        if ($match_data['matched']>0) {
-                            $this->candidate[$candidate_key]+=$score_plus_for_match;
-                            $extra_score=$score_plus_for_match;
-                        }
-
-                    }
-
-
-                    if (isset($this->candidate_companies[$company_key]))
-                        $this->candidate_companies[$company_key]+=$score+$extra_score;
-                    else
-                        $this->candidate_companies[$company_key]=$score+$extra_score;
-                }
-
-
-            }
 
         }
 
@@ -950,7 +915,7 @@ class Company extends DB_Table {
         switch ($key) {
 
         case('Contact List'):
-            $sql=sprintf("select `Contact Key`  from `Contact Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
+            $sql=sprintf("select `Contact Key`  from `Contact Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
             $res=mysql_query($sql);
             $this->contact_list=array();
             while ($row=mysql_fetch_array($res)) {
@@ -1650,9 +1615,8 @@ function remove_address($address_key) {
         return $main_contact_key;
     }
     function create_contact_bridge($contact_key) {
-        $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
+        $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,'Company',%d,'No')  "
                      ,$contact_key
-                     ,prepare_mysql('Company')
                      ,$this->id
 
                     );
@@ -1661,9 +1625,8 @@ function remove_address($address_key) {
             $this->update_principal_contact($contact_key);
         }
 
-        $sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
+        $sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,'Contact',%d,'No')  "
                      ,$this->id
-                     ,prepare_mysql('Contact')
                      ,$contact_key
 
                     );
@@ -1676,36 +1639,37 @@ function remove_address($address_key) {
 
     }
 
-    function update_principal_contact($contact_key) {
-        $main_contact_key=$this->get_principal_contact_key();
+ function update_principal_contact($contact_key) {
+    $main_contact_key=$this->get_principal_contact_key();
 
-        if ($main_contact_key!=$contact_key) {
-            $contact=new Contact($contact_key);
-            $contact->editor=$this->editor;
-            $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`=%d",
-                         $this->id
-                         ,$contact_key
-                        );
-            mysql_query($sql);
-            $sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`=%d",
-                         $this->id
-                         ,$contact_key
-                        );
-            mysql_query($sql);
+    if ($main_contact_key!=$contact_key) {
+        $contact=new Contact($contact_key);
+        $contact->editor=$this->editor;
+        $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d ",
+                     $this->id
+                    );
+        mysql_query($sql);
+        $sql=sprintf("INSERT INTO  `Contact Bridge`  (`Contact Key`,`Subject Type`,`Subject Key`,`Is Main`,`Is Active`)
+                     value (%d,'Company',%d,'Yes','Yes')   ON DUPLICATE KEY UPDATE
+                     `Is Main`='Yes' ,`Is Active`='Yes'",
+                     $contact_key,
+                     $this->id
+                    );
+        mysql_query($sql);
 
-            $sql=sprintf("update `Company Dimension` set  `Company Main Contact Key`=%d where `Company Key`=%d",$contact->id,$this->id);
-            mysql_query($sql);
+        $sql=sprintf("update `Company Dimension` set  `Company Main Contact Key`=%d where `Company Key`=%d",$contact->id,$this->id);
+        mysql_query($sql);
 
 
-            $this->data['Company Main Contact Key']=$contact->id;
-            $this->update_parents_principal_contact_keys($contact_key);
-            $contact->new=$contact->new;
-            $contact->update_parents();
-            $this->last_associated_contact_key=$contact_key;
-
-        }
+        $this->data['Company Main Contact Key']=$contact->id;
+        $this->update_parents_principal_contact_keys($contact_key);
+        $contact->new=$contact->new;
+        $contact->update_parents();
+        $this->last_associated_contact_key=$contact_key;
 
     }
+
+}
 
 
     function update_parents_principal_contact_keys($contact_key) {
@@ -1731,16 +1695,25 @@ function remove_address($address_key) {
                 $old_principal_name_key=$parent_object->data[$parent.' Main Contact Key'];
                 if ($old_principal_name_key!=$contact_key) {
 
-                    $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Contact Key`=%d",
-                                 $parent_object->id
-                                 ,$contact_key
-                                );
-                    mysql_query($sql);
-                    $sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Contact Key`=%d",
-                                 $parent_object->id
-                                 ,$contact_key
-                                );
-                    mysql_query($sql);
+                
+                    
+                        $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
+                     $parent_object->id
+                    );
+        mysql_query($sql);
+        $sql=sprintf("INSERT INTO  `Contact Bridge`  (`Contact Key`,`Subject Type`,`Subject Key`,`Is Main`,`Is Active`)
+                     value (%d,'$parent',%d,'Yes','Yes')   ON DUPLICATE KEY UPDATE
+                     `Is Main`='Yes',`Is Active`='Yes' ",
+                     $contact_key,
+                     $parent_object->id
+                    );
+        mysql_query($sql);
+                    
+                    
+                    
+                    
+                    
+                    
                     $sql=sprintf("update `$parent Dimension` set `$parent Main Contact Key`=%d where `$parent Key`=%d"
                                  ,$contact_key
                                  ,$parent_object->id
@@ -2333,99 +2306,6 @@ function remove_address($address_key) {
         }
     }
 
-
-    /*
-      function:update_contact
-    */
-    function update_contact($contact_key=false) {
-
-
-        $this->associated=false;
-        if (!$contact_key)
-            return;
-        $contact=new contact($contact_key);
-        if (!$contact->id) {
-            $this->msg='contact not found';
-            return;
-
-        }
-
-
-        $old_contact_key=$this->data['Company Main Contact Key'];
-
-        if ($old_contact_key  and $old_contact_key!=$contact_key   ) {
-            $this->remove_contact();
-        }
-        if ($old_contact_key!=$contact_key) {
-            $sql=sprintf("insert into `Contact Bridge` values (%d,'Company',%d,'Yes','Yes')",
-                         $contact->id,
-                         $this->id
-                        );
-            mysql_query($sql);
-            if (mysql_affected_rows()) {
-                $this->associated=true;
-
-            }
-
-        }
-
-        $old_name=$this->data['Company Main Contact Name'];
-        if ($old_name!=$contact->display('name')) {
-
-
-
-            $this->data['Company Main Contact Key']=$contact->id;
-            $this->data['Company Main Contact Name']=$contact->display('name');
-            $sql=sprintf("update `Company Dimension` set `Company Main Contact Key`=%d,`Company Main Contact Name`=%s where `Company Key`=%d"
-
-                         ,$this->data['Company Main Contact Key']
-                         ,prepare_mysql($this->data['Company Main Contact Name'])
-                         ,$this->id
-                        );
-            mysql_query($sql);
-            print $sql;
-
-
-            $this->updated=true;
-
-
-
-
-
-
-            $note=_('Company contact name changed');
-            if ($old_contact_key) {
-                $details=_('Company contact name changed from')." \"".$old_name."\" "._('to')." \"".$this->data['Company Main Contact Name']."\"";
-            } else {
-                $details=_('Company contact set to')." \"".$this->data['Company Main Contact Name']."\"";
-            }
-
-            $history_data=array(
-                              'Indirect Object'=>'Company Main Contact Name'
-
-                                                ,'History Details'=>$details
-                                                                   ,'History Abstract'=>$note
-                                                                                       ,'Action'=>'edited'
-                          );
-            $this->add_history($history_data);
-
-        }
-
-
-        if ($this->associated) {
-            $note=_('Contact name changed');
-            $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Company:')." ".$this->data['Company Name']." (".$this->get_formated_id_link().")";
-            $history_data=array(
-                              'Indirect Object'=>'Company Name'
-                                                ,'History Details'=>$details
-                                                                   ,'History Abstract'=>$note
-                                                                                       ,'Action'=>'edited',
-                              'Deep'=>2
-                          );
-            $this->add_history($history_data,true);
-        }
-
-    }
 
     function update_telephone($telecom_key) {
 

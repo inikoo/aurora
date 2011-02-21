@@ -3512,7 +3512,8 @@ case('Customer Sticky Note'):
                       );
 
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        
         mysql_query($sql);
 
     }
@@ -3578,7 +3579,7 @@ case('Customer Sticky Note'):
                     );
         mysql_query($sql);
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -3659,7 +3660,7 @@ case('Customer Sticky Note'):
                     );
         mysql_query($sql);
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -3723,7 +3724,7 @@ case('Customer Sticky Note'):
         //   print_r($history_data);
 
         $history_key=$dn->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -3822,7 +3823,7 @@ case('Customer Sticky Note'):
                           'Metadata'=>'Process'
                       );
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
         mysql_query($sql);
 
     }
