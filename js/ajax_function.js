@@ -20,8 +20,8 @@ function get_default(v) {
            }
       }
  };
- //req.open("GET", "getPage.php?data="+r+"&val="+val); 
-   req.open("GET", "getPage.php?v="+v); 
+
+   req.open("GET", "import_csv_record.php?v="+v); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -49,7 +49,7 @@ function getPrev(v,limit) {
  };
 	v = v-1;
  //req.open("GET", "getPage.php?data="+r+"&val="+val); 
-   req.open("GET", "getPage.php?v="+v+"&prevArray="+prevArray); 
+   req.open("GET", "import_csv_record.php?v="+v+"&prevArray="+prevArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -75,7 +75,7 @@ function getNext(v,num) {
  };
 	v=v+1;
 
-   req.open("GET", "getPage.php?v="+v+"&myArray="+myArray); 
+   req.open("GET", "import_csv_record.php?v="+v+"&myArray="+myArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -113,7 +113,7 @@ function getIgnore(v) {
       }
  };
 	v=v+1;
- //req.open("GET", "getPage.php?data="+r+"&val="+val); 
+
    req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 

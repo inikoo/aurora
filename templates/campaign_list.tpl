@@ -1,13 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
 
-
-
-
-
-
-
-
  
 <div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}campaign List{/t}</span>
@@ -22,9 +15,6 @@
 </div>
 
 
-  
-  
-  
   
   <div id="filtermenu0" class="yuimenu">
     <div class="bd">
