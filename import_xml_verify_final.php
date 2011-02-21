@@ -72,7 +72,6 @@ $scope_args='';
 }
 if(isset($_POST['final']))
 {
-ss
 $assign=array();
 $val=array();
 
