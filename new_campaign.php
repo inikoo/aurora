@@ -65,6 +65,12 @@ if(isset($_SESSION['disp_msg']) OR $_SESSION['disp_msg'] != ''){
 	$smarty->assign('campaign_mail',$_SESSION['campaign_mail']);
 	$smarty->assign('campaign_content',$_SESSION['campaign_content']);
 	unset($_SESSION['disp_msg']);
+}else{
+	$smarty->assign('msg','');
+	$smarty->assign('campaign_name','');
+	$smarty->assign('campaign_obj','');
+	$smarty->assign('campaign_mail','');
+	$smarty->assign('campaign_content','');
 }
 
 //$smarty->assign('view',$_SESSION['state']['customers']['list']['view']);
