@@ -39,7 +39,7 @@
 				                <th class="list-column-left" style="text-align: left; width: 35%;">
 				                    <span style="float: left;">Sample Values</span>
 
-				                    <span style="float: right;padding-right:5px;"> <a href="" class="subtext">next sample</a>
+				                    <span style="float: right;padding-right:5px;"> <a href="#" class="subtext">next sample</a>
 							
 				                    <span style="float: right;padding-right:5px;"> 
 				                    </span>
