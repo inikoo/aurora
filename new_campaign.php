@@ -40,7 +40,7 @@ $js_files=array(
 		'js/edit_common.js',
 		'js/list_function.js',
 		'js/create_campaign.js',
-		'ckeditor/ckeditor.js'
+		'external_libs/ckeditor/ckeditor.js'
 		);
 		//fetch the customer list name
 		$sqlQuery = "select `Customer List Name` from `Customer List Dimension` where `Customer List Key` = '".$customer_list_key."'";
