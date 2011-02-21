@@ -387,7 +387,7 @@ function list_customer_orders() {
             $mark='<span style="visibility:hidden">*</span>';
         }
         $adata[]=array(
-                     'subject'=>$row['Order Public ID'],
+                     'subject'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
                      'last_update'=>strftime("%a %e %b %Y %T", strtotime($row['Order Last Updated Date'].' UTC')) ,
                      'current_state'=>$row['Order Current XHTML State'],
                      'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
