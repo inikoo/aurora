@@ -4,27 +4,27 @@
 
       <h2 style="clear:both">{t}Create Campaign{/t} (for the list {$listName})</h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
-	<div id="campaign_div"></div>
+	<div id="campaign_div">{$msg}</div>
       <table border="0" width="700">
-	<form action="" method="post" form="campaign">
+	<form action="create_campaign_data.php" method="post" name="campaign" id="campaign">
 	<tr>
-	  <td> Campaign Name  </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30"> </td>
+	  <td> Campaign Name  </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30" value="{$campaign_name}"> </td>
 	</tr>
 	
 	<tr>
-	  <td> Campaign Objective  </td><td><b>:</b></td><td> <input type="text" name="campaign_obj" id="campaign_obj" size="30"> </td>
+	  <td> Campaign Objective  </td><td><b>:</b></td><td> <input type="text" name="campaign_obj" id="campaign_obj" size="30" value="{$campaign_obj}"> </td>
 	</tr>
 
 	<tr>
-	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30"> </td>
+	  <td> Campaign Maximum Email </td><td><b>:</b></td><td> <input type="text" name="campaign_mail" id="campaign_mail" size="30" value="{$campaign_mail}"> </td>
 	</tr>
 
 	<tr>
-	  <td>  Campaign Content </td> <td><b>:</b></td><td><textarea name="campaign_content" id="campaign_content" cols="28"></textarea></td>
+	  <td>  Campaign Content </td> <td><b>:</b></td><td><textarea name="campaign_content" id="campaign_content" class="ckeditor" cols="28">{$campaign_content}</textarea></td>
 	</tr>
 
 	<tr>
-	  <td colspan=3 align="right"> <input type="button" name="createCampaign" value="Create" onclick="getFormData()"> </td>
+	  <td colspan=3 align="right"> <input type="button" name="createCampaign" value="Create" onclick="process();"> </td>
 	</tr>
 		<input type="hidden" name="customer_list_key" id="customer_list_key" value="{$customer_list_key}"> 
 		<input type="hidden" name="max_num_mail" id="max_num_mail" value="{$count}"> 		
