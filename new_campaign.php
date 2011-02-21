@@ -60,17 +60,26 @@ $smarty->assign('js_files',$js_files);
 if(isset($_SESSION['disp_msg']) OR $_SESSION['disp_msg'] != ''){
 
 	$smarty->assign('msg',$_SESSION['disp_msg']);
-	$smarty->assign('campaign_name',$_SESSION['campaign_name']);
-	$smarty->assign('campaign_obj',$_SESSION['campaign_obj']);
-	$smarty->assign('campaign_mail',$_SESSION['campaign_mail']);
-	$smarty->assign('campaign_content',$_SESSION['campaign_content']);
 	unset($_SESSION['disp_msg']);
 }else{
+	$smarty->assign('msg','');
+}
+
+if($_SESSION['succ'] = 'yes'){
 	$smarty->assign('msg','');
 	$smarty->assign('campaign_name','');
 	$smarty->assign('campaign_obj','');
 	$smarty->assign('campaign_mail','');
 	$smarty->assign('campaign_content','');
+	unset($_SESSION['succ']);
+}elseif($_SESSION['succ'] = 'no'){
+	$smarty->assign('campaign_name',$_SESSION['campaign_name']);
+	$smarty->assign('campaign_obj',$_SESSION['campaign_obj']);
+	$smarty->assign('campaign_mail',$_SESSION['campaign_mail']);
+	$smarty->assign('campaign_content',$_SESSION['campaign_content']);
+	unset($_SESSION['succ']);
+}else{
+	$_SESSION['succ'] = '';
 }
 
 //$smarty->assign('view',$_SESSION['state']['customers']['list']['view']);
