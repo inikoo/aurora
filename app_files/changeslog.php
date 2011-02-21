@@ -697,6 +697,8 @@ ALTER TABLE `Customer Dimension` ADD `Customer Account Operative` ENUM( 'Yes', '
 ALTER TABLE `Customer Dimension` ADD `Customer Send Postal Marketing` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Customer Send Email Marketing` ,ADD INDEX ( `Customer Send Postal Marketing` ) ;
 ALTER TABLE `Customer Dimension` ADD `Customer Sticky Note` TEXT NOT NULL ;
 
+ALTER TABLE `Category Dimension` ADD `Category Children` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Category Deep` ,ADD `Category Children Deep` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Category Children` 
+
 */
 
 ?>
