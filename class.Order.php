@@ -442,7 +442,7 @@ function create_order($data) {
                                                                                                                                    'History Details'=>$note
                           );
              $history_key=$this->add_history($history_data);
-  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$customer->id,$history_key);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$customer->id,$history_key);
     mysql_query($sql);
 
         }

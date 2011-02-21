@@ -22,23 +22,23 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 		    display_form_state();
 		    contact_with_same_email=r.found_key;
 		    //alert(subject_found+' '+subject_found_email);
-		     update_save_button();
+		     //update_save_button();
 		}else if(r.action=='found'){
 		    subject_found=true;
 		    subject_found_email=false;
 		    subject_found_key=r.found_key;
-		    display_form_state();
-		     update_save_button();
+		  //  display_form_state();
+		    // update_save_button();
 		}else if(r.action=='found_candidates'){
 		    subject_found=false; subject_found_email=false;
 		    subject_found_key=0;
-		     display_form_state();
-		      update_save_button();
+		   //  display_form_state();
+		    //  update_save_button();
 		}else{
 		    subject_found=false; subject_found_email=false;
 		    subject_found_key=0; 
-		       display_form_state();
-		        update_save_button();
+		     //  display_form_state();
+		     //   update_save_button();
 		}
 		//if(old_subject_found!=subject_found || old_subject_found_email!=subject_found_email){
 		//    update_save_button();
@@ -177,7 +177,7 @@ function validate_form(){
     }
 function display_form_state(){
     
-    
+    return;
     
   //  if(subject_found==true){
 //	Dom.get('mark_'+Subject+'_found').style.display='';

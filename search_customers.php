@@ -28,7 +28,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		 'new_subject.js.php'
+		 'search_customers.js.php'
 	
 		);
 $store_key=1;

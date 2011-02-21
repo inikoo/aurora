@@ -2035,16 +2035,18 @@ class Contact extends DB_Table {
             $company->editor=$this->editor;
             $company->new=$this->new;
 
-            $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Company Key`=%d",
+            $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d ",
                          $this->id
-                         ,$company->id
                         );
             mysql_query($sql);
-            $sql=sprintf("update `Company Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Company Key`=%d",
-                         $this->id
-                         ,$company->id
-                        );
-            mysql_query($sql);
+            
+            $sql=sprintf("INSERT INTO  `Company Bridge`  (`Company Key`,`Subject Type`,`Subject Key`,`Is Main`,`Is Active`)
+                     value (%d,'Contact',%d,'Yes','Yes')   ON DUPLICATE KEY UPDATE
+                     `Is Main`='Yes',`Is Active`='Yes' ",
+                     $company->id,
+                     $this->id
+                    );
+        	mysql_query($sql);
 
             $sql=sprintf("update `Contact Dimension` set  `Contact Company Key`=%d where `Contact Key`=%d",$company->id,$this->id);
             mysql_query($sql);
@@ -2644,56 +2646,7 @@ class Contact extends DB_Table {
 
     }
 
-    /* Method: add_tel
-       Add/Update an telecom to the Contact
-
-       Search for an telecom record maching the telecom data *$data* if not found create a ne telecom record then add this record to the Contact
-
-
-    function delete() {
-
-        $sql=sprintf("select * from `Contact Bridge`  where   `Contact Key`=%d",
-                     $this->id
-
-                    );
-        $res=mysql_query($sql);
-        while ( $row=mysql_fetch_array ( $res  )) {
-            if ($row['Subject Type']=='Company') {
-                $company=new Company($row['Subject Key']);
-                $company->remove_contact($this->id);
-
-            }
-        }
-
-
-        foreach($this->get_emails() as $email) {
-            $sql=sprintf('delete from `Email Bridge`');
-        }
-
-
-
-        $sql=sprintf("delete from `Contact Dimension`  where `Contact Key`=%d",
-                     $this->id
-
-                    );
-        mysql_query($sql);
-        if (mysql_affected_rows()) {
-
-            $this->deleted=true;
-
-
-        }
-
-
-    }
-
-
-
-    /*Method: update
-      Switcher calling the apropiate update method
-      Parameters:
-      $data - associated array with Email Dimension fields
-    */
+   
     public function update($data,$options='') {
         //  print_r($data);
         if (isset($data['editor'])) {
