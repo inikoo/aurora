@@ -1,7 +1,7 @@
 <?php
 	session_start();
-	
-	
+
+
 	//change the text color whether any ignore result is occured
 	$_SESSION['colorArray'][] = $_REQUEST['colorArray'];
 	
@@ -9,14 +9,15 @@
 	$colorArray = array_unique($_SESSION['colorArray']);
 
 	//echo '<pre>'; print_r($colorArray);
-
+	
+	
+	
 	foreach($colorArray as $kk=>$vv)
 	{
+			
+		echo '<span style="color:red;"> '.($vv+1).' number record to be ignored</span>';
 		
-		echo '<span style="color:red;"> '.($vv+1).' number data will be ignored</span>';
 		echo '<br>';
-		
-		
 	}
 
 
