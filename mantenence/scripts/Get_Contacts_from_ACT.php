@@ -118,6 +118,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         if ($row==0) {
             //   print_r($data);exit;
+	  $col_names=$data;
+ 
             $row++;
             continue;
         }
@@ -210,8 +212,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-        //    if($row>2000)
-        //  break;
+            if($row>100)
+          break;
         //      print "$row\r";
 
         // print_r($cols);
