@@ -35,13 +35,17 @@ function getFormData()
 		{
 		   error= error+ 'Invalid entry in mail\n';
 		}
+		else
+		{
+			if(campaign_mail > totalNumber)
+				{
+					 error = error + 'You have '+totalNumber+' number of emails. Limit exceeded.\n';				
+		
+				}
+		}
 	}
 				
-	if(campaign_mail > totalNumber)
-	{
-		 error = error + 'You have '+totalNumber+' number of emails. Limit exceeded.\n';				
-		
-	}
+	
 
 	if(campaign_content == '')
 	{
