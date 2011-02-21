@@ -60,7 +60,7 @@
 					$i++;
 			         }
 		          ?>
-		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="getIgnore(<?php echo $index; ?>)" id="result" class="subtext">Ignore Record</a>
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="getIgnore(<?php echo $index; ?>,<?php echo count($h); ?>)" id="result" class="subtext">Ignore Record</a>
 		</span>
 		</th>
 		
@@ -125,12 +125,17 @@
 </table>
 <div id="display">
 <?php 
-	
-	if((isset($_REQUEST['color_array'])))
-		{ 
+	for($p=0; $p<count($h); $p++)
+	{
+	  if(isset($_SESSION[$p]))
+		{
+			echo $_SESSION[$i];
+		}
+	  else
+		{
+			echo $_REQUEST['color_array'][$i];
+		}
 		
-		$_SESSION['msg'][] = $_REQUEST['color_array'];
-		echo $_SESSION['msg'];
-		} 
+	}
 	?>
 </div>
