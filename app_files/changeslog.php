@@ -699,6 +699,72 @@ ALTER TABLE `Customer Dimension` ADD `Customer Sticky Note` TEXT NOT NULL ;
 
 ALTER TABLE `Category Dimension` ADD `Category Children` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Category Deep` ,ADD `Category Children Deep` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Category Children` 
 
+--------------------------------------------------------------------------------------------
+--
+-- Table structure for table `Email Campaign Dimension`
+--
+
+DROP TABLE IF EXISTS `Email Campaign Dimension`;
+CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
+  `Email Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Campaign Name` varchar(256) NOT NULL,
+  `Email Campaign Objective` text NOT NULL,
+  `Email Campaign Maximum Emails` mediumint(8) unsigned DEFAULT NULL,
+  `Email Campaign Status` enum('Creating','Ready','Sending','Complete') NOT NULL,
+  `Email Campaign Engine` enum('Internal','External') NOT NULL DEFAULT 'Internal',
+  `Email Campaign Content` longtext,
+  `Number of Emails` smallint(5) NOT NULL DEFAULT '0',
+  `Number of Read Emails` smallint(5) NOT NULL DEFAULT '0',
+  `Number of Rejected Emails` smallint(5) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Email Campaign Key`),
+  KEY `Email Campaign Status` (`Email Campaign Status`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Email Campaign Mailing List`
+--
+
+DROP TABLE IF EXISTS `Email Campaign Mailing List`;
+CREATE TABLE IF NOT EXISTS `Email Campaign Mailing List` (
+  `Email Campaign Mailing List Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Campaign Key` mediumint(8) unsigned NOT NULL,
+  `Email Key` mediumint(8) unsigned NOT NULL,
+  `Email Send Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Key` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`Email Campaign Mailing List Key`),
+  KEY `Email Campaign Key` (`Email Campaign Key`,`Email Key`,`Email Send Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Email Send Dimension`
+--
+
+DROP TABLE IF EXISTS `Email Send Dimension`;
+CREATE TABLE IF NOT EXISTS `Email Send Dimension` (
+  `Email Send Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Send Type` enum('Marketing','Registration','Password Reminder','Newsletter') NOT NULL,
+  `Email Send Type Key` mediumint(9) NOT NULL DEFAULT '0',
+  `Email Send Recipient Type` enum('Customer','Supplier') NOT NULL DEFAULT 'Customer',
+  `Email Send Recipient Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Key` int(10) unsigned NOT NULL,
+  `Email Send Date` datetime DEFAULT NULL,
+  `Email Send First Read Date` datetime DEFAULT NULL,
+  `Email Send Last Read Date` datetime DEFAULT NULL,
+  `Email Send Number Reads` smallint(5) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Email Send Key`),
+  KEY `Email Key` (`Email Key`),
+  KEY `Email Send Type` (`Email Send Type`),
+  KEY `Email Send Parent Key` (`Email Send Recipient Key`),
+  KEY `Email Send Parent Type` (`Email Send Recipient Type`),
+  KEY `Email Send Type Key` (`Email Send Type Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+
 */
+
 
 ?>
