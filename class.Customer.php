@@ -772,33 +772,12 @@ $this->data['Customer Billing Address Link']=='Contact';
 $this->data['Customer Delivery Address Link']=='Contact';
 //}
 
+ $this->associate_billing_address($address->id);
+                 $this->associate_delivery_address($address->id);
 
-
-            if ($this->data['Customer Billing Address Link']=='Contact') {
-                $this->associate_delivery_address($address->id);
                 $this->get_data('id',$this->id);
 
-
-            }
-
-
-            if ($this->data['Customer Delivery Address Link']=='Billing') {
-
-
-                $this->associate_delivery_address($this->data['Customer Billing Address Key']);
-                $this->get_data('id',$this->id);
-
-            }
-
-
-
-            if ($this->data['Customer Delivery Address Link']=='Contact') {
-
-                $this->associate_delivery_address($address->id);
-                $this->get_data('id',$this->id);
-
-            }
-
+          
 
         } else {
             print "Error can not create customer $sql\n";
@@ -3102,25 +3081,22 @@ case('Customer Sticky Note'):
         }
     }
 
-    function create_delivery_address_bridge($address_key) {
-        $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
-                     $this->id,
-                     $address_key
+function create_delivery_address_bridge($address_key) {
+    $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
+                 $this->id,
+                 $address_key
 
-                    );
-        //  print $sql;
-        mysql_query($sql);
-        // print $this->get_principal_delivery_address_key()."<-\n";
-        if (
-            !$this->get_principal_delivery_address_key()
-            or ! $this->data['Customer Main Delivery Address Key']
-        ) {
+                );
+    mysql_query($sql);
+    if (
+        !$this->get_principal_delivery_address_key()
+        or ! $this->data['Customer Main Delivery Address Key']
+    ) {
 
-            //  print "caca";
-            $this->update_principal_delivery_address($address_key);
-        }
-
+        $this->update_principal_delivery_address($address_key);
     }
+
+}
     function create_billing_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Billing',%d,%d)  ",
                      $this->id,
@@ -3197,7 +3173,8 @@ case('Customer Sticky Note'):
         if ($main_address_key!=$address_key
                 or ( $this->data['Customer Delivery Address Link']='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
                 or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
-                or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key'] or $address_key==$this->data['Customer Main Address Key']  ) )
+                or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key'] 
+                or $address_key==$this->data['Customer Main Address Key']  ) )
 
            ) {
 
@@ -3512,7 +3489,7 @@ case('Customer Sticky Note'):
                       );
 
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `ƒ` values (%d,%d,'No')",$this->id,$history_key);
         
         mysql_query($sql);
 
