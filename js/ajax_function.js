@@ -81,7 +81,7 @@ function getNext(v,num) {
 }
 
 
-function getIgnore(v) {
+function getIgnore(v,range) {
  var v;
   
 	
@@ -106,6 +106,10 @@ function getIgnore(v) {
 
 		var splitterResult = splitter.split("@");
 
+		var conjugate = splitter.split('#@');
+
+		//alert(conjugate[0]);
+
 		//alert(splitterResult[0]);
 
 		document.getElementById('display').innerHTML=splitterResult[0]; 
@@ -115,7 +119,7 @@ function getIgnore(v) {
  };
 	v=v+1;
 
-   req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray); 
+   req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray+"&range="+range); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
