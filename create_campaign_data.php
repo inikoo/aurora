@@ -8,15 +8,19 @@ if(isset($_REQUEST)){
 	$campaign_content = isset($_REQUEST['campaign_content'])?$_REQUEST['campaign_content']:'';
 	if(trim($campaign_name)== ''){
 		$_SESSION['disp_msg']= '<h4 style=color:red;>Please enter the name for Campaign.</h4>';
+		$_SESSION['succ'] = 'no';
 		$_SESSION['campaign_name'] = $campaign_name;
 	}elseif(trim($campaign_obj) == ''){
 		$_SESSION['disp_msg']= '<h4 style=color:red;>Please enter the objective for Campaign.</h4>';
+		$_SESSION['succ'] = 'no';
 		$_SESSION['campaign_obj'] = $campaign_obj;
 	}elseif(trim($campaign_mail) == ''){
 		$_SESSION['disp_msg']= '<h4 style=color:red;>Please enter the maximum number of mail for Campaign.</h4>';
+		$_SESSION['succ'] = 'no';
 		$_SESSION['campaign_mail'] = $campaign_mail;
 	}elseif(trim($campaign_content) == ''){
 		$_SESSION['disp_msg']= '<h4 style=color:red;>Please enter the content for Campaign.</h4>';
+		$_SESSION['succ'] = 'no';
 		$_SESSION['campaign_content'] = $campaign_content;
 	}
 	else{
@@ -44,8 +48,10 @@ if(isset($_REQUEST)){
 	$result = mysql_query($listQuery);
 		if(mysql_affected_rows()==1){
 			$_SESSION['disp_msg']= '<h4 style=color:green;>Your data has been saved successfully</h4>';
+			$_SESSION['succ'] = 'yes';
 		}else{
 			$_SESSION['disp_msg']= '<h4 style=color:red;>There is some error while saving the data</h4>';
+			$_SESSION['succ'] = 'no';
 		}
 	unset($_REQUEST);
 	}
