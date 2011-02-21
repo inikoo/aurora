@@ -9,7 +9,8 @@ header('Location: index.php');
 $general_options_list=array();
 
 
-//if($modify){
+//if($modify)
+//{
 //  $general_options_list[]=array('tipo'=>'url','url'=>'edit_company_areas.php','label'=>_('Edit Areas'));
 //   $general_options_list[]=array('tipo'=>'url','url'=>'new_company_area.php','label'=>_('Add Area'));
 //}
