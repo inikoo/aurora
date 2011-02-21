@@ -60,12 +60,13 @@ $smarty->assign('js_files',$js_files);
 if(isset($_SESSION['disp_msg']) OR $_SESSION['disp_msg'] != ''){
 
 	$smarty->assign('msg',$_SESSION['disp_msg']);
+	$smarty->assign('campaign_name',$_SESSION['campaign_name']);
+	$smarty->assign('campaign_obj',$_SESSION['campaign_obj']);
+	$smarty->assign('campaign_mail',$_SESSION['campaign_mail']);
+	smarty->assign('campaign_content',$_SESSION['campaign_content']);
 	unset($_SESSION['disp_msg']);
 }
-$smarty->assign('campaign_name',$_SESSION['campaign_name']);
-$smarty->assign('campaign_obj',$_SESSION['campaign_obj']);
-$smarty->assign('campaign_mail',$_SESSION['campaign_mail']);
-$smarty->assign('campaign_content',$_SESSION['campaign_content']);
+
 //$smarty->assign('view',$_SESSION['state']['customers']['list']['view']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
