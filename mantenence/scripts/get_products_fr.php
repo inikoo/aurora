@@ -78,6 +78,11 @@ $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
   
+  if(count($_cols)<=6){
+    continue;
+
+  }
+
 
 //  foreach($_cols as $_key=>$_value){
  //   if(preg_match('/Diffuseurs /',$_value)){
@@ -106,7 +111,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
     $__cols[]=$b;
     $__cols[]=$c;
 
-  }elseif(preg_match('/Cadeau de Bienvenue/',$_cols[6])){
+  }elseif(preg_match('/Special Xmas Bonus/',$_cols[6])){
     break;
   }
   
@@ -123,6 +128,14 @@ $promotion='';
 
 
 foreach($__cols as $cols){
+
+ if(!isset($cols[18]) and $cols[3]=='' and $cols[6]==''){
+   
+    continue;
+  }
+
+ 
+
   $is_product=true;
   $code=_trim($cols[3]);
   $price=$cols[9];
