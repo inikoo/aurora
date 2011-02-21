@@ -7,7 +7,7 @@
   </div>
 
     <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">Customers List</span>
+      <span class="clean_table_title">{t}Customers List{/t}</span>
       
    <div  style="font-size:90%">
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
@@ -18,14 +18,13 @@
 
      </div>
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
+  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
 	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
 	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
 	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
-
 	</tr>
       </table>
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }

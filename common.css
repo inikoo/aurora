@@ -414,9 +414,12 @@ color: #316D89;
 .right_boxs form{ margin-bottom:5px }
 
 .right_boxs div{clear:right;float:right}
-.right_box div.general_options{padding:0 0 5px 0;color:#777}
-.right_box div.general_options span{float:right;margin-left:15px;font-size:85%; font-weight:200;cursor:pointer;}
-.right_box div.general_options span:hover{text-decoration:underline;color:#333}
+
+div.general_options{padding:0 0 5px 0;color:#777}
+div.general_options span{float:right;margin-left:15px;font-size:85%; font-weight:200;cursor:pointer;}
+div.general_options span:hover{text-decoration:underline;color:#333}
+
+
 .no_top_nav{position:relative;bottom:10px}
 
 

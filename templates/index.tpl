@@ -4,7 +4,15 @@
 	<script src="js/index_sliding_tabs.js" type="text/javascript"></script>
 
 
-
+<div  class="general_options" style="margin:5px 20px 0 0">
+ {foreach from=$search_options_list item=options }
+    {if $options.tipo=="url"}
+    <span style="float:left" onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+    {else}
+    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+    {/if}
+    {/foreach}
+</div>
 
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
     <span  >{t}Search{/t}:</span>
