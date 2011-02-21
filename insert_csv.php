@@ -60,13 +60,14 @@ $js_files=array(
 	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'0';
 
 	
+	
 
 	//code to generate the final array		
 	for($i = 0; $i < count($assign);  $i++) 
 	{
-
+		
 		//restrict whether any ignore field is there 
-		if($assign[$i] != '0')
+		if($assign[$i] != 'Ignore')
 		{
 
 		 	$rows[$assign[$i]] = $values[$i];
