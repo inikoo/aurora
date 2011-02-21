@@ -718,7 +718,7 @@ CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
   `Number of Rejected Emails` smallint(5) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Email Campaign Key`),
   KEY `Email Campaign Status` (`Email Campaign Status`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -735,7 +735,7 @@ CREATE TABLE IF NOT EXISTS `Email Campaign Mailing List` (
   `Customer Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Campaign Mailing List Key`),
   KEY `Email Campaign Key` (`Email Campaign Key`,`Email Key`,`Email Send Key`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -761,7 +761,7 @@ CREATE TABLE IF NOT EXISTS `Email Send Dimension` (
   KEY `Email Send Parent Key` (`Email Send Recipient Key`),
   KEY `Email Send Parent Type` (`Email Send Recipient Type`),
   KEY `Email Send Type Key` (`Email Send Type Key`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 
 */
