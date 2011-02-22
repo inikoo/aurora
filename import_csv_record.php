@@ -131,7 +131,8 @@
 		{
 			echo $_SESSION[$i];
 		}
-	  else
+	  
+if(isset($_RQUEST['color_array']))
 		{
 			echo $_REQUEST['color_array'][$i];
 		}

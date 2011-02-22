@@ -1,4 +1,3 @@
-
 function Inint_AJAX() {
 try { return new ActiveXObject("Msxml2.XMLHTTP");  } catch(e) {} //IE
 try { return new ActiveXObject("Microsoft.XMLHTTP"); } catch(e) {} //IE
