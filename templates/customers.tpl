@@ -20,7 +20,7 @@
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
-	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
 	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
 	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
