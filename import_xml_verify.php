@@ -13,7 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
-include_once('assets_header_functions.php');
+
 
 
 $css_files=array(
@@ -110,7 +110,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 		return $arrData;
 	}
 
-	$xmlUrl = "uploads/".$v; // XML feed file/URL
+	$xmlUrl = "app_files/uploads/".$v; // XML feed file/URL
         
 
 	$xmlStr = file_get_contents($xmlUrl);
