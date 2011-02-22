@@ -229,7 +229,7 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
 
     var jsonStr = YAHOO.lang.JSON.stringify(data);
 
-	
+	//alert(jsonStr);
     var table=tables.table0;
     var datasource=tables.dataSource0;
 	

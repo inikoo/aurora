@@ -117,7 +117,7 @@ $list_type=$_REQUEST['typeValue'];
     
    
         $awhere=preg_replace('/\\\"/','"',$awhere);
-        //    print "$awhere";
+       //    print "$awhere";
         $awhere=json_decode($awhere,TRUE);
 
         
@@ -454,9 +454,8 @@ $list_type=$_REQUEST['typeValue'];
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-   // print $sql;
+ // print $sql;
     $adata=array();
-
 
 
     $result=mysql_query($sql);
@@ -528,7 +527,7 @@ $customer_key=$data['Customer Key'];
 ///}
 //$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type,'store'=>'9');//
 
-$meta_data=$where." ".$wheref;//echo $metadata;
+$meta_data=$where;//echo $metadata;
 $store_id=$_REQUEST['store_id'];
 $dt=date("Y-m-d H:i:s");
 $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Key`,`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%d,%s,%s,%s,%s)",
@@ -554,10 +553,28 @@ $list_query2=mysql_query($list_sql2);
    }
     mysql_free_result($result);
 
-//print_r($dataid);//
+//print_r($dataid);//-----------------------------------------------------------------------------------------------------
+/*$response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
 
-
-   
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+*/
+//-------------------------------------------------------------------------------------------------------------------------- 
 }
 
 
@@ -815,7 +832,7 @@ function list_customer_list_static() {
 
 
 
-$sql="select count(distinct `Customer List Key`) as total from `Customer List Customer Bridge`  $where $wheref";   
+$sql="select count(distinct `Customer List Key`) as total from `Customer List Customer Bridge` ";  
 ////$sql="select count(C.`Customer Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
 //$sql="select count(CLCB.`Customer List Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
 //print "$sql<br/>\n";
@@ -998,8 +1015,8 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Cu
 $order='CLD.`Customer List Key`';
   //  $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 //$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref  order by $order DESC $order_direction limit $start_from,$number_results";
-$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD left join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref order by $order DESC $order_direction limit $start_from,$number_results";
- //print $sql;
+$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD right join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`) and CLD.`Customer List Type`='Static' order by $order DESC $order_direction limit $start_from,$number_results";
+//print $sql;
     $adata=array();
 
 
@@ -1039,7 +1056,7 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];*/
-
+//print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
 $sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']));
 //$sql_no_of_customer1=mysql_fetch_array(mysql_query($sql_no_of_customer));
 //print $sql_no_of_customer;

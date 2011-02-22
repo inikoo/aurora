@@ -99,10 +99,6 @@ $export_data=array(
 
 
 
-
-
-
-
 $csv_data=$export_data;
 $out = fopen('php://output', 'w');
 fputcsv($out, $csv_data,"\t");
