@@ -296,10 +296,12 @@ class Customer extends DB_Table {
 
                 if ($raw_data['Customer Type']=='Person') {
 
+
+
                     if (isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']!='' and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
                             and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
-                            and !preg_match("/".$child->data['Contact Name']."/",$raw_data['Customer Main Contact Name'] )
-                            and !preg_match("/".$raw_data['Customer Main Contact Name']."/",$child->data['Contact Name'] )
+                            and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/",$raw_data['Customer Main Contact Name'] )
+                            and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/",$child->data['Contact Name'] )
                        ) {
                         print "super change!!\n";
                         // exit;
