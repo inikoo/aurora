@@ -458,6 +458,7 @@ class CSV_PARSER
         while ($keys = fgetcsv($res, $l, $d, $e)) {
 
             if ($c == 0) {
+		
                 $this->headers = $keys;
             } else {
                 array_push($this->rows, $keys);
@@ -465,7 +466,6 @@ class CSV_PARSER
 
             $c ++;
         }
-
         fclose($res);
         $this->removeEmpty();
         return true;
