@@ -131,12 +131,14 @@
 		{
 			echo $_SESSION[$i];
 		}
+
 	  
-if(isset($_RQUEST['color_array']))
+	if(isset($_REQUEST['color_array']))
+
 		{
 			echo $_REQUEST['color_array'][$i];
 		}
 		
 	}
-	?>
+?>
 </div>
