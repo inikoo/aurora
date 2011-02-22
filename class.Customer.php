@@ -3489,7 +3489,7 @@ function create_delivery_address_bridge($address_key) {
                       );
 
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `ƒ` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
         
         mysql_query($sql);
 
