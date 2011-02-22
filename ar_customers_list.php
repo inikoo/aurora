@@ -1614,11 +1614,12 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];*/
 //print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
-
+/*
 $customer_no_table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
 print $data['Customer List Metadata'];print("***********");
 $sql_customer_no="select count(`Customer Key`) from".$customer_no_table.$data['Customer List Metadata']." and `Customer List Key`=".$data['Customer List key'];
 print $sql_customer_no;
+*/
 //$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
 
