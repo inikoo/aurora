@@ -106,11 +106,7 @@ function getIgnore(v,range) {
 
 		var splitterResult = splitter.split("@");
 
-		var conjugate = splitter.split('#@');
-
-		//alert(conjugate[0]);
-
-		//alert(splitterResult[0]);
+	
 
 		document.getElementById('display').innerHTML=splitterResult[0]; 
                 document.getElementById('show').innerHTML=splitterResult[1]; 
