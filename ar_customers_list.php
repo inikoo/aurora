@@ -1015,7 +1015,7 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Cu
 $order='CLD.`Customer List Key`';
   //  $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 //$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref  order by $order DESC $order_direction limit $start_from,$number_results";
-$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD left join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  order by $order DESC $order_direction limit $start_from,$number_results";
+$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD right join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`) and CLD.`Customer List Type`='Static' order by $order DESC $order_direction limit $start_from,$number_results";
 //print $sql;
     $adata=array();
 
@@ -1056,7 +1056,7 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];*/
-print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
+//print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
 $sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']));
 //$sql_no_of_customer1=mysql_fetch_array(mysql_query($sql_no_of_customer));
 //print $sql_no_of_customer;
