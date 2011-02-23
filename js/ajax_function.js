@@ -80,7 +80,7 @@ function getNext(v,num) {
 }
 
 
-function getIgnore(v,range) {
+function getIgnore(v) {
  var v;
   
 	
@@ -105,7 +105,7 @@ function getIgnore(v,range) {
 
 		var splitterResult = splitter.split("@");
 
-		alert(req.responseText);
+		//alert(req.responseText);
 
 		//alert(splitterResult[1]);
 
@@ -116,7 +116,7 @@ function getIgnore(v,range) {
  };
 	v=v+1;
 
-   req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray+"&range="+range); 
+   req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }

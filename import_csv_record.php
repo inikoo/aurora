@@ -15,7 +15,7 @@
 	
 	//echo '<pre>'; print_r($colorArray);
 
-	//$r =  $csv->getRow($index);
+	//$r =  $csv->getRow($index); 
 	$raw = $csv->getrawArray();
 	
 	
@@ -62,7 +62,7 @@
 					$i++;
 			         }
 		          ?>
-		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="getIgnore(<?php echo $index; ?>,<?php echo count($h); ?>)" id="result" class="subtext">Ignore Record</a>
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="getIgnore(<?php echo $index; ?>)" id="result" class="subtext">Ignore Record</a>
 		</span>
 		</th>
 		

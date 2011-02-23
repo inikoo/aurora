@@ -2,13 +2,14 @@
 	include('common.php');
 
 
-	//$range=isset($_REQUEST['range'])?$_REQUEST['range']:''; 
-	
 	$_SESSION['colorArray'][] = isset($_REQUEST['colorArray'])?$_REQUEST['colorArray']:'0';
 	
 	$colorArray = array();
 
 	$colorArray = array_unique($_SESSION['colorArray']);
+
+	
+
 
 	echo "<span style='color:white;'>@</span>";
 
