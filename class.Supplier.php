@@ -1322,7 +1322,7 @@ case('Supplier Main Contact Name'):
 
     }
 
-    function get_telecom_keys($type) {
+    function get_telecom_keys($type='Telephone') {
 
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and     `Subject Type`='Supplier' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  "

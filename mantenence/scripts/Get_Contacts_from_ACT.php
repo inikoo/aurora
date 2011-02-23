@@ -60,7 +60,7 @@ $_SESSION['locale_info'] = localeconv();
 
 $currency='GBP';
 $_SESSION['lang']=1;
-$convert_encoding=false;
+$convert_encoding=true;
 include_once('local_map.php');
 
 $sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension`");
@@ -212,8 +212,8 @@ $act_data['all_data']=$cols;
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-   //      if($row>100)
-  //        break;
+     //    if($row>1000)
+     //     break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -345,9 +345,14 @@ foreach($contacts as $act_data) {
     }
     }
 
+
+
     $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']),$encrypt);
     $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']),$encrypt);
-    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']),$encrypt);
+   
+ 
+   
+   $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']),$encrypt);
     $_customer_data['address_data']=$shop_address_data;
     $_customer_data['address_data']['type']='3line';
 
@@ -478,6 +483,7 @@ $customer_data['Customer Sticky Note']='Dishonest Customer';
 }
 
 //print_r($customer_data);
+//exit;
     $customer = new Customer ( 'find create',  $customer_data);
 
 
@@ -487,29 +493,36 @@ if($_value!='' and $col_names[$_key]!='History_Generated')
 $_details.= '<tr><td>'.$col_names[$_key]."</td><td>$_value</td><tr>";
 }
 $_details.='</table>';
+$_details=_trim($_details);
 if(!$customer->new){
  $history_found=false;
- $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') and 'History Details'=%s ",
+ $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') and `Metadata`=%s ",
                 $customer->id,
-                prepare_mysql($_details)
+                prepare_mysql(md5($_details))
                 );
                 $res=mysql_query($sql);
+                //print "$sql\n";
                 if($row=mysql_fetch_assoc($res)){
+               
+               
+                
                     $history_found=true;
                 }
 
 if(!$history_found){
-$customer->add_note('Contact data imported from Act (Merged)',$_details,date("Y-m-d H:i:s"));
-
+$history_key=$customer->add_note('Contact data imported from Act (Merged)',$_details,date("Y-m-d H:i:s"));
+$sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+//print "$sql\n";
+mysql_query($sql);
 }
 
 
 
 }else{
-$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
+$history_key=$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
+$sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+mysql_query($sql);
 }
-
-
 
 
 
@@ -612,7 +625,7 @@ $customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s
                 prepare_mysql($history),
                 prepare_mysql($date)
                 );
-                print "$sql\n";
+                //print "$sql\n";
                 $res=mysql_query($sql);
                
                     if($row=mysql_fetch_assoc($res)){
