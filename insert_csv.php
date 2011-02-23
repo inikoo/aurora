@@ -60,7 +60,7 @@ $js_files=array(
 	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'';
 
 	
-	//print_r($hidden_array);
+	print_r($_SESSION['colorArray']);
 
 
 	//code to generate the final array		
@@ -72,6 +72,8 @@ $js_files=array(
 		 	$rows[$assign[$i]] = $values[$i];
 		}		
 	}
+	
+		//print_r($rows);
 
 	
 	require_once 'csvparser.php';

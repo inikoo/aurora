@@ -46,7 +46,7 @@ $js_files=array(
 
 
 	
-	//print_r($_POST['assign_field']);
+
 	
 
 if(!isset($_REQUEST['tipo'])){

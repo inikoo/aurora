@@ -13,7 +13,7 @@
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
 	
-	
+	//echo '<pre>'; print_r($colorArray);
 
 	//$r =  $csv->getRow($index);
 	$raw = $csv->getrawArray();
