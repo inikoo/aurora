@@ -345,7 +345,7 @@ class Company extends DB_Table {
     */
     function find($raw_data,$options) {
         $find_fuzzy=false;
-
+       
 
         //print "XXX------------------> $options <-----------\n";
         $find_type='complete';
@@ -507,7 +507,7 @@ class Company extends DB_Table {
                         $this->update_principal_contact($this->find_contact->id);
                         $update_data=array('Contact Name'=>$raw_data['Company Main Contact Name']);
                         if (isset($raw_data['Company Mobile']))
-                            $update_data['Contact Main XHTML Mobile']=$raw_data['Company Mobile'];
+                            $update_data['Contact Main Plain Mobile']=$raw_data['Company Mobile'];
                         if (isset($raw_data['Company Main Plain Email'])) {
                             $update_data['Contact Main Plain Email']=$raw_data['Company Main Plain Email'];
                         }
@@ -551,7 +551,7 @@ class Company extends DB_Table {
                     $key=preg_replace('/^Company /i','',$key);
                     $_address_data[$key]=$value;
                 }
-                // print_r($_address_data);
+                //print_r($_address_data);
                 $address->update($_address_data);
                 //print_r($address->data);
                 //exit;
@@ -564,7 +564,8 @@ class Company extends DB_Table {
                     if (preg_match('/Address|Customer|Supplier|Location|Country|XHTML|Email/',$key))
                         unset($raw_data[$key]);
                 }
-                //	print_r($raw_data);
+               // print "*************************\n";
+               // print_r($raw_data);
 
 
 
@@ -680,6 +681,9 @@ class Company extends DB_Table {
         $this->data['Company File As']=$this->file_as($this->data['Company Name']);
         $telephone=$this->data['Company Main Plain Telephone'];
         $fax=$this->data['Company Main Plain FAX'];
+
+        if($telephone==$fax)
+            $fax='';
 
         $this->data['Company Main XHTML FAX']='';
         $this->data['Company Main XHTML Telephone']='';
@@ -812,9 +816,9 @@ class Company extends DB_Table {
 
                 $telephone=new Telecom("find in company fast create country code ".$address->data['Address Country Code'],$telephone_data);
                 if (!$telephone->error) {
-                    if ($telephone->is_mobile())
-                        $mobile_keys[]=$telephone->id;
-                    else
+                  //  if ($telephone->is_mobile())
+                  //      $mobile_keys[]=$telephone->id;
+                   // else
                         $telephone_keys[]=$telephone->id;
 
                 }
@@ -831,14 +835,14 @@ class Company extends DB_Table {
 
                 if (!$telephone->error) {
 
-                    if ($telephone->is_mobile()) {
-                        $mobile_keys[]=$telephone->id;
+                   // if ($telephone->is_mobile()) {
+                    //    $mobile_keys[]=$telephone->id;
 
 
-                    } else {
+                    //} else {
                         $fax_keys[]=$telephone->id;
 
-                    }
+                    //}
 
                 }
             }
@@ -1060,6 +1064,7 @@ class Company extends DB_Table {
                      ,prepare_mysql($this->data['Company File As'])
                      ,$this->id);
         mysql_query($sql);
+        //print "\n $sql \n";
         $affected=mysql_affected_rows();
 
         if ($affected==-1) {
@@ -2039,7 +2044,7 @@ class Company extends DB_Table {
 
     }
 
-    function get_telecom_keys($type) {
+    function get_telecom_keys($type='Telephone') {
 
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and     `Subject Type`='Company' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  "
