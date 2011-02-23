@@ -10,7 +10,7 @@
 
 	$colorArray = array_unique($_SESSION['colorArray']);
 
-	echo "@";
+	echo "<span style='color:white;'>@</span>";
 
 /**********************************************************************************/
 	$_SESSION['getQueryString'][] = $_GET['v'];
