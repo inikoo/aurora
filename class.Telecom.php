@@ -1100,8 +1100,8 @@ switch ($find_type) {
 
     function update_field_switcher($field,$value,$options='') {
     
-    print "XXX $field,$value\n";
-    sass();
+   // print "XXX $field,$value\n";
+   // sass();
         if ($field=='Telecom Plain Number')
             $options.=' no history';
         $this->update_field($field,$value,$options);
