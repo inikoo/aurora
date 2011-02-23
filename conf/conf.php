@@ -1269,7 +1269,15 @@ $default_state=array(
                                                 'where'=>'where true',
                                                 'f_field'=>'code',
                                                 'f_value'=>'','f_show'=>false,
-                                                'elements'=>array()
+                                                'elements'=>array(),
+                                                         'csv_export'=>array(
+                                                                'id'=>false,
+                                                                'code'=>true,
+                                                                'name'=>true,
+                                                                'locations_no'=>false,
+                                                                'areas_no'=>false,
+                                                                'shelfs_no'=>false
+                                                                )							
                                             )
 
 
@@ -1717,8 +1725,6 @@ $default_state=array(
 
                                            )
                                ),
-
-
 
  				'staff'=>array(
                                              'view'=>'general',

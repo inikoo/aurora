@@ -301,7 +301,7 @@ function list_customer_history() {
                     'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
                     'objeto'=>$objeto,
                     'note'=>$note,
-                    'handle'=>$author,
+                    'handle'=>$author.$row['History Key'],
                     'delete'=>($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':''),
                     'can_delete'=>($row['Deletable']=='Yes'?1:0),
 'delete_type'=>_('delete')
