@@ -49,31 +49,28 @@ $js_files=array(
 	
 
 	//value of the assigned field
-	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'0';
+	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
 
-
+	
 	//value of the right column
 	$values = isset($_REQUEST['values'])?$_REQUEST['values']:'';
 
 	
 	//removed list of array
-	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'0';
+	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'';
 
 	
-	
+	//print_r($hidden_array);
+
 
 	//code to generate the final array		
 	for($i = 0; $i < count($assign);  $i++) 
 	{
-		
 		//restrict whether any ignore field is there 
 		if($assign[$i] != 'Ignore')
 		{
-
 		 	$rows[$assign[$i]] = $values[$i];
-
 		}		
-		
 	}
 
 	
@@ -114,7 +111,7 @@ $js_files=array(
 		
 	
 
-	print_r($new_arr);
+	//print_r($new_arr);
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);

@@ -36,7 +36,7 @@
 					
 					</div>
 					
-					<form action="insert_csv.php" method="post"><div id="show"></div></form>
+					<div id="show"></div>
 				
                     		</li>
                 	  </ul>	
