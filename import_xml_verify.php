@@ -44,7 +44,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		
+		'js/ajax_function.js',
 		'js/dropdown.js',
         'import_xml_verify.js.php'    
 		);
@@ -117,8 +117,16 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 	$xmlObj = simplexml_load_string($xmlStr);
 	$arrXml = objectsIntoArray($xmlObj);
 	
-	$smarty->assign('success',$arrXml);
-	
+foreach($arrXml as $arr)
+	{
+	  $size=count($arr);
+	$arrXml2[]=$arr;
+
+	}
+     $_SESSION['size']=$size;
+	$smarty->assign('success',$arrXml2);
+  
+       
 	}
 	else
 	{
@@ -130,9 +138,12 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 	{
 	$smarty->assign('success',"not successfully");
 	}
+       //echo $_SESSION['size'];
+	///echo "<pre>";
 	
+	//print_r($arrXml2);
 
-
+$smarty->assign('size',$size);
 $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);

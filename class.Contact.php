@@ -192,6 +192,10 @@ class Contact extends DB_Table {
 
         }
 
+//print "------------------\n";
+//print "$data,$parent,$parent_key,$address_home_data,$address_work_data\n";
+//print_r($data);
+
 
         //  print "candidates ofter telephone:\n";
         // print_r($this->candidate);
