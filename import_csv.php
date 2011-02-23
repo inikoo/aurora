@@ -21,7 +21,7 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
 
-		 //	 $yui_path.'assets/skins/sam/autocomplete.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',

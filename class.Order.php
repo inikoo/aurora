@@ -3426,7 +3426,7 @@ class Order extends DB_Table {
         $second_full_search=strip_tags(preg_replace('/\<br\/\>/',' ',$this->data['Order XHTML Ship Tos'])).' '.$this->data['Order Customer Contact Name'];
         $img='';
 
-
+$amount='';
         if ($this->data['Order Current Payment State']=='Waiting Payment' or $this->data['Order Current Payment State']=='Partially Paid') {
             $amount=' '.money($this->data['Order Total Amount'],$this->data['Order Currency']);
         }

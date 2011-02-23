@@ -1,12 +1,33 @@
 ﻿{include file='header.tpl'}
+<body onLoad="value_size({$size})">
 <div id="bd" >
  
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>Import Contacts From XML File</h1> <a href="import_data.php?tipo=customers_store"><div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div></a>
   </div>
-<br>
+<br>{literal}
+		<script src="js/jquery-1.2.6.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.quickpaginate.packed.js" type="text/javascript" charset="utf-8"></script>
+{/literal}
 
+
+
+
+{literal}
+<script type="text/javascript" charset="utf-8">
+
+ 
+            
+			$(function(){
+				$("#shopping_list tr").quickpaginate({ perpage:3, pager : $("#shopping_list_counter") });
+			});
+			
+			$(function(){
+				$("#images img").quickpaginate({ perpage: 1, showcounter: false, pager : $("#images_counter") });
+			});
+		</script>
+{/literal}
 <div class="left3Quarters">
                 
 
@@ -26,6 +47,7 @@
 	    </div></div>    
                     </div>
                     <div class="clear"></div>
+
                     <ul class="formActions">
                         <li>
                             <div class="framedsection">
@@ -34,12 +56,18 @@
 				    	  <tr>
 						
 				                <th class="list-column-left" style="text-align: left; width: 40%;padding-left:20px;">
-				                    Assigned Field
+				                    Assigned Field 
 				                </th>
 				                <th class="list-column-left" style="text-align: left; width: 35%;">
 				                    <span style="float: left;">Sample Values</span>
 
-				                    <span style="float: right;padding-right:5px;"> <a href="" class="subtext">next sample</a>
+				                    <span style="float: right;padding-right:5px;"><div id="shopping_list_counter"></div>
+
+
+
+
+
+
 							
 				                    <span style="float: right;padding-right:5px;"> 
 				                    </span>
@@ -49,7 +77,8 @@
 			    	</table>
 				<div style="height:200px;overflow:auto; vertical-align:top;">
 				<table class="recordtext">
-		                    <tbody>
+		                    <tbody  id="shopping_list">
+					
 					{foreach from=$success item=foo}
 						
 						 {foreach from=$foo item=v}
@@ -90,13 +119,17 @@
 				                 </th>
 		                          </tr>
 					 {/foreach}
+								
 						{/foreach}
+					
 					 
 		               	   </tbody>
 			    	</table>
 					
                                 </div><div class="bt"><input style="margin-top:8px;" type="submit" value="Next To Continue" name="final" id="submit">
 			     </div>
+                          
+                         
 			    <ul class="formActions">
                     		<li>
 				        
