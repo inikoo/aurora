@@ -46,74 +46,57 @@ $js_files=array(
 		'js/dropdown.js',
         	);
 
-	
-
-	//value of the assigned field
-	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
-
-	
-	//value of the right column
-	$values = isset($_REQUEST['values'])?$_REQUEST['values']:'';
-
-	
-	//removed list of array
-	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'';
-
-	
-	print_r($_SESSION['colorArray']);
-
-
-	//code to generate the final array		
-	for($i = 0; $i < count($assign);  $i++) 
-	{
-		//restrict whether any ignore field is there 
-		if($assign[$i] != 'Ignore')
-		{
-		 	$rows[$assign[$i]] = $values[$i];
-		}		
-	}
-	
-		//print_r($rows);
-
-	
+//total array from the csv
 	require_once 'csvparser.php';
 	$csv = new CSV_PARSER;
-	//loading the CSV File
+
+	
 	$csv->load($_SESSION['file_path']);
-	//extracting the HEADERS
+
+	
 	$h = $csv->getHeaders();
+
+	//$r =  $csv->getRow($index);
+	$raw = $csv->getrawArray();
+	
+
 	$count_rows = $csv->countRows();
-	
-	//count the removed array
-	
-		$numIndex = count($hidden_array);	
-	
-	
-		$new_arr = array();
 
-		for($y=0; $y<$count_rows; $y++)
-		{
-			$total_row = $csv->getRow($y);
-			array_push($new_arr, $total_row);
+	
+	$session_array = array_unique($_SESSION['colorArray']);
 
-		}
+	//$ignore = array_flip($session_array);
 	
 
-		if($hidden_array != '0')
-		{
-			foreach($hidden_array as $value)
-			{
+	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
 
+	print_r($session_array);
 
-				unset($new_arr[$value - 1]);
-
-			}
-		}
-
+	
+	$arr = array();
+	$k = 0;
+	$nArray = array();
 		
 	
+		for($i=0; $i<$count_rows; $i++)
+		{
+			$k = 0;
+			for($j=0; $j<5; $j++)
+			{
+				
+					$nArray[$assign[$k]]=$raw[$i][$j];	
+			
+					
+					$k++;
+				
+			}
+				$arr[]=$nArray;  
+		}
+		
+		print_r($arr);
+	
 
-	//print_r($new_arr);
+
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
