@@ -1,5 +1,6 @@
 <?php
-	include('common.php');
+
+	include('removeResult.php');
 
 	require_once 'csvparser.php';
 	$csv = new CSV_PARSER;
@@ -12,9 +13,10 @@
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
 	
+	
+
 	//$r =  $csv->getRow($index);
 	$raw = $csv->getrawArray();
-	
 	
 	
 	$tt = array();
@@ -43,7 +45,7 @@
 
 		?>
 		</span>
-		<span style="float: right;padding-right:5px;"> 
+		<span style="float: right;padding-right:5px;">
 			     <?php
               			 if($index > 0)
               			 {
@@ -125,20 +127,30 @@
 </table>
 <div id="display">
 <?php 
-	for($p=0; $p<count($h); $p++)
+  	$search = array_search($index,$colorArray);
+
+	if(isset($search) && $search>0)
 	{
-	  if(isset($_SESSION[$p]))
+		echo "<span style=\"color:red;\">This data will be ignored</span>";
+	}
+	
+
+
+
+/*	for($p=0; $p<count($h); $p++)
+	{
+	  if(isset($color_array) && $index == $color_array[$p])
 		{
-			echo $_SESSION[$i];
+			echo $_SESSION[$p];
 		}
 
 	  
 	if(isset($_REQUEST['color_array']))
 
 		{
-			echo $_REQUEST['color_array'][$i];
+			echo $_REQUEST['color_array'][$p];
 		}
 		
-	}
+	} */
 ?>
 </div>
