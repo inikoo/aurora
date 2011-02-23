@@ -94,6 +94,14 @@ switch ($tipo) {
         $filename=_('staff').'.csv';
         $data=get_staff_data($wheref);
         break;
+    case 'warehouses':
+        $filename=_('warehouses').'.csv';
+        $f_field=$_SESSION['state']['warehouses']['table']['f_field'];
+        $f_value=$_SESSION['state']['warehouses']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('warehouses').'.csv';
+        $data=get_warehouses_data($wheref);
+        break;
     case 'company_areas':
         $filename=_('company_areas').'.csv';
         $f_field=$_SESSION['state']['staff']['company_areas']['f_field'];
@@ -520,6 +528,58 @@ $_data[]=$options['title'];
 }
 $data[]=$_data;
 $sql="select * from `Company Position Staff Bridge` PSB left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) left join `Staff Dimension` SD on PSB.`Staff Key`= SD.`Staff Key` where $where $wheref";
+
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+function get_warehouses_data($wheref,$where=' true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['warehouses']['table']['csv_export'];
+}
+
+
+$fields=array(
+'id'=>array('title'=>_('Id'),'db_name'=>'Warehouse Key'),
+'code'=>array('title'=>_('Code'),'db_name'=>'Warehouse Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Warehouse Name'),
+'locations_no'=>array('title'=>_('Locations'),'db_name'=>'Warehouse Number Locations'),
+'areas_no'=>array('title'=>_('Areas'),'db_name'=>'Warehouse Number Areas'),
+'shelfs_no'=>array('title'=>_('Shelfs'),'db_name'=>'Warehouse Number Shelfs')
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select *  from `Warehouse Dimension` where $where $wheref";
 
 $res=mysql_query($sql);
 

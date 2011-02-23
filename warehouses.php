@@ -67,7 +67,7 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
-		'table_common.js.php',
+		'table_common.js.php','js/edit_common.js','js/csv_common.js',
 	'js/search.js',
 	'js/dropdown.js',
 		'warehouses.js.php'
@@ -91,7 +91,39 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+$csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'id'=>array('label'=>_('Id'),'selected'=>$_SESSION['state']['warehouses']['table']['csv_export']['id']),
+							     'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['warehouses']['table']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['warehouses']['table']['csv_export']['name']),
+                                                                                                          
+                                                   )
+                            )
+                            ),
 
+                          'Numbers Of'=>array(
+                                              'title'=>_('Other Details'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'locations_no'=>array('label'=>_('Locations'),'selected'=>$_SESSION['state']['warehouses']['table']['csv_export']['locations_no']),
+                                                             'areas_no'=>array('label'=>_('Areas'),'selected'=>$_SESSION['state']['warehouses']['table']['csv_export']['areas_no']),
+                                                             'shelfs_no'=>array('label'=>_('Shelfs'),'selected'=>$_SESSION['state']['warehouses']['table']['csv_export']['shelfs_no']),
+                                                            
+                                                             
+                                                
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',2);
+
+                     
+$smarty->assign('csv_export_options',$csv_export_options);
 $smarty->display('warehouses.tpl');
 
 ?>
