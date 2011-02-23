@@ -97,5 +97,5 @@ $smarty->assign('export_csv_table_cols',2);
 
                      
 $smarty->assign('csv_export_options',$csv_export_options);*/
-$smarty->display('customer_list_static.tpl');
+$smarty->display('customer_list_dynamic.tpl');
 ?>
