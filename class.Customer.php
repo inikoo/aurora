@@ -1089,8 +1089,14 @@ case('Customer Sticky Note'):
                 $subject_type='Company';
 
             }
+
+
+	 
+	 
+
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
-            $this->updated=$subject->updated;
+	    // print_r($subject);
+	    $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
 

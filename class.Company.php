@@ -920,7 +920,7 @@ class Company extends DB_Table {
 
     protected function update_field_switcher($field,$value,$options='') {
 
-
+    
 
 
         switch ($field) {
@@ -952,6 +952,8 @@ class Company extends DB_Table {
             else
                 $type='FAX';
             $address=new Address($this->data['Company Main Address Key']);
+	   
+	    
 
             $address->editor=$this->editor;
             if ($value=='') {
@@ -965,6 +967,9 @@ class Company extends DB_Table {
 
                 if ($address->get_number_of_associated_telecoms($type)>0) {
                     $address->update_principal_telecom_number($value,$type);
+		     
+		  
+
 
                 } else {
 
