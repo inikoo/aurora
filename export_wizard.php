@@ -52,5 +52,30 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+if(!$_REQUEST['id']){
+	header('Location: index.php');
+	exit;
+}
+
+
+if(!$user->can_view('customers')){
+  exit();
+}
+
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $_SESSION['state']['customer']['id']=$_REQUEST['id'];
+  $customer_id=$_REQUEST['id'];
+}else{
+  $customer_id=$_SESSION['state']['customer']['id'];
+}
+
+$customer=new customer($customer_id);
+$customer_id = $customer->data['Customer Key'];
+
+$list=$customer->data;
+//print_r($list);
+$smarty->assign('customer_id',$customer_id);
+$smarty->assign('list',$list);
+
 $smarty->display('export_wizard.tpl');
 ?>

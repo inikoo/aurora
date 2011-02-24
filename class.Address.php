@@ -4675,6 +4675,8 @@ unset($data['Address Main XHTML Telephone']);
 
     function associate_telecom($telecom_key,$type) {
 
+     
+
         $telecom_keys=$this->get_telecom_type_keys($type);
 
         if (!array_key_exists($telecom_key,$telecom_keys)) {
@@ -4735,7 +4737,8 @@ unset($data['Address Main XHTML Telephone']);
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                      ,prepare_mysql($type)
                      ,$this->id );
-        $res=mysql_query($sql);
+	// print $sql;
+	$res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $main_telecom_key=$row['Telecom Key'];
         } else {
@@ -4887,8 +4890,9 @@ unset($data['Address Main XHTML Telephone']);
             $telephone=new Telecom($telephone_key);
 
             $telephone->update_number($value,$this->data['Address Country Code']);
+	    //print_r($telephone);
             $this->updated=$telephone->updated;
-
+	    $this->new_value=$telephone->display('xhtml');
         }
     }
 
