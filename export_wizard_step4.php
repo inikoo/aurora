@@ -47,10 +47,16 @@ $js_files=array(
         'table_common.js.php',
         'js/search.js',
         'js/edit_common.js',
+	'js/export_wizard_reorder.js',
         'customer.js.php'
         );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+if(!$_POST['SUBMIT']){
+	header('Location: index.php');
+	exit;
+}
 
 if(!$_REQUEST['id']){
 	header('Location: index.php');
@@ -72,13 +78,48 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 $customer=new customer($customer_id);
 $customer_id = $customer->data['Customer Key'];
 
-$list=$customer->data;
-if(isset($_SESSION['list'])){
-	unset($_SESSION['list']);
-}
-//print_r($list);
-$smarty->assign('customer_id',$customer_id);
-$smarty->assign('list',$list);
+//$list=$customer->data;
 
-$smarty->display('export_wizard.tpl');
+$included_data = $_POST['fld'];
+//print_r($included_data);
+
+$actual_data=$customer->data;
+//print_r($actual_data);
+
+$exported_data = final_array($actual_data , $included_data);
+//print_r($exported_data);
+
+
+
+if(!isset($_SESSION['list'])){
+
+	$_SESSION['list'] = $exported_data;
+
+}
+else{
+	$exported_data = $_SESSION['list'];
+	//$exported_data = array_reverse($exported_data); // For Testing //
+}
+
+$smarty->assign('customer_id',$customer_id);
+$smarty->assign('list',$exported_data);
+
+$smarty->display('export_wizard_step4.tpl');
+
+
+function final_array($assoc_arr, $num_arr){
+	$final_arr = array();
+
+	foreach($assoc_arr as $assoc_key => $assoc_val){
+
+		if(in_array($assoc_key, $num_arr)){
+
+			$final_arr[$assoc_key]=$assoc_val;
+
+		}
+	}
+	//print_r($final_arr);
+	return $final_arr;
+}
+
 ?>

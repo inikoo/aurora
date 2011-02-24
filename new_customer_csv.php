@@ -43,15 +43,15 @@ $address=new Address($customer->data['Customer Main Address Key']);
 $address_lines=$address->display('3lines');
 
 $number_orders=$customer->data['Customer Orders'];
-$included_data=array();
-$actual_data=array();
+//$included_data=array();
+//$actual_data=array();
 $exported_data=array();
 
-if(!$_POST['fld']){
+/*if(!$_POST['fld']){
 	die('Select atleast one field');
 	exit;
-}
-$included_data = $_POST['fld'];
+}*/
+//$included_data = $_POST['fld'];
 //print_r($included_data);
 
 
@@ -59,12 +59,13 @@ $line = ''; $data = '';
 $filename = $customer->data['Customer Key'].'.csv';
 
 
-$actual_data=$customer->data;
+//$actual_data=$customer->data;
 //print_r($actual_data);
 
-$exported_data = final_array($actual_data , $included_data);
+//$exported_data = final_array($actual_data , $included_data);
 //print_r($exported_data);
 
+$exported_data = $_SESSION['list'];
 
 foreach($exported_data as $key=>$value){
 
@@ -82,9 +83,9 @@ foreach($exported_data as $key=>$value){
 
 $data .= trim($line)."\n";
 $line = '';
-unset($included_data);
+//unset($included_data);
 unset($exported_data);
-unset($actual_data);
+//unset($actual_data);
 
 $data = str_replace("\r", "", $data);
 
