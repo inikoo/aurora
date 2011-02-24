@@ -178,7 +178,7 @@ $null_if_empty=false;
 
 
         $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
-    //print $sql;
+  
     mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {
@@ -193,7 +193,7 @@ $null_if_empty=false;
         }
         else {
         
-     
+	  // print "updateeddd!!!!  $field $value\n";   
         
             $this->data[$field]=$value;
             $this->msg.=" $field "._('Record updated').", \n";
