@@ -177,7 +177,7 @@ class Customer extends DB_Table {
 
 
     function find($raw_data,$options='') {
-
+  
         $this->found_child=false;
         $this->found_child_key=0;
         $this->found=false;
@@ -317,7 +317,7 @@ class Customer extends DB_Table {
                         return;
                     }
 
-
+        
                     $child=new Contact ("find in customer $type_of_search create update",$raw_data);
 
 
@@ -678,38 +678,50 @@ class Customer extends DB_Table {
 
 
             if ($this->data['Customer Type']=='Company') {
-                //print "associate company: (acytaul contact name ".$this->data['Customer Main Contact Name'].") \n";
 
                 $this->associate_company($company->id);
-
-
                 $this->associate_contact($contact->id);
-
-                //$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
-
-
+                
+                
+                $mobile=new Telecom($contact->data['Contact Main Mobile Key']);
+                if($mobile->id){
+                
+                $contact->update_parents_principal_mobile_keys();
+                $mobile->editor=$this->editor;
+                $mobile->new=true;
+                 $mobile->update_parents();
+                 }
+                 
                 $address=new Address($company->data['Company Main Address Key']);
                 $address->editor=$this->editor;
                 $address->new=true;
 
                 $this->create_contact_address_bridge($address->id);
-                // $address->update_parents();
 
 
                 $address->update_parents_principal_telecom_keys('Telephone');
                 $address->update_parents_principal_telecom_keys('FAX');
-
+                
+                
+                
                 $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
                 $tel->editor=$this->editor;
                 $tel->new=true;
 
                 if ($tel->id)
                     $tel->update_parents();
+                
+                
+                
                 $fax=new Telecom($address->get_principal_telecom_key('FAX'));
                 $fax->editor=$this->editor;
                 $fax->new=true;
                 if ($fax->id)
                     $fax->update_parents();
+                    
+                
+                
+                    
 
             } else {
                 $this->associate_contact($contact->id);
@@ -2464,11 +2476,13 @@ case('Customer Sticky Note'):
 
 
 
-     $this->add_customer_history($history_data,$force_save=true,$deleteable);
+     $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable);
 
        
         $this->updated=true;
-        $this->new_value='';
+        $this->new_value=$history_key;
+        
+        
     }
 
 
@@ -2477,6 +2491,7 @@ case('Customer Sticky Note'):
         $history_key=$this->add_history($history_data,$force_save=true);
        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
        mysql_query($sql);
+       return $history_key;
     }
 
 
@@ -2741,7 +2756,7 @@ case('Customer Sticky Note'):
         return $rate;
     }
 
-    function get_telecom_keys($type) {
+    function get_telecom_keys($type='Telephone') {
 
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and     `Subject Type`='Customer' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  "

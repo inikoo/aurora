@@ -366,6 +366,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $customer_data[$key]=$value;
 
         }
+        
+      
+        
+        
         if ($customer_data['Customer Type']=='Company')
             $customer_data['Customer Name']=$customer_data['Customer Company Name'];
         else

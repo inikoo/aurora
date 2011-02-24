@@ -161,6 +161,10 @@ class Contact extends DB_Table {
 
     function find_complete($data,$parent,$parent_key,$address_home_data,$address_work_data) {
   
+ //print_r($data);
+ 
+ 
+  
         $this->candidate=array();
         $this->found=false;
         $this->found_key=false;
@@ -215,7 +219,7 @@ class Contact extends DB_Table {
 
         if (!array_empty( $address_work_data)) {
 
-            $address=new Address("find in contact",$address_work_data);
+            $address=new Address("find in contact complete",$address_work_data);
             // print_r($address_work_data);
 
             foreach($address->candidate as $key=>$val) {
@@ -225,12 +229,11 @@ class Contact extends DB_Table {
                     $this->candidate[$key]=$val;
             }
         }
-        // print "----------------------------- candidates ofter address:\n";
-        //   print_r($this->candidate);
-
+      
 
         if (!array_empty( $address_home_data)) {
-            $address=new Address("find in contact ",$address_home_data);
+            $address=new Address("find in contact complete",$address_home_data);
+
 
             // $country_code=$address->raw_data['Address Country Code'];
 
@@ -243,7 +246,7 @@ class Contact extends DB_Table {
         }
 
         //Timer::timing_milestone('end  find  contact address / begin tel');
-
+  
 
 
 
@@ -278,7 +281,7 @@ class Contact extends DB_Table {
             }
 
         }
-//print_r($this->candidate);
+
 
         //if(count($this->candidate)>0){
         //print "candidates after fax:\n";
@@ -330,7 +333,6 @@ class Contact extends DB_Table {
         }
 
 
-
         if ($data['Contact Fuzzy']!='Yes') {
             if (array_key_exists('Contact Name Components',$data) and is_array($data['Contact Name Components'])) {
                 $name_data=$data['Contact Name Components'];
@@ -342,7 +344,7 @@ class Contact extends DB_Table {
 
             $salutation_max_semiscore=5;
             $first_name_max_score=27;
-            $surname_max_score=63;
+            $surname_max_score=73;
 
 
 
@@ -402,8 +404,8 @@ class Contact extends DB_Table {
 
 
 
-        if (isset($raw_data['Contact Old ID']) and $raw_data['Contact Old ID']!='') {
-            $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID`=%s",prepare_mysql($raw_data['Contact Old ID']));
+        if (isset($data['Contact Old ID']) and $data['Contact Old ID']!='') {
+            $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID`=%s",prepare_mysql($data['Contact Old ID']));
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $val=100;
@@ -416,11 +418,11 @@ class Contact extends DB_Table {
         }
 
 
-        if (isset($raw_data['Contact Tax Number'])) {
+        if (isset($data['Contact Tax Number'])) {
             $contacts_in_company=array();
-            $raw_data['Contact Tax Number']=_trim($raw_data['Contact Tax Number']);
-            if ($raw_data['Contact Tax Number']!='') {
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($raw_data['Contact Tax Number']));
+            $data['Contact Tax Number']=_trim($data['Contact Tax Number']);
+            if ($data['Contact Tax Number']!='') {
+                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($data['Contact Tax Number']));
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
                     $company=new company($row['Company Key']);
@@ -443,42 +445,43 @@ class Contact extends DB_Table {
             }
         }
 
+/*
 
+//print "*************************************\n";
 
-        if (isset($raw_data['Contact Company Name'])) {
-
+        if (isset($data['Contact Company Name'])) {
+//print "*************************************\n";
+$val=40;
 
             $contacts_in_company=array();
-            $raw_data['Contact Company Name']=_trim($raw_data['Contact Company Name']);
-            if ($raw_data['Contact Company Name']!='') {
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Contact Company Name']));
+            $data['Contact Company Name']=_trim($data['Contact Company Name']);
+            if ($data['Contact Company Name']!='') {
+                $sql=sprintf("select  `Subject Key` from `Company Bridge` B  left join `Company Dimension` C  on (B.`Company Key`=C.`Company Key`)  where `Subject Type`='Contact' and  `Company Name`=%s group by `Subject Key`",prepare_mysql($data['Contact Company Name']));
+               // print $sql;
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
-                    $company=new company($row['Company Key']);
-                    $company->load('Contact List');
-                    foreach($this->contact_list as $key=>$val) {
-                        $contacts_in_company[$key]=$key;
-                    }
-                }
-
-                foreach($contacts_in_company as $key) {
-                    $val=40;
-                    $key=$row['Company Key'];
+                   $key=$row['Subject Key'];
                     if (isset($this->candidate[$key]))
                         $this->candidate[$key]+=$val;
                     else
                         $this->candidate[$key]=$val;
+                  
+                  
                 }
+
 
 
             }
         }
 
-        if (isset($raw_data['Contact Registration Number'])) {
+
+//print_r($this->candidate);
+//exit;
+        if (isset($data['Contact Registration Number'])) {
             $contacts_in_company=array();
-            $raw_data['Contact Registration Number']=_trim($raw_data['Contact Registration Number']);
-            if ($raw_data['Contact Registration Number']!='') {
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($raw_data['Contact Registration Number']));
+            $data['Contact Registration Number']=_trim($data['Contact Registration Number']);
+            if ($data['Contact Registration Number']!='') {
+                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($data['Contact Registration Number']));
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
                     $company=new company($row['Company Key']);
@@ -500,7 +503,7 @@ class Contact extends DB_Table {
 
             }
         }
-
+*/
         if ($parent=='company' and $parent_key and  $data['Contact Fuzzy']!='Yes') {
             // look for down grades;
 
@@ -557,7 +560,7 @@ class Contact extends DB_Table {
         /*     if((!$create and !$update) and count($this->candidate)!=0 ){ */
 
         /*       print "Candidates from #######################\n"; */
-        /*       print_r($raw_data); */
+        /*       print_r($data); */
         /*       foreach($this->candidate as $key => $value){ */
         /* 	print "Score: $value\n"; */
         /* 	$cont=new Contact($key); */
@@ -566,7 +569,9 @@ class Contact extends DB_Table {
         /*       print "Candidates from ----------------------|\n"; */
         /*     } */
 
-        //print_r($this->candidate);
+       // print_r($this->candidate);
+        //
+       // exit;
         foreach($this->candidate as $key => $value) {
 
             if ($value>=200) {
@@ -833,8 +838,8 @@ class Contact extends DB_Table {
 
 
 
-        if (isset($raw_data['Contact Old ID']) and $raw_data['Contact Old ID']!='') {
-            $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID`=%s",prepare_mysql($raw_data['Contact Old ID']));
+        if (isset($data['Contact Old ID']) and $data['Contact Old ID']!='') {
+            $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID`=%s",prepare_mysql($data['Contact Old ID']));
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $val=100;
@@ -847,11 +852,11 @@ class Contact extends DB_Table {
         }
 
 
-        if (isset($raw_data['Contact Tax Number'])) {
+        if (isset($data['Contact Tax Number'])) {
             $contacts_in_company=array();
-            $raw_data['Contact Tax Number']=_trim($raw_data['Contact Tax Number']);
-            if ($raw_data['Contact Tax Number']!='') {
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($raw_data['Contact Tax Number']));
+            $data['Contact Tax Number']=_trim($data['Contact Tax Number']);
+            if ($data['Contact Tax Number']!='') {
+                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($data['Contact Tax Number']));
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
                     $company=new company($row['Company Key']);
@@ -876,13 +881,13 @@ class Contact extends DB_Table {
 
 
 
-        if (isset($raw_data['Contact Company Name'])) {
+        if (isset($data['Contact Company Name'])) {
 
 
             $contacts_in_company=array();
-            $raw_data['Contact Company Name']=_trim($raw_data['Contact Company Name']);
-            if ($raw_data['Contact Company Name']!='') {
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Contact Company Name']));
+            $data['Contact Company Name']=_trim($data['Contact Company Name']);
+            if ($data['Contact Company Name']!='') {
+                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($data['Contact Company Name']));
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
                     $company=new company($row['Company Key']);
@@ -905,11 +910,11 @@ class Contact extends DB_Table {
             }
         }
 
-        if (isset($raw_data['Contact Registration Number'])) {
+        if (isset($data['Contact Registration Number'])) {
             $contacts_in_company=array();
-            $raw_data['Contact Registration Number']=_trim($raw_data['Contact Registration Number']);
-            if ($raw_data['Contact Registration Number']!='') {
-                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($raw_data['Contact Registration Number']));
+            $data['Contact Registration Number']=_trim($data['Contact Registration Number']);
+            if ($data['Contact Registration Number']!='') {
+                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($data['Contact Registration Number']));
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
                     $company=new company($row['Company Key']);
@@ -987,7 +992,7 @@ class Contact extends DB_Table {
         /*     if((!$create and !$update) and count($this->candidate)!=0 ){ */
 
         /*       print "Candidates from #######################\n"; */
-        /*       print_r($raw_data); */
+        /*       print_r($data); */
         /*       foreach($this->candidate as $key => $value){ */
         /* 	print "Score: $value\n"; */
         /* 	$cont=new Contact($key); */
@@ -1036,8 +1041,8 @@ class Contact extends DB_Table {
     Key of the Compnay found, if create is found in the options string  returns the new key
     */
     function find($raw_data,$options) {
-            //print $options."\n";
-        // print_r($raw_data);
+  //  print $options."---------------------------------------------------\n";
+     //   print_r($raw_data);
 
         $find_type='complete';
         if (preg_match('/fuzzy/i',$options)) {
@@ -1253,7 +1258,8 @@ class Contact extends DB_Table {
         if ($this->found) {
             $this->get_data('id',$this->found_key);
 
-            //print "Contact found  ".$this->found_key." --->$create-----\n";
+           // print "Contact found  ".$this->found_key." --->$create-----\n";
+          //  print_r($this->data);
             //print_r($this->card());
         }
 
@@ -1265,8 +1271,8 @@ class Contact extends DB_Table {
 
 
         if ($update and $this->found) {
-            //	  print "------> updating here ,----\n";
-
+  //          	  print "------> updating here ,----\n";
+//print_r($data);
             $data_to_update=array(
                                 'Contact Name'=>$data['Contact Name'],
                                 'Contact Old ID'=>$data['Contact Old ID'],
@@ -1660,10 +1666,9 @@ class Contact extends DB_Table {
                 $mobile=new Telecom("find in company fast create country code $country_code",$mobile_data);
                 $mobile->editor=$this->editor;
                 if (!$mobile->error) {
-                    if ($mobile->is_mobile())
+                   
                         $mobile_keys[]=$mobile->id;
-                    else
-                        $mobile_keys[]=$mobile->id;
+                    
 
                 }
             }
@@ -1680,9 +1685,9 @@ class Contact extends DB_Table {
                 $telephone=new Telecom("find in company fast create country code ".$home_address->data['Address Country Code'],$telephone_data);
                 $telephone->editor=$this->editor;
                 if (!$telephone->error) {
-                    if ($telephone->is_mobile())
-                        $mobile_keys[]=$telephone->id;
-                    else
+                   // if ($telephone->is_mobile())
+                     //   $mobile_keys[]=$telephone->id;
+                    //else
                         $telephone_keys[]=$telephone->id;
 
                 }
@@ -1699,14 +1704,14 @@ class Contact extends DB_Table {
                 $telephone->editor=$this->editor;
                 if (!$telephone->error) {
 
-                    if ($telephone->is_mobile()) {
-                        $mobile_keys[]=$telephone->id;
+                  //  if ($telephone->is_mobile()) {
+                    //    $mobile_keys[]=$telephone->id;
 
 
-                    } else {
+                    //} else {
                         $fax_keys[]=$telephone->id;
 
-                    }
+                    //}
 
                 }
             }
@@ -1930,9 +1935,9 @@ class Contact extends DB_Table {
                 $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
                 if ($old_principal_email_key!=$email_key) {
 
-                    $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Email Key`=%d",
+                    $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
                                  $parent_object->id
-                                 ,$email_key
+                
                                 );
                     mysql_query($sql);
                     $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Email Key`=%d",
@@ -1953,6 +1958,73 @@ class Contact extends DB_Table {
             }
         }
     }
+    
+    
+        function update_parents_principal_mobile_keys() {
+        $mobile_key=$this->data['Contact Main Mobile Key'];
+        //print $this->data['Contact Main Email Key']."<-----\n";
+        if (!$mobile_key)
+            return;
+        $parents=array('Company','Customer','Supplier');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+            //   print "$sql\n";
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+
+                $parent_telecoms=$parent_object->get_telecom_keys();
+
+                if (!array_key_exists($mobile_key,$parent_telecoms)) {
+                    $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`,`Is Active`) values (%d,'$parent',%d,'No','Yes')  "
+                                 ,$mobile_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+                }
+                //print "$sql\n";
+
+                $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
+                if ($old_principal_email_key!=$mobile_key) {
+
+                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  ",
+                                 $parent_object->id
+                    
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Email Key`=%d",
+                                 $parent_object->id
+                                 ,$mobile_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main Telephone Key`=%d where `$parent Key`=%d"
+                                 ,$mobile_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+
+
+
+
+                }
+            }
+        }
+    }
+    
+    
 
 
     function get_number_emails() {
@@ -2696,7 +2768,7 @@ class Contact extends DB_Table {
     */
 
     protected function update_field_switcher($field,$value,$options='') {
-
+//print "Update contact $field,$value\n";
         switch ($field) {
 
 
@@ -2749,6 +2821,7 @@ class Contact extends DB_Table {
 
 
         case('Contact Main Mobile Key'):
+        exit("????  shouls i delete this????");
             $this->update_mobile($value);
             break;
         case('Contact Main Telephone Key'):
@@ -2872,7 +2945,15 @@ class Contact extends DB_Table {
             break;
 
         case('Contact Main XHTML Mobile'):
-            $main_mobile_key=$this->get_principal_mobile_key();
+        dadsds();
+        	exit("????  shouls i delete this  Contact Main XHTML Mobile->$value ????");
+           
+            break;
+        case('Home Address'):
+
+            break;
+case('Contact Main Plain Mobile'):
+		 $main_mobile_key=$this->get_principal_mobile_key();
             if ($main_mobile_key) {
                 $mobile=new Telecom($main_mobile_key);
                 $mobile->editor=$this->editor;
@@ -2888,9 +2969,9 @@ class Contact extends DB_Table {
                 }
 
             }
-            break;
-        case('Home Address'):
-
+		
+		
+		
             break;
 
         default:
@@ -2959,7 +3040,7 @@ class Contact extends DB_Table {
         $values=preg_replace('/,$/',' ',$values);
 
         $sql=sprintf("update `Contact Dimension` set %s where `Contact Key`=%d",$values,$this->id);
-        //print $sql;
+       // print $sql;
         mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {
@@ -3954,10 +4035,9 @@ class Contact extends DB_Table {
         return $fax;
     }
 
-    /*
-      function:get_main_mobile_data
-      Array with the data components of the main mobile
-    */
+
+  
+
     function get_main_mobile_data() {
         $mobile=array('Telecom Country Mobile Code'=>'','Telecom Area Code'=>'','Telecom Number'=>'','Telecom Extension'=>'');
         if ($this->data['Contact Main Mobile Key']) {
@@ -4293,52 +4373,44 @@ class Contact extends DB_Table {
         else
             return false;
     }
-    /*
-      function: update_mobile
-      update Contact Main XHTML Mobile , la tabla puente y graba la historia
+ 
+function update_mobile($telecom_key) {
 
+    return;
 
-      parameter:$telecom_key
-
-    */
-
-    function update_mobile($telecom_key) {
-
-        return;
-
-        if ($telecom_key==$this->data['Contact Main Mobile Key']) {
-            $telecom=new Telecom($telecom_key);
-            if (!$telecom->id) {
-                $this->error=true;
-                $this->msg='Telecom not found';
-                $this->msg_updated.=',Telecom not found';
-                return;
-            }
-            $old_value=$this->data['Contact Main XHTML Mobile'];
-            $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Mobile `=%s ,`Contact Main Plain Mobile`=%s where `Contact Key`=%d "
-                         ,prepare_mysql($telecom->display('xhtml'))
-                         ,prepare_mysql($telecom->display('plain'))
-                         ,$this->id
-                        );
-            mysql_query($sql);
-            if (mysql_affected_rows() and $old_value!=$telecom->display('xhtml')) {
-
-
-                $history_data=array(
-                                  'Indirect Object'=>'Contact Main XHTML Mobile'
-                                                    ,'History Abstract'=>_('Contact Main XHTML Mobile  Changed')
-                                                                        ,'History Details'=>_('Contact Main XHTML Mobile  changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
-
-                              );
-                $this->add_history($history_data);
-            }
-        } else {
-            $this->add_tel(array(
-                               'Telecom Key'=>$telecom->id
-                                             ,'Telecom Type'=>'Mobile'
-                           ));
+    if ($telecom_key==$this->data['Contact Main Mobile Key']) {
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
         }
+        $old_value=$this->data['Contact Main XHTML Mobile'];
+        $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Mobile `=%s ,`Contact Main Plain Mobile`=%s where `Contact Key`=%d ",
+                     prepare_mysql($telecom->display('xhtml')),
+                     prepare_mysql($telecom->display('plain')),
+                     $this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows() and $old_value!=$telecom->display('xhtml')) {
+
+
+            $history_data=array(
+                                'Indirect Object'=>'Contact Main XHTML Mobile',
+                                'History Abstract'=>_('Contact Main XHTML Mobile  Changed'),
+                                'History Details'=>_('Contact Main XHTML Mobile  changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+
+                               );
+            $this->add_history($history_data);
+        }
+    } else {
+        $this->add_tel(array(
+                           'Telecom Key'=>$telecom->id,
+                           'Telecom Type'=>'Mobile'
+                       ));
     }
+}
 
 
 
