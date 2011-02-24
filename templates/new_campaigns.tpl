@@ -8,7 +8,7 @@
       <table border="0" width="700">
 	<form action="create_campaign_data.php" method="post" name="campaign" id="campaign">
 	<tr>
-	  <td> Campaign Name  </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30" value="{$campaign_name}"> </td>
+	  <td width="300"> Campaign Name  </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30" value="{$campaign_name}"> </td>
 	</tr>
 	
 	<tr>
@@ -20,7 +20,11 @@
 	</tr>
 
 	<tr>
-	  <td>  Campaign Content </td> <td><b>:</b></td><td><textarea name="campaign_content" id="campaign_content" class="ckeditor" cols="28">{$campaign_content}</textarea></td>
+	  <td>  Campaign Content </td> <td><b>:</b></td><td></td>
+	</tr>
+
+	<tr>
+		<td colspan="3"><textarea name="campaign_content" id="campaign_content" class="ckeditor" cols="28">{$campaign_content}</textarea></td>
 	</tr>
 
 	<tr>

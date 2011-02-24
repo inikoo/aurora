@@ -78,7 +78,7 @@ var $deleted=false;
 
         switch ($tipo) {
         case('plain'):
-            return $this->data['Telecom Plain Number'];
+            return   $this->plain_number($this->data);
         case('formated'):
             return $this->formated_number($this->data);
             break;
@@ -1060,22 +1060,26 @@ switch ($find_type) {
 
         $base_data=$this->base_data();
         foreach($data as $key=>$value) {
-            if ( array_key_exists($key,$this->data) and   $value!=$this->data[$key]) {
+            if ( array_key_exists($key,$this->data) and   $value!=$this->data[$key] and $key!='Telecom Plain Number') {
                 $this->update_field_switcher($key,$value,$options);
             }
 
         }
 
-
         if (!$this->updated)
             $this->msg.=' '._('Nothing to be updated')."\n";
         else {
+	  //	  print_r($this->data);
+
             $new_plain=$this->display('plain');
             $new_xhtml=$this->display('xhtml');
-            if ($old_plain!=$new_plain)
-                $this->update_field_switcher('Telecom Plain Number',$new_plain,$options);
-            $this->update_parents();
+	    //	print "old:  $old_plain -> $new_plain\n";
 
+
+            if ($old_plain!=$new_plain){
+                $this->update_field_switcher('Telecom Plain Number',$new_plain,$options);
+		$this->update_parents();
+	    }
 
         }
 
@@ -1083,7 +1087,9 @@ switch ($find_type) {
 
 
     function update_number($value,$country_code='UNK') {
-          $_data=preg_replace('/[^\d]/','',$value);
+     
+
+ $_data=preg_replace('/[^\d]/','',$value);
 
             if (strlen($_data)<3) {
 
@@ -1095,12 +1101,13 @@ switch ($find_type) {
             }
     
         $data=$this->parse_number($value,$country_code);
+	//	print_r($data);
         $this->update($data);
     }
 
     function update_field_switcher($field,$value,$options='') {
     
-   // print "XXX $field,$value\n";
+      //  print "XXX $field,$value\n";
    // sass();
         if ($field=='Telecom Plain Number')
             $options.=' no history';
@@ -1111,6 +1118,9 @@ switch ($find_type) {
     }
 
     function update_parents() {
+
+      print $this->id;
+
         $parents=array('Address','Contact','Company','Customer','Supplier');
         $types=array("Mobile","FAX","Telephone");
         foreach($types as $type) {
@@ -1118,7 +1128,8 @@ switch ($find_type) {
         if($type=="Mobile" and $parent!="Contact")
         continue;
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-          $res=mysql_query($sql);
+	    print "$sql\n";
+  $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_telecom_changed=false;
 
@@ -1150,7 +1161,7 @@ switch ($find_type) {
                              ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
                              ,$parent_object->id
                             );
-                         //   print "$sql\n";
+                            print "$sql\n";
                 mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";

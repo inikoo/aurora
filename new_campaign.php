@@ -52,12 +52,13 @@ $js_files=array(
 		$queryCount = mysql_query($sqlCount);
 		$count = mysql_num_rows($queryCount);
 		$smarty->assign('count',$count);
+
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
 $smarty->assign('title', _('Customers Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-if(isset($_SESSION['disp_msg']) OR $_SESSION['disp_msg'] != ''){
+if(isset($_SESSION['disp_msg']) && $_SESSION['disp_msg'] != ''){
 
 	$smarty->assign('msg',$_SESSION['disp_msg']);
 	unset($_SESSION['disp_msg']);

@@ -2087,6 +2087,13 @@ function edit_customer() {
 
 
     $customer=new customer($_REQUEST['customer_key']);
+    if(!$customer->id){
+      $response= array('state'=>400,'msg'=>'Customer not found','key'=>$_REQUEST['key']);
+    echo json_encode($response);
+
+	exit;
+    }
+
     global $editor;
     $customer->editor=$editor;
 
