@@ -56,7 +56,7 @@ $js_files=array(
 	
 	$h = $csv->getHeaders();
 
-	//$r =  $csv->getRow($index);
+	
 	$raw = $csv->getrawArray();
 	
 
@@ -65,46 +65,66 @@ $js_files=array(
 	
 	$session_array = array_unique($_SESSION['colorArray']);
 
-	//$ignore = array_flip($session_array);
 	
+	$tt = array();
 
+	foreach($session_array as $session=>$vv)
+	{
+		$tt[] = $vv;
+	}
+
+	
 	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
 
-	print_r($session_array);
+	
 
 	
 	$arr = array();
 	$k = 0;
 	$nArray = array();
-		
 	
-		for($i=0; $i<$count_rows; $i++)
+	
+		for($i=0; $i<=$count_rows; $i++)
 		{
 			$k = 0;
-			for($j=0; $j<5; $j++)
+			for($j=0; $j<count($assign); $j++)
 			{
 				
+				if($assign[$k] != 'Ignore')
+				{
 					$nArray[$assign[$k]]=$raw[$i][$j];	
 			
-					
+				}	
 					$k++;
 				
 			}
 				$arr[]=$nArray;  
 		}
-		
-		print_r($arr);
-	
+		$previous=array();
+                $previous=$arr;
+		foreach($tt as $key=>$value)
+		{
+			if(array_key_exists($value,$arr))
+			{	
+				unset($arr[$value]);
+			}
+		}
 
+	       $ignore[]=array_diff($previous,$arr);
+		
+		//print_r($ignore);
+			
+		
 
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('assign',$assign);
+$smarty->assign('arr',$arr);
+$smarty->assign('tt',$tt);
 $smarty->assign('values',$values);
 
 
 $smarty->display('insert_csv.tpl');
-	unset($_SESSION['getQueryString']);
+unset($_SESSION['getQueryString']);
 
 ?>

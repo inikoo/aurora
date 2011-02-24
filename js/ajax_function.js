@@ -114,7 +114,7 @@ function getIgnore(v) {
            }
       }
  };
-	v=v+1;
+	//v=v+1;
 
    req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
