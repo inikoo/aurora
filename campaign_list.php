@@ -38,10 +38,13 @@ $js_files=array(
 		);
 
 
+	$msg = isset($_SESSION['msg'])?$_SESSION['msg']:'';
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
+$smarty->assign('msg',$msg);
 
 
 $smarty->display('campaign_list.tpl');
+unset($_SESSION['msg']);
 ?>
