@@ -25,10 +25,13 @@ if(isset($_REQUEST)){
 	}
 	else{
 	$sql = "insert into `Email Campaign Dimension` (`Email Campaign Name`, `Email Campaign Objective`, `Email Campaign Maximum Emails`,
-	`Email Campaign Content`,`Email Campaign Engine`,`Email Campaign Status`)values('".$campaign_name."', '".$campaign_obj."', '".
-	$campaign_mail."', '".$campaign_content."','Internal','Creating')";
+	`Email Campaign Content`,`Email Campaign Engine`,`Email Campaign Status`,`Campaign Creation Date`)values('".$campaign_name."', '".$campaign_obj."', '".
+	$campaign_mail."', '".$campaign_content."','Internal','Creating',NOW())";
 	$res = mysql_query($sql);
 	$campaign_id = mysql_insert_id();
+
+	
+
 	//fetch the number of emails from list
 	//query will be here
 	//select the customer mail from customer dimension
@@ -42,6 +45,8 @@ if(isset($_REQUEST)){
 		'".$campaign_id."', '".$insert['Customer Main Email Key']."')";
 		$r = mysql_query($insert_mail_key);
 	}*/
+
+
 
 	//insert list key
 	$listQuery = "insert into `Email Campaign Mailing List` (`Customer Key`, `Email Campaign Key`)values('".$customer_list_key."', '".$campaign_id."')";

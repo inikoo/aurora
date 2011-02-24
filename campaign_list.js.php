@@ -14,12 +14,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"name", label:"<?php echo _('Name')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					{key:"check_option", label:"<?php echo _('Select')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       
+				       ,{key:"name", label:"<?php echo _('Name')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
 				       ,{key:"creationdate", label:"<?php echo _('Creation Date')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"datesend", label:"<?php echo _('Date Send')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				         ,{key:"sendemail", label:"<?php echo _('Number Emails Send')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				        ,{key:"emailread", label:"<?php echo _('Number Emails Read')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					
 				       ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_campaign_list.php?tipo=campaign_list");
@@ -39,7 +42,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "creationdate"
-			 ,"alias","name","datesend","sendemail","emailread"
+			 ,"alias","check_option","name","datesend","sendemail","emailread"
 
 			 ]};
 	    //__You shouls not change anything from here
