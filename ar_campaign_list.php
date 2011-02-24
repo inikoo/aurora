@@ -174,13 +174,13 @@ function campaign_list() {
         $area='';
         $position=$data['position'];
         $adata[]=array(
-                     
+		     'check_option'=>'<input type="checkbox" name="mail_list[]" value="'.$data['Email Campaign Key'].'">',
                      'name'=>$data['Email Campaign Name'],
 		     'creationdate'=>strftime("%e %b %y %H:%M", strtotime($data['Campaign Creation Date'])),
                      'sendemail'=>$data['Number of Emails'],
                      'emailread'=>$data['Number of Read Emails'],
                      'datesend'=>strftime("%e %b %y %H:%M", strtotime($data['Email Send Date']))
-
+		    
                  );
     }
     mysql_free_result($res);
@@ -197,7 +197,6 @@ function campaign_list() {
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
-
                                       'records_perpage'=>$number_results,
                                       'records_order'=>$order,
                                       'records_order_dir'=>$order_dir,
