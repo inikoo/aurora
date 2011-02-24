@@ -43,28 +43,27 @@ $address=new Address($customer->data['Customer Main Address Key']);
 $address_lines=$address->display('3lines');
 
 $number_orders=$customer->data['Customer Orders'];
-
+$included_data=array();
 $actual_data=array();
-//$post_data=array();
 $exported_data=array();
 
 if(!$_POST['fld']){
-	die('Select al least one field');
+	die('Select atleast one field');
 	exit;
 }
-$exported_data = $_POST['fld'];
-print_r($exported_data);
+$included_data = $_POST['fld'];
+//print_r($included_data);
+
+
 $line = ''; $data = '';
 $filename = $customer->data['Customer Key'].'.csv';
 
-//$post_data[0]='something that need not to process';
-print_r($post_data);
 
 $actual_data=$customer->data;
-print_r($actual_data);
+//print_r($actual_data);
 
-$exported_data = get_exported_array($actual_data , $post_data);
-print_r($exported_data);
+$exported_data = final_array($actual_data , $included_data);
+//print_r($exported_data);
 
 
 foreach($exported_data as $key=>$value){
@@ -83,8 +82,8 @@ foreach($exported_data as $key=>$value){
 
 $data .= trim($line)."\n";
 $line = '';
+unset($included_data);
 unset($exported_data);
-unset($post_data);
 unset($actual_data);
 
 $data = str_replace("\r", "", $data);
@@ -93,27 +92,28 @@ if ($data == "") {
   $data = "\nno matching records found\n";
 }
 
-//header("Content-type: application/octet-stream");
-//header("Content-Disposition: attachment; filename=$filename");
-//header("Pragma: no-cache");
-//header("Expires: 0");
+header("Content-type: application/octet-stream");
+header("Content-Disposition: attachment; filename=$filename");
+header("Pragma: no-cache");
+header("Expires: 0");
 
-//echo $header."\n".$data;
+echo $header."\n".$data;
 
 
 
-function get_exported_array($actual, $input){
+function final_array($assoc_arr, $num_arr){
+	$final_arr = array();
 
-	$result = array();
-	foreach($input as $value){
+	foreach($assoc_arr as $assoc_key => $assoc_val){
 
-		if(array_key_exists($value, $actual)){
-			$var=$actual[$value];
-			array_push($result, $var);
+		if(in_array($assoc_key, $num_arr)){
+
+			$final_arr[$assoc_key]=$assoc_val;
 
 		}
 	}
-	return $result;
+	//print_r($final_arr);
+	return $final_arr;
 }
 
 ?>
