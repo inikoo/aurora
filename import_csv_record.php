@@ -18,6 +18,8 @@
 	//$r =  $csv->getRow($index); 
 	$raw = $csv->getrawArray();
 	
+
+	//$upper_value = count($raw);
 	
 	$tt = array();
 
@@ -41,7 +43,7 @@
 		<th class="list-column-left" style="text-align: left; width: 30%;">
 		<span style="float: left;">
 		<?php 
-			echo 'Value '.($index + 1).' of '.$count_rows;
+			echo 'Value '.$index.' of '.$count_rows;
 
 		?>
 		</span>
@@ -53,7 +55,7 @@
        				<a href="#" class="subtext" id="prev" onclick="getPrev(<?php echo $index; ?>,<?php echo count($h);?>)">Previous</a>&nbsp;|&nbsp;
 		       	   <?php
 			         }
-			       if($index < $count_rows-1)        
+			       if($index < $count_rows)        
 			         {
 					$i=0;
 		       	   ?>

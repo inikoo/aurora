@@ -3,27 +3,57 @@
  
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-    <h1></h1>
-</div>
+    <h1>Import Contacts From CSV File
+</h1>
+  </div>
 <br>
 
-<h3>The FInal Array</h3>
-	<div class="left3Quarters">
-	
- 		<div class="unframedsection">		
-		
-			<div id="form:j_id68">
+<div class="left3Quarters">
+               
 
-    
-    				<div class="prop">
-			
-				</div>
+<form id="form" name="form" method="post" action="" enctype="multipart/form-data">
+<input type="hidden" name="form" value="form" />
+ 
+                    <div class="unframedsection"><div id="form:j_id68">
 
-			</div>    
-                </div>
-       <div class="clear"></div>
+   
+    <div class="prop">
+    <label  for="fileUpload" class="import_level" style="font-size:14px;">
+    Step 3</label>
+       
+        </div></div>   
+                    </div>
+                    <div class="clear"></div>
+                    <ul class="formActions">
+                        <li>
+                            <div class="framedsection">
+               
+               
+                {php}
+          echo "The Ignored array<br>";
+         $tt = $this->get_template_vars('tt');
+                echo "<pre>";
+                print_r($tt);
+                 echo"<br>";
+		echo "The Final array<br>";
+                  $final = $this->get_template_vars('arr');
+                echo "<pre>";
+                print_r($final);
+               
+                {/php}
+                          
 
-</div>
+                            </div>
+               
+                        </li>
+                    </ul>
+                   
+                   
+</form> 
+               
+            </div>
+
+
 
 </div>
 
