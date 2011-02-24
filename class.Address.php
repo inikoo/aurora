@@ -208,6 +208,7 @@ class Address extends DB_Table {
     function find_complete($data,$subject_data) {
 
 
+
         $subject_type=$subject_data['subject_type'];
         $subject_object=$subject_data['subject_object'];
 
@@ -252,7 +253,10 @@ class Address extends DB_Table {
             }
         }
 
-        if (!$this->found and $data['Address Fuzzy']!='Yes') {
+
+if (!$this->found ){
+
+        if ($data['Address Fuzzy']!='Yes') {
 
             $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
@@ -272,15 +276,32 @@ class Address extends DB_Table {
             }
 
 
-        }
+        }else{
+        
+        if( $data['Address Fuzzy Type']=='Town'){
+        
+            $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
+            $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+            
+            foreach($fields as $field) {
+                $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+            }
 
+            $result=mysql_query($sql);
+            $num_results=mysql_num_rows($result);
+            if ($num_results==1) {
+                $row=mysql_fetch_array($result, MYSQL_ASSOC);
+                $this->found=true;
+                $this->found_key=$row['Address Key'];
+                $this->get_data('id',$row['Address Key']);
+                $this->candidate[$row['Subject Key']]=110;
 
-
-
-
-
-    }
+}
+}
+}
+}
+}
 
     function find_fuzzy() {
 
@@ -986,9 +1007,13 @@ class Address extends DB_Table {
             }
         }
         // print "XXXXXXXXXXX\n";
-        // print_r($data);
-        // print"+++++++++++++\n";
+         //print_r($data);
+         //print"+++++++++++++\n";
         $data=$this->prepare_data($data,$options);
+
+unset($data['Address Main Telephone Key']);
+unset($data['Address Main Plain Telephone']);
+unset($data['Address Main XHTML Telephone']);
 
         // if($this->table_name=='Telecom'){
         // print_r($data);exit;
@@ -996,7 +1021,7 @@ class Address extends DB_Table {
         $base_data=$this->base_data();
 
         foreach($data as $key=>$value) {
-
+//print "*** $key $value \n";
             if ($key=='Address Country Code' or  $key==' Address Country 2 Alpha Code' or $key=='Address Country Name' ) {
                 if ($key=='Address Country Code')
                     $code=$value;
@@ -4814,9 +4839,9 @@ class Address extends DB_Table {
                 $old_principal_telecom_key=$parent_object->data[$parent." Main $type Key"];
                 if ($old_principal_telecom_key!=$telecom_key) {
 
-                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where   `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d"
+                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where   `Subject Type`='$parent' and  `Subject Key`=%d  "
                                  ,$parent_object->id
-                                 ,$telecom_key
+                            
                                 );
                     mysql_query($sql);
                     $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where  `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d"

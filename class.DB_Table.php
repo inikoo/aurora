@@ -84,6 +84,8 @@ abstract class DB_Table {
 
 
         foreach($data as $key=>$value) {
+        if(is_string($value))
+        $value=_trim($value);
             $this->update_field_switcher($key,$value,$options);
 
 
@@ -394,10 +396,12 @@ $null_if_empty=false;
                      ,prepare_mysql($data['Deep'])
                      ,prepare_mysql($data['Metadata'])
                     );
+                    
+     //   print $sql;
+       // print_r($raw_data);
+        //dsdfdffd();
         mysql_query($sql);
-       // print $sql;
-        
-        
+   
         return mysql_insert_id();
 
         

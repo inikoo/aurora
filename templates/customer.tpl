@@ -131,6 +131,7 @@
 		  <tr>
 		      <td>{t}Contact Telephone{/t}:</td><td>{$customer->get('Customer Main XHTML Telephone')}</td>
 		    </tr>
+		  
 		  <tr>
 		      <td>{t}Contact Fax{/t}:</td><td>{$customer->get('Customer Main XHTML FAX')}</td>
 		    </tr>
