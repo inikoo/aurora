@@ -451,6 +451,9 @@ overflow:auto;
 
 
 
+  #display_part { background:#fff; margin:3px; width:400px; 
+  display:none; text-align:left; }
+
 
 
 
