@@ -177,16 +177,13 @@ function list_customer_history() {
 
     if ( $f_field=='notes' and $f_value!='' )
         $wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
-    if ($f_field=='upto' and is_numeric($f_value) )
-        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
+    else if ($f_field=='upto' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))<=".$f_value."    ";
     else if ($f_field=='older' and is_numeric($f_value))
-        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))>=".$f_value."    ";
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
     elseif($f_field=='author' and $f_value!='') {
-        if (is_numeric($f_value))
-            $wheref.=" and   staff_id=$f_value   ";
-        else {
-            $wheref.=" and  handle like='".addslashes($f_value)."%'   ";
-        }
+                $wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
+
     }
 
 
@@ -201,7 +198,7 @@ function list_customer_history() {
 
     //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
     $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where $wheref  ";
-    //print $sql;
+ //   print $sql;
     // exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -250,13 +247,13 @@ function list_customer_history() {
             if ($total==0 and $filtered>0)
                 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record older than")." <b>$f_value</b> ".ngettext('day','days',$f_value);
             elseif($filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record older than','records older than',$total)." <b>$f_value</b> ".ngettext($f_value,'day','days');
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record older than','records older than',$total)." <b>$f_value</b> ".ngettext('day','days',$f_value);
             break;
         case('upto'):
             if ($total==0 and $filtered>0)
                 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record in the last")." <b>$f_value</b> ".ngettext('day','days',$f_value);
             elseif($filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record in the last','records inthe last',$total)." <b>$f_value</b> ".ngettext($f_value,'day','days')."<span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record in the last','records inthe last',$total)." <b>$f_value</b> ".ngettext('day','days',$f_value)."<span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
             break;
 
 
@@ -275,10 +272,12 @@ function list_customer_history() {
     if ($order=='handle')
         $order="`Author Name` $order_direction";
 
+// $order="`History Date` desc,  `History Key` DESC  ";
+
 
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
     $sql="select `Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
-     //print $sql;
+   //  print $sql;
     $result=mysql_query($sql);
     $data=array();
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -301,7 +300,7 @@ function list_customer_history() {
                     'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
                     'objeto'=>$objeto,
                     'note'=>$note,
-                    'handle'=>$author.$row['History Key'],
+                    'handle'=>$author,
                     'delete'=>($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':''),
                     'can_delete'=>($row['Deletable']=='Yes'?1:0),
 'delete_type'=>_('delete')

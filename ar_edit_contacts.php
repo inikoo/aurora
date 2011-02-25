@@ -2118,6 +2118,7 @@ function edit_customer() {
                      'name'=>'Customer Name',
                      'email'=>'Customer Main Plain Email',
                      'telephone'=>'Customer Main Plain Telephone',
+                     'fax'=>'Customer Main Plain FAX',
                      'contact'=>'Customer Main Contact Name',
                      "address"=>'Address',
                      "town"=>'Main Address Town',
@@ -2224,7 +2225,7 @@ function list_customers() {
 
     $filter_msg='';
     $wheref='';
-
+$where='where true ';
 
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);

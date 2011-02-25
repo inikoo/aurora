@@ -42,7 +42,7 @@ $tipo_his=array();
 $myFile = "act_timedata.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
 
-$filename="actdatatmp.txt";
+$filename="actdatatmp2.txt";
 
 
 date_default_timezone_set('UTC');
@@ -191,9 +191,10 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $act_data['creation_datetimestap']=$creation_time;
         //print_r($act_data);
         $act_data=act_transformations($act_data);
-        $history_data=get_history_data($act_data['history']);
+        $history_data=get_history_data($act_data['history'],$act_data['creation_date']);
         $act_data['history']=$history_data;
-$act_data['all_data']=$cols;
+        $act_data['all_data']=$cols;
+        
         //print_r($history_data);
 
         if ($act_data['name']=='' and $act_data['contact']=='' and $act_data['email']=='' and $act_data['tel']==''
@@ -709,9 +710,9 @@ function compare($x, $y) {
 }
 
 
-function get_history_data($raw_history) {
+function get_history_data($raw_history,$customer_creation_formated_time) {
     global $tipo_his;
-
+$customer_creation_time=strtotime($customer_creation_formated_time);
 
     $history=array('Field Changed'=>array(),'Note'=>array(),'E-mail Sent'=>array(),'Attachment'=>array(),'Contact Deleted'=>array(),'To-do Done'=>array(),'Call Completed'=>array(),'To-do Not Done'=>array());
 
@@ -742,7 +743,15 @@ function get_history_data($raw_history) {
         $tmp2=preg_split('/\//',$tmp[0]);
         $formated_time=$tmp2[2].'-'.$tmp2[1].'-'.$tmp2[0].' '.$tmp[1];
         $creation_time=strtotime($formated_time);
-        $dates[]=date("Y-m-d H:i:s",$creation_time);
+        
+        
+        if(date("Y-m-d H:i:s",$creation_time)==date("Y-m-d H:i:00",$customer_creation_time)  )
+        $_date=date("Y-m-d H:i:s",$customer_creation_time);
+        else
+        $_date=date("Y-m-d H:i:s",$creation_time);
+        
+        // print date("Y-m-d H:i:s",$creation_time)."-$customer_creation_time-".date("Y-m-d H:i:00",$customer_creation_time)." -- $_date \n";
+        $dates[]=$_date;
     }
     //  print "-----\n";
     //print_r($date_splited);

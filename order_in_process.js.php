@@ -670,10 +670,14 @@ function init(){
     YAHOO.util.Event.addListener('family_search', "keyup",submit_family_code_search_on_enter);
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-    
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
+
+Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+
+
 //---------------------------------------discount search code from here-----------------------
  change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", 
 			{ 

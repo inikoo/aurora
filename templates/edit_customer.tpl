@@ -150,9 +150,9 @@
    <td id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
  </tr>
 
-		 {if $customer_type=='Company'}
+		 
  </td></tr>
- <tr class="first"><td style="" class="label">{t}Company Name{/t}:</td>
+ <tr {if $customer_type!='Company'}style="display:none"{/if} class="first"><td style="" class="label">{t}Company Name{/t}:</td>
    <td  style="text-align:left;width:12em">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0">
@@ -161,7 +161,7 @@
    </td>
    <td id="Customer_Name_msg"  class="edit_td_alert"></td>
  </tr>
- {/if}
+
  <tr class=""><td style=";width:12em" class="label" >{t}Contact Name{/t}:</td>
    <td  style="text-align:left;width:18em;">
      <div  style="width:15em;position:relative;top:00px" >
@@ -189,7 +189,15 @@
    </td>
    <td id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
  </tr>
-
+<tr class=""><td style="" class="label">{t}Contact Fax{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
+       <div id="Customer_Main_FAX_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Main_FAX_msg" class="edit_td_alert"></td>
+ </tr>
 
 
 
