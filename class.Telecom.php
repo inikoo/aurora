@@ -1119,7 +1119,7 @@ switch ($find_type) {
 
     function update_parents() {
 
-      print $this->id;
+      //print $this->id;
 
         $parents=array('Address','Contact','Company','Customer','Supplier');
         $types=array("Mobile","FAX","Telephone");
@@ -1128,7 +1128,7 @@ switch ($find_type) {
         if($type=="Mobile" and $parent!="Contact")
         continue;
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-	    print "$sql\n";
+	   // print "$sql\n";
   $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_telecom_changed=false;
@@ -1161,7 +1161,7 @@ switch ($find_type) {
                              ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
                              ,$parent_object->id
                             );
-                            print "$sql\n";
+                          //  print "$sql\n";
                 mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";

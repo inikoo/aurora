@@ -1010,7 +1010,7 @@ $found=false;
    //print($sql);
     //print "-->".mysql_affected_rows()."<--  "    ;
     if(mysql_affected_rows()>0){
-    $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id']);
+    $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key']);
     echo json_encode($response);
     }else{
     $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
@@ -1078,7 +1078,7 @@ function associate_subject_to_category_radio($data) {
     mysql_query($sql);
     
     if(mysql_affected_rows()>0){
-    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
+    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key']);
     echo json_encode($response);
     }else{
     $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));

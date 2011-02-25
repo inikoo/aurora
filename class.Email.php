@@ -887,7 +887,7 @@ function delete() {
                 $parent_object=new Company($row['Parent Key']);
                 $parent_label=_('Company');
             }
-            $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=0, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d"
+            $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=NULL, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d"
 
                          ,$parent_object->id
                         );

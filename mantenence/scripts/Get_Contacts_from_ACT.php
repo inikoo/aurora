@@ -212,8 +212,8 @@ $act_data['all_data']=$cols;
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-     //    if($row>1000)
-     //     break;
+     //   if($row>5000)
+       //   break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -242,7 +242,7 @@ usort($contacts, 'compare');
 $time_data=array();
 $contador=0;
 $start_time=microtime_float();
-foreach($contacts as $act_data) {
+foreach($contacts as $act_data_contact_key=>$act_data) {
     $base_time=microtime_float();
     $contador++;
 
@@ -676,7 +676,7 @@ mysql_query($sql);
 
     //print "caca";
     //print_r($customer);
-
+unset($contacts[$act_data_contact_key]);
 }
 
 fclose($fh);
