@@ -17,9 +17,9 @@
 {literal}
 <script type="text/javascript" charset="utf-8">
 
- 
             
 			$(function(){
+
 				$("#shopping_list tr").quickpaginate({ perpage:3, pager : $("#shopping_list_counter") });
 			});
 			
