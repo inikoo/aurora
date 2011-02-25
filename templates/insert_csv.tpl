@@ -30,7 +30,7 @@
                
                
                 {php}
-          echo "The Ignored array<br>";
+          echo "The Ignored Record array<br>";
          $tt = $this->get_template_vars('tt');
                 echo "<pre>";
                 print_r($tt);
@@ -41,7 +41,20 @@
                 print_r($final);
                
                 {/php}
-                          
+                      
+<br>
+<br>
+		
+                {php}
+          echo "The Ignored array from the field<br>";
+         $ignored_array = $this->get_template_vars('ignored_array');
+                echo "<pre>";
+                print_r($ignored_array);
+                
+		
+               
+                {/php}
+    
 
                             </div>
                
