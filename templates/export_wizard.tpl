@@ -2,7 +2,7 @@
 <div id="bd" style="padding:0px">
 <div style="clear:both" >
 <h1 style="padding:40px;">Export Wizard</h1>
-<form action="export_wizard_step4.php?id={$customer_id}" method="POST" name="frm_export">
+<form action="export_wizard_step2.php?subject=customer&subject_key={$customer_id}" method="POST" name="frm_export">
 <table style="margin-left:60px;" border="1" width="400">
 <tr><td colspan="2"><B>Select Fields to export</B></td></tr>
 {foreach from=$list key=list_key item=list_item}

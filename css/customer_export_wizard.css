@@ -1,0 +1,28 @@
+
+.field_set {
+    -moz-border-radius: 4px 4px 4px 4px;
+     width:420px;
+    border: 1px #848284 solid;
+    clear: both;
+    margin: 1.2em 0 1.2em 0.3em;
+    min-height: 10px;
+    padding: 1em 1.4em 1.4em;
+}
+
+.next{
+    background-image: url("../art/next.png");
+    background-repeat: no-repeat;
+    border:none;
+    height: 23px;
+    width: 65px;
+    cursor:pointer;
+}
+.prev{
+    background-image: url("../art/prev.png");
+    background-repeat: no-repeat;
+    border:none;
+    height: 23px;
+    width: 65px;
+    cursor:pointer;
+}
+

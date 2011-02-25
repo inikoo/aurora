@@ -763,8 +763,27 @@ CREATE TABLE IF NOT EXISTS `Email Send Dimension` (
   KEY `Email Send Type Key` (`Email Send Type Key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
+--
+-- Table structure for table `Export Map`
+--
 
+CREATE TABLE IF NOT EXISTS `Export Map` (
+  `Map Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Map Name` varchar(255) NOT NULL,
+  `Map Type` enum('Customer','Supplier') NOT NULL,
+  `Map Data` longtext NOT NULL,
+  `Customer Key` int(11) NOT NULL,
+  `Export Map Default` enum('yes','no') NOT NULL,
+  `Exported Date` datetime NOT NULL,
+  PRIMARY KEY (`Map Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `Export Map`
+--
 */
+
+
 
 
 ?>
