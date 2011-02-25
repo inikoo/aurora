@@ -27,8 +27,18 @@
                     <ul class="formActions">
                         <li>
                             <div class="framedsection">
+		
+			 {php}
+          echo "The Ignored array from the field<br>";
+         $ignored_array = $this->get_template_vars('ignored_array');
+                echo "<pre>";
+                print_r($ignored_array);
+                         {/php}      
                
-               
+		<br>
+	<br>
+	<br>
+
                 {php}
           echo "The Ignored Record array<br>";
          $tt = $this->get_template_vars('tt');
@@ -42,18 +52,10 @@
                
                 {/php}
                       
-<br>
-<br>
-		
-                {php}
-          echo "The Ignored array from the field<br>";
-         $ignored_array = $this->get_template_vars('ignored_array');
-                echo "<pre>";
-                print_r($ignored_array);
-                
+       
 		
                
-                {/php}
+
     
 
                             </div>
