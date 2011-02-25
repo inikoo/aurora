@@ -208,7 +208,7 @@ $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
 
-  $general_options_list[]=array('tipo'=>'url','url'=>'export_wizard.php?id='.$customer->id,'label'=>_('New Export Data (CSV)'));
+    $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('New Export Data (CSV)'));
 
   $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
 
