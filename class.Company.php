@@ -960,6 +960,10 @@ class Company extends DB_Table {
                 if ($telecom_key=$address->get_principal_telecom_key($type)) {
                     $telecom=new Telecom($telecom_key);
                     $telecom->delete();
+                    if($telecom->deleted){
+                        $this->updated=true;
+                         $this->new_value='';
+                    }
                 }
 
             } else {

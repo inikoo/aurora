@@ -29,7 +29,7 @@ var validate_scope_data=
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"([ext\\d\\(\\)\\[\\]\\-\\s]+|)",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
   	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
 
   },
@@ -156,6 +156,32 @@ function reset_edit_customer(){
 }
 
 
+function save_comunications(key,value){
+var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
+		
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				 
+            if (r.newvalue=='No' || r.newvalue=='Yes') {
+                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
+
+               Dom.addClass(r.key+'_'+r.newvalue,'selected');
+
+            }else{
+                alert(r.msg)
+            }
+        }
+    }
+    });
+
+
+
+
+}
+
 function save_checkout(o) {
 
 var category_key=o.getAttribute('cat_id')
@@ -205,7 +231,7 @@ var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + cat
 		
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-			//	alert(o.responseText);
+		//	alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				 
@@ -215,15 +241,13 @@ var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + cat
             }else if(r.action=='added'){
                           
                           cat_element=Dom.get(r.cat_id)
-                            parent=cat_element.parentNode;
+               //     alert('cat_'+r.parent_category_key)
                             
-                            other_elements=Dom.getElementsByClassName('catbox', 'span', parent)
-                          //  for (i in other_elements){
-                           //     alert(other_elements[i].id)
-                           // }
+                         other_elements=Dom.getElementsByClassName('catbox', 'span', Dom.get('cat_'+r.parent_category_key+'>'))
+                      //  other_elements=Dom.getElementsByClassName('catbox', 'span', Dom.get('cat_1'))
                         Dom.removeClass(other_elements,'selected');
                         Dom.addClass(cat_element,'selected');
-                    parent.setAttribute('value',cat_element.getAttribute('name'));
+                    //parent.setAttribute('value',cat_element.getAttribute('name'));
                           
                           
                           

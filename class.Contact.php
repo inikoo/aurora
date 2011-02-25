@@ -416,7 +416,7 @@ class Contact extends DB_Table {
                     $this->candidate[$key]=$val;
             }
         }
-
+/*
 
         if (isset($data['Contact Tax Number'])) {
             $contacts_in_company=array();
@@ -444,6 +444,7 @@ class Contact extends DB_Table {
 
             }
         }
+*/
 
 /*
 
@@ -1870,9 +1871,9 @@ $val=40;
             }
 
             $email->editor=$this->editor;
-            $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
+            $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d ",
                          $this->id
-                         ,$main_email_key
+                        
                         );
             mysql_query($sql);
             $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",

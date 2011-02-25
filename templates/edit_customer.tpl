@@ -29,7 +29,7 @@
  <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
  <td>
    <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if}">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if}">{t}No{/t}</span>
+   <span class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if}" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if}" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</span>
    </div>
  </td>
  </tr>
@@ -37,7 +37,7 @@
  <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
  <td>
    <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Customer Send Email Marketing')=='Yes'}selected{/if}">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Email Marketing')=='No'}selected{/if}">{t}No{/t}</span>
+   <span class="{if $customer->get('Customer Send Email Marketing')=='Yes'}selected{/if}" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Email Marketing')=='No'}selected{/if}" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</span>
    </div>
  </td>
  </tr>
@@ -49,7 +49,7 @@
  <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
  <td>
    <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if}">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Postal Marketing')=='No'}selected{/if}">{t}No{/t}</span>
+   <span class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if}" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Postal Marketing')=='No'}selected{/if}" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</span>
    </div>
  </td>
  </tr>
