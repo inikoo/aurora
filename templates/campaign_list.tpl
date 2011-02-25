@@ -18,7 +18,7 @@ $("#hidr").click(function () {
  
 <div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}campaign List{/t}</span>
-	<div style="float:right;"><h2 style="color:green;">{$msg}</h2></div>
+	<div style="float:right; padding-right:300px;"><span style="font-size:11px; color:green;">{$msg}</span></div>
    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
    
   <form action="send_mail.php" method="post">
@@ -29,45 +29,18 @@ $("#hidr").click(function () {
 
 
 
-
-
-
-
 <b id="showr" class="template_choose">Choose Template</b>
   <b id="hidr">Hide Option</b>
   <div id="display_part">
-  		
         		
   			
                             	<input type="radio" id="template1" name="template" value="1">Basic Template<br>
-                                <input type="radio" id= "template2" name="template" value="2">Classic Newsletter Template<br>
+                               <input type="radio" id= "template2" name="template" value="2">Classic Newsletter Template<br>
                                 <input type="radio" id="template3" name="template" value="3">Modern Newsletter Template<br>
                                 <input type="radio" id="template4" name="template" value="4">Postcard Template<br>
                             
-    		
     	
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	<div><br><input type="submit" name="submit" value="Send Mail"></div>
 </form>
 
