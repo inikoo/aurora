@@ -125,7 +125,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('arr',$arr);
 $smarty->assign('tt',$tt);
-$smarty->assign('values',$values);
+
 $smarty->assign('ignored_array',$assign);
 
 
