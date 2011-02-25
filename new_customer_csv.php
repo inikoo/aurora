@@ -55,7 +55,7 @@ $exported_data=array();
 //print_r($included_data);
 
 
-$line = ''; $data = '';
+$line = ''; $data = '';$header = '';
 $filename = $customer->data['Customer Key'].'.csv';
 
 
