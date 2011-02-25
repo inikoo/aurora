@@ -11,16 +11,9 @@ Copyright (c) 2010, Kaktus
 
 Version 2.0
 */
-
-error_reporting(1);
 include_once('common.php');
 include_once('class.Customer.php');
-$filename = $customer->data['Customer Key'].'.csv'; // Define your exported file name from here //
 
-if(!$_POST['SUBMIT']){ // To check whether the form is properly submitted //
-	header('Location: index.php');
-	exit;
-}
 
 if(!$_REQUEST['id']){ //To check whether the form has proper parameters in query string //
 	header('Location: index.php');
@@ -63,9 +56,15 @@ $actual_data=$customer->data;
 
 if($_REQUEST['loaddb']=='yes'){
 
-$exported_data = getExportMapData($customer_id); // Loading from Database
+$exported_data = getExportMapData($customer_id, 'Customer');
+//print_r($exported_data);
+
 
 }else{
+	if(!$_POST['SUBMIT']){ // To check whether the form is properly submitted //
+	header('Location: index.php');
+	exit;
+	}
 	$exported_data = $_SESSION['list']; // Catching values from session [processing through Wizard] //
 
 	/*$exported_data = final_array($actual_data , $included_data);
@@ -84,12 +83,12 @@ $exported_data = getExportMapData($customer_id); // Loading from Database
 	$map_name = 'Map of '.$customer->data['Customer Main Contact Name'];
 	$map_data = base64_encode(serialize($exported_data));
 
-	//if(getNumMap($customer_id)==0){ // First ENTRY - INSERT
+	if(numExportMapData($customer_id, 'Customer') == 0){
 	$sql = "INSERT INTO `Export Map` (`Map Name` ,`Map Type` ,`Map Data` ,`Customer Key` ,`Export Map Default`)
 	VALUES ('$map_name', 'Customer', '$map_data', '$customer_id', '$default')";
-	//}else{ // FURTHER ENTRIES - UPDATE
-	//$sql="UPDATE `Export Map` SET `Map Name` = '$map_name', `Map Data` = '$map_data', `Export Map Default` = '$default' WHERE `Customer Key` ='$customer_id'";
-	//}
+	}else{
+	$sql = "UPDATE `Export Map` SET `Map Name` = '$map_name', `Map Data` =  '$map_data', `Export Map Default` = '$default' WHERE `Customer Key` ='$customer_id' AND `Map Type` = 'Customer'";
+	}
 
 	$query = mysql_query($sql);
 
@@ -125,7 +124,7 @@ $data = str_replace("\r", "", $data);
 if ($data == "") {
   $data = "\nno matching records found\n";
 }
-
+$filename = $customer->data['Customer Key'].'.csv'; // Define your exported file name from here //
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=$filename");
 header("Pragma: no-cache");
@@ -135,21 +134,18 @@ echo $header."\n".$data;
 
 ## METHODS USED FOR THIS PAGE ##
 
-function getExportMapData($customerKey){
-
-	$q = mysql_query("SELECT `Map Data` FROM `Export Map` WHERE `Customer Key` = '$customerKey'");
-	$r = mysql_fetch_row($q);
-	$mapData=unserialize(base64_decode($r['Export Map Default']);
-	return $mapData;
-
+function getExportMapData($customerKey, $mapType){
+	//echo "SELECT `Map Data` FROM `Export Map` WHERE `Customer Key` = '$customerKey' AND `Map Type` = '$mapType'";
+	$q = mysql_query("SELECT `Map Data` FROM `Export Map` WHERE `Customer Key` = '$customerKey' AND `Map Type` = '$mapType'");
+	$r = mysql_fetch_assoc($q);
+	$data= unserialize(base64_decode($r['Map Data']));
+	return $data;
 }
 
-function getNumMap($customerKey){
-
-	$q = mysql_query("SELECT `Map Key` FROM `Export Map` WHERE `Customer Key` = '$customerKey'");
+function numExportMapData($customerKey, $mapType){
+	$q = mysql_query("SELECT `Map Key` FROM `Export Map` WHERE `Customer Key` = '$customerKey' AND `Map Type` = '$mapType'");
 	$num = mysql_num_rows($q);
 	return $num;
-
 }
 
 /*
