@@ -8,7 +8,7 @@ var Event = YAHOO.util.Event;
 var dialog_note;
 var dialog_new_sticky_note;
 var dialog_sticky_note;
-
+var dialog_export;
 var dialog_link;
 var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
 
@@ -265,7 +265,9 @@ case('new_sticky_note'):
 
 	break;
     
-    
+ case('export'):
+ dialog_export.hide();
+ break;
  case('make_order'):
 
      //	Dom.get(tipo+"_input").value='';
@@ -618,12 +620,17 @@ dialog_link.render();
 dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_make_order.render();
 
+dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_export.render();
+
+
 Event.addListener("new_sticky_note", "click", dialog_new_sticky_note.show,dialog_new_sticky_note , true);
 Event.addListener("sticky_note", "click", dialog_sticky_note.show,dialog_sticky_note , true);
 
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
 Event.addListener("link", "click", dialog_link.show,dialog_link , true);
+Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
 Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_order , true);
 
