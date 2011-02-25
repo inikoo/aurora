@@ -100,14 +100,18 @@ $js_files=array(
 			}
 				$arr[]=$nArray;  
 		}
+
+		
 		$previous=array();
                 $previous=$arr;
 		foreach($tt as $key=>$value)
 		{
-			if(array_key_exists($value,$arr))
+			/*if(array_key_exists($value,$arr))
 			{	
 				unset($arr[$value]);
-			}
+			}*/
+
+			
 		}
 
 	       $ignore[]=array_diff($previous,$arr);
@@ -121,7 +125,8 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('arr',$arr);
 $smarty->assign('tt',$tt);
-$smarty->assign('values',$values);
+
+$smarty->assign('ignored_array',$assign);
 
 
 $smarty->display('insert_csv.tpl');
