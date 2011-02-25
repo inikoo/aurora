@@ -776,7 +776,7 @@ CREATE TABLE IF NOT EXISTS `Export Map` (
   `Export Map Default` enum('yes','no') NOT NULL,
   `Exported Date` datetime NOT NULL,
   PRIMARY KEY (`Map Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `Export Map`

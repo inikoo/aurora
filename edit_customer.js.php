@@ -29,7 +29,9 @@ var validate_scope_data=
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"([ext\\d\\(\\)\\[\\]\\-\\s]+|)",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_FAX','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
+
   	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
 
   },
@@ -117,11 +119,9 @@ function validate_customer_email(query){
 
  validate_general('customer','email',unescape(query));
 if(query==''){
-validate_scope_data.customer.email.validated=true;
+    validate_scope_data.customer.email.validated=true;
 	validate_scope('customer'); 
-	
-Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
-	
+    Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
 }
 
 }
@@ -133,8 +133,24 @@ function validate_customer_fiscal_name(query){
 }
 
 function validate_customer_telephone(query){
- validate_general('customer','telephone',unescape(query));
+    validate_general('customer','telephone',unescape(query));
+    if(query==''){
+        validate_scope_data.customer.telephone.validated=true;
+	    validate_scope('customer'); 
+	    Dom.get(validate_scope_data.customer.telephone.name+'_msg').innerHTML='<?php echo _('This operation will remove the telephone')?>';
+    }
 }
+function validate_customer_fax(query){
+    validate_general('customer','fax',unescape(query));
+    if(query==''){
+        validate_scope_data.customer.fax.validated=true;
+	    validate_scope('customer'); 
+	    Dom.get(validate_scope_data.customer.fax.name+'_msg').innerHTML='<?php echo _('This operation will remove the fax')?>';
+    }
+}
+
+
+
 function validate_customer_main_contact_name(query){
  validate_general('customer','contact',unescape(query));
 }
@@ -299,7 +315,7 @@ function back_to_take_order(){
 }
 
 function init(){
-  
+
 
   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -344,6 +360,13 @@ function init(){
     var customer_telephone_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Telephone","Customer_Main_Telephone_Container", customer_telephone_oACDS);
     customer_telephone_oAutoComp.minQueryLength = 0; 
     customer_telephone_oAutoComp.queryDelay = 0.1;
+    
+     var customer_fax_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_fax);
+    customer_fax_oACDS.queryMatchContains = true;
+    var customer_fax_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_FAX","Customer_Main_FAX_Container", customer_fax_oACDS);
+    customer_fax_oAutoComp.minQueryLength = 0; 
+    customer_fax_oAutoComp.queryDelay = 0.1;
+    
     
      var customer_main_contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_main_contact_name);
     customer_main_contact_name_oACDS.queryMatchContains = true;
