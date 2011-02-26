@@ -62,7 +62,6 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 		}else{
 			$map_header = 'no';
 		}
-		$map_header = 'yes';
 		$map_data = base64_encode(serialize($exported_data));
 		$sql = "INSERT INTO `Export Map` (`Map Name` , `Map Description` , `Map Type` ,`Map Data` ,`Customer Key` , `Export Header` , `Export Map Default` , `Exported Date`)
 		VALUES ('$map_name', '$map_desc', '$map_type', '$map_data', '$customer_id', '$map_header', '$default' , now())";
