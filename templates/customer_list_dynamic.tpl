@@ -7,12 +7,12 @@
 
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Customer Lists{/t}</h1>
+    <h1>{t} Dynamic List {/t}</h1>
   </div>
 
  
 <div class="data_table" style="clear:both">
-   <span class="clean_table_title">{t}Dynamic List{/t}</span>
+   <span class="clean_table_title">{t}List Name : {$dynamic_list_name}{/t}</span>
  {* <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="company_areas" >{t}Export (CSV){/t}</span> *}
   
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
