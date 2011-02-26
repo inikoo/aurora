@@ -9,7 +9,9 @@ header('Location: index.php');
 $general_options_list=array();
 if(isset($_REQUEST['id']))
 $id=$_REQUEST['id'];
-
+$sql=mysql_fetch_array(mysql_query("select `Customer List Name` from `Customer List Dimension` where `Customer List Key`=$id"));
+$static_list_name=$sql[0];
+$smarty->assign('static_list_name',$static_list_name);
 //if($modify)
 //{
 //  $general_options_list[]=array('tipo'=>'url','url'=>'edit_company_areas.php','label'=>_('Edit Areas'));
@@ -38,7 +40,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/edit_common.js',
 		'js/csv_common.js',
-		'customer_list_static.js.php'
+		'customer_list_static.js.php?id='.$id
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

@@ -811,7 +811,7 @@ $list_query2=mysql_query($list_sql2);
 
 function list_customer_list_static() {
     global $myconf;
-
+$static_list_id=$_REQUEST['id'];
     $conf=$_SESSION['state']['customers']['table'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -1063,7 +1063,7 @@ function list_customer_list_static() {
 
 
 
-$sql="select count(distinct `Customer List Key`) as total from `Customer List Customer Bridge` ";  
+$sql="select count(C.`Customer Key`) as total from `Customer Dimension` C right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`) where CLD.`Customer List Key`=$static_list_id ";  
 ////$sql="select count(C.`Customer Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
 //$sql="select count(CLCB.`Customer List Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
 //print "$sql<br/>\n";
@@ -1089,7 +1089,7 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Cu
     mysql_free_result($res);
 
 
-    $rtext=$total_records." ".ngettext('List Data','Lists Data',$total_records);
+    $rtext=$total_records." ".ngettext('Customer Data','Customers Data',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
@@ -1246,98 +1246,32 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Cu
 $order='CLD.`Customer List Key`';
   //  $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 //$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref  order by $order DESC $order_direction limit $start_from,$number_results";
-$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD right join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`) and CLD.`Customer List Type`='Static' order by $order DESC $order_direction limit $start_from,$number_results";
+///$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD right join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`) and CLD.`Customer List Type`='Static' order by $order DESC $order_direction limit $start_from,$number_results";
+$sql="select C.`Customer Key`,C.`Customer Store Key`,C.`Customer Main XHTML Email`,C.`Customer Main Location`,C.`Customer Name`,C.`Customer Type`,C.`Customer Main XHTML Telephone` from `Customer Dimension` C right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`) where CLD.`Customer List Key`=$static_list_id order by $order DESC $order_direction limit $start_from,$number_results";
 //print $sql;
     $adata=array();
-
-
-
     $result=mysql_query($sql);
    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-
-       /* $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
         if ($data['Customer Type']=='Person') {
             $name='<img src="art/icons/user.png" alt="('._('Person').')">';
         } else {
             $name='<img src="art/icons/building.png" alt="('._('Company').')">';
-
         }
-
         $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
-
-
-
-        if ($data['Customer Orders']==0)
-            $last_order_date='';
-        else
-            $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
-
-        $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
-
-
-        if ($data['Customer Billing Address Link']=='Contact')
-            $billing_address='<i>'._('Same as Contact').'</i>';
-        else
-            $billing_address=$data['Customer XHTML Billing Address'];
-
-        if ($data['Customer Delivery Address Link']=='Contact')
-            $delivery_address='<i>'._('Same as Contact').'</i>';
-        elseif($data['Customer Delivery Address Link']=='Billing')
-        $delivery_address='<i>'._('Same as Billing').'</i>';
-        else
-            $delivery_address=$data['Customer XHTML Main Delivery Address'];*/
-//print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
-
-
-$sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`='".$data['Customer List key']."'"));
-//$sql_no_of_customer1=mysql_fetch_array(mysql_query($sql_no_of_customer));
-//print $sql_no_of_customer;
-$customer_list_key=" <a href='new_campaign.php?customer_list_key=".$data['Customer List key']."'>"."Create".'</a>';
+      
+$customer_list_key=" <a href='new_campaign.php?customer_list_key=".$static_list_id."'>"."Create".'</a>';
         $adata[]=array(
-		     'no_of_customer'=>$sql_no_of_customer[0],
-                 /*    'id'=>$id,
+		     
+                    'id'=>$id,
                      'name'=>$name,
                    'location'=>$data['Customer Main Location'],
-                    'orders'=>number($data['Customer Orders']),
-                    'invoices'=>$data['Customer Orders Invoiced'],
+                    'store_key'=>$data['Customer Store Key'],
                      'email'=>$data['Customer Main XHTML Email'],
                      'telephone'=>$data['Customer Main XHTML Telephone'],
-                     'last_order'=>$last_order_date,
-                     'contact_since'=>$contact_since,
-
-                     'total_payments'=>money($data['Customer Net Payments'],$currency),
-                     'net_balance'=>money($data['Customer Net Balance'],$currency),
-                     'total_refunds'=>money($data['Customer Net Refunds'],$currency),
-                     'total_profit'=>money($data['Customer Profit'],$currency),
-                    'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
-
-
-                     'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
-                     'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
-                    'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
-                    'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
-                    'contact_name'=>$data['Customer Main Contact Name'],
-                    'address'=>$data['Customer Main XHTML Address'],
-                    'billing_address'=>$billing_address,
-                    'delivery_address'=>$delivery_address,*/
-                    
-
-                     'customer_list_name'=>$data['Customer List Name'],
+               
                      'customer_list_key'=>$customer_list_key,
-                     'customer_list_creation_date'=>$data['Customer List Creation Date'],
-                     
-                     //'town'=>$data['Customer Main Town'],
-                     //'postcode'=>$data['Customer Main Postal Code'],
-                     //'region'=>$data['Customer Main Country First Division'],
-                     //'country'=>$data['Customer Main Country'],
-                     //'ship_address'=>$data['customer main ship to header'],
-                     //'ship_town'=>$data['Customer Main Delivery Address Town'],
-                     //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-                     //'ship_region'=>$data['Customer Main Delivery Address Region'],
-                     //'ship_country'=>$data['Customer Main Delivery Address Country'],
-                    ////// 'activity'=>$data['Customer Type by Activity']
-
+                    
                  );
 
    }
