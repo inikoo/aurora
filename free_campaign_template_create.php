@@ -37,7 +37,7 @@ $js_files=array(
 		'js/create_campaign.js',
 		'external_libs/ckeditor/ckeditor.js'
 		);
-		//fetch the customer list name
+		
 		
 
 $smarty->assign('title', _('Customers Lists'));
