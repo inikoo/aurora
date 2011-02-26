@@ -767,7 +767,6 @@ CREATE TABLE IF NOT EXISTS `Export Map` (
 
 ALTER TABLE `Customer Dimension` ADD `Customer Main XHTML Mobile` VARCHAR( 255 ) NULL DEFAULT NULL AFTER `Customer Main FAX Key` ,ADD `Customer Main Mobile Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Customer Main XHTML Mobile` , ADD `Customer Main Plain Mobile` VARCHAR( 255 ) NOT NULL AFTER `Customer Main Mobile Key` ;
 
-CREATE TABLE `Export Map` ( `Map Key` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , `Map Name` VARCHAR( 255 ) NOT NULL , `Map Type` ENUM( 'Customer', 'Supplier' ) NOT NULL , `Map Data` LONGTEXT NOT NULL , `Customer Key` INT NOT NULL , `Export Map Default` ENUM( 'yes', 'no' ) NOT NULL ) ENGINE = MYISAM ;
 
 */
 
