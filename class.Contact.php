@@ -1963,10 +1963,10 @@ $val=40;
     
         function update_parents_principal_mobile_keys() {
         $mobile_key=$this->data['Contact Main Mobile Key'];
-        //print $this->data['Contact Main Email Key']."<-----\n";
         if (!$mobile_key)
             return;
-        $parents=array('Company','Customer','Supplier');
+        //$parents=array('Company','Customer','Supplier');
+        $parents=array('Customer');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
             //   print "$sql\n";
@@ -1978,6 +1978,7 @@ $val=40;
                     $parent_object=new Customer($row['Parent Key']);
                     $parent_label=_('Customer');
                 }
+                /*
                 elseif($parent=='Supplier') {
                     $parent_object=new Supplier($row['Parent Key']);
                     $parent_label=_('Supplier');
@@ -1986,7 +1987,7 @@ $val=40;
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
                 }
-
+				*/
                 $parent_telecoms=$parent_object->get_telecom_keys();
 
                 if (!array_key_exists($mobile_key,$parent_telecoms)) {
@@ -1998,25 +1999,25 @@ $val=40;
                 }
                 //print "$sql\n";
 
-                $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
-                if ($old_principal_email_key!=$mobile_key) {
+                $old_principal_mobile_key=$parent_object->data[$parent.' Main Mobile Key'];
+                if ($old_principal_mobile_key!=$mobile_key) {
 
-                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  ",
+                    $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='Mobile'  ",
                                  $parent_object->id
                     
                                 );
                     mysql_query($sql);
-                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Email Key`=%d",
+                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d",
                                  $parent_object->id
                                  ,$mobile_key
                                 );
                     mysql_query($sql);
-                    $sql=sprintf("update `$parent Dimension` set `$parent Main Telephone Key`=%d where `$parent Key`=%d"
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main Mobile Key`=%d where `$parent Key`=%d"
                                  ,$mobile_key
                                  ,$parent_object->id
                                 );
                     mysql_query($sql);
-
+//print "$sql\n";
 
 
 
@@ -2848,9 +2849,7 @@ $val=40;
                 $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
             }
 
-//print "updatin name \n\n\n\n";
             $parsed_data=$this->parse_name($value);
-            //          print_r($parsed_data);
             foreach($parsed_data as $key=>$val) {
                 if (array_key_exists($key,$this->data))
                     $this->data[$key]=$val;
@@ -2927,11 +2926,13 @@ $val=40;
 
             break;
         case('Contact Main XHTML Telephone'):
+        dsdsdsdsdsdd();
             $address=new Address($this->data['Contact Main Address Key']);
             $address->editor=$this->editor;
             $address->update_principal_telephone_number($value);
             break;
         case('Contact Main XHTML FAX'):
+        dasdasdasds();
             //  print "y\n";
 
             $address=new Address($this->data['Contact Main Address Key']);
@@ -2953,25 +2954,29 @@ $val=40;
         case('Home Address'):
 
             break;
-case('Contact Main Plain Mobile'):
+		case('Contact Main Plain Mobile'):
 		 $main_mobile_key=$this->get_principal_mobile_key();
             if ($main_mobile_key) {
                 $mobile=new Telecom($main_mobile_key);
                 $mobile->editor=$this->editor;
                 $mobile->update_number($value,$this->data['Contact Main Country Code']);
             } else {
-                $telephone_data=array();
-                $telephone_data['editor']=$this->editor;
-                $telephone_data['Telecom Raw Number']=$value;
-                $telephone_data['Telecom Type']='Telephone';
-                $telephone=new Telecom("find in company $options create country code ".$this->data['Contact Main Country Code'],$telephone_data);
-                if ($telephone->id) {
-                    $this->associate_mobile($telephone->id);
+                $mobile_data=array();
+                $mobile_data['editor']=$this->editor;
+                $mobile_data['Telecom Raw Number']=$value;
+                $mobile_data['Telecom Type']='Mobile';
+                $mobile=new Telecom("find in company $options create country code ".$this->data['Contact Main Country Code'],$mobile_data);
+                if ($mobile->id) {
+                    $this->associate_mobile($mobile->id);
                 }
 
             }
 		
-		
+			$this->updated=$mobile->updated;
+                if ($this->updated) {
+                    $this->get_data('id',$this->id);
+                    $this->new_value=$this->data['Contact Main XHTML Mobile'];
+                }
 		
             break;
 
@@ -3886,52 +3891,52 @@ case('Contact Main Plain Mobile'):
       function: card
       Returns an array with the contact details
     */
-    function card() {
+function card() {
 
 
-        $card=array(
-                  'Contact Name'=>$this->data['Contact Name']
-                                 ,'Company Name'=>$this->data['Contact Company Name']
-                                                 ,'Emails'=>array()
-                                                           ,'Telephones'=>array()
-                                                                         ,'Addresses'=>array()
-              );
+    $card=array(
+              'Contact Name'=>$this->data['Contact Name'],
+              'Company Name'=>$this->data['Contact Company Name'],
+              'Emails'=>array(),
+              'Telephones'=>array(),
+              'Addresses'=>array()
+          );
 
-        $sql=sprintf("select   ED.`Email`,ED.`Email Key`,EB.`Is Main`,EB.`Email Description`  from `Email Bridge` EB left join `Email Dimension` on (EB.`Email Key`=ED.`Email Key`) where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
-        $result=mysql_query($sql);
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $card['Emails'][$row['Email Key']]=array(
-                                                   'Address'=>$row['Email']
-                                                             ,'Description'=>$row['Email Description']
-                                                                            ,'Principal'=>$row['Is Main']
-                                               );
-        }
-        $sql=sprintf("select TB.`Telecom Key`,TB.`Is Main`,TB.`Telecom Description`  from `Telecom Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
-        $result=mysql_query($sql);
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $telecom=new Telecom($row['Telecom Key']);
-            $card['Emails'][$row['Telecom Key']]=array(
-                                                     'Number'=>$telecom->display()
-                                                              ,'Description'=>$row['Telecom Description']
-                                                                             ,'Principal'=>$row['Is Main']
-                                                 );
-        }
-
-        $sql=sprintf("select AB.`Address Key`,AB.`Is Main` from `Address Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
-        $result=mysql_query($sql);
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $telecom=new Address($row['Address Key']);
-            $card['Addresses'][$row['Address Key']]=array(
-                                                        'Address'=>$address->display()
-                                                                  ,'Principal'=>$row['Is Main']
-                                                    );
-        }
-
-
-
-        return $card;
-
+    $sql=sprintf("select   ED.`Email`,ED.`Email Key`,EB.`Is Main`,EB.`Email Description`  from `Email Bridge` EB left join `Email Dimension` on (EB.`Email Key`=ED.`Email Key`) where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $card['Emails'][$row['Email Key']]=array(
+                                               'Address'=>$row['Email'],
+                                               'Description'=>$row['Email Description'],
+                                               'Principal'=>$row['Is Main']
+                                           );
     }
+    $sql=sprintf("select TB.`Telecom Key`,TB.`Is Main`,TB.`Telecom Description`  from `Telecom Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $telecom=new Telecom($row['Telecom Key']);
+        $card['Telephones'][$row['Telecom Key']]=array(
+                    'Number'=>$telecom->display(),
+                    'Description'=>$row['Telecom Description'],
+                    'Principal'=>$row['Is Main']
+                );
+    }
+
+    $sql=sprintf("select AB.`Address Key`,AB.`Is Main` from `Address Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $telecom=new Address($row['Address Key']);
+        $card['Addresses'][$row['Address Key']]=array(
+                                                    'Address'=>$address->display(),
+                                                    'Principal'=>$row['Is Main']
+                                                );
+    }
+
+
+
+    return $card;
+
+}
 
     /*
       function:get_work_email
@@ -4529,7 +4534,7 @@ function update_mobile($telecom_key) {
         if ($main_mobile_key!=$mobile_key) {
             $mobil=new Telecom($mobile_key);
             $mobil->editor=$this->editor;
-            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d"
+            $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Mobile'  "
                          ,$this->id
                          ,$main_mobile_key
                         );

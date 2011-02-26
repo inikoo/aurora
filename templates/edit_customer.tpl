@@ -189,6 +189,17 @@
    </td>
    <td id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
  </tr>
+  <tr class=""><td style="" class="label">{t}Contact Mobile{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
+       <div id="Customer_Main_Mobile_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Main_Mobile_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ 
 <tr class=""><td style="" class="label">{t}Contact Fax{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
