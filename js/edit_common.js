@@ -788,15 +788,8 @@ function SelectUrl()
 	{
 		alert('Please select a template');
 		return false;
+		
 	}
-	if(document.getElementById('template1').checked == true)
-	{
-		location.href='free_campaign_template_create.php';
-	}
-	if(document.getElementById('template2').checked == true)
-	{
-		location.href='#';
-	}
-	
+
 }
 
