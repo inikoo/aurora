@@ -1,5 +1,7 @@
 <?php
-include_once('common.php')?>
+include_once('common.php');
+$static_list_id=$_REQUEST['id'];
+?>
 
 var view='<?php echo$_SESSION['state']['hr']['view']?>'
 
@@ -15,15 +17,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-                                        {key:"customer_list_name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"customer_list_creation_date", label:"<?php echo _('List Created')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                       // ,{key:"id", label:"<?php echo _('Customer Id')?>",  width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"no_of_customer", label:"<?php echo _('No. Of Customer')?>",  width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Customer Name')?>", width:190,sortable:true,hidden:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                       ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                        {key:"id", label:"<?php echo _('Customer Id')?>", width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                        ,{key:"name", label:"<?php echo _('Customer Name')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"location", label:"<?php echo _('Location')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"email", label:"<?php echo _('Email')?>",  width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  //  ,{key:"telephone", label:"<?php echo _('Telephone')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                      ,{key:"store_key", label:"<?php echo _('Store Id')?>",  width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                       ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list.php?tipo=customer_list_static");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list.php?tipo=customer_list_static&id='<?php echo $static_list_id;?>'");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -37,8 +40,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		
-		fields: ["customer_list_name","customer_list_key","customer_list_creation_date","no_of_customer","name"]};
-		//////fields: [ "id","name","departments","positions","customer_list_name","customer_list_key","customer_list_creation_date","no_of_customer"]};
+		//fields: ["customer_list_name","customer_list_key","customer_list_creation_date","no_of_customer","name"]};
+		fields: [ "id","name","location","store_key","email","telephone","customer_list_key"]};
              // fields: [ "id","name","departments","positions"]};
 
 
