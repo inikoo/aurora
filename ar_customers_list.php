@@ -760,7 +760,7 @@ $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Key`,`C
                         '\'\'',
                          prepare_mysql($dt)
                         );
-
+//echo "<br>listsql=".$list_sql;
 $list_query=mysql_query($list_sql);
 $fetch_type_sql=mysql_fetch_array(mysql_query("select `Customer List Type`,max(`Customer List Key`) as max_customer_list_key from `Customer List Dimension` where `Customer List Key`=(select max(`Customer List Key`) from `Customer List Dimension`)"));
 $max_customer_list_key=$fetch_type_sql['max_customer_list_key'];
@@ -768,7 +768,7 @@ if($fetch_type_sql[0]=='Dynamic'){
 $metadata_sql=sprintf("update `Customer List Dimension` set `Customer List Metadata`=%s where `Customer List Key`=".$max_customer_list_key.""
                          ,prepare_mysql($metadata)
                          );
-
+//echo "<br>updatesql=".$metadata_sql;
 $metadata_query=mysql_query($metadata_sql);
 }
 if($list_type=='static')
@@ -1301,7 +1301,10 @@ $customer_list_key=" <a href='new_campaign.php?customer_list_key=".$static_list_
 
 
 function list_customer_list_dynamic() {
-    global $myconf;
+   global $myconf;
+$dynamic_list_id=$_REQUEST['id'];
+$awhere_sql=mysql_fetch_array(mysql_query("select `Customer List Metadata` from `Customer List Dimension` where `Customer List Key`=$dynamic_list_id"));
+$awhere=$awhere_sql[0];
 
     $conf=$_SESSION['state']['customers']['table'];
     if (isset( $_REQUEST['sf']))
@@ -1358,20 +1361,7 @@ function list_customer_list_dynamic() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    /* $_SESSION['state']['customers']['table']=array(
-     'order'=>$order,
-     'order_dir'=>$order_direction,
-     'nr'=>$number_results,
-     'sf'=>$start_from,
-     'where'=>$where,
-     'type'=>$type,
-
-     'f_field'=>$f_field,
-     'f_value'=>$f_value
-     );*/
-
-
-
+ 
 
     $_SESSION['state']['customers']['table']['order']=$order;
     $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
@@ -1391,41 +1381,78 @@ function list_customer_list_dynamic() {
    
         $awhere=preg_replace('/\\\"/','"',$awhere);
         //    print "$awhere";
+        
+        
+        $where_data=array(
+        'product_ordered1'=>'∀',
+        'product_not_ordered1'=>'',
+        'product_not_received1'=>'',
+        'from1'=>'',
+        'to1'=>'',
+        'dont_have'=>array(),
+        'have'=>array(),
+        'categories'=>''
+        );
+        
         $awhere=json_decode($awhere,TRUE);
 
+        
+        foreach ($awhere as $key=>$item) {
+            $where_data[$key]=$item;
+        }
+        
         
         $where='where true';
 
 
+//print_r($where_data);
 
-//print_r($awhere);
-
-
+ $use_categories =false;
         $use_otf =false;
 
-        if ($awhere['product_ordered1']!='') {
-            if ($awhere['product_ordered1']!='∀') {
+        $where_categories='';
+        if ($where_data['categories']!='') {
+        
+        $categories_keys=preg_split('/,/',$where_data['categories']);
+        $valid_categories_keys=array();
+        foreach ($categories_keys as $item) {
+            if(is_numeric($item))
+                $valid_categories_keys[]=$item;
+        }
+        $categories_keys=join($valid_categories_keys,',');
+        if($categories_keys){
+        $use_categories =true;
+        $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
+        }
+        
+        
+        } 
+        
+
+
+        if ($where_data['product_ordered1']!='') {
+            if ($where_data['product_ordered1']!='∀') {
                 $use_otf=true;
-                $where_product_ordered1=extract_product_groups($awhere['product_ordered1']);
+                $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
             } else
                 $where_product_ordered1='true';
         } else{
             $where_product_ordered1='false';
         }
         
-        if ($awhere['product_not_ordered1']!='') {
-            if ($awhere['product_not_ordered1']!='ALL') {
+        if ($where_data['product_not_ordered1']!='') {
+            if ($where_data['product_not_ordered1']!='ALL') {
                 $use_otf=true;
-                $where_product_not_ordered1=extract_product_groups($awhere['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
+                $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
             } else
                 $where_product_not_ordered1='false';
         } else
             $where_product_not_ordered1='true';
 
-        if ($awhere['product_not_received1']!='') {
-            if ($awhere['product_not_received1']!='∀') {
+        if ($where_data['product_not_received1']!='') {
+            if ($where_data['product_not_received1']!='∀') {
                 $use_otf=true;
-                $where_product_not_received1=extract_product_groups($awhere['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+                $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
             } else {
                 $use_otf=true;
                 $where_product_not_received1=' ((ordered-dispatched)>0)  ';
@@ -1433,23 +1460,29 @@ function list_customer_list_dynamic() {
         } else
             $where_product_not_received1='true';
 
-        $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'`Invoice Date`','only_dates');
+        $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
         if ($date_interval1['mysql']) {
             $use_otf=true;
         }
 
-
+       
         if ($use_otf) {
             $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
         }
-
+        
+        
+     if ($use_categories) {
+         
+         $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
+        }
      
 
 
 
-        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ";
 
-        foreach($awhere['dont_have'] as $dont_have) {
+        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
+
+        foreach($where_data['dont_have'] as $dont_have) {
             switch ($dont_have) {
             case 'tel':
                 $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
@@ -1465,7 +1498,7 @@ function list_customer_list_dynamic() {
                 break;
             }
         }
-        foreach($awhere['have'] as $dont_have) {
+        foreach($where_data['have'] as $dont_have) {
             switch ($dont_have) {
             case 'tel':
                 $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
@@ -1498,7 +1531,7 @@ function list_customer_list_dynamic() {
 
     $currency='';
     if (is_numeric($store)) {
-       // $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+        $where.=sprintf(' and `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     }
@@ -1553,17 +1586,16 @@ function list_customer_list_dynamic() {
 
 
 
-$sql="select count(distinct `Customer List Key`) as total from `Customer List Dimension` where `Customer List Type`='Dynamic' ";  
-////$sql="select count(C.`Customer Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
-//$sql="select count(CLCB.`Customer List Key`) as total from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref";
+    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where $wheref";
 //print "$sql<br/>\n";
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total_without_filters from $table  right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`) $where ";
+        $sql="select count(*) as total_without_filters from $table  $where ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1579,11 +1611,11 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Di
     mysql_free_result($res);
 
 
-    $rtext=$total_records." ".ngettext('List Data','Lists Data',$total_records);
+    $rtext=$total_records." ".ngettext('customer','customers',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all Lists");
+        $rtext_rpp=sprintf("Showing all customers");
 
 
 
@@ -1732,21 +1764,17 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Di
     $order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
-
-$order='CLD.`Customer List Key`';
-  //  $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-//$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table right join `Customer List Customer Bridge` CLCB on (C.`Customer Key`=CLCB.`Customer Key`) left join `Customer List Dimension` CLD on (CLD.`Customer List Key`=CLCB.`Customer List Key`)  $where $wheref  order by $order DESC $order_direction limit $start_from,$number_results";
-$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD  where  CLD.`Customer List Type`='Dynamic' order by $order DESC $order_direction limit $start_from,$number_results";
-//print $sql;
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+    // print $sql;
     $adata=array();
 
 
 
     $result=mysql_query($sql);
-   while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-       /* $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
         if ($data['Customer Type']=='Person') {
             $name='<img src="art/icons/user.png" alt="('._('Person').')">';
         } else {
@@ -1754,7 +1782,7 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
 
         }
 
-        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
+        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
 
 
 
@@ -1776,37 +1804,57 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
         elseif($data['Customer Delivery Address Link']=='Billing')
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
-            $delivery_address=$data['Customer XHTML Main Delivery Address'];*/
-//print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
+            $delivery_address=$data['Customer XHTML Main Delivery Address'];
 
-/*
-$customer_no_table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
-print $data['Customer List Metadata'];print("***********");
-$sql_customer_no="select count(`Customer Key`) from".$customer_no_table.$data['Customer List Metadata']." and `Customer List Key`=".$data['Customer List key'];
-print $sql_customer_no;
-*/
-
-//$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-
-
-
-$sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']));
-//$sql_no_of_customer1=mysql_fetch_array(mysql_query($sql_no_of_customer));
-//print $sql_no_of_customer;
-$customer_list_key=" <a href='new_campaign.php?customer_list_key=".$data['Customer List key']."'>"."Create".'</a>';
         $adata[]=array(
-		   //  'no_of_customer'=>$sql_no_of_customer[0],
-                     
-                     'customer_list_name'=>$data['Customer List Name'],
-                     'customer_list_key'=>$customer_list_key,
-                     'customer_list_creation_date'=>$data['Customer List Creation Date'],
-                     
-                    
+                     'id'=>$id,
+                     'name'=>$name,
+                     'location'=>$data['Customer Main Location'],
+                     'orders'=>number($data['Customer Orders']),
+                     'invoices'=>$data['Customer Orders Invoiced'],
+                     'email'=>$data['Customer Main XHTML Email'],
+                     'telephone'=>$data['Customer Main XHTML Telephone'],
+                     'last_order'=>$last_order_date,
+                     'contact_since'=>$contact_since,
+
+                     'total_payments'=>money($data['Customer Net Payments'],$currency),
+                     'net_balance'=>money($data['Customer Net Balance'],$currency),
+                     'total_refunds'=>money($data['Customer Net Refunds'],$currency),
+                     'total_profit'=>money($data['Customer Profit'],$currency),
+                     'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
+
+
+                     'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
+                     'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
+                     'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+                     'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+                     'contact_name'=>$data['Customer Main Contact Name'],
+                     'address'=>$data['Customer Main XHTML Address'],
+                     'billing_address'=>$billing_address,
+                     'delivery_address'=>$delivery_address,
+
+                     //'town'=>$data['Customer Main Town'],
+                     //'postcode'=>$data['Customer Main Postal Code'],
+                     //'region'=>$data['Customer Main Country First Division'],
+                     //'country'=>$data['Customer Main Country'],
+                     //'ship_address'=>$data['customer main ship to header'],
+                     //'ship_town'=>$data['Customer Main Delivery Address Town'],
+                     //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+                     //'ship_region'=>$data['Customer Main Delivery Address Region'],
+                     //'ship_country'=>$data['Customer Main Delivery Address Country'],
+                     'activity'=>$data['Customer Type by Activity']
 
                  );
-
+///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))
+///{
+///	$list_name=$_REQUEST['textValue'];
+///	$list_type=$_REQUEST['typeValue'];
+///}
+///$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type);//
    }
     mysql_free_result($result);
+
+///print_r($dataid);//
 
 
     $response=array('resultset'=>
@@ -1820,6 +1868,7 @@ $customer_list_key=" <a href='new_campaign.php?customer_list_key=".$data['Custom
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
+
                                       'records_perpage'=>$number_results,
                                       'records_order'=>$order,
                                       'records_order_dir'=>$order_dir,
