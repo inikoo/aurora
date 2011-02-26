@@ -38,25 +38,40 @@ $js_files=array(
 		'js/jquery-1.4.4.js'
 		);
 
+	$key = 'Email Campaign Key';
+	$name = 'Email Campaign Name';
+	$emails = 'Email Campaign Maximum Emails';
+	$obj = 'Email Campaign Objective';
+	$status = 'Email Campaign Status';
 
-$sqlCount = "select `Email Campaign Name`,`Email Campaign Maximum Emails`,`Email Campaign Objective`,`Email Campaign Status` from `Email Campaign Dimension";
+	$campaign=array();
+
+	$sqlCount = "select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Maximum Emails`,`Email Campaign Objective`,`Email Campaign Status` from `Email Campaign Dimension";
 		$queryCount = mysql_query($sqlCount);
+		
 		$campaign_size=mysql_num_rows($queryCount);
 		while($k=mysql_fetch_assoc($queryCount))
 		{
-		  $campaign[]=$k;
-                
+		  	$campaign[]=$k;
+                	
        	 	}
-		//echo "<pre>";
-                //print_r($campaign);
+		//print_r($campaign);
 
+	
 $smarty->assign('campaign',$campaign);
+
 $smarty->assign('campaign_size',$campaign_size);
 $msg = isset($_SESSION['msg'])?$_SESSION['msg']:'';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('msg',$msg);
+
+$smarty->assign('name',$name);
+$smarty->assign('emails',$emails);
+$smarty->assign('obj',$obj);
+$smarty->assign('status',$status);
+$smarty->assign('key',$key);
 
 
 $smarty->display('campaign_builder.tpl');
