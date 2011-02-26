@@ -454,9 +454,32 @@ overflow:auto;
   #display_part { background:#fff; margin:3px; width:400px; 
   display:none; text-align:left; }
 
+.template_choose{
+border:1px #000000 solid;
+width:65px;
+height:18px;
+padding-left:2px;
+background-color:#7080b1;
+color:#ffffff;
+float:left;
+}
+.template_hide{
+border:1px #000000 solid;
+width:90px;
+height:18px;
+padding-left:2px;
+background-color:#7080b1;
+color:#ffffff;
+margin-left:10px;
+}
 
-
-
+.campaign_header{
+  color: #000000;
+    font-weight: 500;
+    text-decoration: none;
+    vertical-align: bottom;
+    font-size:12px;
+}
 
 
 
