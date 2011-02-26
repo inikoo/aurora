@@ -4,7 +4,11 @@ if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
 }
-
+if(isset($_REQUEST['id']))
+$id=$_REQUEST['id'];
+$sql=mysql_fetch_array(mysql_query("select `Customer List Name` from `Customer List Dimension` where `Customer List Key`=$id"));
+$dynamic_list_name=$sql[0];
+$smarty->assign('dynamic_list_name',$dynamic_list_name);
 //$modify=$user->can_edit('staff');
 $general_options_list=array();
 
@@ -37,7 +41,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/edit_common.js',
 		'js/csv_common.js',
-		'customer_list_dynamic.js.php'
+		'customer_list_dynamic.js.php?id='.$id
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
