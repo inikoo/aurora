@@ -58,3 +58,47 @@ function stateChanged()
       window.location.reload();
  }
 }
+
+// Other Functions
+// =================
+
+function saveMap(){
+var x=document.getElementById('save').checked;
+if(x!=true){
+	document.getElementById('maps').style.display='none';
+}else{
+	document.getElementById('maps').style.display='block';
+	document.getElementById('map_name').focus();
+}
+
+}
+
+function validate(){
+
+var x=document.getElementById('save').checked;
+
+	if (x==true){
+
+		var map_name = document.getElementById('map_name').value.trim();
+		var map_desc = document.getElementById('map_desc').value.trim();
+
+		if(map_name == ''){
+
+			alert("Enter a Map Name");
+			document.getElementById('map_name').focus();
+			return false;
+			exit;
+		}
+
+		if(map_desc == ''){
+
+			alert("Enter Map Description");
+			document.getElementById('map_desc').focus();
+			return false;
+			exit;
+		}
+
+		return true;
+
+	}
+}
