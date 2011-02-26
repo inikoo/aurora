@@ -1788,7 +1788,7 @@ function list_customers() {
         'to1'=>'',
         'dont_have'=>array(),
         'have'=>array(),
-        'categories'
+        'categories'=>''
         );
         
         $awhere=json_decode($awhere,TRUE);

@@ -762,6 +762,7 @@ CREATE TABLE IF NOT EXISTS `Email Send Dimension` (
   KEY `Email Send Parent Type` (`Email Send Recipient Type`),
   KEY `Email Send Type Key` (`Email Send Type Key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+------------------------------------------------------------
 
 
 */
