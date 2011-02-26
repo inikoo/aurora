@@ -177,7 +177,7 @@ class Customer extends DB_Table {
 
 
     function find($raw_data,$options='') {
-  
+
         $this->found_child=false;
         $this->found_child_key=0;
         $this->found=false;
@@ -317,7 +317,7 @@ class Customer extends DB_Table {
                         return;
                     }
 
-        
+
                     $child=new Contact ("find in customer $type_of_search create update",$raw_data);
 
 
@@ -325,7 +325,7 @@ class Customer extends DB_Table {
 
                 } else {// Bussiness
 
-        
+
 
                     $child=new Company ("find in customer $type_of_search create update",$raw_data);
 
@@ -615,7 +615,7 @@ class Customer extends DB_Table {
         $keys=preg_replace('/^,/','',$keys);
 
         $sql="insert into `Customer Dimension` ($keys) values ($values)";
-         //  print $sql;
+        //  print $sql;
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();
@@ -681,17 +681,17 @@ class Customer extends DB_Table {
 
                 $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
-                
-                
+
+
                 $mobile=new Telecom($contact->data['Contact Main Mobile Key']);
-                if($mobile->id){
-                
-                $contact->update_parents_principal_mobile_keys();
-                $mobile->editor=$this->editor;
-                $mobile->new=true;
-                 $mobile->update_parents();
-                 }
-                 
+                if ($mobile->id) {
+
+                    $contact->update_parents_principal_mobile_keys();
+                    $mobile->editor=$this->editor;
+                    $mobile->new=true;
+                    $mobile->update_parents();
+                }
+
                 $address=new Address($company->data['Company Main Address Key']);
                 $address->editor=$this->editor;
                 $address->new=true;
@@ -701,27 +701,27 @@ class Customer extends DB_Table {
 
                 $address->update_parents_principal_telecom_keys('Telephone');
                 $address->update_parents_principal_telecom_keys('FAX');
-                
-                
-                
+
+
+
                 $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
                 $tel->editor=$this->editor;
                 $tel->new=true;
 
                 if ($tel->id)
                     $tel->update_parents();
-                
-                
-                
+
+
+
                 $fax=new Telecom($address->get_principal_telecom_key('FAX'));
                 $fax->editor=$this->editor;
                 $fax->new=true;
                 if ($fax->id)
                     $fax->update_parents();
-                    
-                
-                
-                    
+
+
+
+
 
             } else {
                 $this->associate_contact($contact->id);
@@ -775,23 +775,23 @@ class Customer extends DB_Table {
 
             $this->get_data('id',$this->id);
 
-          //  print_r($this->data);
-    //        exit;
+            //  print_r($this->data);
+            //        exit;
 
-  //          if ($this->data['Customer Billing Address Link']!='None') {
-$this->data['Customer Billing Address Link']=='Contact';
+            //          if ($this->data['Customer Billing Address Link']!='None') {
+            $this->data['Customer Billing Address Link']=='Contact';
 //}
 
-  // if( !($this->data['Customer Delivery Address Link']=='None'  or $this->data['Customer Delivery Address Link']=='Billing')   ) {
-$this->data['Customer Delivery Address Link']=='Contact';
+            // if( !($this->data['Customer Delivery Address Link']=='None'  or $this->data['Customer Delivery Address Link']=='Billing')   ) {
+            $this->data['Customer Delivery Address Link']=='Contact';
 //}
 
- $this->associate_billing_address($address->id);
-                 $this->associate_delivery_address($address->id);
+            $this->associate_billing_address($address->id);
+            $this->associate_delivery_address($address->id);
 
-                $this->get_data('id',$this->id);
+            $this->get_data('id',$this->id);
 
-          
+
 
         } else {
             print "Error can not create customer $sql\n";
@@ -1052,14 +1052,17 @@ $this->data['Customer Delivery Address Link']=='Contact';
 
         switch ($field) {
         case('Customer Main XHTML Telephone'):
+        case('Customer Main Telephone Key'):
+        case('Customer Main XHTML Mobile'):
+        case('Customer Main Mobile Key'):
+
         case('Customer Main XHTML FAX'):
         case('Customer First Contacted Date'):
-        case('Customer Main Telephone Key'):
         case('Customer Main FAX Key'):
         case('Customer Main XHTML Email'):
         case('Customer Main Email Key'):
             break;
-case('Customer Sticky Note'):
+        case('Customer Sticky Note'):
             $this->update_field($field,$value,'no_null');
             break;
         case('Note'):
@@ -1089,19 +1092,18 @@ case('Customer Sticky Note'):
                 $subject_type='Company';
 
             }
-
-
-	 
-	 
-
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
-	    // print_r($subject);
-	    $this->updated=$subject->updated;
+            $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
-
             break;
-
+        case('Customer Main Plain Mobile'):
+            $subject=new Contact($this->data['Customer Main Contact Key']);
+            $subject->update(array('Contact Main Plain Mobile'=>$value));
+            $this->updated=$subject->updated;
+            $this->msg=$subject->msg;
+            $this->new_value=$subject->new_value;
+            break;
 
         case('Customer Main Plain Email'):
             $contact=new Contact($this->data['Customer Main Contact Key']);
@@ -1899,7 +1901,7 @@ case('Customer Sticky Note'):
     }
 
 
-  
+
     function get($key,$arg1=false) {
 
         if ($key=='Customer Tax Number' or $key=='Tax Number') {
@@ -2482,22 +2484,22 @@ case('Customer Sticky Note'):
 
 
 
-     $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable);
+        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable);
 
-       
+
         $this->updated=true;
         $this->new_value=$history_key;
-        
-        
+
+
     }
 
 
 
     function add_customer_history($history_data,$force_save=true,$deleteable='No') {
         $history_key=$this->add_history($history_data,$force_save=true);
-       $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
-       mysql_query($sql);
-       return $history_key;
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
+        mysql_query($sql);
+        return $history_key;
     }
 
 
@@ -3104,22 +3106,22 @@ case('Customer Sticky Note'):
         }
     }
 
-function create_delivery_address_bridge($address_key) {
-    $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
-                 $this->id,
-                 $address_key
+    function create_delivery_address_bridge($address_key) {
+        $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
+                     $this->id,
+                     $address_key
 
-                );
-    mysql_query($sql);
-    if (
-        !$this->get_principal_delivery_address_key()
-        or ! $this->data['Customer Main Delivery Address Key']
-    ) {
+                    );
+        mysql_query($sql);
+        if (
+            !$this->get_principal_delivery_address_key()
+            or ! $this->data['Customer Main Delivery Address Key']
+        ) {
 
-        $this->update_principal_delivery_address($address_key);
+            $this->update_principal_delivery_address($address_key);
+        }
+
     }
-
-}
     function create_billing_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Billing',%d,%d)  ",
                      $this->id,
@@ -3137,10 +3139,10 @@ function create_delivery_address_bridge($address_key) {
         }
 
     }
-    
-    
+
+
     function update_only_principal_contact_address($address_key) {
-                $this->update_principal_address($address_key,false);
+        $this->update_principal_address($address_key,false);
 
     }
 
@@ -3168,16 +3170,16 @@ function create_delivery_address_bridge($address_key) {
                     );
         mysql_query($sql);
 
-        if($update_other_address_type){
-        if ($this->data['Customer Delivery Address Link']=='Contact') {
-            $this->update_principal_delivery_address($address_key);
+        if ($update_other_address_type) {
+            if ($this->data['Customer Delivery Address Link']=='Contact') {
+                $this->update_principal_delivery_address($address_key);
 
-        }
-        if ($this->data['Customer Billing Address Link']=='Contact') {
-            $this->update_principal_billing_address($address_key);
+            }
+            if ($this->data['Customer Billing Address Link']=='Contact') {
+                $this->update_principal_billing_address($address_key);
 
+            }
         }
-}
         $address=new Address($address_key);
         $address->update_parents('Customer');
 
@@ -3196,8 +3198,8 @@ function create_delivery_address_bridge($address_key) {
         if ($main_address_key!=$address_key
                 or ( $this->data['Customer Delivery Address Link']='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
                 or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
-                or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key'] 
-                or $address_key==$this->data['Customer Main Address Key']  ) )
+                or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key']
+                        or $address_key==$this->data['Customer Main Address Key']  ) )
 
            ) {
 
@@ -3513,7 +3515,7 @@ function create_delivery_address_bridge($address_key) {
 
         $history_key=$order->add_history($history_data);
         $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
-        
+
         mysql_query($sql);
 
     }
@@ -3840,35 +3842,36 @@ function create_delivery_address_bridge($address_key) {
 
     }
 
-function remove_principal_address(){
+    function remove_principal_address() {
 
-$this->remove_address($this->data['Customer Main Address Key']);
+        $this->remove_address($this->data['Customer Main Address Key']);
 
-}
-
-
-function remove_address($address_key){
-
-
-    if($this->data['Customer Type']=='Person'){
-        $contact=new Contact($this->data['Customer Company Key']);
-        $contact->remove_address($address_key);
-
-    }elseif($this->data['Customer Type']=='Company'){
-     $company=new Company($this->data['Customer Company Key']);
- 
-   $company->remove_address($address_key);
     }
 
 
-}
+    function remove_address($address_key) {
 
 
-function close_account(){
-$sql=sprintf("update `Customer Dimension` set `Customer Account Operative`='No' where `Customer Key`=%d ",$this->id);
-mysql_query();
+        if ($this->data['Customer Type']=='Person') {
+            $contact=new Contact($this->data['Customer Company Key']);
+            $contact->remove_address($address_key);
 
-}
+        }
+        elseif($this->data['Customer Type']=='Company') {
+            $company=new Company($this->data['Customer Company Key']);
+
+            $company->remove_address($address_key);
+        }
+
+
+    }
+
+
+    function close_account() {
+        $sql=sprintf("update `Customer Dimension` set `Customer Account Operative`='No' where `Customer Key`=%d ",$this->id);
+        mysql_query();
+
+    }
 
 
 }

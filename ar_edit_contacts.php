@@ -2118,6 +2118,7 @@ function edit_customer() {
                      'name'=>'Customer Name',
                      'email'=>'Customer Main Plain Email',
                      'telephone'=>'Customer Main Plain Telephone',
+                     'mobile'=>'Customer Main Plain Mobile',
                      'fax'=>'Customer Main Plain FAX',
                      'contact'=>'Customer Main Contact Name',
                      "address"=>'Address',
