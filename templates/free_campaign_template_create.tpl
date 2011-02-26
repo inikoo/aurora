@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-{include file='contacts_navigation.tpl'}
+
 
       <h2 style="clear:both">{t}Free Template{/t} </h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">

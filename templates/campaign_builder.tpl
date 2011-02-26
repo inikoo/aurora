@@ -28,7 +28,7 @@ $("#hidr").click(function () {
            <tr style="border-bottom:1px #4682b4 solid;"><td class="campaign_header">Name</td><td class="campaign_header">Maximum Emails</td><td class="campaign_header">Campaign Objective</td><td class="campaign_header">Status</td>
            
 	   </tr>
-<form action="campaign_builder.php" method="POST" onsubmit="SelectUrl();">
+<form action="campaign_builder.php" method="POST" >
 {section name="i" loop="$campaign"}
     <tr bgcolor="{cycle values=#eeeeee,#d0d0d0}"> {* CHANGE HERE *}
   
@@ -55,7 +55,7 @@ $("#hidr").click(function () {
 			<br><br>
                         <input type="radio" id= "template2" name="template" value="2">Template Email
                        
-	<div><br><input type="submit" name="submit" value="Send Mail"></div>
+	<div><br><input type="button" name="submit" value="Send Mail" onclick="SelectUrl()"></div>
         </div>
 </form>	
  
