@@ -58,19 +58,24 @@ if(!$_POST['SUBMIT']){
 	exit;
 }
 
-if(!$_REQUEST['id']){
+if(!$_REQUEST['subject']){
+	header('Location: index.php');
+	exit;
+}
+if(!$_REQUEST['subject']){ //To check whether the form has proper parameters in query string //
 	header('Location: index.php');
 	exit;
 }
 
+$map_type = $_REQUEST['subject'];
 
 if(!$user->can_view('customers')){
   exit();
 }
 
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $_SESSION['state']['customer']['id']=$_REQUEST['id'];
-  $customer_id=$_REQUEST['id'];
+if(isset($_REQUEST['subject']) and is_numeric($_REQUEST['subject']) ){
+  $_SESSION['state']['customer']['id']=$_REQUEST['subject'];
+  $customer_id=$_REQUEST['subject'];
 }else{
   $customer_id=$_SESSION['state']['customer']['id'];
 }
@@ -104,7 +109,7 @@ else{
 $smarty->assign('customer_id',$customer_id);
 $smarty->assign('list',$exported_data);
 
-$smarty->display('export_wizard_step4.tpl');
+$smarty->display('export_wizard_step2.tpl');
 
 
 function final_array($assoc_arr, $num_arr){

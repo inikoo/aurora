@@ -1788,7 +1788,7 @@ function list_customers() {
         'to1'=>'',
         'dont_have'=>array(),
         'have'=>array(),
-        'categories'
+        'categories'=>''
         );
         
         $awhere=json_decode($awhere,TRUE);
@@ -2179,7 +2179,7 @@ function list_customers() {
 
         }
 
-        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
+        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
 
 
 

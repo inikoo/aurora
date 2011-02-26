@@ -699,10 +699,7 @@ ALTER TABLE `Customer Dimension` ADD `Customer Sticky Note` TEXT NOT NULL ;
 
 ALTER TABLE `Category Dimension` ADD `Category Children` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Category Deep` ,ADD `Category Children Deep` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Category Children` ;
 
---------------------------------------------------------------------------------------------
---
--- Table structure for table `Email Campaign Dimension`
---
+
 
 DROP TABLE IF EXISTS `Email Campaign Dimension`;
 CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
@@ -720,11 +717,6 @@ CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
   KEY `Email Campaign Status` (`Email Campaign Status`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `Email Campaign Mailing List`
---
 
 DROP TABLE IF EXISTS `Email Campaign Mailing List`;
 CREATE TABLE IF NOT EXISTS `Email Campaign Mailing List` (
@@ -737,11 +729,6 @@ CREATE TABLE IF NOT EXISTS `Email Campaign Mailing List` (
   KEY `Email Campaign Key` (`Email Campaign Key`,`Email Key`,`Email Send Key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `Email Send Dimension`
---
 
 DROP TABLE IF EXISTS `Email Send Dimension`;
 CREATE TABLE IF NOT EXISTS `Email Send Dimension` (
@@ -762,9 +749,28 @@ CREATE TABLE IF NOT EXISTS `Email Send Dimension` (
   KEY `Email Send Parent Type` (`Email Send Recipient Type`),
   KEY `Email Send Type Key` (`Email Send Type Key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+------------------------------------------------------------
+
+
+CREATE TABLE IF NOT EXISTS `Export Map` (
+  `Map Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Map Name` varchar(255) NOT NULL,
+  `Map Type` enum('Customer','Supplier') NOT NULL,
+  `Map Data` longtext NOT NULL,
+  `Customer Key` int(11) NOT NULL,
+  `Export Map Default` enum('yes','no') NOT NULL,
+  `Exported Date` datetime NOT NULL,
+  PRIMARY KEY (`Map Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+0.9.26
+
+ALTER TABLE `Customer Dimension` ADD `Customer Main XHTML Mobile` VARCHAR( 255 ) NULL DEFAULT NULL AFTER `Customer Main FAX Key` ,ADD `Customer Main Mobile Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Customer Main XHTML Mobile` , ADD `Customer Main Plain Mobile` VARCHAR( 255 ) NOT NULL AFTER `Customer Main Mobile Key` ;
 
 
 */
+
+
 
 
 ?>

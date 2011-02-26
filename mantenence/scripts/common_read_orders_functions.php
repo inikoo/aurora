@@ -3528,6 +3528,8 @@ if($probability>1)$probability=1;
     return $probability;
 
 }
+
+
 function is_company($name,$locale='en_GB') {
 
     $name=_trim($name);

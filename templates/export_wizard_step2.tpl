@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
 <div style="clear:both" >
-<h1 style="padding:40px;">Export Wizard - Step 4</h1>
-<form action="new_customer_csv.php?id={$customer_id}" method="POST" name="frm_export">
+<h1 style="padding:40px;">Export Wizard - Step 2</h1>
+<form action="export_data.php?subject=customer&subject_key={$customer_id}" method="POST" name="frm_export">
 
 
 
@@ -17,7 +17,12 @@
 {/foreach}
 </div>
 <tr>
-<td colspan="2"><input type="SUBMIT" name="SUBMIT" id="SUBMIT" value="Export"></td>
+<td colspan="2">
+<input type="checkbox" id="save" name="save" value="save" checked="checked" /> Save my map&nbsp;<input type="checkbox" id="header" name="header" value="header" checked="checked" /> Include Field Names
+</td>
+</tr/>
+<tr>
+<td colspan="2"><input type="SUBMIT" name="SUBMIT" id="SUBMIT" value="Export Map"></td>
 
 </tr>
 </table>
