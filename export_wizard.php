@@ -11,7 +11,8 @@ Copyright (c) 2009, Kaktus
 
 Version 2.0
 */
-
+/*ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
 include_once('common.php');
 include_once('class.Customer.php');
 
