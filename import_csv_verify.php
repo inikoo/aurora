@@ -73,44 +73,49 @@ if(isset($_POST['submit']))
 {
 	if($_FILES['fileUpload']['name']=='') { header('location:import_csv.php?tipo=customers_store'); }
 		
-	if (($_FILES["fileUpload"]["type"] == "text/plain") || ($_FILES["fileUpload"]["type"] == "text/csv") && ($_FILES["fileUpload"]["size"] < 10000000))
-	  {
-	  if ($_FILES["fileUpload"]["error"] > 0)
-	    {
-	    echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
-	    }
-	  else
-	    {
-			$target_path = "app_files/uploads/";
-
-			$target_path = $target_path . basename( $_FILES['fileUpload']['name']); 
-
-			if(move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) 
-			{
-				$vv=basename( $_FILES['fileUpload']['name']);
-				
-
-				require_once 'csvparser.php';
-				$csv = new CSV_PARSER;
-				//loading the CSV File
-				$csv->load($target_path);
-
-				$h = $csv->getHeaders();
-
-				$_SESSION['file_path'] = $target_path;
-				$r = $csv->connect();
-						
-				//echo '<pre>'; print_r($r);
-			}
-	    }
-	  }
+	if(($_FILES["fileUpload"]["size"]) >= 50000)
+	{
+		$_SESSION['error'] = 'Uploading Error : too large file to upload';
+		header('location:import_csv.php?tipo=customers_store');
+		exit();
+	}
 	else
-	  {
-	  
-	    header('location:import_csv.php?tipo=customers_store&error=Invalid File');	 	
+	{	
+		if (($_FILES["fileUpload"]["type"] == "text/plain") || ($_FILES["fileUpload"]["type"] == "text/csv"))
+	  	{
+	  		if ($_FILES["fileUpload"]["error"] > 0)
+	    		{
+	   		 echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
+	    		}
+	  		else
+	    		{
+				$target_path = "app_files/uploads/";
 
-	  }
+				$target_path = $target_path . basename( $_FILES['fileUpload']['name']); 
+
+				if(move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) 
+				{
+					$vv=basename( $_FILES['fileUpload']['name']);
+					require_once 'csvparser.php';
+					$csv = new CSV_PARSER;
+					//loading the CSV File
+					$csv->load($target_path);
+
+					$h = $csv->getHeaders();
+
+					$_SESSION['file_path'] = $target_path;
+					$r = $csv->connect();
+				}
+	    		}
+	  	}
+		else
+	  	{
+	  	    header('location:import_csv.php?tipo=customers_store&error=Invalid File');	 	
+		}
+	}
 }
+
+	
 
 $v = 0;
 
@@ -120,6 +125,8 @@ $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
+$smarty->assign('showerror',$_SESSION['error']);
+
 
 $smarty->display('import_csv_verify.tpl');
 
