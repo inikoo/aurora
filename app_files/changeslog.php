@@ -767,6 +767,9 @@ CREATE TABLE IF NOT EXISTS `Export Map` (
 
 ALTER TABLE `Customer Dimension` ADD `Customer Main XHTML Mobile` VARCHAR( 255 ) NULL DEFAULT NULL AFTER `Customer Main FAX Key` ,ADD `Customer Main Mobile Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Customer Main XHTML Mobile` , ADD `Customer Main Plain Mobile` VARCHAR( 255 ) NOT NULL AFTER `Customer Main Mobile Key` ;
 
+ALTER TABLE `Export Map` ADD `Export Header` ENUM( 'yes', 'no' ) NOT NULL AFTER `Customer Key` ;
+
+ALTER TABLE `Export Map` ADD `Map Description` TEXT NULL AFTER `Map Name`
 
 */
 
