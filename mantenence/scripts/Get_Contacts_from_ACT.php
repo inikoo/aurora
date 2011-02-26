@@ -42,7 +42,7 @@ $tipo_his=array();
 $myFile = "act_timedata.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
 
-$filename="actdatatmp2.txt";
+$filename="actdatatmp.txt";
 
 
 date_default_timezone_set('UTC');
