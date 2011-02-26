@@ -795,7 +795,7 @@ function SelectUrl()
 	}
 	if(document.getElementById('template2').checked == true)
 	{
-		location.href='free_campaign_template_create.php';
+		location.href='#';
 	}
 	
 }
