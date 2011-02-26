@@ -21,7 +21,7 @@ $("#hidr").click(function () {
 	<div style="float:right; padding-right:300px;"><span style="font-size:11px; color:green;">{$msg}</span></div>
    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
    
-  <form action="send_mail.php" method="post">
+  <!--<form action="send_mail.php" method="post">-->
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
@@ -29,9 +29,9 @@ $("#hidr").click(function () {
 
 
 
-<b id="showr" class="template_choose">Choose Template</b>
+ <!--<b id="showr" class="template_choose">Choose Template</b>
   <b id="hidr">Hide Option</b>
-  <div id="display_part">
+ <div id="display_part">
         		
   			
                             	<input type="radio" id="template1" name="template" value="1">Basic Template<br>
@@ -43,7 +43,7 @@ $("#hidr").click(function () {
   </div>
 	<div><br><input type="submit" name="submit" value="Send Mail"></div>
 </form>
-
+-->
 </div>
 
 
