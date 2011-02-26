@@ -105,7 +105,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/b/%.xls' or like '%/a/%.xls' or  like '%/c/%.xls' order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/59113.xls'   order by filename";
 
-//$sql="select * from  orders_data.orders where filename like '%/7756.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/7926.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1324,7 +1324,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             if ($data['staff sale']=='Yes' ) {
                 print "Warning staff not identified ";
             }
-
+//print_r($data['Customer Data'] );
             $customer = new Customer ( 'find create', $data['Customer Data'] );
             if (!$customer->id) {
                 exit("Error Customer can not found in get_order\n");
