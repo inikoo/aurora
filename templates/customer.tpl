@@ -45,7 +45,9 @@
                 {if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
                 {if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  src="art/icons/email.png"/></td></tr>{/if}
                 {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Telephone')}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" src="art/icons/telephone.png"/></td></tr>{/if}
-                {if $customer->get('Customer Main Fax Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Fax')}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td></tr>{/if}
+                {if $customer->get('Customer Main Mobile Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Mobile')}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td></tr>{/if}
+
+                {if $customer->get('Customer Main FAX Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML FAX')}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td></tr>{/if}
             </table>
         </td>
     </tr>
@@ -266,8 +268,8 @@
 <div id="dialog_export">
   <div id="export_msg"></div>
   <table style="padding:10px;margin:20px 10px 10px 10px" >
- <tr><td><a href="export_data.php?subject=customer&subject_key={$customer->id}">{t}Export Data (using last map){/t}</a></td></tr>
- <tr><td><a href="export_data_maps.php?subject=customer&subject_key={$customer->id}">{t}Export from another map{/t}</a></td></tr>
+ <tr><td><a href="export_data.php?subject=customer&subject_key={$customer->id}&source=db">{t}Export Data (using last map){/t}</a></td></tr>
+ <tr><td><a href="export_data_maps.php?subject=customer&subject_key={$customer->id}&source=db">{t}Export from another map{/t}</a></td></tr>
  <tr><td><a href="export_wizard.php?subject=customer&subject_key={$customer->id}">{t}Export Wizard (new map){/t}</a></td></tr>
 
 </table>

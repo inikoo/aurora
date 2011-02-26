@@ -224,7 +224,7 @@ $list_type=$_REQUEST['typeValue'];
     
    
         $awhere=preg_replace('/\\\"/','"',$awhere);
-        //    print "$awhere";
+        //   print "$awhere";
         
         
         $where_data=array(
@@ -235,12 +235,12 @@ $list_type=$_REQUEST['typeValue'];
         'to1'=>'',
         'dont_have'=>array(),
         'have'=>array(),
-        'categories'
+        'categories'=>''
         );
         
         $awhere=json_decode($awhere,TRUE);
 
-        
+ /// print_r($awhere);      
         foreach ($awhere as $key=>$item) {
             $where_data[$key]=$item;
         }
@@ -673,14 +673,83 @@ $customer_key=$data['Customer Key'];
                      'activity'=>$data['Customer Type by Activity']
 
                  );
-///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))
-///{
-///	$list_name=$_REQUEST['textValue'];
-///	$list_type=$_REQUEST['typeValue'];
-///}
-//$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type,'store'=>'9');//
+ }
+    mysql_free_result($result);
 
-$meta_data=$where;//echo $metadata;
+// **************************************************************************start **************************************************************************************************
+
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction";
+ // print $sql;
+    $adata=array();
+
+
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+$customer_key=$data['Customer Key'];
+        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+        if ($data['Customer Type']=='Person') {
+            $name='<img src="art/icons/user.png" alt="('._('Person').')">';
+        } else {
+            $name='<img src="art/icons/building.png" alt="('._('Company').')">';
+
+        }
+
+        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
+
+
+
+        if ($data['Customer Orders']==0)
+            $last_order_date='';
+        else
+            $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
+        $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+
+
+        if ($data['Customer Billing Address Link']=='Contact')
+            $billing_address='<i>'._('Same as Contact').'</i>';
+        else
+            $billing_address=$data['Customer XHTML Billing Address'];
+
+        if ($data['Customer Delivery Address Link']=='Contact')
+            $delivery_address='<i>'._('Same as Contact').'</i>';
+        elseif($data['Customer Delivery Address Link']=='Billing')
+        $delivery_address='<i>'._('Same as Billing').'</i>';
+        else
+            $delivery_address=$data['Customer XHTML Main Delivery Address'];
+
+        $adata[]=array(
+                     'id'=>$id,
+                     'name'=>$name,
+                     'location'=>$data['Customer Main Location'],
+                     'orders'=>number($data['Customer Orders']),
+                     'invoices'=>$data['Customer Orders Invoiced'],
+                     'email'=>$data['Customer Main XHTML Email'],
+                     'telephone'=>$data['Customer Main XHTML Telephone'],
+                     'last_order'=>$last_order_date,
+                     'contact_since'=>$contact_since,
+                     'total_payments'=>money($data['Customer Net Payments'],$currency),
+                     'net_balance'=>money($data['Customer Net Balance'],$currency),
+                     'total_refunds'=>money($data['Customer Net Refunds'],$currency),
+                     'total_profit'=>money($data['Customer Profit'],$currency),
+                     'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
+                     'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
+                     'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
+                     'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+                     'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+                     'contact_name'=>$data['Customer Main Contact Name'],
+                     'address'=>$data['Customer Main XHTML Address'],
+                     'billing_address'=>$billing_address,
+                     'delivery_address'=>$delivery_address,
+                     'activity'=>$data['Customer Type by Activity']
+
+                 );
+
+ //$meta_data=$where;
+$metadata = json_encode($where_data);
+//echo "<br>meta=".$metadata;
+//$meta_data=$where_data;      
 $store_id=$_REQUEST['store_id'];
 $dt=date("Y-m-d H:i:s");
 $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Key`,`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%d,%s,%s,%s,%s)",
@@ -688,11 +757,20 @@ $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Key`,`C
                          $store_id,
                          prepare_mysql($list_name),
                          prepare_mysql($list_type),
-                         prepare_mysql($meta_data),
+                        '\'\'',
                          prepare_mysql($dt)
                         );
-$list_query=mysql_query($list_sql);
 
+$list_query=mysql_query($list_sql);
+$fetch_type_sql=mysql_fetch_array(mysql_query("select `Customer List Type`,max(`Customer List Key`) as max_customer_list_key from `Customer List Dimension` where `Customer List Key`=(select max(`Customer List Key`) from `Customer List Dimension`)"));
+$max_customer_list_key=$fetch_type_sql['max_customer_list_key'];
+if($fetch_type_sql[0]=='Dynamic'){
+$metadata_sql=sprintf("update `Customer List Dimension` set `Customer List Metadata`=%s where `Customer List Key`=".$max_customer_list_key.""
+                         ,prepare_mysql($metadata)
+                         );
+
+$metadata_query=mysql_query($metadata_sql);
+}
 if($list_type=='static')
 {$customer_list_key=mysql_fetch_array(mysql_query("select max(`Customer List Key`) from `Customer List Dimension` order by `Customer List Creation Date` DESC"));
 $customer_list_id=$customer_list_key[0];
@@ -703,9 +781,9 @@ $list_sql2=sprintf("insert into `Customer List Customer Bridge` (`Customer List 
 $list_query2=mysql_query($list_sql2);
 
 }
-   }
+  
+ }
     mysql_free_result($result);
-
 //print_r($dataid);//-----------------------------------------------------------------------------------------------------
 /*$response=array('resultset'=>
                                 array('state'=>200,
@@ -1210,7 +1288,9 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];*/
 //print("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']);
-$sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']));
+
+
+$sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`='".$data['Customer List key']."'"));
 //$sql_no_of_customer1=mysql_fetch_array(mysql_query($sql_no_of_customer));
 //print $sql_no_of_customer;
 $customer_list_key=" <a href='new_campaign.php?customer_list_key=".$data['Customer List key']."'>"."Create".'</a>';
@@ -2304,8 +2384,13 @@ $sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Cust
 $sql_no_of_customer=mysql_fetch_array(mysql_query("select count(`Customer Key`) from `Customer List Customer Bridge` where `customer List Key`=".$data['Customer List key']));
 //$sql_no_of_customer1=mysql_fetch_array(mysql_query($sql_no_of_customer));
 //print $sql_no_of_customer;
+
 $customer_list_key=" <a href='new_campaign.php?customer_list_key=".$data['Customer List key']."'>"."Create".'</a>';
+
+if($data['Customer List Type']=='Static')
 $cusomer_list_name=" <a href='customer_list_static.php?id=".$data['Customer List key']."'>".$data['Customer List Name'].'</a>';
+else
+$cusomer_list_name=" <a href='customer_list_dynamic.php?id=".$data['Customer List key']."'>".$data['Customer List Name'].'</a>';
         $adata[]=array(
 		   //  'no_of_customer'=>$sql_no_of_customer[0],
                  /*    'id'=>$id,

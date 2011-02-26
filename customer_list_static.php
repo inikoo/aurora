@@ -7,7 +7,8 @@ header('Location: index.php');
 
 //$modify=$user->can_edit('staff');
 $general_options_list=array();
-
+if(isset($_REQUEST['id']))
+$id=$_REQUEST['id'];
 
 //if($modify)
 //{

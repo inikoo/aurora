@@ -1,5 +1,6 @@
 <?php
 include_once('common.php')?>
+
 var view='<?php echo$_SESSION['state']['hr']['view']?>'
 
 YAHOO.util.Event.addListener(window, "load", function() {
