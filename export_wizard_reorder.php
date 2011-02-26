@@ -47,7 +47,6 @@ foreach($ValueArray as $key2=>$val2){
 	$FinalKey = $KeyArray[$key2];
 	$FinalArray[$FinalKey]=$val2;
 
-
 }
 
 //print_r($FinalArray);

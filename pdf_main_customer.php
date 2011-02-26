@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once(dirname(__FILE__).'/external_libs/PDF/config/tcpdf_config_customer.php');
 class TCPDF {
 

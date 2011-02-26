@@ -1117,88 +1117,96 @@ switch ($find_type) {
 
     }
 
-    function update_parents() {
+function update_parents() {
 
-      //print $this->id;
+    //print $this->id;
 
+
+
+    $type=$this->data['Telecom Type'];
+    if($type=='Fax')
+        $type='FAX';
+    if ($type=="Mobile" )
+        $parents=array('Contact','Customer');
+    else
         $parents=array('Address','Contact','Company','Customer','Supplier');
-        $types=array("Mobile","FAX","Telephone");
-        foreach($types as $type) {
-        foreach($parents as $parent) {
-        if($type=="Mobile" and $parent!="Contact")
-        continue;
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-	   // print "$sql\n";
-  $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $principal_telecom_changed=false;
+    foreach($parents as $parent) {
 
-                if ($parent=="Contact") {
-                    $parent_object=new Contact($row["Parent Key"]);
-                    $parent_label=_("Contact");
-                }
-                elseif($parent=="Customer") {
-                    $parent_object=new Customer($row["Parent Key"]);
-                    $parent_label=_("Customer");
-                }
-                elseif($parent=="Supplier") {
-                    $parent_object=new Supplier($row["Parent Key"]);
-                    $parent_label=_("Supplier");
-                }
-                elseif($parent=="Company") {
-                    $parent_object=new Company($row["Parent Key"]);
-                    $parent_label=_("Company");
-                }elseif($parent=="Address") {
-                    $parent_object=new Address($row["Parent Key"]);
-                    $parent_label=_("Address");
-                }
-                
-                $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
-                $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
-                $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
-                $sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
-                             ,prepare_mysql($parent_object->data[$parent." Main Plain $type"])
-                             ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
-                             ,$parent_object->id
-                            );
-                          //  print "$sql\n";
-                mysql_query($sql);
+
+
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
+      //  print "$sql\n";
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_telecom_changed=false;
+
+            if ($parent=="Contact") {
+                $parent_object=new Contact($row["Parent Key"]);
+                $parent_label=_("Contact");
+            }
+            elseif($parent=="Customer") {
+                $parent_object=new Customer($row["Parent Key"]);
+                $parent_label=_("Customer");
+            }
+            elseif($parent=="Supplier") {
+                $parent_object=new Supplier($row["Parent Key"]);
+                $parent_label=_("Supplier");
+            }
+            elseif($parent=="Company") {
+                $parent_object=new Company($row["Parent Key"]);
+                $parent_label=_("Company");
+            }
+            elseif($parent=="Address") {
+                $parent_object=new Address($row["Parent Key"]);
+                $parent_label=_("Address");
+            }
+
+            $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
+            $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
+            $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
+            $sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
+                         ,prepare_mysql($parent_object->data[$parent." Main Plain $type"])
+                         ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
+                         ,$parent_object->id
+                        );
+          //  print "$sql\n";
+            mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
 
-                if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
-                    $principal_telecom_changed=true;
+            if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
+                $principal_telecom_changed=true;
 
-                if ($principal_telecom_changed) {
+            if ($principal_telecom_changed) {
 
-                    if ($old_princial_telecom=="") {
+                if ($old_princial_telecom=="") {
 
-                        $history_data["History Abstract"]="$type Associated";
-                        $history_data["History Details"]=$this->display("plain")." "._("associated with")." ".$parent_object->get_name()." ".$parent_label;
-                        $history_data["Action"]="associated";
-                        $history_data["Direct Object"]=$parent;
-                        $history_data["Direct Object Key"]=$parent_object->id;
-                        $history_data["Indirect Object"]="$type";
-                        $history_data["Indirect Object Key"]="";
-                        $this->add_history($history_data);
-                    } else {
-                        $history_data["History Abstract"]="$type Changed";
-                        $history_data["History Details"]=_("$type changed from")." ".$old_princial_telecom." "._("to")." ".$this->display("plain")." "._("in")." ".$parent_object->get_name()." ".$parent_label;
-                        $history_data["Action"]="changed";
-                        $history_data["Direct Object"]=$parent;
-                        $history_data["Direct Object Key"]=$parent_object->id;
-                        $history_data["Indirect Object"]="$type";
-                        $history_data["Indirect Object Key"]="";
+                    $history_data["History Abstract"]="$type Associated";
+                    $history_data["History Details"]=$this->display("plain")." "._("associated with")." ".$parent_object->get_name()." ".$parent_label;
+                    $history_data["Action"]="associated";
+                    $history_data["Direct Object"]=$parent;
+                    $history_data["Direct Object Key"]=$parent_object->id;
+                    $history_data["Indirect Object"]="$type";
+                    $history_data["Indirect Object Key"]="";
+                    $this->add_history($history_data);
+                } else {
+                    $history_data["History Abstract"]="$type Changed";
+                    $history_data["History Details"]=_("$type changed from")." ".$old_princial_telecom." "._("to")." ".$this->display("plain")." "._("in")." ".$parent_object->get_name()." ".$parent_label;
+                    $history_data["Action"]="changed";
+                    $history_data["Direct Object"]=$parent;
+                    $history_data["Direct Object Key"]=$parent_object->id;
+                    $history_data["Indirect Object"]="$type";
+                    $history_data["Indirect Object Key"]="";
 
-                        $this->add_history($history_data);
-
-                    }
+                    $this->add_history($history_data);
 
                 }
-}
+
             }
+
         }
     }
+}
 
 
 
