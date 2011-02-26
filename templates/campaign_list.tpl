@@ -1,20 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-{literal}
-<script>
-$(document).ready(function(){
-$("#showr").click(function () {
-  $("#display_part:eq(0)").show("fast", function () {
-    /* use callee so don't have to name the function */
-    $(this).next("#display_part").show("fast", arguments.callee);
-  });
-});
-$("#hidr").click(function () {
-  $("#display_part").hide("fast");
-});
-});
-</script>
-{/literal}
+
  
 <div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}campaign List{/t}</span>

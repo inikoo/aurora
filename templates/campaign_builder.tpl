@@ -1,4 +1,21 @@
 {include file='header.tpl'}
+
+{literal}
+<script>
+$(document).ready(function(){
+$("#showr").click(function () {
+  $("#display_part:eq(0)").show("fast", function () {
+    /* use callee so don't have to name the function */
+    $(this).next("#display_part").show("fast", arguments.callee);
+  });
+});
+$("#hidr").click(function () {
+  $("#display_part").hide("fast");
+});
+});
+</script>
+{/literal}
+
 <div id="bd" >
 
  
@@ -11,19 +28,16 @@
            <tr style="border-bottom:1px #4682b4 solid;"><td class="campaign_header">Name</td><td class="campaign_header">Maximum Emails</td><td class="campaign_header">Campaign Objective</td><td class="campaign_header">Status</td>
            
 	   </tr>
-
+<form action="campaign_builder.php" method="POST" onsubmit="SelectUrl();">
 {section name="i" loop="$campaign"}
-    <tr bgcolor="{cycle values="#eeeeee,#d0d0d0"}"> {* CHANGE HERE *}
+    <tr bgcolor="{cycle values=#eeeeee,#d0d0d0}"> {* CHANGE HERE *}
   
-      <td align='center'><input type="checkbox" name="check_email[]" value="{$campaign[i].$key}">{$campaign[i].$name}</td><td align='center'>{$campaign[i].$emails}</td><td align='center'>{$campaign[i].$obj}</td><td align='center'>{$campaign[i].$status}</td>
+      <td align='center'><input type="checkbox" id="mail_{$campaign[i].$key}" name="check_email[]" value="{$campaign[i].$key}">{$campaign[i].$name}</td><td align='center'>{$campaign[i].$emails}</td><td align='center'>{$campaign[i].$obj}</td><td align='center'>{$campaign[i].$status}</td>
     
     </tr>
 {/section} 
 
-
-			
-	
-        
+       
 	   <tr><td></td>
 		<td></td>
 		<td></td>
@@ -31,29 +45,27 @@
 	  </tr>
 
 
-	   
-
      </table>
 
+			<b id="showr">Choose &nbsp;&nbsp;</b>
+ 	<b id="hidr">Close</b>
+ 	<div id="display_part">
+        		<br>
+  	        	<input type="radio" id="template1" name="template" value="1">Free Template
+			<br><br>
+                        <input type="radio" id= "template2" name="template" value="2">Template Email
+                       
+	<div><br><input type="submit" name="submit" value="Send Mail"></div>
+        </div>
+</form>	
  
+
   </div>
 
-
-
-
-
-
-  
 	
-</form>
+
 
 </div>
-
-
-  
-
-  
- 
 
   
   {include file='footer.tpl'}

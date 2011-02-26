@@ -782,5 +782,21 @@ function post_new_found_actions(branch,response) {}
 function post_new_error_actions(branch) {}
 
 
-
+function SelectUrl()
+{
+	if(document.getElementById('template1').checked == false && document.getElementById('template2').checked == false)
+	{
+		alert('Please select a template');
+		return false;
+	}
+	if(document.getElementById('template1').checked == true)
+	{
+		location.href='free_campaign_template_create.php';
+	}
+	if(document.getElementById('template2').checked == true)
+	{
+		location.href='free_campaign_template_create.php';
+	}
+	
+}
 
