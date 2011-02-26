@@ -2,7 +2,7 @@
 <div id="bd" style="padding:0px">
 <div style="clear:both" >
 <h1 style="padding:40px;">Export Wizard - Step 2</h1>
-<form action="export_data.php?subject=customer&subject_key={$customer_id}" method="POST" name="frm_export">
+<form action="export_data.php?subject=customer&subject_key={$customer_id}" method="POST" name="frm_export" onSubmit="return validate();">
 
 
 
@@ -18,11 +18,19 @@
 </div>
 <tr>
 <td colspan="2">
-<input type="checkbox" id="save" name="save" value="save" checked="checked" /> Save my map&nbsp;<input type="checkbox" id="header" name="header" value="header" checked="checked" /> Include Field Names
+<input type="checkbox" id="header" name="header" value="header" checked="checked" /> Include Field Names in exported file
 </td>
 </tr/>
 <tr>
-<td colspan="2"><input type="SUBMIT" name="SUBMIT" id="SUBMIT" value="Export Map"></td>
+<td colspan="2">
+<input type="checkbox" id="save" name="save" value="save" checked="checked" onClick="saveMap();" /> Save my Map for future
+	<table id="maps" style="paddingtop:5px; display:block;"><tr><td>Map Name:</td><td><input type="text" id="map_name" name="map_name" value=""/></td></tr>
+	<tr><td>Map Description: </td><td><textarea id="map_desc" name="map_desc"></textarea></td></tr></table>
+</td>
+</tr/>
+
+<tr>
+<td colspan="2"><input type="SUBMIT" name="SUBMIT" id="SUBMIT" value="Export Map" ></td>
 
 </tr>
 </table>

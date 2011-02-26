@@ -1,8 +1,8 @@
 <?php
 /*
-File: export_wizard.php
+File: export_wizard_step2.php
 
-UI customer page
+Data for export process
 
 About:
 Autor: Raul Perusquia <rulovico@gmail.com>
@@ -11,7 +11,8 @@ Copyright (c) 2009, Kaktus
 
 Version 2.0
 */
-
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 include_once('common.php');
 include_once('class.Customer.php');
 
@@ -58,7 +59,7 @@ if(!$_POST['SUBMIT']){
 	exit;
 }
 
-if(!$_REQUEST['subject']){
+if(!$_REQUEST['subject_key']){
 	header('Location: index.php');
 	exit;
 }
@@ -73,9 +74,9 @@ if(!$user->can_view('customers')){
   exit();
 }
 
-if(isset($_REQUEST['subject']) and is_numeric($_REQUEST['subject']) ){
-  $_SESSION['state']['customer']['id']=$_REQUEST['subject'];
-  $customer_id=$_REQUEST['subject'];
+if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
+  $_SESSION['state']['customer']['id']=$_REQUEST['subject_key'];
+  $customer_id=$_REQUEST['subject_key'];
 }else{
   $customer_id=$_SESSION['state']['customer']['id'];
 }
