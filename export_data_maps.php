@@ -80,16 +80,19 @@ $maps = array();
 $sql = "SELECT `Map Key`,`Map Name`,`Map Description` from `Export Map` WHERE `Customer Key` = '$customer_id' AND `Map Type` = '$map_type' ORDER BY `Exported Date` ASC";
 $query = mysql_query($sql);
 if($query){
-$num=mysql_num_rows($query);
-$i=0;
+	$num=mysql_num_rows($query);
+	$i=0;
 
-while($maps_data=mysql_fetch_row($query))
-{
-	$maps[$i]=$maps_data;
-	$i++;
-}
-//print_r($maps);
+	while($maps_data=mysql_fetch_row($query))
+	{
+		$maps[$i]=$maps_data;
+		$i++;
+	}
+	//print_r($maps);
 
+}else{
+
+	$num = 0;
 }
 $smarty->assign('maps',$maps);
 $smarty->assign('customer_name',$customer_name);
