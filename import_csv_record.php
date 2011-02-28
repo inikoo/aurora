@@ -131,30 +131,21 @@
 </table>
 <div id="display">
 <?php 
-  	$search = array_search($index,$colorArray);
+	//print_r($colorArray);	
+  	$search = in_array($index,$colorArray);
+ 
 
 	if(isset($search) && $search>0)
 	{
-		echo "<span style=\"color:red;\">This data will be ignored</span>";
+             
+		echo "<span id=\"ignore_msg\" style=\"color:red;\">This data will be ignored</span>";
+		
 	}
 	
 
 
 
-/*	for($p=0; $p<count($h); $p++)
-	{
-	  if(isset($color_array) && $index == $color_array[$p])
-		{
-			echo $_SESSION[$p];
-		}
 
-	  
-	if(isset($_REQUEST['color_array']))
-
-		{
-			echo $_REQUEST['color_array'][$p];
-		}
-		
-	} */
 ?>
+
 </div>

@@ -29,7 +29,7 @@ function getPrev(v,limit) {
  var v;
 	
 	
-	
+	document.getElementById('ignore_message').innerHTML="";
 	var prevArray = new Array();
 	
 	for(var l=0; l<limit; l++)
@@ -55,7 +55,7 @@ function getPrev(v,limit) {
 
 function getNext(v,num) {
  var v;
- 
+document.getElementById('ignore_message').innerHTML="";
 
  var myArray = new Array();
 	
@@ -110,7 +110,10 @@ function getIgnore(v) {
 		//alert(splitterResult[1]);
 
 		document.getElementById('display').innerHTML=splitterResult[0]; 
+	
+                document.getElementById('ignore_message').innerHTML="This data will be ignored";
                 document.getElementById('show').innerHTML=splitterResult[1]; 
+                
            }
       }
  };

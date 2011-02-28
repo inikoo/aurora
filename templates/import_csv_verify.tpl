@@ -29,14 +29,16 @@
                         <li>
                            <div class="framedsection">
 				<div id="call_table"></div>
-    			 
+    			 <span id="ignore_message" style="color:red;"></span>
 		    <ul class="formActions">
                     		<li>
+					
 		     			<div class="bt"><input type="submit" value="Next To Continue" name="" id="">
 					
 					</div>
 					
 					<div id="show"></div>
+					
 				
                     		</li>
                 	  </ul>	
