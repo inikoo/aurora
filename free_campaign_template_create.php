@@ -38,7 +38,9 @@ $js_files=array(
 		'external_libs/ckeditor/ckeditor.js'
 		);
 		
-		
+	
+
+
 
 $smarty->assign('title', _('Customers Lists'));
 $smarty->assign('css_files',$css_files);
