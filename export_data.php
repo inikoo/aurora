@@ -133,7 +133,7 @@ function getExportMapHeader($subject_key, $subject){
 		$s="SELECT `Export Header` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC LIMIT 0 , 1";
 	}
 	$q = mysql_query($s);
-	if($q){
+	if(mysql_num_rows($q) != 0){
 		$r = mysql_fetch_assoc($q);
 		$data= $r['Export Header'];
 	}else{
