@@ -37,8 +37,22 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 	if($no_of_maps_saved > 0){
 	$exported_data = getExportMapData($customer_id, $map_type);
 	}else{
-	//Assign "Default Export Rule"  here ... //
-	exit;
+	//Assign "Default Export Fields" in this array ... //
+	$included_data[0] = 'Customer Main Contact Name';
+	$included_data[1] = 'Customer Main Plain Email';
+	$included_data[2] = 'Customer Main Plain Telephone';
+	// If header is required in default export //
+	foreach($included_data as $arr_val){
+		$header .= $arr_val.",";
+	}
+	//print_r($included_data);
+
+	$actual_data=$customer->data;
+	//print_r($actual_data);
+
+	$exported_data = final_array($actual_data , $included_data);
+	//print_r($exported_data);
+
 	}
 }else{
 	if(!isset($_POST['SUBMIT'])){ // To ensure whether the form is properly submitted - Case create new map //
@@ -50,11 +64,11 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 
 	## Saving Map into Database ##
 	if(isset($_POST['save']) && $_POST['save']=='save'){
-		if(isset($_REQUEST['default']) && mysql_real_escape_string($_REQUEST['default']) == 'yes'){
+		/*if(isset($_REQUEST['default']) && mysql_real_escape_string($_REQUEST['default']) == 'yes'){
 			$default='yes';
 		}else{
 			$default='no';
-		}
+		}*/
 		$map_name = mysql_real_escape_string($_POST['map_name']) ;
 		$map_desc = mysql_real_escape_string($_POST['map_desc']) ;
 		if(isset($_POST['header']) && $_POST['header']=='header'){
@@ -135,4 +149,19 @@ function numExportMapData($subject_key, $subject){
 	$num = mysql_num_rows($q);
 	return $num;
 }
+function final_array($assoc_arr, $num_arr){
+	$final_arr = array();
+
+	foreach($assoc_arr as $assoc_key => $assoc_val){
+
+		if(in_array($assoc_key, $num_arr)){
+
+			$final_arr[$assoc_key]=$assoc_val;
+
+		}
+	}
+	//print_r($final_arr);
+	return $final_arr;
+}
+
 ?>
