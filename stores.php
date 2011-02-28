@@ -109,7 +109,7 @@ $smarty->assign('js_files',$js_files);
 
 $_SESSION['state']['assets']['page']='stores';
 $smarty->assign('view',$_SESSION['state']['stores']['view']);
-$smarty->assign('show_details',$_SESSION['state']['stores']['details']);
+
 
 $smarty->assign('avg',$_SESSION['state']['stores']['avg']);
 $smarty->assign('period',$_SESSION['state']['stores']['period']);

@@ -557,18 +557,14 @@ function list_staff_users() {
 
 
 
-    $_SESSION['state']['users']['staff']=array(
-                                             'display'=>$display,
-                                             'order'=>$order,
-                                             'order_dir'=>$order_direction,
-                                             'nr'=>$number_results,
-                                             'sf'=>$start_from,
-                                             'where'=>$where,
-                                             'f_field'=>$f_field,
-                                             'f_value'=>$f_value
-                                             );
-
-
+$_SESSION['state']['users']['staff']['display']=$display;
+$_SESSION['state']['users']['staff']['order']=$order;
+    $_SESSION['state']['users']['staff']['order_dir']=$order_direction;
+    $_SESSION['state']['users']['staff']['nr']=$number_results;
+    $_SESSION['state']['users']['staff']['sf']=$start_from;
+    $_SESSION['state']['users']['staff']['where']=$where;
+    $_SESSION['state']['users']['staff']['f_field']=$f_field;
+    $_SESSION['state']['users']['staff']['f_value']=$f_value;
 
     $wheref='';
     if ($f_field=='name' and $f_value!=''  )

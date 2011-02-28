@@ -2681,8 +2681,8 @@ function list_departments() {
 
 
     if ($parent=='store') {
-        $conf=$_SESSION['state']['store']['table'];
-        $conf2=$_SESSION['state']['store'];
+        $conf=$_SESSION['state']['store']['departments'];
+        $conf2=$_SESSION['state']['store']['departments'];
 
         $conf_table='store';
     } else {
@@ -5435,7 +5435,12 @@ function list_families() {
         $conf=$_SESSION['state']['department'];
         $conf_table='department';
 
-    } else {
+    } elseif ($parent=='store') {
+
+        $conf=$_SESSION['state']['store']['families'];
+        $conf_table='store';
+
+    }else {
 
         $conf=$_SESSION['state']['families'];
         $conf_table='families';
@@ -5445,7 +5450,7 @@ function list_families() {
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
-        $start_from=$conf['table']['sf'];
+        $start_from=$conf['sf'];
     //  $start_from=0;
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
@@ -5457,32 +5462,32 @@ function list_families() {
 
 
     } else
-        $number_results=$conf['table']['nr'];
+        $number_results=$conf['nr'];
 
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
     else
-        $order=$conf['table']['order'];
+        $order=$conf['order'];
     if (isset( $_REQUEST['od']))
         $order_dir=$_REQUEST['od'];
     else
-        $order_dir=$conf['table']['order_dir'];
+        $order_dir=$conf['order_dir'];
 
     if (isset( $_REQUEST['where']))
         $where=$_REQUEST['where'];
     else
-        $where=$conf['table']['where'];
+        $where=$conf['where'];
 
     if (isset( $_REQUEST['f_field']))
         $f_field=$_REQUEST['f_field'];
     else
-        $f_field=$conf['table']['f_field'];
+        $f_field=$conf['f_field'];
 
     if (isset( $_REQUEST['f_value']))
         $f_value=$_REQUEST['f_value'];
     else
-        $f_value=$conf['table']['f_value'];
+        $f_value=$conf['f_value'];
 
 
 
@@ -5532,31 +5537,41 @@ function list_families() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-    // $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
-    //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
-    //$_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
-    $_SESSION['state'][$conf_table]['table']['order']=$order;
-    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
-    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-    $_SESSION['state'][$conf_table]['table']['where']=$where;
-    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
-    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
-
-
-    $_SESSION['state'][$conf_table]['period']=$period;
-    $_SESSION['state'][$conf_table]['mode']=$mode;
-    $_SESSION['state'][$conf_table]['restrictions']=$restrictions;
-    $_SESSION['state'][$conf_table]['parent']=$parent;
+    
+  
 
 
 
     //  $where.=" and `Product Department Key`=".$id;
     switch ($parent) {
     case('store'):
+      $_SESSION['state']['store']['families']['order']=$order;
+    $_SESSION['state']['store']['families']['order_dir']=$order_dir;
+    $_SESSION['state']['store']['families']['nr']=$number_results;
+    $_SESSION['state']['store']['families']['sf']=$start_from;
+    $_SESSION['state']['store']['families']['where']=$where;
+    $_SESSION['state']['store']['families']['f_field']=$f_field;
+    $_SESSION['state']['store']['families']['f_value']=$f_value;
+    $_SESSION['state']['store']['families']['period']=$period;
+    $_SESSION['state']['store']['families']['mode']=$mode;
+    $_SESSION['state']['store']['families']['restrictions']=$restrictions;
+    $_SESSION['state']['store']['families']['parent']=$parent;
+    
+    
         $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
     case('department'):
+      $_SESSION['state']['department']['families']['order']=$order;
+    $_SESSION['state']['department']['families']['order_dir']=$order_dir;
+    $_SESSION['state']['department']['families']['nr']=$number_results;
+    $_SESSION['state']['department']['families']['sf']=$start_from;
+    $_SESSION['state']['department']['families']['where']=$where;
+    $_SESSION['state']['department']['families']['f_field']=$f_field;
+    $_SESSION['state']['department']['families']['f_value']=$f_value;
+    $_SESSION['state']['department']['families']['period']=$period;
+    $_SESSION['state']['department']['families']['mode']=$mode;
+    $_SESSION['state']['department']['families']['restrictions']=$restrictions;
+    $_SESSION['state']['department']['families']['parent']=$parent;
         $where=sprintf(' where `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     default:
@@ -6056,6 +6071,8 @@ function list_families() {
 
         }
         $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Family Store Key'],$row['Product Family Store Code']);
+        $department=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Family Main Department Key'],$row['Product Family Main Department Code']);
+
         $adata[]=array(
 
                      'code'=>$code,
@@ -6069,6 +6086,7 @@ function list_families() {
                      'stock_error'=>number($row['Product Family Unknown Stock Products']),
                      'stock_value'=>money($row['Product Family Stock Value']),
                      'store'=>$store,
+                     'department'=>$department,
                      'sales'=>$tsall,
                      'profit'=>$tprofit,
                      'surplus'=>number($row['Product Family Surplus Availability Products']),

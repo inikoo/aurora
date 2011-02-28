@@ -1,19 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
+{include file='users_navigation.tpl'}
 
-<span class="nav2 onleft"><a class="selected" href="users_staff.php">Staff Users</a></span>
-  <span class="nav2 onleft"><a href="users_customer.php">Customer Users</a></span>
-  <span class="nav2 onleft"><a href="users_supplier.php">Supplier Users</a></span>
-
-
-<div class="search_box">
-  <div class="general_options">
-  <span id="exit">{t}Exit Edit{/t}</span>
-</div>  
-         
-</div>  
-
-  <div id="yui-main">
     
     <div class="data_table" >
       <span class="clean_table_title">{t}Staff Users{/t}</span>
@@ -22,32 +10,21 @@
      
        <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
      <tr  id="orders_show_only"   style="margin-left:0;padding:0"  >
-
        <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       
        <td  style="" {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
        <td  style="" {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
        <td  style="" {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
-
      </tr>
-   
+    </table>
+      
+      
+      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-   </table>
-      
-      
-      
-      
-      
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	<div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-      </div>
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>
  
     
-  </div>
+ 
 </div> 
 
 {include file='footer.tpl'}
