@@ -80,7 +80,6 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 
 // COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB //
 foreach($exported_data as $key=>$value){
-
 	if(!isset($value) || $value == ""){
 			$value = ",";
 			if(getExportMapHeader($customer_id, $map_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')){
