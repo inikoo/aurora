@@ -166,7 +166,7 @@ $default_state=array(
                                                          'to'=>''
                                                      )
                                       ),
-                  'porders'=>array(
+                   'porders'=>array(
                                  'id'=>'',
                                  'show_all'=>false,
                                  'parent'=>'supplier',
@@ -183,23 +183,23 @@ $default_state=array(
                                              'from'=>'',
                                              'to'=>'',
 
-                                            'csv_export'=>array(
-                                                             'public_id'=>true,
-                                                             'last_date'=>true,
-                                                             'supplier'=>true,
-                                                             'status'=>true,
-                                                             'totaltax'=>false,
-                                                             'totalnet'=>false,
-							     'shippingmethod'=>false,
-                                                             'total'=>true,
-                                                             'buyername'=>false,
-                                                             'sourcetype'=>false,
-                                                             'paymentstate'=>false,
-                                                             'actiontaken'=>false,
-                                                             'items'=>false,
-                                                             'currency_code'=>false
-							    
-                                                        )
+                                             'csv_export'=>array(
+                                                              'public_id'=>true,
+                                                              'last_date'=>true,
+                                                              'supplier'=>true,
+                                                              'status'=>true,
+                                                              'totaltax'=>false,
+                                                              'totalnet'=>false,
+                                                              'shippingmethod'=>false,
+                                                              'total'=>true,
+                                                              'buyername'=>false,
+                                                              'sourcetype'=>false,
+                                                              'paymentstate'=>false,
+                                                              'actiontaken'=>false,
+                                                              'items'=>false,
+                                                              'currency_code'=>false
+
+                                                          )
 
                                          )
                              ),
@@ -478,10 +478,10 @@ $default_state=array(
                                 'only'=>'',
                                 'from'=>'',
                                 'to'=>'',
-                                 'id'=>'',
-                                 'show_all'=>false,
-                                 'parent'=>'supplier',
-                                 'parent_key'=>0,
+                                'id'=>'',
+                                'show_all'=>false,
+                                'parent'=>'supplier',
+                                'parent_key'=>0,
 
                                 'table'=>array(
                                             'order'=>'last_date',
@@ -505,7 +505,7 @@ $default_state=array(
                                                              'status'=>true,
                                                              'totaltax'=>false,
                                                              'totalnet'=>false,
-							     'shippingmethod'=>false,
+                                                             'shippingmethod'=>false,
                                                              'total'=>true,
                                                              'buyername'=>false,
                                                              'sourcetype'=>false,
@@ -513,60 +513,60 @@ $default_state=array(
                                                              'actiontaken'=>false,
                                                              'items'=>false,
                                                              'currency_code'=>false
-							    
-                                                        )
+
+                                                         )
                                         ),
                                 'porder_invoices'=>array(
-                                               'order'=>'date',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'invoice_type'=>'all',
-                                               'where'=>'where true',
-                                               'f_field'=>'public_id',
-                                               'f_value'=>'','f_show'=>false,
-                                               'from'=>'',
-                                               'to'=>'',
-                                               'elements'=>array(),
-                                               'csv_export'=>array(
-                                                                'code'=>true,
-                                                                'date'=>true,
-                                                                'name'=>true,
-                                                                'currency'=>false,
-                                                                'invoice_total_tax'=>false,
-                                                                'invoice_total_net_amount'=>false,
-								'items'=>false,
-                                                                'invoice_total'=>true
-                                                               
-                                                            )
-                                           ),
+                                                      'order'=>'date',
+                                                      'order_dir'=>'',
+                                                      'sf'=>0,
+                                                      'nr'=>25,
+                                                      'invoice_type'=>'all',
+                                                      'where'=>'where true',
+                                                      'f_field'=>'public_id',
+                                                      'f_value'=>'','f_show'=>false,
+                                                      'from'=>'',
+                                                      'to'=>'',
+                                                      'elements'=>array(),
+                                                      'csv_export'=>array(
+                                                                       'code'=>true,
+                                                                       'date'=>true,
+                                                                       'name'=>true,
+                                                                       'currency'=>false,
+                                                                       'invoice_total_tax'=>false,
+                                                                       'invoice_total_net_amount'=>false,
+                                                                       'items'=>false,
+                                                                       'invoice_total'=>true
+
+                                                                   )
+                                                  ),
                                 'porder_dn'=>array(
-                                         'order'=>'date',
-                                         'order_dir'=>'',
-                                         'sf'=>0,
-                                         'nr'=>25,
-                                         'where'=>'where true',
-                                         'f_field'=>'public_id',
-                                         'f_value'=>'','f_show'=>false,
-                                         'from'=>'',
-                                         'to'=>'',
-                                         'dn_state_type'=>'all',
-                                         'elements'=>array(),
-                                         'csv_export'=>array(
-                                                           'code'=>true,
-                                                                'date'=>true,
-                                                                'name'=>true,
-                                                                'currency'=>false,
-                                                                'invoice_total_tax'=>false,
-                                                                'invoice_total_net_amount'=>false,
-								'items'=>false,
-                                                                'invoice_total'=>true
+                                                'order'=>'date',
+                                                'order_dir'=>'',
+                                                'sf'=>0,
+                                                'nr'=>25,
+                                                'where'=>'where true',
+                                                'f_field'=>'public_id',
+                                                'f_value'=>'','f_show'=>false,
+                                                'from'=>'',
+                                                'to'=>'',
+                                                'dn_state_type'=>'all',
+                                                'elements'=>array(),
+                                                'csv_export'=>array(
+                                                                 'code'=>true,
+                                                                 'date'=>true,
+                                                                 'name'=>true,
+                                                                 'currency'=>false,
+                                                                 'invoice_total_tax'=>false,
+                                                                 'invoice_total_net_amount'=>false,
+                                                                 'items'=>false,
+                                                                 'invoice_total'=>true
 
 
 
-                                                      )
-                                     )
-                                    
+                                                             )
+                                            )
+
 
 
                             ),
@@ -588,7 +588,7 @@ $default_state=array(
                                             'stores_mode'=>'grouped',
                                             'exchange_value'=>1,
                                             'show_default_currency'=>false,
-				            'edit'=>'description',
+                                            'edit'=>'description',
                                             'subcategories'=>array(
 
                                                                 'order'=>'name',
@@ -613,130 +613,130 @@ $default_state=array(
                                                        ),
                                         ),
                    'customer_categories'=>array(
-                                            'category_key'=>0,
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'period'=>'year',
-                                            'percentages'=>0,
-                                            'mode'=>'all',
-                                            'avg'=>'totals',
-                                            'view'=>'general',
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'exchange_type'=>'day2day',
-                                            'stores'=>'all',
-                                            'stores_mode'=>'grouped',
-                                            'exchange_value'=>1,
-                                            'show_default_currency'=>false,
-				            'edit'=>'description',
-                                            'subcategories'=>array(
+                                             'category_key'=>0,
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'period'=>'year',
+                                             'percentages'=>0,
+                                             'mode'=>'all',
+                                             'avg'=>'totals',
+                                             'view'=>'general',
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'exchange_type'=>'day2day',
+                                             'stores'=>'all',
+                                             'stores_mode'=>'grouped',
+                                             'exchange_value'=>1,
+                                             'show_default_currency'=>false,
+                                             'edit'=>'description',
+                                             'subcategories'=>array(
 
-                                                                'order'=>'name',
-                                                                'order_dir'=>'',
-                                                                'sf'=>0,
-                                                                'nr'=>1000,
-                                                                'where'=>'where true',
-                                                                'f_field'=>'name',
-                                                                'f_value'=>'','f_show'=>false,
+                                                                 'order'=>'name',
+                                                                 'order_dir'=>'',
+                                                                 'sf'=>0,
+                                                                 'nr'=>1000,
+                                                                 'where'=>'where true',
+                                                                 'f_field'=>'name',
+                                                                 'f_value'=>'','f_show'=>false,
 
-                                                            ),
- 
-                                            'products'=>array(
+                                                             ),
 
-                                                           'order'=>'code',
-                                                           'order_dir'=>'',
-                                                           'sf'=>0,
-                                                           'nr'=>25,
-                                                           'where'=>'where true',
-                                                           'f_field'=>'code',
-                                                           'f_value'=>'','f_show'=>false,
+                                             'products'=>array(
 
-                                                       ),
-                                        ),
+                                                            'order'=>'code',
+                                                            'order_dir'=>'',
+                                                            'sf'=>0,
+                                                            'nr'=>25,
+                                                            'where'=>'where true',
+                                                            'f_field'=>'code',
+                                                            'f_value'=>'','f_show'=>false,
+
+                                                        ),
+                                         ),
 
                    'supplier_categories'=>array(
-                                            'category_key'=>0,
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'period'=>'year',
-                                            'percentages'=>0,
-                                            'mode'=>'all',
-                                            'avg'=>'totals',
-                                            'view'=>'general',
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'exchange_type'=>'day2day',
-                                            'stores'=>'all',
-                                            'stores_mode'=>'grouped',
-                                            'exchange_value'=>1,
-                                            'show_default_currency'=>false,
-				            'edit'=>'description',
-                                            'subcategories'=>array(
+                                             'category_key'=>0,
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'period'=>'year',
+                                             'percentages'=>0,
+                                             'mode'=>'all',
+                                             'avg'=>'totals',
+                                             'view'=>'general',
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'exchange_type'=>'day2day',
+                                             'stores'=>'all',
+                                             'stores_mode'=>'grouped',
+                                             'exchange_value'=>1,
+                                             'show_default_currency'=>false,
+                                             'edit'=>'description',
+                                             'subcategories'=>array(
 
-                                                                'order'=>'name',
-                                                                'order_dir'=>'',
-                                                                'sf'=>0,
-                                                                'nr'=>1000,
-                                                                'where'=>'where true',
-                                                                'f_field'=>'name',
-                                                                'f_value'=>'','f_show'=>false,
+                                                                 'order'=>'name',
+                                                                 'order_dir'=>'',
+                                                                 'sf'=>0,
+                                                                 'nr'=>1000,
+                                                                 'where'=>'where true',
+                                                                 'f_field'=>'name',
+                                                                 'f_value'=>'','f_show'=>false,
 
-                                                            ),
- 
-                                            'products'=>array(
+                                                             ),
 
-                                                           'order'=>'code',
-                                                           'order_dir'=>'',
-                                                           'sf'=>0,
-                                                           'nr'=>25,
-                                                           'where'=>'where true',
-                                                           'f_field'=>'code',
-                                                           'f_value'=>'','f_show'=>false,
+                                             'products'=>array(
 
-                                                       ),
-                                        ),
+                                                            'order'=>'code',
+                                                            'order_dir'=>'',
+                                                            'sf'=>0,
+                                                            'nr'=>25,
+                                                            'where'=>'where true',
+                                                            'f_field'=>'code',
+                                                            'f_value'=>'','f_show'=>false,
+
+                                                        ),
+                                         ),
 
                    'part_categories'=>array(
-                                            'category_key'=>0,
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'period'=>'year',
-                                            'percentages'=>0,
-                                            'mode'=>'all',
-                                            'avg'=>'totals',
-                                            'view'=>'general',
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'exchange_type'=>'day2day',
-                                            'stores'=>'all',
-                                            'stores_mode'=>'grouped',
-                                            'exchange_value'=>1,
-                                            'show_default_currency'=>false,
-				            'edit'=>'description',
-                                            'subcategories'=>array(
+                                         'category_key'=>0,
+                                         'from'=>'',
+                                         'to'=>'',
+                                         'period'=>'year',
+                                         'percentages'=>0,
+                                         'mode'=>'all',
+                                         'avg'=>'totals',
+                                         'view'=>'general',
+                                         'from'=>'',
+                                         'to'=>'',
+                                         'exchange_type'=>'day2day',
+                                         'stores'=>'all',
+                                         'stores_mode'=>'grouped',
+                                         'exchange_value'=>1,
+                                         'show_default_currency'=>false,
+                                         'edit'=>'description',
+                                         'subcategories'=>array(
 
-                                                                'order'=>'name',
-                                                                'order_dir'=>'',
-                                                                'sf'=>0,
-                                                                'nr'=>1000,
-                                                                'where'=>'where true',
-                                                                'f_field'=>'name',
-                                                                'f_value'=>'','f_show'=>false,
+                                                             'order'=>'name',
+                                                             'order_dir'=>'',
+                                                             'sf'=>0,
+                                                             'nr'=>1000,
+                                                             'where'=>'where true',
+                                                             'f_field'=>'name',
+                                                             'f_value'=>'','f_show'=>false,
 
-                                                            ),
- 
-                                            'products'=>array(
+                                                         ),
 
-                                                           'order'=>'code',
-                                                           'order_dir'=>'',
-                                                           'sf'=>0,
-                                                           'nr'=>25,
-                                                           'where'=>'where true',
-                                                           'f_field'=>'code',
-                                                           'f_value'=>'','f_show'=>false,
+                                         'products'=>array(
 
-                                                       ),
-                                        ),
+                                                        'order'=>'code',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'code',
+                                                        'f_value'=>'','f_show'=>false,
+
+                                                    ),
+                                     ),
 
                    'products'=>array(
                                   'details'=>false,
@@ -873,60 +873,60 @@ $default_state=array(
                                       'nr'=>25,
                                       'plot'=>'plot_all_stores',
                                       'plot_data'=>array(
-                                                        ),
+                                                  ),
                                   ),
 
                    'report_geo_sales'=>array(
-                                         'store_keys'=>'all',
+                                          'store_keys'=>'all',
                                           'tipo'=>'m',
-                                      'y'=>date('Y'),
-                                      'm'=>date('m'),
-                                      'd'=>date('d'),
-                                      'w'=>1,
-                                         'mode'=>'world',
+                                          'y'=>date('Y'),
+                                          'm'=>date('m'),
+                                          'd'=>date('d'),
+                                          'w'=>1,
+                                          'mode'=>'world',
                                           'mode_key'=>'',
-                                         'view'=>'countries',
-                                         'f_value'=>'',
-                                         'f_show'=>false,
-                                         'f_field'=>'customer_name',
-                                         'from'=>'',
-                                         'to'=>'',
-                                         'countries'=>array(
+                                          'view'=>'countries',
+                                          'f_value'=>'',
+                                          'f_show'=>false,
+                                          'f_field'=>'customer_name',
+                                          'from'=>'',
+                                          'to'=>'',
+                                          'countries'=>array(
+                                                          'display'=>'all',
+                                                          'order'=>'name',
+                                                          'order_dir'=>'asc',
+                                                          'sf'=>0,
+                                                          'nr'=>20,
+                                                          'where'=>'where true',
+                                                          'f_field'=>'country_code',
+                                                          'f_value'=>'',
+                                                      ),
+                                          'wregions'=>array(
+                                                         'wregion_code'=>'',
                                                          'display'=>'all',
-                                                         'order'=>'name',
+                                                         'order'=>'wregion_name',
                                                          'order_dir'=>'asc',
                                                          'sf'=>0,
                                                          'nr'=>20,
                                                          'where'=>'where true',
-                                                         'f_field'=>'country_code',
+                                                         'f_field'=>'wregion_code',
                                                          'f_value'=>'',
                                                      ),
-                                         'wregions'=>array(
-                                                        'wregion_code'=>'',
-                                                        'display'=>'all',
-                                                        'order'=>'wregion_name',
-                                                        'order_dir'=>'asc',
-                                                        'sf'=>0,
-                                                        'nr'=>20,
-                                                        'where'=>'where true',
-                                                        'f_field'=>'wregion_code',
-                                                        'f_value'=>'',
-                                                    ),
-                                         'continents'=>array(
-                                                          'continent_code'=>'',
-                                                          'display'=>'all',
-                                                          'order'=>'continent_name',
-                                                          'order_dir'=>'desc',
-                                                          'sf'=>0,
-                                                          'nr'=>20,
-                                                          'where'=>'where true',
-                                                          'f_field'=>'continent_code',
-                                                          'f_value'=>'',
-                                                      ),
+                                          'continents'=>array(
+                                                           'continent_code'=>'',
+                                                           'display'=>'all',
+                                                           'order'=>'continent_name',
+                                                           'order_dir'=>'desc',
+                                                           'sf'=>0,
+                                                           'nr'=>20,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'continent_code',
+                                                           'f_value'=>'',
+                                                       ),
 
 
 
-                                     ),
+                                      ),
 
 
                    'report_customers'=>array(
@@ -1230,21 +1230,21 @@ $default_state=array(
                                                'f_value'=>'','f_show'=>false,
                                                'elements'=>array()
                                            ),
-                                    'edit_table'=>array(
-                                               'order'=>'code',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'code',
-                                               'f_value'=>'','f_show'=>false,
-                                               'elements'=>array()
-                                           ),       
-                                           
+                                   'edit_table'=>array(
+                                                    'order'=>'code',
+                                                    'order_dir'=>'',
+                                                    'sf'=>0,
+                                                    'nr'=>25,
+                                                    'where'=>'where true',
+                                                    'f_field'=>'code',
+                                                    'f_value'=>'','f_show'=>false,
+                                                    'elements'=>array()
+                                                ),
+
 
                                ),
-                               
-                               
+
+
                    'shelfs'=>array(
                                 'parent'=>'none',
                                 'table'=>array(
@@ -1270,14 +1270,14 @@ $default_state=array(
                                                 'f_field'=>'code',
                                                 'f_value'=>'','f_show'=>false,
                                                 'elements'=>array(),
-                                                         'csv_export'=>array(
-                                                                'id'=>false,
-                                                                'code'=>true,
-                                                                'name'=>true,
-                                                                'locations_no'=>false,
-                                                                'areas_no'=>false,
-                                                                'shelfs_no'=>false
-                                                                )							
+                                                'csv_export'=>array(
+                                                                 'id'=>false,
+                                                                 'code'=>true,
+                                                                 'name'=>true,
+                                                                 'locations_no'=>false,
+                                                                 'areas_no'=>false,
+                                                                 'shelfs_no'=>false
+                                                             )
                                             )
 
 
@@ -1344,9 +1344,9 @@ $default_state=array(
                    'customers'=>array(
                                    'store'=>'',
                                    'view'=>'general',
-                                
+
                                    'stats_view'=>'population',
-                                   
+
                                    'table'=>array(
                                                'order'=>'name',
                                                'order_dir'=>'last_orders',
@@ -1468,7 +1468,7 @@ $default_state=array(
                                                          'mode'=>'',
                                                          'restrictions'=>'none',
                                                          'parent'=>''
-                                                         ),
+                                                     ),
                                          ),
                    'company_areas'=>array(
                                        'view'=>'general',
@@ -1485,7 +1485,7 @@ $default_state=array(
                                                    'mode'=>'',
                                                    'restrictions'=>'none',
                                                    'parent'=>''
-					
+
                                                )
                                    ),
                    'company_staff'=>array(
@@ -1585,41 +1585,41 @@ $default_state=array(
                                           )
                               ),
 // ------------------------------ history for staff.php starts here ---------------------------------------------------------
- 		'staff_history'=>array(
-                                  'id'=>1,
-                                  'action_after_create'=>'continue',
-                                  'edit'=>'details',
-                                  'details'=>false,
-                                  'view'=>'history',
-                                  'working_hours'=>array(
-'id'=>'',
-                                               'order'=>'start_time',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'id',
-                                               'f_value'=>'','f_show'=>false,
-                                              // 'from'=>'',
-                                             //  'to'=>'',
-                                               //'type'=>'Family'
+                   'staff_history'=>array(
+                                       'id'=>1,
+                                       'action_after_create'=>'continue',
+                                       'edit'=>'details',
+                                       'details'=>false,
+                                       'view'=>'history',
+                                       'working_hours'=>array(
+                                                           'id'=>'',
+                                                           'order'=>'start_time',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'id',
+                                                           'f_value'=>'','f_show'=>false,
+                                                           // 'from'=>'',
+                                                           //  'to'=>'',
+                                                           //'type'=>'Family'
 
-                                           ),
+                                                       ),
 
-                                  'table'=>array(
-                                              'order'=>'date',
-                                              'order_dir'=>'desc',
-                                              'sf'=>0,
-                                              'nr'=>10,
-                                              'where'=>'where true',
-                                              'f_field'=>'date',
-                                              'f_value'=>'','f_show'=>false,
-                                              //'from'=>'',
-                                             // 'to'=>'',
-                                              'details'=>0,
-                                              //'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
-                                          )
-                              ),
+                                       'table'=>array(
+                                                   'order'=>'date',
+                                                   'order_dir'=>'desc',
+                                                   'sf'=>0,
+                                                   'nr'=>10,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'date',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   //'from'=>'',
+                                                   // 'to'=>'',
+                                                   'details'=>0,
+                                                   //'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
+                                               )
+                                   ),
 // ------------------------------ history for staff.php ends here -----------------------------------------------------------
                    'company'=>array(
                                  'id'=>1,
@@ -1726,69 +1726,69 @@ $default_state=array(
                                            )
                                ),
 
- 				'staff'=>array(
-                                             'view'=>'general',
-                                             'parent'=>'none',
-                                             'details'=>0,
-					     'view'=>'history',
-                                            
-                                             'table'=>array(
-                                                         'order'=>'name',
-                                                         'order_dir'=>'',
-                                                         'sf'=>0,
-                                                         'nr'=>25,
-                                                         'where'=>'where true',
-                                                         'f_field'=>'name',
-                                                         'f_value'=>'','f_show'=>false,        
-                                                         'csv_export'=>array(
-                                                                'id'=>true,
-                                                                'alias'=>false,
-                                                                'name'=>true,
-                                                                'position'=>true,
-                                                                'description'=>false,
-                                                                'valid_from'=>false,
-                                                                'valid_to'=>false
+                   'staff'=>array(
+                               'view'=>'general',
+                               'parent'=>'none',
+                               'details'=>0,
+                               'view'=>'history',
+
+                               'table'=>array(
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'','f_show'=>false,
+                                           'csv_export'=>array(
+                                                            'id'=>true,
+                                                            'alias'=>false,
+                                                            'name'=>true,
+                                                            'position'=>true,
+                                                            'description'=>false,
+                                                            'valid_from'=>false,
+                                                            'valid_to'=>false
+                                                        )
+                                       ),
+                               'company_areas'=>array(
+                                                   'view'=>'general',
+                                                   'parent'=>'none',
+                                                   'details'=>0,
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'mode'=>'',
+                                                   'restrictions'=>'none',
+                                                   'parent'=>'',
+                                                   'csv_export'=>array(
+                                                                    'id'=>true,
+                                                                    'code'=>false,
+                                                                    'name'=>true,
+                                                                    'description'=>true,
+                                                                    'number_of_department'=>false,
+                                                                    'number_of_position'=>false,
+                                                                    'number_of_employee'=>false
                                                                 )
-                                                        ),
- 	                               'company_areas'=>array(
-                                      		   'view'=>'general',
-                                      		   'parent'=>'none',
-                                      		   'details'=>0,
-                                      		   'order'=>'name',
-                                                   'order_dir'=>'',
-                                                   'sf'=>0,
-                                                   'nr'=>25,
-                                                   'where'=>'where true',
-                                                   'f_field'=>'name',
-                                                   'f_value'=>'','f_show'=>false,
-                                                   'mode'=>'',
-                                                   'restrictions'=>'none',
-                                                   'parent'=>'',                                     
-						  'csv_export'=>array(
-                                                                'id'=>true,
-                                                                'code'=>false,
-                                                                'name'=>true,
-                                                                'description'=>true,
-                                                                'number_of_department'=>false,
-                                                                'number_of_position'=>false,
-                                                                'number_of_employee'=>false
-                                                                     )                                              
-                                                            ),
- 	                               'positions'=>array(
-                                      		   'view'=>'general',
-                                      		   'parent'=>'none',
-                                      		   'details'=>0,
-                                      		   'order'=>'name',
-                                                   'order_dir'=>'',
-                                                   'sf'=>0,
-                                                   'nr'=>25,
-                                                   'where'=>'where true',
-                                                   'f_field'=>'name',
-                                                   'f_value'=>'','f_show'=>false,
-                                                   'mode'=>'',
-                                                   'restrictions'=>'none',
-                                                   'parent'=>'',                                     
-						  'csv_export'=>array(
+                                               ),
+                               'positions'=>array(
+                                               'view'=>'general',
+                                               'parent'=>'none',
+                                               'details'=>0,
+                                               'order'=>'name',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'where'=>'where true',
+                                               'f_field'=>'name',
+                                               'f_value'=>'','f_show'=>false,
+                                               'mode'=>'',
+                                               'restrictions'=>'none',
+                                               'parent'=>'',
+                                               'csv_export'=>array(
                                                                 'code'=>true,
                                                                 'name'=>true,
                                                                 'description'=>true,
@@ -1796,33 +1796,33 @@ $default_state=array(
                                                                 'department_name'=>true,
                                                                 'department_code'=>false,
                                                                 'department_description'=>false
-                                                                     )                                              
-                                                            ),
-                                         'company_departments'=>array(
-                                      		   'view'=>'general',
-                                      		   'parent'=>'none',
-                                      		   'details'=>0,
-                                      		   'order'=>'name',
-                                                   'order_dir'=>'',
-                                                   'sf'=>0,
-                                                   'nr'=>25,
-                                                   'where'=>'where true',
-                                                   'f_field'=>'name',
-                                                   'f_value'=>'','f_show'=>false,
-                                                   'mode'=>'',
-                                                   'restrictions'=>'none',
-                                                   'parent'=>'',                                     
-						         'csv_export'=>array(
+                                                            )
+                                           ),
+                               'company_departments'=>array(
+                                                         'view'=>'general',
+                                                         'parent'=>'none',
+                                                         'details'=>0,
+                                                         'order'=>'name',
+                                                         'order_dir'=>'',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'','f_show'=>false,
+                                                         'mode'=>'',
+                                                         'restrictions'=>'none',
+                                                         'parent'=>'',
+                                                         'csv_export'=>array(
                                                                           'id'=>false,
                                                                           'code'=>true,
                                                                           'name'=>true,
                                                                           'department_description'=>true,
                                                                           'number_of_position'=>false,
                                                                           'number_of_employee'=>false
-                                                                      )                                           
-                                                            ),
-                                         ),
- 
+                                                                      )
+                                                     ),
+                           ),
+
 
                    'hr'=>array(
                             'view'=>'staff',
@@ -1865,7 +1865,7 @@ $default_state=array(
                         ),
                    'users'=>array(
                                'staff'=>array(
-                                           'display'=>'all',
+                                           'display'=>'active',
                                            'order'=>'alias',
                                            'order_dir'=>'',
                                            'sf'=>0,
@@ -1898,7 +1898,7 @@ $default_state=array(
                                                   'display'=>'all',
                                                   'order'=>'login_date',
                                                   'order_dir'=>'',
-						  'type'=>'',
+                                                  'type'=>'',
                                                   'sf'=>0,
                                                   'nr'=>50,
                                                   'where'=>'where true',
@@ -1921,93 +1921,144 @@ $default_state=array(
                               'edit'=>'properties'
                           ),
                    'store'=>array(
-                               'details'=>false,
-                               'percentages'=>false,
-                               'view'=>'general',
-                               'period'=>'year',
-                               'percentage'=>0,
-                               'mode'=>'all',
-                               'avg'=>'totals',
+                               'block_view'=>'details',
 
-                               'plot_interval'=>array(
-                                                   'd'=>array('plot_bins'=>15,
-                                                              'plot_forecast_bins'=>3),
-                                                   'y'=>array('plot_bins'=>5,
-                                                              'plot_forecast_bins'=>3),
-                                                   'q'=>array('plot_bins'=>12,
-                                                              'plot_forecast_bins'=>3),
-                                                   'm'=>array('plot_bins'=>18,
-                                                              'plot_forecast_bins'=>3),
-                                                   'w'=>array('plot_bins'=>26,
-                                                              'plot_forecast_bins'=>3),
-                                               ),
+
+
                                'edit'=>'description',
-                               'editing'=>false,
+
                                'id'=>1,
-                               'plot'=>'store',
-                               'plot_period'=>'m',
-                               'plot_category'=>'sales',
-                               'plot_data'=>array('store'=>array(
-
-                                                              'page'=>'plot.php'
-                                                          )
-                                                          ,'top_departments'=>array(
-
-                                                                                 'page'=>'plot.php'
-                                                                             )
-                                                                             ,'pie'=>array(
-                                                                                        'period'=>'m',
-                                                                                        'interval'=>'1y',
-
-                                                                                        'page'=>'pie.php',
-                                                                                        'forecast'=>'no',
-                                                                                        'from'=>'',
-                                                                                        'to'=>''
-                                                                                    )
-                                                 ),
 
 
 
 
+                               'departments'=>array(
+                                                 'where'=>'where true',
+                                                 'f_field'=>'code',
+                                                 'f_value'=>'','f_show'=>false,
+                                                 'order'=>'name',
+                                                 'order_dir'=>'',
+                                                 'sf'=>0,
+                                                 'nr'=>25,
+                                                 'percentages'=>false,
+                                                 'view'=>'general',
+                                                 'period'=>'year',
+                                                 'percentage'=>0,
+                                                 'mode'=>'all',
+                                                 'avg'=>'totals',
+                                                 'csv_export'=>array(
+                                                                  'code'=>true,
+                                                                  'name'=>true,
+                                                                  'families'=>false,
+                                                                  'products'=>false,
+                                                                  'discontinued'=>false,
+                                                                  'new'=>false,
+                                                                  'surplus'=>false,
+                                                                  'ok'=>false,
+                                                                  'low'=>false,
+                                                                  'critical'=>false,
+                                                                  'gone'=>false,
+                                                                  'unknown'=>false,
+                                                                  'sales_all'=>false,
+                                                                  'sales_1y'=>false,
+                                                                  'sales_1q'=>false,
+                                                                  'sales_1m'=>false,
+                                                                  'sales_1w'=>false,
+                                                                  'profit_all'=>false,
+                                                                  'profit_1y'=>false,
+                                                                  'profit_1q'=>false,
+                                                                  'profit_1m'=>false,
+                                                                  'profit_1w'=>false
 
-                               'table'=>array(
-                                           'where'=>'where true',
-                                           'f_field'=>'code',
-                                           'f_value'=>'','f_show'=>false,
-                                           'order'=>'name',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>25,
-                                           'csv_export'=>array(
-                                                            'code'=>true,
-                                                            'name'=>true,
-                                                            'families'=>false,
-                                                            'products'=>false,
-                                                            'discontinued'=>false,
-                                                            'new'=>false,
-                                                            'surplus'=>false,
-                                                            'ok'=>false,
-                                                            'low'=>false,
-                                                            'critical'=>false,
-                                                            'gone'=>false,
-                                                            'unknown'=>false,
-                                                            'sales_all'=>false,
-                                                            'sales_1y'=>false,
-                                                            'sales_1q'=>false,
-                                                            'sales_1m'=>false,
-                                                            'sales_1w'=>false,
-                                                            'profit_all'=>false,
-                                                            'profit_1y'=>false,
-                                                            'profit_1q'=>false,
-                                                            'profit_1m'=>false,
-                                                            'profit_1w'=>false
+
+                                                              )
+
+                                             ),
+
+'families'=>array(
+                                                 'where'=>'where true',
+                                                 'f_field'=>'code',
+                                                 'f_value'=>'','f_show'=>false,
+                                                 'order'=>'name',
+                                                 'order_dir'=>'',
+                                                 'sf'=>0,
+                                                 'nr'=>25,
+                                                 'percentages'=>false,
+                                                 'view'=>'general',
+                                                 'period'=>'year',
+                                                 'percentage'=>0,
+                                                 'mode'=>'all',
+                                                 'avg'=>'totals',
+                                                 'csv_export'=>array(
+                                                                  'code'=>true,
+                                                                  'name'=>true,
+                                                                  'families'=>false,
+                                                                  'products'=>false,
+                                                                  'discontinued'=>false,
+                                                                  'new'=>false,
+                                                                  'surplus'=>false,
+                                                                  'ok'=>false,
+                                                                  'low'=>false,
+                                                                  'critical'=>false,
+                                                                  'gone'=>false,
+                                                                  'unknown'=>false,
+                                                                  'sales_all'=>false,
+                                                                  'sales_1y'=>false,
+                                                                  'sales_1q'=>false,
+                                                                  'sales_1m'=>false,
+                                                                  'sales_1w'=>false,
+                                                                  'profit_all'=>false,
+                                                                  'profit_1y'=>false,
+                                                                  'profit_1q'=>false,
+                                                                  'profit_1m'=>false,
+                                                                  'profit_1w'=>false
 
 
-                                                        )
+                                                              )
 
-                                       ),
+                                             ),
+                                             'products'=>array(
+                                                 'where'=>'where true',
+                                                 'f_field'=>'code',
+                                                 'f_value'=>'','f_show'=>false,
+                                                 'order'=>'name',
+                                                 'order_dir'=>'',
+                                                 'sf'=>0,
+                                                 'nr'=>25,
+                                                 'percentages'=>false,
+                                                 'view'=>'general',
+                                                 'period'=>'year',
+                                                 'percentage'=>0,
+                                                 'mode'=>'all',
+                                                 'avg'=>'totals',
+                                                 'csv_export'=>array(
+                                                                  'code'=>true,
+                                                                  'name'=>true,
+                                                                  'families'=>false,
+                                                                  'products'=>false,
+                                                                  'discontinued'=>false,
+                                                                  'new'=>false,
+                                                                  'surplus'=>false,
+                                                                  'ok'=>false,
+                                                                  'low'=>false,
+                                                                  'critical'=>false,
+                                                                  'gone'=>false,
+                                                                  'unknown'=>false,
+                                                                  'sales_all'=>false,
+                                                                  'sales_1y'=>false,
+                                                                  'sales_1q'=>false,
+                                                                  'sales_1m'=>false,
+                                                                  'sales_1w'=>false,
+                                                                  'profit_all'=>false,
+                                                                  'profit_1y'=>false,
+                                                                  'profit_1q'=>false,
+                                                                  'profit_1m'=>false,
+                                                                  'profit_1w'=>false
 
 
+                                                              )
+
+                                             ),
 
                                'history'=>array(
                                              'where'=>'where true',
@@ -2084,74 +2135,74 @@ $default_state=array(
 
 
 
- 'site'=>array(
-                               
-                               'view'=>'general',
-                               'period'=>'year',
-                               'percentage'=>0,
-                               'mode'=>'all',
-                               'avg'=>'totals',
-                                 'details'=>true,
-                             
-                               'edit'=>'general',
-                               'editing'=>false,
-                               'id'=>false,
-                              
+                   'site'=>array(
+
+                              'view'=>'general',
+                              'period'=>'year',
+                              'percentage'=>0,
+                              'mode'=>'all',
+                              'avg'=>'totals',
+                              'details'=>true,
+
+                              'edit'=>'general',
+                              'editing'=>false,
+                              'id'=>false,
 
 
 
 
-                               'pages'=>array(
-                                           'where'=>'where true',
-                                           'f_field'=>'code',
-                                           'f_value'=>'',
-                                           'f_show'=>false,
-                                           'order'=>'name',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>25,
-                                          
 
-                                       ),
+                              'pages'=>array(
+                                          'where'=>'where true',
+                                          'f_field'=>'code',
+                                          'f_value'=>'',
+                                          'f_show'=>false,
+                                          'order'=>'name',
+                                          'order_dir'=>'',
+                                          'sf'=>0,
+                                          'nr'=>25,
 
- 'history'=>array(
-                                             'where'=>'where true',
-                                             'f_field'=>'abstract',
-                                             'f_value'=>'','f_show'=>false,
-                                             'order'=>'date',
-                                             'order_dir'=>'desc',
-                                             'sf'=>0,
-                                             'nr'=>25,
-                                             'from'=>'',
-                                             'to'=>'',
-                                             'elements'=>''
-                                         )
 
-                           
+                                      ),
 
-                           ),
+                              'history'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'abstract',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'date',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                                        )
 
 
 
-'email_campaign'=>array(
-'id'=>false
-),
+                          ),
 
 
 
-                'marketing'=>array(
-                'view'=>'metrics',
-                'email_campaigns'=>array(
-                                                 'where'=>'where true',
-                                                 'f_field'=>'name',
-                                                 'f_value'=>'','f_show'=>false,
-                                                 'order'=>'date',
-                                                 'order_dir'=>'desc',
-                                                 'sf'=>0,
-                                                 'nr'=>25,
-                                                 'view'=>'general'
-                )
-                ),
+                   'email_campaign'=>array(
+                                        'id'=>false
+                                    ),
+
+
+
+                   'marketing'=>array(
+                                   'view'=>'metrics',
+                                   'email_campaigns'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'','f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     )
+                               ),
 
 
 
@@ -2202,7 +2253,7 @@ $default_state=array(
                                  ),
 
                    'department'=>array(
-                                    'details'=>false,
+                                    'block_view'=>'details',
                                     'percentages'=>false,
                                     'view'=>'general',
                                     'id'=>1,
@@ -2275,7 +2326,7 @@ $default_state=array(
 
                                 ),
                    'family'=>array(
-                                'details'=>false,
+                                'block_view'=>'details',
                                 'percentages'=>false,
                                 'view'=>'general',
 
@@ -2626,12 +2677,12 @@ $default_state=array(
                               'details'=>false,
 
 
-                             
+
                               'id'=>1,
                               'edit'=>'description',
-                               'view'=>'description', 
-                             
-                          
+                              'view'=>'description',
+
+
 
                               'stock_history'=>array(
                                                   'order'=>'date',
@@ -2773,8 +2824,9 @@ $default_state=array(
 
                                       ),
                    'stores'=>array(
-                                'details'=>false,
+
                                 'percentages'=>false,
+                                'block_view'=>'details',
                                 'view'=>'general',
                                 'period'=>'year',
                                 'mode'=>'all',
@@ -3375,55 +3427,55 @@ $default_state=array(
                                                  'f_value'=>'',
                                              ),
                              ),
-                             'categories'=>array(
-                             
-                             'edit'=>'description',
-                             'parent_key'=>0,
-                             'subject'=>'',
-                             'subject_key'=>0,
-                             'store_key'=>0,
-                             'table'=>array(
-                                                                  
-                                                                  'sf'=>0,
-                                                                  'nr'=>50,
-                                                                  'f_value'=>'',
-                                                                  'f_show'=>true,
-                                                                  'f_field'=>'name',
-                                                                  'from'=>'',
-                                                                  'to'=>'',
-                                                                  'order'=>'name',
-                                                                  'order_dir'=>'',
-                                                                  'where'=>''
-                                                              ),
-                                                              'history'=>array(
-                                                                  
-                                                                  'sf'=>0,
-                                                                  'nr'=>50,
-                                                                  'f_value'=>'',
-                                                                  'f_show'=>true,
-                                                                  'f_field'=>'abstract',
-                                                                  'from'=>'',
-                                                                  'to'=>'',
-                                                                  'order'=>'date',
-                                                                  'order_dir'=>'',
-                                                                  'where'=>''
-                                                              )
-                             ),
- 'search'=>array(
+                   'categories'=>array(
 
+                                    'edit'=>'description',
+                                    'parent_key'=>0,
+                                    'subject'=>'',
+                                    'subject_key'=>0,
+                                    'store_key'=>0,
                                     'table'=>array(
-                                                'order'=>'score',
-                                                'order_dir'=>'desc',
+
                                                 'sf'=>0,
                                                 'nr'=>50,
-                                                'where'=>'',
-                                                'f_field'=>'subject',
-                                                'f_value'=>'','f_show'=>false,
-                                                'elements'=>array()
-                                            )
+                                                'f_value'=>'',
+                                                'f_show'=>true,
+                                                'f_field'=>'name',
+                                                'from'=>'',
+                                                'to'=>'',
+                                                'order'=>'name',
+                                                'order_dir'=>'',
+                                                'where'=>''
+                                            ),
+                                    'history'=>array(
+
+                                                  'sf'=>0,
+                                                  'nr'=>50,
+                                                  'f_value'=>'',
+                                                  'f_show'=>true,
+                                                  'f_field'=>'abstract',
+                                                  'from'=>'',
+                                                  'to'=>'',
+                                                  'order'=>'date',
+                                                  'order_dir'=>'',
+                                                  'where'=>''
+                                              )
+                                ),
+                   'search'=>array(
+
+                                'table'=>array(
+                                            'order'=>'score',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>50,
+                                            'where'=>'',
+                                            'f_field'=>'subject',
+                                            'f_value'=>'','f_show'=>false,
+                                            'elements'=>array()
+                                        )
 
 
-                                )
+                            )
 
                );
 

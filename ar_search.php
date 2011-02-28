@@ -661,7 +661,7 @@ function search_customer($data) {
 //$customer_card.='</table>';
 
 
-    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'customer.php?id=');
+    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'customer.php?id=','q'=>$q);
     echo json_encode($response);
 
 }
