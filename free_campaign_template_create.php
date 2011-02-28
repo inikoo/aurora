@@ -37,8 +37,6 @@ $js_files=array(
 		'js/create_campaign.js',
 		'external_libs/ckeditor/ckeditor.js'
 		);
-		
-	
 
 
 
