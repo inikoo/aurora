@@ -102,3 +102,9 @@ var x=document.getElementById('save').checked;
 
 	}
 }
+
+function go(url){
+	window.location = url;
+	return false;
+}
+
