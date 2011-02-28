@@ -41,10 +41,6 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 	$included_data[0] = 'Customer Main Contact Name';
 	$included_data[1] = 'Customer Main Plain Email';
 	$included_data[2] = 'Customer Main Plain Telephone';
-	// If header is required in default export //
-	foreach($included_data as $arr_val){
-		$header .= $arr_val.",";
-	}
 	//print_r($included_data);
 
 	$actual_data=$customer->data;
@@ -143,7 +139,7 @@ function getExportMapHeader($subject_key, $subject){
 		$r = mysql_fetch_assoc($q);
 		$data= $r['Export Header'];
 	}else{
-		$data = 'yes';
+		$data = 'yes'; // If header is required in default export //
 	}
 	return $data;
 }
