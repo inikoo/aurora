@@ -193,65 +193,70 @@ function search(query,subject,search_scope){
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					//alert(o.responseText)
+					
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
 						    Dom.get(search_scope+'_search_results').removeChild(Dom.get(search_scope+'_search_results_table'));
-						    //alert(r.results)
-						if(r.results==0){
-						   
-						    Dom.get(search_scope+'_search_results').style.display='none';
-						    oTbl=document.createElement("Table");
-						    oTbl.id=search_scope+'_search_results_table';
-						    Dom.get(search_scope+'_search_results').appendChild(oTbl);
-                             Dom.get(search_scope+'_clean_search').src='art/icons/zoom.png';
-						}else{
+                            oTbl=document.createElement("Table");
+                            Dom.get(search_scope+'_clean_search').src='art/icons/cross_bw.png';
+			 			    Dom.get(search_scope+'_search_results').style.display='';
+					    
+						    
+						    var result_number=1;
+						  
+						    Dom.addClass(oTbl,'search_result');
+						    
+						    oTR= oTbl.insertRow(-1);
+						    
+						    oTR.setAttribute('key',r.q);
+							oTR.setAttribute('link','search.php?subject='+subject+'&q=');
+							        
+						    var oTD= oTR.insertCell(0);
+							Dom.addClass(oTD,'naked');
+						    var oTD= oTR.insertCell(1);
+						    if(r.results==0){
+						    	oTD.innerHTML="No results found, try the a more comprensive search click here.";
+
+							}else{
+								oTD.innerHTML="Posible search results below. for a page with all results click here.";
+
+							}
+							
+							oTD.setAttribute('colspan', '3');
+						    
+						     
+                                Dom.addClass(oTR,'selected');
+							    oTR.setAttribute('prev',1);
+							    
+						    oTR.onclick = go_to_result;
 						    
 						    
-						    
+						    var link=r.link;
 						  
 						    
-						     Dom.get(search_scope+'_clean_search').src='art/icons/cross_bw.png';
-			 			    Dom.get(search_scope+'_search_results').style.display='';
+						    //alert(subject)
 						    
-
-						    oTbl=document.createElement("Table");
-						    Dom.addClass(oTbl,'search_result');
-						    var link=r.link;
-						    var first=true;
-						    var result_number=1;
 						    for(result_key in r.data){
-							oTR= oTbl.insertRow(-1);
+							    oTR= oTbl.insertRow(-1);
 
+							    var oTD= oTR.insertCell(0);
+							    Dom.addClass(oTD,'naked');
+					
 
-						
-
-							
-							
-
-							var oTD= oTR.insertCell(0);
-							Dom.addClass(oTD,'naked');
-						
-						//	if(first){
-						//	    oTD.innerHTML='<img src="art/icons/arrow_right.png" alt="go">';
-
-						//	first=false;
-						//	}
-
-							if(subject=='customers'){
-							    oTR.setAttribute('key',result_key);
-							    oTR.setAttribute('link',link);
-							    var oTD= oTR.insertCell(1);
-							    oTD.innerHTML=r.data[result_key ].key;
-							    var oTD= oTR.insertCell(2);
-							    oTD.innerHTML=r.data[result_key ].name;
-							    var oTD= oTR.insertCell(3);
-							    oTD.innerHTML=r.data[result_key ].address;
-							}else if(subject=='orders' || subject=='orders_store'){
-							    oTR.setAttribute('key',result_key);
-							    oTR.setAttribute('link',link);
-							    var oTD= oTR.insertCell(1);
+							    if(subject=='customers'){
+							        oTR.setAttribute('key',result_key);
+							        oTR.setAttribute('link',link);
+							        var oTD= oTR.insertCell(1);
+							        oTD.innerHTML=r.data[result_key ].key;
+							        var oTD= oTR.insertCell(2);
+							        oTD.innerHTML=r.data[result_key ].name;
+							        var oTD= oTR.insertCell(3);
+							        oTD.innerHTML=r.data[result_key ].address;
+							    }else if(subject=='orders' || subject=='orders_store'){
+							        oTR.setAttribute('key',result_key);
+							        oTR.setAttribute('link',link);
+							        var oTD= oTR.insertCell(1);
 							    oTD.innerHTML=r.data[result_key ].public_id;
 							    var oTD= oTR.insertCell(2);
 							    oTD.innerHTML=r.data[result_key ].customer;
@@ -323,11 +328,7 @@ function search(query,subject,search_scope){
 							}
 							oTR.setAttribute('prev',result_number-1);
 						oTR.setAttribute('next',result_number+1);
-					    if(first){
-                                Dom.addClass(oTR,'selected');
-						    	first=false;
-							    oTR.setAttribute('prev',1);
-							    }
+					   
 						if(r.results==result_number){
 						        oTR.setAttribute('next',1);
                                 }							
@@ -345,7 +346,7 @@ function search(query,subject,search_scope){
 // 						    
 						    
 
-						}
+						//}
 						
 					    }
 					},
@@ -372,22 +373,23 @@ function search_events(e,subject){
      else
           key = e.which; //firefox     
 
-
+if(key==undefined)
+key=e.keyCode
 
 var state=Dom.get(subject+'_search').getAttribute('state');
 
      if (key == 13 )
-	 goto_search_result(subject);
+	    goto_search_result(subject);
 	 else if(key == 40 ){
-	 select_next_result(subject);
+	     select_next_result(subject);
 	 Dom.get(subject+'_search').setAttribute('state','ready');
 	 }else if(key == 38 ){
-	 select_prev_result(subject);
-	 Dom.get(subject+'_search').setAttribute('state','ready');
+	    select_prev_result(subject);
+	    Dom.get(subject+'_search').setAttribute('state','ready');
 	 }else if(key == 39  && state=='ready' ){// right arrow
-	goto_search_result(subject);
+	    goto_search_result(subject);
 	 }else if(key == 37   ){// left arrow
-	Dom.get(subject+'_search').setAttribute('state','');
+	    Dom.get(subject+'_search').setAttribute('state','');
 	 }
 	 
 	 
