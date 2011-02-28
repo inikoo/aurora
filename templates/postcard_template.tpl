@@ -2,7 +2,7 @@
 <div id="bd" >
 
 
-      <h2 style="clear:both">{t}Newsletter Template 2 Preview{/t} </h2>
+      <h2 style="clear:both">{t}Postcard Template Preview{/t} </h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 <div id="campaign_div">{$msg}</div>
 
