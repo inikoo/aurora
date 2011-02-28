@@ -6,8 +6,8 @@
 
 
 
-<table style="margin-left:60px;" border="1" width="600">
-<tr><td colspan="2"><B>Select Fields to export</B></td></tr>
+<table style="margin-left:60px;" border="0" width="600">
+<tr><td colspan="2" style="padding-bottom:20px;"><B>Select Fields to export</B></td></tr>
 <div id="result">
 {foreach from=$list key=list_key item=list_item name=foo}
 <tr><td width="30%">
@@ -17,13 +17,15 @@
 {/foreach}
 </div>
 <tr>
-<td colspan="2">
+<td colspan="2" style="padding-top:20px;">
 <input type="checkbox" id="header" name="header" value="header" checked="checked" /> Include Field Names in exported file
 </td>
 </tr/>
 <tr>
-<td colspan="2">
+<td colspan="2" style="padding-top:10px;">
 <input type="checkbox" id="save" name="save" value="save" checked="checked" onClick=saveMap(); /> Save my Map for future
+</td></tr>
+<tr><td colspan="2" style="padding-top:20px;">
 <table id="maps" style="paddingtop:5px; display:block;" width="600px;"><tr>
 <td width="50%">Map Name:</td>
 <td width="50%"><input type="text" id="map_name" name="map_name" value=""/></td></tr>
