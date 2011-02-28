@@ -1,12 +1,14 @@
 <?php
-	include('common.php');
 	include('removeResult.php');
 
 	require_once 'csvparser.php';
 	$csv = new CSV_PARSER;
 
-	//loading the CSV File
-	$csv->load($_SESSION['file_path']);
+	if(isset($_SESSION['file_path']))
+	{
+		//loading the CSV File
+		$csv->load($_SESSION['file_path']);
+	}
 
 	//extracting the HEADERS
 	$h = $csv->getHeaders();
