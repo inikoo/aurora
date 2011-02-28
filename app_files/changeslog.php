@@ -767,10 +767,19 @@ CREATE TABLE IF NOT EXISTS `Export Map` (
 
 ALTER TABLE `Customer Dimension` ADD `Customer Main XHTML Mobile` VARCHAR( 255 ) NULL DEFAULT NULL AFTER `Customer Main FAX Key` ,ADD `Customer Main Mobile Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Customer Main XHTML Mobile` , ADD `Customer Main Plain Mobile` VARCHAR( 255 ) NOT NULL AFTER `Customer Main Mobile Key` ;
 
-ALTER TABLE `Export Map` ADD `Export Header` ENUM( 'yes', 'no' ) NOT NULL AFTER `Customer Key` ;
-
-ALTER TABLE `Export Map` ADD `Map Description` TEXT NULL AFTER `Map Name`
-
+DROP TABLE IF EXISTS `Export Map`;
+CREATE TABLE IF NOT EXISTS `Export Map` (
+  `Map Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Map Name` varchar(255) NOT NULL,
+  `Map Description` text,
+  `Map Type` enum('Customer','Supplier') NOT NULL,
+  `Map Data` longtext NOT NULL,
+  `Customer Key` int(11) NOT NULL,
+  `Export Header` enum('yes','no') NOT NULL,
+  `Export Map Default` enum('yes','no') NOT NULL,
+  `Exported Date` datetime NOT NULL,
+  PRIMARY KEY (`Map Key`)
+)
 */
 
 
