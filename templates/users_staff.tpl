@@ -5,7 +5,7 @@
 
 
 
-  <div id="yui-main">
+ 
    
     <div class="data_table" style="margin-top:25px">
       <span class="clean_table_title">{t}Staff Users{/t}</span>
@@ -26,7 +26,7 @@
       <div  id="table1"   class="data_table_container dtable btable "> </div>
     </div>
     
-  </div>
+ 
 </div> 
 
 {include file='footer.tpl'}

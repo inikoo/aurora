@@ -50,7 +50,16 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$_SESSION['state']['users']['staff']['type']='Staff';
+//$_SESSION['state']['users']['staff']['type']='Staff';
+$smarty->assign('display',$_SESSION['state']['users']['staff']['display']);
+
+
+$general_options_list=array();
+if($user->can_edit('users')){
+  $general_options_list[]=array('tipo'=>'url','url'=>'users_staff.php','label'=>_('Exit Edit'));
+  
+}
+$smarty->assign('general_options_list',$general_options_list);
 
 $sql="select (select count(*) from `User Group Dimension`) as number_groups ,( select count(*) from `User Dimension`) as number_users ";
 $result = mysql_query($sql);

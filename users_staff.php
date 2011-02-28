@@ -50,14 +50,13 @@ $js_files=array(
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
+$smarty->assign('options_box_width','200px');
 
 $general_options_list=array();
 if($user->can_edit('users')){
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_users_staff.php','label'=>_('Edit Users'));
   
 }
-
 $smarty->assign('general_options_list',$general_options_list);
 
 

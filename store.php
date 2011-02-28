@@ -63,8 +63,10 @@ $stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'
 $smarty->assign('stores_period',$stores_period);
 $smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
 
-$show_details=$_SESSION['state'][$page]['details'];
-$smarty->assign('show_details',$show_details);
+$block_view=$_SESSION['state'][$page]['block_view'];
+$smarty->assign('block_view',$block_view);
+
+
 get_header_info($user,$smarty);
 
 
@@ -74,7 +76,6 @@ $general_options_list=array();
 
 if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
 
 $smarty->assign('general_options_list',$general_options_list);
@@ -95,21 +96,22 @@ $css_files=array(
                'css/dropdown.css'
            );
 $js_files=array(
-              $yui_path.'utilities/utilities.js',
-              $yui_path.'json/json-min.js',
-              $yui_path.'paginator/paginator-min.js',
-              $yui_path.'dragdrop/dragdrop-min.js',
-              $yui_path.'datasource/datasource-min.js',
-              $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable.js',
-              $yui_path.'container/container-min.js',
-              $yui_path.'menu/menu-min.js',
-              'js/php.default.min.js',
-              'common.js.php',
-              'table_common.js.php',
-	      'js/edit_common.js',
-              'js/csv_common.js',
-              'js/dropdown.js'
+                $yui_path.'utilities/utilities.js',
+                $yui_path.'json/json-min.js',
+                $yui_path.'paginator/paginator-min.js',
+                $yui_path.'dragdrop/dragdrop-min.js',
+                $yui_path.'datasource/datasource-min.js',
+                $yui_path.'autocomplete/autocomplete-min.js',
+                $yui_path.'datatable/datatable.js',
+                $yui_path.'container/container-min.js',
+                $yui_path.'menu/menu-min.js',
+                'js/php.default.min.js',
+                'common.js.php',
+                'table_common.js.php',
+	            'js/edit_common.js',
+                'js/csv_common.js',
+                'js/dropdown.js',
+                'js/assets_common.js'
           );
 
 
@@ -133,12 +135,58 @@ if (isset($_REQUEST['view'])) {
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+$smarty->assign('department_view',$_SESSION['state']['store']['departments']['view']);
+$smarty->assign('department_show_percentages',$_SESSION['state']['store']['departments']['percentages']);
+$smarty->assign('department_avg',$_SESSION['state']['store']['departments']['avg']);
+$smarty->assign('department_period',$_SESSION['state']['store']['departments']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['store']['departments']['f_field']:'code');
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['store']['departments']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('departments',$store->data['Store Departments']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$smarty->assign('family_view',$_SESSION['state']['store']['families']['view']);
+$smarty->assign('family_show_percentages',$_SESSION['state']['store']['families']['percentages']);
+$smarty->assign('family_avg',$_SESSION['state']['store']['families']['avg']);
+$smarty->assign('family_period',$_SESSION['state']['store']['families']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['store']['families']['f_field']:'code');
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['store']['families']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('families',$store->data['Store Families']);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+$smarty->assign('product_view',$_SESSION['state']['products']['view']);
+$smarty->assign('product_show_percentages',$_SESSION['state']['products']['percentages']);
+$smarty->assign('product_avg',$_SESSION['state']['products']['avg']);
+$smarty->assign('product_period',$_SESSION['state']['products']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('products',$store->data['Store For Public Sale Products']);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 
-$smarty->assign('show_percentages',$_SESSION['state'][$page]['percentages']);
-$smarty->assign('avg',$_SESSION['state'][$page]['avg']);
-$smarty->assign('period',$_SESSION['state'][$page]['period']);
 $info_period_menu=array(
                       array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
                       ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
@@ -150,25 +198,14 @@ $smarty->assign('info_period_menu',$info_period_menu);
 
 
 $subject_id=$store_id;
-include_once('plot.inc.php');
+
 
 $smarty->assign($page,$store);
 
 $smarty->assign('parent','products');
 $smarty->assign('title', $store->data['Store Name']);
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state'][$page]['table']['f_field']:'code');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['table']['f_value']:addslashes($q)));
-$filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code')
-             );
-$smarty->assign('filter_menu0',$filter_menu);
-$smarty->assign('departments',$store->data['Store Departments']);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+
 
  $csv_export_options=array(
                             'description'=>array(
@@ -176,13 +213,13 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['code']),
-                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['name']),
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['name']),
                                                             
-                                                             'families'=>array('label'=>_('Families'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['families']),
-                                                             'products'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['products']),
+                                                             'families'=>array('label'=>_('Families'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['families']),
+                                                             'products'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['products']),
                                                    
-                                                             'discontinued'=>array('label'=>_('Discontinued'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['discontinued']),
+                                                             'discontinued'=>array('label'=>_('Discontinued'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['discontinued']),
                                                             
                                                      
                                                          )
@@ -193,13 +230,13 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                                         'rows'=>
                                                array(
                                                    array(
-                                                       'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['surplus']),
-                                                       'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['ok']),
-                                                       'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['low']),
-                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['critical']),
-                                                       'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['gone']),
+                                                       'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['surplus']),
+                                                       'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['ok']),
+                                                       'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['low']),
+                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['critical']),
+                                                       'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['gone']),
                                                 
-                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['unknown']),
+                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['unknown']),
                                                              array('label'=>''),
                                                        
 
@@ -210,8 +247,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_all']),
-                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_all']),
+                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['sales_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['profit_all']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -221,8 +258,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1y']),
-                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1y']),
+                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['sales_1y']),
+                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['profit_1y']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -232,8 +269,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1q']),
-                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1q']),
+                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['sales_1q']),
+                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['profit_1q']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -243,8 +280,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1m']),
-                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1m']),
+                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['sales_1m']),
+                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['profit_1m']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -254,8 +291,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1w']),
-                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1w']),
+                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['sales_1w']),
+                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['departments']['csv_export']['profit_1w']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )

@@ -7726,6 +7726,7 @@ function checkPostcode (&$toCheck) {
   // Load up the string to check, converting into lowercase and removing spaces
   $postcode = strtolower($toCheck);
   $postcode = str_replace (' ', '', $postcode);
+  $postcode = str_replace ('^', '\^', $postcode);
 
   // Assume we are not going to find a valid postcode
   $valid = false;
