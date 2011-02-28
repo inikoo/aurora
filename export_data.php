@@ -36,8 +36,6 @@ if(isset($_GET['source']) && $_GET['source'] =='db'){//To ensure that map is loa
 $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 	if($no_of_maps_saved > 0){
 	$exported_data = getExportMapData($customer_id, $map_type);
-	echo $no_of_maps_saved;
-	exit;
 	}else{
 	//Assign "Default Export Fields" in this array ... //
 	$included_data[0] = 'Customer Main Contact Name';
@@ -141,8 +139,12 @@ function getExportMapHeader($subject_key, $subject){
 		$s="SELECT `Export Header` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC LIMIT 0 , 1";
 	}
 	$q = mysql_query($s);
-	$r = mysql_fetch_assoc($q);
-	$data= $r['Export Header'];
+	if($q){
+		$r = mysql_fetch_assoc($q);
+		$data= $r['Export Header'];
+	}else{
+		$data = 'yes';
+	}
 	return $data;
 }
 
