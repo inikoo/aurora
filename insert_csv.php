@@ -66,14 +66,21 @@ $js_files=array(
 	$session_array = array_unique($_SESSION['colorArray']);
 
 	
+
+	
 	$tt = array();
 
 	foreach($session_array as $session=>$vv)
 	{
-		$tt[] = $vv;
+		if($session != '')
+		{
+			$tt[] = $vv;
+		}
 	}
 
 	
+	//print_r($tt);
+
 	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
 
 	
@@ -106,10 +113,10 @@ $js_files=array(
                 $previous=$arr;
 		foreach($tt as $key=>$value)
 		{
-			/*if(array_key_exists($value,$arr))
+			if(array_key_exists($value,$arr))
 			{	
 				unset($arr[$value]);
-			}*/
+			}
 
 			
 		}

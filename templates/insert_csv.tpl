@@ -40,10 +40,7 @@
 	<br>
 
                 {php}
-          echo "The Ignored Record array<br>";
-         $tt = $this->get_template_vars('tt');
-                echo "<pre>";
-                print_r($tt);
+         
                  echo"<br>";
 		echo "The Final array<br>";
                   $final = $this->get_template_vars('arr');

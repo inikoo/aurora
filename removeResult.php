@@ -2,7 +2,7 @@
 	include('common.php');
 
 
-	$_SESSION['colorArray'][] = isset($_REQUEST['colorArray'])?$_REQUEST['colorArray']:'0';
+	$_SESSION['colorArray'][] = isset($_REQUEST['colorArray'])?$_REQUEST['colorArray']:'';
 	
 	$colorArray = array();
 
