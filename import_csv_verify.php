@@ -117,7 +117,7 @@ if(isset($_POST['submit']))
 
 if(isset($_SESSION['error'])) 
 { 
-    echo $smarty->assign('showerror',$_SESSION['error']); 
+   $smarty->assign('showerror',$_SESSION['error']); 
 }
 
 $v = 0;
