@@ -12,7 +12,7 @@
 		break;
 
 		case "2":
-			header('location:abc.php');
+			header('location:customise_template_create.php');
 		break;
 
 		default:
