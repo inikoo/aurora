@@ -2,13 +2,14 @@
 <div id="bd" >
 {literal}
 <script>
-$(document).ready(function(){
-$("#basic").click(function(){
-$("#Newsletter1").css("display", "none");
-$("#Newsletter2").css("display", "none");
-$("#Postcard").css("display", "none");
-$("#Basic_template").css("display", "block");
-});
+	$(document).ready(function(){
+	$("#basic").click(function(){
+	$("#Newsletter1").css("display", "none");
+	$("#Newsletter2").css("display", "none");
+	$("#Postcard").css("display", "none");
+	$("#Basic_template").css("display", "block");
+	});
+
 $("#news1").click(function(){
 $("#Basic_template").css("display", "none");
 $("#Newsletter2").css("display", "none");
@@ -16,13 +17,12 @@ $("#Postcard").css("display", "none");
 $("#Newsletter1").css("display", "block");
 });
 
-$("#news2").click(function(){
-$("#Basic_template").css("display", "none");
-$("#Newsletter1").css("display", "none");
-$("#Postcard").css("display", "none");
-$("#Newsletter2").css("display", "block");
-});
-
+	$("#news2").click(function(){
+	$("#Basic_template").css("display", "none");
+	$("#Newsletter1").css("display", "none");
+	$("#Postcard").css("display", "none");
+	$("#Newsletter2").css("display", "block");
+	});
 
 $("#postcard").click(function(){
 $("#Basic_template").css("display", "none");
@@ -49,7 +49,7 @@ $("#Postcard").css("display", "block");
 <table id="Basic_template" style="display:block;">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Basic Template</b></td></tr>
 
-<form name="Newsletter1" action="" method="post">
+<form name="basic" action="basic_template.php" method="post">
 
 <tr>
 <td style="float:left;">Header:</td>
@@ -85,8 +85,8 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td></td>
-<td style="float:right;" ><br><input type="submit" name="preview" id="preview" value="Proceed">
-
+<td style="float:right;" ><br><input type="submit" name="basic" id="basic" value="Proceed">
+		
 </td></tr>
 
 </form><br>
@@ -101,7 +101,7 @@ $("#Postcard").css("display", "block");
 
 <table id="Newsletter1" style="display:none">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Newsletter Template 1</b></td></tr>
-<form name="Newsletter1" action="" method="post">
+<form name="Newsletter1" action="newsletter_template1.php" method="post">
 
 <tr>
 <td style="float:left;">Header:</td>
@@ -137,7 +137,7 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td></td>
-<td style="float:right;" ><br><input type="submit" name="preview" id="preview" value="Proceed">
+<td style="float:right;" ><br><input type="submit" name="newsletter1" id="newsletter1" value="Proceed">
 
 </td></tr>
 
@@ -153,7 +153,7 @@ $("#Postcard").css("display", "block");
 
 <table id="Newsletter2" style="display:none;">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Newsletter Template 2</b></td></tr>
-<form name="Newsletter2" action="" method="post">
+<form name="Newsletter2" action="newsletter_template2.php" method="post">
 
 <tr>
 <td style="float:left;">Header:</td>
@@ -189,7 +189,7 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td></td>
-<td style="float:right;" ><br><input type="submit" name="preview" id="preview" value="Proceed">
+<td style="float:right;" ><br><input type="submit" name="newsletter2" id="newsletter2" value="Proceed">
 
 </td></tr>
 
@@ -200,7 +200,7 @@ $("#Postcard").css("display", "block");
 
 <table id="Postcard" style="display:none;">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Postcard</b></td></tr>
-<form name="postcard" action="" method="post">
+<form name="postcard" action="postcard_template.php" method="post">
 
 
 
@@ -213,27 +213,12 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td></td>
-<td style="float:right;" ><br><input type="submit" name="preview" id="preview" value="Proceed">
+<td style="float:right;" ><br><input type="submit" name="postcard" id="postcard" value="Proceed">
 
 </td></tr>
 
 </form>
 </table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
