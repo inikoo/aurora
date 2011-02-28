@@ -64,11 +64,11 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 
 	## Saving Map into Database ##
 	if(isset($_POST['save']) && $_POST['save']=='save'){
-		/*if(isset($_REQUEST['default']) && mysql_real_escape_string($_REQUEST['default']) == 'yes'){
+		if(isset($_REQUEST['default']) && mysql_real_escape_string($_REQUEST['default']) == 'yes'){
 			$default='yes';
 		}else{
 			$default='no';
-		}*/
+		}
 		$map_name = mysql_real_escape_string($_POST['map_name']) ;
 		$map_desc = mysql_real_escape_string($_POST['map_desc']) ;
 		if(isset($_POST['header']) && $_POST['header']=='header'){

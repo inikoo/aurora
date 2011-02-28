@@ -6,13 +6,13 @@
 
 
 
-<table style="margin-left:60px;" border="1" width="400">
+<table style="margin-left:60px;" border="1" width="600">
 <tr><td colspan="2"><B>Select Fields to export</B></td></tr>
 <div id="result">
 {foreach from=$list key=list_key item=list_item name=foo}
-<tr><td>
-<input type="hidden" style="width:25px;" name="seq{$smarty.foreach.foo.index+1}" id="txt{$smarty.foreach.foo.index+1}" value="{$smarty.foreach.foo.index+1}" readonly="readonly"><a onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index-1});>Up</a>&nbsp;<a onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index+1});>Down</a></td>
-<td>{$list_key}</td>
+<tr><td width="30%">
+<input type="hidden" style="width:25px;" name="seq{$smarty.foreach.foo.index+1}" id="txt{$smarty.foreach.foo.index+1}" value="{$smarty.foreach.foo.index+1}" readonly="readonly"><input type="button" class="up_b" onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index-1}); />&nbsp;<input type="button" class="down_b" onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index+1}); /></td>
+<td width="70%">{$list_key}</td>
 </tr>
 {/foreach}
 </div>
@@ -23,14 +23,18 @@
 </tr/>
 <tr>
 <td colspan="2">
-<input type="checkbox" id="save" name="save" value="save" checked="checked" onClick="saveMap();" /> Save my Map for future
-	<table id="maps" style="paddingtop:5px; display:block;"><tr><td>Map Name:</td><td><input type="text" id="map_name" name="map_name" value=""/></td></tr>
-	<tr><td>Map Description: </td><td><textarea id="map_desc" name="map_desc"></textarea></td></tr></table>
+<input type="checkbox" id="save" name="save" value="save" checked="checked" onClick=saveMap(); /> Save my Map for future
+<table id="maps" style="paddingtop:5px; display:block;" width="600px;"><tr>
+<td width="50%">Map Name:</td>
+<td width="50%"><input type="text" id="map_name" name="map_name" value=""/></td></tr>
+<tr><td>Map Description: </td>
+<td><textarea id="map_desc" name="map_desc"></textarea></td></tr>
+</table>
 </td>
 </tr/>
 
 <tr>
-<td colspan="2"><input type="SUBMIT" name="SUBMIT" id="SUBMIT" value="Export Map" ></td>
+<td colspan="2"><input type="button" name="prev" id="prev" class="prev" onClick=go("export_wizard.php?subject={$map_type}&subject_key={$customer_id}"); /> <input type="SUBMIT" name="SUBMIT" id="SUBMIT" class="export_b" value="" ></td>
 
 </tr>
 </table>

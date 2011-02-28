@@ -29,6 +29,7 @@ $css_files=array(
          'button.css',
          'container.css',
          'table.css',
+	 'css/export_wizard.css',
          'css/customer.css'
 
          );
@@ -48,7 +49,8 @@ $js_files=array(
         'table_common.js.php',
         'js/search.js',
         'js/edit_common.js',
-        'customer.js.php'
+	'js/export_wizard.js',
+	'customer.js.php'
         );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
