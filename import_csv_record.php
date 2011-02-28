@@ -1,5 +1,5 @@
 <?php
-
+	include('common.php');
 	include('removeResult.php');
 
 	require_once 'csvparser.php';
