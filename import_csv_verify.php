@@ -115,7 +115,10 @@ if(isset($_POST['submit']))
 	}
 }
 
-	
+if(isset($_SESSION['error'])) 
+{ 
+    echo $smarty->assign('showerror',$_SESSION['error']); 
+}
 
 $v = 0;
 
@@ -125,7 +128,7 @@ $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('showerror',$_SESSION['error']);
+
 
 
 $smarty->display('import_csv_verify.tpl');

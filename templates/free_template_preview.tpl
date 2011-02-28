@@ -21,13 +21,14 @@
 {/literal}
 <span style="font-size:20px;color:#000000;">{$template_sub}</span><br><br>
 {$template_body}
+
+</div>
+<br> 
 <form  action="send_mail.php" name="free_template" method="post">
 <input type="hidden" name="templateSub" value="{$template_sub}">
-<input type="hidden" name="templatebody" value="{$template_body}
-<input type="submit" name="send" id="send" value="Send">
+<input type="hidden" name="templatebody" value="{$template_body}">
+<input type="submit" name="send_mail" id="send_mail" value="Send Mail">
 </form>
-</div> 
-
 
 </div>
 
