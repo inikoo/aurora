@@ -48,7 +48,6 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 
 	$exported_data = final_array($actual_data , $included_data);
 	//print_r($exported_data);
-
 	}
 }else{
 	if(!isset($_POST['SUBMIT'])){ // To ensure whether the form is properly submitted - Case create new map //
