@@ -1,56 +1,17 @@
 {include file='header.tpl'}
-<div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-<div id="bd" >
+<div id="bd"  style="padding:0px">
+<div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
-
 <div class="branch"> 
   <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
-<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
+<div id="no_details_title" style="clear:right;">
     <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
-{if $product->get('Product Record Type')=='Historic'}
-{t}Historic Product{/t}
-{/if}
+    {if $product->get('Product Record Type')=='Historic'}{t}Historic Product{/t}{/if}
 </div>
 
-
-
-<div style="display:none" >
-  
-  <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
-    <tr style="border-bottom:1px solid #ddd">
-      
-      <th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
-	{if $view_orders}
-      <th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
-	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
-	{/if}
-	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
-	<th><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
-      </tr>
-      <tr style="height:18px;border-bottom:1px solid #ddd">
-	<td  id="change_view_details" 
-	     {if $display.details==0}title="{t}Show Product Details{/t}" atitle="{t}Hide Product Details{/t}"{else}atitle="Hide Product Details"  title="{t}Hide Product Details{/t}"{/if} >
-	  <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
-	{if $view_orders}
-	<td  id="change_view_plot" state="{$display.plot}" block="plot"  
-	     {if $display.plot==0} title="{t}Show Charts{/t}" atitle="{t}Hide Charts{/t}"{else} atitle="{t}Show Charts{/t}" title="{t}Hide Charts{/t}"{/if} >
-	  <img {if $display.plot==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_plot"  /></td>
-	
-	<td  state="{$display.orders}" block="orders"  id="change_view_orders" 
-	     {if $display.orders==0}title="{t}Show Orders{/t}" atitle="{t}Hide Orders{/t}" {else} atitle="{t}Show Orders{/t}" title="{t}Hide Orders{/t}" {/if} >
-	  <img {if $display.orders==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_orders"   /></td>
-	{/if}
-	<td  state="{$display.customers}" block="customers"   id="change_view_customers" {if $display.customers==0}title="{t}Show Customers who have ordered this product{/t}" atitle="{t}Hide Customers who have ordered this product{/t}"{else}atitle="{t}Show Customers who have ordered this product{/t}" title="{t}Hide Customers who have ordered this product{/t}"{/if} ><img {if $display.customers==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_customers"   /></td>
-	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
-	
-      </tr>
-    <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
-  </table>
-  
-  
-    </div>
+    
 <div class="" id="block_info"  style="width:890px">
       <div   style="clear:left;padding:0;width:100%">
 
@@ -298,18 +259,35 @@
      
 
     </div> 
-<div  id="block_timeline" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 0px">
+    
+</div>
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='timeline'}selected{/if}"  id="timeline">  <span> {t}History{/t}</span></span></li>
+    {if $view_customers}<li> <span class="item {if $block_view=='products'}selected{/if}" id="customers"  ><span>  {t}Customers{/t}</span></span></li>{/if}
+    {if $view_orders} <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>{/if}
+
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">    
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+    
+    
+<div  class="data_table" >
     <span id="table_title" class="clean_table_title">{t}Product Code Timeline{/t}</span>
     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
     <div  id="table3"   class="data_table_container dtable btable "> </div>
   </div>
-<div>
+  
+    <div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}clear:both;margin:25px 0px">
+    <span id="table_title" class="clean_table_title">{t}Product History{/t}</span>
+    {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+    <div  id="table2"   class="data_table_container dtable btable "> </div>
+  </div>
 
 
-  <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >
-{include file='plot_splinter.tpl'}
-    
-     
 </div>
 
 
@@ -320,7 +298,7 @@
       
 
   {if $view_orders} 
-  <div  id="block_orders" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 0px">
+  <div  id="block_orders" class="data_table"  style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable "> </div>
@@ -328,7 +306,7 @@
   {/if}
   
   {if $view_customers} 
-  <div  id="block_customers" class="data_table" style="{if $display.customers==0}display:none;{/if}clear:both;margin:25px 0px">
+  <div  id="block_customers" class="data_table"  style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     <span id="table_title" class="clean_table_title">{t}Customer who order this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
   <div  id="table1"   class="data_table_container dtable btable "> </div>
@@ -336,11 +314,6 @@
   {/if}
 
 
-  <div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}clear:both;margin:25px 0px">
-    <span id="table_title" class="clean_table_title">{t}Product History{/t}</span>
-    {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-    <div  id="table2"   class="data_table_container dtable btable "> </div>
-  </div>
 
 
 </div>

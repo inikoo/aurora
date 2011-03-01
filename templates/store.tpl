@@ -1,6 +1,5 @@
 ﻿{include file='header.tpl'}
 <div id="bd" style="padding:0px">
-
 <div style="padding:0 20px">
 
 {include file='assets_navigation.tpl'}
@@ -20,7 +19,6 @@
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div style="padding:0 20px">
-
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 
@@ -313,13 +311,8 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
   </div>
   
 </div> 
-
-
-
-
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-
-  <div class="data_table" style="margin:0px;clear:both">
+<div class="data_table" style="margin:0px;clear:both">
     <span class="clean_table_title">{t}Products{/t}</span>
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products" >{t}Export (CSV){/t}</span>
 <a style="float:right;margin-left:20px"  class="table_type state_details"  href="export_xml.php" >{t}Export (XML){/t}</a>
@@ -366,9 +359,9 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
 
     <div  id="table2"   class="data_table_container dtable btable "> </div>
   </div>
-
-
 </div>
+
+
 <div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:20px 0 40px 0"></div>
 <div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 <a href="product_categories.php?store_id={$store->id}id=0">{t}Product Category Page{/t}</a>

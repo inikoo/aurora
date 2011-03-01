@@ -1,18 +1,30 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="padding:0px">
+<div style="padding:0 20px">
  {include file='assets_navigation.tpl'}
  
  <div class="branch"> 
  <span ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
  </div>
 
-  <div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
+  <div id="no_details_title" style="clear:right;">
     <h1>{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')})</h1>
   </div>
 
+</div>
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals">  <span> {t}Offers{/t}</span></span></li>
 
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
   
-<div id="info" style="margin:10px 0;padding:0;{if !$show_details}display:none;{/if}">
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
 
 
  <div id="photo_container" style="margin-top:0px;float:left">
@@ -164,63 +176,8 @@
 </div>
 
 </div>
-<div style="clear:both"></div>
-<div id="plot" class="top_bar" style="clear:both;position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if};margin-top:30px;">
 
-      <div display="none" id="plot_info" keys="{$store->id}" ></div>
-      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-	<li>
-	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
-	    <span>{$family->get('Product Family Code')} {t}Family{/t}</span>
-	  </span>
-	</li>
-	<li>
-	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
-	    <span>{t}Top Products{/t}</span>
-	  </span>
-	</li>
-	<li>
-	  <span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"   category="{$plot_data.pie.category}" period="{$plot_data.pie.period}" forecast="{$plot_data.pie.forecast}" date="{$plot_data.pie.date}"  >
-	    <span>{t}Department's Pie{/t}</span>
-	  </span>
-	</li>
-      </ul> 
-      
-      <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
-	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
-	<li><span class="item"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
-      </ul> 
-
-      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
-      </div>
-
-      <div id="pie_options"  style="{if $plot_tipo!='pie'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
-	<table id="pie_category_options" style="float:none;margin-bottom:10px;margin-left:30px"  class="options_mini" >
-	  <tr>
-	    <td  {if $plot_data.pie.category=='sales'}class="selected"{/if} period="sales"  id="pie_category_sales" >{t}Sales{/t}</td>
-	    <td {if $plot_data.pie.category=='profit'}class="selected"{/if}  period="profit"  id="pie_category_profit"  >{t}Profit{/t}</td>
-	  </tr>
-	</table>
-	<table id="pie_period_options" style="float:none;margin-bottom:20px;margin-left:30px"  class="options_mini" >
-	  <tr>
-	    <td  {if $plot_data.pie.period=='all'}class="selected"{/if} period="all"  id="pie_period_all" onclick="change_plot_period('all')" >{t}All{/t}</td>
-	    <td {if $plot_data.pie.period=='y'}class="selected"{/if}  period="year"  id="pie_period_year" onclick="change_plot_period('y')"  >{t}Year{/t}</td>
-	    <td  {if $plot_data.pie.period=='q'}class="selected"{/if}  period="quarter"  id="pie_period_quarter" onclick="change_plot_period('q')"  >{t}Quarter{/t}</td>
-	    <td {if $plot_data.pie.period =='m'}class="selected"{/if}  period="month"  id="pie_period_month" onclick="change_plot_period('m')"  >{t}Month{/t}</td>
-	    <td  {if $plot_data.pie.period=='w'}class="selected"{/if} period="week"  id="pie_period_week" onclick="change_plot_period('w')"  >{t}Week{/t}</td>
-	  </tr>
-	</table>
-	<div style="font-size:90%;margin-left:30px">
-	  <span>{$plot_formated_period}</span>: <input class="text" type="text" value="{$plot_formated_date}" style="width:6em"/> <img style="display:none" src="art/icons/chart_pie.png" alt="{t}update{/t}"/>
-	</div>
-      </div>
-      
-      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
-	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
-	
-      </div>
-     
-     </div>
+<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 <div class="data_table"  style="margin-top:10px;clear:both">
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
@@ -243,30 +200,30 @@
 
 
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-       <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
-	  <td  {if $view=='parts'}class="selected"{/if}  id="parts"  >{t}Parts{/t}</td>
-	  <td  {if $view=='cats'}class="selected"{/if}  id="cats"  >{t}Groups{/t}</td>
+       <tr><td  class="option {if $product_view=='general'}selected{/if}" id="product_general" >{t}General{/t}</td>
+	  {if $view_stock}<td class="option {if $product_view=='stock'}selected{/if}"  id="product_stock"  >{t}Stock{/t}</td>{/if}
+	  {if $view_sales}<td  class="option {if $product_view=='sales'}selected{/if}"  id="product_sales"  >{t}Sales{/t}</td>{/if}
+	  <td  class="option {if $product_view=='parts'}selected{/if}"  id="product_parts"  >{t}Parts{/t}</td>
+	  <td  class="option {if $product_view=='cats'}selected{/if}"  id="product_cats"  >{t}Groups{/t}</td>
 
 	</tr>
       </table>
     <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
-	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
-	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
-	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
-	  <td {if $period=='month'}class="selected"{/if}  period="month"  id="period_month"  >{t}1M{/t}</td>
-	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
+	  <td  class="option {if $product_period=='all'}selected{/if}" period="all"  id="period_all" >{t}All{/t}</td>
+	  <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="period_year"  >{t}1Yr{/t}</td>
+	  <td  class="option {if $product_period=='quarter'}selected{/if}"  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $product_period=='month'}selected{/if}"  period="month"  id="period_month"  >{t}1M{/t}</td>
+	  <td  class="option {if $product_period=='week'}selected{/if}" period="week"  id="period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
-    <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+    <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0class="option {if $product_view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
-	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
-	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
-	  <td {if $avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
-	  <td {if $avg=='month_eff'}class="selected"{/if} style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
-	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
+	  <td class="option {if $product_avg=='totals'}selected{/if}" avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
+	  <td class="option {if $product_avg=='month'}selected{/if}"  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
+	  <td class="option {if $product_avg=='week'}selected{/if}"  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
+	  <td class="option {if $product_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
+	  <td class="option {if $product_avg=='week_eff'}selected{/if}" style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
 	</tr>
       </table>
     </div>
@@ -276,8 +233,12 @@
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
-    <div  id="table0"   class="data_table_container dtable btable with_total"  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
+    <div  id="table0"   class="data_table_container dtable btable "  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
   
+</div>
+<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+
 </div>
 
 </div> 
