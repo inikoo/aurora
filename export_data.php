@@ -30,7 +30,7 @@ if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
   $customer_id=$_SESSION['state']['customer']['id'];
 }
 $customer=new customer($customer_id);
-$exported_data=array(); //This is final array of selected and sorted fields - Now assigned as an empty array//
+$exported_data=array(); //This will be the final array of selected and sorted fields - Now assigning as an empty array//
 $line = ''; $data = '';$header = '';
 if(isset($_GET['source']) && $_GET['source'] =='db'){//To ensure that map is loaded from database //
 $no_of_maps_saved = numExportMapData($customer_id, $map_type);
