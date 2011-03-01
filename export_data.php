@@ -112,10 +112,10 @@ echo $header."\n".$data;
 function getExportMapData($subject_key, $subject){
 	if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 		$id=mysql_real_escape_string($_REQUEST['id']);
-		$s="SELECT `Map Data` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject' AND `Map Key` = '$id'";
+		$s="SELECT `Map Data` FROM `Export Map` WHERE `Map Type` = '$subject' AND `Map Key` = '$id'";
 
 	}else{
-		$s="SELECT `Map Data` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC
+		$s="SELECT `Map Data` FROM `Export Map` WHERE `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC
 LIMIT 0 , 1";
 	}
 	$q = mysql_query($s);
@@ -127,10 +127,10 @@ LIMIT 0 , 1";
 function getExportMapHeader($subject_key, $subject){
 	if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 		$id=mysql_real_escape_string($_REQUEST['id']);
-		$s="SELECT `Export Header` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject' AND `Map Key` = '$id'";
+		$s="SELECT `Export Header` FROM `Export Map` WHERE `Map Type` = '$subject' AND `Map Key` = '$id'";
 
 	}else{
-		$s="SELECT `Export Header` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC LIMIT 0 , 1";
+		$s="SELECT `Export Header` FROM `Export Map` WHERE `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC LIMIT 0 , 1";
 	}
 	$q = mysql_query($s);
 	if(mysql_num_rows($q) != 0){
@@ -143,7 +143,7 @@ function getExportMapHeader($subject_key, $subject){
 }
 
 function numExportMapData($subject_key, $subject){
-	$q = mysql_query("SELECT `Map Key` FROM `Export Map` WHERE `Customer Key` = '$subject_key' AND `Map Type` = '$subject'");
+	$q = mysql_query("SELECT `Map Key` FROM `Export Map` WHERE `Map Type` = '$subject'");
 	$num = mysql_num_rows($q);
 	return $num;
 }
