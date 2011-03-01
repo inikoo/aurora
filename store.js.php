@@ -273,7 +273,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['products']['table']['nr']+1?>,containers : 'paginator2', 
+									      rowsPerPage:<?php echo$_SESSION['state']['store']['products']['nr']+1?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -283,8 +283,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['products']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['products']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['store']['products']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['store']['products']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -297,7 +297,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    
 	    this.table2.view='<?php echo$_SESSION['state']['products']['view']?>';
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['products']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['products']['table']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['store']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['products']['f_value']?>'};
 		
 
 

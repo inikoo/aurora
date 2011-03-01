@@ -1922,16 +1922,8 @@ $default_state=array(
                           ),
                    'store'=>array(
                                'block_view'=>'details',
-
-
-
                                'edit'=>'description',
-
                                'id'=>1,
-
-
-
-
                                'departments'=>array(
                                                  'where'=>'where true',
                                                  'f_field'=>'code',
@@ -1975,90 +1967,91 @@ $default_state=array(
 
                                              ),
 
-'families'=>array(
-                                                 'where'=>'where true',
-                                                 'f_field'=>'code',
-                                                 'f_value'=>'','f_show'=>false,
-                                                 'order'=>'name',
-                                                 'order_dir'=>'',
-                                                 'sf'=>0,
-                                                 'nr'=>25,
-                                                 'percentages'=>false,
-                                                 'view'=>'general',
-                                                 'period'=>'year',
-                                                 'percentage'=>0,
-                                                 'mode'=>'all',
-                                                 'avg'=>'totals',
-                                                 'csv_export'=>array(
-                                                                  'code'=>true,
-                                                                  'name'=>true,
-                                                                  'families'=>false,
-                                                                  'products'=>false,
-                                                                  'discontinued'=>false,
-                                                                  'new'=>false,
-                                                                  'surplus'=>false,
-                                                                  'ok'=>false,
-                                                                  'low'=>false,
-                                                                  'critical'=>false,
-                                                                  'gone'=>false,
-                                                                  'unknown'=>false,
-                                                                  'sales_all'=>false,
-                                                                  'sales_1y'=>false,
-                                                                  'sales_1q'=>false,
-                                                                  'sales_1m'=>false,
-                                                                  'sales_1w'=>false,
-                                                                  'profit_all'=>false,
-                                                                  'profit_1y'=>false,
-                                                                  'profit_1q'=>false,
-                                                                  'profit_1m'=>false,
-                                                                  'profit_1w'=>false
+                               'families'=>array(
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'','f_show'=>false,
+                                              'order'=>'name',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'percentages'=>false,
+                                              'view'=>'general',
+                                              'period'=>'year',
+                                              'percentage'=>0,
+                                              'mode'=>'all',
+                                              'avg'=>'totals',
+                                              'restrictions'=>'',
+                                              'csv_export'=>array(
+                                                               'code'=>true,
+                                                               'name'=>true,
+                                                               'families'=>false,
+                                                               'products'=>false,
+                                                               'discontinued'=>false,
+                                                               'new'=>false,
+                                                               'surplus'=>false,
+                                                               'ok'=>false,
+                                                               'low'=>false,
+                                                               'critical'=>false,
+                                                               'gone'=>false,
+                                                               'unknown'=>false,
+                                                               'sales_all'=>false,
+                                                               'sales_1y'=>false,
+                                                               'sales_1q'=>false,
+                                                               'sales_1m'=>false,
+                                                               'sales_1w'=>false,
+                                                               'profit_all'=>false,
+                                                               'profit_1y'=>false,
+                                                               'profit_1q'=>false,
+                                                               'profit_1m'=>false,
+                                                               'profit_1w'=>false
 
 
-                                                              )
+                                                           )
 
-                                             ),
-                                             'products'=>array(
-                                                 'where'=>'where true',
-                                                 'f_field'=>'code',
-                                                 'f_value'=>'','f_show'=>false,
-                                                 'order'=>'name',
-                                                 'order_dir'=>'',
-                                                 'sf'=>0,
-                                                 'nr'=>25,
-                                                 'percentages'=>false,
-                                                 'view'=>'general',
-                                                 'period'=>'year',
-                                                 'percentage'=>0,
-                                                 'mode'=>'all',
-                                                 'avg'=>'totals',
-                                                 'csv_export'=>array(
-                                                                  'code'=>true,
-                                                                  'name'=>true,
-                                                                  'families'=>false,
-                                                                  'products'=>false,
-                                                                  'discontinued'=>false,
-                                                                  'new'=>false,
-                                                                  'surplus'=>false,
-                                                                  'ok'=>false,
-                                                                  'low'=>false,
-                                                                  'critical'=>false,
-                                                                  'gone'=>false,
-                                                                  'unknown'=>false,
-                                                                  'sales_all'=>false,
-                                                                  'sales_1y'=>false,
-                                                                  'sales_1q'=>false,
-                                                                  'sales_1m'=>false,
-                                                                  'sales_1w'=>false,
-                                                                  'profit_all'=>false,
-                                                                  'profit_1y'=>false,
-                                                                  'profit_1q'=>false,
-                                                                  'profit_1m'=>false,
-                                                                  'profit_1w'=>false
+                                          ),
+                               'products'=>array(
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'','f_show'=>false,
+                                              'order'=>'name',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'percentages'=>false,
+                                              'view'=>'general',
+                                              'period'=>'year',
+                                              'percentage'=>0,
+                                              'mode'=>'all',
+                                              'avg'=>'totals',
+                                              'csv_export'=>array(
+                                                               'code'=>true,
+                                                               'name'=>true,
+                                                               'families'=>false,
+                                                               'products'=>false,
+                                                               'discontinued'=>false,
+                                                               'new'=>false,
+                                                               'surplus'=>false,
+                                                               'ok'=>false,
+                                                               'low'=>false,
+                                                               'critical'=>false,
+                                                               'gone'=>false,
+                                                               'unknown'=>false,
+                                                               'sales_all'=>false,
+                                                               'sales_1y'=>false,
+                                                               'sales_1q'=>false,
+                                                               'sales_1m'=>false,
+                                                               'sales_1w'=>false,
+                                                               'profit_all'=>false,
+                                                               'profit_1y'=>false,
+                                                               'profit_1q'=>false,
+                                                               'profit_1m'=>false,
+                                                               'profit_1w'=>false
 
 
-                                                              )
+                                                           )
 
-                                             ),
+                                          ),
 
                                'history'=>array(
                                              'where'=>'where true',
@@ -2254,54 +2247,106 @@ $default_state=array(
 
                    'department'=>array(
                                     'block_view'=>'details',
-                                    'percentages'=>false,
+
                                     'view'=>'general',
                                     'id'=>1,
                                     'period'=>'year',
                                     'percentage'=>0,
                                     'mode'=>'all',
                                     'avg'=>'totals',
-                                    'restrictions'=>'for_sale',
+
                                     'editing'=>'details',
                                     'table_type'=>'list',
 
-                                    'plot'=>'department',
-                                    'plot_data'=>array('department'=>array(
-                                                                        'period'=>'m',
-                                                                        'category'=>'sales',
-                                                                        'page'=>'plot.php'
-                                                                    )
-                                                                    ,'top_families'=>array(
-                                                                                        'period'=>'m',
-                                                                                        'category'=>'sales',
-                                                                                        'page'=>'plot.php'
-                                                                                    )
-                                                                                    ,'pie'=>array(
-                                                                                               'period'=>'m',
-                                                                                               'category'=>'sales',
-                                                                                               'page'=>'pie.php',
-                                                                                               'forecast'=>'no',
-                                                                                               'date'=>'today'
-                                                                                           )
-                                                      ),
 
 
+                                    'families'=>array(
+                                                   'where'=>'where true',
+                                                   'f_field'=>'code',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'percentages'=>false,
+                                                   'view'=>'general',
+                                                   'period'=>'year',
+                                                   'percentage'=>0,
+                                                   'mode'=>'all',
+                                                   'avg'=>'totals',
+                                                   'restrictions'=>'',
+                                                   'csv_export'=>array(
+                                                                    'code'=>true,
+                                                                    'name'=>true,
+                                                                    'families'=>false,
+                                                                    'products'=>false,
+                                                                    'discontinued'=>false,
+                                                                    'new'=>false,
+                                                                    'surplus'=>false,
+                                                                    'ok'=>false,
+                                                                    'low'=>false,
+                                                                    'critical'=>false,
+                                                                    'gone'=>false,
+                                                                    'unknown'=>false,
+                                                                    'sales_all'=>false,
+                                                                    'sales_1y'=>false,
+                                                                    'sales_1q'=>false,
+                                                                    'sales_1m'=>false,
+                                                                    'sales_1w'=>false,
+                                                                    'profit_all'=>false,
+                                                                    'profit_1y'=>false,
+                                                                    'profit_1q'=>false,
+                                                                    'profit_1m'=>false,
+                                                                    'profit_1w'=>false
 
 
+                                                                )
+
+                                               ),
+                                    'products'=>array(
+                                                   'where'=>'where true',
+                                                   'f_field'=>'code',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'percentages'=>false,
+                                                   'view'=>'general',
+                                                   'period'=>'year',
+                                                   'percentage'=>0,
+                                                   'mode'=>'all',
+                                                   'avg'=>'totals',
+                                                   'csv_export'=>array(
+                                                                    'code'=>true,
+                                                                    'name'=>true,
+                                                                    'families'=>false,
+                                                                    'products'=>false,
+                                                                    'discontinued'=>false,
+                                                                    'new'=>false,
+                                                                    'surplus'=>false,
+                                                                    'ok'=>false,
+                                                                    'low'=>false,
+                                                                    'critical'=>false,
+                                                                    'gone'=>false,
+                                                                    'unknown'=>false,
+                                                                    'sales_all'=>false,
+                                                                    'sales_1y'=>false,
+                                                                    'sales_1q'=>false,
+                                                                    'sales_1m'=>false,
+                                                                    'sales_1w'=>false,
+                                                                    'profit_all'=>false,
+                                                                    'profit_1y'=>false,
+                                                                    'profit_1q'=>false,
+                                                                    'profit_1m'=>false,
+                                                                    'profit_1w'=>false
 
 
+                                                                )
+
+                                               ),
 
 
-                                    'table'=>array(
-                                                'order'=>'code',
-                                                'order_dir'=>'',
-                                                'sf'=>0,
-                                                'nr'=>200,
-                                                'where'=>'where true',
-                                                'f_field'=>'code',
-                                                'f_value'=>''
-
-                                            ),
                                     'history'=>array(
                                                   'where'=>'where true',
                                                   'f_field'=>'abstract',
@@ -2327,73 +2372,53 @@ $default_state=array(
                                 ),
                    'family'=>array(
                                 'block_view'=>'details',
-                                'percentages'=>false,
-                                'view'=>'general',
 
-                                'edit_view'=>'view_name',
-                                'id'=>1,
-                                'period'=>'year',
-                                'percentage'=>0,
-                                'mode'=>'all',
-                                'avg'=>'totals',
-                                'edit'=>'details',
-                                'editing'=>false,
-                                'table_type'=>'list',
-                                'plot'=>'family',
-                                'plot_data'=>array('family'=>array(
-                                                                'period'=>'m',
-                                                                'category'=>'sales',
-                                                                'page'=>'plot.php'
+                                'editing'=>'description',
+
+
+
+                                'products'=>array(
+                                               'percentages'=>false,
+                                               'view'=>'general',
+
+                                               'edit_view'=>'view_name',
+                                               'id'=>1,
+                                               'period'=>'year',
+                                               'percentage'=>0,
+                                               'mode'=>'all',
+                                               'avg'=>'totals',
+                                               'edit'=>'details',
+                                               'table_type'=>'list',
+                                               'show_only'=>'forsale',
+                                               'order'=>'code',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>20,
+                                               'where'=>'where true',
+                                               'f_field'=>'code',
+                                               'f_value'=>'',
+                                               'csv_export'=>array(
+                                                                'code'=>true,
+                                                                'name'=>true,
+                                                                'web'=>true,
+                                                                'status'=>true,
+                                                                'products'=>false,
+
+                                                                'sales_all'=>false,
+                                                                'sales_1y'=>false,
+                                                                'sales_1q'=>false,
+                                                                'sales_1m'=>false,
+                                                                'sales_1w'=>false,
+                                                                'profit_all'=>false,
+                                                                'profit_1y'=>false,
+                                                                'profit_1q'=>false,
+                                                                'profit_1m'=>false,
+                                                                'profit_1w'=>false
+
+
                                                             )
-                                                            ,'top_products'=>array(
-                                                                                'period'=>'m',
-                                                                                'category'=>'sales',
-                                                                                'page'=>'plot.php'
-                                                                            )
-                                                                            ,'pie'=>array(
-                                                                                       'period'=>'m',
-                                                                                       'category'=>'sales',
-                                                                                       'page'=>'pie.php',
-                                                                                       'forecast'=>'no',
-                                                                                       'date'=>'today'
-                                                                                   )
-                                                  ),
 
-
-
-
-
-                                'table'=>array(
-                                            'show_only'=>'forsale',
-                                            'order'=>'code',
-                                            'order_dir'=>'',
-                                            'sf'=>0,
-                                            'nr'=>20,
-                                            'where'=>'where true',
-                                            'f_field'=>'code',
-                                            'f_value'=>'',
-                                            'csv_export'=>array(
-                                                             'code'=>true,
-                                                             'name'=>true,
-                                                             'web'=>true,
-                                                             'status'=>true,
-                                                             'products'=>false,
-
-                                                             'sales_all'=>false,
-                                                             'sales_1y'=>false,
-                                                             'sales_1q'=>false,
-                                                             'sales_1m'=>false,
-                                                             'sales_1w'=>false,
-                                                             'profit_all'=>false,
-                                                             'profit_1y'=>false,
-                                                             'profit_1q'=>false,
-                                                             'profit_1m'=>false,
-                                                             'profit_1w'=>false
-
-
-                                                         )
-
-                                        ),
+                                           ),
                                 'history'=>array(
                                               'where'=>'where true',
                                               'f_field'=>'abstract',
@@ -2551,36 +2576,7 @@ $default_state=array(
 
 
                    'product'=>array(
-                                 'details'=>false,
-                                 'plot'=>'product',
-                                 'plot_interval'=>array(
-                                                     'd'=>array('plot_bins'=>7,
-                                                                'plot_forecast_bins'=>3),
-                                                     'y'=>array('plot_bins'=>5,
-                                                                'plot_forecast_bins'=>3),
-                                                     'q'=>array('plot_bins'=>12,
-                                                                'plot_forecast_bins'=>3),
-                                                     'm'=>array('plot_bins'=>18,
-                                                                'plot_forecast_bins'=>3),
-                                                     'w'=>array('plot_bins'=>26,
-                                                                'plot_forecast_bins'=>3),
-                                                 ),
-                                 'plot_period'=>'m',
-                                 'plot_category'=>'sales',
-
-
-                                 'plot_data'=>array('product'=>array(
-                                                                  'label'=>_('Product Sales')
-                                                                          ,'page'=>'plot.php'
-                                                              ),
-
-                                                    'parts'=>array(
-                                                                'label'=>_('Stock History')
-                                                                        ,'parts'=>'plot.php'
-                                                            )
-                                                   ),
-
-
+                                 'block_view'=>'details',
 
                                  'mode'=>'pid',
                                  'tag'=>1,
@@ -2824,56 +2820,195 @@ $default_state=array(
 
                                       ),
                    'stores'=>array(
-
-                                'percentages'=>false,
                                 'block_view'=>'details',
-                                'view'=>'general',
-                                'period'=>'year',
-                                'mode'=>'all',
-                                'avg'=>'totals',
                                 'edit'=>'stores',
                                 'orders_view'=>'orders',
-                                'editing'=>false,
-                                'table'=>array(
-                                            'exchange_type'=>'day2day',
-                                            'exchange_value'=>1,
-                                            'show_default_currency'=>false,
-                                            'where'=>'where true',
-                                            'f_field'=>'code',
-                                            'f_value'=>'','f_show'=>false,
-                                            'order'=>'name',
-                                            'order_dir'=>'',
-                                            'sf'=>0,
-                                            'nr'=>25,
-                                            'csv_export'=>array(
-                                                             'code'=>true,
-                                                             'name'=>true,
-                                                             'departments'=>false,
-                                                             'families'=>false,
-                                                             'products'=>false,
-                                                             'discontinued'=>false,
-                                                             'new'=>false,
-                                                             'surplus'=>false,
-                                                             'ok'=>false,
-                                                             'low'=>false,
-                                                             'critical'=>false,
-                                                             'gone'=>false,
-                                                             'unknown'=>false,
-                                                             'sales_all'=>false,
-                                                             'sales_1y'=>false,
-                                                             'sales_1q'=>false,
-                                                             'sales_1m'=>false,
-                                                             'sales_1w'=>false,
-                                                             'profit_all'=>false,
-                                                             'profit_1y'=>false,
-                                                             'profit_1q'=>false,
-                                                             'profit_1m'=>false,
-                                                             'profit_1w'=>false
+                                'stores'=>array(
+                                             'percentages'=>false,
+                                             'view'=>'general',
+                                             'period'=>'year',
+                                             'mode'=>'all',
+                                             'avg'=>'totals',
+                                             'exchange_type'=>'day2day',
+                                             'exchange_value'=>1,
+                                             'show_default_currency'=>false,
+                                             'where'=>'where true',
+                                             'f_field'=>'code',
+                                             'f_value'=>'','f_show'=>false,
+                                             'order'=>'name',
+                                             'order_dir'=>'',
+                                             'sf'=>0,
+                                             'nr'=>25,
+                                             'csv_export'=>array(
+                                                              'code'=>true,
+                                                              'name'=>true,
+                                                              'departments'=>false,
+                                                              'families'=>false,
+                                                              'products'=>false,
+                                                              'discontinued'=>false,
+                                                              'new'=>false,
+                                                              'surplus'=>false,
+                                                              'ok'=>false,
+                                                              'low'=>false,
+                                                              'critical'=>false,
+                                                              'gone'=>false,
+                                                              'unknown'=>false,
+                                                              'sales_all'=>false,
+                                                              'sales_1y'=>false,
+                                                              'sales_1q'=>false,
+                                                              'sales_1m'=>false,
+                                                              'sales_1w'=>false,
+                                                              'profit_all'=>false,
+                                                              'profit_1y'=>false,
+                                                              'profit_1q'=>false,
+                                                              'profit_1m'=>false,
+                                                              'profit_1w'=>false
 
 
-                                                         )
+                                                          )
 
-                                        ),
+                                         ),
+                                                                'departments'=>array(
+                                                 'where'=>'where true',
+                                                 'f_field'=>'code',
+                                                 'f_value'=>'','f_show'=>false,
+                                                 'order'=>'name',
+                                                 'order_dir'=>'',
+                                                 'sf'=>0,
+                                                 'nr'=>25,
+                                                 'percentages'=>false,
+                                                 'view'=>'general',
+                                                 'period'=>'year',
+                                                 'percentage'=>0,
+                                                 'mode'=>'all',
+                                                 'avg'=>'totals',
+                                                 'csv_export'=>array(
+                                                                  'code'=>true,
+                                                                  'name'=>true,
+                                                                  'families'=>false,
+                                                                  'products'=>false,
+                                                                  'discontinued'=>false,
+                                                                  'new'=>false,
+                                                                  'surplus'=>false,
+                                                                  'ok'=>false,
+                                                                  'low'=>false,
+                                                                  'critical'=>false,
+                                                                  'gone'=>false,
+                                                                  'unknown'=>false,
+                                                                  'sales_all'=>false,
+                                                                  'sales_1y'=>false,
+                                                                  'sales_1q'=>false,
+                                                                  'sales_1m'=>false,
+                                                                  'sales_1w'=>false,
+                                                                  'profit_all'=>false,
+                                                                  'profit_1y'=>false,
+                                                                  'profit_1q'=>false,
+                                                                  'profit_1m'=>false,
+                                                                  'profit_1w'=>false
+
+
+                                                              )
+
+                                             ),
+
+                               'families'=>array(
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'','f_show'=>false,
+                                              'order'=>'name',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'percentages'=>false,
+                                              'view'=>'general',
+                                              'period'=>'year',
+                                              'percentage'=>0,
+                                              'mode'=>'all',
+                                              'avg'=>'totals',
+                                              'restrictions'=>'',
+                                              'csv_export'=>array(
+                                                               'code'=>true,
+                                                               'name'=>true,
+                                                               'families'=>false,
+                                                               'products'=>false,
+                                                               'discontinued'=>false,
+                                                               'new'=>false,
+                                                               'surplus'=>false,
+                                                               'ok'=>false,
+                                                               'low'=>false,
+                                                               'critical'=>false,
+                                                               'gone'=>false,
+                                                               'unknown'=>false,
+                                                               'sales_all'=>false,
+                                                               'sales_1y'=>false,
+                                                               'sales_1q'=>false,
+                                                               'sales_1m'=>false,
+                                                               'sales_1w'=>false,
+                                                               'profit_all'=>false,
+                                                               'profit_1y'=>false,
+                                                               'profit_1q'=>false,
+                                                               'profit_1m'=>false,
+                                                               'profit_1w'=>false
+
+
+                                                           )
+
+                                          ),
+                               'products'=>array(
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'','f_show'=>false,
+                                              'order'=>'name',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'percentages'=>false,
+                                              'view'=>'general',
+                                              'period'=>'year',
+                                              'percentage'=>0,
+                                              'mode'=>'all',
+                                              'avg'=>'totals',
+                                              'csv_export'=>array(
+                                                               'code'=>true,
+                                                               'name'=>true,
+                                                               'families'=>false,
+                                                               'products'=>false,
+                                                               'discontinued'=>false,
+                                                               'new'=>false,
+                                                               'surplus'=>false,
+                                                               'ok'=>false,
+                                                               'low'=>false,
+                                                               'critical'=>false,
+                                                               'gone'=>false,
+                                                               'unknown'=>false,
+                                                               'sales_all'=>false,
+                                                               'sales_1y'=>false,
+                                                               'sales_1q'=>false,
+                                                               'sales_1m'=>false,
+                                                               'sales_1w'=>false,
+                                                               'profit_all'=>false,
+                                                               'profit_1y'=>false,
+                                                               'profit_1q'=>false,
+                                                               'profit_1m'=>false,
+                                                               'profit_1w'=>false
+
+
+                                                           )
+
+                                          ),
+
+                                    'history'=>array(
+                                             'where'=>'where true',
+                                             'f_field'=>'abstract',
+                                             'f_value'=>'','f_show'=>false,
+                                             'order'=>'date',
+                                             'order_dir'=>'desc',
+                                             'sf'=>0,
+                                             'nr'=>25,
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'elements'=>''
+                                         ),
                                 'orders'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',

@@ -22,19 +22,16 @@ var Event   = YAHOO.util.Event;
 
 var current_store_period='<?php echo$_SESSION['state']['department']['period']?>';
 
-var period='period_<?php echo$_SESSION['state']['products']['period']?>';
-var avg='avg_<?php echo$_SESSION['state']['products']['avg']?>';
+function change_block(){
+ids=['details','products','categories','deals'];
+block_ids=['block_details','block_products','block_categories','block_deals'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
 
-var addtotals =function (){
-    //alert("caca");
-  var data={code:'<?php echo _('Totals')?>'};
-    tables.table0.addRow(data,3);
-
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-block_view&value='+this.id ,{});
 }
-
-
-   
-
 
 function change_info_period(period){
     var patt=new RegExp("^(year|month|all|week|quarter)$");
@@ -51,7 +48,6 @@ function change_info_period(period){
     }
 
 }
-
 function next_info_period(){
     if(current_store_period=='all')
         change_info_period('week');
@@ -64,10 +60,6 @@ function next_info_period(){
     else if(current_store_period=='year')    
         change_info_period('all');
 }
-
-
-
-
 function previous_info_period(){
     if(current_store_period=='all')
         change_info_period('year');
@@ -81,100 +73,12 @@ function previous_info_period(){
         change_info_period('quarter');
 }
 
-
-
-
-    var change_view=function(e){
-	tipo=this.id;
-	var table=tables['table0'];
-
-	table.hideColumn('name');
-	table.hideColumn('smallname');
-	
-	table.hideColumn('stock');
-	table.hideColumn('sales');
-	table.hideColumn('profit');
-	table.hideColumn('sold');
-	table.hideColumn('margin');
-	
-	table.hideColumn('parts');
-	table.hideColumn('supplied');
-	table.hideColumn('gmroi');
-		table.hideColumn('formated_record_type');  
-
-	table.hideColumn('family');
-	//table.hideColumn('dept');
-	table.hideColumn('expcode');  
-	table.hideColumn('state');
-	table.hideColumn('web');
-table.hideColumn('stock_state');
-	table.hideColumn('stock_forecast');
-	if(tipo=='sales'){
-	    table.showColumn('sold');
-	    table.showColumn('sales');
-	    table.showColumn('profit');
-	    table.showColumn('margin');
-	    table.showColumn('smallname');
-
-	    Dom.get('period_options').style.display='';
-	    Dom.get('avg_options').style.display='';
-	}else if(tipo=='general'){
-
-	    Dom.get('period_options').style.display='none';
-	    Dom.get('avg_options').style.display='none';
-	    table.showColumn('name');
-	    //table.showColumn('state');
-	    table.showColumn('web');
-	    table.showColumn('stock');
-	    table.showColumn('formated_record_type');  
-
-	}else if(tipo=='stock'){
-	    table.showColumn('stock');
-	    table.showColumn('stock_value');
-	    table.showColumn('smallname');
-	    table.showColumn('web');
-        table.showColumn('stock_state');
-        table.showColumn('stock_forecast');
-	    Dom.get('period_options').style.display='none';
-	    Dom.get('avg_options').style.display='none';
-	}else if(tipo=='parts'){
-	    table.showColumn('parts');
-	    table.showColumn('supplied');
-	    table.showColumn('gmroi');
-	    	    table.showColumn('smallname');
-
-	    Dom.get('period_options').style.display='none';
-	    Dom.get('avg_options').style.display='none';
-	    
-	}else if(tipo=='cats'){
-	    Dom.get('period_options').style.display='none';
-	    Dom.get('avg_options').style.display='none';
-	    table.showColumn('family');
-	  //  table.showColumn('dept');
-	    table.showColumn('expcode');
-	    table.showColumn('smallname');
-
-	}
-
-
-
-	Dom.get(table.view).className="";
-	Dom.get(tipo).className="selected";	
-	table.view=tipo;
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=products-view&value='+escape(tipo));
-    }
-
-
 var myRowFormatter = function(elTr, oRecord) {
     if (oRecord.getData('code') =='total') {
         Dom.addClass(elTr, 'total');
     }
     return true;
 }; 
-
-
-
-
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -193,25 +97,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var ColumnDefs = [ 
 				    {key:"code", label:"<?php echo _('Code')?>", width:87,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>",width:390,<?php echo(($_SESSION['state']['products']['view']=='general' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-								 ,{key:"smallname", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",className:"aleft",<?php echo($_SESSION['state']['products']['view']=='general'?'hidden:true,':'')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"formated_record_type", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['products']['view']=='general' or $_SESSION['state']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //	,{key:"state", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['products']['view']=='general' or $_SESSION['state']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"web", label:"<?php echo _('Web')?>",width:90,<?php echo(($_SESSION['state']['products']['view']=='general' or $_SESSION['state']['products']['view']=='stock' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"sold", label:"<?php echo _('Sold')?>",width:100,<?php echo($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:100,<?php echo($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:100,<?php echo($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"margin", label:"<?php echo _('Margin')?>",width:100,<?php echo($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock", label:"<?php echo _('Available')?>", width:65,sortable:true,className:"aright",<?php echo(($_SESSION['state']['products']['view']=='stock' or $_SESSION['state']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_state", label:"<?php echo _('State')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['products']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_forecast", label:"<?php echo _('Forecast')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['products']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",width:390,<?php echo(($_SESSION['state']['family']['products']['view']=='general' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								 ,{key:"smallname", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",className:"aleft",<?php echo($_SESSION['state']['family']['products']['view']=='general'?'hidden:true,':'')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"formated_record_type", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //	,{key:"state", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"web", label:"<?php echo _('Web')?>",width:90,<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='stock' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sold", label:"<?php echo _('Sold')?>",width:100,<?php echo($_SESSION['state']['family']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:100,<?php echo($_SESSION['state']['family']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:100,<?php echo($_SESSION['state']['family']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"margin", label:"<?php echo _('Margin')?>",width:100,<?php echo($_SESSION['state']['family']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock", label:"<?php echo _('Available')?>", width:65,sortable:true,className:"aright",<?php echo(($_SESSION['state']['family']['products']['view']=='stock' or $_SESSION['state']['family']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_state", label:"<?php echo _('State')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['family']['products']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_forecast", label:"<?php echo _('Forecast')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['family']['products']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
-				   ,{key:"parts", label:"<?php echo _('Parts')?>",width:130,<?php echo($_SESSION['state']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"supplied", label:"<?php echo _('Supplied by')?>",width:130,<?php echo($_SESSION['state']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:100,sortable:true,className:"aright",<?php echo(($_SESSION['state']['products']['view']=='parts' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   ,{key:"parts", label:"<?php echo _('Parts')?>",width:130,<?php echo($_SESSION['state']['family']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"supplied", label:"<?php echo _('Supplied by')?>",width:130,<?php echo($_SESSION['state']['family']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:100,sortable:true,className:"aright",<?php echo(($_SESSION['state']['family']['products']['view']=='parts' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['family']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['family']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 
 			       ];
@@ -256,7 +160,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 formatRow: myRowFormatter,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['products']['table']['nr']+1?>,containers : 'paginator0', 
+									       rowsPerPage:<?php echo$_SESSION['state']['family']['products']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -266,8 +170,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['products']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['products']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['family']['products']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['family']['products']['order_dir']?>"
 								     }
 							   ,dynamicData : true  
 
@@ -277,10 +181,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginator = mydoBeforePaginatorChange;
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['family']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['table']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['family']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['products']['f_value']?>'};
 
 	    
-	    this.table0.view='<?php echo$_SESSION['state']['products']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['family']['products']['view']?>';
 
 		
 
@@ -291,75 +195,67 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+function init(){
+
+    Event.addListener(['details','products','categories','deals'], "click",change_block);
 
 
- function init(){
+    Event.addListener('export_csv0', "click",download_csv,'products_in_family');
+    Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'products_in_family'});
+    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	csvMenu.render();
+	csvMenu.subscribe("show", csvMenu.focus);
+    Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
 
-  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'products_in_family');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'products_in_family'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+    init_search('products_store');
+ 
+ 
+    Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+    Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+    get_thumbnails({tipo:'products',parent:'family'});
 
-  init_search('products_store');
- 
- 
- YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- 
- 
- 
- get_thumbnails({tipo:'products',parent:'family'});
 
-ids=['general','sales','stock','parts','cats'];
- YAHOO.util.Event.addListener(ids, "click",change_view);
- ids=['period_all','period_year','period_quarter','period_month','period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,0);
- ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,0);
- ids=['table_type_thumbnail','table_type_list'];
- YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
+
+
+    ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
+    Event.addListener(ids, "click",change_product_view,{'table_id':0,'parent':'family'});
+    ids=['product_period_all','product_period_year','product_period_quarter','product_period_month','product_period_week'];
+    Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'product'});
+    ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
+    Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'product'});
+    ids=['table_type_thumbnail','table_type_list'];
+    Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
  
      
-YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
-YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
+    Event.addListener("info_next", "click",next_info_period,0);
+    Event.addListener("info_previous", "click",previous_info_period,0);
 
     
-YAHOO.util.Event.addListener('details', "click",change_details,'family');
-//YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
+    Event.addListener('details', "click",change_details,'family');
+    //Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 
 
- YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
- YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
+    Event.addListener('product_submit_search', "click",submit_search,'product');
+    Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
 
+}
 
-
- }
-
-
-
-
-YAHOO.util.Event.onDOMReady(init);
-
-
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
+Event.onDOMReady(init);
+Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
-
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
+Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-YAHOO.util.Event.onContentReady("info_period_menu", function () {
+Event.onContentReady("info_period_menu", function () {
 	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
+	 Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });

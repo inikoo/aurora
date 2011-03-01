@@ -9,14 +9,23 @@ $title.=sprintf(',%s:"%s"',$key,$value);
 $title=preg_replace('/^,/','',$title);
 ?>
 
-  var Event = YAHOO.util.Event;
-     var Dom   = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
 
- var info_period_title={<?php echo $title ?>};
-  var current_store_period='<?php echo$_SESSION['state']['family']['period']?>';
-    var plot='<?php echo $_SESSION['state']['product']['plot']?>';
-  var Dom   = YAHOO.util.Dom;
+var info_period_title={<?php echo $title ?>};
+var current_store_period='<?php echo $_SESSION['state']['family']['products']['period']?>';
 
+function change_block(){
+ids=['details','customers','orders','timeline'];
+block_ids=['block_details','block_customers','block_orders','block_timeline'];
+
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-block_view&value='+this.id ,{});
+}
 
 function change_info_period(period){
     var patt=new RegExp("^(year|month|all|week|quarter)$");
@@ -62,12 +71,9 @@ function previous_info_period(){
 }
 
 
-
- 
-
-      YAHOO.util.Event.addListener(window, "load", function() {
+YAHOO.util.Event.addListener(window, "load", function() {
 	      tables = new function() {
-		<?php if($user->can_view('orders'))  {?>
+		  <?php if($user->can_view('orders'))  {?>
 		      
 		      
 		      var tableid=0;
@@ -324,6 +330,10 @@ var  change_web_status =function(tipo){
       }
 
 function init(){
+
+    Event.addListener(['details','customers','orders','timeline'], "click",change_block);
+
+
  init_search('products_store');
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
@@ -346,69 +356,12 @@ YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 	     YAHOO.util.Event.addListener("web_status", "click", oMenu.show, null, oMenu);
     });
 
-     var change_view = function (e){
-	 block=this.getAttribute('block');
-	 state=this.getAttribute('state');
-	 new_title=this.getAttribute('atitle');
-	 old_title=this.getAttribute('title');
-
-	 this.setAttribute('title',new_title);
-	 this.setAttribute('atitle',old_title);
-	 
-	 if(state==1){
-	     Dom.get('block_'+block).style.display='none';
-	     this.setAttribute('state',0);
-	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', .2);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=0',{});
-	 }else{
-	     Dom.get('block_'+block).style.display='';
-	     this.setAttribute('state',1);
-	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1',{});
-	     
-	 }
-
-
-     }
+   
 
 
 
 
-  var change_plot = function (e){
-
-
-      Dom.get("the_plot").src='plot.php?tipo='+this.id;
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update_plot_product&value='+this.id,{
-	      success:function(o) {
-		  // alert(o.responseText)
-		      var r =  YAHOO.lang.JSON.parse(o.responseText);
-		  if (r.state == 200) {
-		      Dom.get('plot_months').value=r.months;
-		      if(r.sigma)
-			  Dom.get('plot_radio_1').checked;
-		      else
-			  Dom.get('plot_radio_2').checked;
-		    
-		}
-	      
-	      }
-	      
-	  }
-	  );
-      
-      this.className='selected';
-      Dom.get(plot).className='opaque';
-      plot=this.id;
-     }
-
-     var ids = ["change_view_details","change_view_plot","change_view_orders","change_view_customers","change_view_stock_history"]; 
-     Event.addListener(ids,"click",change_view);
-     var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_month_outers" ,"product_quarter_outers","product_year_outers","product_stock_history"]; 
-     Event.addListener(ids,"click",change_plot);
-
-     Event.addListener('product_submit_search', "click",submit_search,'product');
-     Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
-
+    
 
 
 }
