@@ -11,7 +11,24 @@
 <div id="result">
 {foreach from=$list key=list_key item=list_item name=foo}
 <tr><td width="30%">
-<input type="hidden" style="width:25px;" name="seq{$smarty.foreach.foo.index+1}" id="txt{$smarty.foreach.foo.index+1}" value="{$smarty.foreach.foo.index+1}" readonly="readonly"><input type="button" class="up_b" onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index-1}); />&nbsp;<input type="button" class="down_b" onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index+1}); /></td>
+<table><tr><td>
+<input type="hidden" style="width:25px;" name="seq{$smarty.foreach.foo.index+1}" id="txt{$smarty.foreach.foo.index+1}" value="{$smarty.foreach.foo.index+1}" readonly="readonly"></td>
+<td>
+{if $smarty.foreach.foo.index==0}
+<input type="button" class="up_b_disabled"/>
+{else}
+<input type="button" class="up_b" onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index-1}); />
+{/if}
+</td>
+<td>
+{if $smarty.foreach.foo.index eq count}
+<input type="button" class="down_b_disabled"/>
+{else}
+<input type="button" class="down_b" onClick=myfunc({$smarty.foreach.foo.index},{$smarty.foreach.foo.index+1}); />
+{/if}{$count}-{$smarty.foreach.foo.index}
+</td></tr></table>
+
+</td>
 <td width="70%">{$list_key}</td>
 </tr>
 {/foreach}
@@ -36,7 +53,7 @@
 </tr/>
 
 <tr>
-<td colspan="2"><input type="button" name="prev" id="prev" class="prev" onClick=go("export_wizard.php?subject={$map_type}&subject_key={$customer_id}"); /> <input type="SUBMIT" name="SUBMIT" id="SUBMIT" class="export_b" value="" ></td>
+<td colspan="2"><input type="button" name="prev" id="prev" class="prev" onClick=go("export_wizard.php?subject={$map_type}&subject_key={$customer_id}"); /> <input type="SUBMIT" name="SUBMIT" id="SUBMIT" class="export_b" value="" > <input type="button" name="return" id="return" class="return" value="" onClick=go("customer.php?p=cs&id=={$customer_id}"); ></td>
 
 </tr>
 </table>
