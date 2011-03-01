@@ -101,44 +101,45 @@ $("#Postcard").css("display", "block");
 
 <table id="Newsletter1" style="display:none">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Newsletter Template 1</b></td></tr>
-<form name="Newsletter1" action="newsletter_template1.php" method="get">
+
+<form name="basic1" action="newsletter_template1.php" method="post" enctype="multipart/form-data">
 
 <tr>
 <td style="float:left;">Header:</td>
-<td><input type="text" name="news1header" id="template header">
+<td><input type="text" name="basicheader" id="template header">
 
 </td></tr>
 <tr><td style="float:left;">Subtitle:</td>
-<td><input type="text" name="news1title" id="template header">
+<td><input type="text" name="basictitle" id="template header">
 </td></tr>
 
 <tr><td style="float:left;">Paragraph Block 1:</td>
-<td><textarea cols="30" rows="4" name="news1PBlock1"></textarea>
+<td><textarea cols="30" rows="4" name="basicPBlock1"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 1 Image:</td>
-<td><input type="file" name="news1PBlock1image" id="news1PBlock1image" size=20>
+<td><input type="file" name="basicPBlock1image" >
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 2:</td>
-<td><textarea cols="30" rows="4" name="news1PBlock2"></textarea>
+<td><textarea cols="30" rows="4" name="basicPBlock2"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 2 Image:</td>
-<td><input type="file" name="news1PBlock2image" id="news1PBlock2image" size=20>
+<td><input type="file" name="basicPBlock21image">
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 3:</td>
-<td><textarea cols="30" rows="4" name="news1PBlock3"></textarea>
+<td><textarea cols="30" rows="4" name="basicPBlock3"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 3 Image:</td>
-<td><input type="file" name="news1PBlock3image" id="news1PBlock3image" size=20>
+<td><input type="file" name="basicPBlock3image">
 
 </td></tr>
 <tr><td></td>
-<td style="float:right;" ><br><input type="submit" name="newsletter1" id="newsletter1" value="Proceed">
-
+<td style="float:right;" ><br><input type="submit" name="basic" id="basic" value="Proceed">
+		
 </td></tr>
 
 </form>
