@@ -52,7 +52,7 @@ foreach($ValueArray as $key2=>$val2){
 //print_r($FinalArray);
 
 $_SESSION['list'] = $FinalArray;
-$html = '';
+$op = '';
 //$count = 0;
 //$num=$count+1;
 //$prv = $count - 1;
@@ -65,7 +65,8 @@ $html = '';
 //$count++;
 
 //}
-echo $html;
+
+echo $op;
 
 
 unset($KeyArray);

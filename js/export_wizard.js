@@ -61,50 +61,57 @@ function stateChanged()
 
 // Other Functions
 // =================
+function go(url){
+	window.location = url;
+	return false;
+}
 
 function saveMap(){
-var x=document.getElementById('save').checked;
-if(x!=true){
-	document.getElementById('maps').style.display='none';
-}else{
-	document.getElementById('maps').style.display='block';
-	document.getElementById('map_name').focus();
+	var x=document.getElementById('save').checked;
+	if(x!=true){
+		document.getElementById('maps').style.display='none';
+	}else{
+		document.getElementById('maps').style.display='block';
+		document.getElementById('map_name').focus();
+	}
 }
 
+function validate1(n){
+var n;
+var j=0;
+     for (i = 0; i < n; i++) {
+	var fld = 'fld'+i;
+	 if (document.getElementById(fld).checked == true) {
+		j++;
+	}
+    }
+	//alert(j);
+	if(j==0){
+	alert('Please select minimum one field to export');
+	window.scroll(0,0);
+	return false;
+	}
 }
 
-function validate(){
-
-var x=document.getElementById('save').checked;
-
+function validate2(){
+	var x=document.getElementById('save').checked;
 	if (x==true){
-
 		var map_name = document.getElementById('map_name').value.trim();
 		var map_desc = document.getElementById('map_desc').value.trim();
-
 		if(map_name == ''){
-
 			alert("Enter a Map Name");
 			document.getElementById('map_name').focus();
 			return false;
 			exit;
 		}
-
 		if(map_desc == ''){
-
 			alert("Enter Map Description");
 			document.getElementById('map_desc').focus();
 			return false;
 			exit;
 		}
-
 		return true;
-
 	}
 }
 
-function go(url){
-	window.location = url;
-	return false;
-}
 

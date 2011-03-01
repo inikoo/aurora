@@ -86,6 +86,7 @@ if(isset($_SESSION['list'])){
 }
 //print_r($list);
 $smarty->assign('customer_id',$customer_id);
+$smarty->assign('param',count($list)-1);
 $smarty->assign('list',$list);
 
 $smarty->display('export_wizard.tpl');
