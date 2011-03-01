@@ -53,9 +53,12 @@ $max_session_time=$myconf['max_session_time'];
 $max_session_time_in_milliseconds=1000*$max_session_time;
 $session = new Session($max_session_time,1,100);
 
+
+
+
 //print_r($session);
 //print '//'.session_id( );
-//print '//'.$_SESSION['state']['store']['plot'];
+//print_r($_SESSION['state']);
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 $smarty->template_dir = $myconf['template_dir'];
@@ -158,7 +161,8 @@ $smarty->assign('page_layout','doc4');
 $smarty->assign('timezone',date("e P"));
 
 include_once('set_state.php');
-
+//print_r($_SESSION['state']['department']);
+//$_SESSION['state']['department']['id']=3;
 $smarty->assign('user',$user->data['User Alias']);
 $user->read_groups();
 $user->read_rights();
