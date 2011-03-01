@@ -39,7 +39,7 @@
 				<td bgcolor="#FFFFFF" valign="top" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
 			<p><br>
 			<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;padding-left:10px;">
-			{$contenttitle}</span><br><br>
+			{$contenttitle}</span>
 				
 				 									
 				
@@ -49,16 +49,16 @@
 			
 			</p>
                         <p class="basic_template"><img height="107" width="450" src="{$image1}"></p>
-			<br>
+			
 		          <p class="basic_template">
 			{$block2}
-			</p><br>
+			</p>
                         <p class="basic_template"><img height="107" width="450" src="{$image2}"></p>	
                         
 			 <p class="basic_template">
 					
 			{$block3}
-			</p><br>
+			</p>
 			<p class="basic_template"><img height="107" width="450" src="{$image3}"></p>	
 
 				</td>
