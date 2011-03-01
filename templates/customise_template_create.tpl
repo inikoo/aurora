@@ -49,7 +49,7 @@ $("#Postcard").css("display", "block");
 <table id="Basic_template" style="display:block;">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Basic Template</b></td></tr>
 
-<form name="basic" action="basic_template.php" method="post">
+<form name="basic1" action="basic_template.php" method="post" enctype="multipart/form-data">
 
 <tr>
 <td style="float:left;">Header:</td>
@@ -65,7 +65,7 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td style="float:left;">Block 1 Image:</td>
-<td><input type="file" name="basicPBlock1image" id="basicPBlock1image" size=20>
+<td><input type="file" name="basicPBlock1image" >
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 2:</td>
@@ -73,7 +73,7 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td style="float:left;">Block 2 Image:</td>
-<td><input type="file" name="basicPBlock2image" id="basicPBlock2image" size=20>
+<td><input type="file" name="basicPBlock21image">
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 3:</td>
@@ -81,7 +81,7 @@ $("#Postcard").css("display", "block");
 
 </td></tr>
 <tr><td style="float:left;">Block 3 Image:</td>
-<td><input type="file" name="basicPBlock3image" id="basicPBlock3image" size=20>
+<td><input type="file" name="basicPBlock3image">
 
 </td></tr>
 <tr><td></td>
@@ -101,7 +101,7 @@ $("#Postcard").css("display", "block");
 
 <table id="Newsletter1" style="display:none">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Newsletter Template 1</b></td></tr>
-<form name="Newsletter1" action="newsletter_template1.php" method="post">
+<form name="Newsletter1" action="newsletter_template1.php" method="get">
 
 <tr>
 <td style="float:left;">Header:</td>

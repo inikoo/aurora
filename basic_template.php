@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
@@ -16,7 +18,8 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+                 'css/marketing_campaigns.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -44,31 +47,57 @@ $js_files=array(
 		$header = $_REQUEST['basicheader'];
 		$title = $_REQUEST['basictitle'];
 		$block1 = $_REQUEST['basicPBlock1'];
-		$image1 = $_REQUEST['basicPBlock1image'];
+		
 		$block2 = $_REQUEST['basicPBlock2'];
-		$image2 = $_REQUEST['basicPBlock2image'];
+		
 		$block3 = $_REQUEST['basicPBlock3'];
-		$image3 = $_REQUEST['basicPBlock3image'];
+		
+	
+		
+		
+	
 
 		$_SESSION['header'] = $header;
-		$_SESSION['title'] = $title;
+		$_SESSION['contenttitle'] = $title;
 		$_SESSION['block1'] = $block1;
-		$_SESSION['image1'] = $image1;
+		
 		$_SESSION['block2'] = $block2;
-		$_SESSION['image2'] = $image2;
+	
 		$_SESSION['block3'] = $block3;
-		$_SESSION['image3'] = $image3;		
+			
+
 
 	}
 
+if($_FILES['basicPBlock1image']["name"]!='' || $_FILES['basicPBlock21image']["name"]!='' || $_FILES['basicPBlock3image']["name"]!='')
+		{
+      move_uploaded_file($_FILES["basicPBlock1image"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["basicPBlock1image"]["name"]);
+      $image1="app_files/uploads/" . $_FILES["basicPBlock1image"]["name"];
+
+	      move_uploaded_file($_FILES["basicPBlock21image"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["basicPBlock21image"]["name"]);
+      $image2="app_files/uploads/" . $_FILES["basicPBlock21image"]["name"];
+
+      move_uploaded_file($_FILES["basicPBlock3image"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["basicPBlock3image"]["name"]);
+      $image3="app_files/uploads/" . $_FILES["basicPBlock3image"]["name"];
+
+
+$smarty->assign('image1',$image1);
+$smarty->assign('image2',$image2);
+$smarty->assign('image3',$image3);
+
+	
+		}
 $smarty->assign('header',$_SESSION['header']);
-$smarty->assign('title',$_SESSION['title']);
+$smarty->assign('contenttitle',$_SESSION['contenttitle']);
 $smarty->assign('block1',$_SESSION['block1']);
-$smarty->assign('image1',$_SESSION['image1']);
+
 $smarty->assign('block2',$_SESSION['block2']);
-$smarty->assign('image2',$_SESSION['image2']);
+
 $smarty->assign('block3',$_SESSION['block3']);
-$smarty->assign('image3',$_SESSION['image3']);
+
 
 	
 
