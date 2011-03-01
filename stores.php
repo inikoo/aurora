@@ -93,7 +93,8 @@ $js_files=array(
               'table_common.js.php',
               'js/dropdown.js',
               'js/edit_common.js',
-                            'js/csv_common.js'
+              'js/csv_common.js',
+              'js/assets_common.js'
 
           );
 

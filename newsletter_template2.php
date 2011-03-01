@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
@@ -16,7 +18,8 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+                 'css/marketing_campaigns.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -38,44 +41,67 @@ $js_files=array(
 		'external_libs/ckeditor/ckeditor.js',
 		'js/jquery-1.4.4.js'
 		);
-		
-
-if(isset($_REQUEST['newsletter2']) && $_REQUEST['newsletter2'] == 'Proceed')
+	if(isset($_REQUEST['basic']) && $_REQUEST['basic'] == 'Proceed')
 	{
 		
-		$news2header = $_REQUEST['news2header'];
-		$news2title = $_REQUEST['news2title'];
-		$news2block1 = $_REQUEST['news2PBlock1'];
-		$news2image1 = $_REQUEST['news2PBlock1image'];
-		$news2block2 = $_REQUEST['news2PBlock2'];
-		$news2image2 = $_REQUEST['news2PBlock2image'];
-		$news2block3 = $_REQUEST['news2PBlock3'];
-		$image3 = $_REQUEST['news2PBlock3image'];
+		$header = $_REQUEST['newsheader'];
+		$title = $_REQUEST['newstitle'];
+		$block1 = $_REQUEST['newsPBlock1'];
+		
+		$block2 = $_REQUEST['newsPBlock2'];
+		
+		$block3 = $_REQUEST['newsPBlock3'];
+		
+	
+		
+		
+	
 
-		$_SESSION['news2header'] = $news2header;
-		$_SESSION['news2title'] = $news2title;
-		$_SESSION['news2block1'] = $news2block1;
-		$_SESSION['news2image1'] = $news2image1;
-		$_SESSION['news2block2'] = $news2block2;
-		$_SESSION['news2image2'] = $news2image2;
-		$_SESSION['news2block3'] = $news2block3;
-		$_SESSION['news2image3'] = $news2image3;		
+		$_SESSION['header'] = $header;
+		$_SESSION['contenttitle'] = $title;
+		$_SESSION['block1'] = $block1;
+		
+		$_SESSION['block2'] = $block2;
+	
+		$_SESSION['block3'] = $block3;
+			
+
 
 	}
 
-$smarty->assign('news2header',$_SESSION['news2header']);
-$smarty->assign('news2title',$_SESSION['news2title']);
-$smarty->assign('news2block1',$_SESSION['news2block1']);
-$smarty->assign('news2image1',$_SESSION['news2image1']);
-$smarty->assign('news2block2',$_SESSION['news2block2']);
-$smarty->assign('news2image2',$_SESSION['news2image2']);
-$smarty->assign('news2block3',$_SESSION['news2block3']);
-$smarty->assign('news2image3',$_SESSION['news2image3']);
+if($_FILES['newsPBlock1image']["name"]!='' || $_FILES['newsPBlock21image']["name"]!='' || $_FILES['newsPBlock3image']["name"]!='')
+		{
+      move_uploaded_file($_FILES["newsPBlock1image"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["newsPBlock1image"]["name"]);
+      $image1="app_files/uploads/" . $_FILES["newsPBlock1image"]["name"];
+
+	      move_uploaded_file($_FILES["newsPBlock21image"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["newsPBlock21image"]["name"]);
+      $image2="app_files/uploads/" . $_FILES["newsPBlock21image"]["name"];
+
+      move_uploaded_file($_FILES["newsPBlock3image"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["newsPBlock3image"]["name"]);
+      $image3="app_files/uploads/" . $_FILES["newsPBlock3image"]["name"];
+
+
+$smarty->assign('image1',$image1);
+$smarty->assign('image2',$image2);
+$smarty->assign('image3',$image3);
 
 	
-		
+		}
+$smarty->assign('header',$_SESSION['header']);
+$smarty->assign('contenttitle',$_SESSION['contenttitle']);
+$smarty->assign('block1',$_SESSION['block1']);
 
-$smarty->assign('title', 'Newsletter Template 2');
+$smarty->assign('block2',$_SESSION['block2']);
+
+$smarty->assign('block3',$_SESSION['block3']);
+
+
+	
+
+$smarty->assign('title','Newsletter2 Preview');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
