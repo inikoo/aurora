@@ -54,10 +54,10 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(!isset($_POST['SUBMIT'])){
+/*if(!isset($_POST['SUBMIT'])){
 	header('Location: index.php');
 	exit;
-}
+}*/
 
 if(!isset($_REQUEST['subject_key'])){
 	header('Location: index.php');
