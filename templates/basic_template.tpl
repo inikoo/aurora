@@ -21,58 +21,46 @@
 {/literal}
 
 
-	<table width="100%" cellpadding="10" cellspacing="0" class="backgroundTable" bgcolor='#99CC00' >
+	<table width="580" cellpadding="10" cellspacing="0" class="backgroundTable" bgcolor='#99CC00' >
 		<tr>
 			<td valign="top" align="center">
-			<table width="550" cellpadding="0" cellspacing="0">
-				<tr>
-				<td style="background-color:#FFCC66;border-top:0px solid #000000;border-bottom:1px solid #FFFFFF;text-align:center;" align="center">
-				<span style="font-size:10px;color:#996600;line-height:200%;font-family:verdana;text-decoration:none;">Email not displaying correctly? 
-				<a href="*|ARCHIVE|*" style="font-size:10px;color:#996600;line-height:200%;font-family:verdana;text-decoration:none;">View it in your 					browser.</a>
-				</span>
-				</td>
-				</tr>
+			<table width="580" cellpadding="0" cellspacing="0">
+				
  
 				<tr>
 				<td style="background-color:#FFFFFF;border-top:0px solid #333333;border-bottom:10px solid #FFFFFF;">
 				<center><a href="">
-				<IMG id=editableImg1 SRC="img/logo_header.jpg" BORDER="0" title="Your Company"  alt="Your Company" align="center"></a></center></td>
+				<IMG id=editableImg1 SRC="img/logo_header.jpg" BORDER="0" title=""  alt="" align="center"><h1 style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;padding-left:10px;">{$header}</h1</a></center></td>
 				</tr>
 			</table>
-
-			<table width="550" cellpadding="20" cellspacing="0" bgcolor="#FFFFFF">
+                      
+			<table width="580" cellpadding="20" cellspacing="0" bgcolor="#FFFFFF">
 				<tr>
 				<td bgcolor="#FFFFFF" valign="top" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
-			<p>
-			<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;">
-			Genetically Mutated Bananas: Finally</	span><br>
-			<span style="font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;">
-			Quisque dignissim dictum ante</span><br>
-			Lorem ipsum dolor sit amet, <a href="#">consectetuer adipiscing elit</a>. Sed at erat. Phasellus condimentum. 
-			Nullam sed magna. Donec quis tellus in neque congue porttitor. Proin sit amet ligula id leo porta rutrum. Lorem ipsum dolor sit amet, 				consectetuer adipiscing elit. In suscipit, pede a rutrum malesuada, lacus massa euismod neque, a hendrerit justo ante at eros. 
-			<a href="#">Clickitus heritus.</a>
-			</p>
+			<p><br>
+			<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;padding-left:10px;">
+			{$contenttitle}</span>
+				
+				 									
+				
 
-			<p>
-			<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;">
-			Tools: Putting Those Opposable Thumbs To Use!</span><br>
-			<span style="font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;">
-			Quisque dignissim dictum ante</span><br>
 
-			Lorem ipsum dolor sit amet, <a href="#">consectetuer adipiscing elit</a>. Sed at erat. Phasellus condimentum. 
-			Nullam sed magna. Donec quis tellus in neque congue porttitor. Proin sit amet ligula id leo porta rutrum. Lorem ipsum dolor sit amet, 				consectetuer adipiscing elit. In suscipit, pede a rutrum malesuada, lacus massa euismod neque, a hendrerit justo ante at eros. 
-			<a href="#">Clickitus heritus.</a>
+			 <p class="basic_template">{$block1}</p>
+			
 			</p>
+                        <p class="basic_template"><img height="107" width="450" src="{$image1}"></p>
+			
+		          <p class="basic_template">
+			{$block2}
+			</p>
+                        <p class="basic_template"><img height="107" width="450" src="{$image2}"></p>	
+                        
+			 <p class="basic_template">
+					
+			{$block3}
+			</p>
+			<p class="basic_template"><img height="107" width="450" src="{$image3}"></p>	
 
-			<p>
-			<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;">
-			How-to: Build Your Own Coconut Car In 30 Days</span><br>
-			<span style="font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;">
-			Quisque dignissim dictum ante</span><br>
-			Lorem ipsum dolor sit amet, <a href="#">consectetuer adipiscing elit</a>. Sed at erat. Phasellus condimentum. 
-			Nullam sed magna. Donec quis tellus in neque congue porttitor. Proin sit amet ligula id leo porta rutrum. Lorem ipsum dolor sit amet, 				consectetuer adipiscing elit. In suscipit, pede a rutrum malesuada, lacus massa euismod neque, a hendrerit justo ante at eros. 
-			<a href="#">Clickitus heritus.</a>
-			</p>
 				</td>
 				</tr>
 
