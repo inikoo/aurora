@@ -110,6 +110,7 @@ else{
 $smarty->assign('customer_id',$customer_id);
 $smarty->assign('map_type',$map_type);
 $smarty->assign('list',$exported_data);
+$smarty->assign('count', count($exported_data)-1);
 
 $smarty->display('export_wizard_step2.tpl');
 
