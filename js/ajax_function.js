@@ -28,6 +28,7 @@ function get_default(v) {
 function getPrev(v,limit) {
  var v;
 	
+	alert(document.getElementById('ignore_message').innerHTML);
 	
 	document.getElementById('ignore_message').innerHTML="";
 	var prevArray = new Array();
@@ -55,6 +56,7 @@ function getPrev(v,limit) {
 
 function getNext(v,num) {
  var v;
+	alert(document.getElementById('ignore_message').innerHTML);
 document.getElementById('ignore_message').innerHTML="";
 
  var myArray = new Array();
@@ -93,6 +95,7 @@ function getIgnore(v) {
 				
 		}
 	
+	alert(document.getElementById('ignore_message').innerHTML);
 
  var req = Inint_AJAX();
  req.onreadystatechange = function () {

@@ -23,7 +23,8 @@ switch ($tipo) {
 case('customers'):
 $list_name=$_REQUEST['textValue'];
 $list_type=$_REQUEST['typeValue'];
-echo "List \"".$list_name."\" of type \"".$list_type."\" is saved";
+// echo List \"".$list_name."\" of type \"".$list_type."\" is saved";
+
     if (!$user->can_view('customers'))
         exit();
     list_customers();
@@ -771,9 +772,10 @@ $metadata_sql=sprintf("update `Customer List Dimension` set `Customer List Metad
 //echo "<br>updatesql=".$metadata_sql;
 $metadata_query=mysql_query($metadata_sql);
 }
-if($list_type=='static')
-{$customer_list_key=mysql_fetch_array(mysql_query("select max(`Customer List Key`) from `Customer List Dimension` order by `Customer List Creation Date` DESC"));
+$customer_list_key=mysql_fetch_array(mysql_query("select max(`Customer List Key`) from `Customer List Dimension` order by `Customer List Creation Date` DESC"));
 $customer_list_id=$customer_list_key[0];
+if($list_type=='static')
+{
 $list_sql2=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
                          $customer_list_id,
                          $customer_key
@@ -783,6 +785,10 @@ $list_query2=mysql_query($list_sql2);
 }
   
  }
+if($list_type=='static')
+echo "<a href=customer_list_static.php?id=".$customer_list_id.">List \"".$list_name."\" of type \"".$list_type."\" is saved</a>";
+else
+echo "<a href=customer_list_dynamic.php?id=".$customer_list_id.">List \"".$list_name."\" of type \"".$list_type."\" is saved</a>";
     mysql_free_result($result);
 //print_r($dataid);//-----------------------------------------------------------------------------------------------------
 /*$response=array('resultset'=>
