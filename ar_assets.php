@@ -2685,11 +2685,14 @@ function list_departments() {
         $conf2=$_SESSION['state']['store']['departments'];
 
         $conf_table='store';
-    } else {
+    } elseif ($parent=='none') {
 
-        $conf=$_SESSION['state']['store']['table'];
-        $conf2=$_SESSION['state']['store'];
-        $conf_table='departments';
+        $conf=$_SESSION['state']['stores']['departments'];
+        $conf2=$_SESSION['state']['store']['departments'];
+        $conf_table='stores';
+    }else{
+    
+    exit;
     }
 
 
@@ -5432,7 +5435,7 @@ function list_families() {
 
     if ($parent=='department') {
 
-        $conf=$_SESSION['state']['department'];
+        $conf=$_SESSION['state']['department']['families'];
         $conf_table='department';
 
     } elseif ($parent=='store') {
@@ -5440,10 +5443,13 @@ function list_families() {
         $conf=$_SESSION['state']['store']['families'];
         $conf_table='store';
 
-    }else {
+    }elseif ($parent=='none') {
 
-        $conf=$_SESSION['state']['families'];
-        $conf_table='families';
+        $conf=$_SESSION['state']['stores']['families'];
+        $conf_table='stores';
+    }else{
+    
+    return;
     }
 
 
@@ -5538,7 +5544,7 @@ function list_families() {
 
 
     
-  
+  //print_r($_SESSION['state']['department']);
 
 
 
@@ -5723,7 +5729,8 @@ function list_families() {
     $sum_new=0;
     $sum_todo=0;
     $sql="select sum(`Product Family In Process Products`) as sum_todo,sum(`Product Family For Public Sale Products`) as sum_active, sum(`Product Family Discontinued Products`) as sum_discontinued  from `Product Family Dimension`  $where $wheref ";
-    $result=mysql_query($sql);
+
+   $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_discontinued=$row['sum_discontinued'];
         $sum_active=$row['sum_active'];
@@ -6157,7 +6164,7 @@ function list_families() {
 
 function list_stores() {
 
-    $conf=$_SESSION['state']['stores']['table'];
+    $conf=$_SESSION['state']['stores']['stores'];
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -6226,35 +6233,35 @@ function list_stores() {
 
     if (isset( $_REQUEST['percentages'])) {
         $percentages=$_REQUEST['percentages'];
-        $_SESSION['state']['stores']['percentages']=$percentages;
+        $_SESSION['state']['stores']['stores']['percentages']=$percentages;
     } else
-        $percentages=$_SESSION['state']['stores']['percentages'];
+        $percentages=$_SESSION['state']['stores']['stores']['percentages'];
 
 
 
     if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
-        $_SESSION['state']['stores']['period']=$period;
+        $_SESSION['state']['stores']['stores']['period']=$period;
     } else
-        $period=$_SESSION['state']['stores']['period'];
+        $period=$_SESSION['state']['stores']['stores']['period'];
 
     if (isset( $_REQUEST['avg'])) {
         $avg=$_REQUEST['avg'];
-        $_SESSION['state']['stores']['avg']=$avg;
+        $_SESSION['state']['stores']['stores']['avg']=$avg;
     } else
-        $avg=$_SESSION['state']['stores']['avg'];
+        $avg=$_SESSION['state']['stores']['stores']['avg'];
 
 
-    $_SESSION['state']['stores']['table']['exchange_type']=$exchange_type;
-    $_SESSION['state']['stores']['table']['exchange_value']=$exchange_value;
-    $_SESSION['state']['stores']['table']['show_default_currency']=$show_default_currency;
-    $_SESSION['state']['stores']['table']['order']=$order;
-    $_SESSION['state']['stores']['table']['order_dir']=$order_dir;
-    $_SESSION['state']['stores']['table']['nr']=$number_results;
-    $_SESSION['state']['stores']['table']['sf']=$start_from;
-    $_SESSION['state']['stores']['table']['where']=$where;
-    $_SESSION['state']['stores']['table']['f_field']=$f_field;
-    $_SESSION['state']['stores']['table']['f_value']=$f_value;
+    $_SESSION['state']['stores']['stores']['exchange_type']=$exchange_type;
+    $_SESSION['state']['stores']['stores']['exchange_value']=$exchange_value;
+    $_SESSION['state']['stores']['stores']['show_default_currency']=$show_default_currency;
+    $_SESSION['state']['stores']['stores']['order']=$order;
+    $_SESSION['state']['stores']['stores']['order_dir']=$order_dir;
+    $_SESSION['state']['stores']['stores']['nr']=$number_results;
+    $_SESSION['state']['stores']['stores']['sf']=$start_from;
+    $_SESSION['state']['stores']['stores']['where']=$where;
+    $_SESSION['state']['stores']['stores']['f_field']=$f_field;
+    $_SESSION['state']['stores']['stores']['f_value']=$f_value;
 
     $where="where true  ";
 

@@ -139,7 +139,8 @@ $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
 
-
+$block_view=$_SESSION['state']['product']['block_view'];
+$smarty->assign('block_view',$block_view);
 
 
 
@@ -183,8 +184,8 @@ get_header_info($user,$smarty);
 
 
 
-$family_order=$_SESSION['state']['family']['table']['order'];
-$family_period=$_SESSION['state']['family']['period'];
+$family_order=$_SESSION['state']['family']['products']['order'];
+$family_period=$_SESSION['state']['family']['products']['period'];
 $family_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
 $smarty->assign('family_period',$family_period);
@@ -200,7 +201,6 @@ $smarty->assign('family_period_title',$family_period_title[$family_period]);
 
 
 
-// $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
 
 
 $smarty->assign('store',$store);
@@ -208,7 +208,7 @@ $smarty->assign('store',$store);
 $display=$_SESSION['state']['product']['display'];
 
 if($product->data['Product First Sold Date']==''){
-  $display['plot']=false;
+ // dont display_plot
 
 }
 
@@ -272,7 +272,6 @@ $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
 
 $subject_id=$product->id;
-include_once('plot.inc.php');
 
 
 

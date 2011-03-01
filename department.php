@@ -16,13 +16,24 @@ include_once('class.Store.php');
 include_once('class.Department.php');
 include_once('assets_header_functions.php');
 
+
+
+
 if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
   $department_id=$_SESSION['state']['department']['id'];
  else{
    $department_id=$_REQUEST['id'];
-   $_SESSION['state']['department']['id']=$department_id;
+  
   }
 $department=new Department($department_id);
+
+ $_SESSION['state']['department']['id']=$department->id;
+
+
+
+
+
+
 
 if(!( $user->can_view('stores') and in_array($department->data['Product Department Store Key'],$user->stores))){
 header('Location: index.php');
@@ -53,16 +64,18 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
-$show_details=$_SESSION['state']['family']['details'];
+
 $smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
 
 
-$smarty->assign('restrictions',$_SESSION['state']['department']['restrictions']);
+//$smarty->assign('restrictions',$_SESSION['state']['department']['restrictions']);
 
 
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
+$block_view=$_SESSION['state']['department']['block_view'];
+$smarty->assign('block_view',$block_view);
 
 
 $general_options_list=array();
@@ -70,7 +83,6 @@ $general_options_list=array();
 
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'department.php?edit=1','label'=>_('Edit Department'));
-  $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
   
 $smarty->assign('general_options_list',$general_options_list);
@@ -104,7 +116,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/edit_common.js',
                 'js/csv_common.js',
-		 'js/dropdown.js'
+		 'js/dropdown.js',
+		  'js/assets_common.js'
 
 		);
 
@@ -132,8 +145,8 @@ if(isset($_REQUEST['view'])){
 
 
 
-$store_order=$_SESSION['state']['store']['table']['order'];
-$store_period=$_SESSION['state']['store']['period'];
+$store_order=$_SESSION['state']['store']['departments']['order'];
+$store_period=$_SESSION['state']['store']['departments']['period'];
 $store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
   
 
@@ -218,84 +231,46 @@ $smarty->assign('home',$product_home);
 $smarty->assign('department',$department);
 $smarty->assign('store',$store);
 
-// $smarty->assign('department_id',$_REQUEST['id']);
-// $smarty->assign('products',$families['products']);
-
-//print_r($_SESSION['state']['department']);
-$smarty->assign('filter',$_SESSION['state']['department']['table']['f_field']);
-$smarty->assign('filter_value',$_SESSION['state']['department']['table']['f_value']);
-$smarty->assign('filter_name',_('Family code'));
-
-$smarty->assign('view',$_SESSION['state']['department']['view']);
-$smarty->assign('show_details',$_SESSION['state']['department']['details']);
-$smarty->assign('show_percentages',$_SESSION['state']['department']['percentages']);
-$smarty->assign('avg',$_SESSION['state']['department']['avg']);
-$smarty->assign('period',$_SESSION['state']['department']['period']);
-
-$plot_tipo=$_SESSION['state']['department']['plot'];
-$plot_data=$_SESSION['state']['department']['plot_data'][$plot_tipo];
-$plot_period=$plot_data['period'];
-$plot_category=$plot_data['category'];
-
-$plot_args='tipo=department&category='.$plot_category.'&period='.$plot_period.'&keys='.$department_id;
-if($plot_tipo=='top_departments'){
-  $number_children=3;
-  $plot_args.=sprintf('&top_children=%d',$number_children);
-}
-
-if($plot_tipo=='pie'){
-  $pie_forecast=$plot_data['forecast'];
-  
-  if($plot_data['date']=='today'){
-    $plot_date=date('Y-m-d');
-    $smarty->assign('plot_date',$plot_date);
-    $smarty->assign('plot_formated_date',strftime("%b %Y",strtotime($plot_date)));
-
-  }
-
-  $plot_args=sprintf('tipo=children_share&item=department&category=%s&period=%s&keys=%d&date=%s&forecast=%s'
-		     ,$plot_category
-		     ,$plot_period
-		     ,$store_id
-		     ,$plot_date
-		     ,$plot_data['forecast']);
-}
-
-$smarty->assign('plot_tipo',$plot_tipo);
-$smarty->assign('plot_args',$plot_args);
-$smarty->assign('plot_page',$plot_data['page']);
-$smarty->assign('plot_period',$plot_period);
-$smarty->assign('plot_category',$plot_period);
-$smarty->assign('plot_data',$_SESSION['state']['department']['plot_data']);
-
-if($plot_tipo=='pie'){
-  if($plot_period=='m')
-    $plot_formated_period='Month';
-  elseif($plot_period=='y')
-    $plot_formated_period='Year';
-    elseif($plot_period=='q')
-      $plot_formated_period='Quarter';
-    elseif($plot_period=='w')
-      $plot_formated_period='Week';
-  }else{
-    if($plot_period=='m')
-      $plot_formated_period='Monthly';
-    elseif($plot_period=='y')
-      $plot_formated_period='Yearly';
-    elseif($plot_period=='q')
-      $plot_formated_period='Quarterly';
-    elseif($plot_period=='w')
-      $plot_formated_period='Weekly';
-  }
-  
-if($plot_category=='profit')
-  $plot_formated_category=_('Profits');
-else
-  $plot_formated_category=_('Net Sales');
 
 
-$smarty->assign('plot_formated_category',$plot_formated_category);
-$smarty->assign('plot_formated_period',$plot_formated_period);
+
+
+$smarty->assign('family_view',$_SESSION['state']['store']['families']['view']);
+$smarty->assign('family_show_percentages',$_SESSION['state']['store']['families']['percentages']);
+$smarty->assign('family_avg',$_SESSION['state']['store']['families']['avg']);
+$smarty->assign('family_period',$_SESSION['state']['store']['families']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['store']['families']['f_field']:'code');
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['store']['families']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('families',$department->data['Product Department Families']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$smarty->assign('product_view',$_SESSION['state']['store']['products']['view']);
+$smarty->assign('product_show_percentages',$_SESSION['state']['store']['products']['percentages']);
+$smarty->assign('product_avg',$_SESSION['state']['store']['products']['avg']);
+$smarty->assign('product_period',$_SESSION['state']['store']['products']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['store']['products']['f_field']:'code');
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['store']['products']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('products',$department->data['Product Department For Public Sale Products']);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+
 
 
 $info_period_menu=array(
@@ -308,28 +283,13 @@ $info_period_menu=array(
 $smarty->assign('info_period_menu',$info_period_menu);
 
 
-$plot_period_menu=array(
-		     array("period"=>'w','label'=>_('Weekly'))
-		     ,array("period"=>'m','label'=>_('Montly'))
-		     ,array("period"=>'q','label'=>_('Quarterly'))
-		     ,array("period"=>'y','label'=>_('Yearly'))
-		     );
-$smarty->assign('plot_period_menu',$plot_period_menu);
-
-$plot_category_menu=array(
-		     array("category"=>'sales','label'=>_('Sales'))
-		     ,array("category"=>'profit','label'=>_('Profit'))
-		     );
-$smarty->assign('plot_category_menu',$plot_category_menu);
 
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
 
  $q='';
-  $tipo_filter=($q==''?$_SESSION['state']['department']['table']['f_field']:'code');
+  $tipo_filter=($q==''?$_SESSION['state']['department']['families']['f_field']:'code');
   $smarty->assign('filter_name0',$tipo_filter);
-  $smarty->assign('filter_value0',($q==''?$_SESSION['state']['department']['table']['f_value']:addslashes($q)));
+  $smarty->assign('filter_value0',($q==''?$_SESSION['state']['department']['families']['f_value']:addslashes($q)));
   $filter_menu=array(
 		     'code'=>array('db_key'=>'code','menu_label'=>'Department code starting with','label'=>'Code')
 		     ,'name'=>array('db_key'=>'code','menu_label'=>'Department name containing ','label'=>'Code')
@@ -440,6 +400,7 @@ $smarty->assign('csv_export_options',$csv_export_options);
 //{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
 
 // -----------------------------------------------export csv code ends here------------------------
+
   $smarty->display('department.tpl');
  
 

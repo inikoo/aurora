@@ -6,8 +6,7 @@ include_once('common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event  =YAHOO.util.Event;
- var period='period_<?php echo$_SESSION['state']['departments']['period']?>';
-    var avg='avg_<?php echo$_SESSION['state']['departments']['avg']?>';
+ 
 
     var change_view=function(e){
 	

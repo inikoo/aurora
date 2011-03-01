@@ -169,14 +169,14 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
-$smarty->assign('product_view',$_SESSION['state']['products']['view']);
-$smarty->assign('product_show_percentages',$_SESSION['state']['products']['percentages']);
-$smarty->assign('product_avg',$_SESSION['state']['products']['avg']);
-$smarty->assign('product_period',$_SESSION['state']['products']['period']);
+$smarty->assign('product_view',$_SESSION['state']['store']['products']['view']);
+$smarty->assign('product_show_percentages',$_SESSION['state']['store']['products']['percentages']);
+$smarty->assign('product_avg',$_SESSION['state']['store']['products']['avg']);
+$smarty->assign('product_period',$_SESSION['state']['store']['products']['period']);
 $q='';
-$tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');
+$tipo_filter=($q==''?$_SESSION['state']['store']['products']['f_field']:'code');
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['store']['products']['f_value']:addslashes($q)));
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
              );

@@ -105,14 +105,17 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$block_view=$_SESSION['state']['stores']['block_view'];
+$smarty->assign('block_view',$block_view);
+
 
 
 $_SESSION['state']['assets']['page']='stores';
-$smarty->assign('view',$_SESSION['state']['stores']['view']);
+$smarty->assign('view',$_SESSION['state']['stores']['stores']['view']);
 
 
-$smarty->assign('avg',$_SESSION['state']['stores']['avg']);
-$smarty->assign('period',$_SESSION['state']['stores']['period']);
+$smarty->assign('avg',$_SESSION['state']['stores']['stores']['avg']);
+$smarty->assign('period',$_SESSION['state']['stores']['stores']['period']);
 
 
 $smarty->assign('parent','products');
@@ -150,7 +153,7 @@ if ($_SESSION['state']['product_categories']['percentages']) {
 if ($distinct_currencies>1) {
     $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
 
-    if ($_SESSION['state']['stores']['table']['show_default_currency']) {
+    if ($_SESSION['state']['stores']['stores']['show_default_currency']) {
         $display_mode='value_default_d2d';
         $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
     }
@@ -166,10 +169,10 @@ $smarty->assign('search_scope','products');
 
 
 $q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
-//$smarty->assign('filter_show0',$_SESSION['state']['stores']['table']['f_show']);
+$tipo_filter=($q==''?$_SESSION['state']['stores']['stores']['f_field']:'code');
+//$smarty->assign('filter_show0',$_SESSION['state']['stores']['stores']['f_show']);
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['stores']['f_value']:addslashes($q)));
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
                  'name'=>array('db_key'=>'name','menu_label'=>_('Store Name'),'label'=>_('Name')),
@@ -190,14 +193,14 @@ $smarty->assign('mode_options_menu',$mode_options);
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['code']),
-                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['name']),
-                                                             'departments'=>array('label'=>_('Departments'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['departments']),
-                                                             'families'=>array('label'=>_('Families'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['families']),
-                                                             'products'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['products']),
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['name']),
+                                                             'departments'=>array('label'=>_('Departments'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['departments']),
+                                                             'families'=>array('label'=>_('Families'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['families']),
+                                                             'products'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['products']),
                                                    
-                                                             'discontinued'=>array('label'=>_('Discontinued'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['discontinued']),
-                                                             'new'=>array('label'=>_('New'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['new']),
+                                                             'discontinued'=>array('label'=>_('Discontinued'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['discontinued']),
+                                                             'new'=>array('label'=>_('New'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['new']),
                                                      
                                                          )
                                                      )
@@ -207,13 +210,13 @@ $smarty->assign('mode_options_menu',$mode_options);
                                         'rows'=>
                                                array(
                                                    array(
-                                                       'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['surplus']),
-                                                       'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['ok']),
-                                                       'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['low']),
-                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['critical']),
-                                                       'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['gone']),
+                                                       'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['surplus']),
+                                                       'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['ok']),
+                                                       'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['low']),
+                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['critical']),
+                                                       'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['gone']),
                                                 
-                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['unknown']),
+                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['unknown']),
                                                              array('label'=>''),
                                                        
 
@@ -224,8 +227,8 @@ $smarty->assign('mode_options_menu',$mode_options);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['sales_all']),
-                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['profit_all']),
+                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_all']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -235,8 +238,8 @@ $smarty->assign('mode_options_menu',$mode_options);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['sales_1y']),
-                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['profit_1y']),
+                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1y']),
+                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1y']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -246,8 +249,8 @@ $smarty->assign('mode_options_menu',$mode_options);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['sales_1q']),
-                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['profit_1q']),
+                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1q']),
+                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1q']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -257,8 +260,8 @@ $smarty->assign('mode_options_menu',$mode_options);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['sales_1m']),
-                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['profit_1m']),
+                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1m']),
+                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1m']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -268,8 +271,8 @@ $smarty->assign('mode_options_menu',$mode_options);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['sales_1w']),
-                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['profit_1w']),
+                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1w']),
+                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1w']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
