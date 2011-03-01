@@ -102,7 +102,7 @@ $("#Postcard").css("display", "block");
 <table id="Newsletter1" style="display:none">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Newsletter Template 1</b></td></tr>
 
-<form name="basic1" action="newsletter_template1.php" method="post" enctype="multipart/form-data">
+<form name="Newsletter1" action="newsletter_template1.php" method="post" enctype="multipart/form-data">
 
 <tr>
 <td style="float:left;">Header:</td>
@@ -154,44 +154,44 @@ $("#Postcard").css("display", "block");
 
 <table id="Newsletter2" style="display:none;">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Newsletter Template 2</b></td></tr>
-<form name="Newsletter2" action="newsletter_template2.php" method="post">
+<form name="Newsletter2" action="newsletter_template2.php" method="post" enctype="multipart/form-data">
 
 <tr>
 <td style="float:left;">Header:</td>
-<td><input type="text" name="news2header" id="news2header">
+<td><input type="text" name="newsheader" id="template header">
 
 </td></tr>
 <tr><td style="float:left;">Subtitle:</td>
-<td><input type="text" name="news2title" id="news2header">
+<td><input type="text" name="newstitle" id="template header">
 </td></tr>
 
 <tr><td style="float:left;">Paragraph Block 1:</td>
-<td><textarea cols="30" rows="4" name="news2PBlock1"></textarea>
+<td><textarea cols="30" rows="4" name="newsPBlock1"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 1 Image:</td>
-<td><input type="file" name="news2PBlock1image" id="news2PBlock1image" size=20>
+<td><input type="file" name="newsPBlock1image" >
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 2:</td>
-<td><textarea cols="30" rows="4" name="news2PBlock2"></textarea>
+<td><textarea cols="30" rows="4" name="newsPBlock2"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 2 Image:</td>
-<td><input type="file" name="news2PBlock2image" id="news2PBlock2image" size=20>
+<td><input type="file" name="newsPBlock21image">
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 3:</td>
-<td><textarea cols="30" rows="4" name="news2PBlock3"></textarea>
+<td><textarea cols="30" rows="4" name="newsPBlock3"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 3 Image:</td>
-<td><input type="file" name="news2PBlock3image" id="news2PBlock3image" size=20>
+<td><input type="file" name="newsPBlock3image">
 
 </td></tr>
 <tr><td></td>
-<td style="float:right;" ><br><input type="submit" name="newsletter2" id="newsletter2" value="Proceed">
-
+<td style="float:right;" ><br><input type="submit" name="basic" id="basic" value="Proceed">
+		
 </td></tr>
 
 </form>
