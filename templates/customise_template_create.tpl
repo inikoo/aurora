@@ -201,8 +201,11 @@ $("#Postcard").css("display", "block");
 
 <table id="Postcard" style="display:none;">
 <tr><td colspan="2" style="font-size:15px;padding-bottom:10px;"><b>Postcard</b></td></tr>
-<form name="postcard" action="postcard_template.php" method="post">
+<form name="postcard" action="postcard_template.php" method="post"  enctype="multipart/form-data">
+<tr><td style="float:left;">Header:</td>
+<td><input type="text" name="Pcardheader" id="Pcardheader" size=20>
 
+</td></tr>
 
 
 <tr><td style="float:left;">Paragraph Block:</td>

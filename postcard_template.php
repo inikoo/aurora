@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
@@ -16,7 +18,8 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+                 'css/marketing_campaigns.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -38,25 +41,47 @@ $js_files=array(
 		'external_libs/ckeditor/ckeditor.js',
 		'js/jquery-1.4.4.js'
 		);
-		
-if(isset($_REQUEST['postcard']) && $_REQUEST['postcard'] == 'Proceed')
+	if(isset($_REQUEST['postcard']) && $_REQUEST['postcard'] == 'Proceed')
 	{
 		
-		$PcardBlock = $_REQUEST['PcardBlock'];
-		$PcardImage = $_REQUEST['PcardImage'];
+		$header = $_REQUEST['Pcardheader'];
+	
+		$block1 = $_REQUEST['PcardBlock'];
 		
-		$_SESSION['PcardBlock'] = $PcardBlock;
-		$_SESSION['PcardImage'] = $PcardImage;
-			
+		
+		
+	
+
+		$_SESSION['header'] = $header;
+	
+		$_SESSION['block1'] = $block1;
+		
 
 	}
 
-$smarty->assign('PcardBlock',$_SESSION['PcardBlock']);
-$smarty->assign('PcardImage',$_SESSION['PcardImage']);
+if($_FILES['PcardImage']["name"]!='')
+		{
+      move_uploaded_file($_FILES["PcardImage"]["tmp_name"],
+      "app_files/uploads/" . $_FILES["PcardImage"]["name"]);
+      $image1="app_files/uploads/" . $_FILES["PcardImage"]["name"];
+
+
+$smarty->assign('image1',$image1);
+
+	
+		}
+$smarty->assign('header',$_SESSION['header']);
+
+$smarty->assign('block1',$_SESSION['block1']);
+
+
+
+
 
 
 	
-$smarty->assign('title', _('Customers Lists'));
+
+$smarty->assign('title','Postcard Preview');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
