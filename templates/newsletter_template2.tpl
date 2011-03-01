@@ -21,18 +21,15 @@
 {/literal}
 
 
-	<table width="100%" cellpadding="10" cellspacing="0" bgcolor='#fdf4d7' >
+	<table width="600" cellpadding="10" cellspacing="0" bgcolor='#fdf4d7' >
 <tr>
 <td valign="top" align="center">
 
 <table width="600" cellpadding="0" cellspacing="0">
-<tr>
-<td style="background-color:#FFCC66;border-top:0px solid #000000;border-bottom:1px solid #FFFFFF;text-align:center;" align="center"><span style="font-size:10px;color:#996600;line-height:200%;font-family:verdana;text-decoration:none;">Email not displaying correctly? <a href="*|ARCHIVE|*" style="font-size:10px;color:#996600;line-height:200%;font-family:verdana;text-decoration:none;">View it in your browser.</a></span></td>
 
-</tr>
 
 <tr>
-<td align="left" valign="middle" style="background-color:#FFFFFF;border-top:0px solid #333333;border-bottom:10px solid #FFFFFF;"><center><a href=""><IMG id=editableImg1 SRC="img/email_header_UK_tris.jpg" BORDER="0" title="Your Company"  alt="Your Company" align="center"></a></center></td>
+<td align="left" valign="middle" style="background-color:#FFFFFF;border-top:0px solid #333333;border-bottom:10px solid #FFFFFF;"><center><a href=""><IMG id=editableImg1 SRC="img/email_header_UK_tris.jpg" BORDER="0" title=""  alt="" align="center"></a><h1 style="font-weight:bold;">{$header}</h1></center></td>
 </tr>
 
 
@@ -44,21 +41,18 @@
 <td bgcolor="#FFFFFF" valign="top" width="400" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
 
 <p>
-<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;">New Oil Burners</span><br>
+<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;">{$contenttitle}</span><br>
 
-<span style="font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;">Directly from India</span><br>
-Wow, they are beautiful, and cheap.
-<br/><br/>
-<img src="http://www.ancientwisdom.biz/pics/ob-189.jpg" width=150/>
-<img src="http://www.ancientwisdom.biz/pics/ob-188.jpg" width=150/>
+<span style="font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;"><br>
+<img src="{$image1}" width=150/>
+<img src="{$image2}" width=150/>
 </p>
 
 
 
 <p>
-<span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;">Plantains vs. Bananas</span><br>
-<span style="font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;">by Francine Chimperson</span><br>
-Throwing a party? There's no better way to anger your dinner guests than by accidentally serving them plantains instead of bananas. Avoid the poo flinging with these handy guidelines. Plantains look like over ripe bananas, and must be cooked before eaten. Bananas are softer, and don't cook very well (they get mushy). In suscipit, pede a rutrum malesuada, lacus massa euismod neque <a href="#">Clickitus heritus.</a>
+<br>
+{$block1}
 </p>
 
 </td>
@@ -67,17 +61,17 @@ Throwing a party? There's no better way to anger your dinner guests than by acci
 <td width="200" valign="top" style="background-color:#FFFFFF;border-left:1px dashed #CCCCCC;text-align:left;">
 <span style="font-size:11px;font-weight:normal;color:#999999;font-family:arial;line-height:150%;">
 
-<span style="font-size:15px;font-weight:bold;color:#333333;font-family:arial;line-height:150%;">Grooming Tips:</span><br>
-Tick picking novice? Lorem ipsum dolor sit amet, <a href="#">consectetuer adipiscing elit</a>. Sed at erat. Phasellus condimentum. Nullam sed magna. Donec quis tellus in neque congue porttitor. Proin sit amet ligula id leo porta rutrum.
-<img src="http://www.ancientwisdom.biz/pics/ob-189.jpg" width=50/>
+
+{$block2}
+<img src="{$image3}" width=50/>
 
 
 <br>
 <br>
 
-<span style="font-size:15px;font-weight:bold;color:#333333;font-family:arial;line-height:150%;">Waterhole Dangers</span><br>
+{$block3}
 
-Watery oasis, or crocodilian cesspool from hell? As the dry season approaches, lorem ipsum dolor sit amet, <a href="#">consectetuer adipiscing elit</a>. Sed at erat. Phasellus condimentum. Nullam sed magna. Donec quis tellus in neque congue porttitor. Proin sit amet ligula id leo porta rutrum.
+
 
 </span>
 </td>
