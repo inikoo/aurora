@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
@@ -40,6 +42,11 @@ $js_files=array(
 		);
 		//fetch the customer list name
 		
+
+
+
+
+
 
 $smarty->assign('title', _('Customers Lists'));
 $smarty->assign('css_files',$css_files);
