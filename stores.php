@@ -186,6 +186,58 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('mode_options_menu',$mode_options);
 
 
+$smarty->assign('department_view',$_SESSION['state']['stores']['departments']['view']);
+$smarty->assign('department_show_percentages',$_SESSION['state']['stores']['departments']['percentages']);
+$smarty->assign('department_avg',$_SESSION['state']['stores']['departments']['avg']);
+$smarty->assign('department_period',$_SESSION['state']['stores']['departments']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['stores']['departments']['f_field']:'code');
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['stores']['departments']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Department starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+//$smarty->assign('departments',$store->data['Store Departments']);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+$smarty->assign('family_view',$_SESSION['state']['stores']['families']['view']);
+$smarty->assign('family_show_percentages',$_SESSION['state']['stores']['families']['percentages']);
+$smarty->assign('family_avg',$_SESSION['state']['stores']['families']['avg']);
+$smarty->assign('family_period',$_SESSION['state']['stores']['families']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['stores']['families']['f_field']:'code');
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['stores']['families']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu2',$filter_menu);
+//$smarty->assign('families',$store->data['Store Families']);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+$smarty->assign('product_view',$_SESSION['state']['stores']['products']['view']);
+$smarty->assign('product_show_percentages',$_SESSION['state']['stores']['products']['percentages']);
+$smarty->assign('product_avg',$_SESSION['state']['stores']['products']['avg']);
+$smarty->assign('product_period',$_SESSION['state']['stores']['products']['period']);
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['stores']['products']['f_field']:'code');
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['stores']['products']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu3',$filter_menu);
+//$smarty->assign('products',$store->data['Store For Public Sale Products']);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
    
 
     $csv_export_options=array(

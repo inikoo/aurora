@@ -7,12 +7,12 @@
  <span ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
  </div>
 
-  <div id="no_details_title" style="clear:right;">
-    <h1>{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')})</h1>
-  </div>
+  
+    <h1 style="width:600px">{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')})</h1>
+
 
 </div>
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $block_view=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
@@ -201,29 +201,29 @@
 
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
        <tr><td  class="option {if $product_view=='general'}selected{/if}" id="product_general" >{t}General{/t}</td>
-	  {if $view_stock}<td class="option {if $product_view=='stock'}selected{/if}"  id="product_stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  class="option {if $product_view=='sales'}selected{/if}"  id="product_sales"  >{t}Sales{/t}</td>{/if}
+	 <td class="option {if $product_view=='stock'}selected{/if}"  {if !$view_stock}style="display:none"{/if} id="product_stock"  >{t}Stock{/t}</td>
+	  <td  class="option {if $product_view=='sales'}selected{/if}" {if !$view_sales}style="display:none"{/if} id="product_sales"  >{t}Sales{/t}</td>
 	  <td  class="option {if $product_view=='parts'}selected{/if}"  id="product_parts"  >{t}Parts{/t}</td>
-	  <td  class="option {if $product_view=='cats'}selected{/if}"  id="product_cats"  >{t}Groups{/t}</td>
+	  <td  class="option {if $product_view=='cats'}selected{/if}" style="display:none"  id="product_cats"  >{t}Groups{/t}</td>
 
 	</tr>
       </table>
-    <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+    <table id="product_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $product_view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
-	  <td  class="option {if $product_period=='all'}selected{/if}" period="all"  id="period_all" >{t}All{/t}</td>
-	  <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="period_year"  >{t}1Yr{/t}</td>
-	  <td  class="option {if $product_period=='quarter'}selected{/if}"  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
-	  <td class="option {if $product_period=='month'}selected{/if}"  period="month"  id="period_month"  >{t}1M{/t}</td>
-	  <td  class="option {if $product_period=='week'}selected{/if}" period="week"  id="period_week"  >{t}1W{/t}</td>
+	  <td  class="option {if $product_period=='all'}selected{/if}" period="all"  id="product_period_all" >{t}All{/t}</td>
+	  <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="product_period_year"  >{t}1Yr{/t}</td>
+	  <td  class="option {if $product_period=='quarter'}selected{/if}"  period="quarter"  id="product_period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $product_period=='month'}selected{/if}"  period="month"  id="product_period_month"  >{t}1M{/t}</td>
+	  <td  class="option {if $product_period=='week'}selected{/if}" period="week"  id="product_period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
-    <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0class="option {if $product_view!='sales' };display:none{/if}"  class="options_mini" >
+    <table  id="product_avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $product_view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
-	  <td class="option {if $product_avg=='totals'}selected{/if}" avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
-	  <td class="option {if $product_avg=='month'}selected{/if}"  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
-	  <td class="option {if $product_avg=='week'}selected{/if}"  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
-	  <td class="option {if $product_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
-	  <td class="option {if $product_avg=='week_eff'}selected{/if}" style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
+	  <td class="option {if $product_avg=='totals'}selected{/if}" avg="totals"  id="product_avg_totals" >{t}Totals{/t}</td>
+	  <td class="option {if $product_avg=='month'}selected{/if}"  avg="month"  id="product_avg_month"  >{t}M AVG{/t}</td>
+	  <td class="option {if $product_avg=='week'}selected{/if}"  avg="week"  id="product_avg_week"  >{t}W AVG{/t}</td>
+	  <td class="option {if $product_avg=='month_eff'}selected{/if}" style="display:none" avg="product_month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
+	  <td class="option {if $product_avg=='week_eff'}selected{/if}" style="display:none"  avg="product_week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
 	</tr>
       </table>
     </div>
