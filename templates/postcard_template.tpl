@@ -38,13 +38,13 @@
 <table width="550" cellpadding="20" cellspacing="0" bgcolor="#FFFFFF">
 <tr>
 <td bgcolor="#FFFFFF" valign="top" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
-
+<p class="basic_template_img"><img height="220" width="500" src="{$image1}"></p>
 <p>
 <span style="font-size:22px;font-weight:bold;color:#336600;font-family:arial;line-height:110%;"></span><br>
 
 {$block1}
 </p>
-<p class="basic_template_img"><img height="107" width="450" src="{$image1}"></p>
+
 
 
 

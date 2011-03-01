@@ -33,7 +33,6 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'common_customers.js.php',
-		'new_customers_list.js.php',
 		'js/edit_common.js',
 		'js/list_function.js',
 		'js/create_campaign.js',
