@@ -17,7 +17,7 @@
     <li> <span class="item {if $block_view=='departments'}selected{/if}"  id="departments">  <span> {t}Departments{/t}</span></span></li>
     <li> <span class="item {if $block_view=='families'}selected{/if}"  id="families">  <span> {t}Families{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals">  <span> {t}Offers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='deals'}selected{/if}" style="display:none" id="deals">  <span> {t}Offers{/t}</span></span></li>
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -88,12 +88,15 @@
     <span   class="clean_table_title" style="">{t}Departments{/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
-    <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-      <tr><td  {if $department_view=='general'}class="selected"{/if} id="department_general" >{t}Summary{/t}</td>
-	{if $view_stock}<td {if $department_view=='stock'}class="selected"{/if}  id="department_stock"  >{t}Stock{/t}</td>{/if}
-	{if $view_sales}<td {if $department_view=='sales'}class="selected"{/if}  id="department_sales"  >{t}Sales{/t}</td>{/if}
-      </tr>
-    </table>
+  
+  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="department_view_options options" >
+	<tr>
+	    <td class="option {if $department_view=='general'}selected{/if}" id="department_general" >{t}Summary{/t}</td>
+	    <td class="option {if $department_view=='stock'}selected{/if}"  id="department_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
+	    <td class="option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
+	</tr>
+ </table>
+
     <table id="department_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $department_view!='sales' };display:none{/if}"  class="options_mini" >
 	  <tr>
 	    <td class="option {if $department_period=='all'}selected{/if}" period="all"  id="department_period_all" >{t}All{/t}</td>
@@ -121,13 +124,14 @@
 <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
 <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 <span   style="float:right;margin-left:80px" class="state_details" state="{$family_show_percentages}"  id="show_percentages"  atitle="{if $family_show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $family_show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
- <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr><td  {if $family_view=='general'}class="selected"{/if} id="family_general" >{t}Summary{/t}</td>
-	  {if $view_stock}<td {if $family_view=='stock'}class="selected"{/if}  id="family_stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $family_view=='sales'}class="selected"{/if}  id="family_sales"  >{t}Sales{/t}</td>{/if}
+ <table style="float:left;margin:0 0 0 0px ;padding:0"  class="family_view_options options" >
+	<tr>
+	    <td class="option {if $family_view=='general'}selected{/if}" id="family_general" >{t}Summary{/t}</td>
+	    <td class="option {if $family_view=='stock'}selected{/if}"  id="family_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
+	    <td class="option {if $family_view=='sales'}selected{/if}" id="family_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
 	</tr>
       </table>
-        <table id="family_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $family_view=='general'};display:none{/if}"  class="options_mini" >
+        <table id="family_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $family_view!='sales'};display:none{/if}"  class="options_mini" >
 	<tr>
 
 	  <td class="option {if $family_period=='all'}selected{/if}" period="all"  id="family_period_all" >{t}All{/t}</td>
@@ -162,16 +166,20 @@
         <a style="float:right;margin-left:20px"  class="table_type state_details"  href="export_xml.php" >{t}Export (XML){/t}</a>
         <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
         <span style="float:right;margin-left:80px" class="state_details" state="{$product_show_percentages}"  id="show_percentages"  atitle="{if $product_show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $product_show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
-        <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-            <tr>
-                <td  {if $product_view=='general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
-	            {if $view_stock}<td {if $product_view=='stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>{/if}
-	            {if $view_sales}<td  {if $product_view=='sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>{/if}
-	            <td  {if $product_view=='parts'}class="selected"{/if}  id="product_parts"  >{t}Parts{/t}</td>
-	            <td  {if $product_view=='cats'}class="selected"{/if}  id="product_cats"  >{t}Groups{/t}</td>
-            </tr>
-        </table>
-	    <table id="product_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+        
+        <table style="float:left;margin:0 0 0 0px ;padding:0"  class="product_view_options options" >
+	<tr>
+	    <td class="option {if $product_view=='general'}selected{/if}" id="product_general" >{t}Summary{/t}</td>
+	    <td class="option {if $product_view=='stock'}selected{/if}"  id="product_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
+	    <td class="option {if $product_view=='sales'}selected{/if}" id="product_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
+	    <td class="option {if $product_view=='parts'}selected{/if}" id="product_parts" {if !$view_sales}style="display:none"{/if} >{t}Parts{/t}</td>
+	    <td class="option {if $product_view=='cats'}selected{/if}" id="product_cats" {if !$view_sales}style="display:none"{/if} >{t}Groups{/t}</td>
+
+	</tr>
+      </table>
+        
+       
+	    <table id="product_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $product_view!='sales' };display:none{/if}"  class="options_mini" >
 	    <tr>
     	    <td class="option {if $product_period=='all'}selected{/if}" period="all"  id="product_period_all" >{t}All{/t}</td>
 	        <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="product_period_year"  >{t}1Yr{/t}</td>
@@ -180,7 +188,7 @@
 	        <td class="option {if $product_period=='week'}selected{/if}" period="week"  id="product_period_week"  >{t}1W{/t}</td>
 	    </tr>
         </table>
-        <table  id="product_avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+        <table  id="product_avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $product_view!='sales' };display:none{/if}"  class="options_mini" >
 	    <tr>
 	        <td class="option {if $product_avg=='totals'}selected{/if}" avg="totals"  id="product_avg_totals" >{t}Totals{/t}</td>
 	        <td class="option {if $product_avg=='month'}selected{/if}"  avg="month"  id="product_avg_month"  >{t}M AVG{/t}</td>
@@ -252,6 +260,73 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
     </ul>
   </div>
 </div>
+
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="rppmenu2" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},2)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="filtermenu2" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="rppmenu3" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu3 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},3)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="filtermenu3" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu3 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 
 <div id="change_display_menu" class="yuimenu">
   <div class="bd">
