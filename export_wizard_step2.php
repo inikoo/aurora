@@ -83,9 +83,9 @@ if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
 
 $customer=new customer($customer_id);
 $customer_id = $customer->data['Customer Key'];
-
 //$list=$customer->data;
 
+if(isset($_POST['SUBMIT'])){
 $included_data = $_POST['fld'];
 //print_r($included_data);
 
@@ -94,7 +94,7 @@ $actual_data=$customer->data;
 
 $exported_data = final_array($actual_data , $included_data);
 //print_r($exported_data);
-
+}
 
 
 if(!isset($_SESSION['list'])){
