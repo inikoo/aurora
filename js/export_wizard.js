@@ -55,7 +55,8 @@ function stateChanged()
     var str=xmlHttp.responseText;
     //alert(str);
     //document.getElementById('result').innerHTML=str;
-      window.location.reload();
+    var url = window.location.toString();
+	go(url);
  }
 }
 
