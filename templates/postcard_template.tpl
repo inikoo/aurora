@@ -21,23 +21,18 @@
 {/literal}
 
 
-<table width="100%" cellpadding="10" cellspacing="0" class="backgroundTable" bgcolor='#66CC00' >
+<table width="550" cellpadding="10" cellspacing="0" class="backgroundTable" bgcolor='#66CC00' >
 <tr>
 <td valign="top" align="center">
 
 <table width="550" cellpadding="0" cellspacing="0">
-<tr>
-<td style="background-color:#66CC00;border-top:0px solid #000000;border-bottom:0px solid #FFCC66;text-align:right;" align="center"><span style="font-size:10px;color:#FFFFCC;line-height:200%;font-family:verdana;text-decoration:none;">Email not displaying correctly? <a href="*|ARCHIVE|*" style="font-size:10px;color:#FFFFCC;line-height:200%;font-family:verdana;text-decoration:none;">View it in your browser.</a></span></td>
 
-</tr>
  
 <tr>
-<td style="background-color:#FFFFFF;border-top:0px solid #FFFFFF;border-bottom:0px solid #333333;"><center><a href=""><IMG id=editableImg1 SRC="img/postcard_logo.gif" BORDER="0" title="Your Company"  alt="Your Company" align="center"></a></center></td>
+<td style="background-color:#FFFFFF;border-top:0px solid #FFFFFF;border-bottom:0px solid #333333;"><center><a href=""><IMG id=editableImg1 SRC="img/postcard_logo.gif" BORDER="0" title=""  alt="" align="center"></a><h1>{$header}</h1></center></td>
 </tr>
 
-<tr>
-<td style="background-color:#FFFFFF;border-top:0px solid #FFFFFF;border-bottom:0px solid #333333;"><center><a href="#"><img src="img/postcard_splash.jpg" width="550" height="300" border="0" alt="Lorem ipsum"></a></center></td>
-</tr>
+
 </table>
 
 <table width="550" cellpadding="20" cellspacing="0" bgcolor="#FFFFFF">
@@ -45,11 +40,11 @@
 <td bgcolor="#FFFFFF" valign="top" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
 
 <p>
-<span style="font-size:22px;font-weight:bold;color:#336600;font-family:arial;line-height:110%;">The Big Banana Bonanza</span><br>
+<span style="font-size:22px;font-weight:bold;color:#336600;font-family:arial;line-height:110%;"></span><br>
 
-Lorem ipsum dolor sit amet, <a href="#">consectetuer adipiscing elit</a>. Sed at erat. Phasellus condimentum. Nullam sed magna. Donec quis tellus in neque congue porttitor. Proin sit amet ligula id leo porta rutrum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In suscipit, pede a rutrum malesuada, lacus massa euismod neque, a hendrerit justo ante at eros. <a href="#">Clickitus heritus.</a>
+{$block1}
 </p>
-
+<p class="basic_template_img"><img height="107" width="450" src="{$image1}"></p>
 
 
 
