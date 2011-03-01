@@ -41,8 +41,30 @@
     width: 65px;
     cursor:pointer;
 }
+.up_b_disabled{
+    background-image: url("../art/up_d.png");
+    background-repeat: no-repeat;
+    border:none;
+    height: 23px;
+    width: 65px;
+}
 .down_b{
     background-image: url("../art/down_b.png");
+    background-repeat: no-repeat;
+    border:none;
+    height: 23px;
+    width: 65px;
+    cursor:pointer;
+}
+.down_b_disabled{
+    background-image: url("../art/down_d.png");
+    background-repeat: no-repeat;
+    border:none;
+    height: 23px;
+    width: 65px;
+}
+.return{
+    background-image: url("../art/return.png");
     background-repeat: no-repeat;
     border:none;
     height: 23px;
