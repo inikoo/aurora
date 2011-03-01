@@ -46,16 +46,16 @@ var change_view=function(e){
 	    table.hideColumn('margin');
 
 	    if(tipo=='sales'){
-		Dom.get('period_options').style.display='';
-		Dom.get('avg_options').style.display='';
+		Dom.get('stores_period_options').style.display='';
+		Dom.get('stores_avg_options').style.display='';
 		table.showColumn('sales');
 		table.showColumn('profit');
 		table.showColumn('margin');
 
 	    }
 	    if(tipo=='general'){
-		Dom.get('period_options').style.display='none';
-		Dom.get('avg_options').style.display='none';
+		Dom.get('stores_period_options').style.display='none';
+		Dom.get('stores_avg_options').style.display='none';
 		table.showColumn('active');
 		table.showColumn('families');
 		table.showColumn('departments');
@@ -64,8 +64,8 @@ var change_view=function(e){
 
 	    }
 	    if(tipo=='stock'){
-		Dom.get('period_options').style.display='none';
-		Dom.get('avg_options').style.display='none';
+		Dom.get('stores_period_options').style.display='none';
+		Dom.get('stores_avg_options').style.display='none';
 		
 		table.showColumn('surplus');
 		table.showColumn('optimal');
@@ -81,7 +81,7 @@ var change_view=function(e){
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo
-	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-view&value=' + escape(tipo),{} );
+	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-block_view&value=' + escape(tipo),{} );
 	}
   }
 
@@ -490,9 +490,9 @@ function init(){
     ids=['general','sales','stock'];
     YAHOO.util.Event.addListener(ids, "click",change_view)
     ids=['period_all','period_year','period_quarter','period_month','period_week'];
-    YAHOO.util.Event.addListener(ids, "click",change_period,0);
+    YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'stores'});
     ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
-    YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+    YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'stores'});
 
     YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'stores');
 
