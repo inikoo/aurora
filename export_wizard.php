@@ -23,7 +23,6 @@ $css_files=array(
          $yui_path.'button/assets/skins/sam/button.css',
          $yui_path.'editor/assets/skins/sam/editor.css',
          $yui_path.'assets/skins/sam/autocomplete.css',
-
          'text_editor.css',
          'common.css',
          'button.css',
@@ -31,7 +30,6 @@ $css_files=array(
          'table.css',
 	 'css/export_wizard.css',
          'css/customer.css'
-
          );
 $js_files=array(
         $yui_path.'utilities/utilities.js',
@@ -54,7 +52,6 @@ $js_files=array(
         );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
 if(!$_REQUEST['subject']){
 	header('Location: index.php');
 	exit;
@@ -63,23 +60,19 @@ if(!$_REQUEST['subject']){ //To check whether the form has proper parameters in 
 	header('Location: index.php');
 	exit;
 }
-
 $map_type = $_REQUEST['subject'];
 
 if(!$user->can_view('customers')){
   exit();
 }
-
 if(isset($_REQUEST['subject']) and is_numeric($_REQUEST['subject']) ){
   $_SESSION['state']['customer']['id']=$_REQUEST['subject'];
   $customer_id=$_REQUEST['subject'];
 }else{
   $customer_id=$_SESSION['state']['customer']['id'];
 }
-
 $customer=new customer($customer_id);
 $customer_id = $customer->data['Customer Key'];
-
 $list=$customer->data;
 if(isset($_SESSION['list'])){
 	unset($_SESSION['list']);
@@ -88,6 +81,5 @@ if(isset($_SESSION['list'])){
 $smarty->assign('customer_id',$customer_id);
 $smarty->assign('param',count($list)-1);
 $smarty->assign('list',$list);
-
 $smarty->display('export_wizard.tpl');
 ?>

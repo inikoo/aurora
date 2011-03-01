@@ -30,7 +30,6 @@ $css_files=array(
          'table.css',
 	 'css/export_wizard.css',
          'css/customer.css'
-
          );
 $js_files=array(
         $yui_path.'utilities/utilities.js',
@@ -53,12 +52,10 @@ $js_files=array(
         );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
 /*if(!isset($_POST['SUBMIT'])){
 	header('Location: index.php');
 	exit;
 }*/
-
 if(!isset($_REQUEST['subject_key'])){
 	header('Location: index.php');
 	exit;
@@ -67,36 +64,29 @@ if(!isset($_REQUEST['subject'])){ //To check whether the form has proper paramet
 	header('Location: index.php');
 	exit;
 }
-
 $map_type = $_REQUEST['subject'];
 
 if(!$user->can_view('customers')){
   exit();
 }
-
 if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
   $_SESSION['state']['customer']['id']=$_REQUEST['subject_key'];
   $customer_id=$_REQUEST['subject_key'];
 }else{
   $customer_id=$_SESSION['state']['customer']['id'];
 }
-
 $customer=new customer($customer_id);
 $customer_id = $customer->data['Customer Key'];
 //$list=$customer->data;
-
 if(isset($_POST['SUBMIT'])){
 $included_data = $_POST['fld'];
 //print_r($included_data);
-
 $actual_data=$customer->data;
 //print_r($actual_data);
-
 $exported_data = final_array($actual_data , $included_data);
 //print_r($exported_data);
+unset($_POST);
 }
-
-
 if(!isset($_SESSION['list'])){
 
 	$_SESSION['list'] = $exported_data;
@@ -106,14 +96,11 @@ else{
 	$exported_data = $_SESSION['list'];
 	//$exported_data = array_reverse($exported_data); // For Testing //
 }
-
 $smarty->assign('customer_id',$customer_id);
 $smarty->assign('map_type',$map_type);
 $smarty->assign('list',$exported_data);
 $smarty->assign('count', count($exported_data)-1);
-
 $smarty->display('export_wizard_step2.tpl');
-
 
 function final_array($assoc_arr, $num_arr){
 	$final_arr = array();
@@ -129,5 +116,4 @@ function final_array($assoc_arr, $num_arr){
 	//print_r($final_arr);
 	return $final_arr;
 }
-
 ?>
