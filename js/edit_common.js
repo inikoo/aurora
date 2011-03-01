@@ -378,13 +378,12 @@ function validate_scope(branch) {
 
 
 function validate_scope_edit(branch) {
-  
   var errors=false;
   var changed=false;
 
     for (item in validate_scope_data[branch]) {
     
-         //  alert(branch +' '+item+' '+validate_scope_data[branch][item].name) 
+       //  alert(branch +' '+item+' '+validate_scope_data[branch][item].name) 
         if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][item].changed==true)

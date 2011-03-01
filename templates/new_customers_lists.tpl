@@ -105,13 +105,16 @@
 
 
 
-      
+ 
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
      	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable "> </div>
-	<br>Enter list name : <input type="text" name="list_name" id="list_name"> &nbsp;&nbsp;Select List Type : <input type="radio" name="type" id="static" value="static">&nbsp;Static &nbsp;&nbsp;<input type="radio" name="type"  id="dynamic" value="dynamic">&nbsp;Dynamic&nbsp;&nbsp;<input type="button" name="" value="Save List" onclick="get_search_list()">
+<br>
+<a href="javascript:void(0)" onclick="document.getElementById('the_div').style.display=(document.getElementById('the_div').style.display== 'block')?'none':'block';">Save As:</a>
+ <div id="the_div" style="display:none;">    
+	Enter list name : <input type="text" name="list_name" id="list_name"> &nbsp;&nbsp;Select List Type : <input type="radio" name="type" id="static" value="static">&nbsp;Static &nbsp;&nbsp;<input type="radio" name="type"  id="dynamic" value="dynamic">&nbsp;Dynamic&nbsp;&nbsp;<input type="button" name="" value="Save List" onclick="get_search_list()">
       </div>
 <div id="showDiv"></div>
-		
+</div>		
 
     </div>
 
