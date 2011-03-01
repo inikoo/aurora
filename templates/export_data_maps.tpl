@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
 <div class="data_table" style="clear:both">
-   <span class="clean_table_title">{t}Maps of {$customer_name}{/t}</span>
+   <span class="clean_table_title">{t}Saved Maps{/t}</span>
 	<div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid rgb(153, 153, 153);"></div>
          <span style="font-size:11px;">{$no_of_maps} record(s)<span>
      <div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid #4682b4;"></div>

@@ -77,7 +77,7 @@ $customer=new customer($customer_id);
 $customer_id = $customer->data['Customer Key'];
 $customer_name = $customer->data['Customer Main Contact Name'];
 $maps = array();
-$sql = "SELECT `Map Key`,`Map Name`,`Map Description` from `Export Map` WHERE `Customer Key` = '$customer_id' AND `Map Type` = '$map_type' ORDER BY `Exported Date` ASC";
+$sql = "SELECT `Map Key`,`Map Name`,`Map Description` from `Export Map` WHERE `Map Type` = '$map_type' ORDER BY `Exported Date` ASC";
 $query = mysql_query($sql);
 if($query){
 	$num=mysql_num_rows($query);
