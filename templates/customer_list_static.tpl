@@ -49,4 +49,18 @@
   </div>
    {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="company_areas-table-csv_export" export_options=$csv_export_options } 
   
+
+<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+    {if $options.tipo=="url"}
+    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+    {else}
+    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+    {/if}
+    {/foreach}
+  </div>
+</div>
+
+
   {include file='footer.tpl'}

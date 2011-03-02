@@ -219,14 +219,15 @@ function init(){
 
     ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
     Event.addListener(ids, "click",change_product_view,{'table_id':0,'parent':'family'});
-    ids=['product_period_all','product_period_year','product_period_quarter','product_period_month','product_period_week'];
+ 
+   ids=['product_period_all','product_period_year','product_period_quarter','product_period_month','product_period_week'];
     Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'product'});
     ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
     Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'product'});
     ids=['table_type_thumbnail','table_type_list'];
     Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
  
-     
+   
     Event.addListener("info_next", "click",next_info_period,0);
     Event.addListener("info_previous", "click",previous_info_period,0);
 
@@ -234,10 +235,6 @@ function init(){
     Event.addListener('details', "click",change_details,'family');
     //Event.addListener('show_percentages', "click",show_percentages,'departments');
 
-
-
-    Event.addListener('product_submit_search', "click",submit_search,'product');
-    Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
 
 }
 

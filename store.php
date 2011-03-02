@@ -56,8 +56,8 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 
-$stores_order=$_SESSION['state']['stores']['table']['order'];
-$stores_period=$_SESSION['state']['stores']['period'];
+$stores_order=$_SESSION['state']['stores']['stores']['order'];
+$stores_period=$_SESSION['state']['stores']['stores']['period'];
 $stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
 $smarty->assign('stores_period',$stores_period);
@@ -76,6 +76,7 @@ $general_options_list=array();
 
 if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php?edit=1','label'=>_('Edit Store'));
 
 
 $smarty->assign('general_options_list',$general_options_list);

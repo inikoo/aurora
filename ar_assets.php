@@ -2682,13 +2682,12 @@ function list_departments() {
 
     if ($parent=='store') {
         $conf=$_SESSION['state']['store']['departments'];
-        $conf2=$_SESSION['state']['store']['departments'];
-
+       
         $conf_table='store';
     } elseif ($parent=='none') {
 
         $conf=$_SESSION['state']['stores']['departments'];
-        $conf2=$_SESSION['state']['store']['departments'];
+      
         $conf_table='stores';
     }else{
     
@@ -2749,35 +2748,35 @@ function list_departments() {
     if (isset( $_REQUEST['percentages'])) {
         $percentages=$_REQUEST['percentages'];
     } else
-        $percentages=$conf2['percentages'];
+        $percentages=$conf['percentages'];
 
 
 
     if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
     } else
-        $period=$conf2['period'];
+        $period=$conf['period'];
 
     if (isset( $_REQUEST['avg'])) {
         $avg=$_REQUEST['avg'];
     } else
-        $avg=$conf2['avg'];
+        $avg=$conf['avg'];
 
 
 
 
 
-    $_SESSION['state'][$conf_table]['table']['order']=$order;
-    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
-    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-    $_SESSION['state'][$conf_table]['table']['where']=$where;
-    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
-    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['departments']['order']=$order;
+    $_SESSION['state'][$conf_table]['departments']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['departments']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['departments']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['departments']['where']=$where;
+    $_SESSION['state'][$conf_table]['departments']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['departments']['f_value']=$f_value;
 
-    $_SESSION['state'][$conf_table]['percentages']=$percentages;
-    $_SESSION['state'][$conf_table]['period']=$period;
-    $_SESSION['state'][$conf_table]['avg']=$avg;
+    $_SESSION['state'][$conf_table]['departments']['percentages']=$percentages;
+    $_SESSION['state'][$conf_table]['departments']['period']=$period;
+    $_SESSION['state'][$conf_table]['departments']['avg']=$avg;
 
 
     switch ($parent) {
@@ -2965,7 +2964,7 @@ function list_departments() {
          sum(`Product Department Low Availability Products`) low,sum(`Product Department Critical Availability Products`) critical,
          sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where  $wheref ";
     $result=mysql_query($sql);
-// print $sql;
+ //print $sql;
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
         $sum_active=$row['sum_active'];
@@ -2987,8 +2986,8 @@ function list_departments() {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select   max(`Product Department Total Days Available`) as 'Product Department Total Days Available',max(`Product Department Total Days On Sale`) as 'Product Department Total Days On Sale', sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where   ";
-
+        $sql="select   max(`Product Department Total Days Available`) as 'Product Department Total Days Available',max(`Product Department Total Days On Sale`) as 'Product Department Total Days On Sale', sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where $wheref  ";
+//print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -3262,7 +3261,7 @@ function list_departments() {
 
     $res = mysql_query($sql);
     $adata=array();
-    //  print "$sql";
+//  print "$sql";
     global $myconf;
     $currency_code=$myconf['currency_code'];
     $sum_active=0;
@@ -3361,19 +3360,11 @@ function list_departments() {
             }
 
 
-        } else {
-
-
-
-
-
-
+        } else {// totals
             if ($period=='all') {
-
-
-                if ($avg=='totals')
+                if ($avg=='totals'){
                     $factor=1;
-                elseif($avg=='month') {
+                }elseif($avg=='month') {
                     if ($row['Product Department Total Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department Total Days On Sale'];
                     else
@@ -3722,11 +3713,37 @@ function list_products() {
     $display_total=false;
 
 
-    $conf=$_SESSION['state']['products']['table'];
+        if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else
+        $parent='none';
+
+
+    if ($parent=='store') {
+        $conf=$_SESSION['state']['store']['products'];
+         $conf_table='store';
+    }elseif ($parent=='department') {
+        $conf=$_SESSION['state']['department']['products'];
+        $conf_table='department';
+    }elseif ($parent=='family') {
+        $conf=$_SESSION['state']['family']['products'];
+        $conf_table='family';
+    }elseif ($parent=='none') {
+        $conf=$_SESSION['state']['stores']['products'];
+        $conf_table='stores';
+    }else{
+    
+    exit;
+    }
+
+    
+ 
+
+    
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
     else
-        $view=$_SESSION['state']['products']['view'];
+        $view=$conf['view'];
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -3752,15 +3769,6 @@ function list_products() {
     }
 
 
-
-
-
-
-    //    if(!is_numeric($number_results)){
-    // 	print $number_results."xx";
-    // 	$number_results=25;
-
-    //       }
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -3801,30 +3809,31 @@ function list_products() {
 
     if (isset( $_REQUEST['percentages'])) {
         $percentages=$_REQUEST['percentages'];
-        $_SESSION['state']['products']['percentages']=$percentages;
     } else
-        $percentages=$_SESSION['state']['products']['percentages'];
+        $percentages=$conf['percentages'];
 
 
 
     if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
-        $_SESSION['state']['products']['period']=$period;
     } else
-        $period=$_SESSION['state']['products']['period'];
+        $period=$conf['period'];
 
     if (isset( $_REQUEST['avg'])) {
         $avg=$_REQUEST['avg'];
-        $_SESSION['state']['products']['avg']=$avg;
     } else
-        $avg=$_SESSION['state']['products']['avg'];
-
-
+        $avg=$conf['avg'];
+        
+   if (isset( $_REQUEST['period'])) {
+        $period=$_REQUEST['period'];
+    } else{
+        $period=$conf['period'];
+}
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
-    else
+    else{
         $parent=$conf['parent'];
-
+}
     if (isset( $_REQUEST['mode']))
         $mode=$_REQUEST['mode'];
     else
@@ -3836,21 +3845,26 @@ function list_products() {
         $restrictions=$conf['restrictions'];
 
 
-    $conf_table='products';
+   
 
     //$_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
     //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
     //$_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
-    $_SESSION['state'][$conf_table]['table']['order']=$order;
-    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
-    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-    $_SESSION['state'][$conf_table]['table']['where']=$where;
-    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
-    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['products']['order']=$order;
+    $_SESSION['state'][$conf_table]['products']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['products']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['products']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['products']['where']=$where;
+    $_SESSION['state'][$conf_table]['products']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
+     $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
+     $_SESSION['state'][$conf_table]['products']['avg']=$avg;
+     $_SESSION['state'][$conf_table]['products']['period']=$period;
+     $_SESSION['state'][$conf_table]['products']['restrictions']=$restrictions;
+ $_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
     //$_SESSION['state'][$conf_table]['period']=$period;
-    $_SESSION['state'][$conf_table]['mode']=$mode;
+   
     //$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
     // $_SESSION['state'][$conf_table]['parent']=$parent;
 
@@ -4203,7 +4217,7 @@ function list_products() {
     $count_margin=0;
     $sum_margin=0;
 
-    //print "$sql";
+  //  print "P:$period $avg $sql";
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $counter++;
@@ -4558,7 +4572,7 @@ function list_products() {
 
         //		print_r($locale_product_record_type);
         $record_type=$locale_product_record_type[$row['Product Record Type']];
-        //print $record_type;
+   
         $adata[]=array(
 
                      'code'=>$code,
@@ -4579,7 +4593,7 @@ function list_products() {
                      'sales'=>money($tsall),
                      'profit'=>money($tprofit),
                      'margin'=>$margin,
-                     'sold'=>number($sold),
+                     'sold'=>(is_numeric($sold)?number($sold):$sold),
                      'state'=>$type,
                      'web'=>$web_state,
                      'image'=>$row['Product Main Image'],
@@ -5499,7 +5513,7 @@ function list_families() {
 
     if (isset( $_REQUEST['percentages'])) {
         $percentages=$_REQUEST['percentages'];
-        $conf['percentages']=$percentages;
+      
     } else
         $percentages=$conf['percentages'];
 
@@ -5507,13 +5521,13 @@ function list_families() {
 
     if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
-        $conf['period']=$period;
+       
     } else
         $period=$conf['period'];
 
     if (isset( $_REQUEST['avg'])) {
         $avg=$_REQUEST['avg'];
-        $conf['avg']=$avg;
+      
     } else
         $avg=$conf['avg'];
 
@@ -5546,38 +5560,29 @@ function list_families() {
     
   //print_r($_SESSION['state']['department']);
 
+   $_SESSION['state'][$conf_table]['families']['order']=$order;
+    $_SESSION['state'][$conf_table]['families']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['families']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['families']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['families']['where']=$where;
+    $_SESSION['state'][$conf_table]['families']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['families']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['families']['period']=$period;
+        $_SESSION['state'][$conf_table]['families']['avg']=$avg;
 
+    $_SESSION['state'][$conf_table]['families']['mode']=$mode;
+    $_SESSION['state'][$conf_table]['families']['restrictions']=$restrictions;
+    $_SESSION['state'][$conf_table]['families']['parent']=$parent;
 
     //  $where.=" and `Product Department Key`=".$id;
     switch ($parent) {
     case('store'):
-      $_SESSION['state']['store']['families']['order']=$order;
-    $_SESSION['state']['store']['families']['order_dir']=$order_dir;
-    $_SESSION['state']['store']['families']['nr']=$number_results;
-    $_SESSION['state']['store']['families']['sf']=$start_from;
-    $_SESSION['state']['store']['families']['where']=$where;
-    $_SESSION['state']['store']['families']['f_field']=$f_field;
-    $_SESSION['state']['store']['families']['f_value']=$f_value;
-    $_SESSION['state']['store']['families']['period']=$period;
-    $_SESSION['state']['store']['families']['mode']=$mode;
-    $_SESSION['state']['store']['families']['restrictions']=$restrictions;
-    $_SESSION['state']['store']['families']['parent']=$parent;
-    
+     
     
         $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
     case('department'):
-      $_SESSION['state']['department']['families']['order']=$order;
-    $_SESSION['state']['department']['families']['order_dir']=$order_dir;
-    $_SESSION['state']['department']['families']['nr']=$number_results;
-    $_SESSION['state']['department']['families']['sf']=$start_from;
-    $_SESSION['state']['department']['families']['where']=$where;
-    $_SESSION['state']['department']['families']['f_field']=$f_field;
-    $_SESSION['state']['department']['families']['f_value']=$f_value;
-    $_SESSION['state']['department']['families']['period']=$period;
-    $_SESSION['state']['department']['families']['mode']=$mode;
-    $_SESSION['state']['department']['families']['restrictions']=$restrictions;
-    $_SESSION['state']['department']['families']['parent']=$parent;
+     
         $where=sprintf(' where `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     default:
