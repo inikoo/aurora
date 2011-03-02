@@ -1266,7 +1266,7 @@ $sql="select C.`Customer Key`,C.`Customer Store Key`,C.`Customer Main XHTML Emai
         }
         $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
       
-$customer_list_key=" <a href='new_campaign.php?customer_list_key=".$static_list_id."'>"."Create".'</a>';
+//$customer_list_key=" <a href=new_campaign.php?customer_list_key=".$static_list_id.">"."Create".'</a>';
         $adata[]=array(
 		     
                     'id'=>$id,
@@ -1276,7 +1276,7 @@ $customer_list_key=" <a href='new_campaign.php?customer_list_key=".$static_list_
                      'email'=>$data['Customer Main XHTML Email'],
                      'telephone'=>$data['Customer Main XHTML Telephone'],
                
-                     'customer_list_key'=>$customer_list_key,
+                     //'customer_list_key'=>$customer_list_key,
                     
                  );
 
