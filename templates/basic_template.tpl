@@ -1,7 +1,5 @@
 {include file='header.tpl'}
 <div id="bd" >
-
-
       <h2 style="clear:both">{t}Basic Template Preview{/t} </h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 <div id="campaign_div">{$msg}</div>
@@ -19,7 +17,6 @@
 	 a { color:#FF6600; color:#FF6600; color:#FF6600; }
 	</STYLE>
 {/literal}
-
 <form action="send_mail.php" name="basic_form" id="basic_form" method="POST">
 	<table width="500" cellpadding="10" cellspacing="0" class="backgroundTable" bgcolor='#99CC00' >
 		<tr>
@@ -93,8 +90,5 @@ Copyright (C) 2007 *|LIST:COMPANY|* All rights reserved.<br />
 	<input type="hidden" name="template" value="basic">
 </form>
 </div> 
-
-
 </div>
-
 {include file='footer.tpl'}
