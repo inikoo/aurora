@@ -1,8 +1,5 @@
 <?php
-	ini_set('display_errors',1);
-error_reporting(E_ALL|E_STRICT|E_NOTICE);
 	include('common.php');
-	
 	if(!isset($_REQUEST['send_mail']))
 	{
 	    header('Location: index.php');
@@ -11,39 +8,29 @@ error_reporting(E_ALL|E_STRICT|E_NOTICE);
 	
 	$mail_list = array();		//select the list of members to send mail
 	$mail_list = $_SESSION['check_email'];
-	
-	
+
 	if(isset($_REQUEST['template']))
 	{
 		$template = $_REQUEST['template'];
-	
 
-		//echo $template; die();
-	
 		if($template=='basic'){
-			$template = include('basic_template_design.php');
-			$path = 'basic_template.php';
-			//echo $template; die();
+			$template = "include('basic_template_design.php')";
 		}
 
 		if($template=='newsletter1'){
-			$template = include('newsletter_template1_design.php');
-			$path = 'newsletter_template1.php';
-			//echo $template; die();
+			$template = "include('newsletter_template1_design.php')";
 		}	
 
 		if($template=='newsletter2'){
-			$template = include('newsletter_template2_design.php');
-			$path = 'newsletter_template2.php';
-			//echo $template; die();
+			$template = "include('newsletter_template2_design.php')";
 		}	
-	
+
 		if($template=='postcard'){
-			$template = include('postcard_template_design.php');
-			$path = 'postcard_template.php';
-			//echo $template; die();
+			$template = "include('postcard_template_design.php')";
 		}
 	}
+
+	
 
 	foreach($mail_list as $key=>$mail)
 	{	
@@ -63,7 +50,7 @@ error_reporting(E_ALL|E_STRICT|E_NOTICE);
 		$runQuery = mysql_query($runSql);
 		$fetchRow = mysql_fetch_assoc($runQuery);
 
-		//print_r($fetchRow); die();
+		
 		
 		//fetch the customer base from Customer List Customer Bridge
 		$exeSql = "select `Customer Key` from `Customer List Customer Bridge` where `Customer List Key` = '".$fetchRow['Customer Key']."'";
@@ -90,8 +77,7 @@ error_reporting(E_ALL|E_STRICT|E_NOTICE);
 			//$headers .= "Cc: [email]satyajit@primediart.com[/email]";
 			//$headers .= "Bcc: [email]satyajit@primediart.com[/email]";
 
-			//echo 'ok'; die();
-
+			
 			// now lets send the email.
 			mail($to, $subject, $template, $headers);
 
@@ -101,5 +87,5 @@ error_reporting(E_ALL|E_STRICT|E_NOTICE);
 			
 	}
 			$_SESSION['msg'] = "Message has been sent....!";
-			header('location:basic_template.php');		
+			header('location:campaign_builder.php');		
 ?>

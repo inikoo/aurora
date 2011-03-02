@@ -1,8 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-
-
-      <h2 style="clear:both">{t}Postcard Template Preview{/t} </h2>
+    <h2 style="clear:both">{t}Postcard Template Preview{/t} </h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 <div id="campaign_div">{$msg}</div>
 
@@ -20,7 +18,7 @@
 </STYLE>
 {/literal}
 
-<form action="send_mail.php?template=postcard" name="newsletter2_form" id="newsletter2_form" method="POST">
+<form action="send_mail.php" name="newsletter2_form" id="newsletter2_form" method="POST">
 <table width="550" cellpadding="10" cellspacing="0" class="backgroundTable" bgcolor='#66CC00' >
 <tr>
 <td valign="top" align="center">
