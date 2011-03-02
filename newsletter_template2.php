@@ -71,22 +71,32 @@ $js_files=array(
 
 if($_FILES['newsPBlock1image']["name"]!='' || $_FILES['newsPBlock21image']["name"]!='' || $_FILES['newsPBlock3image']["name"]!='')
 		{
-      move_uploaded_file($_FILES["newsPBlock1image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["newsPBlock1image"]["name"]);
-      $image1="app_files/uploads/" . $_FILES["newsPBlock1image"]["name"];
+	
+	$key0 = rand(1,2000);	
+	$key1 = rand(1,1000);
+	$key2 = rand(1,100);
+	
+	$firstImage = $key0.$_FILES["newsPBlock1image"]["name"];
+	$secondImage = $key1.$_FILES["newsPBlock21image"]["name"];
+	$thirdImage = $key2.$_FILES["newsPBlock3image"]["name"];
 
-	      move_uploaded_file($_FILES["newsPBlock21image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["newsPBlock21image"]["name"]);
-      $image2="app_files/uploads/" . $_FILES["newsPBlock21image"]["name"];
+       move_uploaded_file($_FILES["newsPBlock1image"]["tmp_name"],"app_files/uploads/" .$firstImage);
+      $image1="app_files/uploads/" .$firstImage;
 
-      move_uploaded_file($_FILES["newsPBlock3image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["newsPBlock3image"]["name"]);
-      $image3="app_files/uploads/" . $_FILES["newsPBlock3image"]["name"];
+      move_uploaded_file($_FILES["newsPBlock21image"]["tmp_name"],"app_files/uploads/" .$secondImage);
+      $image2="app_files/uploads/" .$secondImage;
+
+      move_uploaded_file($_FILES["newsPBlock3image"]["tmp_name"],"app_files/uploads/" .$thirdImage);
+      $image3="app_files/uploads/" .$thirdImage;
 
 
 $smarty->assign('image1',$image1);
 $smarty->assign('image2',$image2);
 $smarty->assign('image3',$image3);
+		
+	$_SESSION['image1'] = $image1;
+	$_SESSION['image2'] = $image2;
+	$_SESSION['image3'] = $image3;	
 
 	
 		}
@@ -98,8 +108,6 @@ $smarty->assign('block2',$_SESSION['block2']);
 
 $smarty->assign('block3',$_SESSION['block3']);
 
-
-	
 
 $smarty->assign('title','Newsletter2 Preview');
 $smarty->assign('css_files',$css_files);
