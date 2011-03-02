@@ -6,10 +6,10 @@
   <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
-<div id="no_details_title" style="clear:right;">
+
     <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
-    {if $product->get('Product Record Type')=='Historic'}{t}Historic Product{/t}{/if}
-</div>
+    {if $product->get('Product Record Type')=='Historic'}<h2>{t}Historic Product{/t}</h2>{/if}
+
 
     
 <div class="" id="block_info"  style="width:890px">

@@ -1,5 +1,6 @@
 ﻿{include file='header.tpl'}
 <div id="bd" style="padding:0px">
+
 <div style="padding:0 20px">
 
 {include file='assets_navigation.tpl'}
@@ -8,17 +9,18 @@
  
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='categories'}selected{/if}"  style="display:none" id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $block_view=='departments'}selected{/if}"  id="departments">  <span> {t}Departments{/t}</span></span></li>
     <li> <span class="item {if $block_view=='families'}selected{/if}"  id="families">  <span> {t}Families{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='sites'}selected{/if}"  id="sites">  <span> {t}Sites{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals">  <span> {t}Offers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='sites'}selected{/if}" style="display:none" id="sites">  <span> {t}Sites{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='deals'}selected{/if}" style="display:none" id="deals">  <span> {t}Offers{/t}</span></span></li>
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div style="padding:0 20px">
+
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 
