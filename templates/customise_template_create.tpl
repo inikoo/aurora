@@ -112,35 +112,35 @@ $("#Postcard").css("display", "block");
 
 <tr>
 <td style="float:left;">Header:</td>
-<td><input type="text" name="basicheader" id="template header">
+<td><input type="text" name="news1_header" id="template header">
 
 </td></tr>
 <tr><td style="float:left;">Subtitle:</td>
-<td><input type="text" name="basictitle" id="template header">
+<td><input type="text" name="news1_title" id="template header">
 </td></tr>
 
 <tr><td style="float:left;">Paragraph Block 1:</td>
-<td><textarea cols="30" rows="4" name="basicPBlock1"></textarea>
+<td><textarea cols="30" rows="4" name="news1_Block1"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 1 Image:</td>
-<td><input type="file" name="basicPBlock1image" >
+<td><input type="file" name="news1_Block1image" >
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 2:</td>
-<td><textarea cols="30" rows="4" name="basicPBlock2"></textarea>
+<td><textarea cols="30" rows="4" name="news1_Block2"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 2 Image:</td>
-<td><input type="file" name="basicPBlock21image">
+<td><input type="file" name="news1_Block2image">
 
 </td></tr>
 <tr><td style="float:left;">Paragraph Block 3:</td>
-<td><textarea cols="30" rows="4" name="basicPBlock3"></textarea>
+<td><textarea cols="30" rows="4" name="news1_Block3"></textarea>
 
 </td></tr>
 <tr><td style="float:left;">Block 3 Image:</td>
-<td><input type="file" name="basicPBlock3image">
+<td><input type="file" name="news1_Block3image">
 
 </td></tr>
 <tr><td></td>

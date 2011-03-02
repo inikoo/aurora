@@ -20,8 +20,8 @@
 	</STYLE>
 {/literal}
 
-
-	<table width="600" cellpadding="10" cellspacing="0" bgcolor='#fdf4d7' >
+<form action="send_mail.php" name="newsletter2_form" id="newsletter2_form" method="POST">
+<table width="600" cellpadding="10" cellspacing="0" bgcolor='#fdf4d7' >
 <tr>
 <td valign="top" align="center">
 
@@ -115,8 +115,9 @@ Copyright (C) 2007 *|LIST:COMPANY|* All rights reserved.<br />
 </td>
 </tr>
 </table>
-   
-
+    <input type="submit" name="send_mail" value="Send Mail">
+	<input type="hidden" name="template" value="newsletter2">
+</form>
 </div> 
 
 

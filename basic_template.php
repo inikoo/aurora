@@ -53,17 +53,13 @@ $js_files=array(
 		$block3 = $_REQUEST['basicPBlock3'];
 		
 	
-		
-		
-	
 
 		$_SESSION['header'] = $header;
 		$_SESSION['contenttitle'] = $title;
-		$_SESSION['block1'] = $block1;
-		
-		$_SESSION['block2'] = $block2;
-	
-		$_SESSION['block3'] = $block3;
+		$_SESSION['basic_pr1'] = $block1;
+		$_SESSION['basic_pr2']=$block2;
+
+                $_SESSION['basic_pr3'] = $block3;
 			
 
 
@@ -71,35 +67,46 @@ $js_files=array(
 
 if($_FILES['basicPBlock1image']["name"]!='' || $_FILES['basicPBlock21image']["name"]!='' || $_FILES['basicPBlock3image']["name"]!='')
 		{
-      move_uploaded_file($_FILES["basicPBlock1image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["basicPBlock1image"]["name"]);
-      $image1="app_files/uploads/" . $_FILES["basicPBlock1image"]["name"];
 
-	      move_uploaded_file($_FILES["basicPBlock21image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["basicPBlock21image"]["name"]);
-      $image2="app_files/uploads/" . $_FILES["basicPBlock21image"]["name"];
-
-      move_uploaded_file($_FILES["basicPBlock3image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["basicPBlock3image"]["name"]);
-      $image3="app_files/uploads/" . $_FILES["basicPBlock3image"]["name"];
+	$key0 = rand(1,2000);	
+	$key1 = rand(1,1000);
+	$key2 = rand(1,100);
+	
+	$firstImage = $key0.$_FILES["basicPBlock1image"]["name"];
+	$secondImage = $key1.$_FILES["basicPBlock21image"]["name"];
+	$thirdImage = $key2.$_FILES["basicPBlock3image"]["name"];
 
 
-$smarty->assign('image1',$image1);
-$smarty->assign('image2',$image2);
-$smarty->assign('image3',$image3);
+     move_uploaded_file($_FILES["basicPBlock1image"]["tmp_name"],"app_files/uploads/" .$firstImage);
+      $image1="app_files/uploads/" .$firstImage;
+
+      move_uploaded_file($_FILES["basicPBlock21image"]["tmp_name"],"app_files/uploads/" .$secondImage);
+      $image2="app_files/uploads/" .$secondImage;
+
+      move_uploaded_file($_FILES["basicPBlock3image"]["tmp_name"],"app_files/uploads/" .$thirdImage);
+      $image3="app_files/uploads/" .$thirdImage;
+
+$_SESSION['basic_image1'] = $image1;
+	$_SESSION['basic_image2'] = $image2;
+	$_SESSION['basic_image3'] = $image3;
+
+
+
+		$smarty->assign('image1',$_SESSION['basic_image1']);
+		$smarty->assign('image2',$_SESSION['basic_image2']);
+		$smarty->assign('image3',$_SESSION['basic_image3']);
+
+		
 
 	
 		}
 $smarty->assign('header',$_SESSION['header']);
 $smarty->assign('contenttitle',$_SESSION['contenttitle']);
-$smarty->assign('block1',$_SESSION['block1']);
+$smarty->assign('block1',$_SESSION['basic_pr1']);
 
-$smarty->assign('block2',$_SESSION['block2']);
+$smarty->assign('block2',$_SESSION['basic_pr2']);
 
-$smarty->assign('block3',$_SESSION['block3']);
-
-
-	
+$smarty->assign('block3',$_SESSION['basic_pr3']);
 
 $smarty->assign('title','Basic Template Preview');
 $smarty->assign('css_files',$css_files);

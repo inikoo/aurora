@@ -7,11 +7,41 @@
 	    exit();
 	}	
 	
-	//select the list of members to send mail
-	$mail_list = array();
+	$mail_list = array();		//select the list of members to send mail
 	$mail_list = $_SESSION['check_email'];
 	
 	
+	if(isset($_REQUEST['template']))
+	{
+		$template = $_REQUEST['template'];
+	
+
+		//echo $template; die();
+	
+		if($template=='basic'){
+			$template = include('basic_template_design.php');
+			$path = 'basic_template.php';
+			//echo $template; die();
+		}
+
+		if($template=='newsletter1'){
+			$template = include('newsletter_template1_design.php');
+			$path = 'newsletter_template1.php';
+			//echo $template; die();
+		}	
+
+		if($template=='newsletter2'){
+			$template = include('newsletter_template2_design.php');
+			$path = 'newsletter_template2.php';
+			//echo $template; die();
+		}	
+	
+		if($template=='postcard'){
+			$template = include('postcard_template_design.php');
+			$path = 'postcard_template.php';
+			//echo $template; die();
+		}
+	}
 
 	foreach($mail_list as $key=>$mail)
 	{	
@@ -50,10 +80,6 @@
 			$subject = "Hello! This is HTML email";
 			
 		
-			//begin of HTML message
-			$message = <<<EOF
-			$structure
-EOF;
 			//end of message
 			$headers  = "From: $from\r\n";
 			$headers .= "Content-type: text/html\r\n";
@@ -62,18 +88,16 @@ EOF;
 			//$headers .= "Cc: [email]satyajit@primediart.com[/email]";
 			//$headers .= "Bcc: [email]satyajit@primediart.com[/email]";
 
+			//echo 'ok'; die();
+
 			// now lets send the email.
-			mail($to, $subject, $message, $headers);
+			mail($to, $subject, $template, $headers);
 
 			
 
-
-
-		}
+		}	
 			$_SESSION['msg'] = "Message has been sent....!"; 
-			header('location:campaign_list.php');
+			@Header('location:'.$path);
+			
 	}
-
-
-	
 ?>
