@@ -1,4 +1,4 @@
-	<STYLE>
+<STYLE>
 	 .headerTop { background-color:#FFCC66; border-top:0px solid #000000; border-bottom:1px solid #FFFFFF; text-align:center; }
 	 .adminText { font-size:10px; color:#996600; line-height:200%; font-family:verdana; text-decoration:none; }
 	 .headerBar { background-color:#FFFFFF; border-top:0px solid #333333; border-bottom:10px solid #FFFFFF; }
@@ -8,7 +8,7 @@
 	 .footerRow { background-color:#FFFFCC; border-top:10px solid #FFFFFF; }
 	 .footerText { font-size:10px; color:#996600; line-height:100%; font-family:verdana; }
 	 a { color:#FF6600; color:#FF6600; color:#FF6600; }
-	</STYLE>
+</STYLE>
 
 <table width="600" cellpadding="10" cellspacing="0" bgcolor='#fdf4d7' >
 <tr>
