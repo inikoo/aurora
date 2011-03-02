@@ -36,7 +36,16 @@ $pdf->Write(0, '', '', 0, 'L', true, 0, false, false, 0);
 $pdf->SetFont('helvetica', '', 8);
 ob_clean();
 ob_start();
+
+$sql=mysql_fetch_array(mysql_query("select `Customer List Type` from `Customer List Dimension` where `Customer List Key`=$id"));
+$list_type=$sql[0];
+if($list_type=='Static'){
 include('external_libs/PDF/template_customer_list.php');
+}else
+{
+include('external_libs/PDF/template_customer_list_dynamic.php');
+}
+
 $page1 = ob_get_contents();
 ob_clean();
 $page1 = preg_replace("/\s\s+/", '', $page1);
