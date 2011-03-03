@@ -33,11 +33,15 @@ $("#hidr").click(function () {
 	   </tr>
 <form action="check_template.php" method="POST" name="myForm" id="myForm" onsubmit="SelectUrl()">
 {section name="i" loop="$campaign"}
+	
     <tr bgcolor="{cycle values=#eeeeee,#d0d0d0}"> {* CHANGE HERE *}
-  
+  	
+
       <td align='center'><input type="checkbox" id="mail_{$campaign[i].$key}" name="check_email[]" value="{$campaign[i].$key}">{$campaign[i].$name}</td><td align='center'>{$campaign[i].$emails}</td><td align='center'>{$campaign[i].$obj}</td><td align='center'>{$campaign[i].$status}</td>
-    
+	
+		
     </tr>
+	
 {/section} 
 
        
@@ -50,7 +54,12 @@ $("#hidr").click(function () {
 
      </table>
 
-			<b id="showr">Choose &nbsp;&nbsp;</b>
+	
+	
+{if !isset($no_record) }
+
+
+	<b id="showr">Choose &nbsp;&nbsp;</b>
  	<b id="hidr">Close</b>
  	<div id="display_part">
         		<br>
@@ -60,6 +69,9 @@ $("#hidr").click(function () {
                        
 	<div><br><input type="submit" name="submit" value="Send Mail"></div>
         </div>
+{/if}
+	
+
 </form>	
  
 
