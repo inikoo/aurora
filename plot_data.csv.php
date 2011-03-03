@@ -71,6 +71,34 @@ case('store_sales'):
                          ));
     store_sales($data);
     break;
+case('department_sales'):
+    $data=prepare_values($_REQUEST,array(
+                             'department_key'=>array('type'=>'string'),
+                             'from'=>array('type'=>'date','optional'=>true),
+                             'to'=>array('type'=>'date','optional'=>true),
+                             'use_corporate'=>array('type'=>'number')
+                         ));
+    department_sales($data);
+    break;
+case('family_sales'):
+    $data=prepare_values($_REQUEST,array(
+                             'family_key'=>array('type'=>'string'),
+                             'from'=>array('type'=>'date','optional'=>true),
+                             'to'=>array('type'=>'date','optional'=>true),
+                             'use_corporate'=>array('type'=>'number')
+                         ));
+    family_sales($data);
+    break;
+ case('product_id_sales'):
+    $data=prepare_values($_REQUEST,array(
+                             'product_id'=>array('type'=>'string'),
+                             'from'=>array('type'=>'date','optional'=>true),
+                             'to'=>array('type'=>'date','optional'=>true),
+                             'use_corporate'=>array('type'=>'number')
+                         ));
+    product_id_sales($data);
+    break;   
+    
 case('stacked_store_sales'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'string'),
@@ -88,9 +116,7 @@ case('part_location_stock_history'):
     break;
 }
 
-
-
-function  part_location_stock_history($data) {
+function part_location_stock_history($data) {
 
 if($data['location_key']){
 
@@ -117,11 +143,7 @@ if($data['location_key']){
 }
 
 }
-
-
-
-
-function  number_of_contacts($data) {
+function number_of_contacts($data) {
 
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='contact population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
                  $data['store_key']
@@ -134,9 +156,7 @@ function  number_of_contacts($data) {
 
 
 }
-
-
-function  number_of_customers($data) {
+function number_of_customers($data) {
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='customer population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
                  $data['store_key']
                 );
@@ -148,8 +168,6 @@ function  number_of_customers($data) {
 
 
 }
-
-
 function customers_orders_pie($data) {
 
     $pie_data=array(
@@ -213,7 +231,6 @@ function customers_orders_pie($data) {
 
 
 }
-
 function customers_data_completeness_pie($data) {
 
     $pie_data=array(
@@ -275,7 +292,6 @@ function customers_data_completeness_pie($data) {
 
 
 }
-
 function customer_departments_pie($data) {
     $number_slices=9;
     $others=0;
@@ -322,7 +338,6 @@ function customer_departments_pie($data) {
     }
 
 }
-
 function customer_families_pie($data) {
 
     $number_slices=14;
@@ -367,8 +382,6 @@ function customer_families_pie($data) {
         printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
     }
 }
-
-
 function store_sales($data) {
     global $user;
     $tmp=preg_split('/\,/', $data['store_key']);
@@ -446,8 +459,237 @@ function store_sales($data) {
 
 
 }
+function department_sales($data) {
+    global $user;
+    $tmp=preg_split('/\,/', $data['department_key']);
+    $departments_keys=array();
+    foreach($tmp as $department_key) {
+
+        if (is_numeric($department_key)) {
+            $departments_keys[]=$department_key;
+        }
+    }
+
+    $graph_data=array();
 
 
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+    } else {
+        $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Depament Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$departments_keys));
+    }
+
+    $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+                 $dates
+
+                );
+
+//print $sql;
+
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+
+        $graph_data[$row['Date']]['vol']=0;
+
+        $graph_data[$row['Date']]['value']=0;
+        //$graph_data[$row['Date']]['date']=$row['Date'];
+
+    }
+
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Invoice Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+    }
+
+    $corporate_currency='';
+    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Depament Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+                 $corporate_currency,
+                 $dates,
+                 join(',',$departments_keys)
+                );
+   //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $graph_data[$row['date']]['vol']=$row['invoices'];
+        $graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+    }
+
+
+
+    $out='';
+//print_r($graph_data);
+    foreach($graph_data as $key=>$value) {
+        print $key.','.join(',',$value)."\n";
+    }
+
+
+}
+function family_sales($data) {
+    global $user;
+    $tmp=preg_split('/\,/', $data['family_key']);
+    $familys_keys=array();
+    foreach($tmp as $family_key) {
+
+        if (is_numeric($family_key)) {
+            $familys_keys[]=$family_key;
+        }
+    }
+
+    $graph_data=array();
+
+
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+    } else {
+        $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Family Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$familys_keys));
+    }
+
+    $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+                 $dates
+
+                );
+
+//print $sql;
+
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+
+        $graph_data[$row['Date']]['vol']=0;
+
+        $graph_data[$row['Date']]['value']=0;
+        //$graph_data[$row['Date']]['date']=$row['Date'];
+
+    }
+
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Invoice Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+    }
+
+    $corporate_currency='';
+    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Family Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+                 $corporate_currency,
+                 $dates,
+                 join(',',$familys_keys)
+                );
+   //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $graph_data[$row['date']]['vol']=$row['invoices'];
+        $graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+    }
+
+
+
+    $out='';
+//print_r($graph_data);
+    foreach($graph_data as $key=>$value) {
+        print $key.','.join(',',$value)."\n";
+    }
+
+
+}
+function product_id_sales($data) {
+    global $user;
+    $tmp=preg_split('/\,/', $data['product_id']);
+    $product_ids=array();
+    foreach($tmp as $product_id) {
+
+        if (is_numeric($product_id)) {
+            $product_ids[]=$product_id;
+        }
+    }
+
+    $graph_data=array();
+
+
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+    } else {
+        $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product ID` in (%s)  and `Current Payment State`='Paid'  )",join(',',$product_ids));
+    }
+
+    $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+                 $dates
+
+                );
+
+//print $sql;
+
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+
+        $graph_data[$row['Date']]['vol']=0;
+
+        $graph_data[$row['Date']]['value']=0;
+        //$graph_data[$row['Date']]['date']=$row['Date'];
+
+    }
+
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Invoice Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+    }
+
+    $corporate_currency='';
+    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product ID` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+                 $corporate_currency,
+                 $dates,
+                 join(',',$product_ids)
+                );
+   //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $graph_data[$row['date']]['vol']=$row['invoices'];
+        $graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+    }
+
+
+
+    $out='';
+//print_r($graph_data);
+    foreach($graph_data as $key=>$value) {
+        print $key.','.join(',',$value)."\n";
+    }
+
+
+}
 function stacked_store_sales($data) {
 
 
@@ -546,7 +788,6 @@ function stacked_store_sales($data) {
 
     */
 }
-
 function top_families($data) {
 
     $max_slices=10;

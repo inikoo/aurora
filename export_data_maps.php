@@ -92,7 +92,7 @@ if($query){
 }
 $smarty->assign('maps',$maps);
 $smarty->assign('subject_key',$subject_key);
-$smarty->assign('subject',$map_type);
+$smarty->assign('subject',$map_db_type);
 $smarty->assign('no_of_maps',$num);
 $smarty->display('export_data_maps.tpl');
 

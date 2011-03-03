@@ -175,6 +175,51 @@
  </table>
 </div>
 
+<div  id="plots" style="clear:both">
+<ul class="tabs" id="chooser_ul" style="margin-top:25px">
+    <li>
+	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
+	    <span>{t}Family Sales{/t}</span>
+	  </span>
+	</li>
+{*
+	<li>
+	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments"  >
+	    <span>{t}Top Products{/t}</span>
+	  </span>
+	</li>
+*}
+	<li>
+	  <span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"     forecast="{$plot_data.pie.forecast}" interval="{$plot_data.pie.interval}"  >
+	    <span>{t}Products{/t}</span>
+	  </span>
+	</li>
+
+  </ul>
+  
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
+
+<div id="plot" style="clear:both;border:1px solid #ccc" >
+	<div id="single_data_set"  >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+</div>
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=family_sales&family_key={$family->id}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("plot");
+		// ]]>
+	</script>
+  
+  
+  <div style="clear:both"></div>
+</div>
+
+
+
 </div>
 
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
