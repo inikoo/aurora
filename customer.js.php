@@ -621,9 +621,6 @@ dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make
 dialog_make_order.render();
 
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-
-
 Event.addListener("new_sticky_note", "click", dialog_new_sticky_note.show,dialog_new_sticky_note , true);
 Event.addListener("sticky_note", "click", dialog_sticky_note.show,dialog_sticky_note , true);
 
@@ -637,7 +634,7 @@ Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_orde
 
 Event.addListener("take_order", "click", take_order , true);
 Event.on('upload_attach', 'click', upload_attach);
-
+dialog_export.render();
 
  if(Dom.get('sticky_note_content').innerHTML==''){
  

@@ -3,7 +3,7 @@ include_once('common.php');
 ?>
    var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
-
+var dialog_export;
 var category_labels={'total':'<?php echo _('Number')?>','growth':'<?php echo _('Growth')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
@@ -21,7 +21,15 @@ function new_customer(tipo){
     location.href='new_customer.php?tipo='+tipo;
     dialog_new_customer.hide();
 }
-
+// -------------------------------
+function close_dialog(tipo){
+    switch(tipo){
+case('export'):
+ dialog_export.hide();
+ break;
+    }
+};
+// --------------------------------
 
 
 
@@ -37,7 +45,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-	    var CustomersColumnDefs = [
+	    var CustomersColumnDefs = [ 
 				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -168,7 +176,7 @@ function change_table_type(){
 
 
  function init(){
-// -------------------------Export(CSV) code for customer list under order --------------------
+
   YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers');
  YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'customers'});
   csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
@@ -176,7 +184,9 @@ function change_table_type(){
 	 csvMenu.subscribe("show", csvMenu.focus);
    
  YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-// ------------------------------------------------------------------------------------------
+dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_export.render();
+Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
 // -------------------------Import(CSV) code for customer list under order --------------------
   YAHOO.util.Event.addListener('import_csv0', "click",popup,'import.php');
