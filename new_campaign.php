@@ -73,6 +73,13 @@ if(isset($_SESSION['disp_msg']) && $_SESSION['disp_msg'] != ''){
 	$smarty->assign('msg','');
 }
 
+if(isset($_REQUEST['link']))
+{
+	$href='<a href=campaign_builder.php><font color=red>Click</font></a> here to go back';
+	$link = '<span style="font-size:11px;">'.stripslashes($_REQUEST['link']).'&nbsp;&nbsp;'. $href.'</span>';
+	$smarty->assign('link',$link);	
+}
+
 if($_SESSION['succ'] = 'yes'){
 	$smarty->assign('msg','');
 	$smarty->assign('campaign_name','');

@@ -63,8 +63,8 @@ if(isset($_REQUEST)){
 		}
 	unset($_REQUEST);
 	}
-	$_SESSION['disp_msg'] = 'Campaign successfully created';
-	$path = "new_campaign.php?customer_list_key=$customer_list_key";
+	
+	$path = "new_campaign.php?customer_list_key=$customer_list_key&link=Campaign successfully created";
 	header("Location: $path");
 }
 ?>
