@@ -13,12 +13,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    			{key:"score", hidden:true,label:"<?php echo _('Score')?>", width:60,sortable:false,className:"aleft"},
 	    			{key:"store", label:"<?php echo _('Store')?>", width:60,sortable:false,className:"aleft"},
 				    {key:"subject", label:"<?php echo _('Type')?>", width:100,sortable:false,className:"aleft"},
-				    {key:"result", label:"<?php echo _('Subject')?>", width:100,sortable:false,className:"aleft"},
+				 //   {key:"result", label:"<?php echo _('Subject')?>", width:100,sortable:false,className:"aleft"},
 				    {key:"description", label:"<?php echo _('Description')?>", width:552,sortable:false,className:"aleft"}
 				      
 				];
 	    //?tipo=locations&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_search.php?tipo=search&q="+Dom.get('all_search').value);
+	  
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
