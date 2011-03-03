@@ -5,6 +5,9 @@ if(isset($_REQUEST)){
 	$campaign_obj = isset($_REQUEST['campaign_obj'])?$_REQUEST['campaign_obj']:'';
 	$campaign_mail = isset($_REQUEST['campaign_mail'])?$_REQUEST['campaign_mail']:'';
 	$customer_list_key = isset($_REQUEST['customer_list_key'])?$_REQUEST['customer_list_key']:'';
+	
+	//echo $customer_list_key; die();
+	
 	$campaign_content = isset($_REQUEST['campaign_content'])?$_REQUEST['campaign_content']:'';
 	if(trim($campaign_name)== ''){
 		$_SESSION['disp_msg']= '<h4 style=color:red;>Please enter the name for Campaign.</h4>';
@@ -60,7 +63,8 @@ if(isset($_REQUEST)){
 		}
 	unset($_REQUEST);
 	}
-	$path = "new_campaign.php?customer_list_key=$customer_list_key";
+	
+	$path = "new_campaign.php?customer_list_key=$customer_list_key&link=Campaign successfully created";
 	header("Location: $path");
 }
 ?>
