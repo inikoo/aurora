@@ -50,6 +50,10 @@ $js_files=array(
 	$sqlCount = "select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Maximum Emails`,`Email Campaign Objective`,`Email Campaign Status` from `Email Campaign Dimension";
 		$queryCount = mysql_query($sqlCount);
 		
+	//echo mysql_num_rows($queryCount); die();
+
+	if(mysql_num_rows($queryCount)>0)
+	{
 		$campaign_size=mysql_num_rows($queryCount);
 		while($k=mysql_fetch_assoc($queryCount))
 		{
@@ -57,6 +61,12 @@ $js_files=array(
                 	
        	 	}
 		//print_r($campaign);
+	}
+	else
+	{
+		$no_record = 0;
+		$smarty->assign('no_record',$no_record);
+	}
 
 if(isset($_SESSION['msg']))
 {
@@ -66,7 +76,7 @@ if(isset($_SESSION['msg']))
 	
 $smarty->assign('campaign',$campaign);
 
-$smarty->assign('campaign_size',$campaign_size);
+//$smarty->assign('campaign_size',$campaign_size);
 $msg = isset($_SESSION['msg'])?$_SESSION['msg']:'';
 
 $smarty->assign('css_files',$css_files);
