@@ -15,47 +15,88 @@ Version 2.0
 error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
 include_once('common.php');
 include_once('class.Customer.php');
-if(!$_REQUEST['subject_key'] || !$_REQUEST['subject']){ //To ensure whether the form has proper parameters in query string //
-	header('Location: index.php');
-	exit;
-}
-$map_type = mysql_real_escape_string($_REQUEST['subject']);
 if(!$user->can_view('customers')){
   exit();
 }
-if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
-  $_SESSION['state']['customer']['id']=mysql_real_escape_string($_REQUEST['subject_key']);
-  $customer_id=mysql_real_escape_string($_REQUEST['subject_key']);
-}else{
-  $customer_id=$_SESSION['state']['customer']['id'];
+
+### To check whether the form has proper parameters in query string ###
+if(!isset($_REQUEST['subject_key'])){
+	header('Location: customers_server.php');
+	exit;
 }
-$customer=new customer($customer_id);
-$exported_data=array(); //This will be the final array of selected and sorted fields - Now assigning as an empty array//
+if(!isset($_REQUEST['subject'])){
+	header('Location: customers_server.php');
+	exit;
+}
+$map_type = mysql_real_escape_string($_REQUEST['subject']);
+if($map_type == 'customer' || $map_type == 'customers'){
+	$map_db_type = 'Customer';
+}
 $line = ''; $data = '';$header = '';
-if(isset($_GET['source']) && $_GET['source'] =='db'){//To ensure that map is loaded from database //
-$no_of_maps_saved = numExportMapData($customer_id, $map_type);
-	if($no_of_maps_saved > 0){
-	$exported_data = getExportMapData($customer_id, $map_type);
+$my_exported_data=array();
+$exported_data = array();//This will be the final array of selected and sorted fields - Now assigning as an empty array//
+
+## FOR CUSTOMER - Individual ##
+if($map_type == 'customer'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
+	  $_SESSION['state']['customer']['id']=mysql_real_escape_string($_REQUEST['subject_key']);
+	  $customer_id=mysql_real_escape_string($_REQUEST['subject_key']);
 	}else{
-	//Assign "Default Export Fields" in this array ... //
-	$included_data[0] = 'Customer Main Contact Name';
-	$included_data[1] = 'Customer Main Plain Email';
-	$included_data[2] = 'Customer Main Plain Telephone';
-	//print_r($included_data);
-
-	$actual_data=$customer->data;
-	//print_r($actual_data);
-
-	$exported_data = final_array($actual_data , $included_data);
-	//print_r($exported_data);
+	  $customer_id=$_SESSION['state']['customer']['id'];
 	}
-}else{
-	if(!isset($_POST['SUBMIT'])){ // To ensure whether the form is properly submitted - Case create new map //
+	$customer=new customer($customer_id);
+}
+## FOR CUSTOMERS - of a Store ##
+elseif($map_type == 'customers'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $store_id=mysql_real_escape_string($_REQUEST['subject_key']);
+	}
+}
+## IF NO PROPER DEFINATION FOUND ##
+else{
+	header('Location: customers_server.php');
+	exit;
+}
+
+
+### Load from saved maps ... Case: "Export Data (using last map)" & "Export from another map" ###
+if(isset($_GET['source']) && $_GET['source'] =='db'){
+$no_of_maps_saved = numExportMapData($map_db_type);
+	## If maps exist in database ##
+	if($no_of_maps_saved > 0){
+	$exported_data = getExportMapData($map_db_type);
+	//print_r(exported_data);
+	}
+	## If no map exists then assign "Default Export Fields" ##
+	else{
+		# Fields to be included in default export #
+		if($map_db_type == 'Customer'){
+		$included_data[0] = 'Customer Main Contact Name';
+		$included_data[1] = 'Customer Main Plain Email';
+		$included_data[2] = 'Customer Main Plain Telephone';
+		//print_r($included_data);
+		$exported_data = fetch_all_records($included_data, 'Customer Dimension');
+		//print_r($my_exported_data);
+		}
+	}
+}
+### Map is created and exported - Case: Export Wizard (new map)###
+else{
+	## To ensure whether the form is properly submitted ##
+	if(!isset($_POST['SUBMIT'])){
 	header('Location: index.php');
 	exit;
 	}
-	$exported_data = $_SESSION['list']; // Catching values from session [processing through Wizard] //
-	//print_r($exported_data);*/
+	## Catching values from session [processing through Wizard] ##
+	$my_exported_data = $_SESSION['list'];
+	if($map_type == 'customer'){
+		$exported_data[]=$my_exported_data;
+	}
+	elseif($map_type == 'customers'){
+		$exported_data = fetch_records($my_exported_data, 'Customer Dimension', 'Customer Store Key', $store_id);
+	}
+
+	//print_r($exported_data);
 
 	## Saving Map into Database ##
 	if(isset($_POST['save']) && $_POST['save']=='save'){
@@ -72,44 +113,59 @@ $no_of_maps_saved = numExportMapData($customer_id, $map_type);
 			$map_header = 'no';
 		}
 		$map_data = base64_encode(serialize($exported_data));
-		$sql = "INSERT INTO `Export Map` (`Map Name` , `Map Description` , `Map Type` ,`Map Data` ,`Customer Key` , `Export Header` , `Export Map Default` , `Exported Date`)
-		VALUES ('$map_name', '$map_desc', '$map_type', '$map_data', '$customer_id', '$map_header', '$default' , now())";
+		$sql = "INSERT INTO `Export Map` (`Map Name` , `Map Description` , `Map Type` ,`Map Data` , `Export Header` , `Export Map Default` , `Exported Date`)
+		VALUES ('$map_name', '$map_desc', '$map_db_type', '$map_data', '$map_header', '$default' , now())";
 		$query = mysql_query($sql);
 	}
 }
 
-// COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB //
-foreach($exported_data as $key=>$value){
-	if(!isset($value) || $value == ""){
-			$value = ",";
-			if(getExportMapHeader($customer_id, $map_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')){
-			$header .= $key.",";
+### EXPORT PART ===== COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB ###
+$header_flag=1;
+for($i=0;$i<count($exported_data);$i++){
+	foreach($exported_data[$i] as $key=>$value){
+		if(!isset($value) || $value == ""){
+				$value = ",";
+				if(getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')){
+					if($header_flag==1){
+						$header .= $key.",";
+					}
+				}
+			}else{
+				$value = str_replace('"', '""', $value);
+				$value = $value.",";
+				if(getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')){
+					if($header_flag==1){
+						$header .= $key.",";
+					}
+				}
 			}
-		}else{
-			$value = str_replace('"', '""', $value);
-			$value = $value.",";
-			if(getExportMapHeader($customer_id, $map_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')){
-			$header .= $key.",";
-			}
+		$line .= $value;
+
 	}
-			$line .= $value;
-}
+$header_flag++;
 $data .= trim($line)."\n";
 $line = '';
+}
+
+### Unseting unnecessary variables ###
+unset($my_exported_data);
 unset($exported_data);
+
+### Processing Export file ###
 $data = str_replace("\r", "", $data);
+
 if ($data == "") {
   $data = "\nno matching records found\n";
 }
-$filename = $customer->data['Customer Key'].'-'.time().'.csv'; // Define your exported file name from here //
+$filename = mt_rand(11111,99999).'-'.time().'.csv'; // Define the way of your exported file name here //
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=$filename");
 header("Pragma: no-cache");
 header("Expires: 0");
 echo $header."\n".$data;
 
-## METHODS USED FOR THIS PAGE ##
-function getExportMapData($subject_key, $subject){
+### USER DEFINED METHODS ###
+function getExportMapData($subject){
 	if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 		$id=mysql_real_escape_string($_REQUEST['id']);
 		$s="SELECT `Map Data` FROM `Export Map` WHERE `Map Type` = '$subject' AND `Map Key` = '$id'";
@@ -123,12 +179,10 @@ LIMIT 0 , 1";
 	$data= unserialize(base64_decode($r['Map Data']));
 	return $data;
 }
-
-function getExportMapHeader($subject_key, $subject){
+function getExportMapHeader($subject){
 	if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 		$id=mysql_real_escape_string($_REQUEST['id']);
 		$s="SELECT `Export Header` FROM `Export Map` WHERE `Map Type` = '$subject' AND `Map Key` = '$id'";
-
 	}else{
 		$s="SELECT `Export Header` FROM `Export Map` WHERE `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC LIMIT 0 , 1";
 	}
@@ -137,29 +191,49 @@ function getExportMapHeader($subject_key, $subject){
 		$r = mysql_fetch_assoc($q);
 		$data= $r['Export Header'];
 	}else{
-		$data = 'yes'; // If header is required in default export //
+		$data = 'yes'; // If header is required in default export then write 'yes' else 'no' //
 	}
 	return $data;
 }
-
-function numExportMapData($subject_key, $subject){
+function numExportMapData($subject){
 	$q = mysql_query("SELECT `Map Key` FROM `Export Map` WHERE `Map Type` = '$subject'");
 	$num = mysql_num_rows($q);
 	return $num;
 }
 function final_array($assoc_arr, $num_arr){
 	$final_arr = array();
-
 	foreach($assoc_arr as $assoc_key => $assoc_val){
-
 		if(in_array($assoc_key, $num_arr)){
-
 			$final_arr[$assoc_key]=$assoc_val;
-
 		}
 	}
-	//print_r($final_arr);
 	return $final_arr;
 }
+function fetch_records($exported_data, $table_name, $look_field, $id){
 
+	$fields=''; $customers_data=array(); $row=array();
+	foreach($exported_data as $key=>$value){
+		$fields .= '`'.$key.'`,';
+	}
+		$fields = substr($fields,0,-1);
+	$sql = "SELECT $fields FROM `$table_name` WHERE `$look_field`='$id'";
+	$query=mysql_query($sql);
+	while($row=mysql_fetch_assoc($query)){
+		$customer_data[]=$row;
+	}
+	return $customer_data;
+}
+function fetch_all_records($exported_data, $table_name){
+	$fields=''; $customers_data=array(); $row=array();
+	foreach($exported_data as $key=>$value){
+		$fields .= '`'.$value.'`,';
+	}
+		$fields = substr($fields,0,-1);
+	$sql = "SELECT $fields FROM `$table_name`";
+	$query=mysql_query($sql);
+	while($row=mysql_fetch_assoc($query)){
+		$customer_data[]=$row;
+	}
+	return $customer_data;
+}
 ?>

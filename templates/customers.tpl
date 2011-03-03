@@ -6,6 +6,17 @@
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
   </div>
 
+	<!-- added code by kallol for demo only -->
+	<div id="dialog_export">
+	<div id="export_msg"></div>
+	  <table style="padding:10px;margin:20px 10px 10px 10px" >
+	 <tr><td><a href="export_data.php?subject=customers&subject_key={$store_id}&source=db">{t}Export Data (using last map){/t}</a></td></tr>
+	 <tr><td><a href="export_data_maps.php?subject=customers&subject_key={$store_id}&source=db">{t}Export from another map{/t}</a></td></tr>
+	 <tr><td><a href="export_wizard.php?subject=customers&subject_key={$store_id}">{t}Export Wizard (new map){/t}</a></td></tr>
+	</table>
+	</div>
+	<!-- up to this -->
+
     <div id="the_table" class="data_table" style="clear:both">
       <span class="clean_table_title">{t}Customers List{/t}</span>
       
