@@ -12,6 +12,7 @@ $id=$_REQUEST['id'];
 $sql=mysql_fetch_array(mysql_query("select `Customer List Name` from `Customer List Dimension` where `Customer List Key`=$id"));
 $static_list_name=$sql[0];
 $smarty->assign('static_list_name',$static_list_name);
+$smarty->assign('static_list_id',$id);
 //if($modify)
 //{
 //  $general_options_list[]=array('tipo'=>'url','url'=>'edit_company_areas.php','label'=>_('Edit Areas'));
