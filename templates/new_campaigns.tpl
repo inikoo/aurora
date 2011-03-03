@@ -2,7 +2,7 @@
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
 
-      <h2 style="clear:both">{t}Create Campaign{/t} </h2>
+      <h2 style="clear:both">{t}Create Campaign{/t} <span style="padding-left:300px;">{$link}</span></h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div">{$msg}</div>
       <table border="0" width="700">

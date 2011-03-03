@@ -58,7 +58,7 @@ $("#hidr").click(function () {
 	
 {if !isset($no_record) }
 
-
+ <span style="font-size:11px; color:#445695; font-weight:500;">(Please select the default email template or create it)</span><br><br>
 	<b id="showr">Choose &nbsp;&nbsp;</b>
  	<b id="hidr">Close</b>
  	<div id="display_part">
