@@ -29,7 +29,7 @@ if(!isset($_REQUEST['subject'])){
 	exit;
 }
 $map_type = mysql_real_escape_string($_REQUEST['subject']);
-if($map_type == 'customer' || $map_type == 'customers'){
+if($map_type == 'customer' || $map_type == 'customers' || $map_type == 'Customer'){
 	$map_db_type = 'Customer';
 }
 $line = ''; $data = '';$header = '';
@@ -52,11 +52,11 @@ elseif($map_type == 'customers'){
 	    $store_id=mysql_real_escape_string($_REQUEST['subject_key']);
 	}
 }
-## IF NO PROPER DEFINATION FOUND ##
+/*## IF NO PROPER DEFINATION FOUND ##
 else{
 	header('Location: customers_server.php');
 	exit;
-}
+}*/
 
 
 ### Load from saved maps ... Case: "Export Data (using last map)" & "Export from another map" ###
@@ -124,7 +124,7 @@ $header_flag=1;
 for($i=0;$i<count($exported_data);$i++){
 	foreach($exported_data[$i] as $key=>$value){
 		if(!isset($value) || $value == ""){
-				$value = ",";
+				$value = ","; // Seperator Value
 				if(getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')){
 					if($header_flag==1){
 						$header .= $key.",";
@@ -155,14 +155,22 @@ unset($exported_data);
 $data = str_replace("\r", "", $data);
 
 if ($data == "") {
-  $data = "\nno matching records found\n";
+  $data = "no matching records found";
 }
 $filename = mt_rand(11111,99999).'-'.time().'.csv'; // Define the way of your exported file name here //
-header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=$filename");
-header("Pragma: no-cache");
-header("Expires: 0");
-echo $header."\n".$data;
+if(trim($header)!=''){
+	header("Content-type: application/octet-stream");
+	header("Content-Disposition: attachment; filename=$filename");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+	echo $header."\n".$data;
+}else{
+	header("Content-type: application/octet-stream");
+	header("Content-Disposition: attachment; filename=$filename");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+	echo $header.$data;
+}
 
 ### USER DEFINED METHODS ###
 function getExportMapData($subject){

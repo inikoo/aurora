@@ -3269,6 +3269,7 @@ function list_departments() {
         $currency_code=$row['Product Department Currency Code'];
         $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
         $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Department Store Key'],$row['Product Department Store Code']);
 
         switch ($row['Product Department Sales Type']) {
         case 'Public Sale':
@@ -3581,6 +3582,7 @@ function list_departments() {
         $adata[]=array(
                      'code'=>$code,
                      'name'=>$name,
+                     'store'=>$store,
                      'families'=>$families,
                      'active'=>$active,
                      'todo'=>$todo,
@@ -3863,6 +3865,8 @@ function list_products() {
      $_SESSION['state'][$conf_table]['products']['restrictions']=$restrictions;
  $_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
+
+
     //$_SESSION['state'][$conf_table]['period']=$period;
    
     //$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
@@ -3879,7 +3883,7 @@ function list_products() {
         $where=sprintf(' where `Product Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
     case('department'):
-        $where=sprintf(' left join `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
+        $where=sprintf('  where `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     case('family'):
         if (isset($_REQUEST['parent_key']))
@@ -3945,7 +3949,8 @@ function list_products() {
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `Product Dimension`  $where $wheref";
-    $res=mysql_query($sql);
+  // print $sql;
+   $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
@@ -4093,6 +4098,8 @@ function list_products() {
     }
     elseif($order=='formated_record_type') {
         $order='`Product Record Type`';
+    } elseif($order=='store') {
+        $order='`Store Code`';
     }
 
 
@@ -4200,8 +4207,8 @@ function list_products() {
 
     }
 
-    $sql="select  * from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-    //print $sql;
+    $sql="select  * from `Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+   // print $sql;
     $res = mysql_query($sql);
     $adata=array();
 
@@ -4232,6 +4239,7 @@ function list_products() {
 
 
         $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
 
 
         if ($percentages) {
@@ -4574,7 +4582,7 @@ function list_products() {
         $record_type=$locale_product_record_type[$row['Product Record Type']];
    
         $adata[]=array(
-
+                     'store'=>$store,   
                      'code'=>$code,
                      'name'=>$row['Product XHTML Short Description'],
                      'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',

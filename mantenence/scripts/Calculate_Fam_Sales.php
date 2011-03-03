@@ -28,6 +28,8 @@ require_once '../../conf/conf.php';
 $stores=array(1,2,3);
 
 $sql="select * from `Product Family Dimension`  where `Product Family Store Key` in (".join(',',$stores).") ";
+$sql="select * from `Product Family Dimension` ";
+
 //print $sql;
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){

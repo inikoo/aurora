@@ -1027,7 +1027,7 @@ function create_refund($data,$header_data,$data_dn_transactions) {
                                         );
     foreach($data_invoice_transactions as $transaction) {
 
-        $sql=sprintf("select `Order Transaction Fact Key`,OTF.`Product Key`,`Product Code` from `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Order Key`=%d  and OTF.`Product Key`=%d ",
+        $sql=sprintf("select `Order Transaction Fact Key`,OTF.`Product Key`,`Product Code` from `Order Transaction Fact` OTF   where `Order Key`=%d  and OTF.`Product Key`=%d ",
                      $parent_order->id,
                      $transaction['Product Key']
                     );
