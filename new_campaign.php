@@ -14,7 +14,7 @@ header('Location: index.php?error');
   header('Location: index.php?error_store='.$store_id);
    exit;
 }*/
-$smarty->assign('customer_list_key',$customer_list_key);
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
