@@ -1209,7 +1209,7 @@ create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
         $data['staff sale key']=$header_data['staff sale key'];
 
 
-$customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email']);
+$customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],false);
 
        
         $data['products']=$products_data;

@@ -796,8 +796,12 @@ CREATE TABLE IF NOT EXISTS `Customers Send Post` (
   `Date Creation` datetime NOT NULL,
   `Date Send` datetime NOT NULL,
   `Post Type` enum('Catalogue','Advert','Letter') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+ALTER TABLE `Search Full Text Dimension` ADD FULLTEXT (
+`First Search Full Text` ,
+`Second Search Full Text`
+);
 
 */
 

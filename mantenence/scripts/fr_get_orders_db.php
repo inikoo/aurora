@@ -410,7 +410,7 @@ mysql_free_result($result_test);
             $customer_data[$key]=$value;
 
         }
-        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email']);
+        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],false);
 
         $customer_data['Customer Store Key']=$store_key;
         if ($customer_data['Customer Type']=='Company')
