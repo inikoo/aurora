@@ -57,7 +57,7 @@ if(!$user->can_view('customers')){
 }
 
 ## To check whether the form has proper parameters in query string ##
-if(!$_REQUEST['subject']){
+if(!$_REQUEST['subject_key']){
 	header('Location: customers_server.php');
 	exit;
 }
@@ -83,7 +83,8 @@ if($map_type == 'customer'){
 	}
 	$customer=new customer($customer_id);
 	$customer_id = $customer->data['Customer Key'];
-	$smarty->assign('customer_id',$customer_id);
+	$smarty->assign('subject_key',$customer_id);
+	$smarty->assign('prev_path',"customer.php?p=cs&id=$customer_id");
 	$smarty->assign('return_path',"customer.php?p=cs&id==$customer_id");
 	$list=$customer->data;
 }
@@ -94,8 +95,21 @@ elseif($map_type == 'customers'){
 	}
 	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Store Key` = '$store_id' LIMIT 1");
 	$list= mysql_fetch_assoc($qry);
-	$smarty->assign('customer_id',$store_id);
-	$smarty->assign('return_path',"customers.php?store=$store_id");
+	$smarty->assign('subject_key',$store_id);
+	$smarty->assign('prev_path',"customers.php?store=$store_id");
+	$smarty->assign('return_path',"customers_server.php");
+}
+## FOR CUSTOMERS STATIC LIST ##
+elseif($map_type == 'customers_static_list'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $static_list_id=$_REQUEST['subject_key'];
+	}
+
+	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Key` = (SELECT `Customer Key` FROM `Customer List Customer Bridge` WHERE `Customer List Key` = '$static_list_id' LIMIT 1 )");
+	$list= mysql_fetch_assoc($qry);
+	$smarty->assign('subject_key', $static_list_id);
+	$smarty->assign('prev_path',"customer_list_static.php?id=$static_list_id");
+	$smarty->assign('return_path',"customers_lists.php");
 }
 ## IF NO PROPER DEFINATION FOUND ##
 else{
@@ -109,8 +123,9 @@ if(isset($_SESSION['list'])){
 	unset($_SESSION['list']);
 }
 //print_r($list);
-$smarty->assign('map_type',$map_type);
+$smarty->assign('subject',$map_type);
 $smarty->assign('param',count($list)-1);
 $smarty->assign('list',$list);
 $smarty->display('export_wizard.tpl');
+
 ?>
