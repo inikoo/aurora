@@ -921,9 +921,12 @@ class Order extends DB_Table {
                 $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
 
-
-                $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
-                                 values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'')   ",
+                $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
+                `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
+                `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                                 values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
+                                 %d,%d,%s,%d,%d,
+                                 %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'')   ",
                                  $bonus_quantity,
                                  prepare_mysql($order_type),
                                  $tax_rate,
@@ -933,7 +936,11 @@ class Order extends DB_Table {
                                  prepare_mysql ( $data ['date'] ),
                                  prepare_mysql ( $data ['date'] ),
                                  prepare_mysql ( $data ['date'] ),
-                                 $data ['Product Key'],
+                                 $product->id,
+                                 $product->data['Product ID'],
+                                prepare_mysql($product->data['Product Code']),
+                                $product->data['Product Family Key'],
+                                $product->data['Product Main Department Key'],
                                  prepare_mysql ( $data ['Current Dispatching State'] ),
                                  prepare_mysql ( $data ['Current Payment State'] ),
                                  prepare_mysql ( $this->data['Order Customer Key' ] ),
@@ -966,8 +973,12 @@ class Order extends DB_Table {
             $gross=$total_quantity*$product->data['Product History Price'];
             $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
-            $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
-                             values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+            $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
+            `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
+            `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                             values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
+                             %d,%d,%s,%d,%d,
+                             %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
                              $bonus_quantity,
                              prepare_mysql($order_type),
                              $tax_rate,
@@ -977,7 +988,11 @@ class Order extends DB_Table {
                              prepare_mysql ( $data ['date'] ),
                              prepare_mysql ( $data ['date'] ),
                              prepare_mysql ( $data ['date'] ),
-                             $data ['Product Key'],
+                              $product->id,
+                                 $product->data['Product ID'],
+                                prepare_mysql($product->data['Product Code']),
+                                $product->data['Product Family Key'],
+                                $product->data['Product Main Department Key'],
                              prepare_mysql ( $data ['Current Dispatching State'] ),
                              prepare_mysql ( $data ['Current Payment State'] ),
                              prepare_mysql ( $this->data['Order Customer Key' ] ),
@@ -3195,7 +3210,7 @@ class Order extends DB_Table {
                     $this->deals['Family']['Deal Multiplicity'];
 
                     $qty_family=0;
-                    $sql=sprintf('select sum(`Order Quantity`) as qty  from `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Key`=%d and `Product Family Key`=%d '
+                    $sql=sprintf('select sum(`Order Quantity`) as qty  from `Order Transaction Fact` OTF where `Order Key`=%d and `Product Family Key`=%d '
                                  ,$this->id
                                  ,$family_key
                                 );
@@ -3281,7 +3296,7 @@ class Order extends DB_Table {
                         );
             mysql_query($sql);
 
-            $sql=sprintf('select OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Key`=%d and `Product Family Key`=%d '
+            $sql=sprintf('select OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF  where `Order Key`=%d and `Product Family Key`=%d '
                          ,$this->id
                          ,$allowance_data['Family Key']
                         );
@@ -3677,8 +3692,12 @@ $amount='';
             $order_public_id=$this->data['Order Public ID'];
 
             $bonus_quantity=0;
-            $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
-                             values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,%d,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+            $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,
+            `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
+            `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                             values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
+                             %d,%d,%s,%d,%d,
+                             %s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
                              prepare_mysql($order_date),
                              prepare_mysql($order_key),
                              prepare_mysql($order_public_id),
@@ -3694,7 +3713,12 @@ $amount='';
                              $row['Product Gross Weight']*$row['Quantity'],
 
                              prepare_mysql($order_date),
-                             $row ['Product Key'],
+                               $product->id,
+                                 $product->data['Product ID'],
+                                prepare_mysql($product->data['Product Code']),
+                                $product->data['Product Family Key'],
+                                $product->data['Product Main Department Key'],
+                             
                              prepare_mysql ( 'In Process' ),
                              prepare_mysql ( $data ['Current Payment State'] ),
                              prepare_mysql ( $this->data['Order Customer Key' ] ),
