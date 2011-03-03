@@ -29,7 +29,7 @@ if(!isset($_REQUEST['subject'])){
 	exit;
 }
 $map_type = mysql_real_escape_string($_REQUEST['subject']);
-if($map_type == 'customer' || $map_type == 'customers' || $map_type == 'Customer'){
+if($map_type == 'customer' || $map_type == 'customers' || $map_type == 'customers_static_list' || $map_type == 'Customer'){
 	$map_db_type = 'Customer';
 }
 $line = ''; $data = '';$header = '';
@@ -50,6 +50,12 @@ if($map_type == 'customer'){
 elseif($map_type == 'customers'){
 	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
 	    $store_id=mysql_real_escape_string($_REQUEST['subject_key']);
+	}
+}
+## FOR CUSTOMERS STATIC LIST ##
+elseif($map_type == 'customers_static_list'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $static_list_id=mysql_real_escape_string($_REQUEST['subject_key']);
 	}
 }
 /*## IF NO PROPER DEFINATION FOUND ##
@@ -75,7 +81,7 @@ $no_of_maps_saved = numExportMapData($map_db_type);
 		$included_data[1] = 'Customer Main Plain Email';
 		$included_data[2] = 'Customer Main Plain Telephone';
 		//print_r($included_data);
-		$exported_data = fetch_all_records($included_data, 'Customer Dimension');
+		$exported_data = fetch_records_from_value($included_data, 'Customer Dimension');
 		//print_r($my_exported_data);
 		}
 	}
@@ -91,12 +97,16 @@ else{
 	$my_exported_data = $_SESSION['list'];
 	if($map_type == 'customer'){
 		$exported_data[]=$my_exported_data;
+		//print_r($exported_data);
 	}
 	elseif($map_type == 'customers'){
-		$exported_data = fetch_records($my_exported_data, 'Customer Dimension', 'Customer Store Key', $store_id);
+		$exported_data = fetch_records_from_key($my_exported_data, 'Customer Dimension', 'Customer Store Key', $store_id);
+		//print_r($exported_data);
 	}
-
-	//print_r($exported_data);
+	elseif($map_type == 'customers_static_list'){
+		$exported_data = fetch_records_from_static_list($my_exported_data, $static_list_id);
+		//print_r($exported_data);
+	}
 
 	## Saving Map into Database ##
 	if(isset($_POST['save']) && $_POST['save']=='save'){
@@ -217,7 +227,7 @@ function final_array($assoc_arr, $num_arr){
 	}
 	return $final_arr;
 }
-function fetch_records($exported_data, $table_name, $look_field, $id){
+function fetch_records_from_key($exported_data, $table_name, $look_field, $id){
 
 	$fields=''; $customers_data=array(); $row=array();
 	foreach($exported_data as $key=>$value){
@@ -231,7 +241,7 @@ function fetch_records($exported_data, $table_name, $look_field, $id){
 	}
 	return $customer_data;
 }
-function fetch_all_records($exported_data, $table_name){
+function fetch_records_from_value($exported_data, $table_name){
 	$fields=''; $customers_data=array(); $row=array();
 	foreach($exported_data as $key=>$value){
 		$fields .= '`'.$value.'`,';
@@ -241,6 +251,28 @@ function fetch_all_records($exported_data, $table_name){
 	$query=mysql_query($sql);
 	while($row=mysql_fetch_assoc($query)){
 		$customer_data[]=$row;
+	}
+	return $customer_data;
+}
+function fetch_records_from_static_list($exported_data, $static_list_id){
+
+	$fields=''; $customers_data=array(); $row=array(); $id=array();
+	foreach($exported_data as $key=>$value){
+		$fields .= '`'.$key.'`,';
+	}
+		$fields = substr($fields,0,-1);
+
+	$sql1= "SELECT `Customer Key` FROM `Customer List Customer Bridge` WHERE `Customer List Key` = '$static_list_id'";
+	$query1=mysql_query($sql1);
+	while($row1=mysql_fetch_assoc($query1)){
+		$id[]=$row1['Customer Key'];
+	}
+	for($i=0;$i<count($id);$i++){
+		$sql2 = "SELECT $fields FROM `Customer Dimension` WHERE `Customer Key`='$id[$i]'";
+			$query2=mysql_query($sql2);
+			while($row2=mysql_fetch_assoc($query2)){
+			$customer_data[]=$row2;
+		}
 	}
 	return $customer_data;
 }
