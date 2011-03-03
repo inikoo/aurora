@@ -51,33 +51,30 @@ $js_files=array(
         );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-if(!$_REQUEST['subject_key']){
-	header('Location: index.php');
-	exit;
+
+if(!$user->can_view('customers')){
+  exit();
 }
+
 if(!$_REQUEST['subject']){ //To check whether the form has proper parameters in query string //
 	header('Location: index.php');
 	exit;
 }
 
 $map_type = $_REQUEST['subject'];
+if($map_type=='customer'){
+	$map_db_type = 'Customer';
 
-if(!$user->can_view('customers')){
-  exit();
+}elseif($map_type=='customers'){
+
+	$map_db_type = 'Customer';
 }
 
-if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
-  $_SESSION['state']['customer']['id']=$_REQUEST['subject_key'];
-  $customer_id=$_REQUEST['subject_key'];
-}else{
-  $customer_id=$_SESSION['state']['customer']['id'];
-}
+$subject_key=$_REQUEST['subject_key'];
 
-$customer=new customer($customer_id);
-$customer_id = $customer->data['Customer Key'];
-$customer_name = $customer->data['Customer Main Contact Name'];
+
 $maps = array();
-$sql = "SELECT `Map Key`,`Map Name`,`Map Description` from `Export Map` WHERE `Map Type` = '$map_type' ORDER BY `Exported Date` ASC";
+$sql = "SELECT `Map Key`,`Map Name`,`Map Description` from `Export Map` WHERE `Map Type` = '$map_db_type' ORDER BY `Exported Date` ASC";
 $query = mysql_query($sql);
 if($query){
 	$num=mysql_num_rows($query);
@@ -89,14 +86,12 @@ if($query){
 		$i++;
 	}
 	//print_r($maps);
-
 }else{
 
 	$num = 0;
 }
 $smarty->assign('maps',$maps);
-$smarty->assign('customer_name',$customer_name);
-$smarty->assign('customer_id',$customer_id);
+$smarty->assign('subject_key',$subject_key);
 $smarty->assign('subject',$map_type);
 $smarty->assign('no_of_maps',$num);
 $smarty->display('export_data_maps.tpl');
