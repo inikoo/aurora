@@ -60,47 +60,7 @@ function hide_details(){
 }
 
 
-    var change_view=function(e){
-
-	var table=tables['table0'];
-	var tipo=this.id;
-	//	alert(table.view+' '+tipo)
-	if(table.view!=tipo){
-	    table.hideColumn('stock_value');
-	     table.hideColumn('stock_error');
-	     table.hideColumn('outofstock');
-	     table.hideColumn('active'); table.hideColumn('discontinued');
-	     table.hideColumn('sales');
-	     table.hideColumn('profit');
-	     table.hideColumn('todo');
-
-	    if(tipo=='sales'){
-		table.showColumn('profit');
-		table.showColumn('sales');
-			Dom.get('period_options').style.display='';
-		Dom.get('avg_options').style.display='';
-
-	    }else if(tipo=='general'){
-		table.showColumn('active');
-		table.showColumn('todo');	table.showColumn('discontinued');
-		Dom.get('period_options').style.display='none';
-		Dom.get('avg_options').style.display='none';
-	    }else if(tipo=='stock'){
-		    table.showColumn('stock_value');
-		    table.showColumn('stock_error');
-		    table.showColumn('outofstock');
-		    	Dom.get('period_options').style.display='';
-		Dom.get('avg_options').style.display='none';
-	    }
-	    
-
-	    Dom.get(table.view).className="";
-	    Dom.get(tipo).className="selected";
-	    table.view=tipo
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-view&value=' + escape(tipo),{} );
-	}
-    }
-
+   
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -208,7 +168,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 			       ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=store&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=department&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -341,16 +301,29 @@ function previous_info_period(){
  oAutoComp.minQueryLength = 0; 
 
 
- ids=['general','sales','stock'];
- YAHOO.util.Event.addListener(ids, "click",change_view)
- ids=['period_all','period_year','period_quarter','period_month','period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,0);
- ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+ ids=['family_general','family_sales','family_stock'];
+ YAHOO.util.Event.addListener(ids, "click",change_family_view,{'table_id':0,'parent':'department'})
+
+
+
+
+ ids=['family_period_all','family_period_year','family_period_quarter','family_period_month','family_period_week'];
+    Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'family'});
+    ids=['family_avg_totals','family_avg_month','family_avg_week',"family_avg_month_eff","family_avg_week_eff"];
+    Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'family'});
+ ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
+    Event.addListener(ids, "click",change_product_view,{'table_id':1,'parent':'department'});
+ ids=['product_period_all','product_period_year','product_period_quarter','product_period_month','product_period_week'];
+    Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'product'});
+    ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
+    Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'product'});
+
+
+
 YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
 YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
- //     YAHOO.util.Event.addListener('show_details', "click",show_details,'department');
+
 
  YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,"product");
  YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,"product");
@@ -362,7 +335,7 @@ YAHOO.util.Event.addListener('details', "click",change_details,'store');
 
  ids=['table_type_thumbnail','table_type_list'];
  YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'department'});
- 
+
  }
 
 YAHOO.util.Event.onDOMReady(init);

@@ -779,7 +779,16 @@ CREATE TABLE IF NOT EXISTS `Export Map` (
   `Export Map Default` enum('yes','no') NOT NULL,
   `Exported Date` datetime NOT NULL,
   PRIMARY KEY (`Map Key`)
-)
+);
+
+ALTER TABLE `Product Dimension` ADD `Product Store Code` VARCHAR( 64 ) NOT NULL AFTER `Product Store Key` ,ADD `Product Store Name` VARCHAR( 256 ) NOT NULL AFTER `Product Store Code` ;
+
+ALTER TABLE `Order Transaction Fact` ADD `Product ID` MEDIUMINT UNSIGNED NOT NULL AFTER `Product Key` ,ADD `Product Code` VARCHAR( 64 ) NOT NULL AFTER `Product ID` ,ADD `Product Family Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Product Code` ,ADD `Product Department Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Product Family Key` ;
+ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Product ID` ) ;
+ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Product Family Key` ) ;
+ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Product Department Key` ) ;
+
+
 */
 
 

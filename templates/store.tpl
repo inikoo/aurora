@@ -160,7 +160,7 @@
 
 
 
-<div  style="color:red;clear:both">
+<div  id="plots" style="clear:both">
 <ul class="tabs" id="chooser_ul" style="margin-top:25px">
     <li>
 	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
