@@ -2,9 +2,10 @@
 include_once('common.php');
 $static_list_id=$_REQUEST['id'];
 ?>
-
+  var Event = YAHOO.util.Event;
+     var Dom   = YAHOO.util.Dom;
 var view='<?php echo$_SESSION['state']['hr']['view']?>'
-
+var dialog_export;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -90,7 +91,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-
+function close_dialog(tipo){
+    switch(tipo){
+case('export'):
+ dialog_export.hide();
+ break;
+    }
+};
 
 
  function init(){
@@ -112,7 +119,9 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'company_areas'
  var ids=['all','staff','exstaff'];
  YAHOO.util.Event.addListener(ids, "click", change_view);
  
-
+dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_export.render();
+Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
 
  }
