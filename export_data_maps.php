@@ -69,6 +69,10 @@ if($map_type=='customer'){
 
 	$map_db_type = 'Customer';
 }
+elseif($map_type=='customers_static_list'){
+
+	$map_db_type = 'Customer';
+}
 
 $subject_key=$_REQUEST['subject_key'];
 
