@@ -21,6 +21,9 @@ $("#hidr").click(function () {
  
 <div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}Campaign Builder{/t}</span><span style="padding-left:30px;">{$msg}</span>
+	<div class="general_options">
+		<span onclick="window.location.href='new_campaign.php'">Create Campaign</span>
+	</div>
 	<div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid rgb(153, 153, 153);"></div>
          <span style="font-size:11px;">{$campaign_size} records<span>
      <div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid #4682b4;"></div>
