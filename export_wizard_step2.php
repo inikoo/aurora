@@ -83,7 +83,7 @@ if($map_type == 'customer'){
 	}
 	$customer=new customer($customer_id);
 	$customer_id = $customer->data['Customer Key'];
-	$smarty->assign('customer_id',$customer_id);
+	$smarty->assign('subject_key',$customer_id);
 	$smarty->assign('return_path',"customer.php?p=cs&id=$customer_id");
 	$list=$customer->data;
 }
@@ -92,10 +92,22 @@ elseif($map_type == 'customers'){
 	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
 	    $store_id=$_REQUEST['subject_key'];
 	}
-	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Store Key` = '$store_id'");
+	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Store Key` = '$store_id' LIMIT 1");
 	$list=mysql_fetch_assoc($qry);
-	$smarty->assign('customer_id',$store_id);
+	//print_r($list);
+	$smarty->assign('subject_key',$store_id);
 	$smarty->assign('return_path',"customers.php?store=$store_id");
+}
+## FOR CUSTOMERS STATIC LIST ##
+elseif($map_type == 'customers_static_list'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $static_list_id=$_REQUEST['subject_key'];
+	}
+	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Key` = (SELECT `Customer Key` FROM `Customer List Customer Bridge` WHERE `Customer List Key` = '$static_list_id' LIMIT 1 )");
+	$list= mysql_fetch_assoc($qry);
+	//print_r($list);
+	$smarty->assign('subject_key', $static_list_id);
+	$smarty->assign('return_path',"customers_lists.php");
 }
 ## IF NO PROPER DEFINATION FOUND ##
 else{
@@ -119,8 +131,8 @@ if(!isset($_SESSION['list'])){
 else{
 	$exported_data = $_SESSION['list'];
 }
-$smarty->assign('map_type',$map_type);
-$smarty->assign('list',$exported_data);
+$smarty->assign('subject',$map_type);
+$smarty->assign('list', $exported_data);
 $smarty->assign('count', count($exported_data)-1);
 $smarty->display('export_wizard_step2.tpl');
 
