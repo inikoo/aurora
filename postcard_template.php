@@ -64,7 +64,7 @@ if($_FILES['PcardImage']["name"]!='')
       move_uploaded_file($_FILES["PcardImage"]["tmp_name"],
       "app_files/uploads/" . $_FILES["PcardImage"]["name"]);
       $image1="app_files/uploads/" . $_FILES["PcardImage"]["name"];
-
+$_SESSION['postcard_image']=$image1;
 
 $smarty->assign('image1',$image1);
 

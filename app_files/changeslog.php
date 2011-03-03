@@ -789,6 +789,16 @@ ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Product Family Key` ) ;
 ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Product Department Key` ) ;
 
 
+CREATE TABLE IF NOT EXISTS `Customers Send Post` (
+  `Customer Send Post Key` mediumint(11) NOT NULL,
+  `Customer Key` mediumint(11) NOT NULL,
+  `Send Post Status` enum('To Send','Send','Cancelled') NOT NULL,
+  `Date Creation` datetime NOT NULL,
+  `Date Send` datetime NOT NULL,
+  `Post Type` enum('Catalogue','Advert','Letter') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
 */
 
 
