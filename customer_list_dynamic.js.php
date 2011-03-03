@@ -41,7 +41,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list.php?tipo=customer_list_dynamic&id='<?php echo $dynamic_list_id;?>'");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

@@ -19,11 +19,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var CustomersColumnDefs = [
                                         {key:"id", label:"<?php echo _('Customer Id')?>", width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                         ,{key:"name", label:"<?php echo _('Customer Name')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"location", label:"<?php echo _('Location')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"location", label:"<?php echo _('Location')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"email", label:"<?php echo _('Email')?>",  width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  //  ,{key:"telephone", label:"<?php echo _('Telephone')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                       ,{key:"store_key", label:"<?php echo _('Store Id')?>",  width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                       ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     //  ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_customers_list.php?tipo=customer_list_static&id='<?php echo $static_list_id;?>'");

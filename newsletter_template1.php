@@ -44,52 +44,69 @@ $js_files=array(
 	if(isset($_REQUEST['basic']) && $_REQUEST['basic'] == 'Proceed')
 	{
 		
-		$header = $_REQUEST['basicheader'];
-		$title = $_REQUEST['basictitle'];
-		$block1 = $_REQUEST['basicPBlock1'];
 		
-		$block2 = $_REQUEST['basicPBlock2'];
-		
-		$block3 = $_REQUEST['basicPBlock3'];
 		
 	
 		
 		
 	
 
-		$_SESSION['header'] = $header;
-		$_SESSION['contenttitle'] = $title;
-		$_SESSION['block1'] = $block1;
 		
-		$_SESSION['block2'] = $block2;
-	
-		$_SESSION['block3'] = $block3;
 			
 
 
 	}
 
-if($_FILES['basicPBlock1image']["name"]!='' || $_FILES['basicPBlock21image']["name"]!='' || $_FILES['basicPBlock3image']["name"]!='')
+if($_FILES['news1_Block1image']["name"]!='' || $_FILES['news1_Block2image']["name"]!='' || $_FILES['news1_Block3image']["name"]!='')
 		{
-      move_uploaded_file($_FILES["basicPBlock1image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["basicPBlock1image"]["name"]);
-      $image1="app_files/uploads/" . $_FILES["basicPBlock1image"]["name"];
 
-	      move_uploaded_file($_FILES["basicPBlock21image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["basicPBlock21image"]["name"]);
-      $image2="app_files/uploads/" . $_FILES["basicPBlock21image"]["name"];
+	$key0 = rand(1,2000);	
+	$key1 = rand(1,1000);
+	$key2 = rand(1,100);
+	
+	$firstImage = $key0.$_FILES["news1_Block1image"]["name"];
+	$secondImage = $key1.$_FILES["news1_Block2image"]["name"];
+	$thirdImage = $key2.$_FILES["news1_Block3image"]["name"];
 
-      move_uploaded_file($_FILES["basicPBlock3image"]["tmp_name"],
-      "app_files/uploads/" . $_FILES["basicPBlock3image"]["name"]);
-      $image3="app_files/uploads/" . $_FILES["basicPBlock3image"]["name"];
+	
+
+        move_uploaded_file($_FILES["news1_Block1image"]["tmp_name"],"app_files/uploads/" .$firstImage);
+      $image1="app_files/uploads/" .$firstImage;
+
+      move_uploaded_file($_FILES["news1_Block2image"]["tmp_name"],"app_files/uploads/" .$secondImage);
+      $image2="app_files/uploads/" .$secondImage;
+
+      move_uploaded_file($_FILES["news1_Block3image"]["tmp_name"],"app_files/uploads/" .$thirdImage);
+      $image3="app_files/uploads/" .$thirdImage;
+
+$_SESSION['news1_image1']=$image1;
+$_SESSION['news1_image2']=$image2;
+$_SESSION['news1_image3']=$image3;
 
 
-$smarty->assign('image1',$image1);
+
+
+$smarty->assign('image1',$_SESSION['news1_image1']);
 $smarty->assign('image2',$image2);
 $smarty->assign('image3',$image3);
 
 	
 		}
+
+
+
+
+$_SESSION['header'] =  $_REQUEST['news1_header'];
+		$_SESSION['contenttitle'] = $_REQUEST['news1_title'];
+		$_SESSION['block1'] = $_REQUEST['news1_Block1'];
+		
+		$_SESSION['block2'] = $_REQUEST['news1_Block2'];
+	
+		$_SESSION['block3'] = $_REQUEST['news1_Block3'];
+
+
+
+
 $smarty->assign('header',$_SESSION['header']);
 $smarty->assign('contenttitle',$_SESSION['contenttitle']);
 $smarty->assign('block1',$_SESSION['block1']);

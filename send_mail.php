@@ -1,16 +1,35 @@
 <?php
 	include('common.php');
-	
 	if(!isset($_REQUEST['send_mail']))
 	{
 	    header('Location: index.php');
 	    exit();
 	}	
 	
-	//select the list of members to send mail
-	$mail_list = array();
+	$mail_list = array();		//select the list of members to send mail
 	$mail_list = $_SESSION['check_email'];
-	
+
+	if(isset($_REQUEST['template']))
+	{
+		$template = $_REQUEST['template'];
+
+		if($template=='basic'){
+			$template = "include('basic_template_design.php')";
+		}
+
+		if($template=='newsletter1'){
+			$template = "include('newsletter_template1_design.php')";
+		}	
+
+		if($template=='newsletter2'){
+			$template = "include('newsletter_template2_design.php')";
+		}	
+
+		if($template=='postcard'){
+			$template = "include('postcard_template_design.php')";
+		}
+	}
+
 	
 
 	foreach($mail_list as $key=>$mail)
@@ -31,7 +50,7 @@
 		$runQuery = mysql_query($runSql);
 		$fetchRow = mysql_fetch_assoc($runQuery);
 
-		//print_r($fetchRow); die();
+		
 		
 		//fetch the customer base from Customer List Customer Bridge
 		$exeSql = "select `Customer Key` from `Customer List Customer Bridge` where `Customer List Key` = '".$fetchRow['Customer Key']."'";
@@ -50,10 +69,6 @@
 			$subject = "Hello! This is HTML email";
 			
 		
-			//begin of HTML message
-			$message = <<<EOF
-			$structure
-EOF;
 			//end of message
 			$headers  = "From: $from\r\n";
 			$headers .= "Content-type: text/html\r\n";
@@ -62,18 +77,15 @@ EOF;
 			//$headers .= "Cc: [email]satyajit@primediart.com[/email]";
 			//$headers .= "Bcc: [email]satyajit@primediart.com[/email]";
 
+			
 			// now lets send the email.
-			mail($to, $subject, $message, $headers);
+			mail($to, $subject, $template, $headers);
 
 			
 
-
-
-		}
-			$_SESSION['msg'] = "Message has been sent....!"; 
-			header('location:campaign_list.php');
+		}	
+			
 	}
-
-
-	
+			$_SESSION['msg'] = "Message has been sent....!";
+			header('location:campaign_builder.php');		
 ?>
