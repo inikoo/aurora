@@ -387,7 +387,7 @@ function previous_info_period(){
  oAutoComp.minQueryLength = 0; 
 
  ids=['department_general','department_sales','department_stock'];
- YAHOO.util.Event.addListener(ids, "click",change_department_view)
+ YAHOO.util.Event.addListener(ids, "click",change_department_view,{'table_id':0,'parent':'store'})
  ids=['department_period_all','department_period_year','department_period_quarter','department_period_month','department_period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'department'});
  ids=['department_avg_totals','department_avg_month','department_avg_week',"department_avg_month_eff","department_avg_week_eff"];

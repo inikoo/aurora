@@ -72,105 +72,7 @@
 		  
 		</table>
 
-	  <table    class="show_info_product">
-      <tr >
-      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$family_period_title}</span></span>
-      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
-    </tr>
-       <tbody id="info_all" style="{if $family_period!='all'}display:none{/if}">
-	 <tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('Total Customers')}</td>
-	</tr>
-	 	<tr >
-	  <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('Total Invoices')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('Total Invoiced Amount')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('Total Profit')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('Total Quantity Delivered')}</td>
-	</tr>
-
-
-      </tbody>
-
-      <tbody id="info_year"  style="{if $family_period!='year'}display:none{/if}">
-      	<tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Year Acc Customers')}</td>
-	</tr>
-		<tr >
-	  <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Year Acc Invoices')}</td>
-	</tr>
-
-	<tr >
-	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Year Acc Invoiced Amount')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Year Acc Profit')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Year Acc Quantity Delivered')}</td>
-	</tr>
-
-      </tbody>
-        <tbody id="info_quarter" style="{if $family_period!='quarter'}display:none{/if}"  >
-         <tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Customers')}</td>
-	</tr>
-       <tr >
-	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Invoices')}</td>
-	    </tr>
-      
-	<tr >
-	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Quarter Acc Invoiced Amount')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Quarter Acc Profit')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Quantity Delivered')}</td>
-	</tr>	
-      </tbody>
-        <tbody id="info_month" style="{if $family_period!='month'}display:none{/if}"  >
-        <tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Month Acc Customers')}</td>
-	</tr>
-       <tr >
-	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Month Acc Invoices')}</td>
-	    </tr>
-       
-	<tr >
-	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Month Acc Invoiced Amount')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Month Acc Profit')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Month Acc Quantity Delivered')}</td>
-	</tr>	
-      </tbody>
-       <tbody id="info_week" style="{if $family_period!='week'}display:none{/if}"  >
-        <tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Week Acc Customers')}</td>
-	</tr>
-       <tr >
-	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Week Acc Invoices')}</td>
-	    </tr>
-       
-	<tr >
-	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Week Acc Invoiced Amount')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Week Acc Profit')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Week Acc Quantity Delivered')}</td>
-	</tr>	
-      </tbody>
- </table>
+	 
 
 
 
@@ -261,17 +163,147 @@
     </div> 
     
 </div>
+
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+     <li> <span class="item {if $block_view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
+
+    <li> <span class="item {if $block_view=='products'}selected{/if}" id="customers" {if $view_customers}display:none{/if} ><span>  {t}Customers{/t}</span></span></li>
+   <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="orders"  {if $view_orders}display:none{/if}  >  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='timeline'}selected{/if}"  id="timeline">  <span> {t}History{/t}</span></span></li>
-    {if $view_customers}<li> <span class="item {if $block_view=='products'}selected{/if}" id="customers"  ><span>  {t}Customers{/t}</span></span></li>{/if}
-    {if $view_orders} <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>{/if}
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div style="padding:0 20px">    
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
+ <table    class="show_info_product" style="width:250px">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$family_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $family_period!='all'}display:none{/if}">
+	
+	 	<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('Total Invoices')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('Total Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('Total Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('Total Quantity Delivered')}</td>
+	</tr>
+
+
+      </tbody>
+
+      <tbody id="info_year"  style="{if $family_period!='year'}display:none{/if}">
+      
+		<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Year Acc Invoices')}</td>
+	</tr>
+
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Year Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Year Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Year Acc Quantity Delivered')}</td>
+	</tr>
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $family_period!='quarter'}display:none{/if}"  >
+      
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Invoices')}</td>
+	    </tr>
+      
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Quarter Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Quarter Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+        <tbody id="info_month" style="{if $family_period!='month'}display:none{/if}"  >
+       
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Month Acc Invoices')}</td>
+	    </tr>
+       
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Month Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Month Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Month Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+       <tbody id="info_week" style="{if $family_period!='week'}display:none{/if}"  >
+       
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Week Acc Invoices')}</td>
+	    </tr>
+       
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Week Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Week Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Week Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+ </table>
+ 
+ <div  id="plots" style="clear:both">
+<ul class="tabs" id="chooser_ul" style="margin-top:25px">
+    <li>
+	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
+	    <span>{t}Product Sales{/t}</span>
+	  </span>
+	</li>
+
+
+  </ul>
+  
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
+
+<div id="plot" style="clear:both;border:1px solid #ccc" >
+	<div id="single_data_set"  >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+</div>
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=product_id_sales&product_id={$product->pid}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("plot");
+		// ]]>
+	</script>
+  
+  
+  <div style="clear:both"></div>
+</div>
+
+ 
+</div>
+
 <div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     
     
@@ -297,21 +329,70 @@
  
       
 
-  {if $view_orders} 
-  <div  id="block_orders" class="data_table"  style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+ 
+  <div  id="block_orders" class="data_table"  style="{if $block_view!='ordes'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+ {if $view_orders} 
     <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable "> </div>
-  </div>
-  {/if}
+   {/if}
+ </div>
   
-  {if $view_customers} 
-  <div  id="block_customers" class="data_table"  style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-    <span id="table_title" class="clean_table_title">{t}Customer who order this Product{/t}</span>
+
+  
+
+  <div  id="block_customers" class="data_table"  style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+     {if $view_customers} 
+     
+      <table    class="show_info_product" style="width:250px">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$family_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $family_period!='all'}display:none{/if}">
+	 <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('Total Customers')}</td>
+	</tr>
+	 	
+
+
+      </tbody>
+
+      <tbody id="info_year"  style="{if $family_period!='year'}display:none{/if}">
+      	<tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Year Acc Customers')}</td>
+	</tr>
+	
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $family_period!='quarter'}display:none{/if}"  >
+         <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Customers')}</td>
+	</tr>
+     
+      </tbody>
+        <tbody id="info_month" style="{if $family_period!='month'}display:none{/if}"  >
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Month Acc Customers')}</td>
+	</tr>
+    
+      </tbody>
+       <tbody id="info_week" style="{if $family_period!='week'}display:none{/if}"  >
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Week Acc Customers')}</td>
+	</tr>
+      
+      </tbody>
+ </table>
+     
+     
+     
+   <span id="table_title" class="clean_table_title">{t}Customer who order this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
   <div  id="table1"   class="data_table_container dtable btable "> </div>
-  </div>
   {/if}
+  </div>
+
 
 
 
