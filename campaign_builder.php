@@ -58,6 +58,11 @@ $js_files=array(
        	 	}
 		//print_r($campaign);
 
+if(isset($_SESSION['msg']))
+{
+    $smarty->assign('msg',$_SESSION['msg']);
+}
+
 	
 $smarty->assign('campaign',$campaign);
 

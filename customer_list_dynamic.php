@@ -18,7 +18,8 @@ $general_options_list=array();
 //  $general_options_list[]=array('tipo'=>'url','url'=>'edit_company_areas.php','label'=>_('Edit Areas'));
 //   $general_options_list[]=array('tipo'=>'url','url'=>'new_company_area.php','label'=>_('Add Area'));
 //}
-
+ $general_options_list[]=array('tipo'=>'url','url'=>'new_campaign.php?customer_list_key='.$id,'label'=>_('Create Campaign'));
+$general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer_list.php?id='.$id,'label'=>_('Print Address Label'));
 $smarty->assign('general_options_list',$general_options_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
