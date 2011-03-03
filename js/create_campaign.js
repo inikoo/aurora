@@ -1,5 +1,5 @@
 function process(){
-	var totalNumber = document.getElementById('max_num_mail').value;
+	//var totalNumber = document.getElementById('max_num_mail').value;
 	var campaign_name;
 	var campaign_obj;
 	var campaign_mail;
