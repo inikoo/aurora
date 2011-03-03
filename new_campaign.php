@@ -4,12 +4,12 @@ if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
 }
-if(isset($_REQUEST['customer_list_key']) and is_numeric($_REQUEST['customer_list_key']) ){
+/*if(isset($_REQUEST['customer_list_key']) and is_numeric($_REQUEST['customer_list_key']) ){
   $customer_list_key=$_REQUEST['customer_list_key'];
 
 }else{
 header('Location: index.php?error');
-}
+}*/
 /*if(! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
   header('Location: index.php?error_store='.$store_id);
    exit;
@@ -43,25 +43,32 @@ $js_files=array(
 		'external_libs/ckeditor/ckeditor.js'
 		);
 		//fetch the customer list name
-		$sqlQuery = "select `Customer List Name` from `Customer List Dimension` where `Customer List Key` = '".$customer_list_key."'";
-		$queryResult = mysql_query($sqlQuery);
-		$row = mysql_fetch_array($queryResult);
-		$smarty->assign('listName',$row['Customer List Name']);
-		//count the total number of emails
-		$sqlCount = "select `Customer List Key`,`Customer Key` from `Customer List Customer Bridge` where `Customer List Key` = '".$customer_list_key."'";
-		$queryCount = mysql_query($sqlCount);
-		$count = mysql_num_rows($queryCount);
-		$smarty->assign('count',$count);
+		$queryString = "select `Customer List Name`,`Customer List Key` from `Customer List Dimension` order by `Customer List Key` desc";
+		$resultSet = mysql_query($queryString);		
+		$n = 'Customer List Name';
+		$k = 'Customer List Key';
+		$customer = array();
+		while($row = mysql_fetch_assoc($resultSet))
+		{
+		   $customer[] = $row;
+		   
+		}
+		$smarty->assign('n',$n);
+		$smarty->assign('k',$k);
+		$smarty->assign('customer',$customer);
+		
 
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
 $smarty->assign('title', _('Customers Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
 if(isset($_SESSION['disp_msg']) && $_SESSION['disp_msg'] != ''){
 
 	$smarty->assign('msg',$_SESSION['disp_msg']);
-	unset($_SESSION['disp_msg']);
+	//unset($_SESSION['disp_msg']);
 }else{
 	$smarty->assign('msg','');
 }
