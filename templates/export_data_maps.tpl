@@ -14,7 +14,7 @@
 	<td align="center">{$d[0]}</td>
 	<td align="center">{$d[1]}</td>
 	<td align="center">{$d[2]}</td>
-	<td align="center"><a href="export_data.php?subject={$subject}&subject_key={$customer_id}&source=db&id={$d[0]}">Export</a></td>
+	<td align="center"><a href="export_data.php?subject={$subject}&subject_key={$subject_key}&source=db&id={$d[0]}">Export</a></td>
 	</tr>
 	{/foreach}
     </tr>

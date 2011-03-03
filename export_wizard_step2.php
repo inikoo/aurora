@@ -52,68 +52,86 @@ $js_files=array(
         );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+if(!$user->can_view('customers')){
+  exit();
+}
+
+## NOT BEING USED ##
 /*if(!isset($_POST['SUBMIT'])){
 	header('Location: index.php');
 	exit;
 }*/
+
+## To check whether the form has proper parameters in query string ##
 if(!isset($_REQUEST['subject_key'])){
-	header('Location: index.php');
+	header('Location: customers_server.php');
 	exit;
 }
-if(!isset($_REQUEST['subject'])){ //To check whether the form has proper parameters in query string //
-	header('Location: index.php');
+if(!isset($_REQUEST['subject'])){
+	header('Location: customers_server.php');
 	exit;
 }
 $map_type = $_REQUEST['subject'];
 
-if(!$user->can_view('customers')){
-  exit();
+## FOR CUSTOMER - Individual ##
+if($map_type == 'customer'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	  $_SESSION['state']['customer']['id']=$_REQUEST['subject_key'];
+	  $customer_id=$_REQUEST['subject_key'];
+	}else{
+	  $customer_id=$_SESSION['state']['customer']['id'];
+	}
+	$customer=new customer($customer_id);
+	$customer_id = $customer->data['Customer Key'];
+	$smarty->assign('customer_id',$customer_id);
+	$smarty->assign('return_path',"customer.php?p=cs&id=$customer_id");
+	$list=$customer->data;
 }
-if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key']) ){
-  $_SESSION['state']['customer']['id']=$_REQUEST['subject_key'];
-  $customer_id=$_REQUEST['subject_key'];
-}else{
-  $customer_id=$_SESSION['state']['customer']['id'];
+## FOR CUSTOMERS - of a Store ##
+elseif($map_type == 'customers'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $store_id=$_REQUEST['subject_key'];
+	}
+	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Store Key` = '$store_id'");
+	$list=mysql_fetch_assoc($qry);
+	$smarty->assign('customer_id',$store_id);
+	$smarty->assign('return_path',"customers.php?store=$store_id");
 }
-$customer=new customer($customer_id);
-$customer_id = $customer->data['Customer Key'];
-//$list=$customer->data;
+## IF NO PROPER DEFINATION FOUND ##
+else{
+	header('Location: customers_server.php');
+	exit;
+}
+
+## WORKING WITH DATA AND DISPLAYING IN TEMPLATE ##
 if(isset($_POST['SUBMIT'])){
 $included_data = $_POST['fld'];
 //print_r($included_data);
-$actual_data=$customer->data;
+$actual_data=$list;
 //print_r($actual_data);
 $exported_data = final_array($actual_data , $included_data);
 //print_r($exported_data);
 unset($_POST);
 }
 if(!isset($_SESSION['list'])){
-
 	$_SESSION['list'] = $exported_data;
-
 }
 else{
 	$exported_data = $_SESSION['list'];
-	//$exported_data = array_reverse($exported_data); // For Testing //
 }
-$smarty->assign('customer_id',$customer_id);
 $smarty->assign('map_type',$map_type);
 $smarty->assign('list',$exported_data);
 $smarty->assign('count', count($exported_data)-1);
 $smarty->display('export_wizard_step2.tpl');
 
+### USER DEFINED METHODS ###
 function final_array($assoc_arr, $num_arr){
 	$final_arr = array();
-
 	foreach($assoc_arr as $assoc_key => $assoc_val){
-
 		if(in_array($assoc_key, $num_arr)){
-
 			$final_arr[$assoc_key]=$assoc_val;
-
 		}
 	}
-	//print_r($final_arr);
 	return $final_arr;
 }
 ?>

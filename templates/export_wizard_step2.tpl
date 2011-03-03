@@ -2,7 +2,7 @@
 <div id="bd" style="padding:0px">
 <div style="clear:both" >
 <h1 style="padding:40px;">Export Wizard - Step 2</h1>
-<form action="export_data.php?subject=customer&subject_key={$customer_id}" method="POST" name="frm_export" onSubmit="return validate2();">
+<form action="export_data.php?subject={$map_type}&subject_key={$customer_id}" method="POST" name="frm_export" onSubmit="return validate2();">
 
 
 
@@ -53,7 +53,7 @@
 </tr/>
 
 <tr>
-<td colspan="2"><input type="button" name="prev" id="prev" class="prev" onClick=go("export_wizard.php?subject={$map_type}&subject_key={$customer_id}"); /> <input type="SUBMIT" name="SUBMIT" id="SUBMIT" class="export_b" value="" > <input type="button" name="return" id="return" class="return" value="" onClick=go("customer.php?p=cs&id=={$customer_id}"); ></td>
+<td colspan="2"><input type="button" name="prev" id="prev" class="prev" onClick=go("export_wizard.php?subject={$map_type}&subject_key={$customer_id}"); /> <input type="SUBMIT" name="SUBMIT" id="SUBMIT" class="export_b" value="" > <input type="button" name="return" id="return" class="return" value="" onClick=go("{$return_path}"); ></td>
 
 </tr>
 </table>
