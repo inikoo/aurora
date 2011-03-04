@@ -13,7 +13,23 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
-if(isset($_POST['check'])) print_r($_POST['check']); else echo "else";
+if(isset($_POST['check'])){
+	if($_POST['checkall']=='all'){
+		$q=mysql_query("SELECT `Customer Key` FROM `Customer Dimension`");
+		$customer_key=array();
+		while($r=mysql_fetch_assoc($q)){
+		$customer_key[]=$r['Customer Key'];
+		}
+	}else{
+		$customer_key[]=$_POST['check'];
+	}
+
+	print_r($customer_key);
+
+}else{
+
+
+}
 /*if (!$user->can_view('customers')) {
     header('Location: index.php');
     exit();
