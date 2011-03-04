@@ -78,7 +78,7 @@ $smarty->assign('campaign',$campaign);
 
 $smarty->assign('campaign_size',$campaign_size);
 $msg = isset($_SESSION['msg'])?$_SESSION['msg']:'';
-
+$smarty->assign('title', _('View Campaign'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('msg',$msg);

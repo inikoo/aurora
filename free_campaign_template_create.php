@@ -40,7 +40,7 @@ $js_files=array(
 
 
 
-$smarty->assign('title', _('Customers Lists'));
+$smarty->assign('title', _('campaign Free Template'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
