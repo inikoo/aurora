@@ -16,6 +16,7 @@ error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
 include_once('common.php');
 include_once('class.Customer.php');
 
+
 $css_files=array(
          $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
          $yui_path.'menu/assets/skins/sam/menu.css',
@@ -111,6 +112,26 @@ elseif($map_type == 'customers_static_list'){
 	$smarty->assign('prev_path',"customer_list_static.php?id=$static_list_id");
 	$smarty->assign('return_path',"customers_lists.php");
 }
+## FOR CUSTOMERS DYNAMIC LIST ##
+elseif($map_type == 'customers_dynamic_list'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $static_list_id=$_REQUEST['subject_key'];
+	}
+
+	$qry = mysql_query("SELECT `Customer List Metadata` FROM `Customer List Dimension` WHERE `Customer List Key` = '$static_list_id'");
+	$list= mysql_fetch_assoc($qry);
+	$metadata = json_decode($list['Customer List Metadata'], true);
+	echo dynamic_data($metadata);
+	/* Add your code here */
+
+
+	/* up to this */
+
+
+	$smarty->assign('subject_key', $dynamic_list_id);
+	$smarty->assign('prev_path',"customer_list_dynamic.php?id=$dynamic_list_id");
+	$smarty->assign('return_path',"customers_lists.php");
+}
 ## IF NO PROPER DEFINATION FOUND ##
 else{
 	header('Location: customers_server.php');
@@ -127,5 +148,80 @@ $smarty->assign('subject',$map_type);
 $smarty->assign('param',count($list)-1);
 $smarty->assign('list',$list);
 $smarty->display('export_wizard.tpl');
+
+function dynamic_data($where_data)
+{
+	$where = '';
+	if ($where_data['product_ordered1']!='') {
+		   if ($where_data['product_ordered1']!='∀') {
+		       $use_otf=true;
+		       $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
+		   } else
+		       $where_product_ordered1='true';
+	       } else{
+		   $where_product_ordered1='false';
+	       }
+	       if ($where_data['product_not_ordered1']!='') {
+		   if ($where_data['product_not_ordered1']!='ALL') {
+		       $use_otf=true;
+		       $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
+		   } else
+		       $where_product_not_ordered1='false';
+	       } else
+		   $where_product_not_ordered1='true';
+
+	       if ($where_data['product_not_received1']!='') {
+		   if ($where_data['product_not_received1']!='∀') {
+		       $use_otf=true;
+		       $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+		   } else {
+		       $use_otf=true;
+		       $where_product_not_received1=' ((ordered-dispatched)>0)  ';
+		   }
+	       } else
+		   $where_product_not_received1='true';
+
+	       $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
+	       if ($date_interval1['mysql']) {
+		   $use_otf=true;
+	       }
+	foreach($where_data['dont_have'] as $dont_have) {
+		   switch ($dont_have) {
+		   case 'tel':
+		       $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
+		       break;
+		   case 'email':
+		       $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
+		       break;
+		   case 'fax':
+		       $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
+		       break;
+		   case 'address':
+		       $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
+		       break;
+		   }
+	       }
+	       foreach($where_data['have'] as $dont_have) {
+		   switch ($dont_have) {
+		   case 'tel':
+		       $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
+		       break;
+		   case 'email':
+		       $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
+		       break;
+		   case 'fax':
+		       $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
+		       break;
+		   case 'address':
+		       $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
+		       break;
+		   }
+	       }
+		echo $where;
+		return $where;
+}
+
+
+
 
 ?>

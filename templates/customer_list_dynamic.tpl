@@ -25,9 +25,9 @@
   <div id="dialog_export">
 	<div id="export_msg"></div>
 	  <table style="padding:10px;margin:20px 10px 10px 10px" >
-	 <tr><td><a href="export_data.php?subject=customers_static_list&subject_key={$static_list_id}&source=db">{t}Export Data (using last map){/t}</a></td></tr>
-	 <tr><td><a href="export_data_maps.php?subject=customers_static_list&subject_key={$static_list_id}&source=db">{t}Export from another map{/t}</a></td></tr>
-	 <tr><td><a href="export_wizard.php?subject=customers_static_list&subject_key={$static_list_id}">{t}Export Wizard (new map){/t}</a></td></tr>
+	 <tr><td><a href="export_data.php?subject=customers_dynamic_list&subject_key={$dynamic_list_id}&source=db">{t}Export Data (using last map){/t}</a></td></tr>
+	 <tr><td><a href="export_data_maps.php?subject=customers_dynamic_list&subject_key={$dynamic_list_id}&source=db">{t}Export from another map{/t}</a></td></tr>
+	 <tr><td><a href="export_wizard.php?subject=customers_dynamic_list&subject_key={$dynamic_list_id}">{t}Export Wizard (new map){/t}</a></td></tr>
 	</table>
 	</div>
   
