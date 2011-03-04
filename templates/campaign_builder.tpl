@@ -31,7 +31,7 @@ $("#hidr").click(function () {
            <tr style="border-bottom:1px #4682b4 solid;"><td class="campaign_header">Name</td><td class="campaign_header">Maximum Emails</td><td class="campaign_header">Campaign Objective</td><td class="campaign_header">Status</td>
            
 	   </tr>
-<form action="check_template.php" method="POST" name="myForm" id="myForm" onsubmit="SelectUrl()">
+<form action="check_template.php" method="POST" name="myForm" id="myForm" onsubmit="return SelectUrl()">
 {section name="i" loop="$campaign"}
 	
     <tr bgcolor="{cycle values=#eeeeee,#d0d0d0}"> {* CHANGE HERE *}
@@ -59,15 +59,15 @@ $("#hidr").click(function () {
 {if !isset($no_record) }
 
  <span style="font-size:11px; color:#445695; font-weight:500;">(Please select the default email template or create it)</span><br><br>
-	<b id="showr">Choose &nbsp;&nbsp;</b>
- 	<b id="hidr">Close</b>
+	<b id="showr">Select Template &nbsp;&nbsp;</b>
+ 	<b id="hidr">Cancel</b>
  	<div id="display_part">
         		<br>
   	        	<input type="radio" id="template1" name="template" value="1">Free Template
 			<br><br>
                         <input type="radio" id= "template2" name="template" value="2">Template Email
                        
-	<div><br><input type="submit" name="submit" value="Send Mail"></div>
+	<div><br><input type="submit" name="submit" value="Continue"></div>
         </div>
 {/if}
 	
