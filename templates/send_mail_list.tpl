@@ -4,7 +4,7 @@
 <div class="general_options"></div>
 
 
-<h2>Create Post</h2>
+<h2>Create Post   <span style="padding-left:200px;">{$queue}</span>  </h2> 
 
 
 
