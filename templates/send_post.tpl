@@ -33,7 +33,7 @@
 
 <form name="orderform" method="POST" action="send_post.php"><br>
 <div align="right"><input type="submit" value="Send Post"></div>
-&nbsp;&nbsp;<input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/> Select/Unselect All
+&nbsp;&nbsp;<input type="checkbox" name="checkall" id="checkall" value="all" onclick="checkUncheckAll(this);"/> Select/Unselect All
 
  <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
 
