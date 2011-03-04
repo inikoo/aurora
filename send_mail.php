@@ -67,7 +67,7 @@ if($mail_list != '')
 			$to = $execute['Customer Main Plain Email'];
 			$from = "rulovico@gmail.com";
 			$subject = "Hello! This is HTML email";
-			Message has been sent....!
+			
 		
 			//end of message
 			$headers  = "From: $from\r\n";
