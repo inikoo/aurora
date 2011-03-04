@@ -9,6 +9,7 @@ $id=$_REQUEST['id'];
 $sql=mysql_fetch_array(mysql_query("select `Customer List Name` from `Customer List Dimension` where `Customer List Key`=$id"));
 $dynamic_list_name=$sql[0];
 $smarty->assign('dynamic_list_name',$dynamic_list_name);
+$smarty->assign('dynamic_list_id',$id);
 //$modify=$user->can_edit('staff');
 $general_options_list=array();
 
