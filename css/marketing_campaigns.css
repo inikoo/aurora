@@ -452,7 +452,7 @@ overflow:auto;
 
 
   #display_part { background:#fff; margin:3px; width:400px; 
-  display:none; text-align:left; }
+  display:block; text-align:left; }
 
 .template_choose{
 border:1px #000000 solid;
