@@ -191,13 +191,8 @@ function list_customer_history() {
 
 
 
-
-
-
-
-
     //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
-    $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where $wheref  ";
+    $sql="select count(*) as total from  `Customer History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
  //   print $sql;
     // exit;
     $result=mysql_query($sql);
@@ -211,7 +206,7 @@ function list_customer_history() {
     } else {
 
         // $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
-        $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where ";
+        $sql="select count(*) as total from   `Customer History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)  $where ";
         // print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
