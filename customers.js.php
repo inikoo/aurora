@@ -21,7 +21,7 @@ function new_customer(tipo){
     location.href='new_customer.php?tipo='+tipo;
     dialog_new_customer.hide();
 }
-// -------------------------------
+
 function close_dialog(tipo){
     switch(tipo){
 case('export'):
@@ -29,7 +29,7 @@ case('export'):
  break;
     }
 };
-// --------------------------------
+
 
 
 
