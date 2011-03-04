@@ -62,16 +62,9 @@ if(!$_REQUEST['subject']){ //To check whether the form has proper parameters in 
 }
 
 $map_type = $_REQUEST['subject'];
-if($map_type=='customer'){
+if($map_type=='customer' || $map_type=='customers' || $map_type=='customers_static_list' || $map_type=='customers_dynamic_list'){
 	$map_db_type = 'Customer';
 
-}elseif($map_type=='customers'){
-
-	$map_db_type = 'Customer';
-}
-elseif($map_type=='customers_static_list'){
-
-	$map_db_type = 'Customer';
 }
 
 $subject_key=$_REQUEST['subject_key'];
