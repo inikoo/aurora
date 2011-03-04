@@ -30,8 +30,8 @@
 		}
 	}
 
-	
-
+if($mail_list != '')
+{
 	foreach($mail_list as $key=>$mail)
 	{	
 		
@@ -86,6 +86,13 @@
 		}	
 			
 	}
-			$_SESSION['msg'] = "Message has been sent....!";
-			header('location:campaign_builder.php');		
+			$_SESSION['msg'] = "Message has been sent....!";			
+			@header('location:campaign_builder.php');		
+
+}
+else
+{
+			$_SESSION['msg'] = "Please select the mail ID";
+			@header('location:campaign_builder.php');		
+}
 ?>
