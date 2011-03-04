@@ -188,12 +188,11 @@ function search(query,subject,search_scope){
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+search_scope;
 
-
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					
+					//alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
@@ -211,7 +210,7 @@ function search(query,subject,search_scope){
 						    
 						    oTR.setAttribute('key',r.q);
 							oTR.setAttribute('link','search.php?subject='+subject+'&q=');
-							        
+							Dom.addClass(oTR,'result');
 						    var oTD= oTR.insertCell(0);
 							Dom.addClass(oTD,'naked');
 						    var oTD= oTR.insertCell(1);
@@ -223,6 +222,11 @@ function search(query,subject,search_scope){
 
 							}
 							
+							
+							
+							if(subject=='all')
+							oTD.setAttribute('colspan', '4');
+							else
 							oTD.setAttribute('colspan', '3');
 						    
 						     
@@ -231,15 +235,15 @@ function search(query,subject,search_scope){
 							    
 						    oTR.onclick = go_to_result;
 						    
-						    
+						  
 						    var link=r.link;
 						  
 						    
-						    //alert(subject)
+						   if(r.results>0){
 						    
 						    for(result_key in r.data){
 							    oTR= oTbl.insertRow(-1);
-
+	Dom.addClass(oTR,'result');
 							    var oTD= oTR.insertCell(0);
 							    Dom.addClass(oTD,'naked');
 					
@@ -287,9 +291,9 @@ function search(query,subject,search_scope){
 							    Dom.setStyle(oTD,'width',20)
 							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].image;
+							    //var oTD= oTR.insertCell(4);
+							    //oTD.innerHTML=r.data[result_key ].name;
 							    var oTD= oTR.insertCell(4);
-							    oTD.innerHTML=r.data[result_key ].name;
-							    var oTD= oTR.insertCell(5);
 							    oTD.innerHTML=r.data[result_key ].description;
 
 							}else if(subject=='products'){
@@ -338,7 +342,7 @@ function search(query,subject,search_scope){
 							
 						
 						}
-						
+						}
 						
 						oTbl.id=search_scope+'_search_results_table';
 						Dom.get(search_scope+'_search_results').appendChild(oTbl);

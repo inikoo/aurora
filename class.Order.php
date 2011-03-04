@@ -3451,7 +3451,10 @@ $amount='';
 
         $show_description=$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'].$amount;
 
-
+        $description1='<b><a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a></b>';
+        $description='<table ><tr style="border:none;"><td  class="col1"'.$description1.'</td><td class="col2">'.$show_description.'</td></tr></table>';
+    
+        
         $sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Order',%d,%s,%s,%s,%s,%s) on duplicate key
                      update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
                      ,$this->data['Order Store Key']
@@ -3459,12 +3462,12 @@ $amount='';
                      ,prepare_mysql($first_full_search)
                      ,prepare_mysql($second_full_search,false)
                      ,prepare_mysql($this->data['Order Public ID'],false)
-                     ,prepare_mysql($show_description,false)
+                     ,prepare_mysql($description,false)
                      ,prepare_mysql($img,false)
                      ,prepare_mysql($first_full_search)
                      ,prepare_mysql($second_full_search,false)
                      ,prepare_mysql($this->data['Order Public ID'],false)
-                     ,prepare_mysql($show_description,false)
+                     ,prepare_mysql($description,false)
 
 
                      ,prepare_mysql($img,false)

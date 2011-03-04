@@ -1766,6 +1766,12 @@ if($this->data['Product Family Main Image']!='art/nopic.png')
 $img=preg_replace('/small/','thumbnails',$this->data['Product Family Main Image']);
 else
 $img='';
+
+$description1='<b><a href="family.php?id='.$this->id.'">'.$this->data['Product Family Code'].'</a></b>';
+$description2=$this->data['Product Family Name'];
+$description='<table ><tr style="border:none;"><td  class="col1"'.$description1.'</td><td class="col2">'.$description2.'</td></tr></table>';
+
+
 $sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Family',%d,%s,%s,%s,%s,%s) on duplicate key 
 update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
 ,$this->data['Product Family Store Key']
@@ -1773,12 +1779,12 @@ update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result
 ,prepare_mysql($first_full_search)
 ,prepare_mysql($second_full_search,false)
 ,prepare_mysql($this->data['Product Family Code'],false)
-,prepare_mysql($this->data['Product Family Name'],false)
+,prepare_mysql($description,false)
 ,prepare_mysql($img,false)
 ,prepare_mysql($first_full_search)
 ,prepare_mysql($second_full_search,false)
 ,prepare_mysql($this->data['Product Family Code'],false)
-,prepare_mysql($this->data['Product Family Name'],false)
+,prepare_mysql($description,false)
 ,prepare_mysql($img,false)
 );
 mysql_query($sql);
