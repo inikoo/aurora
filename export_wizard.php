@@ -115,17 +115,206 @@ elseif($map_type == 'customers_static_list'){
 ## FOR CUSTOMERS DYNAMIC LIST ##
 elseif($map_type == 'customers_dynamic_list'){
 	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
-	    $static_list_id=$_REQUEST['subject_key'];
+	    $dynamic_list_id=$_REQUEST['subject_key'];
 	}
 
-	$qry = mysql_query("SELECT `Customer List Metadata` FROM `Customer List Dimension` WHERE `Customer List Key` = '$static_list_id'");
+	$qry = mysql_query("SELECT `Customer List Metadata`,`Customer List Store Key` FROM `Customer List Dimension` WHERE `Customer List Key` = '$dynamic_list_id'");
 	$list= mysql_fetch_assoc($qry);
-	$metadata = json_decode($list['Customer List Metadata'], true);
-	echo dynamic_data($metadata);
-	/* Add your code here */
+	$metadata = $list['Customer List Metadata'];
+  $table='`Customer Dimension` C ';  
+if ($metadata) {   
+        $metadata=preg_replace('/\\\"/','"',$metadata);
+         $where_data=array(
+        'product_ordered1'=>'∀',
+        'product_not_ordered1'=>'',
+        'product_not_received1'=>'',
+        'from1'=>'',
+        'to1'=>'',
+        'dont_have'=>array(),
+        'have'=>array(),
+        'categories'=>''
+        );       
+        $metadata=json_decode($metadata,TRUE);
+        foreach ($metadata as $key=>$item) {
+            $where_data[$key]=$item;
+        }        
+        $where='where true';
+ $use_categories =false;
+        $use_otf =false;
+        $where_categories='';
+        if ($where_data['categories']!='') {        
+        $categories_keys=preg_split('/,/',$where_data['categories']);
+        $valid_categories_keys=array();
+        foreach ($categories_keys as $item) {
+            if(is_numeric($item))
+                $valid_categories_keys[]=$item;
+        }
+        $categories_keys=join($valid_categories_keys,',');
+        if($categories_keys){
+        $use_categories =true;
+        $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
+        }
+        } 
+        if ($where_data['product_ordered1']!='') {
+            if ($where_data['product_ordered1']!='∀') {
+                $use_otf=true;
+                $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
+            } else
+                $where_product_ordered1='true';
+        } else{
+            $where_product_ordered1='false';
+        }       
+        if ($where_data['product_not_ordered1']!='') {
+            if ($where_data['product_not_ordered1']!='ALL') {
+                $use_otf=true;
+                $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
+            } else
+                $where_product_not_ordered1='false';
+        } else
+            $where_product_not_ordered1='true';
+
+        if ($where_data['product_not_received1']!='') {
+            if ($where_data['product_not_received1']!='∀') {
+                $use_otf=true;
+                $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+            } else {
+                $use_otf=true;
+                $where_product_not_received1=' ((ordered-dispatched)>0)  ';
+            }
+        } else
+            $where_product_not_received1='true';
+        $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
+        if ($date_interval1['mysql']) {
+            $use_otf=true;
+        }      
+        if ($use_otf) {
+            $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
+        }       
+     if ($use_categories) {
+         
+         $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
+        }
+        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
+
+        foreach($where_data['dont_have'] as $dont_have) {
+            switch ($dont_have) {
+            case 'tel':
+                $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
+                break;
+            case 'email':
+                $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
+                break;
+            case 'fax':
+                $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
+                break;
+            case 'address':
+                $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
+                break;
+            }
+        }
+        foreach($where_data['have'] as $dont_have) {
+            switch ($dont_have) {
+            case 'tel':
+                $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
+                break;
+            case 'email':
+                $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
+                break;
+            case 'fax':
+                $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
+                break;
+            case 'address':
+                $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
+                break;
+            }
+        }
+    } else {
+        $where='where true ';
+    }
+    $filter_msg='';
+    $wheref='';
+    $store=$list['Customer List Store Key'];
+    $currency='';
+    if (is_numeric($store)) {
+        $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+        $store=new Store($store);
+        $currency=$store->data['Store Currency Code'];
+    }
+        $order='`Customer File As`';
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order DESC ";
+    $adata=array();
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-	/* up to this */
+        $id=$data['Customer Key'];
+        if ($data['Customer Type']=='Person') {
+            $name='<img src="art/icons/user.png" alt="('._('Person').')">';
+        } else {
+            $name='<img src="art/icons/building.png" alt="('._('Company').')">';
+
+        }
+
+        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
+
+
+
+        if ($data['Customer Orders']==0)
+            $last_order_date='';
+        else
+            $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
+        $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+
+
+        if ($data['Customer Billing Address Link']=='Contact')
+            $billing_address='<i>'._('Same as Contact').'</i>';
+        else
+            $billing_address=$data['Customer XHTML Billing Address'];
+
+        if ($data['Customer Delivery Address Link']=='Contact')
+            $delivery_address='<i>'._('Same as Contact').'</i>';
+        elseif($data['Customer Delivery Address Link']=='Billing')
+        $delivery_address='<i>'._('Same as Billing').'</i>';
+        else
+            $delivery_address=$data['Customer XHTML Main Delivery Address'];
+
+        $adata[]=array(
+                     'id'=>$id,
+                     'name'=>$name,
+                     'location'=>$data['Customer Main Location'],
+                     'orders'=>number($data['Customer Orders']),
+                     'invoices'=>$data['Customer Orders Invoiced'],
+                     'email'=>$data['Customer Main XHTML Email'],
+                     'telephone'=>$data['Customer Main XHTML Telephone'],
+                     'last_order'=>$last_order_date,
+                     'contact_since'=>$contact_since,
+                     'total_payments'=>money($data['Customer Net Payments'],$currency),
+                     'net_balance'=>money($data['Customer Net Balance'],$currency),
+                     'total_refunds'=>money($data['Customer Net Refunds'],$currency),
+                     'total_profit'=>money($data['Customer Profit'],$currency),
+                     'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
+                     'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
+                     'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
+                     'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+                     'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+                     'contact_name'=>$data['Customer Main Contact Name'],
+                     'address'=>$data['Customer Main XHTML Address'],
+                     'billing_address'=>$billing_address,
+                     'delivery_address'=>$delivery_address,
+                     'town'=>$data['Customer Main Town'],
+                     'postcode'=>$data['Customer Main Postal Code'],
+                     'region'=>$data['Customer Main Country First Division'],
+                     'country'=>$data['Customer Main Country'],
+                     //'ship_address'=>$data['customer main ship to header'],
+                     'ship_town'=>$data['Customer Main Delivery Address Town'],
+                     'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+                     'ship_region'=>$data['Customer Main Delivery Address Region'],
+                     'ship_country'=>$data['Customer Main Delivery Address Country'],
+                     'activity'=>$data['Customer Type by Activity']
+
+                 );
+                print_r($adata);
 
 
 	$smarty->assign('subject_key', $dynamic_list_id);
@@ -148,80 +337,6 @@ $smarty->assign('subject',$map_type);
 $smarty->assign('param',count($list)-1);
 $smarty->assign('list',$list);
 $smarty->display('export_wizard.tpl');
-
-function dynamic_data($where_data)
-{
-	$where = '';
-	if ($where_data['product_ordered1']!='') {
-		   if ($where_data['product_ordered1']!='∀') {
-		       $use_otf=true;
-		       $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
-		   } else
-		       $where_product_ordered1='true';
-	       } else{
-		   $where_product_ordered1='false';
-	       }
-	       if ($where_data['product_not_ordered1']!='') {
-		   if ($where_data['product_not_ordered1']!='ALL') {
-		       $use_otf=true;
-		       $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
-		   } else
-		       $where_product_not_ordered1='false';
-	       } else
-		   $where_product_not_ordered1='true';
-
-	       if ($where_data['product_not_received1']!='') {
-		   if ($where_data['product_not_received1']!='∀') {
-		       $use_otf=true;
-		       $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
-		   } else {
-		       $use_otf=true;
-		       $where_product_not_received1=' ((ordered-dispatched)>0)  ';
-		   }
-	       } else
-		   $where_product_not_received1='true';
-
-	       $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
-	       if ($date_interval1['mysql']) {
-		   $use_otf=true;
-	       }
-	foreach($where_data['dont_have'] as $dont_have) {
-		   switch ($dont_have) {
-		   case 'tel':
-		       $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
-		       break;
-		   case 'email':
-		       $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
-		       break;
-		   case 'fax':
-		       $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
-		       break;
-		   case 'address':
-		       $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
-		       break;
-		   }
-	       }
-	       foreach($where_data['have'] as $dont_have) {
-		   switch ($dont_have) {
-		   case 'tel':
-		       $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
-		       break;
-		   case 'email':
-		       $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
-		       break;
-		   case 'fax':
-		       $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
-		       break;
-		   case 'address':
-		       $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
-		       break;
-		   }
-	       }
-		echo $where;
-		return $where;
-}
-
-
 
 
 ?>
