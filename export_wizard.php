@@ -119,7 +119,7 @@ elseif($map_type == 'customers_dynamic_list'){
 	}
 	$qry = mysql_query("SELECT `Customer List Metadata`,`Customer List Store Key` FROM `Customer List Dimension` WHERE `Customer List Key` = '$dynamic_list_id'");
 	$rows= mysql_fetch_assoc($qry);
-	$metadata = $list['Customer List Metadata'];
+	$metadata = $rows['Customer List Metadata'];
 	$table='`Customer Dimension` C ';
 	if ($metadata) {
         $metadata=preg_replace('/\\\"/','"',$metadata);
