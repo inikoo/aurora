@@ -3,21 +3,20 @@
 
 <div class="general_options"></div>
 
-<div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid rgb(153, 153, 153);"></div>
 
-<div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid #4682b4;"></div>
+<h2>Create Post</h2>
 
-<div style="clear: both; margin: 0pt 0px;margin-top:-7px; margin-bottom:10px; border-bottom: 1px solid #4682b4;"></div>
 
-<br><br>
- <form action="" method="">
+
+<br><br><br>
+ <form action="create_mail_data.php" method="post">
 	<table border="0" align="center" width="700px">
 		<tr>
 			<td>Select Post Type : </td> <td>
-							<select name="" style="width:150px;"> 
-								<option value="">Catalogue</option> 
-								<option value="">Advert</option>
-								<option value="">Letter</option>
+							<select name="post_type" style="width:150px;"> 
+								<option value="Catalogue">Catalogue</option> 
+								<option value="Advert">Advert</option>
+								<option value="Letter">Letter</option>
 							</select></td>
 		</tr>
 
@@ -28,7 +27,8 @@
 
 		<tr>
 
-			<td colspan="2"><textarea name="content" rows="30" style="width:500px;"></textarea></td>
+			<td colspan="2"><textarea name="content" class="ckeditor" rows="30" style="width:500px;">
+</textarea></td>
 		</tr>
 
 		<tr>

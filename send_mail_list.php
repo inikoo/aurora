@@ -27,13 +27,14 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php','js/edit_common.js','js/csv_common.js',
-		'js/jquery-1.4.4.js'
+		'js/jquery-1.4.4.js',
+		'external_libs/ckeditor/ckeditor.js'
 		);
 
 
 	if(isset($_REQUEST['check']))
 	{
-			
+		$_SESSION['check_mail_list'] = $_REQUEST['check'];	
 	
 	}
 
