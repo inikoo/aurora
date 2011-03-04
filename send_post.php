@@ -124,7 +124,17 @@ $smarty->assign('title', _('Send Post'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-
+if(isset($_REQUEST['msg']))
+{
+	if($_REQUEST['msg'] == 0)
+	{
+		$smarty->assign('msg','<span style=color:red;>Not Send</span>');	    
+	}	
+	else
+	{
+		$smarty->assign('msg','<span style=color:green;>Send</span>');	
+	}
+}
 
 
 $smarty->assign('table_type',$_SESSION['state']['customers']['table']['type']);

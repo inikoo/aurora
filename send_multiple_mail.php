@@ -48,11 +48,11 @@ if(isset($_REQUEST['check']) != '')
 		$mail = mail($to, $subject, $message, $headers);
 		if($mail)
 		{
-			header('location:send_post.php?msg=Sent');
+			header('location:send_post.php?msg=0');
 		}
 		else
 		{
-			header('location:send_post.php?msg=Not Send');	
+			header('location:send_post.php?msg=1');	
 		}
 	}
 }
