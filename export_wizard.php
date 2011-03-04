@@ -245,20 +245,13 @@ if ($metadata) {
     $adata=array();
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-
         $id=$data['Customer Key'];
         if ($data['Customer Type']=='Person') {
             $name='<img src="art/icons/user.png" alt="('._('Person').')">';
         } else {
             $name='<img src="art/icons/building.png" alt="('._('Company').')">';
-
         }
-
         $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
-
-
-
         if ($data['Customer Orders']==0)
             $last_order_date='';
         else
@@ -278,7 +271,6 @@ if ($metadata) {
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];
-
         $adata[]=array(
                      'id'=>$id,
                      'name'=>$name,
