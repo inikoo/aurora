@@ -1,20 +1,6 @@
 {include file='header.tpl'}
 
-{literal}
-<script>
-$(document).ready(function(){
-$("#showr").click(function () {
-  $("#display_part:eq(0)").show("fast", function () {
-    /* use callee so don't have to name the function */
-    $(this).next("#display_part").show("fast", arguments.callee);
-  });
-});
-$("#hidr").click(function () {
-  $("#display_part").hide("fast");
-});
-});
-</script>
-{/literal}
+
 
 <div id="bd" >
 <span class="nav2 onleft"><a href="#">{t}Create List{/t}</a></span>
@@ -33,32 +19,30 @@ $("#hidr").click(function () {
          <span style="font-size:11px;">{$campaign_size} records<span>
      <div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid #4682b4;"></div>
       <table width="913">
-           <tr style="border-bottom:1px #4682b4 solid;"><td class="campaign_header">Name</td><td class="campaign_header">Maximum Emails</td><td class="campaign_header">Campaign Objective</td><td class="campaign_header">Status</td>
+           <tr style="border-bottom:1px #4682b4 solid;"><td class="campaign_header" style="padding-left:20px;">Name</td><td class="campaign_header">Maximum Emails</td><td class="campaign_header">Campaign Objective</td><td class="campaign_header">Status</td>
            
 	   </tr>
 <form action="check_template.php" method="POST" name="myForm" id="myForm" onsubmit="return SelectUrl()">
 {section name="i" loop="$campaign"}
 	
-    <tr bgcolor="{cycle values=#eeeeee,#d0d0d0}"> {* CHANGE HERE *}
+    <tr bgcolor="{cycle values=#f2f2ff,#ffffff}"> {* CHANGE HERE *}
   	
 
-      <td align='center'><input type="checkbox" id="mail_{$campaign[i].$key}" name="check_email[]" value="{$campaign[i].$key}">{$campaign[i].$name}</td><td align='center'>{$campaign[i].$emails}</td><td align='center'>{$campaign[i].$obj}</td><td align='center'>{$campaign[i].$status}</td>
+      <td align='center' style="font: 13px/1.231 arial,helvetica,clean,sans-serif;color: #222222;font-weight:400;"><input  type="checkbox" id="mail_{$campaign[i].$key}" name="check_email[]" value="{$campaign[i].$key}">&nbsp;&nbsp;{$campaign[i].$name}</td>
+<td align='center' style="font: 13px/1.231 arial,helvetica,clean,sans-serif;color: #222222;font-weight:400;">{$campaign[i].$emails}</td>
+<td align='center' style="font: 13px/1.231 arial,helvetica,clean,sans-serif;color: #222222;font-weight:400;">{$campaign[i].$obj}</td>
+<td align='center' style="font: 13px/1.231 arial,helvetica,clean,sans-serif;color: #222222;font-weight:400;">{$campaign[i].$status}</td>
 	
 		
     </tr>
 	
 {/section} 
-
        
-	   <tr><td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-	  </tr>
+	   
 
 
      </table>
-
+<div style="clear: both; margin: 0pt 0px;margin-top:-7px; margin-bottom:10px; border-bottom: 1px solid #4682b4;"></div>
 	
 	
 {if !isset($no_record) }
