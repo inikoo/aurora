@@ -534,7 +534,7 @@ function list_assets_dispatched_to_customer() {
 
             break;
         default:
-            $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+            $wheref.=" and  OTF.`Product Code` like '".addslashes($f_value)."%'";
 
         }
 
@@ -542,8 +542,8 @@ function list_assets_dispatched_to_customer() {
 
     }
 
-    $sql=sprintf("select count(distinct `%s`)  as total  from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  ",$group_by);
-//print $sql;
+    $sql=sprintf("select count(distinct OTF.`%s`)  as total  from `Order Transaction Fact` OTF  left join `Product Dimension` PD on (PD.`Product ID`=OTF.`Product ID`)  $where  ",$group_by);
+
     $total=0;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -555,7 +555,7 @@ function list_assets_dispatched_to_customer() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(distinct `$group_by`)  as total   from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  $wheref ";
+        $sql="select count(distinct OTF.`$group_by`)  as total   from `Order Transaction Fact` OTF  left join `Product Dimension` PD on (PD.`Product ID`=OTF.`Product ID`)  $where  $wheref ";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -636,10 +636,10 @@ function list_assets_dispatched_to_customer() {
     }
 
     $adata=array();
-    $sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,`Product Code`,`Product Family Code`,PD.`Product Family Key`,PD.`Product Main Department Key`,D.`Product Department Code` ,`Product Family Name` , `Product XHTML Short Description` ,`Product Department Name` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=`Product Main Department Key`)   $where " ,$customer_id);
+    $sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,OTF.`Product Code`,`Product Family Code`,OTF.`Product Family Key`,OTF.`Product Department Key`,D.`Product Department Code` ,`Product Family Name` , `Product XHTML Short Description` ,`Product Department Name` from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product ID`=OTF.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=OTF.`Product Department Key`)   $where " ,$customer_id);
     $sql.=" $wheref ";
     $sql.=sprintf("  group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$group_by);
-
+  //  print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);

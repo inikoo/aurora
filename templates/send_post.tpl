@@ -31,7 +31,7 @@
 *}
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-<form name="orderform" method="POST" action="send_post.php"><br>
+<form name="orderform" method="POST" action="send_multiple_mail.php"><br>
 <div align="right"><input type="submit" value="Send Post"></div>
 &nbsp;&nbsp;<input type="checkbox" name="checkall" id="checkall" value="all" onclick="checkUncheckAll(this);"/> Select/Unselect All
 

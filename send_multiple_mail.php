@@ -1,15 +1,13 @@
 <?php
 	include('common.php');
-	$check = array();
-	$check = isset($_REQUEST['check'])$_REQUEST['check']:'';
 
-if($check != '')
+if(isset($_REQUEST['check']) != '')
 {
-	foreach($check as $key=>$value)
+	foreach($_REQUEST['check'] as $key=>$value)
 	{
 
 		//fetch the mail id from the checkboxes
-		$query = "select `Customer Key`,`Customer Main Plain Email` from `Customer DImension` where `Customer Key` = '".$value."'";
+		$query = "select `Customer Key`,`Customer Main Plain Email` from `Customer Dimension` where `Customer Key` = '".$value."'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_array($result);	
 
