@@ -11,8 +11,8 @@ Copyright (c) 2009, Kaktus
 
 Version 2.0
 */
-/*ini_set('display_errors',1);
-error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 include_once('common.php');
 include_once('class.Customer.php');
 
@@ -116,7 +116,7 @@ elseif($map_type == 'customers_dynamic_list'){
 	}
 	$qry = mysql_query("SELECT `Customer List Metadata`,`Customer List Store Key` FROM `Customer List Dimension` WHERE `Customer List Key` = '$dynamic_list_id'");
 	$rows= mysql_fetch_assoc($qry);
-	$metadata = $list['Customer List Metadata'];
+	$metadata = $rows['Customer List Metadata'];
 	$table='`Customer Dimension` C ';
 	if ($metadata) {
         $metadata=preg_replace('/\\\"/','"',$metadata);
