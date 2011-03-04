@@ -1309,7 +1309,7 @@ $sql="select C.`Customer Key`,C.`Customer Store Key`,C.`Customer Main XHTML Emai
 function list_customer_list_dynamic() {
    global $myconf;
 $dynamic_list_id=$_REQUEST['id'];
-$awhere_sql=mysql_fetch_array(mysql_query("select `Customer List Metadata` from `Customer List Dimension` where `Customer List Key`=$dynamic_list_id"));
+$awhere_sql=mysql_fetch_array(mysql_query("select `Customer List Metadata`,`Customer List Store Key` from `Customer List Dimension` where `Customer List Key`=$dynamic_list_id"));
 $awhere=$awhere_sql[0];
 
     $conf=$_SESSION['state']['customers']['table'];
@@ -1534,7 +1534,7 @@ $awhere=$awhere_sql[0];
 
     $filter_msg='';
     $wheref='';
-
+$store=$awhere_sql[1];
     $currency='';
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);
@@ -2327,7 +2327,7 @@ $order='CLD.`Customer List Key`';
 //$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date` from `Customer List Dimension` CLD right join `Customer List Customer Bridge` CLCB on (CLD.`Customer List Key`=CLCB.`Customer List Key`) and CLD.`Customer List Type`='Static' order by $order DESC $order_direction limit $start_from,$number_results";
 
 
-$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date`,CLD.`Customer List Type` from `Customer List Dimension` CLD   order by $order DESC $order_direction limit $start_from,$number_results";
+$sql="select distinct CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date`,CLD.`Customer List Type` from `Customer List Dimension` CLD   order by $order $order_direction limit $start_from,$number_results";
 
 //print $sql;
     $adata=array();
