@@ -77,7 +77,7 @@ $export_data=array(
 		   ,"n"
 		   ,"o"
 		   ,$number_orders+1
-		   ,"900"
+		   ,$customer->id
 		   ,"q"
 		   ,""
 		   ,""

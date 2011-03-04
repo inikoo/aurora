@@ -107,7 +107,7 @@ $contacts_date=array();
 if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
-//  print_r($data);
+
        print "$num $row\r";
 
         //    if($row>1000)
@@ -176,8 +176,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       
         
         $act_data['tax_number']=parse_tax_number($cols[$map_act['real_tax_number']+3]);
-
-
+ $act_data['delivery_method']=$cols[88];
+         $act_data['special_instructions']=$cols[89];
        
         $act_data['country_d1']='';
         //  $act_data['vat_number']=$cols[88+3];
@@ -443,10 +443,21 @@ foreach($contacts as $act_data_contact_key=>$act_data) {
 
 $customer_data['Customer Sticky Note']='';
 
+
+
+ if($act_data['delivery_method']!=''){
+    $customer_data['Customer Sticky Note']='Delivery Method: '.$act_data['delivery_method']."<br/>";
+ }
+  if($act_data['special_instructions']!=''){
+    $customer_data['Customer Sticky Note'].='Special Instructions: '.$act_data['special_instructions']."<br/>";
+ }
+             
+         
+
 $remove_customer=false;
 if(preg_match('/^(Closed Acc|Stopped Trading|Businees Closed Down|Closed Business|Not Trading-closed Down|Ceased Business|Bisiness Sold|Out OF Business|Closing Business|Blacklisted\! Ah|Fraud \- Dont Deal With|No Longer In Business|Close Down)/i',$act_data['business_type'])){
 $remove_customer=true;
-$customer_data['Customer Sticky Note']='Business Closed Down';
+$customer_data['Customer Sticky Note'].='Business Closed Down<br/>';
 }
 
 
@@ -468,7 +479,7 @@ $customer_data['Customer Send Email Marketing']='No';
 $remove_address=false;
 if(preg_match('/(Poss Gone Away|Remove From Aw Mailing|Gone Away|Wrong Address|Unknown AT This Address)/i',$act_data['business_type'])){
 $remove_address=true;
-$customer_data['Customer Sticky Note']='Wrong Address';
+$customer_data['Customer Sticky Note'].='Wrong Address<br/>';
 $customer_data['Customer Send Postal Marketing']='No';
 
 }
@@ -476,12 +487,14 @@ $customer_data['Customer Send Postal Marketing']='No';
 
 if(preg_match('/(Difficult|Customer \- DIF|Very Fussy)/i',$act_data['business_type'])){
 $remove_address=true;
-$customer_data['Customer Sticky Note']='Difficult Customer';
+$customer_data['Customer Sticky Note'].='Difficult Customer<br/>';
 }
 if(preg_match('/(dishonest|Blacklisted)/i',$act_data['business_type'])){
 $remove_address=true;
-$customer_data['Customer Sticky Note']='Dishonest Customer';
+$customer_data['Customer Sticky Note'].='Dishonest Customer<br/>';
 }
+
+$customer_data['Customer Sticky Note']=preg_replace('/\<br\/\>$/','',$customer_data['Customer Sticky Note']);
 
 //print_r($customer_data);
 //exit;
