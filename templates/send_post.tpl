@@ -7,7 +7,7 @@
   </div>
 
     <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Customers List{/t}</span>
+      <span class="clean_table_title">{t}Customers List{/t} <span style="padding-left:720px; font-size:11px;">{$msg}</span></span>
       
   {* <div  style="font-size:90%">
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
