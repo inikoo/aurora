@@ -383,7 +383,21 @@
 <div id="dialog_make_order">
   <div id="long_note_msg"></div>
   <table >
-    <tr><td colspan=2>{t}Courier{/t}:</td><tr><tr><td colspan=2><input /></td></tr>
+<input type="hidden" id="make_order_customer_id" value="{$customer->id}">
+    <tr><td colspan=2>{t}Paymnet Method{/t}:</td></tr><tr><td colspan=2>
+	<select id="make_order_payment_method">
+	  <option>Credit Card</option>
+	  <option>Paypal</option>
+	  <option>Bank Transfer</option>
+	  <option>Cheque</option>
+	  <option>Cash</option>
+	  <option>Account</option>
+	  <option>Postal Order</option>
+	</select>
+    </td></tr>
+
+
+    <tr><td colspan=2>{t}Courier{/t}:</td></tr><tr><td colspan=2><input  id="make_order_courier"  /></td></tr>
     
     <tr><td colspan=2>{t}Special Instructions{/t}:</td></tr>
     <tr><td colspan=2>
@@ -397,7 +411,7 @@
       <td style="text-align:center;width:50%">
 	<span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span></td>
       <td style="text-align:center;width:50%">
-	<span  onclick="window.open('customer_csv.php?id={$customer->get('Customer Key')}','Download');close_dialog('make_order')" id="make_order_save"  class="unselectable_text state_details"   >{t}Export{/t}</span></td></tr>
+	<span  onclick="make_order()" id="make_order_save"  class="unselectable_text state_details"   >{t}Export{/t}</span></td></tr>
   </table>
 </div>
 

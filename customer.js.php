@@ -12,6 +12,25 @@ var dialog_export;
 var dialog_link;
 var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
 
+
+function make_order(){
+
+    var customer_id=Dom.get('make_order_customer_id').value;
+    
+    var data={
+	'courier':Dom.get('make_order_courier').value,
+	'special_instructions':Dom.get('make_order_special_instructions').value,
+	'payment_method':Dom.get('make_order_payment_method').value
+
+    };
+    // alert('customer_csv.php?id='+customer_id+'&data='+encodeURIComponent(YAHOO.lang.JSON.stringify(data)))
+
+    window.open('customer_csv.php?id='+customer_id+'&data='+YAHOO.lang.JSON.stringify(data),'Download');
+    close_dialog('make_order');
+
+}
+
+
 function showdetails(o){
 
  
@@ -617,7 +636,7 @@ dialog_attach.render();
 dialog_link = new YAHOO.widget.Dialog("dialog_link", {context:["link","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_link.render();
 
-dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","br"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_make_order.render();
 
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});

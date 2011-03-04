@@ -23,13 +23,50 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 }else{
   $customer_id=$_SESSION['state']['customer']['id'];
 }
+$data=array(
+	    'payment_method'=>'',
+	    'courier'=>'',
+	    'special_instructions'=>'',
+	    );
 
 
-header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"out.txt\"");
+
+if(isset($_REQUEST['data'])){
+  $json=$_REQUEST['data'];
+      $tmp=stripslashes ($json);
+      $raw_data=json_decode($tmp, true);
+      foreach($raw_data as $key=>$value){
+	if(array_key_exists($key,$data)){
+	  $data[$key]=$value;
+	}
+      }
+
+}
+
+
+
+
+
 $customer=new customer($customer_id);
 
 
+$gold='Not Current';
+//print_r($customer->data);
+if($customer->data['Customer Last Order Date']    ){
+  $last_order_date=$customer->data['Customer Last Order Date'];
+  $last_order_date='2011-01-15';
+  $last_order_time=strtotime( $last_order_date);
+  // print $last_order_time;
+  if( (date('U')-$last_order_time)<2592000 )
+    $gold='Gold Reward Member';
+
+}
+
+//print $gold;
+//exit("s");
+
+header("Content-type: application/octet-stream");
+header("Content-Disposition: attachment; filename=\"out.txt\"");
 
 
 $address=new Address($customer->data['Customer Main Address Key']);
@@ -71,12 +108,12 @@ $export_data=array(
 		   ,"k"
 		   ,"2"
 		   ,"l"
-		   ,"Gold Reward Member"
+		   ,$gold
 		   ,$user->get("User Alias")
 		   ,"m"
 		   ,"n"
 		   ,"o"
-		   ,$number_orders+1
+		   ,$data['payment_method']
 		   ,$customer->id
 		   ,"q"
 		   ,""
@@ -85,9 +122,11 @@ $export_data=array(
 		   ,""
 		   ,""
 		   ,""
-		   ,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
-		   ,''
-		   ,''
+		   ,"","","","","","","","","","","","","","","","","","","","a","b","c","d","e"
+		   ,$number_orders+1
+		   ,"","","","","","","","","","","","",""
+		   ,$data['courier']
+		   ,$data['special_instructions']
 		   ,"Yes","","","","",""
 		   ,$customer->data['Customer Main Plain Email']
                          ,""
