@@ -49,7 +49,7 @@
 
  <span style="font-size:11px; color:#445695; font-weight:500;">(Please select the default email template or create it)</span><br><br>
 	<b id="showr">Select Template &nbsp;&nbsp;</b>
- 	<b id="hidr">Cancel</b>
+ 	
  	<div id="display_part">
         		<br>
   	        	<input type="radio" id="template1" name="template" value="1">Free Template
