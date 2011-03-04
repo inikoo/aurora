@@ -2786,7 +2786,7 @@ function list_customers_send_post() {
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];
-	    $checkbox='<input type="checkbox" name="check[]"  id=".$data[\'Customer Key\'].">';
+	    $checkbox='<input type="checkbox" name="check[]" id="check[]"  value='.$data['Customer Key'].'>';
 
         $adata[]=array(
 		     'ch'=>$checkbox,

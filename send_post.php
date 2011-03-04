@@ -13,7 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
-//if(isset($_POST['check']))echo "if";else echo "else";
+if(isset($_POST['check'])) print_r($_POST['check']); else echo "else";
 /*if (!$user->can_view('customers')) {
     header('Location: index.php');
     exit();
