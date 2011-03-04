@@ -208,9 +208,9 @@ $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
 
-    $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('New Export Data (CSV)'));
+    $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Customer (CSV)'));
 
-  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
+//  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
 
   $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer.php?id='.$customer->id,'label'=>_('Print Address Label'));
 
