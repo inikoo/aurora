@@ -799,7 +799,7 @@ CREATE TABLE IF NOT EXISTS `Customers Send Post` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `Search Full Text Dimension` ADD FULLTEXT (`First Search Full Text` ,`Second Search Full Text`);
-
+ALTER TABLE `History Dimension` ORDER BY `History Date` DESC;
 */
 
 
