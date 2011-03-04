@@ -239,10 +239,9 @@ var active=function(el, oRecord, oColumn, oData){
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource1
 								 , {
-								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								    //    ,paginator : new YAHOO.widget.Paginator({
-// 									      rowsPerPage    : <?php echo$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
+// 									      rowsPerPage    : <?php //echo$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
 //  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 // 									      previousPageLinkLabel : "<",
 //  									      nextPageLinkLabel : ">",
