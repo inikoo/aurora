@@ -76,7 +76,7 @@ if(isset($_SESSION['msg']))
 	
 $smarty->assign('campaign',$campaign);
 
-//$smarty->assign('campaign_size',$campaign_size);
+$smarty->assign('campaign_size',$campaign_size);
 $msg = isset($_SESSION['msg'])?$_SESSION['msg']:'';
 
 $smarty->assign('css_files',$css_files);
