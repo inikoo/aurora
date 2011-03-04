@@ -5490,6 +5490,11 @@ if($this->data['Product Main Image']!='art/nopic.png')
 $img=preg_replace('/small/','thumbnails',$this->data['Product Main Image']);
 else
 $img='';
+
+$description1='<b><a href="product.php?pid='.$this->pid.'">'.$this->data['Product Code'].'</a></b><br/>'.$this->data['Product XHTML Parts'];
+$description2=$this->data['Product XHTML Short Description'];
+$description='<table ><tr><td class="col1"'.$description1.'</td><td class="col2">'.$description2.'</td></tr></table>';
+
 $sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Product',%d,%s,%s,%s,%s,%s) on duplicate key 
 update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
 ,$this->data['Product Store Key']
@@ -5497,12 +5502,12 @@ update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result
 ,prepare_mysql($first_full_search)
 ,prepare_mysql($second_full_search,false)
 ,prepare_mysql($this->data['Product Code'],false)
-,prepare_mysql($this->data['Product XHTML Short Description'],false)
+,prepare_mysql($description,false)
 ,prepare_mysql($img,false)
 ,prepare_mysql($first_full_search)
 ,prepare_mysql($second_full_search,false)
 ,prepare_mysql($this->data['Product Code'],false)
-,prepare_mysql($this->data['Product XHTML Short Description'],false)
+,prepare_mysql($description,false)
 ,prepare_mysql($img,false)
 );
 mysql_query($sql);

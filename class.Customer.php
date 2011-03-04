@@ -3440,6 +3440,26 @@ class Customer extends DB_Table {
         $second_full_search=$this->data['Customer Type'];
 
 
+$description='';
+
+ if ($this->data['Customer Type']=='Company') {
+            $name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formated_id_link().')<br/>'.$this->data['Customer Main Contact Name'];
+        } else {
+            $name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formated_id_link().')';
+
+        }
+        $name.='<br/>'._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>';
+        
+        
+        $_address=$this->data['Customer Main Plain Email'];
+ 
+        if($this->data['Customer Main Telephone Key'])$_address.='<br/>T: '.$this->data['Customer Main XHTML Telephone'];
+        $_address.='<br/>'.$this->data['Customer Main Location'];
+        if($this->data['Customer Main Postal Code'])$_address.=', '.$this->data['Customer Main Postal Code'];
+        $_address=preg_replace('/^\<br\/\>/','',$_address);
+        
+$description='<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
+
         $sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
                      values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key
                      update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
@@ -3448,12 +3468,12 @@ class Customer extends DB_Table {
                      ,prepare_mysql($first_full_search)
                      ,prepare_mysql($second_full_search)
                      ,prepare_mysql($this->data['Customer Name'])
-                     ,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
+                     ,prepare_mysql($description)
                      ,"''"
                      ,prepare_mysql($first_full_search)
                      ,prepare_mysql($second_full_search)
                      ,prepare_mysql($this->data['Customer Name'])
-                     ,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
+                     ,prepare_mysql($description)
 
 
                      ,"''"

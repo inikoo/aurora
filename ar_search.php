@@ -10,7 +10,11 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
+
+
 $tipo=$_REQUEST['tipo'];
+
+
 switch ($tipo) {
 
 case('all'):
@@ -18,6 +22,7 @@ case('all'):
                              'q'=>array('type'=>'string')
                          ));
     $data['user']=$user;
+
     search_full_text($data);
     break;
 case('search'):
@@ -97,149 +102,221 @@ default:
 }
 
 
-function search($data){
+function search($data) {
 
 
-$q=$data['q'];
-      $conf=$_SESSION['state']['search']['table'];
-     
-      $conf_table='search';
+    $q=$data['q'];
+    $conf=$_SESSION['state']['search']['table'];
+
+    $conf_table='search';
 
 
-      if(isset( $_REQUEST['sf'])){
-	$start_from=$_REQUEST['sf'];
-	
-	
-      }else
-	$start_from=$conf['sf'];
-      if(isset( $_REQUEST['nr'])){
-	$number_results=$_REQUEST['nr'];
-	if($start_from>0){
-	  $page=floor($start_from/$number_results);
-	  $start_from=$start_from-$page;
-	}
-	
-      }else
-	$number_results=$conf['nr'];
-      if(isset( $_REQUEST['o']))
-	$order=$_REQUEST['o'];
-      else
-	$order=$conf['order'];
-      if(isset( $_REQUEST['od']))
-	$order_dir=$_REQUEST['od'];
-      else
-	$order_dir=$conf['order_dir'];
-      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-      if(isset( $_REQUEST['where']))
-	 
-      if(isset( $_REQUEST['f_field']))
-	$f_field=$_REQUEST['f_field'];
-      else
-	$f_field=$conf['f_field'];
-      
-      if(isset( $_REQUEST['f_value']))
-	$f_value=$_REQUEST['f_value'];
-      else
-	$f_value=$conf['f_value'];
-      
-      
-      if(isset( $_REQUEST['tableid']))
-	$tableid=$_REQUEST['tableid'];
-      else
-    $tableid=0;
-      
-      
+    if (isset( $_REQUEST['sf'])) {
+        $start_from=$_REQUEST['sf'];
+
+
+    } else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+
+    } else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+
+        if (isset( $_REQUEST['f_field']))
+            $f_field=$_REQUEST['f_field'];
+        else
+            $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
     $where='';
 
-      
-   
-      
-      $_SESSION['state'][$conf_table]['table']['order']=$order;
-      $_SESSION['state'][$conf_table]['table']['order_dir']=$order_direction;
-      $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-      $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-      $_SESSION['state'][$conf_table]['table']['where']=$where;
-      $_SESSION['state'][$conf_table]['table']['f_field']=$order;
-      $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
-      
-   
-      $filter_msg='';
-      $wheref='';
-     
-     
-$sql=sprintf("select count(*) as total  from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) ",addslashes($q),addslashes($q));;
 
-     
-   
-   $res = mysql_query($sql); 
-   if($row=mysql_fetch_array($res)) {
-     $total=$row['total'];
-   }
-   mysql_free_result($res);
-//   if($wheref==''){
-     $filtered=0; $total_records=$total;
- //  }
-   
-   
- $rtext=$total_records." ".ngettext('match','matches',$total_records);
-  if($total_records>$number_results)
-    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-  else
-    $rtext_rpp=' ('._('Showing all').')';
-   $_dir=$order_direction;
-   $_order=$order;
-   
-        $sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
 
-   // print $sql;
-   $res = mysql_query($sql);
-   $adata=array();
-   
 
-   
-   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-   
-   switch ($row['Subject']) {
-       case 'Product':
-           $subject=_('Product');
+    $_SESSION['state'][$conf_table]['table']['order']=$order;
+    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_direction;
+    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['table']['where']=$where;
+    $_SESSION['state'][$conf_table]['table']['f_field']=$order;
+    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+
+
+    $filter_msg='';
+    $wheref='';
+
+    /*
+        $sql=sprintf("select count(*) as total  from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) ",addslashes($q),addslashes($q));;
+
+        // print $sql;
+
+        $res = mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $total=$row['total'];
+        }
+        mysql_free_result($res);
+    //   if($wheref==''){
+        $filtered=0;
+        $total_records=$total;
+    //  }
+
+
+        $rtext=$total_records." ".ngettext('match','matches',$total_records);
+        if ($total_records>$number_results)
+            $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+        else
+            $rtext_rpp=' ('._('Showing all').')';
+
+    */
+    $rtext_rpp='';
+    $rtext='';
+    $total_records=0;
+    $_dir=$order_direction;
+    $_order=$order;
+//------------------------------------
+    $adata=array();
+    $ascore=array();
+    $q_parts=preg_split('/\s+/',$q);
+    foreach($q_parts as $q_part) {
+        $sql=sprintf("select `Search Full Text Key`,S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
+       // print $sql;
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+
+            $score=1;
+
+            $total_records++;
+            switch ($row['Subject']) {
+            case 'Product':
+                $subject=_('Product');
+                $result_name=sprintf('<a href="product.php?id=%d">%s</a>',$row['Subject Key'],$row['Search Result Name']);
+                break;
+            default:
+                $subject=$row['Subject'];
+                $result_name=$row['Search Result Name'];
+                break;
+            }
+
+
+
+            $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+            if (array_key_exists($row['Search Full Text Key'],  $ascore)) {
+                $ascore[$row['Search Full Text Key']]+=$store;
+            } else {
+                $ascore[$row['Search Full Text Key']]=$store;
+            }
+
+            $adata[$row['Search Full Text Key']]=array(
+                                                     'score'=>$score,
+                                                     'store'=>$store,
+                                                     'subject'=>$subject,
+                                                     'result'=>$result_name,
+                                                     'score'=>$ascore[$row['Search Full Text Key']],
+                                                     'description'=>$row['Search Result Description']
+
+                                                 );
+
+
+        }
+    }
+
+
+
+
+//-------------------------------
+
+
+
+$sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
+
+// print $sql;
+$res = mysql_query($sql);
+
+
+
+
+while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $total_records++;
+    switch ($row['Subject']) {
+    case 'Product':
+        $subject=_('Product');
         $result_name=sprintf('<a href="product.php?id=%d">%s</a>',$row['Subject Key'],$row['Search Result Name']);
-           break;
-       default:
-              $subject=$row['Subject'];
-$result_name=$row['Search Result Name'];
-           break;
-   }
-   
+        break;
+    default:
+        $subject=$row['Subject'];
+        $result_name=$row['Search Result Name'];
+        break;
+    }
 
-   
-   
-$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
-    $adata[]=array(
-        'score'=>$row['score'],
-         'store'=>$store,
-            'subject'=>$subject,
-                        'result'=>$result_name,
 
-		   'description'=>$row['Search Result Description']
-		  
-		   );
-  }
-  mysql_free_result($res);
-  $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results,
-			)
-		   );
-   echo json_encode($response);
+
+
+    $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+    if (array_key_exists($row['Search Full Text Key'],  $ascore)) {
+        $ascore[$row['Search Full Text Key']]+=$store;
+    } else {
+        $ascore[$row['Search Full Text Key']]=$store;
+    }
+
+
+    $adata[$row['Search Full Text Key']]=array(
+                                             'score'=>$ascore[$row['Search Full Text Key']],
+                                             'store'=>$store,
+                                             'subject'=>$subject,
+                                             'result'=>$result_name,
+
+                                             'description'=>$row['Search Result Description']
+
+                                         );
+}
+mysql_free_result($res);
+
+array_multisort($ascore, SORT_DESC , $adata);
+
+
+$response=array('resultset'=>
+                            array('state'=>200,
+                                  'data'=>$adata,
+                                  'sort_key'=>$_order,
+                                  'sort_dir'=>$_dir,
+                                  'tableid'=>$tableid,
+                                  'filter_msg'=>$filter_msg,
+                                  'rtext'=>$rtext,
+                                  'rtext_rpp'=>$rtext_rpp,
+                                  'total_records'=>$total_records,
+                                  'records_offset'=>$start_from,
+                                  'records_perpage'=>$number_results,
+                                 )
+               );
+echo json_encode($response);
 }
 
 function search_departments($data) {
@@ -543,6 +620,21 @@ function search_customer($data) {
         $stores=join(',',$user->stores);
 
     $candidates=array();
+    
+    if(is_numeric($q)){
+     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Key`=%d',$stores,$q);
+    //print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res)) {
+    
+    $candidates[$row['Customer Key']]=2000;
+      
+    
+    }
+    }
+    
+    
+    
     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
     //print $sql;
     $res=mysql_query($sql);
@@ -574,8 +666,10 @@ function search_customer($data) {
     }
     //print_r($candidates);
 
+ 
+  
 
-    $sql=sprintf('select `Customer Key`,`Customer Main Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Postal Code` like "%s%%"  limit 150'
+    $sql=sprintf('select `Customer Key`,`Customer Main Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Postal Code`!="" and   `Customer Main Postal Code` like "%s%%"  limit 150'
                  ,$stores
                  ,addslashes($q)
                 );
@@ -590,11 +684,14 @@ function search_customer($data) {
 
             $len_name=$row['Customer Main Postal Code'];
             $len_q=strlen($q);
-            $factor=$len_name/$len_q;
-            $candidates[$row['Customer Key']]=20*$factor;
+            $factor=$len_q/$len_name;
+ 
+ 
+ $candidates[$row['Customer Key']]=20*$factor;
         }
 
     }
+
 
 
 
@@ -613,6 +710,8 @@ function search_customer($data) {
             $candidates[$row['Subject Key']]=100*$factor;
         }
     }
+
+//print_r($candidates);
 
     arsort($candidates);
     $total_candidates=count($candidates);
@@ -639,7 +738,7 @@ function search_customer($data) {
     }
     $customer_keys=preg_replace('/^,/','',$customer_keys);
 
-    $sql=sprintf("select `Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` where `Customer Key` in (%s)",$customer_keys);
+    $sql=sprintf("select `Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` where `Customer Key` in (%s)",$customer_keys);
     $res=mysql_query($sql);
 
 
@@ -652,10 +751,15 @@ function search_customer($data) {
             $name=$row['Customer Name'];
 
         }
-
-        $address=$row['Customer Main Plain Email'].'<br/>'.$row['Customer Main Location'];
-
-
+        
+        $address=$row['Customer Main Plain Email'];
+ 
+        if($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
+        $address.='<br/>'.$row['Customer Main Location'];
+        if($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
+        $address=preg_replace('/^\<br\/\>/','',$address);
+        
+        
         $results[$row['Customer Key']]=array('key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
     }
 //$customer_card.='</table>';
@@ -1116,6 +1220,10 @@ function search_parts($data) {
 
 
 function search_full_text($data) {
+
+
+
+
     $the_results=array();
 
     $max_results=20;
@@ -1124,7 +1232,7 @@ function search_full_text($data) {
     // $q=_trim($_REQUEST['q']);
 
     if ($q=='') {
-        $response=array('state'=>200,'results'=>0,'data'=>'');
+        $response=array('state'=>200,'results'=>0,'data'=>'','q'=>$q);
         echo json_encode($response);
         return;
     }
@@ -1147,19 +1255,19 @@ function search_full_text($data) {
                 break;
             case('Order'):
                 $link='order.php?id=';
-                 $icon='basket.png';
+                $icon='basket.png';
                 break;
             case('Part'):
                 $link='part.php?id=';
-                 $icon='package_green.png';
+                $icon='package_green.png';
                 break;
             case('Customer'):
                 $link='customer.php?id=';
-                 $icon='vcard.png';
+                $icon='vcard.png';
                 break;
             case('Family'):
                 $link='family.php?id=';
-                 $icon='bricks.png';
+                $icon='bricks.png';
                 break;
             }
             $image='';
@@ -1182,9 +1290,9 @@ function search_full_text($data) {
             $candidates[$row['Search Full Text Key']]=$row['score'];
 
         $link='';
-         $store_code=$row['Store Code'];
+        $store_code=$row['Store Code'];
         switch ($row['Subject']) {
-       
+
         case('Product'):
             $link='product.php?pid=';
             $icon='brick.png';
@@ -1199,7 +1307,7 @@ function search_full_text($data) {
             break;
         case('Customer'):
             $link='customer.php?id=';
-             $icon='vcard.png';
+            $icon='vcard.png';
 
             break;
         case('Family'):
@@ -1224,7 +1332,7 @@ function search_full_text($data) {
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {
-        $response=array('state'=>200,'results'=>0,'data'=>'');
+        $response=array('state'=>200,'results'=>0,'data'=>'','q'=>$q);
         echo json_encode($response);
         return;
     }
@@ -1245,10 +1353,11 @@ function search_full_text($data) {
         $counter++;
     }
 
+    //  print_r($results);
+//   exit;
 
 
-
-    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
+    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'','q'=>$q);
     echo json_encode($response);
 
 

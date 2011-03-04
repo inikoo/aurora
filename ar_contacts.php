@@ -2334,12 +2334,12 @@ function list_customers_send_post() {
     else
         $tableid=0;
 
-    if (isset( $_REQUEST['store_id'])    ) {
+ /*   if (isset( $_REQUEST['store_id'])    ) {
         $store=$_REQUEST['store_id'];
         $_SESSION['state']['customers']['store']=$store;
     } else
         $store=$_SESSION['state']['customers']['store'];
-
+*/
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
  
@@ -2511,12 +2511,12 @@ function list_customers_send_post() {
     $wheref='';
 
     $currency='';
-    if (is_numeric($store)) {
-        $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+  /*  if (is_numeric($store)) {
+       ///// $where.=sprintf(' and `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     }
-
+*/
 
 
     if ($type=='all_customers') {
@@ -2786,7 +2786,8 @@ function list_customers_send_post() {
         $delivery_address='<i>'._('Same as Billing').'</i>';
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];
-	    $checkbox='<input type="checkbox" name="check1"/>';
+	    $checkbox='<input type="checkbox" name="check[]"  id=".$data[\'Customer Key\'].">';
+
         $adata[]=array(
 		     'ch'=>$checkbox,
                      'id'=>$id,
