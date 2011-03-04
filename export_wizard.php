@@ -117,6 +117,7 @@ elseif($map_type == 'customers_dynamic_list'){
 	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
 	    $dynamic_list_id=$_REQUEST['subject_key'];
 	}
+
 	$qry = mysql_query("SELECT `Customer List Metadata`,`Customer List Store Key` FROM `Customer List Dimension` WHERE `Customer List Key` = '$dynamic_list_id'");
 	$list= mysql_fetch_assoc($qry);
 	$metadata = $list['Customer List Metadata'];
@@ -189,7 +190,8 @@ if ($metadata) {
         if ($use_otf) {
             $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
         }       
-     if ($use_categories) {         
+     if ($use_categories) {
+         
          $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
         }
         $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
@@ -254,6 +256,7 @@ if ($metadata) {
             $last_order_date='';
         else
             $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
         $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
         if ($data['Customer Billing Address Link']=='Contact')
             $billing_address='<i>'._('Same as Contact').'</i>';
@@ -301,6 +304,7 @@ if ($metadata) {
                      'activity'=>$data['Customer Type by Activity']
 
                  );
+}
                 print_r($adata);
 
 
