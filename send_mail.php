@@ -92,7 +92,7 @@ if($mail_list != '')
 }
 else
 {
-			$_SESSION['msg'] = "Please select the mail ID";
+			$_SESSION['msg'] = "Please select the campaign";
 			@header('location:campaign_builder.php');		
 }
 ?>
