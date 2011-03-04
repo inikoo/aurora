@@ -38,6 +38,11 @@ $js_files=array(
 	
 	}
 
+	if(isset($_SESSION['queue_list']))
+	{
+		$smarty->assign('queue',$_SESSION['queue_list']);
+		
+	}
 
 
 $smarty->assign('css_files',$css_files);
