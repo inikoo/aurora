@@ -60,7 +60,7 @@ $js_files=array(
 
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
-$smarty->assign('title', _('Customers Lists'));
+$smarty->assign('title', _('Create Campaign'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
