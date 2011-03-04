@@ -305,7 +305,7 @@ if ($metadata) {
 
                  );
 }
-                print_r($adata);
+              //  print_r($adata);
 
 
 	$smarty->assign('subject_key', $dynamic_list_id);
