@@ -29,7 +29,7 @@ if(!isset($_REQUEST['subject'])){
 	exit;
 }
 $map_type = mysql_real_escape_string($_REQUEST['subject']);
-if($map_type == 'customer' || $map_type == 'customers' || $map_type == 'customers_static_list' || $map_type == 'Customer'){
+if($map_type == 'customer' || $map_type == 'customers' || $map_type == 'customers_static_list' || $map_type == 'customers_dynamic_list' || $map_type == 'Customer'){
 	$map_db_type = 'Customer';
 }
 $line = ''; $data = '';$header = '';
@@ -58,6 +58,12 @@ elseif($map_type == 'customers_static_list'){
 	    $static_list_id=mysql_real_escape_string($_REQUEST['subject_key']);
 	}
 }
+## FOR CUSTOMERS DYNAMIC LIST ##
+elseif($map_type == 'customers_dynamic_list'){
+	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
+	    $dynamic_list_id=mysql_real_escape_string($_REQUEST['subject_key']);
+	}
+}
 /*## IF NO PROPER DEFINATION FOUND ##
 else{
 	header('Location: customers_server.php');
@@ -81,7 +87,7 @@ $no_of_maps_saved = numExportMapData($map_db_type);
 		$included_data[1] = 'Customer Main Plain Email';
 		$included_data[2] = 'Customer Main Plain Telephone';
 		//print_r($included_data);
-		$exported_data = fetch_records_from_value($included_data, 'Customer Dimension');
+		$exported_data = exportDefaultMap($included_data, 'Customer Dimension');
 		//print_r($my_exported_data);
 		}
 	}
@@ -105,6 +111,10 @@ else{
 	}
 	elseif($map_type == 'customers_static_list'){
 		$exported_data = fetch_records_from_static_list($my_exported_data, $static_list_id);
+		//print_r($exported_data);
+	}
+	elseif($map_type == 'customers_dynamic_list'){
+		$exported_data = fetch_records_from_dynamic_list($my_exported_data, $dynamic_list_id);
 		//print_r($exported_data);
 	}
 
@@ -182,7 +192,8 @@ if(trim($header)!=''){
 	echo $header.$data;
 }
 
-### USER DEFINED METHODS ###
+### USER DEFINED FUNCTIONS ###
+// COMMON USED //
 function getExportMapData($subject){
 	if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 		$id=mysql_real_escape_string($_REQUEST['id']);
@@ -227,7 +238,25 @@ function final_array($assoc_arr, $num_arr){
 	}
 	return $final_arr;
 }
+
+// CONDITIONAL USED //
+function exportDefaultMap($exported_data, $table_name){
+// USED TO GET DEFAULT MAP
+	$fields=''; $customers_data=array(); $row=array();
+	foreach($exported_data as $key=>$value){
+		$fields .= '`'.$value.'`,';
+	}
+		$fields = substr($fields,0,-1);
+	$sql = "SELECT $fields FROM `$table_name`";
+	$query=mysql_query($sql);
+	while($row=mysql_fetch_assoc($query)){
+		$customer_data[]=$row;
+	}
+	return $customer_data;
+}
+
 function fetch_records_from_key($exported_data, $table_name, $look_field, $id){
+// USED TO GET RECORDS OF CUSTOMERS
 
 	$fields=''; $customers_data=array(); $row=array();
 	foreach($exported_data as $key=>$value){
@@ -241,22 +270,11 @@ function fetch_records_from_key($exported_data, $table_name, $look_field, $id){
 	}
 	return $customer_data;
 }
-function fetch_records_from_value($exported_data, $table_name){
-	$fields=''; $customers_data=array(); $row=array();
-	foreach($exported_data as $key=>$value){
-		$fields .= '`'.$value.'`,';
-	}
-		$fields = substr($fields,0,-1);
-	$sql = "SELECT $fields FROM `$table_name`";
-	$query=mysql_query($sql);
-	while($row=mysql_fetch_assoc($query)){
-		$customer_data[]=$row;
-	}
-	return $customer_data;
-}
-function fetch_records_from_static_list($exported_data, $static_list_id){
 
-	$fields=''; $customers_data=array(); $row=array(); $id=array();
+function fetch_records_from_static_list($exported_data, $static_list_id){
+// USED TO GET RECORDS OF A STATIC LIST
+
+	$fields=''; $customers_data=array(); $id=array();
 	foreach($exported_data as $key=>$value){
 		$fields .= '`'.$key.'`,';
 	}
@@ -276,4 +294,155 @@ function fetch_records_from_static_list($exported_data, $static_list_id){
 	}
 	return $customer_data;
 }
+
+function fetch_records_from_dynamic_list($exported_data, $dynamic_list_id){
+// USED TO GET RECORDS OF A DYNAMIC LIST
+
+	$fields=''; $customers_data=array();
+	foreach($exported_data as $key=>$value){
+		$fields .= '`'.$key.'`,';
+	}
+		$fields = substr($fields,0,-1);
+
+	$qry = mysql_query("SELECT `Customer List Metadata`,`Customer List Store Key` FROM `Customer List Dimension` WHERE `Customer List Key` = '$dynamic_list_id'");
+	$rows= mysql_fetch_assoc($qry);
+	$metadata = $list['Customer List Metadata'];
+	$table='`Customer Dimension` C ';
+	if ($metadata) {
+        $metadata=preg_replace('/\\\"/','"',$metadata);
+        $where_data=array(
+        'product_ordered1'=>'∀',
+        'product_not_ordered1'=>'',
+        'product_not_received1'=>'',
+        'from1'=>'',
+        'to1'=>'',
+        'dont_have'=>array(),
+        'have'=>array(),
+        'categories'=>''
+        );
+        $metadata=json_decode($metadata,TRUE);
+        foreach ($metadata as $key=>$item){
+            $where_data[$key]=$item;
+        }
+        $where='where true';
+	$use_categories =false;
+        $use_otf =false;
+        $where_categories='';
+        if ($where_data['categories']!='') {
+        $categories_keys=preg_split('/,/',$where_data['categories']);
+        $valid_categories_keys=array();
+        foreach ($categories_keys as $item) {
+            if(is_numeric($item))
+                $valid_categories_keys[]=$item;
+        }
+        $categories_keys=join($valid_categories_keys,',');
+        if($categories_keys){
+        $use_categories =true;
+        $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
+        }
+        }
+        if ($where_data['product_ordered1']!=''){
+            if ($where_data['product_ordered1']!='∀'){
+                $use_otf=true;
+                $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
+            }else
+                $where_product_ordered1='true';
+        }else{
+            $where_product_ordered1='false';
+        }
+        if ($where_data['product_not_ordered1']!='') {
+            if ($where_data['product_not_ordered1']!='ALL') {
+                $use_otf=true;
+                $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
+            } else
+                $where_product_not_ordered1='false';
+        } else
+            $where_product_not_ordered1='true';
+
+        if ($where_data['product_not_received1']!='') {
+            if ($where_data['product_not_received1']!='∀') {
+                $use_otf=true;
+                $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+            } else {
+                $use_otf=true;
+                $where_product_not_received1=' ((ordered-dispatched)>0)  ';
+            }
+        } else
+            $where_product_not_received1='true';
+        $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
+        if ($date_interval1['mysql']) {
+            $use_otf=true;
+        }
+        if ($use_otf) {
+            $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)';
+        }
+	if ($use_categories){
+         $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)';
+        }
+        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
+
+        foreach($where_data['dont_have'] as $dont_have) {
+            switch ($dont_have) {
+            case 'tel':
+                $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
+                break;
+            case 'email':
+                $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
+                break;
+            case 'fax':
+                $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
+                break;
+            case 'address':
+                $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
+                break;
+            }
+        }
+        foreach($where_data['have'] as $dont_have) {
+            switch ($dont_have) {
+            case 'tel':
+                $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
+                break;
+            case 'email':
+                $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
+                break;
+            case 'fax':
+                $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
+                break;
+            case 'address':
+                $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
+                break;
+            }
+        }
+    } else {
+        $where='where true ';
+    }
+    $filter_msg='';
+    $wheref='';
+    $store=$rows['Customer List Store Key'];
+    $currency='';
+    if (is_numeric($store)) {
+	$where.=sprintf(' and `Customer Store Key`=%d ',$store);
+	$store=new Store($store);
+	$currency=$store->data['Store Currency Code'];
+    }
+	$order='`Customer File As`';
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order DESC ";
+    $adata=array();
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$id=$data['Customer Key'];
+	array_push($adata, $id);
+	}
+
+	for($i=0;$i<count($adata);$i++){
+		$sql2 = "SELECT $fields FROM `Customer Dimension` WHERE `Customer Key`='$adata[$i]'";
+			$query2=mysql_query($sql2);
+			while($row2=mysql_fetch_assoc($query2)){
+			$customer_data[]=$row2;
+		}
+	}
+	return $customer_data;
+}
+
+
 ?>
