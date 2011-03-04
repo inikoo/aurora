@@ -1771,7 +1771,7 @@ $awhere=$awhere_sql[0];
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-     print $sql;
+ 
     $adata=array();
 
 
