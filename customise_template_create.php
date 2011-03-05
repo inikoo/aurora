@@ -18,7 +18,8 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		'css/marketing_campaigns.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -37,6 +38,7 @@ $js_files=array(
 		'js/list_function.js',
 		'js/create_campaign.js',
 		'external_libs/ckeditor/ckeditor.js',
+		'customer_list_marketing.js.php',
 		'js/jquery-1.4.4.js'
 		);
 		//fetch the customer list name

@@ -76,7 +76,7 @@
 	</tr>
 
 	<tr>
-	  <td colspan=3 align="right"> <input type="button" name="createCampaign" value="Create" onclick="process();"> </td>
+	  <td colspan=3 align="right"> <input type="button" class="Emarketing_button" name="createCampaign" value="Create" onclick="process();"> </td>
 	</tr>
 		
 		<input type="hidden" name="max_num_mail" id="max_num_mail" value="{$count}"> 		
