@@ -866,8 +866,7 @@ var $external_DB_link=false;
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
         ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) 
-        left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
 
         $result=mysql_query($sql);
 
@@ -942,8 +941,7 @@ var $external_DB_link=false;
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
         ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) 
-        left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+        from `Order Transaction Fact`  OTF   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
 
         $result=mysql_query($sql);
 
@@ -1020,8 +1018,7 @@ var $external_DB_link=false;
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
         ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) 
-        left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+        from `Order Transaction Fact`   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
 
 
         $result=mysql_query($sql);
@@ -1267,8 +1264,8 @@ var $external_DB_link=false;
       $number_active_customers=0;
       $number_active_customers_more_than_50=0;
 
-      $sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Main Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
-      //      print "$sql\n";
+      $sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
+          // print "$sql\n";
       $result=mysql_query($sql);
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$number_active_customers++;
@@ -1442,6 +1439,116 @@ function get_page_data(){
   return $data;
 
 }
+
+ function update_sales_default_currency() {
+        $this->data_default_currency=array();
+        $this->data_default_currency['Product Department DC Total Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Department DC Total Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Department DC Total Invoiced Amount']=0;
+        $this->data_default_currency['Product Department DC Total Profit']=0;
+        $this->data_default_currency['Product Department DC 1 Year Acc Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Year Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Year Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Year Acc Profit']=0;
+        $this->data_default_currency['Product Department DC 1 Quarter Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Quarter Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Quarter Acc Profit']=0;
+        $this->data_default_currency['Product Department DC 1 Month Acc Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Month Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Month Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Month Acc Profit']=0;
+        $this->data_default_currency['Product Department DC 1 Week Acc Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Week Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Week Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Department DC 1 Week Acc Profit']=0;
+
+
+
+        $sql="select     sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc  from `Order Transaction Fact`  OTF   where `Product Department Key`=".$this->id;
+
+
+        //print "$sql\n\n";
+        // exit;
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Department DC Total Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Department DC Total Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Department DC Total Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Department DC Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+
+
+        $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc
+                     from `Order Transaction Fact`  OTF    where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Department DC 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Department DC 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+        $sql=sprintf("select   sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc  from `Order Transaction Fact`  OTF    where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Department DC 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Department DC 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+        $sql=sprintf("select    sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross  ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc    from `Order Transaction Fact`  OTF    where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+
+
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Department DC 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Department DC 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+        $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross   ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc    from `Order Transaction Fact`  OTF    where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+        //	print $sql;
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Department DC 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Department DC 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Department DC 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+        $insert_values='';
+        $update_values='';
+        foreach($this->data_default_currency as $key=>$value) {
+            $insert_values.=sprintf(',%.2f',$value);
+            $update_values.=sprintf(',`%s`=%.2f',addslashes($key),$value);
+        }
+        $insert_values=preg_replace('/^,/','',$insert_values);
+        $update_values=preg_replace('/^,/','',$update_values);
+
+
+        $sql=sprintf('Insert into `Product Department Default Currency` values (%d,%s) ON DUPLICATE KEY UPDATE %s  ',$this->id,$insert_values,$update_values);
+        mysql_query($sql);
+        //print "$sql\n";
+
+
+
+    }
+
 
 }
 

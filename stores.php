@@ -45,7 +45,7 @@ $corporation=new Corporation();
 $smarty->assign('corporation',$corporation);
 
 $number_of_stores=count($user->stores);
-
+$general_options_list=array();
 if ($modify) {
     if ($number_of_stores>1)
         $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Edit Stores'));
