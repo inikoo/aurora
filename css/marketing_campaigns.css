@@ -500,10 +500,42 @@ font-weight:normal;
 padding:2px 10px 0px 20px;
 
 }
+#create_list a{
+color:#666666;
 
+}
+#create_list a:hover{
+  text-decoration:none;
+  color:#000000;
 
+}
+#view_list a{
+color:#666666;
 
+}
+#view_list a:hover{
+  text-decoration:none;
+  color:#000000;
 
+}
+#create_campaign a{
+color:#666666;
+
+}
+#create_campaign a:hover{
+  text-decoration:none;
+  color:#000000;
+
+}
+#view_campaign a{
+color:#666666;
+
+}
+#view_campaign a:hover{
+  text-decoration:none;
+  color:#000000;
+
+}
 
 
 

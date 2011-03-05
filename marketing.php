@@ -39,7 +39,8 @@ $css_files=array(
 		 'container.css',
 		 'css/marketing_campaigns.css',
 	         'table.css',
-		 'css/marketing_menu.css'
+		 'css/marketing_menu.css',
+		'css/marketing_campaigns.css'
 		 );
 $js_files=array(
 
