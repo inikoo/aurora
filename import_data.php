@@ -58,33 +58,23 @@ header('Location: index.php?error=no_tipo');
 
 $scope=$_REQUEST['tipo'];
 
-
-
-
 include_once('xml2array.php');
 
 switch($scope){
 case('customers_store'):
 
-
-
-
 $scope_args=$_SESSION['state']['customers']['store'];
 $store_key=$scope_args;
 
-if(!($user->can_view('stores') and in_array($store_key,$user->stores)   ) ){
+if(!($user->can_view('stores') and in_array($store_key,$user->stores))){
   header('Location: index.php');
    exit;
 }
 
-
-$smarty->assign('store_key',$store_key);
-
-
+$smarty->assign('subject_key',$store_key);
 
 // $xml=file_get_contents('conf/import_file_customers.xml');
 //$fields=xml2array($xml);
-
 
 break;
 default:
