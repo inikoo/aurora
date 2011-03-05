@@ -8,19 +8,19 @@ return null;
 
 function get_default(v) {
  var v;
-
-//alert(v);
+ var qstring = window.location.toString();
+ arr=qstring.split("?");
+ var str=arr[1];
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
            if (req.status==200) {
-		
                 document.getElementById('call_table').innerHTML=req.responseText; 
            }
       }
  };
 
-   req.open("GET", "import_csv_record.php?v="+v); 
+   req.open("GET", "import_csv_record.php?v="+v+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -28,7 +28,7 @@ function get_default(v) {
 function getPrev(v,limit) {
  var v;
 	
-	alert(document.getElementById('ignore_message').innerHTML);
+	//alert(document.getElementById('ignore_message').innerHTML);
 	
 	document.getElementById('ignore_message').innerHTML="";
 	var prevArray = new Array();
@@ -56,7 +56,7 @@ function getPrev(v,limit) {
 
 function getNext(v,num) {
  var v;
-	alert(document.getElementById('ignore_message').innerHTML);
+	//alert(document.getElementById('ignore_message').innerHTML);
 document.getElementById('ignore_message').innerHTML="";
 
  var myArray = new Array();

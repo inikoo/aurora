@@ -13,7 +13,7 @@
 <br>
 
 <div class="left3Quarters">
- <form id="form_data" name="form_data" method="post" action="insert_csv.php" enctype="multipart/form-data" onsubmit="return checkDropdown()">
+ <form id="form_data" name="form_data" method="post" action="insert_csv.php?subject={$subject}&subject_key={$subject_key}" enctype="multipart/form-data" onsubmit="return checkDropdown()">
 <input type="hidden" name="form" value="form" />
                     <div class="unframedsection"><div id="form:j_id68">
     <div class="prop">

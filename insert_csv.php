@@ -1,14 +1,14 @@
 <?php
 /*
- File: store.php 
+ File: store.php
 
  UI store page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Kaktus 
- 
+
+ Copyright (c) 2009, Kaktus
+
  Version 2.0
 */
 include_once('common.php');
@@ -20,8 +20,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
-		 //	 $yui_path.'assets/skins/sam/autocomplete.css',
+		 // $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',
@@ -46,27 +45,16 @@ $js_files=array(
 		'js/dropdown.js',
         	);
 
-//total array from the csv
+	//total array from the csv
 	require_once 'csvparser.php';
 	$csv = new CSV_PARSER;
 
 	
 	$csv->load($_SESSION['file_path']);
-
-	
 	$h = $csv->getHeaders();
-
-	
 	$raw = $csv->getrawArray();
-	
-
 	$count_rows = $csv->countRows();
-
-	
 	$session_array = array_unique($_SESSION['colorArray']);
-
-	
-
 	
 	$tt = array();
 
@@ -78,37 +66,27 @@ $js_files=array(
 		}
 	}
 
-	
-	//print_r($tt);
+	print_r($tt);
 
 	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
-
-	
-
 	
 	$arr = array();
 	$k = 0;
 	$nArray = array();
-	
-	
+
 		for($i=0; $i<=$count_rows; $i++)
 		{
 			$k = 0;
 			for($j=0; $j<count($assign); $j++)
 			{
-				
 				if($assign[$k] != 'Ignore')
 				{
-					$nArray[$assign[$k]]=$raw[$i][$j];	
-			
+					$nArray[$assign[$k]]=$raw[$i][$j];
 				}	
 					$k++;
-				
 			}
 				$arr[]=$nArray;  
 		}
-
-		
 		$previous=array();
                 $previous=$arr;
 		foreach($tt as $key=>$value)
@@ -124,9 +102,6 @@ $js_files=array(
 	       $ignore[]=array_diff($previous,$arr);
 		
 		//print_r($ignore);
-			
-		
-
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
@@ -134,7 +109,6 @@ $smarty->assign('arr',$arr);
 $smarty->assign('tt',$tt);
 
 $smarty->assign('ignored_array',$assign);
-
 
 $smarty->display('insert_csv.tpl');
 unset($_SESSION['getQueryString']);
