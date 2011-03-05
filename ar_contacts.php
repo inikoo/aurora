@@ -2208,6 +2208,21 @@ function list_customers() {
         else
             $delivery_address=$data['Customer XHTML Main Delivery Address'];
 
+        switch ($data['Customer Type by Activity']) {
+            case 'Inactive':
+                $activity=_('Lost');
+                break;
+            case 'Active':
+                $activity=_('Active');
+                break;   
+            case 'Prospect':
+                $activity=_('Prospect');
+                break;       
+            default:
+                $activity=$data['Customer Type by Activity'];
+                break;
+        }
+
         $adata[]=array(
                      'id'=>$id,
                      'name'=>$name,
@@ -2235,16 +2250,7 @@ function list_customers() {
                      'billing_address'=>$billing_address,
                      'delivery_address'=>$delivery_address,
 
-                     //'town'=>$data['Customer Main Town'],
-                     //'postcode'=>$data['Customer Main Postal Code'],
-                     //'region'=>$data['Customer Main Country First Division'],
-                     //'country'=>$data['Customer Main Country'],
-                     //'ship_address'=>$data['customer main ship to header'],
-                     //'ship_town'=>$data['Customer Main Delivery Address Town'],
-                     //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-                     //'ship_region'=>$data['Customer Main Delivery Address Region'],
-                     //'ship_country'=>$data['Customer Main Delivery Address Country'],
-                     'activity'=>$data['Customer Type by Activity']
+                     'activity'=>$activity
 
                  );
 ///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))

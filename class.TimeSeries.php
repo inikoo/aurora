@@ -2130,7 +2130,7 @@ $last_day=date("Y-m-d");
                     
                     );
 
-     //   print "$sql\n";
+       print "$sql\n";
 
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
