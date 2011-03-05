@@ -1921,7 +1921,7 @@ $default_state=array(
                               'edit'=>'properties'
                           ),
                    'store'=>array(
-                               'block_view'=>'details',
+                               'block_view'=>'departments',
                                'edit'=>'description',
                                'id'=>1,
                                'departments'=>array(
@@ -2247,7 +2247,7 @@ $default_state=array(
                                  ),
 
                    'department'=>array(
-                                    'block_view'=>'details',
+                                    'block_view'=>'families',
 
                                     'view'=>'general',
                                     'id'=>1,
@@ -2373,7 +2373,7 @@ $default_state=array(
 
                                 ),
                    'family'=>array(
-                                'block_view'=>'details',
+                                'block_view'=>'products',
 
                                 'editing'=>'description',
 
