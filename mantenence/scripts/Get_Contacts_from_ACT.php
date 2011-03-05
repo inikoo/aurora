@@ -87,10 +87,10 @@ while ($row=mysql_fetch_assoc($res)) {
     }
 
     $valid_sub_cats_type_bussiness[$row['Store Key']]=array('Gift Shop','Internet Shop','Market Trader','Party Planner','Craft Fairs','Tourist Attraction','Wedding Planner','Wholesaler','Department Store','Florist','Ebay Seller','Garden Centre','NPO','Hospitality Industry','Therapist','Event','Other');
-foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_type_business) {
-            $data=array('Category Name'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
-            $subcat_type_type_business=new Category('find create',$data);
-        }
+    foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_type_business) {
+        $data=array('Category Name'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+        $subcat_type_type_business=new Category('find create',$data);
+    }
 
 
 }
@@ -108,7 +108,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
 
-       print "$num $row\r";
+        print "$num $row\r";
 
         //    if($row>1000)
         //       break;
@@ -118,8 +118,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         if ($row==0) {
             //   print_r($data);exit;
-	  $col_names=$data;
- 
+            $col_names=$data;
+
             $row++;
             continue;
         }
@@ -173,12 +173,12 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $act_data['international_email']=$cols[$map_act['int_email']+3];
         $act_data['alt_email']=$cols[$map_act['alt_email']];
 
-      
-        
+
+
         $act_data['tax_number']=parse_tax_number($cols[$map_act['real_tax_number']+3]);
- $act_data['delivery_method']=$cols[88];
-         $act_data['special_instructions']=$cols[89];
-       
+        $act_data['delivery_method']=$cols[88];
+        $act_data['special_instructions']=$cols[89];
+
         $act_data['country_d1']='';
         //  $act_data['vat_number']=$cols[88+3];
         $tmp=preg_split('/\s/',$cols[0]);
@@ -194,7 +194,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $history_data=get_history_data($act_data['history'],$act_data['creation_date']);
         $act_data['history']=$history_data;
         $act_data['all_data']=$cols;
-        
+
         //print_r($history_data);
 
         if ($act_data['name']=='' and $act_data['contact']=='' and $act_data['email']=='' and $act_data['tel']==''
@@ -213,8 +213,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-     //   if($row>5000)
-       //   break;
+        //   if($row>5000)
+        //   break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -334,26 +334,26 @@ foreach($contacts as $act_data_contact_key=>$act_data) {
 
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
-    else{
-        if($_customer_data['email']=='' and $act_data['alt_email']!=''){
+    else {
+        if ($_customer_data['email']=='' and $act_data['alt_email']!='') {
             $email_data=guess_email($act_data['alt_email']);
-        
-        if($email_data['email']){
-        $_customer_data['email']=encrypt_email($email_data['email'],$encrypt);
-        $send_emails=false;
-        
+
+            if ($email_data['email']) {
+                $_customer_data['email']=encrypt_email($email_data['email'],$encrypt);
+                $send_emails=false;
+
+            }
         }
-    }
     }
 
 
 
     $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']),$encrypt);
     $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']),$encrypt);
-   
- 
-   
-   $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']),$encrypt);
+
+
+
+    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']),$encrypt);
     $_customer_data['address_data']=$shop_address_data;
     $_customer_data['address_data']['type']='3line';
 
@@ -374,7 +374,7 @@ foreach($contacts as $act_data_contact_key=>$act_data) {
 
 
 //print_r($act_data);
-     //print_r($_customer_data);
+    //print_r($_customer_data);
 //exit;
 
     //if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
@@ -441,102 +441,118 @@ foreach($contacts as $act_data_contact_key=>$act_data) {
     //  if($customer_data['Customer Main Plain Email']=='')
     //    continue;
 
-$customer_data['Customer Sticky Note']='';
+    $customer_data['Customer Sticky Note']='';
 
 
 
- if($act_data['delivery_method']!=''){
-    $customer_data['Customer Sticky Note']='Delivery Method: '.$act_data['delivery_method']."<br/>";
- }
-  if($act_data['special_instructions']!=''){
-    $customer_data['Customer Sticky Note'].='Special Instructions: '.$act_data['special_instructions']."<br/>";
- }
-             
-         
-
-$remove_customer=false;
-if(preg_match('/^(Closed Acc|Stopped Trading|Businees Closed Down|Closed Business|Not Trading-closed Down|Ceased Business|Bisiness Sold|Out OF Business|Closing Business|Blacklisted\! Ah|Fraud \- Dont Deal With|No Longer In Business|Close Down)/i',$act_data['business_type'])){
-$remove_customer=true;
-$customer_data['Customer Sticky Note'].='Business Closed Down<br/>';
-}
+    if ($act_data['delivery_method']!='') {
+        $customer_data['Customer Sticky Note']='Delivery Method: '.$act_data['delivery_method']."<br/>";
+    }
+    if ($act_data['special_instructions']!='') {
+        $customer_data['Customer Sticky Note'].='Special Instructions: '.$act_data['special_instructions']."<br/>";
+    }
 
 
-$customer_data['Customer Send Postal Marketing']='Yes';
-if(preg_match('/^(Don.t Send Catalogues)/i',$act_data['business_type']) or $remove_customer){
-$customer_data['Customer Send Postal Marketing']='No';
-}
 
-if($send_emails){
-$customer_data['Customer Send Newsletter']='Yes';
-$customer_data['Customer Send Email Marketing']='Yes';
-
-}else{
-$customer_data['Customer Send Newsletter']='No';
-$customer_data['Customer Send Email Marketing']='No';
-
-}
-
-$remove_address=false;
-if(preg_match('/(Poss Gone Away|Remove From Aw Mailing|Gone Away|Wrong Address|Unknown AT This Address)/i',$act_data['business_type'])){
-$remove_address=true;
-$customer_data['Customer Sticky Note'].='Wrong Address<br/>';
-$customer_data['Customer Send Postal Marketing']='No';
-
-}
+    $remove_customer=false;
+    if (preg_match('/^(Closed Acc|Stopped Trading|Businees Closed Down|Closed Business|Not Trading-closed Down|Ceased Business|Bisiness Sold|Out OF Business|Closing Business|Blacklisted\! Ah|Fraud \- Dont Deal With|No Longer In Business|Close Down)/i',$act_data['business_type'])) {
+        $remove_customer=true;
+        $customer_data['Customer Sticky Note'].='Business Closed Down<br/>';
+    }
 
 
-if(preg_match('/(Difficult|Customer \- DIF|Very Fussy)/i',$act_data['business_type'])){
-$remove_address=true;
-$customer_data['Customer Sticky Note'].='Difficult Customer<br/>';
-}
-if(preg_match('/(dishonest|Blacklisted)/i',$act_data['business_type'])){
-$remove_address=true;
-$customer_data['Customer Sticky Note'].='Dishonest Customer<br/>';
-}
+    $customer_data['Customer Send Postal Marketing']='Yes';
+    if (preg_match('/^(Don.t Send Catalogues)/i',$act_data['business_type']) or $remove_customer) {
+        $customer_data['Customer Send Postal Marketing']='No';
+    }
 
-$customer_data['Customer Sticky Note']=preg_replace('/\<br\/\>$/','',$customer_data['Customer Sticky Note']);
+    if ($send_emails) {
+        $customer_data['Customer Send Newsletter']='Yes';
+        $customer_data['Customer Send Email Marketing']='Yes';
 
-//print_r($customer_data);
+    } else {
+        $customer_data['Customer Send Newsletter']='No';
+        $customer_data['Customer Send Email Marketing']='No';
+
+    }
+
+    $remove_address=false;
+    if (preg_match('/(Poss Gone Away|Remove From Aw Mailing|Gone Away|Wrong Address|Unknown AT This Address)/i',$act_data['business_type'])) {
+        $remove_address=true;
+        $customer_data['Customer Sticky Note'].='Wrong Address<br/>';
+        $customer_data['Customer Send Postal Marketing']='No';
+
+    }
+
+
+    if (preg_match('/(Difficult|Customer \- DIF|Very Fussy)/i',$act_data['business_type'])) {
+        $remove_address=true;
+        $customer_data['Customer Sticky Note'].='Difficult Customer<br/>';
+    }
+    if (preg_match('/(dishonest|Blacklisted)/i',$act_data['business_type'])) {
+        $remove_address=true;
+        $customer_data['Customer Sticky Note'].='Dishonest Customer<br/>';
+    }
+
+    $customer_data['Customer Sticky Note']=preg_replace('/\<br\/\>$/','',$customer_data['Customer Sticky Note']);
+
+    //print_r($customer_data);
 //exit;
     $customer = new Customer ( 'find create update',  $customer_data);
 
 
-$_details='<table>';
-foreach($act_data['all_data'] as $_key=>$_value){
-if($_value!='' and $col_names[$_key]!='History_Generated')
-$_details.= '<tr><td>'.$col_names[$_key]."</td><td>$_value</td><tr>";
-}
-$_details.='</table>';
-$_details=_trim($_details);
-if(!$customer->new){
- $history_found=false;
- $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') and `Metadata`=%s ",
-                $customer->id,
-                prepare_mysql(md5($_details))
-                );
-                $res=mysql_query($sql);
-                //print "$sql\n";
-                if($row=mysql_fetch_assoc($res)){
-               
-               
-                
-                    $history_found=true;
-                }
+    $_details='<table>';
+    foreach($act_data['all_data'] as $_key=>$_value) {
+        if ($_value!='' and $col_names[$_key]!='History_Generated')
+            $_details.= '<tr><td>'.$col_names[$_key]."</td><td>$_value</td><tr>";
+    }
+    $_details.='</table>';
+    $_details=_trim($_details);
+    if (!$customer->new) {
+        $history_found=false;
+        $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') and `Metadata`=%s ",
+                     $customer->id,
+                     prepare_mysql(md5($_details))
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $history_found=true;
+        }
 
-if(!$history_found){
-$history_key=$customer->add_note('Contact data imported from Act (Merged)',$_details,date("Y-m-d H:i:s"));
-$sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+        
+$sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') ",
+                     $customer->id
+                    
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $data_not_imported_yet=false;
+        }else{
+            $data_not_imported_yet=true;
+        }
+
+        if($data_not_imported_yet){
+        $history_key=$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
+        $sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+        mysql_query($sql);
+        }else{
+            
+
+
+        if (!$history_found) {
+            $history_key=$customer->add_note('Contact data imported from Act (Merged)',$_details,date("Y-m-d H:i:s"));
+            $sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
 //print "$sql\n";
-mysql_query($sql);
-}
+            mysql_query($sql);
+        }
+        }
 
 
-
-}else{
-$history_key=$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
-$sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
-mysql_query($sql);
-}
+    } else {
+        $history_key=$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
+        $sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+        mysql_query($sql);
+    }
 
 
 
@@ -544,7 +560,7 @@ mysql_query($sql);
     if ($customer->data['Customer Store Key']==1) {
 
         $act_data['business_type']=mb_ucwords($act_data['business_type']);
-         if (preg_match('/(Carboot Sales)/i',$act_data['business_type']))
+        if (preg_match('/(Carboot Sales)/i',$act_data['business_type']))
             $act_data['business_type']='Market Trader';
         if (preg_match('/(school|church|charity)/i',$act_data['business_type']))
             $act_data['business_type']='NPO';
@@ -632,42 +648,42 @@ mysql_query($sql);
 
         if ($h_tipo=='Note')
             foreach($histories as $date=>$history) {
-             $history_found=false;
-             if(!$customer->new){
+            $history_found=false;
+            if (!$customer->new) {
                 $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and `History Abstract`=%s  and `History Date`=%s",
-                $customer->id,
-                prepare_mysql($history),
-                prepare_mysql($date)
-                );
+                             $customer->id,
+                             prepare_mysql($history),
+                             prepare_mysql($date)
+                            );
                 //print "$sql\n";
                 $res=mysql_query($sql);
-               
-                    if($row=mysql_fetch_assoc($res)){
+
+                if ($row=mysql_fetch_assoc($res)) {
                     $history_found=true;
                 }
-                }
-             if(!(!$customer->new and $history_found) )
-            $customer->add_note($history,'',$date);
+            }
+            if (!(!$customer->new and $history_found) )
+                $customer->add_note($history,'',$date);
         } else {
             foreach($histories as $date=>$history) {
-            
-            
-            $history_found=false;
-             if(!$customer->new){
-                $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and `History Abstract`=%s  and `History Date`=%s",
-                $customer->id,
-                prepare_mysql("Old Database Note ($h_tipo)"),
-                prepare_mysql($date)
-                );
-                $res=mysql_query($sql);
-               
-                    if($row=mysql_fetch_assoc($res)){
-                    $history_found=true;
+
+
+                $history_found=false;
+                if (!$customer->new) {
+                    $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and `History Abstract`=%s  and `History Date`=%s",
+                                 $customer->id,
+                                 prepare_mysql("Old Database Note ($h_tipo)"),
+                                 prepare_mysql($date)
+                                );
+                    $res=mysql_query($sql);
+
+                    if ($row=mysql_fetch_assoc($res)) {
+                        $history_found=true;
+                    }
                 }
-                }
-             if(!(!$customer->new and $history_found) )
-            
-                $customer->add_note("Old Database Note ($h_tipo)",$history,$date);
+                if (!(!$customer->new and $history_found) )
+
+                    $customer->add_note("Old Database Note ($h_tipo)",$history,$date);
             }
         }
     }
@@ -690,7 +706,7 @@ mysql_query($sql);
 
     //print "caca";
     //print_r($customer);
-unset($contacts[$act_data_contact_key]);
+    unset($contacts[$act_data_contact_key]);
 }
 
 fclose($fh);
@@ -725,7 +741,7 @@ function compare($x, $y) {
 
 function get_history_data($raw_history,$customer_creation_formated_time) {
     global $tipo_his;
-$customer_creation_time=strtotime($customer_creation_formated_time);
+    $customer_creation_time=strtotime($customer_creation_formated_time);
 
     $history=array('Field Changed'=>array(),'Note'=>array(),'E-mail Sent'=>array(),'Attachment'=>array(),'Contact Deleted'=>array(),'To-do Done'=>array(),'Call Completed'=>array(),'To-do Not Done'=>array());
 
@@ -756,13 +772,13 @@ $customer_creation_time=strtotime($customer_creation_formated_time);
         $tmp2=preg_split('/\//',$tmp[0]);
         $formated_time=$tmp2[2].'-'.$tmp2[1].'-'.$tmp2[0].' '.$tmp[1];
         $creation_time=strtotime($formated_time);
-        
-        
-        if(date("Y-m-d H:i:s",$creation_time)==date("Y-m-d H:i:00",$customer_creation_time)  )
-        $_date=date("Y-m-d H:i:s",$customer_creation_time);
+
+
+        if (date("Y-m-d H:i:s",$creation_time)==date("Y-m-d H:i:00",$customer_creation_time)  )
+            $_date=date("Y-m-d H:i:s",$customer_creation_time);
         else
-        $_date=date("Y-m-d H:i:s",$creation_time);
-        
+            $_date=date("Y-m-d H:i:s",$creation_time);
+
         // print date("Y-m-d H:i:s",$creation_time)."-$customer_creation_time-".date("Y-m-d H:i:00",$customer_creation_time)." -- $_date \n";
         $dates[]=$_date;
     }
@@ -775,14 +791,14 @@ $customer_creation_time=strtotime($customer_creation_formated_time);
         $tipo=$x[0];
         $note=preg_replace("/^$tipo -/",'',$y);
 
+        if (!preg_match('/Last contact by/',$note)) {
 
+            if (isset($history[$tipo][$dates[$index-1]]))
+                $history[$tipo][$dates[$index-1]].=_trim(";\n".$note);
+            else
+                $history[$tipo][$dates[$index-1]]=_trim($note);
 
-        if (isset($history[$tipo][$dates[$index-1]]))
-            $history[$tipo][$dates[$index-1]].=_trim(";\n".$note);
-        else
-            $history[$tipo][$dates[$index-1]]=_trim($note);
-
-
+        }
 
 
 
