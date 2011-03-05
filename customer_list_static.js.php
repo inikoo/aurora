@@ -82,7 +82,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 	    
-	    this.table0.subscribe("dataReturnEvent", data_returned);  
+	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
