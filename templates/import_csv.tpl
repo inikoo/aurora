@@ -11,7 +11,7 @@
 <div class="left3Quarters">
 
 
-<form id="form" name="form" method="post" action="import_csv_verify.php?tipo=customers_store" enctype="multipart/form-data">
+<form id="form" name="form" method="post" action="import_csv_verify.php?subject={$subject}&subject_key={$subject_key}" enctype="multipart/form-data">
 <input type="hidden" name="form" value="form" />
  
                     <div class="unframedsection"><div id="form:j_id68">

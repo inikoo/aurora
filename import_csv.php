@@ -1,10 +1,10 @@
 <?php
 /*
- File: store.php 
+ File: import_csv.php
 
- UI store page
+ UI Import CSV page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
  
  Copyright (c) 2009, Kaktus 
@@ -13,14 +13,11 @@
 */
 include_once('common.php');
 
-
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
 		 $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
@@ -46,21 +43,21 @@ $js_files=array(
 		'js/dropdown.js',
         	);
 
-
-if(!isset($_REQUEST['tipo'])){
+if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
 }
 
-$scope=$_REQUEST['tipo'];
-
-
+$scope=$_REQUEST['subject'];
  
 switch($scope){
 case('customers_store'):
 $scope_args=$_SESSION['state']['customers']['store'];
-
-
 break;
+
+case('supplier_products'):
+$scope_args=$_SESSION['state']['supplier']['id'];
+break;
+
 default:
 $scope_args='';
 }
@@ -74,13 +71,10 @@ else
 	$showerror = '';
 }
 
-$smarty->assign('scope',$scope);
-$smarty->assign('scope_args',$scope_args);
+$smarty->assign('subject',$scope);
+$smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('showerror',$showerror);
-
- 
-  $smarty->display('import_csv.tpl');
-
+$smarty->display('import_csv.tpl');
 ?>
