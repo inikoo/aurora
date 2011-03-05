@@ -82,10 +82,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 	    
-	    this.table0.subscribe("dataReturnEvent", data_returned);  
+	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo $_SESSION['state']['customers']['list']['f_value']?>'};
 
 	
 	};
@@ -110,7 +110,6 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'company_areas'
 
  var Dom   = YAHOO.util.Dom;
 
-
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
@@ -123,7 +122,6 @@ dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data"
 dialog_export.render();
 Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
-
  }
 
 YAHOO.util.Event.onDOMReady(init);
@@ -134,7 +132,6 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
