@@ -330,14 +330,23 @@ class Customer extends DB_Table {
                     $child=new Company ("find in customer $type_of_search create update",$raw_data);
 
 
-                    $raw_data_to_update=array();
-                    if (isset($raw_data['Customer Old ID']))
-                        $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
-
-
-                    $this->update($raw_data_to_update);
+                   
                     //print "ssssssss";
                 }
+
+
+                 $raw_data_to_update=array();
+                    if (isset($raw_data['Customer Old ID']))
+                        $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
+                    if (isset($raw_data['Customer Send Newsletter']))
+                        $raw_data_to_update['Customer Send Newsletter']=$raw_data['Customer Send Newsletter'];
+                    if (isset($raw_data['Customer Send Email Marketing']))
+                        $raw_data_to_update['Customer Send Email Marketing']=$raw_data['Customer Send Email Marketing'];
+                    if (isset($raw_data['Customer Send Postal Marketing']))
+                        $raw_data_to_update['Customer Send Postal Marketing']=$raw_data['Customer Send Postal Marketing'];    
+                    if (isset($raw_data['Customer Sticky Note']))
+                        $raw_data_to_update['Customer Sticky Note']=$raw_data['Customer Sticky Note'];        
+                    $this->update($raw_data_to_update);
 
                 $this->get_data('id',$this->id);
 
@@ -1906,25 +1915,16 @@ class Customer extends DB_Table {
 
         if ($key=='Customer Tax Number' or $key=='Tax Number') {
             return $this->get_tax_number();
-        }
-        if ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
+        }elseif ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
             return $this->get_fiscal_name();
-        }
-        if (array_key_exists($key,$this->data)) {
+        }elseif (array_key_exists($key,$this->data)) {
             return $this->data[$key];
-        }
-
-        if (preg_match('/^contact /i',$key)) {
+        }elseif (preg_match('/^contact /i',$key)) {
             if (!$this->contact_data)
                 $this->load('contact data');
             if (isset($this->contact_data[$key]))
                 return $this->contact_data[$key];
-        }
-
-
-
-
-        if (preg_match('/^ship to /i',$key)) {
+        }elseif (preg_match('/^ship to /i',$key)) {
             if (!$arg1)
                 $ship_to_key=$this->data['Customer Main Delivery Address Key'];
             else
@@ -1941,6 +1941,9 @@ class Customer extends DB_Table {
         case("ID"):
         case("Formated ID"):
             return $this->get_formated_id();
+        case("Sticky Note"):
+            return nl2br($this->data['Customer Sticky Note']);
+        break;
         case('Net Balance'):
             return money($this->data['Customer Net Balance']);
             break;

@@ -158,7 +158,7 @@ function list_customer_history() {
 
 
 
-    $where.=' and `Deep`=1 ';
+  //  $where.=' and `Deep`=1 ';
 
     $where.=sprintf(' and  B.`Customer Key`=%d   ',$customer_id);
 //   if(!$details)
