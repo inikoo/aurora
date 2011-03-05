@@ -380,7 +380,9 @@ var update_details=function(e){
 
 
 
-function init(){
+function initx(){
+    // Commented because duplicate save adresss  saving whan try to edit an address
+    
     
     //   var ids = ["personal","pictures","work","other"]; 
     //	YAHOO.util.Event.addListener(ids, "click", change_block);
@@ -418,4 +420,4 @@ function init(){
  
 
 } 
-YAHOO.util.Event.onDOMReady(init);
+//YAHOO.util.Event.onDOMReady(init);

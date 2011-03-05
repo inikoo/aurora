@@ -711,11 +711,12 @@ class Store extends DB_Table {
 $current_from=strtotime($this->data['Store Valid From']);
 
   $sql="select min(`Customer First Contacted Date`) as ffrom ,count(*) as number   from `Customer Dimension` as C   where `Customer Store Key`=".$this->id;
-   $result=mysql_query($sql);
+// print "C: $current_from $sql";
+ $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $from=strtotime($row['ffrom']);
             //print "-->".$row['ffrom']."\n" ;    
-            if($from<$current_from and $row['number']>0 and $row['ffrom']!=''){
+            if(($from<$current_from or !$current_from  )and $row['number']>0 and $row['ffrom']!=''){
             $_from=date("Y-m-d H:i:s",$from);
            $this->data['Store Valid From']=$_from;
 
@@ -929,7 +930,7 @@ $current_from=strtotime($this->data['Store Valid From']);
                      $this->id
                     );
         mysql_query($sql);
-//print "\n$sql\n";
+       // print "\n$sql\n";
 
 
 

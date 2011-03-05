@@ -5,7 +5,7 @@
  
 
 
-<div style="padding:0px 20px">
+<div style="padding:0px 20px;">
 
   {include file='contacts_navigation.tpl'}
 
@@ -36,9 +36,9 @@
        
 
      
+<div  style="width:500px;float:left" >    
      
-     
-<table id="customer_data" style="width:430px;float:left" border=0>
+<table id="customer_data" border=0 style="width:100%">
     <tr>
         {if $customer->get('Customer Main Address Key')}<td valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
         <td  valign="top">
@@ -53,16 +53,9 @@
         </td>
     </tr>
 </table>
-
- <div id="sticky_note_div" style="border:1px solid #eee;background:#e0eefd;float:left;width:300px;padding:0;margin-right:20px">
-<img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
-<div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Customer Sticky Note')}</div>
-</div>
-
-
-<div style="clear:both" >
-  <h2 style="font-size:150%">{t}Orders Overview{/t}</h2>
-  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
+<div  >
+  <h2 style="font-size:150% ">{t}Orders Overview{/t}</h2>
+  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;">
     <tr><td>
 	{if $customer->get('Customer Orders')==1}
 	{$customer->get('Customer Name')} {t}has place one order{/t}.  
@@ -76,7 +69,16 @@
     </td></tr>
   </table>
 </div>
+</div>
 
+<div id="sticky_note_div" style="border:1px solid #eee;background:#e0eefd;float:left;width:300px;padding:0;margin-left:20px">
+<img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
+<div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
+</div>
+
+
+
+<div style="clear:both"></div>
 </div>
 
 
