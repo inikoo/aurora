@@ -35,6 +35,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 	        'customers_lists.js.php',
+		'js/list_function.js',
                 'customer_list_marketing.js.php',
 		'js/menu.js'
 		);
