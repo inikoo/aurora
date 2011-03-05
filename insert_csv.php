@@ -1,6 +1,6 @@
 <?php
 /*
- File: store.php
+ File: insert_csv.php
 
  UI store page
 
