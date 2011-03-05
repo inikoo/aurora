@@ -79,7 +79,7 @@ $("#Postcard").css("display", "block");
 {/literal}
 
       <h2 style="clear:both">{t}Customise Template{/t} </h2>
-<div style="padding:50px;width:690px">
+<div style="padding:5px 50px 50px 10px;width:690px">
 	<div id="campaign_div">{$msg}</div>
 <table style="background-color:#dddddd;min-width:650px;">
 <tr><td style="min-width:156px;background-color:#445685;color:#ffffff;min-height:520px;float:left; font-size:14px;padding:5px;">
