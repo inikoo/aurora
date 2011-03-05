@@ -2311,8 +2311,6 @@ function list_customers_send_post() {
         $type=$_REQUEST['type'];
     else
         $type=$conf['type'];
-
-
     if (isset( $_REQUEST['od']))
         $order_dir=$_REQUEST['od'];
     else
@@ -2360,220 +2358,19 @@ function list_customers_send_post() {
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
 
 
-    $table='`Customer Dimension` C ';
+    $table='`Customers Send Post` CSD ';
 
-//print "-> $awhere <-";
-    if ($awhere) {
-    
-   
-        $awhere=preg_replace('/\\\"/','"',$awhere);
-        //    print "$awhere";
+
         
         
-        $where_data=array(
-        'product_ordered1'=>'∀',
-        'product_not_ordered1'=>'',
-        'product_not_received1'=>'',
-        'from1'=>'',
-        'to1'=>'',
-        'dont_have'=>array(),
-        'have'=>array(),
-        'categories'=>''
-        );
-        
-        $awhere=json_decode($awhere,TRUE);
-
-        
-        foreach ($awhere as $key=>$item) {
-            $where_data[$key]=$item;
-        }
-        
-        
-        $where='where true';
+        $where="where `Send Post Status`='To Send'";
 
 
-//print_r($where_data);
-
- $use_categories =false;
-        $use_otf =false;
-
-        $where_categories='';
-        if ($where_data['categories']!='') {
-        
-        $categories_keys=preg_split('/,/',$where_data['categories']);
-        $valid_categories_keys=array();
-        foreach ($categories_keys as $item) {
-            if(is_numeric($item))
-                $valid_categories_keys[]=$item;
-        }
-        $categories_keys=join($valid_categories_keys,',');
-        if($categories_keys){
-        $use_categories =true;
-        $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
-        }
-        
-        
-        } 
-        
-
-
-        if ($where_data['product_ordered1']!='') {
-            if ($where_data['product_ordered1']!='∀') {
-                $use_otf=true;
-                $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
-            } else
-                $where_product_ordered1='true';
-        } else{
-            $where_product_ordered1='false';
-        }
-        
-        if ($where_data['product_not_ordered1']!='') {
-            if ($where_data['product_not_ordered1']!='ALL') {
-                $use_otf=true;
-                $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
-            } else
-                $where_product_not_ordered1='false';
-        } else
-            $where_product_not_ordered1='true';
-
-        if ($where_data['product_not_received1']!='') {
-            if ($where_data['product_not_received1']!='∀') {
-                $use_otf=true;
-                $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
-            } else {
-                $use_otf=true;
-                $where_product_not_received1=' ((ordered-dispatched)>0)  ';
-            }
-        } else
-            $where_product_not_received1='true';
-
-        $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
-        if ($date_interval1['mysql']) {
-            $use_otf=true;
-        }
-
-       
-        if ($use_otf) {
-            $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
-        }
-        
-        
-     if ($use_categories) {
-         
-         $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
-        }
-     
+$wheref='';
 
 
 
-
-        $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
-
-        foreach($where_data['dont_have'] as $dont_have) {
-            switch ($dont_have) {
-            case 'tel':
-                $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
-                break;
-            case 'email':
-                $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
-                break;
-            case 'fax':
-                $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
-                break;
-            case 'address':
-                $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
-                break;
-            }
-        }
-        foreach($where_data['have'] as $dont_have) {
-            switch ($dont_have) {
-            case 'tel':
-                $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
-                break;
-            case 'email':
-                $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
-                break;
-            case 'fax':
-                $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
-                break;
-            case 'address':
-                $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
-                break;
-            }
-        }
-
-
-    } else {
-        $where='where true ';
-    }
-
-
-
-
-
-
-
-    $filter_msg='';
-    $wheref='';
-
-    $currency='';
-  /*  if (is_numeric($store)) {
-       ///// $where.=sprintf(' and `Customer Store Key`=%d ',$store);
-        $store=new Store($store);
-        $currency=$store->data['Store Currency Code'];
-    }
-*/
-
-
-    if ($type=='all_customers') {
-        $where.=sprintf(' and `Actual Customer`="Yes" ');
-    }
-    elseif($type=='active_customers') {
-        $where.=sprintf(' and `Active Customer`="Yes" ');
-    }
-
-    //  print $f_field;
-
-
-    if (($f_field=='customer name'     )  and $f_value!='') {
-        $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
-    }
-    elseif(($f_field=='postcode'     )  and $f_value!='') {
-        $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-    }
-    else if ($f_field=='id'  )
-        $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-    else if ($f_field=='last_more' and is_numeric($f_value) )
-        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
-    else if ($f_field=='last_less' and is_numeric($f_value) )
-        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-    else if ($f_field=='max' and is_numeric($f_value) )
-        $wheref.=" and  `Customer Orders`<=".$f_value."    ";
-    else if ($f_field=='min' and is_numeric($f_value) )
-        $wheref.=" and  `Customer Orders`>=".$f_value."    ";
-    else if ($f_field=='maxvalue' and is_numeric($f_value) )
-        $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
-    else if ($f_field=='minvalue' and is_numeric($f_value) )
-        $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
-    else if ($f_field=='country' and  $f_value!='') {
-        if ($f_value=='UNK') {
-            $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
-            $find_data=' '._('a unknown country');
-        } else {
-
-            $f_value=Address::parse_country($f_value);
-            if ($f_value!='UNK') {
-                $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
-                $country=new Country('code',$f_value);
-                $find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
-            }
-
-        }
-    }
-
-
-
-    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where $wheref";
+    $sql="select count(Distinct CSD.`Customer Key`) as total from $table  $where $wheref";
 //print "$sql<br/>\n";
 
     $res=mysql_query($sql);
@@ -2678,80 +2475,9 @@ function list_customers_send_post() {
 
     $_order=$order;
     $_dir=$order_direction;
-    // if($order=='location'){
-//      if($order_direction=='desc')
-//        $order='country_code desc ,town desc';
-//      else
-//        $order='country_code,town';
-//      $order_direction='';
-//    }
-
-//     if($order=='total'){
-//       $order='supertotal';
-//    }
-
-
-    if ($order=='name')
-        $order='`Customer File As`';
-    elseif($order=='id')
-    $order='`Customer Key`';
-    elseif($order=='location')
-    $order='`Customer Main Location`';
-    elseif($order=='orders')
-    $order='`Customer Orders`';
-    elseif($order=='email')
-    $order='`Customer Main Plain Email`';
-    elseif($order=='telephone')
-    $order='`Customer Main Plain Telephone`';
-    elseif($order=='last_order')
-    $order='`Customer Last Order Date`';
-    elseif($order=='contact_name')
-    $order='`Customer Main Contact Name`';
-    elseif($order=='address')
-    $order='`Customer Main Location`';
-    elseif($order=='town')
-    $order='`Customer Main Town`';
-    elseif($order=='postcode')
-    $order='`Customer Main Postal Code`';
-    elseif($order=='region')
-    $order='`Customer Main Country First Division`';
-    elseif($order=='country')
-    $order='`Customer Main Country`';
-    //  elseif($order=='ship_address')
-    //  $order='`customer main ship to header`';
-    elseif($order=='ship_town')
-    $order='`Customer Main Delivery Address Town`';
-    elseif($order=='ship_postcode')
-    $order='`Customer Main Delivery Address Postal Code`';
-    elseif($order=='ship_region')
-    $order='`Customer Main Delivery Address Country Region`';
-    elseif($order=='ship_country')
-    $order='`Customer Main Delivery Address Country`';
-    elseif($order=='net_balance')
-    $order='`Customer Net Balance`';
-    elseif($order=='balance')
-    $order='`Customer Outstanding Net Balance`';
-    elseif($order=='total_profit')
-    $order='`Customer Profit`';
-    elseif($order=='total_payments')
-    $order='`Customer Net Payments`';
-    elseif($order=='top_profits')
-    $order='`Customer Profits Top Percentage`';
-    elseif($order=='top_balance')
-    $order='`Customer Balance Top Percentage`';
-    elseif($order=='top_orders')
-    $order='``Customer Orders Top Percentage`';
-    elseif($order=='top_invoices')
-    $order='``Customer Invoices Top Percentage`';
-    elseif($order=='total_refunds')
-    $order='`Customer Total Refunds`';
-    elseif($order=='contact_since')
-    $order='`Customer First Contacted Date`';
-    elseif($order=='activity')
-    $order='`Customer Type by Activity`';
-    else
-        $order='`Customer File As`';
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   
+        $order='C.`Customer Key`';
+    $sql="select   * from $table left join `Customer Dimension` C on (C.`Customer Key`=CSD.`Customer Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
     // print $sql;
     $adata=array();
 
@@ -2806,12 +2532,12 @@ function list_customers_send_post() {
                      'last_order'=>$last_order_date,
                      'contact_since'=>$contact_since,
 
-                     'total_payments'=>money($data['Customer Net Payments'],$currency),
+                 /*    'total_payments'=>money($data['Customer Net Payments'],$currency),
                      'net_balance'=>money($data['Customer Net Balance'],$currency),
                      'total_refunds'=>money($data['Customer Net Refunds'],$currency),
                      'total_profit'=>money($data['Customer Profit'],$currency),
                      'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
-
+		*/
 
                      'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
                      'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
