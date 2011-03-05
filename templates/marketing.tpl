@@ -30,10 +30,10 @@
 <h2>Emarketing</h2>
 <div class="table_top_bar"></div>
 <table class="options" style="float: left; margin: 0pt 0pt 0pt 0px; padding: 0pt;">
-	<tbody><tr><td id="general"><a href="#">Create List</a></td>
-        <td id="general"><a href="customers_lists.php">View List</a></td>
-	  <td id="stock"><a href="new_campaign.php">Create Campaign</a></td>	  
-          <td id="sales"><a href="campaign_builder.php">View Campaign</a></td>	</tr>
+	<tbody><tr><td id="create_list"><a href="#">Create List</a></td>
+        <td id="view_list"><a href="customers_lists.php">View List</a></td>
+	  <td id="create_campaign"><a href="new_campaign.php">Create Campaign</a></td>	  
+          <td id="view_campaign" ><a href="campaign_builder.php">View Campaign</a></td>	</tr>
       </tbody></table>
 
 

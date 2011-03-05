@@ -17,7 +17,9 @@ header('Location: index.php');
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		'css/marketing_menu.css',
+		'css/marketing_campaigns.css'
 		 );
 		 
 $js_files=array(
@@ -32,7 +34,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-	        'customers_lists.js.php'
+	        'customers_lists.js.php',
+                'customer_list_marketing.js.php',
+		'js/menu.js'
 		);
 
 $store_options=array();
