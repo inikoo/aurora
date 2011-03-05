@@ -36,7 +36,7 @@
           <td id="view_campaign" style="background-color:#7296E1;"><a style="color:#ffffff;" href="campaign_builder.php">View Campaign</a></td>	</tr>
       </tbody></table>
 
-<div class="data_table" style="clear:both">
+<div class="data_table" style="clear:both"><br>
    <span class="clean_table_title">{t}Campaign Builder{/t}</span><span style="padding-left:30px;">{$msg}</span>
 	<div class="general_options">
 		<span onclick="window.location.href='new_campaign.php'">Create Campaign</span>
@@ -82,7 +82,7 @@
 			<br><br>
                         <input type="radio" id= "template2" name="template" value="2">Template Email
                        
-	<div><br><input type="submit" name="submit" value="Continue"></div>
+	<div><br><input type="submit" name="submit" class="Emarketing_button" value="Continue"></div>
         </div>
 {/if}
 	
