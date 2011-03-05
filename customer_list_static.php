@@ -4,7 +4,6 @@ if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
 }
-
 //$modify=$user->can_edit('staff');
 $general_options_list=array();
 if(isset($_REQUEST['id']))
