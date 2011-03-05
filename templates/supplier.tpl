@@ -144,7 +144,7 @@
     <div class="data_table" >
       <span class="clean_table_title">{t}Supplier Products{/t}</span>
       <div id="list_options0">
-	<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Import (CSV){/t}</span>
+        <span  style="float:right;margin-left:20px" class="table_type state_details"><a href="import_csv.php?subject=supplier_products&subject_key={$supplier_id}">{t}Import (CSV){/t}</a></span>
        <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Export (CSV){/t}</span>
         <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
@@ -295,6 +295,7 @@
     </ul>
   </div>
 </div>
+ 
 {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="supplier-table-csv_export" export_options=$csv_export_options }
 
 {include file='footer.tpl'}
