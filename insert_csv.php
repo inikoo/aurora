@@ -1,6 +1,6 @@
 <?php
 /*
- File: store.php
+ File: insert_csv.php
 
  UI store page
 
@@ -69,7 +69,7 @@ $js_files=array(
 	print_r($tt);
 
 	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
-	
+
 	$arr = array();
 	$k = 0;
 	$nArray = array();
@@ -85,7 +85,7 @@ $js_files=array(
 				}	
 					$k++;
 			}
-				$arr[]=$nArray;  
+				$arr[]=$nArray;
 		}
 		$previous=array();
                 $previous=$arr;
@@ -95,12 +95,10 @@ $js_files=array(
 			{	
 				unset($arr[$value]);
 			}
-
-			
 		}
 
 	       $ignore[]=array_diff($previous,$arr);
-		
+
 		//print_r($ignore);
 
 $smarty->assign('js_files',$js_files);

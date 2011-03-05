@@ -4,7 +4,6 @@ if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
 }
-
 //$modify=$user->can_edit('staff');
 $general_options_list=array();
 if(isset($_REQUEST['id']))
@@ -18,7 +17,6 @@ $smarty->assign('static_list_id',$id);
 //  $general_options_list[]=array('tipo'=>'url','url'=>'edit_company_areas.php','label'=>_('Edit Areas'));
 //   $general_options_list[]=array('tipo'=>'url','url'=>'new_company_area.php','label'=>_('Add Area'));
 //}
-
 // $general_options_list[]=array('tipo'=>'url','url'=>'new_campaign.php?customer_list_key='.$id,'label'=>_('Create Campaign'));
 $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
  $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer_list.php?id='.$id,'label'=>_('Print Address Label'));

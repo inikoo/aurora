@@ -37,6 +37,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php','js/edit_common.js','js/csv_common.js',
 		'customer_list_marketing.js.php',
+		'js/list_function.js',
 		'js/jquery-1.4.4.js'
 		);
 
@@ -47,7 +48,7 @@ $js_files=array(
 	$status = 'Email Campaign Status';
 
 	$campaign=array();
-
+          $campaign_size='';
 	$sqlCount = "select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Maximum Emails`,`Email Campaign Objective`,`Email Campaign Status` from `Email Campaign Dimension";
 		$queryCount = mysql_query($sqlCount);
 		
