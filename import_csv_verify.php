@@ -1,8 +1,6 @@
 <?php
 /*
-
-
- UI store page
+ UI import_csv_verify.php page
 
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -17,8 +15,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
-		 //	 $yui_path.'assets/skins/sam/autocomplete.css',
+		 // $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',
@@ -40,28 +37,23 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/ajax_function.js',
+		'js/import_csv_data.js',
 		'js/dropdown.js'
         	);
 
-
-	
-
-	
-
-if(!isset($_REQUEST['tipo'])){
+if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
 }
 
-$scope=$_REQUEST['tipo'];
-
-
+$scope=$_REQUEST['subject'];
 
 switch($scope){
 case('customers_store'):
 $scope_args=$_SESSION['state']['customers']['store'];
+break;
 
-
+case('supplier_products'):
+$scope_args=$_SESSION['state']['supplier']['id'];
 break;
 default:
 $scope_args='';
@@ -71,12 +63,13 @@ $scope_args='';
 
 if(isset($_POST['submit']))
 {
-	if($_FILES['fileUpload']['name']=='') { header('location:import_csv.php?tipo=customers_store'); }
-		
-	if(($_FILES["fileUpload"]["size"]) >= 50000)
+	if($_FILES['fileUpload']['name']=='') { header("location:import_csv.php?subject=$scope&subject_key=$scope_args"); }
+	$filesize = '2097152'; // in bytes eqv. to 2MB
+
+	if(($_FILES["fileUpload"]["size"]) >= $filesize)
 	{
 		$_SESSION['error'] = 'Uploading Error : too large file to upload';
-		header('location:import_csv.php?tipo=customers_store');
+		header("location:import_csv.php?subject=$scope&subject_key=$scope_args");
 		exit();
 	}
 	else
@@ -110,7 +103,7 @@ if(isset($_POST['submit']))
 	  	}
 		else
 	  	{
-	  	    header('location:import_csv.php?tipo=customers_store&error=Invalid File');	 	
+		    header("location:import_csv.php?subject=$scope&subject_key=$scope_args&error=Invalid File");
 		}
 	}
 }
@@ -124,12 +117,10 @@ $v = 0;
 
 $smarty->assign('v',$v);
 
-$smarty->assign('scope',$scope);
-$smarty->assign('scope_args',$scope_args);
+$smarty->assign('subject',$scope);
+$smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-
-
 
 $smarty->display('import_csv_verify.tpl');
 
