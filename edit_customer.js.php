@@ -328,6 +328,8 @@ function back_to_take_order(){
 
 }
 
+function post_change_main_delivery_address(){}
+
 function init(){
 
 
@@ -408,6 +410,7 @@ function init(){
 	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
 	 
 	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
+	//alert("caca")
 	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
 	
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);

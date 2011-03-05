@@ -1631,7 +1631,7 @@ class Customer extends DB_Table {
                     if (   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval) {
 
                         $this->data['Active Customer']='Maybe';
-                        $this->data['Customer Type by Activity']='New';
+                        $this->data['Customer Type by Activity']='Active';
 
                     } else {
                         $this->data['Active Customer']='No';

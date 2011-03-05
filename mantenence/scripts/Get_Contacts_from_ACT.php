@@ -498,7 +498,7 @@ $customer_data['Customer Sticky Note']=preg_replace('/\<br\/\>$/','',$customer_d
 
 //print_r($customer_data);
 //exit;
-    $customer = new Customer ( 'find create',  $customer_data);
+    $customer = new Customer ( 'find create update',  $customer_data);
 
 
 $_details='<table>';
