@@ -47,7 +47,7 @@ $js_files=array(
 	$status = 'Email Campaign Status';
 
 	$campaign=array();
-
+          $campaign_size='';
 	$sqlCount = "select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Maximum Emails`,`Email Campaign Objective`,`Email Campaign Status` from `Email Campaign Dimension";
 		$queryCount = mysql_query($sqlCount);
 		
