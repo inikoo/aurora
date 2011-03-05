@@ -36,6 +36,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php','js/edit_common.js','js/csv_common.js',
+		'customer_list_marketing.js.php',
 		'js/jquery-1.4.4.js'
 		);
 
