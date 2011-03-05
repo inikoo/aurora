@@ -123,7 +123,6 @@ dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data"
 dialog_export.render();
 Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
-
  }
 
 YAHOO.util.Event.onDOMReady(init);
@@ -134,7 +133,6 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });

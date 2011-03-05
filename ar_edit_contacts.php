@@ -99,6 +99,9 @@ case('edit_billing_data'):
 case('edit_customer'):
     edit_customer();
     break;
+case('edit_customer_send_post'):
+    edit_customer_send_post();
+    break;
 case('edit_customers'):
     list_customers();
     break;
@@ -2162,8 +2165,26 @@ function edit_customer() {
     echo json_encode($response);
 
 }
+// --------------------------------------------------------------------------------------------------------------
+function edit_customer_send_post() {
+    $dt=date("Y-m-d H:i:s");
+    $key=$_REQUEST['key'];
+    $new_value=$_REQUEST['newvalue'];
+    $customer_key=$_REQUEST['customer_key'];
+    $sql=sprintf("insert into `Customers Send Post` (`Customer Send Post Key`,`Customer Key`,`Send Post Status`,`Date Creation`,`Date Send`,`Post Type`) values (%d,%d,%s,%s,%s,%s)",
+                         '1',
+                         $customer_key,
+                         prepare_mysql($new_value),
+                         prepare_mysql($dt),
+                        '\'\'',
+                         'Letter'
+                        );
+print $sql;
+$query=mysql_query($sql);
+if($query)echo "inserted";else echo "not inserted";die();
+}
 
-
+// ----------------------------------------------------------------------------------------------------------------
 function list_customers() {
 
 
