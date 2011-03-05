@@ -143,7 +143,8 @@
   <div  id="block_products" class="data_table" style="margin:25px 0px;clear:both">
     <div class="data_table" >
       <span class="clean_table_title">{t}Supplier Products{/t}</span>
-      <div id="list_options0"> 
+      <div id="list_options0">
+	<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Import (CSV){/t}</span>
        <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Export (CSV){/t}</span>
         <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
