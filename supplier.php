@@ -32,7 +32,6 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
 else
     $supplier_id=$_SESSION['state']['supplier']['id'];
 
-
 if ($user->data['User Type']=='Supplier' and !in_array($supplier_id,$user->suppliers)) {
 
     $smarty->display('forbidden.tpl');
@@ -58,6 +57,7 @@ $general_options_list=array();
 
 
 if ($modify) {
+   // $general_options_list[]=array('tipo'=>'url','url'=>'new_import_csv.php?subject=supplier_products&subject_key='.$supplier_id,'label'=>_('Import (CSV)'));
     $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier.php?id='.$supplier_id,'label'=>_('Edit Supplier'));
     $general_options_list[]=array('tipo'=>'url','url'=>'supplier_invoice.php?new=1&supplier_id='.$supplier_id,'label'=>_('Input Invoice'));
     $general_options_list[]=array('tipo'=>'url','url'=>'supplier_delivery.php?new=1&supplier_id='.$supplier_id,'label'=>_('New Delivery'));
