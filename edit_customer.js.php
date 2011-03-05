@@ -186,15 +186,38 @@ function reset_edit_customer(){
 }
 
 
+function save_comunications_send_post(key,value){
+var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
+	alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+alert(o.responseText);	
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+			 
+            if (r.newvalue=='To Send' || r.newvalue=='Cancelled') {
+                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
+
+               Dom.addClass(r.key+'_'+r.newvalue,'selected');
+
+            }else{
+                alert(r.msg)
+            }
+        }
+    }
+    });
+
+
+
 function save_comunications(key,value){
 var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-		
+	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
-				 
+			 
             if (r.newvalue=='No' || r.newvalue=='Yes') {
                            Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
 
