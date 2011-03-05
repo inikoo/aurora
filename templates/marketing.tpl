@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd"  style="padding:0px">
- {include file='Marketing_navigation.tpl'}
 <div style="padding:0 20px">
 
+{include file='marketing_navigation.tpl'}
 
 
 
@@ -13,11 +13,35 @@
 </div>
 
 </div>
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='Emarketing'}selected{/if}" id="metrics"  ><span>  {t}Emarketing{/t}</span></span></li>
+    <li> <span class="item {if $view=='newsletter'}selected{/if}"  id="newsletter">  <span> {t}eNewsletters{/t}</span></span></li>
+    <li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Email Campaigns{/t}</span></span></li>
+    <li> <span class="item {if $view=='web_internal'}selected{/if}"  id="web_internal">  <span> {t}Site Campaigns{/t}</span></span></li>
+    <li> <span class="item {if $view=='web'}selected{/if}"  id="web">  <span> {t}Internet Campaigns{/t}</span></span></li>
+    <li> <span class="item {if $view=='other'}selected{/if}"  id="other">  <span> {t}Other Media Campaigns{/t}</span></span></li>
+</ul>
+ <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+
+<div id="block_metrics" style="{if $view!='Emarketing'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
+
+<h2>Emarketing</h2>
+<div class="table_top_bar"></div>
+<table class="options" style="float: left; margin: 0pt 0pt 0pt 0px; padding: 0pt;">
+	<tbody><tr><td id="general"><a href="#">Create List</a></td>
+        <td id="general"><a href="customers_lists.php">View List</a></td>
+	  <td id="stock"><a href="new_campaign.php">Create Campaign</a></td>	  
+          <td id="sales"><a href="campaign_builder.php">View Campaign</a></td>	</tr>
+      </tbody></table>
 
 
 
 
-<div id="block_metrics" style="{if $view!='metrics'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
+
+
 </div>
 <div id="block_newsletter" style="{if $view!='newsletter'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 </div>
