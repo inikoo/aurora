@@ -110,7 +110,6 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'company_areas'
 
  var Dom   = YAHOO.util.Dom;
 
-
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
