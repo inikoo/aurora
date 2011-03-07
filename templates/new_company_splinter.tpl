@@ -242,6 +242,8 @@
 
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
+		<td   id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
+
 	  <td  class="disabled" id="save_new_Company">{t}Save{/t}</td>
 	  <td  id="cancel_add_Company" ">{t}Cancel{/t}</td>
 	</tr>

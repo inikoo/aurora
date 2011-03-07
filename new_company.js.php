@@ -83,6 +83,9 @@ function save_new_company(e){
 	return;
     }
 
+ Dom.setStyle("creating_message",'display','');
+	  Dom.setStyle(["save_new_Company","cancel_add_Company"],'display','none');
+
     get_data();
 
     if(scope=='supplier'){
