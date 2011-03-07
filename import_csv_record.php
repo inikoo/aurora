@@ -14,24 +14,15 @@
 	$h = $csv->getHeaders();
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
-	
 	//echo '<pre>'; print_r($colorArray);
-
 	//$r =  $csv->getRow($index); 
 	$raw = $csv->getrawArray();
-	
-
 	//$upper_value = count($raw);
-	
 	$tt = array();
-
 	$prev = array();	
-
 	if(isset($_REQUEST['myArray'])) { $tt = explode(',',$_REQUEST['myArray']); }
 
 	if(isset($_REQUEST['prevArray'])) { $prev = explode(',',$_REQUEST['prevArray']); }
-	
-	
 
 ?>
 
@@ -44,7 +35,7 @@
 		</th>
 		<th class="list-column-left" style="text-align: left; width: 30%;">
 		<span style="float: left;">
-		<?php 
+		<?php
 			echo 'Value '.$index.' of '.$count_rows;
 
 		?>
@@ -57,7 +48,7 @@
        				<a href="#" class="subtext" id="prev" onclick="getPrev(<?php echo $index; ?>,<?php echo count($h);?>)">Previous</a>&nbsp;|&nbsp;
 		       	   <?php
 			         }
-			       if($index < $count_rows)        
+			       if($index < $count_rows)
 			         {
 					$i=0;
 		       	   ?>
@@ -69,31 +60,25 @@
 		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="getIgnore(<?php echo $index; ?>)" id="result" class="subtext">Ignore Record</a>
 		</span>
 		</th>
-		
 <tr>&nbsp;</tr>
-		
 	<?php
 	for($j=0; $j<count($h); $j++)
-	{ 
-		
+	{
 	?>
 	<tr>
-	
+
 		<!--<td width=150 align=center >
-		
 		<?php //echo $h[$j]; 	$leftColumnArray = $h; ?>
 		</td>-->
-
 		<td align=center id="middle_column">
 		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>">
-		<?php 
-			
+		<?php
+			/*$selectBox = array('Ignore'=>'Ignore','Customer Main Contact Name'=>'Contact Name','Customer Name'=>'Name','Customer Type'=>'Type','Customer Company Name'=>'Company Name','Customer Main Plain Email'=>'Email','Contact Main Plain Mobile'=>'Mobile','Customer Main Plain Telephone'=>'Telephone','Customer Main Plain FAX'=>'FAX','Customer Main Plain Address'=>'Address','Customer Address Line 1'=>'Address Line1','Customer Address Line 2'=>'Address Line2','Customer Address Line 3'=>'Address Line3','Customer Address Town'=>'Town','Customer Address Postal Code'=>'Postal Code','Customer Address Country Name'=>'Country Name','Customer Address Country First Division'=>'First Division','Customer Address Country Second Division'=>'Second Division','Customer Tax Number'=>'Tax Number');*/
 			$scope=$_REQUEST['subject'];
 			$scope_args=$_REQUEST['subject_key'];
-
 			$selectBox = array('Ignore'=>'Ignore');
 
-				switch($scope){
+			switch($scope){
 				case('customers_store'):
 				$tbl = "Customer Dimension";
 				break;
@@ -104,34 +89,33 @@
 
 				default:
 				}
-
-
 		$query = mysql_query("Select * from `$tbl` LIMIT 1");
 		$res=mysql_fetch_assoc($query);
 		foreach($res as $key=>$value){
-			array_push($selectBox, $key);
+			//array_push($selectBox, $key);
+			$selectBox[$key]=$key; // generates associative array //
 		}
 
-		foreach($selectBox as $key=>$value) { 
+		foreach($selectBox as $key=>$value) {
 			if((isset($tt[$j]) == TRUE))
 			{
 		?>
 		<option value="<?php echo $key;?>" <?php if($tt[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
 		<?php
-			}
-			else
-				if((isset($prev[$j]) == TRUE))
-				{
+		}
+		else
+			if((isset($prev[$j]) == TRUE))
+			{
 		?>
 		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
-		<?php 		} 
-				else
-				{
+		<?php
+		}
+		else
+		{
 		?>
 		<option value="<?php echo $key;?>"><?php echo $value;?></option>
 		<?php
-				}
-
+		}
 		}?>
 		</select>
 		</td>
@@ -141,30 +125,24 @@
 		</td>
 	</tr>
 		<input type="hidden" name="values[]" value="<?php echo $raw[$index][$j]; ?>">
-		
 	<?php
-		
 	}
 	?>
-	
 </table>
 <div id="display">
-<?php 
-	//print_r($colorArray);	
+<?php
+	//print_r($colorArray);
   	$search = in_array($index,$colorArray);
  
-
 	if(isset($search) && $search>0)
 	{
-             
 		echo "<span id=\"ignore_msg\" style=\"color:red;\">This data will be ignored</span>";
-		
 	}
-	
-
-
-
-
 ?>
 
 </div>
+<?php
+
+function assoc_array_push($array, $key, $value){
+
+}
