@@ -201,10 +201,10 @@ if ($user->can_view('suppliers'))
     $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
 if ($user->can_view('warehouses')) {
     if ($user->warehouses==1)
-        $nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
+        $nav_menu[] = array(_('Inventory'), 'warehouse.php','warehouses');
 
     else
-        $nav_menu[] = array(_('Warehouses'), 'warehouses.php','warehouses');
+        $nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
 }
 //if ($user->can_view('marketing')) {
 $nav_menu[] = array(_('Marketing'), 'marketing.php','marketing');
