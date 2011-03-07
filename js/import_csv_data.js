@@ -38,7 +38,7 @@ function getPrev(v,limit) {
 	{
 	  prevArray.push(document.getElementById('assign_field_'+l).value);
 	}
-
+	alert(prevArray);
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
@@ -68,7 +68,7 @@ function getNext(v,num) {
 	{
 	  myArray.push(document.getElementById('assign_field_'+k).value);
 	}
-	//alert(myArray);
+	alert(myArray);
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {

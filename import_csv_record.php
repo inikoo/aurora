@@ -74,8 +74,16 @@
 		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>">
 		<?php
 			/*$selectBox = array('Ignore'=>'Ignore','Customer Main Contact Name'=>'Contact Name','Customer Name'=>'Name','Customer Type'=>'Type','Customer Company Name'=>'Company Name','Customer Main Plain Email'=>'Email','Contact Main Plain Mobile'=>'Mobile','Customer Main Plain Telephone'=>'Telephone','Customer Main Plain FAX'=>'FAX','Customer Main Plain Address'=>'Address','Customer Address Line 1'=>'Address Line1','Customer Address Line 2'=>'Address Line2','Customer Address Line 3'=>'Address Line3','Customer Address Town'=>'Town','Customer Address Postal Code'=>'Postal Code','Customer Address Country Name'=>'Country Name','Customer Address Country First Division'=>'First Division','Customer Address Country Second Division'=>'Second Division','Customer Tax Number'=>'Tax Number');*/
-			$scope=$_REQUEST['subject'];
-			$scope_args=$_REQUEST['subject_key'];
+
+			if(isset($_REQUEST['subject']) && isset($_REQUEST['subject_key'])){
+				$scope=$_REQUEST['subject'];
+				$scope_args=$_REQUEST['subject_key'];
+				$_SESSION['subject']=$scope;
+				$_REQUEST['subject_key']=$scope_args;
+			}else{
+				$scope=$_SESSION['subject'];
+				$scope_args=$_SESSION['subject_key'];
+			}
 			$selectBox = array('Ignore'=>'Ignore');
 
 			switch($scope){
@@ -100,14 +108,14 @@
 			if((isset($tt[$j]) == TRUE))
 			{
 		?>
-		<option value="<?php echo $key;?>" <?php if($tt[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
+		<option value="<?php echo $key;?>" <?php if($tt[$j]==$key) { ?>selected="selected"<?php echo $tt[$j]; } ?> ><?php echo $value;?></option>
 		<?php
 		}
 		else
 			if((isset($prev[$j]) == TRUE))
 			{
 		?>
-		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
+		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php echo $tt[$j];} ?> ><?php echo $value;?></option>
 		<?php
 		}
 		else
@@ -117,11 +125,11 @@
 		<?php
 		}
 		}?>
-		</select>
+		</select><? echo $tt[$j]; //echo '<pre>';print_r($tt); ?>
 		</td>
 		<td>
 			<!-- Value Output -->
-			<h4 id="changecolor_<?php echo $j; ?>" ><?php echo $raw[$index][$j]; ?></h4>
+			<h4 id="changecolor_<?php echo $j; ?>" ><?php echo $raw[$index][$j];?></h4>
 		</td>
 	</tr>
 		<input type="hidden" name="values[]" value="<?php echo $raw[$index][$j]; ?>">
@@ -141,8 +149,3 @@
 ?>
 
 </div>
-<?php
-
-function assoc_array_push($array, $key, $value){
-
-}
