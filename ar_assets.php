@@ -2666,7 +2666,7 @@ function list_departments() {
 //     $conf_table='store';
 //       $conf=$_SESSION['state']['store']['table'];
 //       $conf2=$_SESSION['state']['store'];
-
+    global $user;
 
     if (isset( $_REQUEST['store']) and  is_numeric( $_REQUEST['store']))
         $store_id=$_REQUEST['store'];
@@ -2682,16 +2682,18 @@ function list_departments() {
 
     if ($parent=='store') {
         $conf=$_SESSION['state']['store']['departments'];
-       
+
         $conf_table='store';
-    } elseif ($parent=='none') {
+    }
+    elseif ($parent=='none') {
 
         $conf=$_SESSION['state']['stores']['departments'];
-      
+
         $conf_table='stores';
-    }else{
-    
-    exit;
+    }
+    else {
+
+        exit;
     }
 
 
@@ -2781,10 +2783,14 @@ function list_departments() {
 
     switch ($parent) {
     case('store'):
-        $where=sprintf("where  `Product Department Store Key`=%d",$store_id);
+        if (in_array($store_id,$user->stores))
+            $where=sprintf("where  `Product Department Store Key`=%d",$store_id);
+        else
+            $where=sprintf("where  false");
         break;
     default:
-        $where='where true';
+      
+        $where=sprintf("where `Product Department Store Key` in (%s)",join(',',$user->stores));
 
     }
 
@@ -2964,7 +2970,7 @@ function list_departments() {
          sum(`Product Department Low Availability Products`) low,sum(`Product Department Critical Availability Products`) critical,
          sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where  $wheref ";
     $result=mysql_query($sql);
- //print $sql;
+//print $sql;
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
         $sum_active=$row['sum_active'];
@@ -3363,9 +3369,10 @@ function list_departments() {
 
         } else {// totals
             if ($period=='all') {
-                if ($avg=='totals'){
+                if ($avg=='totals') {
                     $factor=1;
-                }elseif($avg=='month') {
+                }
+                elseif($avg=='month') {
                     if ($row['Product Department Total Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department Total Days On Sale'];
                     else
@@ -3711,11 +3718,11 @@ function list_departments() {
 
 function list_products() {
 
-
+    global $user;
     $display_total=false;
 
 
-        if (isset( $_REQUEST['parent']))
+    if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
         $parent='none';
@@ -3723,25 +3730,29 @@ function list_products() {
 
     if ($parent=='store') {
         $conf=$_SESSION['state']['store']['products'];
-         $conf_table='store';
-    }elseif ($parent=='department') {
+        $conf_table='store';
+    }
+    elseif ($parent=='department') {
         $conf=$_SESSION['state']['department']['products'];
         $conf_table='department';
-    }elseif ($parent=='family') {
+    }
+    elseif ($parent=='family') {
         $conf=$_SESSION['state']['family']['products'];
         $conf_table='family';
-    }elseif ($parent=='none') {
+    }
+    elseif ($parent=='none') {
         $conf=$_SESSION['state']['stores']['products'];
         $conf_table='stores';
-    }else{
-    
-    exit;
+    }
+    else {
+
+        exit;
     }
 
-    
- 
 
-    
+
+
+
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
     else
@@ -3825,17 +3836,17 @@ function list_products() {
         $avg=$_REQUEST['avg'];
     } else
         $avg=$conf['avg'];
-        
-   if (isset( $_REQUEST['period'])) {
+
+    if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
-    } else{
+    } else {
         $period=$conf['period'];
-}
+    }
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
-    else{
+    else {
         $parent=$conf['parent'];
-}
+    }
     if (isset( $_REQUEST['mode']))
         $mode=$_REQUEST['mode'];
     else
@@ -3847,7 +3858,7 @@ function list_products() {
         $restrictions=$conf['restrictions'];
 
 
-   
+
 
     //$_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
     //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
@@ -3859,31 +3870,31 @@ function list_products() {
     $_SESSION['state'][$conf_table]['products']['where']=$where;
     $_SESSION['state'][$conf_table]['products']['f_field']=$f_field;
     $_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
-     $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
-     $_SESSION['state'][$conf_table]['products']['avg']=$avg;
-     $_SESSION['state'][$conf_table]['products']['period']=$period;
-     $_SESSION['state'][$conf_table]['products']['restrictions']=$restrictions;
- $_SESSION['state'][$conf_table]['products']['mode']=$mode;
+    $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
+    $_SESSION['state'][$conf_table]['products']['avg']=$avg;
+    $_SESSION['state'][$conf_table]['products']['period']=$period;
+    $_SESSION['state'][$conf_table]['products']['restrictions']=$restrictions;
+    $_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
 
 
     //$_SESSION['state'][$conf_table]['period']=$period;
-   
+
     //$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
     // $_SESSION['state'][$conf_table]['parent']=$parent;
 
     $db_table='`Product Dimension`';
 
 
-
+$where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
     switch ($parent) {
     case('store'):
 
 
-        $where=sprintf(' where `Product Store Key`=%d',$_SESSION['state']['store']['id']);
+        $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
     case('department'):
-        $where=sprintf('  where `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
+        $where.=sprintf('  and `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     case('family'):
         if (isset($_REQUEST['parent_key']))
@@ -3891,10 +3902,10 @@ function list_products() {
         else
             $parent_key=$_SESSION['state']['family']['id'];
 
-        $where=sprintf(' where `Product Family Key`=%d',$parent_key);
+        $where.=sprintf(' and `Product Family Key`=%d',$parent_key);
         break;
     default:
-        $where=sprintf(' where true ');
+      
 
     }
     $group='';
@@ -3949,8 +3960,8 @@ function list_products() {
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `Product Dimension`  $where $wheref";
-  // print $sql;
-   $res=mysql_query($sql);
+    // print $sql;
+    $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
@@ -4098,7 +4109,8 @@ function list_products() {
     }
     elseif($order=='formated_record_type') {
         $order='`Product Record Type`';
-    } elseif($order=='store') {
+    }
+    elseif($order=='store') {
         $order='`Store Code`';
     }
 
@@ -4208,7 +4220,7 @@ function list_products() {
     }
 
     $sql="select  * from `Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-   // print $sql;
+    // print $sql;
     $res = mysql_query($sql);
     $adata=array();
 
@@ -4224,7 +4236,7 @@ function list_products() {
     $count_margin=0;
     $sum_margin=0;
 
-  //  print "P:$period $avg $sql";
+    //  print "P:$period $avg $sql";
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $counter++;
@@ -4580,9 +4592,9 @@ function list_products() {
 
         //		print_r($locale_product_record_type);
         $record_type=$locale_product_record_type[$row['Product Record Type']];
-   
+
         $adata[]=array(
-                     'store'=>$store,   
+                     'store'=>$store,
                      'code'=>$code,
                      'name'=>$row['Product XHTML Short Description'],
                      'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
@@ -5449,7 +5461,7 @@ function find_part() {
 
 function list_families() {
 
-
+    global $user;
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
@@ -5460,18 +5472,21 @@ function list_families() {
         $conf=$_SESSION['state']['department']['families'];
         $conf_table='department';
 
-    } elseif ($parent=='store') {
+    }
+    elseif ($parent=='store') {
 
         $conf=$_SESSION['state']['store']['families'];
         $conf_table='store';
 
-    }elseif ($parent=='none') {
+    }
+    elseif ($parent=='none') {
 
         $conf=$_SESSION['state']['stores']['families'];
         $conf_table='stores';
-    }else{
-    
-    return;
+    }
+    else {
+
+        return;
     }
 
 
@@ -5521,7 +5536,7 @@ function list_families() {
 
     if (isset( $_REQUEST['percentages'])) {
         $percentages=$_REQUEST['percentages'];
-      
+
     } else
         $percentages=$conf['percentages'];
 
@@ -5529,13 +5544,13 @@ function list_families() {
 
     if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
-       
+
     } else
         $period=$conf['period'];
 
     if (isset( $_REQUEST['avg'])) {
         $avg=$_REQUEST['avg'];
-      
+
     } else
         $avg=$conf['avg'];
 
@@ -5565,10 +5580,10 @@ function list_families() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-    
-  //print_r($_SESSION['state']['department']);
 
-   $_SESSION['state'][$conf_table]['families']['order']=$order;
+    //print_r($_SESSION['state']['department']);
+
+    $_SESSION['state'][$conf_table]['families']['order']=$order;
     $_SESSION['state'][$conf_table]['families']['order_dir']=$order_dir;
     $_SESSION['state'][$conf_table]['families']['nr']=$number_results;
     $_SESSION['state'][$conf_table]['families']['sf']=$start_from;
@@ -5576,25 +5591,29 @@ function list_families() {
     $_SESSION['state'][$conf_table]['families']['f_field']=$f_field;
     $_SESSION['state'][$conf_table]['families']['f_value']=$f_value;
     $_SESSION['state'][$conf_table]['families']['period']=$period;
-        $_SESSION['state'][$conf_table]['families']['avg']=$avg;
+    $_SESSION['state'][$conf_table]['families']['avg']=$avg;
 
     $_SESSION['state'][$conf_table]['families']['mode']=$mode;
     $_SESSION['state'][$conf_table]['families']['restrictions']=$restrictions;
     $_SESSION['state'][$conf_table]['families']['parent']=$parent;
 
     //  $where.=" and `Product Department Key`=".$id;
+
+    $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+
+
     switch ($parent) {
     case('store'):
-     
-    
-        $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
+
+
+        $where.=sprintf(' and `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
     case('department'):
-     
-        $where=sprintf(' where `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
+
+        $where.=sprintf(' and `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     default:
-        $where=sprintf(' where true ');
+
 
     }
 
@@ -5743,7 +5762,7 @@ function list_families() {
     $sum_todo=0;
     $sql="select sum(`Product Family In Process Products`) as sum_todo,sum(`Product Family For Public Sale Products`) as sum_active, sum(`Product Family Discontinued Products`) as sum_discontinued  from `Product Family Dimension`  $where $wheref ";
 
-   $result=mysql_query($sql);
+    $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_discontinued=$row['sum_discontinued'];
         $sum_active=$row['sum_active'];
@@ -6176,7 +6195,7 @@ function list_families() {
 
 
 function list_stores() {
-
+    global $user;
     $conf=$_SESSION['state']['stores']['stores'];
 
     if (isset( $_REQUEST['sf']))
@@ -6276,12 +6295,11 @@ function list_stores() {
     $_SESSION['state']['stores']['stores']['f_field']=$f_field;
     $_SESSION['state']['stores']['stores']['f_value']=$f_value;
 
-    $where="where true  ";
-
+    $where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
     $filter_msg='';
     $wheref=wheref_stores($f_field,$f_value);
 
-    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
+    $sql="select count(*) as total from `Store Dimension`  S $where $wheref";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -6292,7 +6310,7 @@ function list_stores() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Store Dimension`   $where ";
+        $sql="select count(*) as total from `Store Dimension` S  $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6391,7 +6409,7 @@ function list_stores() {
     $order='`Store New Products`';
 
 
-    $sql="select sum(`Store For Public Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension` $where $wheref   ";
+    $sql="select sum(`Store For Public Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension` S $where $wheref   ";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
@@ -7579,6 +7597,8 @@ function list_deals() {
 
 function list_customers_per_store() {
 
+    global $user;
+
     $conf=$_SESSION['state']['stores']['customers'];
 
     if (isset( $_REQUEST['sf']))
@@ -7668,7 +7688,10 @@ function list_customers_per_store() {
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
-    $where="where true  ";
+
+
+
+    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
 
     $filter_msg='';
     $wheref='';
@@ -7873,7 +7896,7 @@ function list_customers_per_store() {
 
 
 function list_orders_per_store() {
-
+    global $user;
     $conf=$_SESSION['state']['stores']['orders'];
 
     if (isset( $_REQUEST['sf']))
@@ -7963,7 +7986,8 @@ function list_orders_per_store() {
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
-    $where="where true  ";
+
+    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
 
     $filter_msg='';
     $wheref='';

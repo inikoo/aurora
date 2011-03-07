@@ -1791,5 +1791,115 @@ mysql_query($sql);
 //exit($sql);
 }
 
+ function update_sales_default_currency() {
+        $this->data_default_currency=array();
+        $this->data_default_currency['Product Family DC Total Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Family DC Total Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Family DC Total Invoiced Amount']=0;
+        $this->data_default_currency['Product Family DC Total Profit']=0;
+        $this->data_default_currency['Product Family DC 1 Year Acc Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Year Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Year Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Year Acc Profit']=0;
+        $this->data_default_currency['Product Family DC 1 Quarter Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Quarter Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Quarter Acc Profit']=0;
+        $this->data_default_currency['Product Family DC 1 Month Acc Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Month Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Month Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Month Acc Profit']=0;
+        $this->data_default_currency['Product Family DC 1 Week Acc Invoiced Gross Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Week Acc Invoiced Discount Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Week Acc Invoiced Amount']=0;
+        $this->data_default_currency['Product Family DC 1 Week Acc Profit']=0;
+
+
+
+        $sql="select     sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc  from `Order Transaction Fact`  OTF   where `Product Family Key`=".$this->id;
+
+
+        //print "$sql\n\n";
+        // exit;
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Family DC Total Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Family DC Total Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Family DC Total Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Family DC Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+
+
+        $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc
+                     from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Family DC 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Family DC 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+        $sql=sprintf("select   sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Family DC 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Family DC 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+        $sql=sprintf("select    sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross  ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc    from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+
+
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Family DC 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Family DC 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+        $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross   ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc    from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+        //	print $sql;
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data_default_currency['Product Family DC 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data_default_currency['Product Family DC 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data_default_currency['Product Family DC 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+
+        }
+
+        $insert_values='';
+        $update_values='';
+        foreach($this->data_default_currency as $key=>$value) {
+            $insert_values.=sprintf(',%.2f',$value);
+            $update_values.=sprintf(',`%s`=%.2f',addslashes($key),$value);
+        }
+        $insert_values=preg_replace('/^,/','',$insert_values);
+        $update_values=preg_replace('/^,/','',$update_values);
+
+
+        $sql=sprintf('Insert into `Product Family Default Currency` values (%d,%s) ON DUPLICATE KEY UPDATE %s  ',$this->id,$insert_values,$update_values);
+        mysql_query($sql);
+        //print "$sql\n";
+
+
+
+    }
+
+
 }
 ?>

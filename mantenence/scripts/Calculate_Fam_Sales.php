@@ -33,9 +33,10 @@ $sql="select * from `Product Family Dimension` ";
 //print $sql;
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $product=new Family($row['Product Family Key']);
-  $product->update_product_data();
-  $product->update_sales_data();
+  $family=new Family($row['Product Family Key']);
+  $family->update_sales_default_currency();
+  $family->update_product_data();
+  $family->update_sales_data();
   print $row['Product Family Code']."        \r";
  }
 

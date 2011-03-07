@@ -95,6 +95,10 @@ var save_new_contact=function(e){
 	
 //	return;
   //  }
+	  
+	  Dom.setStyle("creating_message",'display','');
+	  Dom.setStyle(["save_new_Contact","cancel_add_Contact"],'display','none');
+
 
     get_data();
 

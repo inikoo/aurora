@@ -53,7 +53,9 @@ $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Expor
 //$general_options_list[]=array('tipo'=>'js','id'=>'export_csv0','label'=>_('Export (CSV)'));
 
 //$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php','label'=>_('Customers Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
 
 $smarty->assign('general_options_list',$general_options_list);

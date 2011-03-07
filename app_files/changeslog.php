@@ -800,6 +800,145 @@ CREATE TABLE IF NOT EXISTS `Customers Send Post` (
 
 ALTER TABLE `Search Full Text Dimension` ADD FULLTEXT (`First Search Full Text` ,`Second Search Full Text`);
 ALTER TABLE `History Dimension` ORDER BY `History Date` DESC;
+
+0.9.27
+
+DROP TABLE IF EXISTS `Product Department Default Currency`;
+CREATE TABLE `Product Department Default Currency` (
+  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Department DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC Total Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Department DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Department DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
+  PRIMARY KEY (`Product Department Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Product Family Default Currency`;
+CREATE TABLE `Product Family Default Currency` (
+  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Family DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC Total Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Family DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Family DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
+  PRIMARY KEY (`Product Family Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Product ID Default Currency`;
+CREATE TABLE `Product ID Default Currency` (
+  `Product ID` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product ID DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC Total Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product ID DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product ID DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
+  PRIMARY KEY (`Product ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Product Default Currency`;
+CREATE TABLE `Product Default Currency` (
+  `Product Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Total Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
+  PRIMARY KEY (`Product Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Product Code Default Currency`;
+CREATE TABLE `Product Code Default Currency` (
+  `Product Code` varchar(64) NOT NULL,
+  `Product Code DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC Total Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
+  `Product Code DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Code DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
+  PRIMARY KEY (`Product Code`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+ALTER TABLE orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
+ALTER TABLE de_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
+ALTER TABLE fr_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
+ALTER TABLE pl_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
+
+
 */
 
 

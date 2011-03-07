@@ -2177,11 +2177,11 @@ function edit_customer_send_post() {
                          prepare_mysql($new_value),
                          prepare_mysql($dt),
                         '\'\'',
-                         'Letter'
+                        prepare_mysql('Letter') 
                         );
-print $sql;
+
 $query=mysql_query($sql);
-if($query)echo "inserted";else echo "not inserted";die();
+if($query)echo "inserted into database 'Send Customer Post'";else echo "not inserted";die();
 }
 
 // ----------------------------------------------------------------------------------------------------------------
