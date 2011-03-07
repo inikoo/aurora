@@ -104,10 +104,11 @@ switch($scope){
 	default:
 }
 
-for($x=1; $k<count($arr); $x++){
-	$data=$arr[$x];
+// Importing to database //
+//for($x=1; $k<count($arr); $x++){
+	//$data=$arr[$x];
 	//$no_inserts=insert($data, $tbl, $fld, $scope_args);
-}
+//}
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('arr',$arr);
