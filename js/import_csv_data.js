@@ -68,7 +68,7 @@ function getNext(v,num) {
 	{
 	  myArray.push(document.getElementById('assign_field_'+k).value);
 	}
-	alert(myArray);
+	//alert(myArray);
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
@@ -100,7 +100,7 @@ function getIgnore(v) {
 				
 		}
 	
- alert(document.getElementById('ignore_message').innerHTML);
+ //alert(document.getElementById('ignore_message').innerHTML);
 
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
