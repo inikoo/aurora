@@ -4,7 +4,26 @@
 
 {include file='marketing_navigation.tpl'}
 
+{literal}
+<script language="javascript">
+var ct = 1;
+function addEmail()
+{
+ct++;
+  $('#emailAddress').after('<tr><td></td><td><b>:</b></td><td align="right"> <input type="text" name="email_address[]"size="30" value=""></td><tr>');
 
+
+
+}
+function submitform()
+{
+  document.campaign.submit();
+}
+
+
+</script>
+
+{/literal}
 
 
  
@@ -42,7 +61,7 @@
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div">{$msg}</div>
       <table border="0" width="700">
-	<form action="create_campaign_data.php" method="post" name="campaign" id="campaign">
+	<form action="create_campaign_data2.php" method="post" name="campaign" id="campaign">
 	<tr>
 	  <td width="300"> Select list </td><td><b>:</b></td><td align="right"> 
 
@@ -55,9 +74,16 @@
 		
 	 </td>
 	</tr>	
+<tr id="emailAddress">
+	  <td width="300"> Email Address   </td><td><b>:</b></td><td align="right"> <input type="text" name="email_address[]" id="email_address" size="30" value="">
+         <img onclick="addEmail()" title="Add Email" src="art/icons/add.png">
+ </td>
+	</tr>
+
 	<tr>
 	  <td width="300"> Campaign Name   </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30" value="{$campaign_name}"> </td>
 	</tr>
+
 	
 	<tr>
 	  <td> Campaign Objective  </td><td><b>:</b></td><td> <input type="text" name="campaign_obj" id="campaign_obj" size="30" value="{$campaign_obj}"> </td>
@@ -84,6 +110,20 @@
       </table>
 
 </div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
