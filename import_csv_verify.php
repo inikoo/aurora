@@ -59,8 +59,6 @@ default:
 $scope_args='';
 }
 
-
-
 if(isset($_POST['submit']))
 {
 	if($_FILES['fileUpload']['name']=='') { header("location:import_csv.php?subject=$scope&subject_key=$scope_args"); }
@@ -116,12 +114,10 @@ if(isset($_SESSION['error']))
 $v = 0;
 
 $smarty->assign('v',$v);
-
 $smarty->assign('subject',$scope);
 $smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-
 $smarty->display('import_csv_verify.tpl');
 
 ?>
