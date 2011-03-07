@@ -83,10 +83,10 @@ class Company extends DB_Table {
 
     }
 
-    function find_fuzzy() {
+    function find_fuzzy($raw_data) {
 
         //Timer::timing_milestone('begin  find  contact');
-        $this->find_contact=new Contact("find in company $find_fuzzy ",$raw_data);
+        $this->find_contact=new Contact("find in company fuzzy ",$raw_data);
         //Timer::timing_milestone('end find contact');
         foreach($this->find_contact->candidate as $key=>$val) {
             if (isset($this->candidate[$key]))
@@ -437,8 +437,8 @@ class Company extends DB_Table {
             $this->find_complete($raw_data);
             break;
         case 'fuzzy':
-            exit("try find complete");
-            $this->find_fuzzy();
+           
+            $this->find_fuzzy($raw_data);
             break;
         }
 

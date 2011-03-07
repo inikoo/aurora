@@ -34,6 +34,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
 
   $department=new Department($row['Product Department Key']);
+    $department->update_sales_default_currency();
+
   $department->update_customers();
   $department->load('sales');
   $department->load('products_info');
