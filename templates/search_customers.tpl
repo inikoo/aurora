@@ -1,9 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0 20px">
-
+ {include file='contacts_navigation.tpl'}
 <div id="yui-main" >
    
-   <h1>{t}Search Customers{/t}</h1>
+   <h1>{t}Search Customers{/t} ({$store->get('Store Code')})</h1>
     
      
  
@@ -12,17 +12,19 @@
     </div>
     
     <div >
-      <div id="results" style="margin-top:0px;float:right;width:500px;xheight:800px">
+    <div style="margin-top:0px;float:right;width:500px;xheight:800px">
+     <div id="results_info" style="display:none">{t}No Results Found{/t}</div>
+      <div id="results" >
 	
       </div>
-      
+      </div>
       <div  style="float:left;width:370px" >
       <table class="edit" border=0 >
       
       	
       
 	
-<input type="hidden" value="{$store_key}" id="Store_Key"/>
+<input type="hidden" value="{$store->id}" id="Store_Key"/>
 
 	
 	
@@ -34,6 +36,21 @@
 	    </div>
 	  </td>
 	</tr>
+	
+	<tr style="{if $scope=='corporation'}display:none{/if}" >
+	  
+	  <td class="label">{t}Contact Name{/t}:</td>
+	  <td>
+	    
+	    <input style="width:18em" id="Contact_Name" value="" >
+	    <div id="Contact_Name_Container" style="" ></div>
+	    
+	  </td>
+	 </tr> 
+	
+	
+	{*
+	
 	<tr style="{if $scope=='corporation'}display:none{/if}" >
 	  
 	  <td class="label">{t}Contact Name{/t}:</td>
@@ -80,7 +97,7 @@
 	  </tr>
 	  
 	</tbody>
-	
+	*}
 	<tr id="email_mould"   style="{if $scope=='corporation'}display:none{/if}"  >
 	  <td  class="label"  >{t}Email{/t}:</td>
 	  <td >

@@ -45,6 +45,11 @@ var data_returned=function(){
 	 if(searched){
 	     Dom.get('searching').style.display='none';
 	     Dom.get('the_table').style.display='';
+	     Dom.get('save_list').style.display='';
+	     Dom.get('modify_search').style.display='';
+	     Dom.get('submit_search').style.display='none';
+
+
 	 }	 
     }
     

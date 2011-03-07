@@ -6,7 +6,7 @@ header('Location: index.php');
    exit;
  }
 
-if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']) ){
+if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
   $store_id=$_REQUEST['store_key'];
 
 }else{

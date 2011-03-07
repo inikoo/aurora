@@ -260,7 +260,16 @@ class Customer extends DB_Table {
             }
 
 
-        } else {
+        }
+        
+     //   print_r($child->candidate);
+     //   foreach($child->candidate as $contact_key=>$score){
+            
+       // }
+        
+         $this->candidate=$child->candidate;
+        /*
+        else {
             $this->candidate=$child->candidate;
 
         }
@@ -268,10 +277,10 @@ class Customer extends DB_Table {
         if ($this->found) {
             $this->get_data('id',$this->found_key);
         }
+        */
 
 
-
-
+       // $this->child=$child;
 
         if ($create and (
                     ($raw_data['Customer Main Contact Name']=='' and  $raw_data['Customer Type']=='Person')

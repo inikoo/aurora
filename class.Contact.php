@@ -209,7 +209,7 @@ class Contact extends DB_Table {
         // }
 
         //Timer::timing_milestone('begin  find  contact address');
-
+//print_r($address_work_data);
 
         if ($data['Contact Name']=='')
             $data['Contact Fuzzy']='Yes';
@@ -332,7 +332,6 @@ class Contact extends DB_Table {
 
         }
 
-
         if ($data['Contact Fuzzy']!='Yes') {
             if (array_key_exists('Contact Name Components',$data) and is_array($data['Contact Name Components'])) {
                 $name_data=$data['Contact Name Components'];
@@ -345,7 +344,6 @@ class Contact extends DB_Table {
             $salutation_max_semiscore=5;
             $first_name_max_score=27;
             $surname_max_score=73;
-
 
 
             if ($name_data['Contact First Name']!='') {
@@ -602,8 +600,15 @@ $val=40;
       
 
     }
-    function find_fuzzy($data) {
-        $this->candidate=array();
+    function find_fuzzy($data,$parent,$parent_key,$address_home_data,$address_work_data) {
+      
+      
+        if ($data['Contact Name']=='')
+            $data['Contact Fuzzy']='Yes';
+
+      
+     // print_r($data);
+      $this->candidate=array();
         $this->found=false;
         $this->found_key=false;
 
@@ -644,9 +649,6 @@ $val=40;
 
         //Timer::timing_milestone('begin  find  contact address');
 
-
-        if ($data['Contact Name']=='')
-            $data['Contact Fuzzy']='Yes';
 
 
         $country_code='UNK';
@@ -748,10 +750,6 @@ $val=40;
 
 
         if ($data['Contact Old ID']!='') {
-
-
-
-
             $sql=sprintf("select `Contact Key` from `Contact Old ID Bridge` where `Contact Old ID`=%s",prepare_mysql($data['Contact Old ID']));
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
@@ -766,7 +764,7 @@ $val=40;
 
         }
 
-
+//print_r($data);
 
         if ($data['Contact Fuzzy']!='Yes') {
             if (array_key_exists('Contact Name Components',$data) and is_array($data['Contact Name Components'])) {
@@ -777,20 +775,45 @@ $val=40;
             }
             $name=$this->name($name_data);
 
+
+// `Customer Main Contact Name` REGEXP "[[:<:]]%s" 
+
+
+
+
+
+
+
             $salutation_max_semiscore=5;
-            $first_name_max_score=27;
-            $surname_max_score=63;
+            $first_name_max_score=7;
+            $surname_max_score=43;
 
-
+//print_r($name_data);
 
             $len_name=strlen($name_data['Contact First Name']);
             if ($name_data['Contact First Name']!=''  and $len_name<256 ) {
 
+
+				
+				$sql=sprintf('select `Contact Key` from `Contact Dimension` where    `Contact Name` REGEXP "[[:<:]]%s" limit 100',$name_data['Contact First Name']);
+				$res=mysql_query($sql);
+				$score=50;
+				//print $sql;
+				while($row=mysql_fetch_assoc($res)){
+				
+					  $contact_key=$row['Contact Key'];
+                    if (isset($this->candidate[$contact_key]))
+                        $this->candidate[$contact_key]+=$score;
+                    else
+                        $this->candidate[$contact_key]=$score;
+				}
+
+				if($len_name<256){
                 $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlevlim256(UPPER(%s),UPPER(`Contact First Name`),$len_name)/$len_name as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
                              ,prepare_mysql($name_data['Contact First Name'])
 
                             );
-//print $sql;
+
                 $result=mysql_query($sql);
                 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                     if ($row['dist1']>=1)
@@ -805,6 +828,8 @@ $val=40;
                     else
                         $this->candidate[$contact_key]=$score;
                 }
+				}
+
 
             }
 
@@ -1002,7 +1027,7 @@ $val=40;
         /*       print "Candidates from ----------------------|\n"; */
         /*     } */
 
-        //print_r($this->candidate);
+    //    print_r($this->candidate);
         foreach($this->candidate as $key => $value) {
 
             if ($value>=200) {
@@ -1030,7 +1055,7 @@ $val=40;
         }
 
 
-        return $found_data;
+       
     }
 
 
@@ -1246,7 +1271,7 @@ $val=40;
             $this->find_complete($data,$parent,$parent_key,$address_home_data,$address_work_data);
              break;
         case 'fuzzy':
-            $this->find_fuzzy();
+            $this->find_fuzzy($data,$parent,$parent_key,$address_home_data,$address_work_data);
              break;
         }
  
