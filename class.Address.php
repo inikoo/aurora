@@ -207,7 +207,7 @@ class Address extends DB_Table {
     }
     function find_complete($data,$subject_data) {
 
-
+//print_r($data);
 
         $subject_type=$subject_data['subject_type'];
         $subject_object=$subject_data['subject_object'];
@@ -254,71 +254,133 @@ class Address extends DB_Table {
         }
 
 
-if (!$this->found ){
+        if (!$this->found ) {
 
-        if ($data['Address Fuzzy']!='Yes') {
+            if ($data['Address Fuzzy']!='Yes') {
 
-            $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+                $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
-            $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-            foreach($fields as $field) {
-                $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+                $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+                foreach($fields as $field) {
+                    $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+                }
+
+                $result=mysql_query($sql);
+                $num_results=mysql_num_rows($result);
+                if ($num_results==1) {
+                    $row=mysql_fetch_array($result, MYSQL_ASSOC);
+                    $this->found=true;
+                    $this->found_key=$row['Address Key'];
+                    $this->get_data('id',$row['Address Key']);
+                    $this->candidate[$row['Subject Key']]=110;
+                }
+
+
+            } else {
+
+                if ( $data['Address Fuzzy Type']=='Town') {
+
+                    $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+
+                    $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+
+                    foreach($fields as $field) {
+                        $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+                    }
+
+                    $result=mysql_query($sql);
+                    $num_results=mysql_num_rows($result);
+                    if ($num_results==1) {
+                        $row=mysql_fetch_array($result, MYSQL_ASSOC);
+                        $this->found=true;
+                        $this->found_key=$row['Address Key'];
+                        $this->get_data('id',$row['Address Key']);
+                        $this->candidate[$row['Subject Key']]=110;
+
+                    }
+                }
             }
+        }
+    }
 
-            $result=mysql_query($sql);
-            $num_results=mysql_num_rows($result);
-            if ($num_results==1) {
-                $row=mysql_fetch_array($result, MYSQL_ASSOC);
-                $this->found=true;
-                $this->found_key=$row['Address Key'];
-                $this->get_data('id',$row['Address Key']);
-                $this->candidate[$row['Subject Key']]=110;
-            }
+    function find_fuzzy($data,$subject_data) {
 
-
-        }else{
-        
-        if( $data['Address Fuzzy Type']=='Town'){
-        
-            $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
-
-            $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-            
-            foreach($fields as $field) {
-                $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-            }
-
-            $result=mysql_query($sql);
-            $num_results=mysql_num_rows($result);
-            if ($num_results==1) {
-                $row=mysql_fetch_array($result, MYSQL_ASSOC);
-                $this->found=true;
-                $this->found_key=$row['Address Key'];
-                $this->get_data('id',$row['Address Key']);
-                $this->candidate[$row['Subject Key']]=110;
-
-}
-}
-}
-}
-}
-
-    function find_fuzzy() {
-
-
+//print_r($data);
 
         //special cases
         // Only one data
         $fields=array('Address Street Number','Address Building','Address Street Name','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Postal Code','Address Country Code');
         $filled_fields=array();
         foreach($fields as $field) {
-            if ($data[$field]!='')
+            if ($data[$field]!='' ) {
                 $filled_fields[$field]=$data[$field];
+            }
         }
 
 
         $number_filled_fields=count($filled_fields);
 
+//print_r($filled_fields);
+
+
+        foreach($filled_fields as $field=>$value) {
+            switch ($field) {
+            case 'Address Postal Code':
+                $postal_code_no_spaces=preg_replace('/\n/','',$value);
+                if ($postal_code_no_spaces!=$value) {
+                    $postal_code=prepare_mysql($value).','.prepare_mysql($postal_code_no_spaces);
+                } else {
+                    $postal_code=prepare_mysql($value);
+                }
+
+                $sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' and `Address Postal Code` in (%s)",
+                             $postal_code
+                            );
+                // print $sql;
+                $res=mysql_query($sql);
+                $num_results=mysql_num_rows($res);
+                if ($num_results>100)
+                    continue;
+                while ($row=mysql_fetch_assoc($res)) {
+                    $val=25;
+                    if (isset($this->candidate[$row['Subject Key']]))
+                        $this->candidate[$row['Subject Key']]+=$val;
+                    else
+                        $this->candidate[$row['Subject Key']]=$val;
+                }
+                break;
+            case 'Address Town':
+             
+                $sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' and `Address Town`=%s ",
+                             prepare_mysql($value)
+                            );
+                // print "$sql\n";
+                $res=mysql_query($sql);
+                $num_results=mysql_num_rows($res);
+                if ($num_results>120)
+                    continue;
+                while ($row=mysql_fetch_assoc($res)) {
+                    $val=20;
+                    if (isset($this->candidate[$row['Subject Key']]))
+                        $this->candidate[$row['Subject Key']]+=$val;
+                    else
+                        $this->candidate[$row['Subject Key']]=$val;
+                }
+                break;   
+                
+            default:
+
+                break;
+            }
+
+
+//print_r($this->candidate);
+
+        }
+
+
+
+        return;
 
         if ($number_filled_fields==1) {
 
@@ -848,8 +910,8 @@ if (!$this->found ){
             $this->find_complete($data,$subject_data);
             break;
         case 'fuzzy':
-            exit("try find complete");
-            $this->find_fuzzy();
+
+            $this->find_fuzzy($data,$subject_data);
             break;
         }
 
@@ -1007,13 +1069,13 @@ if (!$this->found ){
             }
         }
         // print "XXXXXXXXXXX\n";
-         //print_r($data);
-         //print"+++++++++++++\n";
+        //print_r($data);
+        //print"+++++++++++++\n";
         $data=$this->prepare_data($data,$options);
 
-unset($data['Address Main Telephone Key']);
-unset($data['Address Main Plain Telephone']);
-unset($data['Address Main XHTML Telephone']);
+        unset($data['Address Main Telephone Key']);
+        unset($data['Address Main Plain Telephone']);
+        unset($data['Address Main XHTML Telephone']);
 
         // if($this->table_name=='Telecom'){
         // print_r($data);exit;
@@ -4675,7 +4737,7 @@ unset($data['Address Main XHTML Telephone']);
 
     function associate_telecom($telecom_key,$type) {
 
-     
+
 
         $telecom_keys=$this->get_telecom_type_keys($type);
 
@@ -4737,8 +4799,8 @@ unset($data['Address Main XHTML Telephone']);
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                      ,prepare_mysql($type)
                      ,$this->id );
-	// print $sql;
-	$res=mysql_query($sql);
+        // print $sql;
+        $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $main_telecom_key=$row['Telecom Key'];
         } else {
@@ -4773,7 +4835,7 @@ unset($data['Address Main XHTML Telephone']);
             $telecom->editor=$this->editor;
             $sql=sprintf("update `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)   set `Is Main`='No' where `Subject Type`='Address'   and `Subject Key`=%d and `Telecom Type`='$type' "
                          ,$this->id
-                        
+
                         );
             mysql_query($sql);
             $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Address'  and  `Subject Key`=%d  and `Telecom Key`=%d"
@@ -4836,7 +4898,7 @@ unset($data['Address Main XHTML Telephone']);
                                  ,$parent_object->id
                                 );
                     mysql_query($sql);
-                     // print "$sql\n";
+                    // print "$sql\n";
                 }
 
                 $old_principal_telecom_key=$parent_object->data[$parent." Main $type Key"];
@@ -4845,7 +4907,7 @@ unset($data['Address Main XHTML Telephone']);
 
                     $sql=sprintf("update `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) set `Is Main`='No'   where   `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='$type' "
                                  ,$parent_object->id
-                            
+
                                 );
                     mysql_query($sql);
                     //print "$sql\n";
@@ -4854,13 +4916,13 @@ unset($data['Address Main XHTML Telephone']);
                                  ,$telecom_key
                                 );
                     mysql_query($sql);
-                   // print "$sql\n";
-                    
+                    // print "$sql\n";
+
                     $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=%d where `$parent Key`=%d"
                                  ,$telecom_key
                                  ,$parent_object->id
                                 );
-                   // print "$sql\n";
+                    // print "$sql\n";
                     mysql_query($sql);
 
 
@@ -4894,9 +4956,9 @@ unset($data['Address Main XHTML Telephone']);
             $telephone=new Telecom($telephone_key);
 
             $telephone->update_number($value,$this->data['Address Country Code']);
-	    //print_r($telephone);
+            //print_r($telephone);
             $this->updated=$telephone->updated;
-	    $this->new_value=$telephone->display('xhtml');
+            $this->new_value=$telephone->display('xhtml');
         }
     }
 
@@ -5000,7 +5062,7 @@ unset($data['Address Main XHTML Telephone']);
 
 
     function delete() {
-       
+
 
 
         $country_code=$this->data['Address Country Code'];
@@ -5087,7 +5149,7 @@ unset($data['Address Main XHTML Telephone']);
         }
 
 
- $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
+        $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
         mysql_query($sql);
         $sql=sprintf("delete from `Address Bridge`  where  `Address Key`=%d", $this->id);
         mysql_query($sql);
