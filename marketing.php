@@ -56,6 +56,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
+		'js/list_function.js',
 		'marketing.js.php',
 		'js/menu.js'
 		);
@@ -93,9 +94,4 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->display('marketing.tpl');
 
 
-
-
-
-
 ?>
-
