@@ -3329,7 +3329,7 @@ function find_company($the_data) {
                         if ($parent->data['Customer Store Key']==$store_key) {
                             $in_store=true;
                             $scope_found_key=$parent->id;
-                            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?edit=%d">(%s)</a>'
+                            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?id=%d">(%s)</a>'
                                            ,_('Warning')
                                            ,_('A customer found with similar data in this store')
                                            ,$parent->id
@@ -3441,7 +3441,7 @@ function find_company($the_data) {
                 if ($parent->data['Customer Store Key']==$store_key) {
                     $in_store=true;
                     $scope_found_key=$parent->id;
-                    $link.=sprintf('<br/><img src="art/icons/exclamation.png" alt="%s"/> %s<br/>(<a href="customer.php?edit=%d">%s</a>)'
+                    $link.=sprintf('<br/><img src="art/icons/exclamation.png" alt="%s"/> %s<br/>(<a href="customer.php?id=%d">%s</a>)'
                                    ,_('Warning').":"
                                    ,_('Customer in this store')
                                    ,$parent->id
@@ -3601,7 +3601,7 @@ function find_contact($the_data) {
                         if ($parent->data['Customer Store Key']==$store_key) {
                             $in_store=true;
                             $scope_found_key=$parent->id;
-                            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?edit=%d">(%s)</a>'
+                            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?id=%d">(%s)</a>'
                                            ,_('Warning')
                                            ,_('A customer found with similar data in this store')
                                            ,$parent->id
@@ -3718,7 +3718,7 @@ function find_contact($the_data) {
                 if ($parent->data['Customer Store Key']==$store_key) {
                     $in_store=true;
                     $scope_found_key=$parent->id;
-                    $link.=sprintf('<br/><img src="art/icons/exclamation.png" alt="%s"/> %s<br/>(<a href="customer.php?edit=%d">%s</a>)'
+                    $link.=sprintf('<br/><img src="art/icons/exclamation.png" alt="%s"/> %s<br/>(<a href="customer.php?id=%d">%s</a>)'
                                    ,_('Warning').":"
                                    ,_('Customer in this store')
                                    ,$parent->id
