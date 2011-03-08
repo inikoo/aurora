@@ -1,6 +1,11 @@
 <?php
 include_once('common.php');
-if(isset($_REQUEST)){
+if(isset($_REQUEST['createCampaign'])){
+
+	die('gfvgf');
+
+	print_r($_REQUSET['email']); die();
+
 	$campaign_name = isset($_REQUEST['campaign_name'])?$_REQUEST['campaign_name']:'';
 	$campaign_obj = isset($_REQUEST['campaign_obj'])?$_REQUEST['campaign_obj']:'';
 	$campaign_mail = isset($_REQUEST['campaign_mail'])?$_REQUEST['campaign_mail']:'';

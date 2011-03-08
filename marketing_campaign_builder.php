@@ -56,6 +56,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
+		'js/jquery-1.3.2.min.js',
 		'marketing_create_campaign.js.php'
 		);
 
