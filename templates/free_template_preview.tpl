@@ -24,9 +24,10 @@
 
 </div>
 <br> 
-<form  action="send_mail.php" name="free_template" method="post">
+<form  action="send_free_mail.php" name="free_template" method="post">
 <input type="hidden" name="templateSub" value="{$template_sub}">
 <input type="hidden" name="templatebody" value="{$template_body}">
+<input type="hidden" name="template" value="free_template">
 <input type="submit" name="send_mail" id="send_mail" value="Send Mail">
 </form>
 

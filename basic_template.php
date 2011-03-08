@@ -39,6 +39,8 @@ $js_files=array(
 		'js/list_function.js',
 		'js/create_campaign.js',
 		'external_libs/ckeditor/ckeditor.js',
+		'customer_list_marketing.js.php',
+
 		'js/jquery-1.4.4.js'
 		);
 	if(isset($_REQUEST['basic']) && $_REQUEST['basic'] == 'Proceed')

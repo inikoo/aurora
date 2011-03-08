@@ -42,6 +42,9 @@ if(isset($_REQUEST['createCampaign']))
 	$f_template_body=stripslashes($_REQUEST['f_template_body']);
 	$smarty->assign('template_sub',$_REQUEST['f_template_sub']);
 	$smarty->assign('template_body',$f_template_body);
+
+	$_SESSION['body'] = $f_template_body;
+	$_SESSION['subject'] = $_REQUEST['f_template_sub'];
 	
 }
 
