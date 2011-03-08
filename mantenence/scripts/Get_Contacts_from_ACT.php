@@ -324,6 +324,9 @@ foreach($contacts as $act_data_contact_key=>$act_data) {
 
         //  continue;
     }
+    
+    
+
 
     $shop_address_data=$address_raw_data;
 

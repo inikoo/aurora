@@ -512,7 +512,7 @@ return;
     }
 
 
-    function update_parents() {
+    function update_parents($add_parent_history=true) {
 
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
@@ -538,6 +538,7 @@ return;
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
                 }
+                  $parent_object->editor=$this->editor;
                 $old_princial_email=$parent_object->data[$parent.' Main Plain Email'];
                 $parent_object->data[$parent.' Main Plain Email']=$this->display('plain');
                 $parent_object->data[$parent.' Main XHTML Email']=$this->display('xhtml');
@@ -552,7 +553,7 @@ return;
                 if ($old_princial_email!=$parent_object->data[$parent.' Main Plain Email'])
                     $principal_email_changed=true;
 
-                if ($principal_email_changed) {
+                if ($principal_email_changed and $add_parent_history) {
 
                     if ($old_princial_email=='') {
                         $history_data['History Abstract']='Email Associated '.$this->display('plain');
@@ -574,6 +575,7 @@ return;
 
                     }
                      if ($parent=='Customer') {
+                       // print_r($history_data);
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
