@@ -117,7 +117,7 @@ class Ship_To extends DB_Table {
         foreach($fields as $field) {
             $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
         }
-
+//print $sql;
 
         $result=mysql_query($sql);
         $num_results=mysql_num_rows($result);
@@ -153,6 +153,31 @@ class Ship_To extends DB_Table {
     }
 
 
+function get_xhtml_address() {
+    $address='';
+    $separator="<br/>";
+    if ($this->data['Ship To Line 1']!='')
+        $address=_trim($this->data['Ship To Line 1']).$separator;
+    if ($this->data['Ship To Line 2']!='')
+        $address.=_trim($this->data['Ship To Line 2']).$separator;
+    if ($this->data['Ship To Line 3']!='')
+        $address.=_trim($this->data['Ship To Line 3']).$separator;
+    if ($this->data['Ship To Town']!='')
+        $address.=_trim($this->data['Ship To Town']).$separator;
+    if ($this->data['Ship To Line 4']!='')
+        $address.=_trim($this->data['Ship To Line 4']).$separator;
+    if ($this->data['Ship To Postal Code']!='')
+        $address.=_trim($this->data['Ship To Postal Code']).$separator;
+
+
+
+
+    $address.='<a class="ninja" href="region.php?country='.$this->data['Ship To Country Code'].'" >'.$this->data['Ship To Country Name'].'</a>';
+
+return _trim($address);
+
+}
+
     function get($key='') {
 
         if (isset($this->data[$key]))
@@ -178,8 +203,8 @@ class Ship_To extends DB_Table {
         $values='';
 
         foreach($this->data as $key=>$value) {
-
-
+    if($key=='Ship To XHTML Address')
+            continue;
             //  if(preg_match('/Address Data Creation/i',$key) ){
             //	$keys.=",`".$key."`";
             //	$values.=', Now()';
@@ -202,6 +227,9 @@ class Ship_To extends DB_Table {
             $this->data['Address Key']= $this->id;
             $this->new=true;
             $this->get_data('id',$this->id);
+            $this->data['Ship To XHTML Address']=$this->get_xhtml_address();
+            $sql=sprintf("update `Ship To Dimension` set `Ship To XHTML Address`=%s where `Ship To Key`=%d",prepare_mysql($this->data['Ship To XHTML Address']),$this->id);
+            mysql_query($sql);
         } else {
             print "Error can not create address\n";
             exit;

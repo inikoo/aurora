@@ -15,7 +15,7 @@ include_once('class.DB_Table.php');
 include_once('class.Country.php');
 
 class Telecom extends DB_Table {
-var $deleted=false;
+    var $deleted=false;
 
     /*
       Constructor: Telecom
@@ -119,14 +119,14 @@ var $deleted=false;
     }
 
 
-function find_fast(){
+    function find_fast() {
 
-}
+    }
 
-function find_complete($data,$subject_data){
+    function find_complete($data,$subject_data) {
 
-$mode=$subject_data['mode'];
-$in_contact=$subject_data['in_contact'];
+        $mode=$subject_data['mode'];
+        $in_contact=$subject_data['in_contact'];
 
         $intl_code_max_score=10;
         $ext_code_max_score=10;
@@ -143,87 +143,87 @@ $in_contact=$subject_data['in_contact'];
 
             $len_tel=strlen($data['Telecom Area Code'].$data['Telecom Number']);
 
-  
-
-         
-                $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact'  and  `Telecom Area Code`=%s and `Telecom Number`=%s   limit 100 "
-                             ,prepare_mysql($data['Telecom Area Code'],false)
-                             ,prepare_mysql($data['Telecom Number'],false)
-
-                            );
-
-                //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
-                // print $sql;
-                $result=mysql_query($sql);
-                //print $sql."<br><br>";
-                // echo mysql_errno() . ": " . mysql_error() . "\n";
-                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                    $contact_key=$row['Subject Key'];
 
 
 
-                    $score=$tel_max_score;
-                    $_score=$score;
-                    //print "Dat: $len_tel ".$row['dist1']." $score\n";
+            $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact'  and  `Telecom Area Code`=%s and `Telecom Number`=%s   limit 100 "
+                         ,prepare_mysql($data['Telecom Area Code'],false)
+                         ,prepare_mysql($data['Telecom Number'],false)
 
-                    $score+=$exact_match_bonus;
-                    $this->found_number=1;
+                        );
+
+            //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
+            // print $sql;
+            $result=mysql_query($sql);
+            //print $sql."<br><br>";
+            // echo mysql_errno() . ": " . mysql_error() . "\n";
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $contact_key=$row['Subject Key'];
 
 
-                    //   print "1******************* $score\n";
-                    if ($row['Telecom Country Telephone Code']==$data['Telecom Country Telephone Code']) {
-                        if ($data['Telecom Country Telephone Code']!='') {
-                            $this->found_intl_code=1;
-                            $score+= $intl_code_max_score;
-                        }
-                    } else {
-                        if ($data['Telecom Country Telephone Code']!='' and $row['Telecom Country Telephone Code']!='')
-                            $this->found_intl_code=-2;
+
+                $score=$tel_max_score;
+                $_score=$score;
+                //print "Dat: $len_tel ".$row['dist1']." $score\n";
+
+                $score+=$exact_match_bonus;
+                $this->found_number=1;
+
+
+                //   print "1******************* $score\n";
+                if ($row['Telecom Country Telephone Code']==$data['Telecom Country Telephone Code']) {
+                    if ($data['Telecom Country Telephone Code']!='') {
+                        $this->found_intl_code=1;
+                        $score+= $intl_code_max_score;
                     }
-                    //    print "2******************* $score\n";
-                    if ($row['Telecom Extension']==$data['Telecom Extension']) {
-                        if ($data['Telecom Extension']!='') {
-                            $this->found_ext=2;
-                            $score+= $ext_max_score;
-                        }
-                    } else {
-                        if ($data['Telecom Extension']!='' and $row['Telecom Extension']!='')
-                            $this->found_ext=-2;
+                } else {
+                    if ($data['Telecom Country Telephone Code']!='' and $row['Telecom Country Telephone Code']!='')
+                        $this->found_intl_code=-2;
+                }
+                //    print "2******************* $score\n";
+                if ($row['Telecom Extension']==$data['Telecom Extension']) {
+                    if ($data['Telecom Extension']!='') {
+                        $this->found_ext=2;
+                        $score+= $ext_max_score;
                     }
+                } else {
+                    if ($data['Telecom Extension']!='' and $row['Telecom Extension']!='')
+                        $this->found_ext=-2;
+                }
 
-                    //   print "3******************* $score\n";
-                    if (isset($this->candidate[$contact_key]))
-                        $this->candidate[$contact_key]+=$score;
-                    else
-                        $this->candidate[$contact_key]=$score;
+                //   print "3******************* $score\n";
+                if (isset($this->candidate[$contact_key]))
+                    $this->candidate[$contact_key]+=$score;
+                else
+                    $this->candidate[$contact_key]=$score;
 
 
 
 
 
-                    if (!$this->found and(  $this->found_number and ($this->found_ext>=0 and $this->found_intl_code>=0) ) ) {
-                        $this->found=true;
-                        $this->get_data('id',$row['Telecom Key']);
+                if (!$this->found and(  $this->found_number and ($this->found_ext>=0 and $this->found_intl_code>=0) ) ) {
+                    $this->found=true;
+                    $this->get_data('id',$row['Telecom Key']);
 
-                        //print "----> ".$row['Telecom Key']."\n";
-                        if ($mode=='Contact in' or $mode=='Company in') {
-                            if (in_array($row['Subject Key'],$in_contact)) {
+                    //print "----> ".$row['Telecom Key']."\n";
+                    if ($mode=='Contact in' or $mode=='Company in') {
+                        if (in_array($row['Subject Key'],$in_contact)) {
 
-                                $this->found_in=true;
-                                $this->found_out=false;
-                            } else {
+                            $this->found_in=true;
+                            $this->found_out=false;
+                        } else {
 
-                                $this->found_in=false;
-                                $this->found_out=true;
-                            }
+                            $this->found_in=false;
+                            $this->found_out=true;
                         }
-
                     }
-
 
                 }
 
-            
+
+            }
+
+
 
 
 
@@ -231,11 +231,11 @@ $in_contact=$subject_data['in_contact'];
         }
 
 
-}
+    }
 
-function find_fuzzy(){
+    function find_fuzzy() {
 
-}
+    }
 
 
 
@@ -253,9 +253,9 @@ function find_fuzzy(){
     */
     function find($raw_data,$options) {
 
-     
 
-  $find_type='complete';
+
+        $find_type='complete';
         if (preg_match('/fuzzy/i',$options)) {
             $find_type='fuzzy';
         }
@@ -277,14 +277,14 @@ function find_fuzzy(){
         $this->found=false;
         $this->found_in=false;
         $this->found_out=false;
-$in_contact=false;
+        $in_contact=false;
         $in_contacts=array();
         $mode='Contact';
         $parent='Contact';
         $subject_key=0;
         $subject_type='';
-        
-        
+
+
         $create=false;
         if (preg_match('/create|update/i',$options)) {
             $create=true;
@@ -339,14 +339,14 @@ $in_contact=false;
                 return false;
 
             }
-            
+
             $tmp=$this->parse_number($raw_number,$country_code);
             //print_r($tmp);
-            foreach($tmp as $key=>$value){
-            
-            $raw_data[$key]=$value;
+            foreach($tmp as $key=>$value) {
+
+                $raw_data[$key]=$value;
             }
-            
+
         } else {
             $this->error=true;
             $this->msg=_('Error, no telecom data');
@@ -416,28 +416,28 @@ $in_contact=false;
 
         // print_r($data);
 
-$subject_data=array(
-'subject_type'=>$subject_type,
-'subject_key'=>$subject_key,
-'parent'=>$parent,
+        $subject_data=array(
+                          'subject_type'=>$subject_type,
+                          'subject_key'=>$subject_key,
+                          'parent'=>$parent,
 
-'mode'=>$mode,
-'in_contact'=>$in_contact,
+                          'mode'=>$mode,
+                          'in_contact'=>$in_contact,
 
-);
+                      );
 
-switch ($find_type) {
+        switch ($find_type) {
         case 'fast':
-        
+
             $this->find_fast();
             break;
         case 'complete':
-       
+
             $this->find_complete($data,$subject_data);
-             break;
+            break;
         case 'fuzzy':
             $this->find_fuzzy();
-             break;
+            break;
         }
 
 
@@ -467,7 +467,7 @@ switch ($find_type) {
                     }
 
                 }
-*/
+                */
                 $this->create($data,$options);
 
             }
@@ -528,7 +528,7 @@ switch ($find_type) {
                      prepare_mysql($this->data['Telecom Plain Number'])
                     );
 
-         //print "$sql\n";
+        //print "$sql\n";
 
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
@@ -1041,14 +1041,14 @@ switch ($find_type) {
 
 
     public function update($data,$options='') {
-    
+
         if ($data['Telecom Number']=='') {
             $this->error=true;
             $this->msg=_('Wrong telephone number');
             return false;
         }
 
-    
+
         $old_plain=$this->display('plain');
         $old_xhtml=$this->display('xhtml');
         if (isset($data['editor'])) {
@@ -1069,17 +1069,17 @@ switch ($find_type) {
         if (!$this->updated)
             $this->msg.=' '._('Nothing to be updated')."\n";
         else {
-	  //	  print_r($this->data);
+            //	  print_r($this->data);
 
             $new_plain=$this->display('plain');
             $new_xhtml=$this->display('xhtml');
-	    //	print "old:  $old_plain -> $new_plain\n";
+            //	print "old:  $old_plain -> $new_plain\n";
 
 
-            if ($old_plain!=$new_plain){
+            if ($old_plain!=$new_plain) {
                 $this->update_field_switcher('Telecom Plain Number',$new_plain,$options);
-		$this->update_parents();
-	    }
+                $this->update_parents();
+            }
 
         }
 
@@ -1087,28 +1087,28 @@ switch ($find_type) {
 
 
     function update_number($value,$country_code='UNK') {
-     
 
- $_data=preg_replace('/[^\d]/','',$value);
 
-            if (strlen($_data)<3) {
+        $_data=preg_replace('/[^\d]/','',$value);
 
-                $this->error=true;
-                $this->msg=_('Error, invalid telecom data');
-                
-                return false;
+        if (strlen($_data)<3) {
 
-            }
-    
+            $this->error=true;
+            $this->msg=_('Error, invalid telecom data');
+
+            return false;
+
+        }
+
         $data=$this->parse_number($value,$country_code);
-	//	print_r($data);
+        //	print_r($data);
         $this->update($data);
     }
 
     function update_field_switcher($field,$value,$options='') {
-    
-      //  print "XXX $field,$value\n";
-   // sass();
+
+        //  print "XXX $field,$value\n";
+        // sass();
         if ($field=='Telecom Plain Number')
             $options.=' no history';
         $this->update_field($field,$value,$options);
@@ -1117,184 +1117,192 @@ switch ($find_type) {
 
     }
 
-function update_parents() {
+    function update_parents() {
 
-    //print $this->id;
-
-
-
-    $type=$this->data['Telecom Type'];
-    if($type=='Fax')
-        $type='FAX';
-    if ($type=="Mobile" )
-        $parents=array('Contact','Customer');
-    else
-        $parents=array('Address','Contact','Company','Customer','Supplier');
-    foreach($parents as $parent) {
+        //print $this->id;
 
 
 
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-      //  print "$sql\n";
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $principal_telecom_changed=false;
+        $type=$this->data['Telecom Type'];
+        if ($type=='Fax')
+            $type='FAX';
+        if ($type=="Mobile" )
+            $parents=array('Contact','Customer');
+        else
+            $parents=array('Address','Contact','Company','Customer','Supplier');
+        foreach($parents as $parent) {
 
-            if ($parent=="Contact") {
-                $parent_object=new Contact($row["Parent Key"]);
-                $parent_label=_("Contact");
-            }
-            elseif($parent=="Customer") {
-                $parent_object=new Customer($row["Parent Key"]);
-                $parent_label=_("Customer");
-            }
-            elseif($parent=="Supplier") {
-                $parent_object=new Supplier($row["Parent Key"]);
-                $parent_label=_("Supplier");
-            }
-            elseif($parent=="Company") {
-                $parent_object=new Company($row["Parent Key"]);
-                $parent_label=_("Company");
-            }
-            elseif($parent=="Address") {
-                $parent_object=new Address($row["Parent Key"]);
-                $parent_label=_("Address");
-            }
 
-            $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
-            $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
-            $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
-            $sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
-                         ,prepare_mysql($parent_object->data[$parent." Main Plain $type"])
-                         ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
-                         ,$parent_object->id
-                        );
-          //  print "$sql\n";
-            mysql_query($sql);
+
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
+            //  print "$sql\n";
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_telecom_changed=false;
+
+                if ($parent=="Contact") {
+                    $parent_object=new Contact($row["Parent Key"]);
+                    $parent_label=_("Contact");
+                }
+                elseif($parent=="Customer") {
+                    $parent_object=new Customer($row["Parent Key"]);
+                    $parent_label=_("Customer");
+                }
+                elseif($parent=="Supplier") {
+                    $parent_object=new Supplier($row["Parent Key"]);
+                    $parent_label=_("Supplier");
+                }
+                elseif($parent=="Company") {
+                    $parent_object=new Company($row["Parent Key"]);
+                    $parent_label=_("Company");
+                }
+                elseif($parent=="Address") {
+                    $parent_object=new Address($row["Parent Key"]);
+                    $parent_label=_("Address");
+                }
+
+                $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
+                $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
+                $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$parent." Main Plain $type"])
+                             ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
+                             ,$parent_object->id
+                            );
+                //  print "$sql\n";
+                mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
 
-            if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
-                $principal_telecom_changed=true;
+                if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
+                    $principal_telecom_changed=true;
 
-            if ($principal_telecom_changed) {
+                if ($principal_telecom_changed) {
 
-                if ($old_princial_telecom=="") {
 
-                    $history_data["History Abstract"]="$type Associated";
-                    $history_data["History Details"]=$this->display("plain")." "._("associated with")." ".$parent_object->get_name()." ".$parent_label;
-                    $history_data["Action"]="associated";
-                    $history_data["Direct Object"]=$parent;
-                    $history_data["Direct Object Key"]=$parent_object->id;
-                    $history_data["Indirect Object"]="$type";
-                    $history_data["Indirect Object Key"]="";
-                    $this->add_history($history_data);
-                } else {
-                    $history_data["History Abstract"]="$type Changed";
-                    $history_data["History Details"]=_("$type changed from")." ".$old_princial_telecom." "._("to")." ".$this->display("plain")." "._("in")." ".$parent_object->get_name()." ".$parent_label;
-                    $history_data["Action"]="changed";
-                    $history_data["Direct Object"]=$parent;
-                    $history_data["Direct Object Key"]=$parent_object->id;
-                    $history_data["Indirect Object"]="$type";
-                    $history_data["Indirect Object Key"]="";
+                    if ($old_princial_telecom=="") {
 
-                    $this->add_history($history_data);
+                        $history_data["History Abstract"]="$type associated ".$this->display("xhtml");
+                        $history_data["History Details"]=$this->display("plain")." "._("associated with")." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data["Action"]="associated";
+                        $history_data["Direct Object"]=$parent;
+                        $history_data["Direct Object Key"]=$parent_object->id;
+                        $history_data["Indirect Object"]="$type";
+                        $history_data["Indirect Object Key"]="";
+
+
+                    } else {
+                        $history_data["History Abstract"]="$type updated to ".$this->display("xhtml");
+                        $history_data["History Details"]=_("$type changed from")." ".$old_princial_telecom." "._("to")." ".$this->display("plain")." "._("in")." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data["Action"]="changed";
+                        $history_data["Direct Object"]=$parent;
+                        $history_data["Direct Object Key"]=$parent_object->id;
+                        $history_data["Indirect Object"]="$type";
+                        $history_data["Indirect Object Key"]="";
+
+
+
+                    }
+                    if ($parent=='Customer') {
+                        $parent_object->add_customer_history($history_data);
+                    } else {
+                        $this->add_history($history_data);
+                    }
+
 
                 }
 
             }
-
         }
     }
-}
 
 
 
 
-function delete() {
-    $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
-    mysql_query($sql);
-    $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
-    mysql_query($sql);
-    $this->deleted=true;
-    $history_data['History Abstract']='Telecom Deleted';
-    $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
-    $history_data['Action']='deleted';
-    $history_data['Direct Object']='Telecom';
-    $history_data['Direct Object Key']=$this->id;
-    $history_data['Indirect Object']='';
-    $history_data['Indirect Object Key']='';
-    $this->add_history($history_data);
+    function delete() {
+        $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
+        mysql_query($sql);
+        $this->deleted=true;
+        $history_data['History Abstract']='Telecom Deleted';
+        $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
+        $history_data['Action']='deleted';
+        $history_data['Direct Object']='Telecom';
+        $history_data['Direct Object Key']=$this->id;
+        $history_data['Indirect Object']='';
+        $history_data['Indirect Object Key']='';
+        $this->add_history($history_data);
 
 
-    $type=$this->data['Telecom Type'];
-    if ($type=='Fax')
-        $type="FAX";
+        $type=$this->data['Telecom Type'];
+        if ($type=='Fax')
+            $type="FAX";
 
 
-    if ($type=='Mobile')
-        $parents=array('Contact');
-    else
-        $parents=array('Contact','Company','Customer','Supplier');
-
-
-
-    foreach($parents as $parent) {
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
-                     ,$this->id);
-        // print "$sql";
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $principal_Telecom_changed=false;
-
-            if ($parent=='Contact') {
-                $parent_object=new Contact($row['Parent Key']);
-                $parent_label=_('Contact');
-            }
-            elseif($parent=='Customer') {
-                $parent_object=new Customer($row['Parent Key']);
-                $parent_label=_('Customer');
-            }
-            elseif($parent=='Supplier') {
-                $parent_object=new Supplier($row['Parent Key']);
-                $parent_label=_('Supplier');
-            }
-            elseif($parent=='Company') {
-                $parent_object=new Company($row['Parent Key']);
-                $parent_label=_('Company');
-            }
+        if ($type=='Mobile')
+            $parents=array('Contact');
+        else
+            $parents=array('Contact','Company','Customer','Supplier');
 
 
 
-            $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
+                         ,$this->id);
+            // print "$sql";
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_Telecom_changed=false;
 
-                         ,$parent_object->id
-                        );
-            mysql_query($sql);
-
-
-
-            $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
-            $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-            $history_data['Action']='disassociate';
-            $history_data['Direct Object']=$parent;
-            $history_data['Direct Object Key']=$parent_object->id;
-            $history_data['Indirect Object']='Telecom';
-            $history_data['Indirect Object Key']=$this->id;
-            $this->add_history($history_data);
-
-            if ($parent=='Contact' and $type=='Mobile') {
-                $mobiles=$parent_object->get_mobiles();
-                foreach($mobiles as $mobile) {
-                    $parent_object->update_principal_mobil($mobile->id);
-                    break;
+                if ($parent=='Contact') {
+                    $parent_object=new Contact($row['Parent Key']);
+                    $parent_label=_('Contact');
                 }
+                elseif($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+
+
+
+                $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
+
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+
+
+
+                $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
+                $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['Action']='disassociate';
+                $history_data['Direct Object']=$parent;
+                $history_data['Direct Object Key']=$parent_object->id;
+                $history_data['Indirect Object']='Telecom';
+                $history_data['Indirect Object Key']=$this->id;
+                $this->add_history($history_data);
+
+                if ($parent=='Contact' and $type=='Mobile') {
+                    $mobiles=$parent_object->get_mobiles();
+                    foreach($mobiles as $mobile) {
+                        $parent_object->update_principal_mobil($mobile->id);
+                        break;
+                    }
+                }
+
+
             }
-
-
         }
     }
-}
 
 }
 ?>

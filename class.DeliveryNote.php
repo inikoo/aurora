@@ -211,12 +211,15 @@ class DeliveryNote extends DB_Table {
                 $this->data ['Delivery Note Shipper Code']='';
             }
 
+         
+
             if ($order and $order->data ['Order Ship To Key To Deliver']) {
                 $ship_to=new Ship_To($order->data ['Order Ship To Key To Deliver']);
+                
+                
                 $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
                 $this->data ['Delivery Note XHTML Ship To'] =$ship_to->data['Ship To XHTML Address'];
                 $this->data ['Delivery Note Country 2 Alpha Code'] = ($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
-
 
             } else {
                 $ship_to=$customer->get_ship_to($this->data ['Delivery Note Date Created']);
@@ -888,7 +891,10 @@ class DeliveryNote extends DB_Table {
         }
 
 
-        $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$customer->id,$this->data['Delivery Note Ship To Key']);
+        $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',
+        $customer->id,
+        $this->data['Delivery Note Ship To Key']);
+        
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
 
@@ -911,6 +917,10 @@ class DeliveryNote extends DB_Table {
                      $this->data['Delivery Note Ship To Key']
                     );
         mysql_query($sql);
+        
+        $customer->update_last_ship_to_key();
+        $customer->update_ship_to_stats();
+        
 
         foreach($this->get_invoices_objects() as $invoice) {
             $invoice->update_delivery_note_data(array('Invoice Delivery Country 2 Alpha Code'=>$this->data['Delivery Note Country 2 Alpha Code']));

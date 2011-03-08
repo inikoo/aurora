@@ -273,11 +273,11 @@ class Customer extends DB_Table {
             $this->candidate=$child->candidate;
 
         }
-
+ */
         if ($this->found) {
             $this->get_data('id',$this->found_key);
         }
-        */
+       
 
 
        // $this->child=$child;
@@ -930,21 +930,18 @@ class Customer extends DB_Table {
 
 
 
+function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false){
 
-    function update_ship_to($data) {
 
-
-        $ship_to_key=$data['Ship To Key'];
-        $current_ship_to=$data['Current Ship To Is Other Key'];
-
-        if ($current_ship_to) {
+   if ($current_ship_to) {
             $principal='No';
 
         } else {
             $principal='Yes';
             $current_ship_to=$ship_to_key;
         }
-        $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
+
+ $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
 
@@ -952,10 +949,10 @@ class Customer extends DB_Table {
             $to_date=$row['Ship To Last Used'];
 
 
-            if (strtotime($data['Date'])< strtotime($from_date))
-                $from_date=$data['Date'];
-            if (strtotime($data['Date'])> strtotime($to_date))
-                $to_date=$data['Date'];
+            if (strtotime($date)< strtotime($from_date))
+                $from_date=$date;
+            if (strtotime($date)> strtotime($to_date))
+                $to_date=$date;
 
             $sql=sprintf('update `Customer Ship To Bridge` set `Ship To From Date`=%s,`Ship To Last Used`=%s,`Is Principal`=%s,`Ship To Current Key`=%d where `Customer Key`=%d and `Ship To Key`=%d',
 
@@ -973,13 +970,26 @@ class Customer extends DB_Table {
                          $this->id,
                          $ship_to_key,
                          prepare_mysql($principal),
-                         prepare_mysql($data['Date']),
-                         prepare_mysql($data['Date']),
+                         prepare_mysql($date),
+                         prepare_mysql($date),
                          $current_ship_to
                         );
             mysql_query($sql);
         }
 
+}
+
+
+
+    function update_ship_to($data) {
+
+
+        $ship_to_key=$data['Ship To Key'];
+        $current_ship_to=$data['Current Ship To Is Other Key'];
+
+$this->associate_ship_to_key($ship_to_key,$data['Date'],$current_ship_to);
+     
+       
 
         $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
                      $current_ship_to,
@@ -989,11 +999,22 @@ class Customer extends DB_Table {
 
 
 
-
         $this->update_ship_to_stats();
     }
 
+function update_last_ship_to_key(){
+$sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Customer Key`=%d  order by `Ship To Last Used` desc  ',$this->id);
+        $res2=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res2)) {
+           $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%s where `Customer Key`=%d",
+           prepare_mysql($row['Ship To Key']),
 
+                     $this->id
+                    );
+        mysql_query($sql);
+        }
+
+}
 
     function update_ship_to_stats() {
 
@@ -1114,6 +1135,8 @@ class Customer extends DB_Table {
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
+            
+            
             break;
         case('Customer Main Plain Mobile'):
             $subject=new Contact($this->data['Customer Main Contact Key']);
@@ -2515,37 +2538,30 @@ class Customer extends DB_Table {
     }
 
 
-    function add_attach($file,$data) {
-
-
-        $data=array(
-                  'file'=>$file
-                         ,'Attachment Caption'=>$data['Caption']
-                                               ,'Attachment MIME Type'=>$data['Type']
-                                                                       ,'Attachment File Original Name'=>$data['Original Name']
-              );
-
-
-        $attach=new Attachment('find',$data,'create');
-
-        if ($attach->new) {
-
-
-            $history_data=array(
-                              'History Abstract'=>$attach->get_abstract()
-                                                 ,'History Details'=>$attach->get_details()
-                                                                    ,'Action'=>'associated'
-                                                                              ,'Direct Object'=>'Attachment'
-                                                                                               ,'Prepostion'=>''
-                                                                                                             ,'Indirect Object'=>'Customer'
-                                                                                                                                ,'Indirect Object Key'=>$this->id
-                          );
-            $this->add_customer_history($history_data);
-            $this->updated=true;
-            $this->new_value='';
-        }
-
+function add_attach($file,$data) {
+    $data=array(
+              'file'=>$file,
+              'Attachment Caption'=>$data['Caption'],
+              'Attachment MIME Type'=>$data['Type'],
+              'Attachment File Original Name'=>$data['Original Name']
+          );
+    $attach=new Attachment('find',$data,'create');
+    if ($attach->new) {
+        $history_data=array(
+                          'History Abstract'=>$attach->get_abstract(),
+                          'History Details'=>$attach->get_details(),
+                          'Action'=>'associated',
+                          'Direct Object'=>'Attachment',
+                          'Prepostion'=>'',
+                          'Indirect Object'=>'Customer',
+                          'Indirect Object Key'=>$this->id
+                      );
+        $this->add_customer_history($history_data);
+        $this->updated=true;
+        $this->new_value='';
     }
+
+}
 
 
     function delivery_address_xhtml() {
@@ -2638,27 +2654,7 @@ class Customer extends DB_Table {
 
         $line=$address->display('3lines');
 
-        /*
-        Array
-        (
-            [Ship To Contact Name] =>
-            [Ship To Company Name] =>
-            [Ship To Line 1] =>
-            [Ship To Line 2] =>
-            [Ship To Line 3] =>
-            [Ship To Town] =>
-            [Ship To Line 4] =>
-            [Ship To Postal Code] =>
-            [Ship To Country Name] =>
-            [Ship To XHTML Address] =>
-            [Ship To Telephone] =>
-            [Ship To Email] =>
-            [Ship To Country Key] =>
-            [Ship To Country Code] => UNK
-            [Ship To Country 2 Alpha Code] => XX
-        )
-        */
-
+   
 
         $shipping_addresses['Ship To Line 1']=$line[1];
         $shipping_addresses['Ship To Line 2']=$line[2];
@@ -3362,12 +3358,21 @@ class Customer extends DB_Table {
     }
 
 
+
+
+
     function get_ship_to($date=false) {
+/*
+if($date){
+$this->get_ship_to_historic($date);
+return;
+}
+*/
 
         if (!$date) {
             $date=date("Y-m-d H:i:s");
         }
-        if ($this->data['Customer Active Ship To Records']==0) {
+        if ($this->data['Customer Active Ship To Records']==0 or !$this->data['Customer Last Ship To Key']) {
             $ship_to= $this->set_current_ship_to('return object');
 
             $data_ship_to=array(
@@ -3378,6 +3383,8 @@ class Customer extends DB_Table {
 
             $this->update_ship_to($data_ship_to);
         } else {
+
+            
 
             $ship_to= new Ship_To($this->data['Customer Last Ship To Key']);
         }

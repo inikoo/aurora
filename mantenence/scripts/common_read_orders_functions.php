@@ -492,8 +492,12 @@ function create_order($data) {
                     'Order Original Metadata'=>$store_code.$order_data_id,
                     'editor'=>$data['editor'],
                     'Order Public ID'=>$data['order id'],
-                    'Order Date'=>$date_order
+                    'Order Date'=>$date_order,
+                 'Order Tax Code'=>$tax_category_object->data['Tax Category Code']
                 );
+
+    if(isset($data['Order Ship To Key']))
+         $order_data['Order Ship To Key']=$data['Order Ship To Key'];
 
 
     $order=new Order('new',$order_data);
@@ -1304,6 +1308,8 @@ function uk_get_tax_code($header_data) {
         $tax_description='';
     }
     else {
+  //  print "calcl tax coed";
+    
         $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
         foreach($tax_rates as $_tax_code=>$_tax_rate) {
             // print "$_tax_code => $_tax_rate $tax_rate\n ";
@@ -1325,7 +1331,7 @@ function uk_get_tax_code($header_data) {
            );
 
 
-
+//print_r($data);
 
     return $data;
 }
