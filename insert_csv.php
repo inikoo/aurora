@@ -103,12 +103,14 @@ $scope_args=$_REQUEST['subject_key'];
 switch($scope){
 	case('customers_store'):
 	$tbl = "Customer Dimension";
-	$fld="Customer Store Key";
+	$fld = "Customer Store Key";
+	$pk = "Customer Key";
 	break;
 
 	case('supplier_products'):
-	$tbl="Supplier Product Dimension";
-	$fld="Supplier Key";
+	$tbl = "Supplier Product Dimension";
+	$fld = "Supplier Key";
+	$pk = "Supplier Product Key";
 	break;
 	default:
 }
