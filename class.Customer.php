@@ -634,6 +634,7 @@ class Customer extends DB_Table {
 
         $sql="insert into `Customer Dimension` ($keys) values ($values)";
         //  print $sql;
+      
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();
@@ -651,7 +652,7 @@ class Customer extends DB_Table {
             if ($this->data['Customer Type']=='Company') {
 
                 if (!$this->data['Customer Company Key']) {
-
+                        //print_r($raw_data);
                     $company=new company('find in customer fast create update',$raw_data);
                 } else {
                     $company=new company('id',$this->data['Customer Company Key']);
@@ -696,6 +697,7 @@ class Customer extends DB_Table {
 
 
             if ($this->data['Customer Type']=='Company') {
+ 
 
                 $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
@@ -704,21 +706,23 @@ class Customer extends DB_Table {
                 $mobile=new Telecom($contact->data['Contact Main Mobile Key']);
                 if ($mobile->id) {
 
-                    $contact->update_parents_principal_mobile_keys();
+                    $contact->update_parents_principal_mobile_keys(($this->new?false:true));
                     $mobile->editor=$this->editor;
                     $mobile->new=true;
-                    $mobile->update_parents();
+                    $mobile->update_parents(($this->new?false:true));
                 }
+
 
                 $address=new Address($company->data['Company Main Address Key']);
                 $address->editor=$this->editor;
                 $address->new=true;
+                //print_r($address);
 
                 $this->create_contact_address_bridge($address->id);
 
 
-                $address->update_parents_principal_telecom_keys('Telephone');
-                $address->update_parents_principal_telecom_keys('FAX');
+                $address->update_parents_principal_telecom_keys('Telephone',($this->new?false:true));
+                $address->update_parents_principal_telecom_keys('FAX',($this->new?false:true));
 
 
 
@@ -727,7 +731,7 @@ class Customer extends DB_Table {
                 $tel->new=true;
 
                 if ($tel->id)
-                    $tel->update_parents();
+                    $tel->update_parents(($this->new?false:true));
 
 
 
@@ -735,8 +739,7 @@ class Customer extends DB_Table {
                 $fax->editor=$this->editor;
                 $fax->new=true;
                 if ($fax->id)
-                    $fax->update_parents();
-
+                    $fax->update_parents(($this->new?false:true));
 
 
 
@@ -744,7 +747,7 @@ class Customer extends DB_Table {
             } else {
                 $this->associate_contact($contact->id);
 
-                //$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
+                //$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key'],($this->new?false:true));
 
 
 
@@ -757,7 +760,7 @@ class Customer extends DB_Table {
 
                 $this->create_contact_address_bridge($address->id);
 
-                $address->update_parents();
+                $address->update_parents(false,($this->new?false:true));
 
                 $this->get_data('id',$this->id);
 
@@ -769,14 +772,16 @@ class Customer extends DB_Table {
                 $tel->new=true;
                 if ($tel->id)
 
-                    $tel->update_parents();
+                    $tel->update_parents(($this->new?false:true));
                 $fax=new Telecom($address->get_principal_telecom_key('FAX'));
                 $fax->editor=$this->editor;
                 $fax->new=true;
                 if ($fax->id)
 
-                    $fax->update_parents();
+                    $fax->update_parents(($this->new?false:true));
             }
+
+
 
 
 
@@ -787,7 +792,7 @@ class Customer extends DB_Table {
             $email->editor=$this->editor;
             $email->new=true;
             if ($email->id) {
-                $email->update_parents();
+                $email->update_parents(($this->new?false:true));
 
             }
 
@@ -2310,6 +2315,9 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
     }
 
     function get_tax_number($reread=false) {
+     return $this->data['Customer Tax Number'];
+    
+    /*
         if ($this->tax_number_read and $reread)
             return $this->data['Customer Tax Number'];
 
@@ -2334,7 +2342,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
             return '';
         }
 
-
+*/
 
 
     }
@@ -2533,7 +2541,8 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
     function add_customer_history($history_data,$force_save=true,$deleteable='No') {
         $history_key=$this->add_history($history_data,$force_save=true);
         $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
-        mysql_query($sql);
+      // print $sql;
+       mysql_query($sql);
         return $history_key;
     }
 
@@ -2887,7 +2896,7 @@ function add_attach($file,$data) {
 
 
             $this->data['Customer Company Key']=$company->id;
-            $company->update_parents();
+            $company->update_parents(($this->new?false:true));
 
         }
 
@@ -2918,9 +2927,7 @@ function add_attach($file,$data) {
 
 
             $this->data['Customer Main Contact Key']=$contact->id;
-
-            $contact->update_parents();
-
+            $contact->update_parents(($this->new?false:true));
         }
 
     }
@@ -3177,7 +3184,7 @@ function add_attach($file,$data) {
                      ,$this->id
                     );
         mysql_query($sql);
-
+//print $sql;
         if ($update_other_address_type) {
             if ($this->data['Customer Delivery Address Link']=='Contact') {
                 $this->update_principal_delivery_address($address_key);
@@ -3189,7 +3196,10 @@ function add_attach($file,$data) {
             }
         }
         $address=new Address($address_key);
-        $address->update_parents('Customer');
+        $address->editor=$this->editor;
+       
+        $address->update_parents('Customer',($this->new?false:true));
+        
 
         $this->updated=true;
         $this->new_value=$address_key;
@@ -3242,7 +3252,7 @@ function add_attach($file,$data) {
                          ,$this->id);
             $this->data['Customer Main Delivery Address Key']=$address->id;
             mysql_query($sql);
-            $address->update_parents();
+            $address->update_parents(false,($this->new?false:true));
             $this->get_data('id',$this->id);
             $this->updated=true;
             $this->new_value=$address->id;
@@ -3291,8 +3301,9 @@ function add_attach($file,$data) {
                          ,$this->id);
             $this->data['Customer Billing Address Key']=$address->id;
             mysql_query($sql);
-
-            $address->update_parents();
+ 
+            $address->update_parents(false,($this->new?false:true));
+         
             $this->get_data('id',$this->id);
             $this->updated=true;
             $this->new_value=$address->id;

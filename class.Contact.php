@@ -2134,7 +2134,7 @@ class Contact extends DB_Table {
 
 
 
-    function update_parents() {
+    function update_parents($add_parent_history=true) {
 
         $parents=array('Company','Customer','Supplier','Staff');
         foreach($parents as $parent) {
@@ -2167,6 +2167,7 @@ class Contact extends DB_Table {
                     $parent_object=new Staff($row['Parent Key']);
                     $parent_label=_('Staff');
                 }
+                $parent_object->editor=$this->editor;
                 $old_principal_contact=$parent_object->data[$col_contact_name];
                 $parent_object->data[$col_contact_name]=$this->display('name');
                 $sql=sprintf("update `$parent Dimension` set `$col_contact_name`=%s where `$parent Key`=%d"
@@ -2189,7 +2190,7 @@ class Contact extends DB_Table {
                     $principal_contact_changed=true;
 
 
-                if ($principal_contact_changed) {
+                if ($principal_contact_changed and $add_parent_history) {
 
                     if ($old_principal_contact=='') {
 
@@ -2235,7 +2236,7 @@ class Contact extends DB_Table {
                 $email->editor=$this->editor;
                 $email->new=$this->new;
                 if ($email->id)
-                    $email->update_parents();
+                    $email->update_parents($add_parent_history);
 
             }
         }

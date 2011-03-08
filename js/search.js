@@ -28,8 +28,9 @@ search_scope='orders';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders);
   break;
   case 'orders_store':
+ 
 search_scope='orders_store';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(orders_store);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_store);
   break;
 case 'products':
 search_scope='products';

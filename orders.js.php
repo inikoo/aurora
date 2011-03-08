@@ -273,9 +273,11 @@ YAHOO.util.Event.addListener('export_csv2', "click",download_csv,'dn');
    
  YAHOO.util.Event.addListener('export_csv2_close_dialog', "click",csvMenu.hide,csvMenu,true);
 // ------------------------------------------------------------------------------------
-init_search('orders_store');
- 
 
+
+init_search('orders_store');
+
+ 
     Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 Event.addListener('clean_table_filter_show1', "click",show_filter,1);

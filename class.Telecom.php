@@ -1117,7 +1117,7 @@ class Telecom extends DB_Table {
 
     }
 
-    function update_parents() {
+    function update_parents($add_parent_history=true) {
 
         //print $this->id;
 
@@ -1160,7 +1160,7 @@ class Telecom extends DB_Table {
                     $parent_object=new Address($row["Parent Key"]);
                     $parent_label=_("Address");
                 }
-
+  $parent_object->editor=$this->editor;
                 $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
                 $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
                 $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
@@ -1177,7 +1177,7 @@ class Telecom extends DB_Table {
                 if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
                     $principal_telecom_changed=true;
 
-                if ($principal_telecom_changed) {
+                if ($principal_telecom_changed and $add_parent_history) {
 
 
                     if ($old_princial_telecom=="") {
@@ -1204,6 +1204,7 @@ class Telecom extends DB_Table {
 
                     }
                     if ($parent=='Customer') {
+                     //   print_r($history_data);
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);

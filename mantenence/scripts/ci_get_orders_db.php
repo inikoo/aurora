@@ -806,18 +806,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $supplier=new Supplier('code',$supplier_code);
             if (!$supplier->id) {
                 $the_supplier_data=array(
-                                       'Supplier Name'=>$supplier_code
-                                                       ,'Supplier Code'=>$supplier_code
+                                       'Supplier Name'=>$supplier_code,
+                                            'Supplier Code'=>$supplier_code,
+                                             'editor'=>$editor
                                    );
 
                 if ( $supplier_code=='Unknown'  ) {
                     $the_supplier_data=array(
-                                           'Supplier Name'=>'Unknown Supplier'
-                                                           ,'Supplier Code'=>$supplier_code
+                                           'Supplier Name'=>'Unknown Supplier',
+                                            'Supplier Code'=>$supplier_code,
+                                             'editor'=>$editor
                                        );
                 }
 
-                $supplier=new Supplier('new',$the_supplier_data);
+                $supplier=new Supplier('find',$the_supplier_data,'create update');
             }
 
 
