@@ -11,6 +11,8 @@
 
  Version 2.0
 */
+/*ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
 include_once('common.php');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -89,6 +91,13 @@ $js_files=array(
 	       $ignore[]=array_diff($previous,$arr);
 		//print_r($ignore);
 		//print_r($arr);
+
+if(!isset($_REQUEST['subject'])){
+exit("to do a page where the user can choose the correct options");
+}
+if(!isset($_REQUEST['subject_key'])){
+exit("to do a page where the user can choose the correct options");
+}
 $scope=$_REQUEST['subject'];
 $scope_args=$_REQUEST['subject_key'];
 switch($scope){
@@ -105,10 +114,11 @@ switch($scope){
 }
 
 // Importing to database //
-//for($x=1; $k<count($arr); $x++){
-	//$data=$arr[$x];
-	//$no_inserts=insert($data, $tbl, $fld, $scope_args);
-//}
+/*for($x=1; $x<count($arr); $x++){
+	$data=$arr[$x];
+	insert($data, $tbl, $fld, $scope_args);
+}*/
+
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('arr',$arr);
@@ -146,10 +156,12 @@ function insert($raw_data, $table, $fld, $scope_args) {
 	} else $sql .= ", '$scope_args') ";
 	next($data);
 	}
-	//echo $sql;echo"<br/>";
 	//execute the query
-	mysql_query($sql);
-	return mysql_affected_rows();
+	//echo $sql;echo "<br />";
+	//mysql_query($sql) or die("query failed ".mysql_error());
+	$query=mysql_query($sql);
+	if($query){ return true; }else{ return false;}
+	//return mysql_affected_rows();
 }
 
 function dataprotection($data){
