@@ -4697,18 +4697,21 @@ class Address extends DB_Table {
                         $history_data['Indirect Object']='Address';
                         $history_data['Indirect Object Key']=$this->id;
 
-                        $this->add_history($history_data);
                     } else {
                         $history_data['History Abstract']='Address Changed';
-                        $history_data['History Details']=_('Address changed from').' '.$old_princial_address.' '._('to').' '.$this->display('xhtml')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['History Details']=_('Address changed from').' <div style="border:1px solid grey;padding:5px;width:250px">'.$old_princial_address.'</div> '._('to').' <div tyle="border:1px solid grey;padding:5px;width:250px">'.$this->display('xhtml')."</div> "._('in')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='changed';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Address';
                         $history_data['Indirect Object Key']=$this->id;
 
-                        $this->add_history($history_data);
 
+                    }
+                    if ($parent=='Customer') {
+                        $parent_object->add_customer_history($history_data);
+                    } else {
+                        $this->add_history($history_data);
                     }
 
                 }
@@ -4722,18 +4725,7 @@ class Address extends DB_Table {
 
     }
 
-    function xupdate_parents() {
-//       $this->data['Company Main Address Key']=$address->id;
-        //  $this->data['Company Main XHTML Address']=$address->display('xhtml');
-        //  $this->data['Company Main Plain Address']=$address->display('plain');
-        //  $this->data['Company Main Country Key']=$address->data['Address Country Key'];
-        //  $this->data['Company Main Country']=$address->data['Address Country Name'];
-        //  $this->data['Company Main Country Code']=$address->data['Address Country Code'];
-        //  $this->data['Company Main Location']=$address->display('location');
 
-
-
-    }
 
     function associate_telecom($telecom_key,$type) {
 

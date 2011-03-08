@@ -96,7 +96,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0300.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0737.xls' ) order by filename";
 
 
 $contador=0;
@@ -971,13 +971,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             if (!$supplier->id) {
                 $the_supplier_data=array(
                                        'Supplier Name'=>$supplier_code,
-                                                       'Supplier Code'=>$supplier_code
+                                       'Supplier Code'=>$supplier_code
                                    );
 
                 if ( $supplier_code=='Unknown'  ) {
                     $the_supplier_data=array(
                                            'Supplier Name'=>'Unknown Supplier',
-                                                           'Supplier Code'=>$supplier_code
+                                           'Supplier Code'=>$supplier_code
                                        );
                 }
 
@@ -1314,7 +1314,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         }
         else {
+            //print_r( $data['Customer Data']);
+            //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
             $customer = new Customer ( 'find create', $data['Customer Data'] );
+
+
         }
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
@@ -1327,6 +1331,33 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             //print_r($shipping_addresses);
             $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
             $customer->create_delivery_address_bridge($address->id);
+        }
+
+
+        $country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
+
+        $shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
+        $shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
+        $shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
+        $shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
+        $shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
+        $shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
+        $shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
+        $shipping_addresses['Ship To Country Key']=$country->id;
+        $shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
+        $shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
+        $shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
+
+        $ship_to= new Ship_To('find create',$shipping_addresses);
+
+        if ($ship_to->id) {
+
+            $customer->associate_ship_to_key($ship_to->id,$date_order,false);
+            $data['Order Ship To Key']=$ship_to->id;
+
+        } else {
+
+            exit("no ship tp in de_get_otders shit\n");
         }
 
         $data['Order Customer Key']=$customer->id;

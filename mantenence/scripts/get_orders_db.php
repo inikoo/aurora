@@ -103,9 +103,9 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls' )
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/b/%.xls' or like '%/a/%.xls' or  like '%/c/%.xls' order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/59113.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/123964.xls'   order by filename";
 
-//$sql="select * from  orders_data.orders where filename like '%/7926.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/6911.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -118,6 +118,10 @@ $contador=0;
 //print $sql;
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+$customer_key_from_order_data=$row2['customer_id'];
+    $customer_key_from_excel_order=0 ;
+
     $sql="select * from orders_data.data where id=".$row2['id'];
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1325,19 +1329,72 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 print "Warning staff not identified ";
             }
 //print_r($data['Customer Data'] );
-            $customer = new Customer ( 'find create', $data['Customer Data'] );
-            if (!$customer->id) {
-                exit("Error Customer can not found in get_order\n");
-
-            }
 
 
-            if ($customer_data['Customer Delivery Address Link']=='None') {
-                $shipping_addresses['Address Input Format']='3 Line';
-                $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
-                // print_r($address);
-                $customer->create_delivery_address_bridge($address->id);
-            }
+
+        if ($customer_key_from_excel_order) {
+            $customer = new Customer($customer_key_from_excel_order);
+        }
+        elseif($customer_key_from_order_data) {
+            //print "using customer key from order data   $customer_key_from_order_data ";
+            $customer = new Customer($customer_key_from_order_data);
+
+        }
+        else {
+            $customer = new Customer ( 'find create update', $data['Customer Data'] );
+        }
+        if (!$customer->id) {
+            print "Error !!!! customer not found\n";
+            print_r($customer);
+           exit;
+        }
+
+         $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+        mysql_query($sql);
+
+
+        if ($customer_data['Customer Delivery Address Link']=='None') {
+            $shipping_addresses['Address Input Format']='3 Line';
+            //print_r($shipping_addresses);
+            $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
+            $customer->create_delivery_address_bridge($address->id);
+        }
+
+
+        $country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
+
+        $shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
+        $shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
+        $shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
+        $shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
+        $shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
+        $shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
+        $shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
+        $shipping_addresses['Ship To Country Key']=$country->id;
+        $shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
+        $shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
+        $shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
+
+        $ship_to= new Ship_To('find create',$shipping_addresses);
+
+        if ($ship_to->id) {
+
+            $customer->associate_ship_to_key($ship_to->id,$date_order,false);
+            $data['Order Ship To Key']=$ship_to->id;
+
+        } else {
+
+            exit("no ship tp in de_get_otders shit\n");
+        }
+
+        $data['Order Customer Key']=$customer->id;
+        $customer_key=$customer->id;
+
+
+
+
+
+
         }
 
         $data['Order Customer Key']=$customer->id;
@@ -1406,9 +1463,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "Unknown Order $tipo_order\n";
             break;
         }
-        $store=new Store($store_key);
-        $store->update_orders();
-        $store->update_customers_data();
+        //$store=new Store($store_key);
+        //$store->update_orders();
+        //$store->update_customers_data();
 
 
         print "\n";

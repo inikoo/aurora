@@ -448,6 +448,12 @@ class Company extends DB_Table {
 
         $contact_created=false;
 
+//print_r($this->candidate);
+//  print_r($this->candidate);
+
+//exit('company,php');
+
+
         if ($create or $update) {
          
            // print "Company founded ".$this->found_key." ".$this->found." \n";
@@ -2473,16 +2479,16 @@ class Company extends DB_Table {
 
                     if ($old_principal_name=='') {
 
-                        $history_data['History Abstract']='Company Associated';
+                        $history_data['History Abstract']='Company Associated '.$this->data['Company Name'];
                         $history_data['History Details']=$this->data['Company Name']." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
                         $history_data['Direct Object']='Company';
                         $history_data['Direct Object Key']=$this->id;
                         $history_data['Indirect Object']=$parent;
                         $history_data['Indirect Object Key']=$parent_object->id;
-                        $this->add_history($history_data);
+                       
                     } else {
-                        $history_data['History Abstract']='Name Changed';
+                        $history_data['History Abstract']='Company name changed to '.$this->data['Company Name'];
                         $history_data['History Details']=_('Name changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Company Name']." "._('in')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='changed';
                         $history_data['Direct Object']=$parent;
@@ -2490,8 +2496,13 @@ class Company extends DB_Table {
                         $history_data['Indirect Object']=$parent.' Name';
                         $history_data['Indirect Object Key']='';
 
-                        $this->add_history($history_data);
+                       
 
+                    }
+                       if ($parent=='Customer') {
+                        $parent_object->add_customer_history($history_data);
+                    } else {
+                        $this->add_history($history_data);
                     }
 
                 }

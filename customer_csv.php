@@ -88,7 +88,7 @@ $export_data=array(
 		   ,$customer->data['Customer Main Postal Code']
 		   ,$customer->data['Customer Main Country']
 		   ,"Staff"
-		   ,$customer->data['Customer Main XHTML Telephone']
+		   ,($customer->data['Customer Main XHTML Telephone']==''?$customer->data['Customer Main XHTML Mobile']:$customer->data['Customer Main XHTML Telephone'])
 		   ,$customer->data['Customer Main XHTML FAX']
 		   ,"a"
 		   ,"mobile"

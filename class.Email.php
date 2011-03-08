@@ -555,16 +555,15 @@ return;
                 if ($principal_email_changed) {
 
                     if ($old_princial_email=='') {
-                        $history_data['History Abstract']='Email Associated';
+                        $history_data['History Abstract']='Email Associated '.$this->display('plain');
                         $history_data['History Details']=$this->display('plain')." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Email';
                         $history_data['Indirect Object Key']=$this->id;
-                        $this->add_history($history_data);
                     } else {
-                        $history_data['History Abstract']='Email Changed';
+                        $history_data['History Abstract']='Email Changed to '.$this->display('plain');
                         $history_data['History Details']=_('Email changed from').' '.$old_princial_email.' '._('to').' '.$this->display('plain')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='changed';
                         $history_data['Direct Object']=$parent;
@@ -572,9 +571,14 @@ return;
                         $history_data['Indirect Object']='Email';
                         $history_data['Indirect Object Key']=$this->id;
 
-                        $this->add_history($history_data);
 
                     }
+                     if ($parent=='Customer') {
+                        $parent_object->add_customer_history($history_data);
+                    } else {
+                        $this->add_history($history_data);
+                    }
+                    
 
                 }
 

@@ -455,7 +455,28 @@ class Order extends DB_Table {
                 $this->data ['Order Date'] =$data['Order Date'];
             else
                 $this->data ['Order Date'] = date('Y-m-d H:i:s');
+                
+                if(isset($data['Order Ship To Key'])){
+            
+             $this->ship_to=new Ship_To($data['Order Ship To Key']);
+            } 
+                
+                //print_r($this->ship_to);
+                
+                
+             
+                
             $this->set_data_from_customer($data['Customer Key']);
+           
+              $this->data ['Order Ship To Key To Deliver']=$this->ship_to->id;
+        $this->data ['Destination Country 2 Alpha Code']=($this->ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$this->ship_to->data['Ship To Country 2 Alpha Code']);
+        $this->data ['Order XHTML Ship Tos']=$this->ship_to->data['Ship To XHTML Address'];
+        $this->data ['Order Ship To Keys']=$this->ship_to->id;
+        $this->data ['Order Ship To Country Code']=($this->ship_to->data['Ship To Country Code']==''?'UNK':$this->ship_to->data['Ship To Country Code']);
+            
+                            
+
+            
             $this->data ['Order Current Dispatch State'] = 'In Process';
             $this->data ['Order Current Payment State'] = 'Waiting Payment';
             $this->data ['Order Current XHTML State'] = 'In Process';
@@ -2657,13 +2678,13 @@ class Order extends DB_Table {
         if (!$store_key) {
             $store_key=$customer->data['Customer Store Key'];
         }
-
-        $ship_to=$customer->get_ship_to($this->data['Order Date']);
-        $this->data ['Order Ship To Key To Deliver']=$ship_to->id;
-        $this->data ['Destination Country 2 Alpha Code']=($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
-        $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
-        $this->data ['Order Ship To Keys']=$ship_to->id;
-        $this->data ['Order Ship To Country Code']=($ship_to->data['Ship To Country Code']==''?'UNK':$ship_to->data['Ship To Country Code']);
+ 
+   // print "xxxx".is_object($this->ship_to)."x".."xx";
+ if(!(is_object($this->ship_to) and $this->ship_to->id)){
+// print "xxxxxxxxxxxxxxxxxxxxx";
+ 
+        $this->ship_to=$customer->get_ship_to($this->data['Order Date']);
+      }
 
         $this->billing_address=new Address($customer->data['Customer Main Address Key']);
         $this->data ['Order Customer Key'] = $customer->id;

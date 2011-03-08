@@ -139,8 +139,8 @@ $contador=0;
 //print $sql;
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    //if($row2['filename']=='/media/sda3/share/Orders2005/60000604.xls')
-    // exit();
+    $customer_key_from_order_data=$row2['customer_id'];
+    $customer_key_from_excel_order=0 ;
     $sql="select * from ci_orders_data.data where id=".$row2['id'];
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -150,23 +150,28 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_credit_value=0;
         $update=false;
         $old_order_key=0;
-        
-        
+
+
         $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
-$result_test=mysql_query($sql);
-if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-    if ($row_test['num']==0) {
-        $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
-                     ,prepare_mysql($store_code.$order_data_id));
-        $result_test2=mysql_query($sql);
-        if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
-            if ($row_test2['num']==0) {
-                $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+        $result_test=mysql_query($sql);
+        if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+            if ($row_test['num']==0) {
+                $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
                              ,prepare_mysql($store_code.$order_data_id));
-                $result_test3=mysql_query($sql);
-                if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
-                    if ($row_test3['num']==0) {
-                        print "NEW $contador $order_data_id $filename ";
+                $result_test2=mysql_query($sql);
+                if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+                    if ($row_test2['num']==0) {
+                        $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                                     ,prepare_mysql($store_code.$order_data_id));
+                        $result_test3=mysql_query($sql);
+                        if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                            if ($row_test3['num']==0) {
+                                print "NEW $contador $order_data_id $filename ";
+                            } else {
+                                $update=true;
+                                print "UPD $contador $order_data_id $filename ";
+                            }
+                        }
                     } else {
                         $update=true;
                         print "UPD $contador $order_data_id $filename ";
@@ -177,14 +182,9 @@ if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
                 print "UPD $contador $order_data_id $filename ";
             }
         }
-    } else {
-        $update=true;
-        print "UPD $contador $order_data_id $filename ";
-    }
-}
-mysql_free_result($result_test);
-        
-        
+        mysql_free_result($result_test);
+
+
 
 
         $_header=mb_unserialize($row['header']);
@@ -282,17 +282,17 @@ mysql_free_result($result_test);
 
 
 
-$editor=array(
-                            'Date'=>$date_order,
-                            'Author Name'=>'',
-                            'Author Alias'=>'',
-                            'Author Type'=>'',
-                            'Author Key'=>0,
-                            'User Key'=>0,
-                        );
+        $editor=array(
+                    'Date'=>$date_order,
+                    'Author Name'=>'',
+                    'Author Alias'=>'',
+                    'Author Type'=>'',
+                    'Author Key'=>0,
+                    'User Key'=>0,
+                );
 
-      
- $data['editor']=$editor;
+
+        $data['editor']=$editor;
 
 
         $header_data['Order Main Source Type']='Unknown';
@@ -647,7 +647,7 @@ $editor=array(
 
             if ($transaction['units']=='' OR $transaction['units']<=0)
                 $transaction['units']=1;
-   $transaction['original_price']=$transaction['price'];
+            $transaction['original_price']=$transaction['price'];
             if (!is_numeric($transaction['price']) or $transaction['price']<=0) {
                 //       print "Price Zero ".$transaction['code']."\n";
                 $transaction['price']=0;
@@ -922,8 +922,8 @@ $editor=array(
 
             // $scode= preg_replace('/\?/i','_unk',$scode);
 
-          
-   
+
+
 
             $sp_data=array(
                          'Supplier Key'=>$supplier->id,
@@ -944,31 +944,31 @@ $editor=array(
             $to_update['parts'][$part->sku]=1;
 
 
-           $spp_header=array(
-			  'Supplier Product Part Type'=>'Simple',
-		       'Supplier Product Part Most Recent'=>'Yes',
-		       'Supplier Product Part Valid From'=>$date_order,
-		       'Supplier Product Part Valid To'=>$date2,
-		       'Supplier Product Part In Use'=>'Yes',
-		       'Supplier Product Part Metadata'=>''
-		       );
+            $spp_header=array(
+                            'Supplier Product Part Type'=>'Simple',
+                            'Supplier Product Part Most Recent'=>'Yes',
+                            'Supplier Product Part Valid From'=>$date_order,
+                            'Supplier Product Part Valid To'=>$date2,
+                            'Supplier Product Part In Use'=>'Yes',
+                            'Supplier Product Part Metadata'=>''
+                        );
 
-	$spp_list=array(
-			array(
-			      'Part SKU'=>$part->data['Part SKU'],
-			      'Supplier Product Units Per Part'=>$transaction['units'],
-			      'Supplier Product Part Type'=>'Simple'
-			      )
-			);
-	$supplier_product->new_historic_part_list($spp_header,$spp_list);
+            $spp_list=array(
+                          array(
+                              'Part SKU'=>$part->data['Part SKU'],
+                              'Supplier Product Units Per Part'=>$transaction['units'],
+                              'Supplier Product Part Type'=>'Simple'
+                          )
+                      );
+            $supplier_product->new_historic_part_list($spp_header,$spp_list);
 
 
-          
+
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 
 
-           create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
+            create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 
         }//end loop transactions
 
@@ -1045,7 +1045,7 @@ $editor=array(
         // print_r($products_data);
         // exit;
 
-     
+
 
 
 
@@ -1080,10 +1080,10 @@ $editor=array(
         if ($lag==0 or $lag<0)
             $lag='';
         $taxable='Yes';
-*/
+        */
 
 
-  //Tipo order
+        //Tipo order
         // 1 DELIVERY NOTE
         // 2 INVOICE
         // 3 CANCEL
@@ -1099,7 +1099,7 @@ $editor=array(
 
 
         if ($update) {
-           delete_old_data();
+            delete_old_data();
         }
 
 
@@ -1112,35 +1112,75 @@ $editor=array(
             }
         }
 
-   
-   
-  
-      $data['editor']=$editor;
 
-get_data($header_data);
+
+
+        $data['editor']=$editor;
+
+        get_data($header_data);
         $tax_category_object=get_tax_code($store_code,$header_data);
         $data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
-        //print_r($data['Customer Data']);
-        
-        
-        
-        
-        $customer = new Customer ( 'find create', $data['Customer Data'] );
-       
-               if($customer_data['Customer Delivery Address Link']=='None'){
-       $shipping_addresses['Address Input Format']='3 Line';
-       //print_r($shipping_addresses);
-       $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
-       $customer->create_delivery_address_bridge($address->id);
-       }
-  
-        $data['Order Customer Key']=$customer->id;
-      $customer_key=$customer->id;
 
- 
-       
+
+        if ($customer_key_from_excel_order) {
+            $customer = new Customer($customer_key_from_excel_order);
+        }
+        elseif($customer_key_from_order_data) {
+            //print "using customer key from order data   $customer_key_from_order_data ";
+            $customer = new Customer($customer_key_from_order_data);
+
+        }
+        else {
+            $customer = new Customer ( 'find create update', $data['Customer Data'] );
+        }
+        if (!$customer->id) {
+            print "Error !!!! customer not found\n";
+            continue;
+        }
+
+         $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+        mysql_query($sql);
+
+
+        if ($customer_data['Customer Delivery Address Link']=='None') {
+            $shipping_addresses['Address Input Format']='3 Line';
+            //print_r($shipping_addresses);
+            $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
+            $customer->create_delivery_address_bridge($address->id);
+        }
+
+
+        $country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
+
+        $shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
+        $shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
+        $shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
+        $shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
+        $shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
+        $shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
+        $shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
+        $shipping_addresses['Ship To Country Key']=$country->id;
+        $shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
+        $shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
+        $shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
+
+        $ship_to= new Ship_To('find create',$shipping_addresses);
+
+        if ($ship_to->id) {
+
+            $customer->associate_ship_to_key($ship_to->id,$date_order,false);
+            $data['Order Ship To Key']=$ship_to->id;
+
+        } else {
+
+            exit("no ship tp in de_get_otders shit\n");
+        }
+
+        $data['Order Customer Key']=$customer->id;
+        $customer_key=$customer->id;
+
         switch ($tipo_order) {
         case 1://Delivery Note
             print "DN";
@@ -1206,7 +1246,7 @@ get_data($header_data);
         }
 
 
- $store=new Store($store_key);
+        $store=new Store($store_key);
         $store->update_orders();
         $store->update_customers_data();
 
