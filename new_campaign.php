@@ -41,7 +41,7 @@ $js_files=array(
 		'js/edit_common.js',
 		'js/list_function.js',
 		'js/create_campaign.js',
-                'js/jquery-1.4.4.js',
+                'js/jquery-1.3.2.min.js',
 		'customer_list_marketing.js.php',
 		'external_libs/ckeditor/ckeditor.js'
 		);
