@@ -2,6 +2,7 @@
 include_once('common.php');
 
 if (!$user->can_view('customers') or count($user->stores)==0 ) {
+	
     header('Location: index.php');
     exit;
 }
@@ -14,6 +15,7 @@ if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
 }
 
 if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+	
     header('Location: index.php');
     exit;
 }
