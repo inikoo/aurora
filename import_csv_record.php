@@ -89,10 +89,14 @@
 			switch($scope){
 				case('customers_store'):
 				$tbl = "Customer Dimension";
+				$fld = "Customer Store Key";
+				$pk = "Customer Key";
 				break;
 
 				case('supplier_products'):
 				$tbl="Supplier Product Dimension";
+				$fld = "Supplier Key";
+				$pk = "Supplier Product Key";
 				break;
 
 				default:
@@ -100,8 +104,12 @@
 		$query = mysql_query("Select * from `$tbl` LIMIT 1");
 		$res=mysql_fetch_assoc($query);
 		foreach($res as $key=>$value){
-			//array_push($selectBox, $key);
+
+			if($key==$fld || $key==$pk){
+				continue;
+			}else{
 			$selectBox[$key]=$key; // generates associative array //
+			}
 		}
 
 		foreach($selectBox as $key=>$value) {
