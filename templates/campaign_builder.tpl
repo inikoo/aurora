@@ -44,11 +44,12 @@
 	<div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid rgb(153, 153, 153);"></div>
          <span style="font-size:11px;">{$campaign_size} records<span>
      <div style="clear: both; margin: 0pt 0px; padding: 0pt 20px; border-bottom: 1px solid #4682b4;"></div>
+<form action="check_template.php" method="POST" name="myForm" id="myForm" onsubmit="return SelectUrl()">
       <table width="913">
            <tr style="border-bottom:1px #4682b4 solid;"><td class="campaign_header" style="padding-left:20px;">Name</td><td class="campaign_header">Maximum Emails</td><td class="campaign_header">Campaign Objective</td><td class="campaign_header">Status</td>
            
 	   </tr>
-<form action="check_template.php" method="POST" name="myForm" id="myForm" onsubmit="return SelectUrl()">
+
 {section name="i" loop="$campaign"}
 	
     <tr bgcolor="{cycle values=#f2f2ff,#ffffff}"> {* CHANGE HERE *}
@@ -73,12 +74,16 @@
 	
 {if !isset($no_record) }
 
-
+<div>
+	<table>
+		<tr>
 		<input type="hidden" value="0" id="theValue" />
 		<input type="text" name="email[]" id="email" size="30"> <img onclick="addElement();" src="art/icons/add.png">
 
-		<div id="myDiv"> </div> 
-		
+		<div id="myDiv"> </div> </td>
+		</tr>	
+	</table>
+</div>
 
  <span style="font-size:11px; color:#445695; font-weight:500;">(Please select the default email template or create it)</span><br><br>
 	<b id="showr">Select Template &nbsp;&nbsp;</b>
