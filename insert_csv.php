@@ -102,22 +102,22 @@ $scope=$_REQUEST['subject'];
 $scope_args=$_REQUEST['subject_key'];
 switch($scope){
 	case('customers_store'):
-	$tbl = "Customer Dimension2";
+	$tbl = "Customer Dimension";
 	$fld="Customer Store Key";
 	break;
 
 	case('supplier_products'):
-	$tbl="Supplier Product Dimension2";
+	$tbl="Supplier Product Dimension";
 	$fld="Supplier Key";
 	break;
 	default:
 }
 
 // Importing to database //
-for($x=1; $x<count($arr); $x++){
+/*for($x=1; $x<count($arr); $x++){
 	$data=$arr[$x];
 	insert($data, $tbl, $fld, $scope_args);
-}
+}*/
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
