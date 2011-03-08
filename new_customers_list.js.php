@@ -3,7 +3,7 @@ include_once('common.php');
 ?>
 
     var Dom   = YAHOO.util.Dom;
- var store_id=<?php echo $_REQUEST['store_id'];?>;
+ //var store_id=<?php echo $_REQUEST['store_id'];?>;
 
 var searched=false;
 function get_search_list()

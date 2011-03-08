@@ -5,25 +5,30 @@
 {include file='marketing_navigation.tpl'}
 
 {literal}
-<script language="javascript">
-var ct = 1;
-function addEmail()
-{
-ct++;
-  $('#emailAddress').after('<tr><td></td><td><b>:</b></td><td align="right"> <input type="text" name="email_address[]"size="30" value=""></td><tr>');
-
-
-
+<script>
+function addElement() {
+  var ni = document.getElementById('myDiv');
+  var numi = document.getElementById('theValue');
+  var num = (document.getElementById('theValue').value -1)+ 2;
+  numi.value = num;
+  var newdiv = document.createElement('div');
+  var divIdName = 'my'+num+'Div';
+  newdiv.setAttribute('id',divIdName);
+alert(divIdName);
+  newdiv.innerHTML = '<input type="text" name="email[]" size="30" style="margin-top:5px;"> <a  href=\'#\' onclick=\"removeElement(\"'+divIdName+'\")\">Remove </a>';
+  ni.appendChild(newdiv);
 }
-function submitform()
-{
-  document.campaign.submit();
+
+function removeElement(divNum) {
+alert(divNum);
+  //var d = document.getElementById('div');
+  //var olddiv = document.getElementById(divNum);
+  //d.removeChild(olddiv);
 }
-
-
 </script>
 
 {/literal}
+
 
 
  
@@ -60,8 +65,9 @@ function submitform()
       <h2 style="clear:both">{t}Create Campaign{/t} <span style="padding-left:300px;">{$link}</span></h2>
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div">{$msg}</div>
-      <table border="0" width="700">
-	<form action="create_campaign_data2.php" method="post" name="campaign" id="campaign">
+   
+	<form action="create_campaign_datadd.php" method="get" name="campaign" id="campaign">  
+ <table border="0" width="700">
 	<tr>
 	  <td width="300"> Select list </td><td><b>:</b></td><td align="right"> 
 
@@ -74,17 +80,15 @@ function submitform()
 		
 	 </td>
 	</tr>	
-<tr id="emailAddress">
-	  <td width="300"> Email Address   </td><td><b>:</b></td><td align="right"> <input type="text" name="email_address[]" id="email_address" size="30" value="">
-         <img onclick="addEmail()" title="Add Email" src="art/icons/add.png">
- </td>
-	</tr>
+	<tr>
+	  <td width="300"> Campaign Email id(add data mannualy)   </td><td><b>:</b></td><td align="right"><input type="hidden" value="0" id="theValue" />
+<input type="text" name="email[]" id="email" size="30"> <img onclick="addElement();" src="art/icons/add.png">
 
+<div id="myDiv"> </div> </td>
+	</tr>
 	<tr>
 	  <td width="300"> Campaign Name   </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30" value="{$campaign_name}"> </td>
 	</tr>
-
-	
 	<tr>
 	  <td> Campaign Objective  </td><td><b>:</b></td><td> <input type="text" name="campaign_obj" id="campaign_obj" size="30" value="{$campaign_obj}"> </td>
 	</tr>
@@ -106,24 +110,10 @@ function submitform()
 	</tr>
 		
 		<input type="hidden" name="max_num_mail" id="max_num_mail" value="{$count}"> 		
-	</form>
-      </table>
+	</table></form>
+      
 
 </div> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
