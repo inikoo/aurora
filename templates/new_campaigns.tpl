@@ -15,15 +15,15 @@ function addElement() {
   var divIdName = 'my'+num+'Div';
   newdiv.setAttribute('id',divIdName);
 alert(divIdName);
-  newdiv.innerHTML = '<input type="text" name="email[]" size="30" style="margin-top:5px;"> <a  href=\'#\' onclick=\"removeElement(\"'+divIdName+'\")\">Remove </a>';
+  newdiv.innerHTML = "<input type=\"text\" name=\"email[]\" size=\"30\" style=\"margin-top:5px;\"> <a href=\"#\" onclick=\"removeElement('"+divIdName+"')\">Remove </a>";
   ni.appendChild(newdiv);
 }
 
 function removeElement(divNum) {
-alert(divNum);
-  //var d = document.getElementById('div');
-  //var olddiv = document.getElementById(divNum);
-  //d.removeChild(olddiv);
+
+  var d = document.getElementById('myDiv');
+  var olddiv = document.getElementById(divNum);
+  d.removeChild(olddiv);
 }
 </script>
 
