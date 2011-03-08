@@ -3,9 +3,9 @@
 
 	$_SESSION['mail_added'] = $_REQUEST['email'];
 
-	print_r($_SESSION['mail_added']);  
+	//print_r($_SESSION['mail_added']);  
 
-/*
+
 	$_SESSION['check_email'] = array();
 	$_SESSION['check_email'] = isset($_REQUEST['check_email'])?$_REQUEST['check_email']:'';
 	$_SESSION['template'] = $_REQUEST['template'];
@@ -24,5 +24,5 @@
 		default:
 			$_SESSION['back'] = 'Please select at least one mail';
 	}
-*/
+
 ?>

@@ -1,38 +1,23 @@
 <?php
 	include('common.php');
-	if(!isset($_REQUEST['send_mail']))
+	if(!isset($_REQUEST['template']))
 	{
-	    header('Location: index.php');
-	    exit();
-	}	
+		header('Location: index.php');
+	    	exit();
+	}
 	
 	$mail_list = array();		//select the list of members to send mail
 	$mail_list = $_SESSION['check_email'];
 
+	$template = $_REQUEST['template']; 
+
+	$subject = $_REQUEST['templateSub'];
+	
+	$body = $_REQUEST['templatebody'];
+
 	$new_array = array();
 
 	$i = 0;
-
-	if(isset($_REQUEST['template']))
-	{
-		$template = $_REQUEST['template'];
-
-		if($template=='basic'){
-			$template = "include('basic_template_design.php')";
-		}
-
-		if($template=='newsletter1'){
-			$template = "include('newsletter_template1_design.php')";
-		}	
-
-		if($template=='newsletter2'){
-			$template = "include('newsletter_template2_design.php')";
-		}	
-
-		if($template=='postcard'){
-			$template = "include('postcard_template_design.php')";
-		}
-	}
 
 if($mail_list != '')
 {
@@ -56,7 +41,7 @@ if($mail_list != '')
 
 		
 		
-		//fetch the customer base from Customer List Customer Bridge
+		//fetch the customer base from Customer List Customer Bridgedata
 		$exeSql = "select `Customer Key` from `Customer List Customer Bridge` where `Customer List Key` = '".$fetchRow['Customer Key']."'";
 		$exeQuery = mysql_query($exeSql);
 		
@@ -66,11 +51,14 @@ if($mail_list != '')
 			$printSql = "select `Customer Main Plain Email` from `Customer Dimension` where `Customer Key` = '".$exeRow['Customer Key']."'";
 			$resultSet = mysql_query($printSql);
 			$execute = mysql_fetch_assoc($resultSet);
+
 			$new_array[] = $execute;
 
-		}	
+
+		}//end of while	
 			
-	}
+	}//end of foreach
+
 		foreach($new_array as $parent=>$fparent)
 		{
 				foreach($fparent as $key=>$data)
