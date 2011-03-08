@@ -4,9 +4,6 @@
 
 {include file='marketing_navigation.tpl'}
 
-
-
-
  
 <div style="clear:left;margin:0 0px">
     <h1>{t}Marketing{/t}</h1>
@@ -42,7 +39,7 @@
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div">{$msg}</div>
    
-	<form action="create_campaign_data.php" method="POST" name="campaign" id="campaign" onsubmit="process();">  
+	<form action="create_campaign_data.php" method="post" name="campaign" id="campaign" onsubmit="return process();">  
  <table border="0" width="700">
 	<tr>
 	  <td width="300"> Select list </td><td><b>:</b></td><td align="right"> 
@@ -56,12 +53,7 @@
 		
 	 </td>
 	</tr>	
-	<tr>
-	  <td width="300"> Campaign Email id(add data mannualy)   </td><td><b>:</b></td><td align="right"><input type="hidden" value="0" id="theValue" />
-<input type="text" name="email[]" id="email" size="30"> <img onclick="addElement();" src="art/icons/add.png">
-
-<div id="myDiv"> </div> </td>
-	</tr>
+	
 	<tr>
 	  <td width="300"> Campaign Name   </td><td><b>:</b></td><td align="right"> <input type="text" name="campaign_name" id="campaign_name" size="30" value="{$campaign_name}"> </td>
 	</tr>

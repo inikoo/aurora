@@ -73,9 +73,18 @@
 	
 {if !isset($no_record) }
 
+
+		<input type="hidden" value="0" id="theValue" />
+		<input type="text" name="email[]" id="email" size="30"> <img onclick="addElement();" src="art/icons/add.png">
+
+		<div id="myDiv"> </div> 
+		
+
  <span style="font-size:11px; color:#445695; font-weight:500;">(Please select the default email template or create it)</span><br><br>
 	<b id="showr">Select Template &nbsp;&nbsp;</b>
  	
+
+
  	<div id="display_part">
         		<br>
   	        	<input type="radio" id="template1" name="template" value="1">Free Template
