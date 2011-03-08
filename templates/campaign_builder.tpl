@@ -76,7 +76,7 @@
 
 <div>
 	<table>
-		<tr>
+		<tr><td>Campaign Email id(add email Manually) </td> <td>
 		<input type="hidden" value="0" id="theValue" />
 		<input type="text" name="email[]" id="email" size="30"> <img onclick="addElement();" src="art/icons/add.png">
 
