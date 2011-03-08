@@ -32,5 +32,26 @@ function process(){
 		campaign_mail = document.getElementById('campaign_mail').focus();
 		return false;
 	}
-	location.href='create_campaign_data.php';
+	
+}
+
+
+function addElement() {
+  var ni = document.getElementById('myDiv');
+  var numi = document.getElementById('theValue');
+  var num = (document.getElementById('theValue').value -1)+ 2;
+  numi.value = num;
+  var newdiv = document.createElement('div');
+  var divIdName = 'my'+num+'Div';
+  newdiv.setAttribute('id',divIdName);
+//alert(divIdName);
+  newdiv.innerHTML = "<input type=\"text\" name=\"email[]\" size=\"30\" style=\"margin-top:5px;\"> <a href=\"#\" onclick=\"removeElement('"+divIdName+"')\">Remove </a>";
+  ni.appendChild(newdiv);
+}
+
+function removeElement(divNum) {
+
+  var d = document.getElementById('myDiv');
+  var olddiv = document.getElementById(divNum);
+  d.removeChild(olddiv);
 }
