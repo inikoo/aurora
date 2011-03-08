@@ -11,6 +11,8 @@
  
  Version 2.0
 */
+/*ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
 include_once('common.php');
 
 $css_files=array(
@@ -46,7 +48,9 @@ $js_files=array(
 if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
 }
-
+if(!isset($_REQUEST['subject_key'])){
+exit("to do a page where the user can choose the correct options");
+}
 $scope=$_REQUEST['subject'];
  
 switch($scope){
