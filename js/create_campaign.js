@@ -32,5 +32,5 @@ function process(){
 		campaign_mail = document.getElementById('campaign_mail').focus();
 		return false;
 	}
-	document.campaign.submit();
+	location.href='create_campaign_data.php';
 }

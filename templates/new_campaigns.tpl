@@ -14,7 +14,7 @@ function addElement() {
   var newdiv = document.createElement('div');
   var divIdName = 'my'+num+'Div';
   newdiv.setAttribute('id',divIdName);
-alert(divIdName);
+//alert(divIdName);
   newdiv.innerHTML = "<input type=\"text\" name=\"email[]\" size=\"30\" style=\"margin-top:5px;\"> <a href=\"#\" onclick=\"removeElement('"+divIdName+"')\">Remove </a>";
   ni.appendChild(newdiv);
 }
@@ -66,7 +66,7 @@ function removeElement(divNum) {
 <div style="border:1px solid #ccc;padding:50px;width:690px">
 	<div id="campaign_div">{$msg}</div>
    
-	<form action="create_campaign_datadd.php" method="get" name="campaign" id="campaign">  
+	<form action="create_campaign_data.php" method="POST" name="campaign" id="campaign" onsubmit="process();">  
  <table border="0" width="700">
 	<tr>
 	  <td width="300"> Select list </td><td><b>:</b></td><td align="right"> 
@@ -106,7 +106,7 @@ function removeElement(divNum) {
 	</tr>
 
 	<tr>
-	  <td colspan=3 align="right"> <input type="button" class="Emarketing_button" name="createCampaign" value="Create" onclick="process();"> </td>
+	  <td colspan=3 align="right"> <input type="submit" class="Emarketing_button" name="createCampaign" value="Create"> </td>
 	</tr>
 		
 		<input type="hidden" name="max_num_mail" id="max_num_mail" value="{$count}"> 		
