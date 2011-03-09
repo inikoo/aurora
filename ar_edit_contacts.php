@@ -2171,7 +2171,12 @@ function edit_customer_send_post() {
     $key=$_REQUEST['key'];
     $new_value=$_REQUEST['newvalue'];
     $customer_key=$_REQUEST['customer_key'];
-    $sql=sprintf("insert into `Customers Send Post` (`Customer Send Post Key`,`Customer Key`,`Send Post Status`,`Date Creation`,`Date Send`,`Post Type`) values (%d,%d,%s,%s,%s,%s)",
+	if($key=='Post Type')
+		{
+		$sql=sprintf("update `Customers Send Post` set `Post Type`=%s",prepare_mysql($new_value));
+		}
+        else{
+            $sql=sprintf("insert into `Customers Send Post` (`Customer Send Post Key`,`Customer Key`,`Send Post Status`,`Date Creation`,`Date Send`,`Post Type`) values (%d,%d,%s,%s,%s,%s)",
                          '1',
                          $customer_key,
                          prepare_mysql($new_value),
@@ -2179,8 +2184,8 @@ function edit_customer_send_post() {
                         '\'\'',
                         prepare_mysql('Letter') 
                         );
-
-$query=mysql_query($sql);
+            }
+          $query=mysql_query($sql);
 if ($query) {
         $response= array('state'=>200,'newvalue'=>$new_value,'key'=>$_REQUEST['key']);
 
