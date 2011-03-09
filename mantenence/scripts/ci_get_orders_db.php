@@ -1142,7 +1142,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             continue;
         }
 
-         $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+         $sql=sprintf("update ci_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
         mysql_query($sql);
 
 
