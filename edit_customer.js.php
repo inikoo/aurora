@@ -197,27 +197,36 @@ function reset_edit_customer(){
 
 function save_comunications_send_post(key,value){
 var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	alert(request);	
+	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-alert(o.responseText);	
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-			 
-            if (r.newvalue=='Letter' || r.newvalue=='Catalogue') {
+	            success:function(o){
+	            alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+                                 if(r.key=='Post Type')
+					{			 
+                                         if (r.newvalue=='Letter' || r.newvalue=='Catalogue') {
+                          			 Dom.removeClass([r.key+'_Catalogue',r.key+'_Letter'],'selected');
+                                        	 Dom.addClass(r.key+'_'+r.newvalue,'selected');
+                                        	 }else {
+                                        	 alert(r.msg)
+                                        	 }
+                                         }
+				 if(r.key=='Send Post Status')
+					{			 
+                                         if (r.newvalue=='To Send' || r.newvalue=='Cancelled') {
+                          			 Dom.removeClass([r.key+'_Cancelled',r.key+'_To Send'],'selected');
+                                        	 Dom.addClass(r.key+'_'+r.newvalue,'selected');
+                                        	 }else {
+                                        	 alert(r.msg)
+                                        	 }
+                                         }
 
-                           Dom.removeClass([r.key+'_Catalogue',r.key+'_Letter'],'selected');
 
-               Dom.addClass(r.key+'_'+r.newvalue,'selected');
-
-            }else {
-                alert(r.msg)
-            }
-        }
-    }
+                                        }
+   			}
     });
 }
-
 
 
 
