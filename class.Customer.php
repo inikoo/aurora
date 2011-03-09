@@ -1136,6 +1136,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
                 $subject_type='Company';
 
             }
+	    $subject->editor=$this->editor;
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
@@ -1145,6 +1146,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
             break;
         case('Customer Main Plain Mobile'):
             $subject=new Contact($this->data['Customer Main Contact Key']);
+	     $subject->editor=$this->editor;
             $subject->update(array('Contact Main Plain Mobile'=>$value));
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
@@ -1153,6 +1155,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
 
         case('Customer Main Plain Email'):
             $contact=new Contact($this->data['Customer Main Contact Key']);
+	    $contact->editor=$this->editor;
             $contact->update(array('Contact Main Plain Email'=>$value));
             $this->updated=$contact->updated;
             $this->msg=$contact->msg;

@@ -289,6 +289,9 @@ function delete_old_data() {
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
         $sql=sprintf("delete from `Order Invoice Bridge` where `Invoice Key`=%d   ",$row_test['Invoice Key']);
         mysql_query($sql);
+	
+	$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$row_test['Invoice Key']);
+	 mysql_query($sql);
 
         $sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Invoice Key`=%d   ",$row_test['Invoice Key']);
         mysql_query($sql)  ;
@@ -506,7 +509,7 @@ function create_order($data) {
                     'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
                     'Order Ship To Key'=>$data['Order Ship To Key']
                 );
-
+    // print_r($order_data);
     //if(isset($data['Order Ship To Key']))
     //    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
 
@@ -1259,6 +1262,8 @@ function get_tax_code($type,$header_data) {
 
 
 function ci_get_tax_code($header_data) {
+
+
     $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04,'EX'=>0);
     $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX"=>"Not Tax");
 
@@ -1296,7 +1301,7 @@ function ci_get_tax_code($header_data) {
            );
 
 
-
+    //  print_r($data);
 
     return $data;
 
