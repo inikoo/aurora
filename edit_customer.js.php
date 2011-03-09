@@ -221,9 +221,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&ne
                                         	 alert(r.msg)
                                         	 }
                                          }
-
-
-                                        }
+                                  }
    			}
     });
 }
