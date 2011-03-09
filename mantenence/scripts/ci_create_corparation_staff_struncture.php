@@ -279,21 +279,21 @@ foreach($staff as $position_codes=>$staff_data) {
 $data=array(
           'Tax Category Code'=>'S1',
           'Tax Category Name'=>'IVA 16%',
-          'Tax Category Rate'=>0.14
+          'Tax Category Rate'=>0.16
       );
 $cat_tax=new TaxCategory('find',$data,'create');
 
 $data=array(
           'Tax Category Code'=>'S2',
           'Tax Category Name'=>'IVA 4%',
-          'Tax Category Rate'=>0.14
+          'Tax Category Rate'=>0.04
       );
 $cat_tax=new TaxCategory('find',$data,'create');
 
 $data=array(
           'Tax Category Code'=>'S3',
           'Tax Category Name'=>'IVA 20%',
-          'Tax Category Rate'=>0.14
+          'Tax Category Rate'=>0.20
       );
 $cat_tax=new TaxCategory('find',$data,'create');
 
