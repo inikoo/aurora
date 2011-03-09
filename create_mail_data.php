@@ -14,7 +14,7 @@
 		//select customer list		
 		$mailList = $_SESSION['check_mail_list'];
 
-		//print_r($mailList); die();
+		print_r($mailList); die();
 
 		foreach($mailList as $k=>$v)
 		{
