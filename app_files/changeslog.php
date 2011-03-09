@@ -938,6 +938,8 @@ ALTER TABLE de_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DE
 ALTER TABLE fr_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
 ALTER TABLE pl_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
 
+0.9.28 from here
+
 
 */
 
