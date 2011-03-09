@@ -2181,7 +2181,14 @@ function edit_customer_send_post() {
                         );
 
 $query=mysql_query($sql);
-if($query)echo "inserted into database 'Send Customer Post'";else echo "not inserted";die();
+if ($query) {
+        $response= array('state'=>200,'newvalue'=>$new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>"Not Added To Send Post queue",'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+
 }
 
 // ----------------------------------------------------------------------------------------------------------------

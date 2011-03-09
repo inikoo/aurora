@@ -186,6 +186,7 @@ function reset_edit_customer(){
 }
 
 
+
 function save_comunications_send_post(key,value){
 var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
 	alert(request);	
@@ -196,11 +197,12 @@ alert(o.responseText);
 				if(r.state==200){
 			 
             if (r.newvalue=='To Send' || r.newvalue=='Cancelled') {
-                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
+alert("within if");
+                           Dom.removeClass([r.key+'_Cancelled',r.key+'_To Send'],'selected');
 
                Dom.addClass(r.key+'_'+r.newvalue,'selected');
 
-            }else{
+            }else {
                 alert(r.msg)
             }
         }
