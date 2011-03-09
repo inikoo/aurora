@@ -5,7 +5,7 @@
 
 	if(isset($_REQUEST['submit']) && $_REQUEST['submit'] == "Send")
 	{
-		$post_type = $_REQUEST['post_type'];
+		//$post_type = $_REQUEST['post_type'];
 
 		$content = $_REQUEST['content'];
 
@@ -16,7 +16,7 @@
 
 		print_r($mailList); die();
 
-		foreach($mailList as $k=>$v)
+	/*	foreach($mailList as $k=>$v)
 		{
 
 		$insert = "INSERT INTO `kaktus`.`Customers Send Post` (`Customer Send Post Key`, `Customer Key`, `Send Post Status`, `Date Creation`, `Date Send`, `Post Type`) VALUES ('1', '".$v."', 'To Send', NOW(), NOW(), '".$post_type."');";
@@ -26,6 +26,7 @@
 
 		header('location:send_mail_list.php');
 		}
+	*/
 	}
 
 ?>
