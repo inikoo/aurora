@@ -74,7 +74,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 								   this.dataSource0
 								 , {
-								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : 1000,containers : 'paginator', 

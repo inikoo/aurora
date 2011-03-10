@@ -166,6 +166,7 @@ if(!isset($invoice_data['Invoice Date'])   ){
   
  
 protected function create($invoice_data) {
+//print_r($invoice_data);
     $this->data=$this->base_data();
     $this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
    
@@ -1403,6 +1404,7 @@ function add_refund_no_product_transaction($refund_transaction_data) {
     ,$amount
     ,prepare_mysql($is_base)
     );
+   // print "$sql\n";
  mysql_query($sql);
  }
  

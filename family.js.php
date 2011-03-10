@@ -208,7 +208,7 @@ function init(){
     Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
 
     init_search('products_store');
- 
+  
  
     Event.addListener('clean_table_filter_show0', "click",show_filter,0);
     Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
@@ -219,7 +219,7 @@ function init(){
 
     ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
     Event.addListener(ids, "click",change_product_view,{'table_id':0,'parent':'family'});
- 
+
    ids=['product_period_all','product_period_year','product_period_quarter','product_period_month','product_period_week'];
     Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'product'});
     ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
