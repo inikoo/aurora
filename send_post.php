@@ -13,6 +13,8 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
+
+
 /*if(isset($_POST['check'])){
 	if($_POST['checkall']=='all'){
 		$q=mysql_query("SELECT `Customer Key` FROM `Customer Dimension`");
