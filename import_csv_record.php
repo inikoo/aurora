@@ -99,6 +99,30 @@
 				$pk = "Supplier Product Key";
 				break;
 
+				case('staff'):
+				$tbl="Staff Dimension";
+				$fld = "";
+				$pk = "Staff Key";
+				break;
+
+				case('positions'):
+				$tbl="Company Position Dimension";
+				$fld = "";
+				$pk = "Company Position Key";
+				break;
+
+				case('areas'):
+				$tbl="Company Area Dimension";
+				$fld = "";
+				$pk = "Company Area Key";
+				break;
+
+				case('departments'):
+				$tbl="Company Department Dimension";
+				$fld = "";
+				$pk = "Company Department Key";
+				break;
+
 				default:
 				}
 		$query = mysql_query("Select * from `$tbl` LIMIT 1");
