@@ -36,9 +36,11 @@
  <div class="table_top_bar" ></div>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}Summary{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
+	<tr>
+	 <td class="option {if $view=='general'}selected{/if}" id="dgeneral" >{t}Summary{/t}</td>
+	    <td class="option {if $view=='stock'}selected{/if}"  id="stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
+	    <td class="option {if $view=='sales'}selected{/if}" id="sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
+	
 	</tr>
       </table>
         <table id="stores_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $block_view!='sales' };display:none{/if}"  class="options_mini" >

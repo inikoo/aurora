@@ -3695,7 +3695,10 @@ function list_departments() {
     $total_records=ceil($total/$number_results)+$total;
     $number_results++;
 
-
+if($start_from==0)
+$record_offset=0;
+else
+$record_offset=$start_from+1;
 
     $response=array('resultset'=>
                                 array('state'=>200,
@@ -3707,7 +3710,7 @@ function list_departments() {
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
                                       'total_records'=>$total_records,
-                                      'records_offset'=>$start_from+1,
+                                      'records_offset'=>$record_offset,
                                       'records_perpage'=>$number_results,
                                      )
                    );

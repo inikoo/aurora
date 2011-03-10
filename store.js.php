@@ -121,13 +121,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
+								        alwaysVisible:true,
 									      rowsPerPage:<?php echo $_SESSION['state']['store']['departments']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+ 									      lastPageLinkLabel :">>",
+ 									      rowsPerPageOptions : [10,25,50,100,250,500],
+ 									     
+									      template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -363,6 +366,10 @@ function previous_info_period(){
 
  function init(){
  
+  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+
+ 
  Event.addListener(['details','sites','departments','families','products','categories','deals'], "click",change_block);
 
 // -------------------------Export(CSV) code for department under store --------------------
@@ -386,8 +393,6 @@ function previous_info_period(){
   init_search('products_store');
  
  
- YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
    
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
