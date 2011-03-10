@@ -55,8 +55,9 @@
 
 </table>
 {/if}
+	
 </div>
-
+	<a href="change_style.php">Website Theme Manager</a>
 
 </div>
 {include file='footer.tpl'}
