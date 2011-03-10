@@ -178,20 +178,35 @@
   
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 
-<div id="plot" style="clear:both;border:1px solid #ccc" >
-	<div id="single_data_set"  >
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-</div>
+<div id="plot_store_div" style="{if $plot_tipo!='store'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
+<div id="plot_top_departments_div" style="{if $plot_tipo!='top_departments'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
+<div id="plot_pie_div" style="{if $plot_tipo!='pie'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
+
+
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store->id}"));
 		so.addVariable("preloader_color", "#999999");
-		so.write("plot");
+		so.write("plot_store_div");
+		// ]]>
+</script>
+
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=store_departments_pie&store_key=1")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot_pie_div");
 		// ]]>
 	</script>
+	
+
   
   
   <div style="clear:both"></div>
