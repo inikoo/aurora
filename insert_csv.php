@@ -96,6 +96,7 @@ if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
 }
 if(!isset($_REQUEST['subject_key'])){
+	if($_REQUEST['subject']!='staff' && $_REQUEST['subject']!='positions' && $_REQUEST['subject']!='areas' && $_REQUEST['subject']!='departments')
 exit("to do a page where the user can choose the correct options");
 }
 $scope=$_REQUEST['subject'];
@@ -112,6 +113,31 @@ switch($scope){
 	$fld = "Supplier Key";
 	$pk = "Supplier Product Key";
 	break;
+
+	case('staff'):
+	$tbl="Staff Dimension";
+	$fld = "";
+	$pk = "Staff Key";
+	break;
+
+	case('positions'):
+	$tbl="Company Position Dimension";
+	$fld = "";
+	$pk = "Company Position Key";
+	break;
+
+	case('areas'):
+	$tbl="Company Area Dimension";
+	$fld = "";
+	$pk = "Company Area Key";
+	break;
+
+	case('departments'):
+	$tbl="Company Department Dimension";
+	$fld = "";
+	$pk = "Company Department Key";
+	break;
+
 	default:
 }
 
@@ -119,7 +145,7 @@ switch($scope){
 /*for($x=1; $x<count($arr); $x++){
 	$data=$arr[$x];
 	insert($data, $tbl, $fld, $scope_args);
-}*/
+}*/ //Put off this comments to insert data in database //
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
@@ -135,28 +161,38 @@ function insert($raw_data, $table, $fld, $scope_args) {
 		unset($raw_data[$fld]);
 	}*/
 	$data = dataprotection($raw_data);
-	if (!is_array($data)) { die("insertion failed, input data must be an array"); }
+	if (!is_array($data)) {
+	 die("insertion failed, input data must be an array");
+	}
 	//building the query
 	$sql = "INSERT INTO `".$table."` (";
 	for ($i=0; $i<count($data); $i++) {
-	 //we need to get the key in the info array, which represents the column in $table
-	$sql .= "`".key($data)."`";
-	//echo commas after each key except the last, then echo a closing parenthesis
-	if ($i < (count($data)-1)) {
-	$sql .= ", ";
-	}else $sql .= ", `$fld`) ";
-	//advance the array pointer to point to the next key
-	next($data);
+		//we need to get the key in the info array, which represents the column in $table
+		$sql .= "`".key($data)."`";
+		//echo commas after each key except the last, then echo a closing parenthesis
+		if ($i < (count($data)-1)) {
+			$sql .= ", ";
+		}else{
+			if($fld != '')
+			$sql .= ", `$fld`) ";
+			else $sql .= " ) ";
+		}
+		//advance the array pointer to point to the next key
+		next($data);
 	}
 	//now lets reuse $data to get the values which represent the insert field values
 	reset($data);
 	$sql .= "VALUES (";
 	for ($j=0; $j<count($data); $j++) {
-	$sql .= "'".current($data)."'";
-	if ($j < (count($data)-1)) {
-	   $sql .= ", ";
-	} else $sql .= ", '$scope_args') ";
-	next($data);
+		$sql .= "'".current($data)."'";
+		if ($j < (count($data)-1)) {
+		   $sql .= ", ";
+		}else{
+		   if($fld != '')
+		   $sql .= ", '$scope_args') ";
+		   else $sql .= " ) ";
+		}
+		next($data);
 	}
 	//execute the query
 	//echo $sql;echo "<br />";

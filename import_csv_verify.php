@@ -47,18 +47,38 @@ if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
 }
 if(!isset($_REQUEST['subject_key'])){
+	if($_REQUEST['subject']!='staff' && $_REQUEST['subject']!='positions' && $_REQUEST['subject']!='areas' && $_REQUEST['subject']!='departments')
 exit("to do a page where the user can choose the correct options");
 }
 $scope=$_REQUEST['subject'];
 
 switch($scope){
 case('customers_store'):
-$scope_args=$_SESSION['state']['customers']['store'];
+//$scope_args=$_SESSION['state']['customers']['store'];
+$scope_args=$_REQUEST['subject_key'];
 break;
 
 case('supplier_products'):
-$scope_args=$_SESSION['state']['supplier']['id'];
+//$scope_args=$_SESSION['state']['supplier']['id'];
+$scope_args=$_REQUEST['subject_key'];
 break;
+
+case('staff'):
+$scope_args=$_REQUEST['subject_key'];
+break;
+
+case('positions'):
+$scope_args=$_REQUEST['subject_key'];
+break;
+
+case('areas'):
+$scope_args=$_REQUEST['subject_key'];
+break;
+
+case('departments'):
+$scope_args=$_REQUEST['subject_key'];
+break;
+
 default:
 $scope_args='';
 }
@@ -112,7 +132,7 @@ if(isset($_POST['submit']))
 
 if(isset($_SESSION['error'])) 
 { 
-   $smarty->assign('showerror',$_SESSION['error']); 
+   $smarty->assign('showerror',$_SESSION['error']);
 }
 
 $v = 0;
@@ -123,5 +143,4 @@ $smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->display('import_csv_verify.tpl');
-
 ?>
