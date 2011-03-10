@@ -10,6 +10,7 @@ function show_filter(e,table_id){
 
 Dom.get('clean_table_filter_show'+table_id).style.display='none';
 Dom.get('clean_table_filter'+table_id).style.display='';
+Dom.get('f_input'+table_id).focus()
 }
 
 function hide_filter(e,table_id){
@@ -34,12 +35,15 @@ var remove_filter= function (tableid){
 
 var myRowsPerPageDropdown = function(){return true};
 var mydoBeforeSortColumn = function(){return true};
-var mydoBeforePaginatorChange = function(e){return true};
+var mydoBeforePaginatorChange = function(e){
+
+return true};
 
 
 var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
-    // alert(oResponse.meta.RecordOffset)
-     if(oPayload!=undefined){
+    //alert(oResponse.meta.RecordOffset)
+  // alert(oResponse.meta.rowsPerPage)
+    if(oPayload!=undefined){
         oPayload.pagination = {
             rowsPerPage: parseInt(oResponse.meta.rowsPerPage)||5,
             recordOffset: parseInt(oResponse.meta.RecordOffset)||0
@@ -56,19 +60,22 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	totalRecords:0,
 	pagination:{
 	alwaysVisible:false
-	    //rowsPerPage:3
-	    //rowsPerPage:parseInt(oResponse.meta.rowsPerPage),
-	    //recordOffset: 12
+	 //   ,rowsPerPage:3
+	  //  ,rowsPerPage:parseInt(oResponse.meta.rowsPerPage),
+	   // recordOffset: 12
 	},
 	sortedBy:
 	{key:oResponse.meta.sort_key,
 	 dir:oResponse.meta.sort_dir},
 	SelectedRows:null,
-	SelectedCells:null} ;
+	SelectedCells:null};
 
     oPayload.filter_msg=oResponse.meta.filter_msg;
-  // oPayload.pagination = {  rowsPerPage:parseInt(oResponse.meta.rowsPerPage),recordOffset:0 }
-   
+   //oPayload.pagination.alwaysVisible=false;
+  // oPayload.pagination.setState({alwaysVisible:false});
+
+
+
    //alert(oResponse.meta.RecordOffset)
    
   // alert(oResponse.meta.rtext+' '+oResponse.meta.tableid)
@@ -86,7 +93,6 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
 
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
-  //  alert(oResponse.meta.totalRecords)
     if(oPayload.totalRecords==0){
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='none';
@@ -97,25 +103,16 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	    }
 	    
     }else{
+    Dom.setStyle('paginator'+oResponse.meta.tableid,'display','none')
+    //alert(Dom.get('paginator'+oResponse.meta.tableid).innerHTML)
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='';
 	     Dom.get(table).style.display='';
 	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
 	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
        
-      // alert(oPayload.totalRecords+' xx '+oResponse.meta.rowsPerPage+' d '+oPayload.totalRecords<=oResponse.meta.rowsPerPage)
-       //if(oPayload.totalRecords<=oResponse.meta.rowsPerPage){
-       
-       //Dom.get('paginator'+oResponse.meta.tableid).style.display='none';
-       
-       //alert("caca");
-       //}
-       
-      //Dom.get('yui-rec10').style.display='none';
-       
     }
-    //var data={code:'<?php echo _('Totals')?>'};
-    //tables.table0.addRow(data);
+  
     return oPayload;
 };
 
@@ -153,7 +150,7 @@ var myRequestBuilder = function(oState, oSelf) {
 var myRequestBuilderwithTotals = function(oState, oSelf) {
     // Get states or use defaults
 
-    
+   
     oState = oState || {pagination:null, sortedBy:null};
 
     var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
@@ -161,7 +158,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
     var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
 
    var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
-    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
+    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 20;
 
     // Build custom request
     var request= "&o=" + sort +

@@ -239,9 +239,10 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-      <tr><td  {if $department_view=='general'}class="selected"{/if} id="department_general" >{t}Summary{/t}</td>
-	{if $view_stock}<td {if $department_view=='stock'}class="selected"{/if}  id="department_stock"  >{t}Stock{/t}</td>{/if}
-	{if $view_sales}<td  {if $department_view=='sales'}class="selected"{/if}  id="department_sales"  >{t}Sales{/t}</td>{/if}
+      <tr>
+    <td class="option {if $department_view=='general'}selected{/if}" id="department_general" >{t}Summary{/t}</td>
+	    <td class="option {if $department_view=='stock'}selected{/if}"  id="department_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
+	    <td class="option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
       </tr>
     </table>
     <table id="department_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $department_view!='sales' };display:none{/if}"  class="options_mini" >
