@@ -92,7 +92,12 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
 
+//alert(oResponse.meta.rowsPerPage+' '+oResponse.meta.totalRecords)
+
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
+        oPayload.rowsPerPage = parseInt(oResponse.meta.rowsPerPage);
+
+    
     if(oPayload.totalRecords==0){
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='none';
@@ -103,15 +108,20 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	    }
 	    
     }else{
-    Dom.setStyle('paginator'+oResponse.meta.tableid,'display','none')
-    //alert(Dom.get('paginator'+oResponse.meta.tableid).innerHTML)
+  //  Dom.setStyle('paginator'+oResponse.meta.tableid,'display','none')
+ //   alert(Dom.get('paginator'+oResponse.meta.tableid).innerHTML)
+ 
+    
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='';
 	     Dom.get(table).style.display='';
 	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
 	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
+	 
+	        
        
     }
+  
   
     return oPayload;
 };
@@ -158,7 +168,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
     var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
 
    var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
-    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 20;
+    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
 
     // Build custom request
     var request= "&o=" + sort +
@@ -208,6 +218,9 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
+    
+   // alert(table.get('paginator'))
+    //alert(table.get('paginator').getState())
     table.get('paginator').setRowsPerPage(rpp)
 
 }
