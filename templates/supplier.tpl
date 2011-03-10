@@ -144,7 +144,7 @@
     <div class="data_table" >
       <span class="clean_table_title">{t}Supplier Products{/t}</span>
       <div id="list_options0">
-        <span  style="float:right;margin-left:20px" class="table_type state_details"><a href="import_csv.php?subject=supplier_products&subject_key={$supplier_id}">{t}Import (CSV){/t}</a></span>
+        <span  style="float:right;margin-left:20px" class="table_type state_details"><a style="text-decoration:none" href="import_csv.php?subject=supplier_products&subject_key={$supplier_id}">{t}Import (CSV){/t}</a></span>
        <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Export (CSV){/t}</span>
         <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
