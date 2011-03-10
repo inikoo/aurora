@@ -20,7 +20,7 @@
 {/if}
 <span class="nav2 onright" style="padding:0px">{if $next.id>0}<a class="next" href="customer.php?{$parent_info}id={$next.id}" ><img src="art/icons/next_white.png" style="padding:0px 10px" alt=">" title="{$next.name}"  /></a>{/if}</span>
 {if $parent_url}<span class="nav2 onright"><a   href="{$parent_url}">{$parent_title}</a></span>{/if}
-<span class="nav2 onright" style="margin-left:20px; padding:0px"> {if $next.id>0}<a class="prev" href="customer.php?id={$prev.id}" ><img src="art/icons/previous_white.png" style="padding:0px 10px" alt="<" title="{$prev.name}"  /></a>{/if}</span>
+<span class="nav2 onright" style="margin-left:20px; padding:0px"> {if $prev.id>0}<a class="prev" href="customer.php?{$parent_info}id={$prev.id}" ><img src="art/icons/previous_white.png" style="padding:0px 10px" alt="<" title="{$prev.name}"  /></a>{/if}</span>
 
 
 

@@ -14,11 +14,20 @@ print "var customer_id='".$_REQUEST['id']."';";
 
 $tax_number_regex="^((AT)?U[0-9]{8}|(BE)?0?[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}L|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}L|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$";
 
-
-
-
+$send_post_type='Letter';
+$send_post_status='Cancelled';
+$sql=sprintf("select * from `Customers Send Post`   where  `Customer Key`=%d  " ,
+$_REQUEST['id']);
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+if($row['Send Post Status']=='To Send')
+	$send_post_status='To Send';
+if($row['Post Type']!='Letter')
+	$send_post_type='Catalogue';
+}
 ?>
-  
+var send_post_status='<?php echo $send_post_status;?>';
+var send_post_type='<?php echo $send_post_type;?>';
 var Dom   = YAHOO.util.Dom;
 var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 
@@ -188,25 +197,35 @@ function reset_edit_customer(){
 
 function save_comunications_send_post(key,value){
 var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	alert(request);	
+	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-alert(o.responseText);	
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-			 
-            if (r.newvalue=='To Send' || r.newvalue=='Cancelled') {
-                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
-
-               Dom.addClass(r.key+'_'+r.newvalue,'selected');
-
-            }else{
-                alert(r.msg)
-            }
-        }
-    }
+	            success:function(o){
+	            alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+                                 if(r.key=='Post Type')
+					{			 
+                                         if (r.newvalue=='Letter' || r.newvalue=='Catalogue') {
+                          			 Dom.removeClass([r.key+'_Catalogue',r.key+'_Letter'],'selected');
+                                        	 Dom.addClass(r.key+'_'+r.newvalue,'selected');
+                                        	 }else {
+                                        	 alert(r.msg)
+                                        	 }
+                                         }
+				 if(r.key=='Send Post Status')
+					{			 
+                                         if (r.newvalue=='To Send' || r.newvalue=='Cancelled') {
+                          			 Dom.removeClass([r.key+'_Cancelled',r.key+'_To Send'],'selected');
+                                        	 Dom.addClass(r.key+'_'+r.newvalue,'selected');
+                                        	 }else {
+                                        	 alert(r.msg)
+                                        	 }
+                                         }
+                                  }
+   			}
     });
 }
+
 
 
 function save_comunications(key,value){
@@ -354,8 +373,8 @@ function back_to_take_order(){
 function post_change_main_delivery_address(){}
 
 function init(){
-
-
+Dom.addClass('Send Post Status'+'_'+send_post_status,'selected');
+Dom.addClass('Post Type'+'_'+send_post_type,'selected');
   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);

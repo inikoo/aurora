@@ -93,7 +93,7 @@ class supplier extends DB_Table {
         }
 
         if (preg_match('/create|new/i',$arg1)) {
-
+ioioioi();
             $this->find($arg2,'create');
             return;
         }
@@ -174,6 +174,7 @@ class supplier extends DB_Table {
 
 
         $data=$this->base_data();
+       
         foreach($raw_data as $key=>$value) {
             if (array_key_exists($key,$data)) {
                 $data[$key]=_trim($value);
@@ -336,7 +337,7 @@ $this->data['Supplier Main XHTML Email']='';
             $this->id=mysql_insert_id();
 
             if (!$this->data['Supplier Company Key']) {
-               
+            $raw_data['editor']=$this->editor;
                 $company=new company('find in supplier create update',$raw_data);
                 //print_r($company->data);
 		
@@ -369,24 +370,24 @@ $this->data['Supplier Main XHTML Email']='';
             
 
             //$address->update_parents();
-            $address->update_parents_principal_telecom_keys('Telephone');
-            $address->update_parents_principal_telecom_keys('FAX');
+            $address->update_parents_principal_telecom_keys('Telephone',($this->new?false:true));
+            $address->update_parents_principal_telecom_keys('FAX',($this->new?false:true));
             
             
             $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
             $tel->editor=$this->editor;
             if ($tel->id)
-                $tel->update_parents();
+                $tel->update_parents(($this->new?false:true));
             $fax=new Telecom($address->get_principal_telecom_key('FAX'));
             $fax->editor=$this->editor;
             if ($fax->id)
-                $fax->update_parents();
+                $fax->update_parents(($this->new?false:true));
 
             $contact->update_parents_principal_email_keys();
             $email=new Email($contact->get_principal_email_key());
             $email->editor=$this->editor;
             if ($email->id)
-                $email->update_parents();
+                $email->update_parents(($this->new?false:true));
             $this->get_data('id',$this->id);
 
             $this->update_company($company->id,true);
@@ -1450,7 +1451,8 @@ function update_principal_address($address_key) {
     
     
       $address=new Address($address_key);
-  $address->update_parents('Supplier');
+      $address->editor=$this->editor;
+  $address->update_parents('Supplier',($this->new?false:true));
   $this->updated=true;
   $this->new_value=$address_key;
 /*  
@@ -1509,7 +1511,7 @@ function update_principal_address($address_key) {
 
 
             $this->data['Supplier Company Key']=$company->id;
-            $company->update_parents();
+            $company->update_parents(($this->new?false:true));
 
         }
 
@@ -1538,7 +1540,7 @@ function update_principal_address($address_key) {
 
 
             $this->data['Supplier Main Contact Key']=$contact->id;
-            $contact->update_parents();
+            $contact->update_parents(($this->new?false:true));
 
         }
 

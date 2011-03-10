@@ -23,7 +23,6 @@
 <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
     <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
-
     <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr style="display:none"><td id="take_order">{t}Take Order{/t}</td></tr>

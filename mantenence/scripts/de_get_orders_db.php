@@ -96,7 +96,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0737.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE1053.xls' ) order by filename";
 
 
 $contador=0;
@@ -169,7 +169,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $header=mb_unserialize($row['header']);
         $products=mb_unserialize($row['products']);
-
+//print_r($products);
 
         $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
         $map_act=$_map_act;
@@ -471,8 +471,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_credit_value=0;
         $estimated_w=0;
         //echo "Memory: ".memory_get_usage(true) . "\n";
-        //    print_r($transactions);
-        // exit;
+        //  print_r($transactions);
+        //  exit;
 
         foreach($transactions as $transaction) {
 
@@ -971,17 +971,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             if (!$supplier->id) {
                 $the_supplier_data=array(
                                        'Supplier Name'=>$supplier_code,
-                                       'Supplier Code'=>$supplier_code
+                                       'Supplier Code'=>$supplier_code,
+                                       'editor'=>$editor
                                    );
 
                 if ( $supplier_code=='Unknown'  ) {
                     $the_supplier_data=array(
                                            'Supplier Name'=>'Unknown Supplier',
-                                           'Supplier Code'=>$supplier_code
+                                           'Supplier Code'=>$supplier_code,
+                                           'editor'=>$editor
                                        );
                 }
 
-                $supplier=new Supplier('new',$the_supplier_data);
+                $supplier=new Supplier('find',$the_supplier_data,'create update');
             }
 
             $part_list=array();
@@ -1279,16 +1281,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
         }
 
-        /*
-        $data['Order Currency']=$currency;
-        $data['Order Currency Exchange']=$exchange;
-        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
-        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
-        $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
-        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
-        $data['Order Currency']=$currency;
-        $data['Order Currency Exchange']=$exchange;
-        */
+
 
 
 
@@ -1324,7 +1317,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "Error !!!! customer not found\n";
             continue;
         }
-
+        $sql=sprintf("update de_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+        print $sql;
+        mysql_query($sql);
 
         if ($customer_data['Customer Delivery Address Link']=='None') {
             $shipping_addresses['Address Input Format']='3 Line';

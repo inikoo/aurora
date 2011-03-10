@@ -11,17 +11,17 @@
 <br><br><br>
  <form action="create_mail_data.php" method="post">
 	<table border="0" align="center" width="700px">
-		<tr>
+		{*<tr>
 			<td>Select Post Type : </td> <td>
 							<select name="post_type" style="width:150px;"> 
 								<option value="Catalogue">Catalogue</option> 
 								<option value="Advert">Advert</option>
 								<option value="Letter">Letter</option>
 							</select></td>
-		</tr>
+		</tr>*}
 
 		<tr>
-			<td colspan="2">Enter Subject of Type : </td> 
+			<td colspan="2">Enter The Content : </td> 
 				
 		</tr>
 

@@ -4566,7 +4566,7 @@ class Address extends DB_Table {
 
 
 
-    function update_parents($parents=false) {
+    function update_parents($parents=false,$add_parent_history=true) {
 
         if (!$parents) {
             $parents=array('Contact','Company','Customer','Supplier');
@@ -4582,6 +4582,7 @@ class Address extends DB_Table {
 
 
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+            //print "$sql\n";
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_address_changed=false;
@@ -4589,9 +4590,11 @@ class Address extends DB_Table {
                 if ($parent=='Contact') {
                     $parent_object=new Contact($row['Parent Key']);
                     $parent_label=_('Contact');
+                      $parent_object->editor=$this->editor;
                 }
                 elseif($parent=='Customer') {
                     $parent_object=new Customer($row['Parent Key']);
+                      $parent_object->editor=$this->editor;
                     $parent_label=_('Customer');
 
 
@@ -4618,6 +4621,7 @@ class Address extends DB_Table {
                                      ,$this->data['Address Country Key']
                                      ,$row2['Customer Key']
                                     );
+                                   
                         mysql_query($sql);
                     }
 
@@ -4647,6 +4651,7 @@ class Address extends DB_Table {
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
                 }
+                  $parent_object->editor=$this->editor;
                 $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
                 $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
                 $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
@@ -4685,12 +4690,12 @@ class Address extends DB_Table {
                 if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
                     $principal_address_changed=true;
 
-                if ($principal_address_changed) {
+                if ($principal_address_changed and $add_parent_history) {
 
                     if ($old_princial_address=='') {
 
                         $history_data['History Abstract']='Address Associated';
-                        $history_data['History Details']=$this->display('xhtml')." "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['History Details']='<div class="history_address" style="border:1px solid grey;padding:5px;width:250px">'.$this->display('xhtml')."</div> "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
@@ -4699,7 +4704,7 @@ class Address extends DB_Table {
 
                     } else {
                         $history_data['History Abstract']='Address Changed';
-                        $history_data['History Details']=_('Address changed from').' <div style="border:1px solid grey;padding:5px;width:250px">'.$old_princial_address.'</div> '._('to').' <div tyle="border:1px solid grey;padding:5px;width:250px">'.$this->display('xhtml')."</div> "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['History Details']=_('Address changed from').' <div  class="history_address" style="border:1px solid grey;padding:5px;width:250px">'.$old_princial_address.'</div> '._('to').' <div  class="history_address" style="border:1px solid grey;padding:5px;width:250px">'.$this->display('xhtml')."</div> "._('in')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='changed';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
@@ -4708,7 +4713,9 @@ class Address extends DB_Table {
 
 
                     }
+                    
                     if ($parent=='Customer') {
+                        
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);

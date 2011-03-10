@@ -126,6 +126,7 @@ $js_files[]='store.js.php';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('plot_tipo',$_SESSION['state']['store']['plot']);
 
 
 

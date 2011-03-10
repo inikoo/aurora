@@ -294,7 +294,7 @@ $customer_key_from_order_data=$row2['customer_id'];
 
         $header_data=is_to_be_collected($header_data);
 
-        $header_data=is_shipping_supplier($header_data,$date_order);
+        $header_data=is_shipping_supplier($header_data);
         $header_data=is_staff_sale($header_data,array('Date'=>$date_order));
 
         $header_data=is_showroom($header_data);
@@ -1002,18 +1002,20 @@ $customer_key_from_order_data=$row2['customer_id'];
             $supplier=new Supplier('code',$supplier_code);
             if (!$supplier->id) {
                 $the_supplier_data=array(
-                                       'Supplier Name'=>$supplier_code
-                                                       ,'Supplier Code'=>$supplier_code
+                                       'Supplier Name'=>$supplier_code,
+                                        'Supplier Code'=>$supplier_code,
+                                         'editor'=>$editor
                                    );
 
                 if ( $supplier_code=='Unknown'  ) {
                     $the_supplier_data=array(
-                                           'Supplier Name'=>'Unknown Supplier'
-                                                           ,'Supplier Code'=>$supplier_code
+                                           'Supplier Name'=>'Unknown Supplier',
+                                                           'Supplier Code'=>$supplier_code,
+                                                            'editor'=>$editor
                                        );
                 }
 
-                $supplier=new Supplier('new',$the_supplier_data);
+                $supplier=new Supplier('find',$the_supplier_data,'create update');
             }
 
 

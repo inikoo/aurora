@@ -166,6 +166,7 @@ if(!isset($invoice_data['Invoice Date'])   ){
   
  
 protected function create($invoice_data) {
+//print_r($invoice_data);
     $this->data=$this->base_data();
     $this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
    
@@ -487,8 +488,44 @@ $this->data ['Invoice Total Profit']=0;
                 );
     mysql_query($sql);
 
+
+    $this->update_tax();
+
 //print "\n$sql\n";
 }
+
+function update_tax(){
+  
+  $sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$this->id);
+  mysql_query($sql);
+  
+  $tax_sum_by_code=array();
+
+  $sql=sprintf("select `Transaction Tax Code`,sum(`Invoice Transaction Item Tax Amount`) as amount from `Order Transaction Fact`  where `Invoice Key`=%d  group by `Transaction Tax Code`",$this->id);
+  $result = mysql_query ( $sql );
+  while ( $row = mysql_fetch_array ( $result, MYSQL_ASSOC ) ) {
+    $tax_sum_by_code[$row['Transaction Tax Code']]=$row['amount'];
+  }
+  
+   $sql=sprintf("select `Tax Category Code`,sum(`Transaction Invoice Tax Amount`) as amount from `Order No Product Transaction Fact` where `Invoice Key`=%d   group by `Tax Category Code`",$this->id);
+  $result = mysql_query ( $sql );
+  while ( $row = mysql_fetch_array ( $result, MYSQL_ASSOC ) ) {
+    if(array_key_exists($row['Tax Category Code'],$tax_sum_by_code))
+    $tax_sum_by_code[$row['Tax Category Code']]+=$row['amount'];
+
+      else
+    $tax_sum_by_code[$row['Tax Category Code']]=$row['amount'];
+  } 
+
+ 
+  foreach($tax_sum_by_code as $tax_code=>$amount ){
+    $this->add_tax_item($tax_code,$amount);
+  }
+  
+}
+
+
+
 function update_refund_totals() {
     $shipping_net=0;
     $shipping_tax=0;
@@ -1166,7 +1203,9 @@ $sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Invoice Ke
             return $orders;
 
 }
+
 function get_orders_objects(){
+
 $orders=array();
 $orders_ids=$this->get_orders_ids();
 foreach ($orders_ids as $order_id) {
@@ -1365,6 +1404,7 @@ function add_refund_no_product_transaction($refund_transaction_data) {
     ,$amount
     ,prepare_mysql($is_base)
     );
+   // print "$sql\n";
  mysql_query($sql);
  }
  

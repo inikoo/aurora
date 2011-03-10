@@ -1922,6 +1922,7 @@ $default_state=array(
                           ),
                    'store'=>array(
                                'block_view'=>'departments',
+                               'plot'=>'store',
                                'edit'=>'description',
                                'id'=>1,
                                'departments'=>array(

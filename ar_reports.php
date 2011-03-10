@@ -599,8 +599,8 @@ function es_1() {
         $where=$conf['where'];
 
 
-    if (isset( $_REQUEST['y']))
-        $year=$_REQUEST['y'];
+    if (isset( $_REQUEST['year']))
+        $year=$_REQUEST['year'];
     else
         $year=date('Y',strtotime('today -1 year'));
 
@@ -628,6 +628,7 @@ function es_1() {
     $filter_msg='';
     $wheref='';
 
+    $where=' where true ';
 
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);
@@ -643,6 +644,7 @@ function es_1() {
     $total=0;
 
     $sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
+    //  print $sql;
     $adata=array();
 
 
@@ -660,13 +662,19 @@ function es_1() {
         $sql2=sprintf("select `Tax Code`,sum(`Tax Amount`) as amount from `Invoice Tax Bridge` where `Invoice Key` in (%s) group by `Tax Code`  ", $data['invoice_keys']);
         $res2=mysql_query($sql2);
 //print "$sql2<br>";
+	$tax1=0;
+	$tax2=0;
+
         while ($row2=mysql_fetch_array($res2)) {
 //print_r($row2);
-            if ($row2['Tax Code']=='IVA') {
-                $tax1=$row2['amount'];
+            if ($row2['Tax Code']=='S1') {
+                $tax1+=$row2['amount'];
             }
-            if ($row2['Tax Code']=='I2') {
-                $tax2=$row2['amount'];
+            elseif ($row2['Tax Code']=='S2') {
+                $tax2+=$row2['amount'];
+            }elseif ($row2['Tax Code']=='S3') {
+	       $tax1+=0.8*$row2['amount'];
+                $tax2+=0.2*$row2['amount'];
             }
 
         }
