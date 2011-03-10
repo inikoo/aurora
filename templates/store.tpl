@@ -155,11 +155,6 @@
  </table>
 </div>
 
-
-
-
-
-
 <div  id="plots" style="clear:both">
 <ul class="tabs" id="chooser_ul" style="margin-top:25px">
     <li>

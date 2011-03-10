@@ -21,7 +21,7 @@
 	table.hideColumn('parts');
 	table.hideColumn('supplied');
 	table.hideColumn('gmroi');
-	
+	table.hideColumn('formated_record_type');
 	table.hideColumn('family');
 	table.hideColumn('dept');
 	table.hideColumn('expcode');  
@@ -40,10 +40,12 @@
 	    table.showColumn('name');
 	    table.showColumn('web');
 	    table.showColumn('stock');
+	    	table.showColumn('formated_record_type');
 	    Dom.get('product_period_options').style.display='none';
 	    Dom.get('product_avg_options').style.display='none';
 	    table.showColumn('gmroi');
 	}else if(tipo=='stock'){
+	table.showColumn('formated_record_type');
 	    table.showColumn('stock');
 	    table.showColumn('stock_value');
 	    table.showColumn('smallname');

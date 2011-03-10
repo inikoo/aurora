@@ -21,15 +21,24 @@ var period='period_<?php echo$_SESSION['state']['store']['departments']['period'
 var avg='avg_<?php echo$_SESSION['state']['store']['departments']['avg']?>';
 
 
-function change_block(){
-ids=['details','sites','departments','families','products','categories','deals'];
+function change_plot(){
+ids=['plot_store','plot_top_departments','plot_pie'];
 block_ids=['block_details','block_sites','block_departments','block_families','block_products','block_categories','block_deals'];
-
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-block_view&value='+this.id ,{});
+}
 
+
+function change_block(){
+ids=['details','sites','departments','families','products','categories','deals'];
+block_ids=['block_details','block_sites','block_departments','block_families','block_products','block_categories','block_deals'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-block_view&value='+this.id ,{});
 }
 
