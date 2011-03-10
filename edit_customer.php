@@ -170,6 +170,8 @@ if (isset($_REQUEST['return_to_order'])) {
     $smarty->assign('return_to_order',$_REQUEST['return_to_order']);
 }
 
+
+
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
 
@@ -203,6 +205,9 @@ while($row=mysql_fetch_array($res)){
 
 }
 mysql_free_result($res);
+
+
+
 
 $smarty->assign('categories',$comb);
 $smarty->assign('number_categories',count($comb));

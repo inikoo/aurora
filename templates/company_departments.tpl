@@ -13,6 +13,7 @@
  
 <div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}Departments List{/t}</span>
+<span  style="float:right;margin-left:20px;" class="table_type state_details"><a style="text-decoration:none" href="import_csv.php?subject=departments">{t}Import (CSV){/t}</a></span>
   <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="company_departments" >{t}Export (CSV){/t}</span>
   
   

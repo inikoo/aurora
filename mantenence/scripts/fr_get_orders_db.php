@@ -1000,18 +1000,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $supplier=new Supplier('code',$supplier_code);
             if (!$supplier->id) {
                 $the_supplier_data=array(
-                                       'Supplier Name'=>$supplier_code
-                                                       ,'Supplier Code'=>$supplier_code
+                                       'Supplier Name'=>$supplier_code,
+                                        'Supplier Code'=>$supplier_code,
+                                        'editor'=>$editor
                                    );
 
                 if ( $supplier_code=='Unknown'  ) {
                     $the_supplier_data=array(
-                                           'Supplier Name'=>'Unknown Supplier'
-                                                           ,'Supplier Code'=>$supplier_code
+                                           'Supplier Name'=>'Unknown Supplier',
+                                            'Supplier Code'=>$supplier_code,
+                                             'editor'=>$editor
                                        );
                 }
 
-                $supplier=new Supplier('new',$the_supplier_data);
+                $supplier=new Supplier('find',$the_supplier_data,'create update');
             }
 
             $parts_per_product=1;
@@ -1342,7 +1344,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             continue;
         }
 
-         $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+        $sql=sprintf("update fr_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
         mysql_query($sql);
 
 

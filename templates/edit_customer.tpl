@@ -59,7 +59,15 @@
  <td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
  <td>
    <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Send Post Status')=='To Send'}selected{/if}" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Send Post Status')=='Cancelled'}selected{/if}" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_No">{t}No{/t}</span>
+   <span class="{if $customer->get('Send Post Status')=='To Send'}selected{/if}" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</span> <span class="{if $customer->get('Send Post Status')=='Cancelled'}selected{/if}" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</span>
+   </div>
+ </td>
+ </tr>
+<tr>
+ <td class="label" style="width:200px">{t}Post Type{/t}:</td>
+ <td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <span class="{if $customer->get('Post Type')=='Letter'}selected{/if}" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</span> <span class="{if $customer->get('Post Type')=='Catalogue'}selected{/if}" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</span>
    </div>
  </td>
  </tr>

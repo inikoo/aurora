@@ -342,7 +342,7 @@ function customer_families_pie($data) {
 
     $number_slices=14;
     $others=0;
-    $sql=sprintf("select count(distinct `Product Family Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d",
+    $sql=sprintf("select count(distinct `Product Family Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact` OTF where `Customer Key`=%d",
                  $data['customer_key']
                 );
 
@@ -363,7 +363,7 @@ function customer_families_pie($data) {
         }
     }
 
-    $sql=sprintf("select `Product Family Name`,`Product Family Code`,`Product Family Key` ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d group by `Product Family Key` order by amount desc  limit %d",
+    $sql=sprintf("select `Product Family Name`,`Product Family Code`,OTF.`Product Family Key` ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product Family Dimension` F on (OTF.`Product Family Key`=F.`Product Family Key`)  where `Customer Key`=%d group by OTF.`Product Family Key` order by amount desc  limit %d",
                  $data['customer_key'],
                  $number_slices
                 );

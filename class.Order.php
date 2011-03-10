@@ -462,9 +462,14 @@ class Order extends DB_Table {
             } 
                 
                 //print_r($this->ship_to);
+                if(isset($data['Order Tax Code'])){
                 
-                
-             
+                $tax_cat=new TaxCategory('code',$data['Order Tax Code']);
+                if($tax_cat->id){
+                $this->data ['Order Tax Code']=$tax_cat->data['Tax Category Code'];
+             $this->data['Order Tax Rate']=$tax_cat->data['Tax Category Rate'];
+             }
+             }
                 
             $this->set_data_from_customer($data['Customer Key']);
            
@@ -2692,11 +2697,12 @@ class Order extends DB_Table {
         $this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
         $this->data ['Order Main Country 2 Alpha Code'] = ($customer->data ['Customer Main Country 2 Alpha Code']==''?'UNK':$customer->data ['Customer Main Country 2 Alpha Code']);
         $this->data ['Order Customer Order Number']=$customer->get_number_of_orders()+1;
-
+  if (!isset($this->data ['Order Tax Code'])) {
         if ($customer->data['Customer Tax Category Code']) {
             $tax_category=new TaxCategory('code',$customer->data['Customer Tax Category Code']);
             $this->data ['Order Tax Rate'] = $tax_category->data['Tax Category Rate'];
             $this->data ['Order Tax Code'] = $tax_category->data['Tax Category Code'];
+        }
         }
         $this->set_data_from_store($store_key);
     }

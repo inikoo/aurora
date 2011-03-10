@@ -2513,7 +2513,7 @@ function list_customers_send_post() {
             $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
 
         $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
-
+	$created_on=strftime("%e %b %y", strtotime($data['Date Creation']." +00:00"));
 
         if ($data['Customer Billing Address Link']=='Contact')
             $billing_address='<i>'._('Same as Contact').'</i>';
@@ -2538,7 +2538,7 @@ function list_customers_send_post() {
                      'email'=>$data['Customer Main XHTML Email'],
                      'telephone'=>$data['Customer Main XHTML Telephone'],
                      'last_order'=>$last_order_date,
-                     'contact_since'=>$contact_since,
+                     'created_on'=>$created_on,
 
                      /*    'total_payments'=>money($data['Customer Net Payments'],$currency),
                          'net_balance'=>money($data['Customer Net Balance'],$currency),

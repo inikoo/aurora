@@ -103,20 +103,26 @@ $smarty->assign('customer',$customer);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
+
+
 if(isset($_REQUEST['p'])){
   
   if($_REQUEST['p']=='cs'){
-  
+
   $order=$_SESSION['state']['customers']['table']['order'];
-     if ($order=='name')
+  $order_label=$order;  
+     if ($order=='name'){
         $order='`Customer File As`';
-    elseif($order=='id')
+        $order_label=_('Name');
+    }elseif($order=='id'){
     $order='`Customer Key`';
-    elseif($order=='location')
+         $order_label=_('ID');
+    }elseif($order=='location')
     $order='`Customer Main Location`';
-    elseif($order=='orders')
+    elseif($order=='orders'){
     $order='`Customer Orders`';
-    elseif($order=='email')
+         $order_label='# '._('Orders');
+    }elseif($order=='email')
     $order='`Customer Main Plain Email`';
     elseif($order=='telephone')
     $order='`Customer Main Plain Telephone`';
@@ -170,7 +176,7 @@ if(isset($_REQUEST['p'])){
 
    $_order=preg_replace('/`/','',$order);
 $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($customer->get($_order)),$order);
-//print $sql;
+
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'name'=>'');
@@ -178,6 +184,7 @@ mysql_free_result($result);
 
 $smarty->assign('prev',$prev);
 $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($customer->get($_order)),$order);
+
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'name'=>'');
@@ -188,7 +195,7 @@ $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 $store=new Store($customer->data['Customer Store Key']);
 $smarty->assign('parent_url','customers.php?store='.$store->id);
-$parent_title=$store->data['Store Name'].' '._('Customers');
+$parent_title=$store->data['Store Code'].' '._('Customers').' ('.$order_label.')';
 $smarty->assign('parent_title',$parent_title);
 
 }
