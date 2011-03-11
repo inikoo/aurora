@@ -236,7 +236,7 @@ if ($user->can_view('customers')) {
  
 }
  
- 
+ $common='';
  
  
 if ($user->data['User Type']=='Supplier') {
