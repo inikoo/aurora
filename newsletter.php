@@ -34,11 +34,31 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
+		
 		 'button.css',
-		 'container.css',
-		 'table.css'
+		 'container.css'
 		 );
+
+if($common)
+{
+array_push($css_files, 'themes_css/'.$common);   
+array_push($css_files, 'themes_css/'.$row['Themes css4']);
+array_push($css_files, 'themes_css/'.$row['Themes css2']); 
+array_push($css_files, 'themes_css/'.$row['Themes css3']);
+array_push($css_files, 'themes_css/'.$row['Themes css5']);
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/dropdown.css'); 
+array_push($css_files, 'css/index.css');
+array_push($css_files, 'table.css');
+array_push($css_files, 'css/marketing_campaigns.css');
+}
+
+
+
+
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',

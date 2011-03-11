@@ -37,10 +37,27 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 'common.css',
-		 'container.css',
-		 'table.css'
+	
+		 'container.css'
 		 );
+
+if($common)
+{
+array_push($css_files, 'themes_css/'.$common);   
+array_push($css_files, 'themes_css/'.$common2); 
+array_push($css_files, 'themes_css/'.$common3); 
+array_push($css_files, 'themes_css/'.$common4); 
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/dropdown.css'); 
+array_push($css_files, 'css/index.css');
+array_push($css_files, 'table.css');
+}
+
+
+
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',

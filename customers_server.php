@@ -27,10 +27,25 @@ $css_files=array(
                $yui_path.'build/assets/skins/sam/skin.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
 
-               'common.css',
-               'container.css',
-               'table.css'
+              
+               'container.css'
            );
+
+
+if($common)
+{
+array_push($css_files, 'themes_css/'.$common);   
+
+array_push($css_files, 'themes_css/'.$row['Themes css2']); 
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+
+array_push($css_files, 'table.css');
+}
+
+
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
