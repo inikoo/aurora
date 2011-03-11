@@ -649,10 +649,9 @@ function es_1() {
     $_dir='';
     $total=0;
 
-    $sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
-    //  print $sql;
+    $sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,sum(`Invoice Total Tax Adjust Amount`) as adjust_tax,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
+    //   print $sql;
     $adata=array();
-
 
 
     $result=mysql_query($sql);
@@ -672,18 +671,24 @@ function es_1() {
 	$tax2=0;
 
         while ($row2=mysql_fetch_array($res2)) {
-//print_r($row2);
-            if ($row2['Tax Code']=='S1') {
-                $tax1+=$row2['amount'];
-            }
-            elseif ($row2['Tax Code']=='S2') {
-                $tax2+=$row2['amount'];
-            }elseif ($row2['Tax Code']=='S3') {
-	       $tax1+=0.8*$row2['amount'];
-                $tax2+=0.2*$row2['amount'];
-            }
-
+	  if ($row2['Tax Code']=='S1') {
+	    $tax1+=$row2['amount'];
+	  }
+	  elseif ($row2['Tax Code']=='S2') {
+	    $tax2+=$row2['amount'];
+	  }elseif ($row2['Tax Code']=='S3') {
+	    $tax1+=0.8*$row2['amount'];
+	    $tax2+=0.2*$row2['amount'];
+	  } 
         }
+
+	if($tax2>0 and $tax1==0){
+	$tax2+=$data['adjust_tax'];
+
+	}else{
+	
+	$tax1+=$data['adjust_tax'];
+	}
 
         $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
         $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
