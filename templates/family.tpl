@@ -275,10 +275,9 @@
    
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-       </div>
+
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
-    <div  id="table0"   class="data_table_container dtable btable "  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
+    <div  id="table0"   class="data_table_container dtable btable with_total "  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
   
 </div>
 <div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>

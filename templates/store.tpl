@@ -178,20 +178,35 @@
   
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 
-<div id="plot" style="clear:both;border:1px solid #ccc" >
-	<div id="single_data_set"  >
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-</div>
+<div id="plot_store_div" style="{if $plot_tipo!='store'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
+<div id="plot_top_departments_div" style="{if $plot_tipo!='top_departments'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
+<div id="plot_pie_div" style="{if $plot_tipo!='pie'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
+
+
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store->id}"));
 		so.addVariable("preloader_color", "#999999");
-		so.write("plot");
+		so.write("plot_store_div");
+		// ]]>
+</script>
+
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=store_departments_pie&store_key=1")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot_pie_div");
 		// ]]>
 	</script>
+	
+
   
   
   <div style="clear:both"></div>
@@ -239,9 +254,10 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-      <tr><td  {if $department_view=='general'}class="selected"{/if} id="department_general" >{t}Summary{/t}</td>
-	{if $view_stock}<td {if $department_view=='stock'}class="selected"{/if}  id="department_stock"  >{t}Stock{/t}</td>{/if}
-	{if $view_sales}<td  {if $department_view=='sales'}class="selected"{/if}  id="department_sales"  >{t}Sales{/t}</td>{/if}
+      <tr>
+    <td class="option {if $department_view=='general'}selected{/if}" id="department_general" >{t}Summary{/t}</td>
+	    <td class="option {if $department_view=='stock'}selected{/if}"  id="department_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
+	    <td class="option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
       </tr>
     </table>
     <table id="department_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $department_view!='sales' };display:none{/if}"  class="options_mini" >

@@ -3695,7 +3695,10 @@ function list_departments() {
     $total_records=ceil($total/$number_results)+$total;
     $number_results++;
 
-
+if($start_from==0)
+$record_offset=0;
+else
+$record_offset=$start_from+1;
 
     $response=array('resultset'=>
                                 array('state'=>200,
@@ -3707,7 +3710,7 @@ function list_departments() {
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
                                       'total_records'=>$total_records,
-                                      'records_offset'=>$start_from+1,
+                                      'records_offset'=>$record_offset,
                                       'records_perpage'=>$number_results,
                                      )
                    );
@@ -3758,29 +3761,19 @@ function list_products() {
     else
         $view=$conf['view'];
 
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
-    if (!is_numeric($start_from))
-        $start_from=0;
-
     if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
-        if ($display_total) {
-            if ($start_from>0) {
-                $page=floor($start_from/$number_results);
-                $start_from=$start_from-$page;
-            }
+        $number_results=$_REQUEST['nr']-1;
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
         }
-
-
-
-
-    }      else {
+    } else
         $number_results=$conf['nr'];
-    }
-
 
 
     if (isset( $_REQUEST['o']))
@@ -4624,6 +4617,9 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
                  );
     }
 
+
+if ($total<=$number_results) {
+
     if ($percentages) {
         $tsall='100.00%';
         $tprofit='100.00%';
@@ -4635,7 +4631,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
 
     }
 
-    if ($display_total) {
+   
         $total_title='Total';
         if ($view=='sales')
             $total_title=_('Total');
@@ -4662,8 +4658,13 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
                  );
 
 
-        $total_records=ceil($total_records/$number_results)+$total_records;
+       // $total_records=ceil($total_records/$number_results)+$total_records;
+    }else {
+        $adata[]=array();
+
     }
+      $total_records=ceil($total/$number_results)+$total;
+    $number_results++;
 
 
     $response=array('resultset'=>
@@ -4676,8 +4677,8 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
                                     'filter_msg'=>$filter_msg,
                                     'rtext'=>$rtext,
                                     'rtext_rpp'=>$rtext_rpp,
-                                    'total_records'=>$total,
-                                    'records_offset'=>$start_from,
+                                    'total_records'=>$total_records,
+                                    'records_offset'=>$start_from+1,
                                     'records_perpage'=>$number_results,
                                 )
                    );
@@ -5494,16 +5495,12 @@ function list_families() {
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
-    //  $start_from=0;
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
-
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
         }
-
-
     } else
         $number_results=$conf['nr'];
 
