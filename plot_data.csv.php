@@ -37,7 +37,31 @@ case('number_of_customers'):
                          ));
     number_of_customers($data);
     break;
-
+case('store_departments_pie'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                             
+                         ));
+  
+    
+    store_departments_pie($data);
+    break;
+ case('store_families_pie'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+                  
+    store_families_pie($data);
+    break;
+case('store_product_pie'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+    store_product_pie($data);
+    break;    
+    
+    
+    
 case('customers_orders_pie'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -863,6 +887,106 @@ function top_families($data) {
 
     if ($others) {
         printf("%s;%.2f;true\n",_('Others'),$others);
+    }
+
+}
+
+
+function store_departments_pie($data) {
+    $number_slices=9;
+    $others=0;
+    
+  
+    
+    $sql=sprintf("select count(distinct OTF.`Product Department Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join `Product Department Dimension` D on (D.`Product Department Key`=OTF.`Product Department Key`)  where OTF.`Store Key`=%d",
+                 $data['store_key']
+                );
+
+    $res=mysql_query($sql);
+    // print $sql;
+    if ($row=mysql_fetch_assoc($res)) {
+
+        if ($row['amount']>0) {
+            if ($row['num_slices']==10) {
+                $number_slices=10;
+            }
+            elseif($row['num_slices']>10) {
+                $others=$row['amount'];
+
+                // printf("%s;%.2f\n",_('Others'),$row['amount']);
+            }
+
+        }
+    }
+
+    $sql=sprintf("select `Product Department Code` ,`Product Department Name` ,OTF.`Product Department Key`,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join `Product Department Dimension` D on (D.`Product Department Key`=OTF.`Product Department Key`)  where OTF.`Store Key`=%d group by OTF.`Product Department Key` order by amount desc limit %d",
+                 $data['store_key'],
+                 $number_slices
+                );
+//print $sql;
+    $sum_slices=0;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        if ($row['amount']>0) {
+            // printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
+            $descripton=$row['Product Department Name'];
+            printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['Product Department Code'],$row['amount'],$row['Product Department Key'],$descripton);
+            $sum_slices+=$row['amount'];
+
+        }
+    }
+
+    if ($others) {
+        printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
+    }
+
+}
+function store_families_pie($data) {
+    $number_slices=14;
+    $others=0;
+    
+  
+    
+    $sql=sprintf("select count(distinct OTF.`Product Family Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join `Product Family Dimension` D on (D.`Product Family Key`=OTF.`Product Family Key`)  where OTF.`Store Key`=%d",
+                 $data['store_key']
+                );
+
+    $res=mysql_query($sql);
+    // print $sql;
+    if ($row=mysql_fetch_assoc($res)) {
+
+        if ($row['amount']>0) {
+            if ($row['num_slices']==10) {
+                $number_slices=10;
+            }
+            elseif($row['num_slices']>10) {
+                $others=$row['amount'];
+
+                // printf("%s;%.2f\n",_('Others'),$row['amount']);
+            }
+
+        }
+    }
+
+    $sql=sprintf("select `Product Family Code` ,`Product Family Name` ,OTF.`Product Family Key`,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join `Product Family Dimension` D on (D.`Product Family Key`=OTF.`Product Family Key`)  where OTF.`Store Key`=%d group by OTF.`Product Family Key` order by amount desc limit %d",
+                 $data['store_key'],
+                 $number_slices
+                );
+//print $sql;
+    $sum_slices=0;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        if ($row['amount']>0) {
+            // printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
+            $descripton=$row['Product Family Name'];
+            printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['Product Family Code'],$row['amount'],$row['Product Family Key'],$descripton);
+            $sum_slices+=$row['amount'];
+
+        }
+    }
+
+    if ($others) {
+        printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
     }
 
 }

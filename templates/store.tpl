@@ -180,8 +180,46 @@
 
 <div id="plot_store_div" style="{if $plot_tipo!='store'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
 <div id="plot_top_departments_div" style="{if $plot_tipo!='top_departments'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
-<div id="plot_pie_div" style="{if $plot_tipo!='pie'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>You need to upgrade your Flash Player</strong></div>
 
+<div id="plot_pie_block"  style="{if $plot_tipo!='pie'}display:none;{/if}clear:both;border:1px solid #ccc;padding:20px">
+  <div style="width:435px;float:left">
+  <span   class="clean_table_title" style="">{t}Departments{/t}</span>
+
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+     
+    <table id="pie_department_period_options" style="float:left;margin:0 0 0 0px ;padding:0"  class="options_mini" >
+	  <tr>
+	    
+
+	    <td class="option {if $department_period=='all'}selected{/if}" period="all"  id="pie_department_period_all" >{t}All{/t}</td>
+	    <td class="option {if $department_period=='year'}selected{/if}"  period="year"  id="pie_department_period_year"  >{t}1Yr{/t}</td>
+	    <td class="option {if $department_period=='quarter'}selected{/if}"  period="quarter"  id="pie_department_period_quarter"  >{t}1Qtr{/t}</td>
+	    <td class="option {if $department_period=='month'}selected{/if}"  period="month"  id="pie_department_period_month"  >{t}1M{/t}</td>
+	    <td class="option {if $department_period=='week'}selected{/if}" period="week"  id="pie_department_period_week"  >{t}1W{/t}</td>
+	  </tr>
+      </table>
+<div id="plot_pie_departments" ><strong>You need to upgrade your Flash Player</strong></div>
+</div>
+ <div style="width:435px;float:left;margin-left:20px">
+  <span   class="clean_table_title" style="">{t}Families{/t}</span>
+
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+     
+    <table id="pie_family_period_options" style="float:left;margin:0 0 0 0px ;padding:0"  class="options_mini" >
+	  <tr>
+	    
+
+	    <td class="option {if $family_period=='all'}selected{/if}" period="all"  id="pie_family_period_all" >{t}All{/t}</td>
+	    <td class="option {if $family_period=='year'}selected{/if}"  period="year"  id="pie_family_period_year"  >{t}1Yr{/t}</td>
+	    <td class="option {if $family_period=='quarter'}selected{/if}"  period="quarter"  id="pie_family_period_quarter"  >{t}1Qtr{/t}</td>
+	    <td class="option {if $family_period=='month'}selected{/if}"  period="month"  id="pie_family_period_month"  >{t}1M{/t}</td>
+	    <td class="option {if $family_period=='week'}selected{/if}" period="week"  id="pie_family_period_week"  >{t}1W{/t}</td>
+	  </tr>
+      </table>
+<div id="plot_pie_families" ><strong>You need to upgrade your Flash Player</strong></div>
+</div>
+<div style="clear:both"></div>
+</div>
 
 <script type="text/javascript">
 		// <![CDATA[
@@ -195,19 +233,42 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "430", "430", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=store_departments_pie&store_key=1")); 
 		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
 		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
 
-		so.write("plot_pie_div");
+		so.write("plot_pie_departments");
 		// ]]>
 	</script>
-	
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "430", "430", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=store_families_pie&store_key=1")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
 
-  
+		so.write("plot_pie_families");
+		// ]]>
+	</script>
+
+  	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "430", "430", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=store_products_pie&store_key=1")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot_pie_families");
+		// ]]>
+	</script>
+
   
   <div style="clear:both"></div>
 </div>
