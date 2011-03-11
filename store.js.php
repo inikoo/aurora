@@ -21,14 +21,23 @@ var period='period_<?php echo$_SESSION['state']['store']['departments']['period'
 var avg='avg_<?php echo$_SESSION['state']['store']['departments']['avg']?>';
 
 
-function change_plot(){
+function change_plot(o){
 ids=['plot_store','plot_top_departments','plot_pie'];
-block_ids=['block_details','block_sites','block_departments','block_families','block_products','block_categories','block_deals'];
+block_ids=['plot_store_div','plot_top_departments_div','plot_pie_div'];
 Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
+Dom.setStyle(o.id+'_div','display','');
 Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-block_view&value='+this.id ,{});
+Dom.addClass(o,'selected');
+
+
+if(o.id=='plot_store')
+plot='store';
+else if(o.id=='plot_top_departments')
+plot='top_departments';
+else if(o.id=='plot_pie')
+plot='pie';
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+plot ,{});
 }
 
 
@@ -119,15 +128,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
+							   renderLoopSize: 20,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo $_SESSION['state']['store']['departments']['nr']+1?>,containers : 'paginator0', 
+								        alwaysVisible:true,
+									      rowsPerPage:<?php echo $_SESSION['state']['store']['departments']['nr']+1?>,
+									      totalRecords:YAHOO.widget.Paginator.VALUE_UNLIMITED,
+									      containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+ 									      lastPageLinkLabel :">>",
+ 									      rowsPerPageOptions : [10,25,50,100,250,500],
+ 									     
+									      template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -202,12 +216,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
+								        
 									      rowsPerPage:<?php echo$_SESSION['state']['families']['table']['nr']+1?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
@@ -287,7 +302,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
@@ -363,6 +378,14 @@ function previous_info_period(){
 
  function init(){
  
+  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+
+ 
  Event.addListener(['details','sites','departments','families','products','categories','deals'], "click",change_block);
 
 // -------------------------Export(CSV) code for department under store --------------------
@@ -386,14 +409,25 @@ function previous_info_period(){
   init_search('products_store');
  
  
- YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
    
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
+ 
+  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+  oACDS1.table_id=1;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+
+ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+  oACDS2.table_id=2;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+ oAutoComp2.minQueryLength = 0; 
+ 
 
  ids=['department_general','department_sales','department_stock'];
  YAHOO.util.Event.addListener(ids, "click",change_department_view,{'table_id':0,'parent':'store'})

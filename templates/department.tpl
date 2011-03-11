@@ -200,7 +200,6 @@
 
    
 </div>
- 
 <div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 <div class="data_table" style="clear:both;">
@@ -252,19 +251,14 @@
     </tr>
   </table>
   </div>
-  <div  class="clean_table_caption"  style="clear:both;">
+
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
+      
+  <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
+ <div  id="table0"  style="{if $table_type=='thumbnails'}display:none{/if}"  class="data_table_container dtable btable with_total"> </div>
 
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-       </div>
-  
-
-      <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
-
-  <div  id="table0"  style="{if $table_type=='thumbnails'}display:none{/if}"  class="data_table_container dtable btable with_total"> </div>
 </div>
 </div>
-
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
   <div class="data_table" style="margin:0px;clear:both">
     <span class="clean_table_title">{t}Products{/t}</span>
@@ -310,7 +304,7 @@
 
         {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name2 filter_value=$filter_value1  }
 
-    <div  id="table1"   class="data_table_container dtable btable "> </div>
+    <div  id="table1"   class="data_table_container dtable btable with_total "> </div>
   </div>
 </div>
 <div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
@@ -372,6 +366,27 @@
     </ul>
   </div>
 </div>
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="family-table-csv_export" export_options=$csv_export_options }
 {include file='footer.tpl'}
 

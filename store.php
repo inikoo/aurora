@@ -141,6 +141,8 @@ $smarty->assign('department_view',$_SESSION['state']['store']['departments']['vi
 $smarty->assign('department_show_percentages',$_SESSION['state']['store']['departments']['percentages']);
 $smarty->assign('department_avg',$_SESSION['state']['store']['departments']['avg']);
 $smarty->assign('department_period',$_SESSION['state']['store']['departments']['period']);
+
+
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['store']['departments']['f_field']:'code');
 $smarty->assign('filter0',$tipo_filter);
@@ -158,6 +160,7 @@ $smarty->assign('family_view',$_SESSION['state']['store']['families']['view']);
 $smarty->assign('family_show_percentages',$_SESSION['state']['store']['families']['percentages']);
 $smarty->assign('family_avg',$_SESSION['state']['store']['families']['avg']);
 $smarty->assign('family_period',$_SESSION['state']['store']['families']['period']);
+
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['store']['families']['f_field']:'code');
 $smarty->assign('filter1',$tipo_filter);
@@ -175,10 +178,11 @@ $smarty->assign('product_view',$_SESSION['state']['store']['products']['view']);
 $smarty->assign('product_show_percentages',$_SESSION['state']['store']['products']['percentages']);
 $smarty->assign('product_avg',$_SESSION['state']['store']['products']['avg']);
 $smarty->assign('product_period',$_SESSION['state']['store']['products']['period']);
+
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['store']['products']['f_field']:'code');
-$smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',($q==''?$_SESSION['state']['store']['products']['f_value']:addslashes($q)));
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',($q==''?$_SESSION['state']['store']['products']['f_value']:addslashes($q)));
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
              );

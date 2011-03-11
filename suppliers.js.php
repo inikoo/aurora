@@ -47,6 +47,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    rtext_rpp:"resultset.rtext_rpp",
 
 		    rowsPerPage:"resultset.records_perpage",
+		    recordsOffset:"resultset.records_offset",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
@@ -63,18 +64,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"low","location","email","profit",'profit_after_storing','cost',"pending_pos","sales"
 	 ]};
 
-	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,
-						     this.dataSource0, {draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?php echo$_SESSION['state']['suppliers']['table']['nr']?>,containers : 'paginator0', 
+table_paginator0=new YAHOO.widget.Paginator({
+								       alwaysVisible:true,
+									       rowsPerPage    : <?php echo$_SESSION['state']['suppliers']['table']['nr']?>,
+									       containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>"
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-									  })
+ 									      lastPageLinkLabel :">>",
+ 									      rowsPerPageOptions : [10,25,50,100,250,500],
+									      template : "{FirstPageLink}{PreviousPageLink} <strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  });
+
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,
+						     this.dataSource0, {draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : table_paginator0
 								     
 								     ,sortedBy : {
 									 key: "<?php echo$_SESSION['state']['suppliers']['table']['order']?>",
@@ -84,9 +90,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 						     }
 						     );
-	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	   this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	  //table_paginator0.unsubscribe("changeRequest", this.table0.onPaginatorChangeRequest);
+	  
+	  
+	  
+	//  table_paginator0.subscribe("changeRequest", handlePagination, this.table0, true); 
+	  
+	  //  this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	   // this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['suppliers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['suppliers']['table']['f_value']?>'};
 	    this.table0.view='<?php echo$_SESSION['state']['suppliers']['view']?>';
 	    

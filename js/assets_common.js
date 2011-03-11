@@ -225,7 +225,7 @@ function change_department_view(e,data){
 	    table.showColumn('stock_error');
 	    table.showColumn('outofstock');
 	}
-	
+
    Dom.removeClass(Dom.getElementsByClassName('option','td' , this.parentNode),'selected')
     Dom.addClass(this,"selected");	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+data.parent+'-departments-view&value=' + escape(tipo) ,{success:function(o) {}});

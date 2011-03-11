@@ -624,8 +624,14 @@ function es_1() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-    $filter_msg='';
+   $_SESSION['state']['customers']['table']['order']=$order;
+    $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['table']['nr']=$number_results;
+     $_SESSION['state']['customers']['table']['sf']=$start_from;
+      $_SESSION['state']['customers']['table']['where']=$where;
+       $_SESSION['state']['customers']['table']['f_field']=$f_field;
+        $_SESSION['state']['customers']['table']['f_value']=$f_value;
+   $filter_msg='';
     $wheref='';
 
     $where=' where true ';
