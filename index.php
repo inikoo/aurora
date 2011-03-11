@@ -11,6 +11,8 @@
 
  Version 2.0
 */
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 
 include_once('common.php');
 
@@ -44,6 +46,10 @@ $search_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'
 
 $smarty->assign('search_options_list',$search_options_list);
 
+
+
+
+
      $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -55,12 +61,12 @@ $smarty->assign('search_options_list',$search_options_list);
                
                
            ); 
-
-if($common)
+$theme="";
+if($theme)
 {
-array_push($css_files, 'themes_css/'.$common);   
-array_push($css_files, 'themes_css/'.$row['Themes css3']); 
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
+array_push($css_files, 'themes_css/'.$Themecss1);   
+array_push($css_files, 'themes_css/'.$Themecss2);
+array_push($css_files, 'themes_css/'.$Themecss3);
 }    
 
 else{
