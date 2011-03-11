@@ -940,6 +940,8 @@ ALTER TABLE pl_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DE
 ALTER TABLE ci_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `customer_id` );
 
 0.9.28 from here
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Total Net Adjust Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Net Amount` ;
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Total Tax Adjust Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Tax Amount` ;
 
 
 */

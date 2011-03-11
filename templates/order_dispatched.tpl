@@ -42,7 +42,10 @@
 	   
 	   
 	   
-	   <tr style="border-top:1px solid #bbb"><td  class="aright" style="border-top:1px solid #bbb">{t}Net{/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Net Amount')}</td></tr>
+	   <tr style="border-top:1px solid #bbb">
+	   
+	   <td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Net Amount')}</td>
+	   </tr>
 	   <tr><td  class="aright" >{t}Tax{/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Tax Amount')}</td></tr>
 
 	   <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td></tr>
