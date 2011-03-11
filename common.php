@@ -263,4 +263,32 @@ $export_data=array(
              );
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+$user_key=$_SESSION['user_key'];
+$sql="select * from  `User Dimension` inner join `Theme Dimention`  on (`User Dimension`.`User Themes`=`Theme Dimention`.`User Themes`) where `User Key`='$user_key' ";
+$res=mysql_query($sql);
+
+if ($row=mysql_fetch_array($res)) {
+$common=$row['Themes css1'];
+$common2=$row['Themes css2'];
+$common3=$row['Themes css3'];
+$common4=$row['Themes css3'];
+
+
+          } 
+
+
+
+
 ?>

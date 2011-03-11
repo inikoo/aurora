@@ -29,7 +29,7 @@
 <table class="options" style="float: left; margin: 0pt 0pt 0pt 0px; padding: 0pt;">
 	<tbody><tr><td id="create_list"><a href="#">Create List</a></td>
         <td id="view_list"><a href="customers_lists.php">View List</a></td>
-	  <td id="create_campaign" style="background-color:#7296E1;"><a style="color:#ffffff;" href="#" onclick="checkListTable()">Create Campaign</a></td>	  
+	  <td id="create_campaign"  class="campaign_tab"><a style="color:#ffffff;" href="#" onclick="checkListTable()">Create Campaign</a></td>	  
           <td id="view_campaign" ><a href="campaign_builder.php">View Campaign</a></td>	</tr>
       </tbody></table>
 

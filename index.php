@@ -44,22 +44,30 @@ $search_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'
 
 $smarty->assign('search_options_list',$search_options_list);
 
-
-
-$css_files=array(
+     $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               'common.css',
+              
                'button.css',
-               'container.css',
-               'table.css',
-               'css/index.css'
-           );
-           
-           
-        
+               'container.css'
+               
+               
+           ); 
+
+if($common)
+{
+array_push($css_files, 'themes_css/'.$common);   
+array_push($css_files, 'themes_css/'.$row['Themes css3']); 
+array_push($css_files, 'themes_css/'.$row['Themes css2']); 
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/index.css'); 
+array_push($css_files, 'table.css');
+}
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',

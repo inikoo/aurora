@@ -32,12 +32,27 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 'common.css',
+		 
 		 'button.css',
 		 'container.css',
-		 'table.css',
+		 
 		 'css/dropdown.css'
 		 );
+
+if($common)
+{
+array_push($css_files, 'themes_css/'.$common);   
+array_push($css_files, 'themes_css/'.$row['Themes css4']); 
+array_push($css_files, 'themes_css/'.$row['Themes css2']); 
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'dropdown.css');
+array_push($css_files, 'table.css');
+}
+
+
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
