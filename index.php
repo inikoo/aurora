@@ -11,6 +11,8 @@
 
  Version 2.0
 */
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 
 include_once('common.php');
 
@@ -46,20 +48,32 @@ $smarty->assign('search_options_list',$search_options_list);
 
 
 
-$css_files=array(
+
+
+     $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               'common.css',
+              
                'button.css',
-               'container.css',
-               'table.css',
-               'css/index.css'
-           );
-           
-           
-        
+               'container.css'
+               
+               
+           ); 
+$theme="";
+if($theme)
+{
+array_push($css_files, 'themes_css/'.$Themecss1);   
+array_push($css_files, 'themes_css/'.$Themecss2);
+array_push($css_files, 'themes_css/'.$Themecss3);
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/index.css'); 
+array_push($css_files, 'table.css');
+}
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',

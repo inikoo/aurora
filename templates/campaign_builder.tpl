@@ -33,7 +33,7 @@
 	<tbody><tr><td id="create_list"><a href="#">Create List</a></td>
         <td id="view_list"><a href="customers_lists.php">View List</a></td>
 	  <td id="create_campaign"><a href="#" onclick="checkListTable()">Create Campaign</a></td>	  
-          <td id="view_campaign" style="background-color:#7296E1;"><a style="color:#ffffff;" href="campaign_builder.php">View Campaign</a></td>	</tr>
+          <td id="view_campaign" class="campaign_tab"><a style="color:#ffffff;" href="campaign_builder.php">View Campaign</a></td>	</tr>
       </tbody></table>
 
 <div class="data_table" style="clear:both"><br>

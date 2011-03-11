@@ -23,6 +23,7 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 
 
 
+
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',

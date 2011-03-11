@@ -86,11 +86,27 @@ $css_files=array(
 		 		 $yui_path.'assets/skins/sam/autocomplete.css',
 
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 'common.css',
+		 
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		
 		 );
+
+$theme="";
+if($theme)
+{
+array_push($css_files, 'themes_css/'.$Themecss1);   
+array_push($css_files, 'themes_css/'.$Themecss2);
+array_push($css_files, 'themes_css/'.$Themecss3);
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/dropdown.css');
+array_push($css_files, 'table.css');
+}
+
+
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',

@@ -1391,7 +1391,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(!$supplier->id){
 	  //print "neew: $supplier_code\n";
 	  //print_r($the_supplier_data);
-	  $supplier=new Supplier('new',$the_supplier_data);
+	  $supplier=new Supplier('find',$the_supplier_data,'create update');
 	}
 
 	if(strlen($supplier->data['Supplier Name'])<=1){

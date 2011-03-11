@@ -11,16 +11,15 @@
 <br>
 <form action="change_style.php" method="post">
 <div>
-	<table border="0" width="400">
+	<table border="0" width="350">
 		
 
 		<tr>
 			 <td width="200px">Please select the style : </td> 
-			 <td><a href="#" onclick="change_style(1);"><div style="width:10px; height:10px; background-color:green; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(2);"><div style="width:10px; height:10px; background-color:#B90104; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(3);"><div style="width:10px; height:10px; background-color:#011345; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(4);"><div style="width:10px; height:10px; background-color:#000000; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(5);"><div style="width:10px; height:10px; background-color:#ECC965; border:1px;"></div></a></td>
+			<td><a href="#" onclick="change_style(0);"><div style="width:10px; height:10px; background-color:Blue; border:1px;"></div></a></td>
+			 <td><a href="#" onclick="change_style(1);"><div style="width:10px; height:10px; background-color:#BD6A14; border:1px;"></div></a></td>
+			 <td><a href="#" onclick="change_style();"><div style="width:10px; height:10px; background-color:#B90104; border:1px;"></div></a></td>
+			
 		</tr>
 		
 		
