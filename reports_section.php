@@ -30,13 +30,14 @@ $css_files=array(
 
 		 );
 
-if($common)
+$theme="";
+if($theme)
 {
-array_push($css_files, 'themes_css/'.$common);   
-array_push($css_files, 'themes_css/'.$row['Themes css4']);
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-array_push($css_files, 'themes_css/'.$row['Themes css3']);
+array_push($css_files, 'themes_css/'.$Themecss1);   
+array_push($css_files, 'themes_css/'.$Themecss2);
+array_push($css_files, 'themes_css/'.$Themecss3);
 }    
+    
 
 else{
 array_push($css_files, 'common.css'); 
