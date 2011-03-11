@@ -25,6 +25,8 @@ var theme;
 
 
 
+
+
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
@@ -37,7 +39,8 @@ var theme;
 		}
 		else
 		{
-			result = "<img src='art/icons/tick.png'>"+"Your setting has been saved";
+			location.href ="change_style.php";
+			result = "";
 
 		}
 

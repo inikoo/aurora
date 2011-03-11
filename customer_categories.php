@@ -40,19 +40,26 @@ $css_files=array(
 		
 		
 		 );
-if($common)
+$theme="";
+if($theme)
 {
-array_push($css_files, 'themes_css/'.$common);   
-
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-array_push($css_files, 'themes_css/'.$row['Themes css4']);
+array_push($css_files, 'themes_css/'.$Themecss1);   
+array_push($css_files, 'themes_css/'.$Themecss2);
+array_push($css_files, 'themes_css/'.$Themecss3);
 }    
+    
 
 else{
 array_push($css_files, 'common.css');  
 array_push($css_files,  'css/dropdown.css');
 array_push($css_files, 'css/table.css');
 }	
+
+
+
+
+
+
 		 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
