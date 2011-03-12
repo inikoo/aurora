@@ -13,8 +13,6 @@ if(!($user->can_view('warehouses')  ) ){
 $create=$user->can_create('warehouses');
 $modify=$user->can_edit('warehouses');
 $smarty->assign('view_parts',$user->can_view('parts'));
-$show_details=$_SESSION['state']['store']['details'];
-$smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
 $general_options_list=array();
