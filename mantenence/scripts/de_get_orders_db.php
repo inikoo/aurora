@@ -14,7 +14,7 @@ include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('common_read_orders_functions.php');
 
-$encrypt=true;
+$encrypt=false;
 $store_code='D';
 $__currency_code='EUR';
 
