@@ -12,7 +12,7 @@ function change_style(s) {
 var result;
 var theme;
 
-		var make_default = confirm ("Are you want to make it default ?")
+		var make_default = confirm ("Press Ok to select default theme or Cancel to change the theme ?")
 
 		if(make_default)
 		{
