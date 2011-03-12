@@ -11,7 +11,7 @@ include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('common_read_orders_functions.php');
 
-
+$encrypt_email=true;
 
 $store_code='F';
 $__currency_code='EUR';
@@ -411,7 +411,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $customer_data[$key]=$value;
 
         }
-        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],false);
+        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],$encrypt_email);
 
         $customer_data['Customer Store Key']=$store_key;
         if ($customer_data['Customer Type']=='Company')

@@ -942,8 +942,8 @@ ALTER TABLE ci_orders_data.`orders` ADD `customer_id` MEDIUMINT UNSIGNED NULL DE
 0.9.28 from here
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Total Net Adjust Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Net Amount` ;
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Total Tax Adjust Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Tax Amount` ;
-
-
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Total` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Total Tax Adjust Amount`;
+ALTER TABLE `Order Transaction Fact` ADD `Invoice Transaction Net Adjust` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Outstanding Refund Tax Balance` ,ADD `Invoice Transaction Tax Adjust` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Adjust` ;
 */
 
 

@@ -32,6 +32,7 @@ function encrypt_email($value,$do_it=true) {
     $value=preg_replace('/yahoo|hotmail|gmail/','mmm2',$value);
     $value=preg_replace('/bt/','mx',$value);
     $value=preg_replace('/mail/','mmm3',$value);
+    $value=preg_replace('/m/','r',$value);
 
     $value=preg_replace('/e/','a',$value);
     $value=preg_replace('/i/','ie',$value);

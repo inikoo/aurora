@@ -701,7 +701,7 @@ $order='`Order Current XHTML State`';
 else if($order=='customer')
      $order='`Order Customer Name`';
 
-  $sql="select `Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
   global $myconf;
 
@@ -715,13 +715,32 @@ else if($order=='customer')
      if($row ['Order Type'] != 'Order')
        $state.=' ('.$row ['Order Type'].')';
        
-       if($row['Order Balance Total Amount']!=$row['Order Total Amount']){
-       $mark='<span style="color:red">*</span>';
-       }else{
-       $mark='<span style="visibility:hidden">*</span>';
+       $mark='';
+       $adjusts=false;
+       $out_of_stock=false;
+        $adjust_color='brown';
+       if($row['Order Current Dispatch State']=='Dispatched' or $row['Order Current Payment State']=='Paid'){
+       
+       if($row['Order Out of Stock Amount']!=0){
+       $out_of_stock=true;
        }
        
+       $adjust=$row['Order Balance Total Amount']-$row['Order Total Amount']-$row['Order Out of Stock Amount'];
+       if($adjust!=0){
        
+       $adjusts=true;
+        if(abs($adjust)>1)
+        $adjust_color='red';
+
+       
+       
+       }
+       }
+       if($out_of_stock)
+       $mark.='<span style="'.(!$out_of_stock?'visibility:hidden;':'').'color:brown">&otimes;</span><span style="'.(!$adjusts?'visibility:hidden;':'').'color:'.$adjust_color.'">'.$adjust.'&epsilon;</span>';
+       else
+              $mark.='<span style="'.(!$adjusts?'visibility:hidden;':'').'color:'.$adjust_color.'">&epsilon;</span><span style="'.(!$out_of_stock?'visibility:hidden;':'').'color:brown">&otimes;</span>';
+
      $data[]=array(
 		   'id'=>$order_id,
 		   'customer'=>$customer,

@@ -43,7 +43,7 @@
 	
 	</tr>
       </table>
-        <table id="stores_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $block_view!='sales' };display:none{/if}"  class="options_mini" >
+        <table id="stores_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
 
 	  <td class="option {if $period=='all'}selected{/if}" period="all"  id="period_all" >{t}All{/t}</td>
@@ -55,7 +55,7 @@
       </table>
 
 
-       <table  id="stores_avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $block_view!='sales'};display:none{/if}"  class="options_mini" >
+       <table  id="stores_avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td class="option {if $avg=='totals'}selected{/if}" avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
 	  <td class="option {if $avg=='month'}selected{/if}"  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
