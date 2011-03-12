@@ -48,8 +48,12 @@
 		     </tr>
 		</table>
 		
-</div>    
+</div>  
+	
+		<div style="padding-top:200px;"> <img src="art/icons/theme.png"/> &nbsp; <a href="change_user_theme.php">Theme Manager</a> (Change your theme)</div>
   </div>
+
+	
 
 
 {include file='footer.tpl'}

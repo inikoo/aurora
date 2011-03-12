@@ -13,6 +13,11 @@ include_once('common.php');
 $general_options_list=array();
 $smarty->assign('general_options_list',$general_options_list);
 
+if(isset($_SESSION['user_key']) &  $_SESSION['user_key'] > 1)
+{
+	header('location:index.php');
+	exit();
+}
 
 
 $css_files=array(
