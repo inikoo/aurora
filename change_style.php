@@ -12,9 +12,11 @@
  
  Version 2.0
 */
-include_once('common.php');
-//include_once('class.User.php');
 
+include_once('common.php');
+
+ini_set('display_errors',1);
+error_reporting(E_ALL|E_STRICT|E_NOTICE);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -26,12 +28,27 @@ $css_files=array(
 		 );
 
 
-$theme="";
-if($theme)
+$user_key=$_SESSION['user_key'];
+$themeSql="select * from  `User Dimension` inner join `Theme Dimension`  on (`User Dimension`.`User Themes`=`Theme Dimension`.`Theme Key`) where `User Key`=$user_key";
+
+$themeResult=mysql_query($themeSql);
+//print_r(mysql_fetch_array($themeResult));
+if ($themeRow=mysql_fetch_array($themeResult)) 
 {
-array_push($css_files, 'themes_css/'.$Themecss1);   
-array_push($css_files, 'themes_css/'.$Themecss2);
-array_push($css_files, 'themes_css/'.$Themecss3);
+$ThemeCommon=$themeRow['Theme Common Css'];
+$ThemeTable=$themeRow['Theme Table Css'];
+$ThemeIndex=$themeRow['Theme Index Css'];
+$ThemeDropdown=$themeRow['Theme Dropdown Css'];
+$ThemeCampaign=$themeRow['Theme Campaign Css'];
+ } 
+
+if($themeRow)
+{
+array_push($css_files, 'themes_css/'.$ThemeCommon);   
+array_push($css_files, 'themes_css/'.$ThemeTable);
+array_push($css_files, 'themes_css/'.$ThemeIndex); 
+array_push($css_files, 'themes_css/'.$ThemeDropdown);
+array_push($css_files, 'themes_css/'.$ThemeCampaign);
 }    
    
 
