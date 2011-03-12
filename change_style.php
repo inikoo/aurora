@@ -14,7 +14,7 @@
 */
 
 include_once('common.php');
-include_once('Theme.php');
+
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT|E_NOTICE);
 $css_files=array(
@@ -28,24 +28,8 @@ $css_files=array(
 		 );
 
 
+include_once('Theme.php');
 
-
-if($themeRow)
-{
-array_push($css_files, 'themes_css/'.$ThemeCommon);   
-array_push($css_files, 'themes_css/'.$ThemeTable);
-array_push($css_files, 'themes_css/'.$ThemeIndex); 
-array_push($css_files, 'themes_css/'.$ThemeDropdown);
-array_push($css_files, 'themes_css/'.$ThemeCampaign);
-}    
-   
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css'); 
-array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
-}
 
 
 $js_files=array(
