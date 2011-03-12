@@ -13,5 +13,21 @@ $ThemeDropdown=$themeRow['Theme Dropdown Css'];
 $ThemeCampaign=$themeRow['Theme Campaign Css'];
 
 }
+if($themeRow)
+{
+array_push($css_files, 'themes_css/'.$ThemeCommon);   
+array_push($css_files, 'themes_css/'.$ThemeTable);
+array_push($css_files, 'themes_css/'.$ThemeIndex); 
+array_push($css_files, 'themes_css/'.$ThemeDropdown);
+array_push($css_files, 'themes_css/'.$ThemeCampaign);
+}    
+   
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/dropdown.css'); 
+array_push($css_files, 'css/index.css');
+array_push($css_files, 'table.css');
+}
 
 ?> 
