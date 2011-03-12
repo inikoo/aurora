@@ -8,7 +8,7 @@
 	
 if($selectedIndex >= 0)
 {
-	$sql = "UPDATE `kaktus`.`User Dimension` SET `User Themes` = '".$selectedIndex."' WHERE `User Dimension`.`User Key` = '".$_SESSION['user_key']."'";
+	$sql = "UPDATE `User Dimension` SET `User Themes` = '".$selectedIndex."' WHERE `User Dimension`.`User Key` = '".$_SESSION['user_key']."'";
 	$result = mysql_query($sql);
 	$num = mysql_num_rows($result);
 

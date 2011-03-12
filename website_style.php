@@ -7,11 +7,11 @@
 
 	if($theme == 0)
 	{
-		$sql = "UPDATE `kaktus`.`User Dimension` SET `User Themes` = '".$style."'";
+		$sql = "UPDATE `User Dimension` SET `User Themes` = '".$style."'";
 	}
 	else
 	{
-		$sql = "UPDATE `kaktus`.`User Dimension` SET `User Themes` = '".$style."' WHERE `User Dimension`.`User Key` = '".$_SESSION['user_key']."'";
+		$sql = "UPDATE `User Dimension` SET `User Themes` = '".$style."' WHERE `User Dimension`.`User Key` = '".$_SESSION['user_key']."'";
 	}
 		
 	//echo $sql; die();
