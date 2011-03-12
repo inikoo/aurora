@@ -2109,6 +2109,8 @@ class Order extends DB_Table {
                sum(`Invoice Transaction Charges Amount`) as inv_charges,
                sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as inv_net,
                sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`) as inv_tax,
+               
+               
                sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_net
                from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
 

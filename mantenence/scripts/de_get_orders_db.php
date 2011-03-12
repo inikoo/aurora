@@ -14,6 +14,7 @@ include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('common_read_orders_functions.php');
 
+$encrypt=true;
 $store_code='D';
 $__currency_code='EUR';
 
@@ -1213,7 +1214,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $data['staff sale key']=$header_data['staff sale key'];
 
 
-        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],false);
+        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],$encrypt);
 
 
         $data['products']=$products_data;
@@ -1318,7 +1319,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             continue;
         }
         $sql=sprintf("update de_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
-        print $sql;
+        //print $sql;
         mysql_query($sql);
 
         if ($customer_data['Customer Delivery Address Link']=='None') {
