@@ -40,6 +40,7 @@ case('new_shelf_type'):
 case('new_location'):
   new_location();
   break;
+  case('edit_warehouse_areas'):
 case('warehouse_areas'):
   list_warehouse_areas_for_edition();
   break;
