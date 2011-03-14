@@ -30,7 +30,7 @@ span.aslink:hover{text-decoration:underline;}
 .aright .yui-dt-liner{ text-align:right; }
 .aleft,td.aleft {text-align:left}
 .aleft .yui-dt-liner{text-align:left}
-span.nav2 {float:left;background:#F2Af32;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
+span.nav2 {float:left;background:#95C287;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 span.nav2 a {color:#fff}
 span.nav2 a.selected {color:yellow;font-weight:400}
 span.nav2 span {color:#fff;cursor:pointer}
@@ -321,7 +321,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 
 .options td:hover,  .options span:hover{border:1px solid #777;color:#777}
 
-.options td.selected,.options span.selected{background:#F2AF32;border:1px solid #BD6A14;color:#f6f6f6;text-decoration:none}
+.options td.selected,.options span.selected{background:#7EC325;border:1px solid #7BBA59;color:#f6f6f6;text-decoration:none}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
@@ -344,7 +344,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 
 .options_mini td{border:1px solid #aaa;color:#888;text-align:center;padding:1px 2px 2px 2px;cursor:pointer}
 .options_mini td:hover{border:1px solid #777;color:#777}
-.options_mini td.selected{background:#F2AF32;border:1px solid #BD6A14;color:#f6f6f6}
+.options_mini td.selected{background:#7EC325;border:1px solid #7BBA59;color:#f6f6f6}
 .options_mini td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 
 
