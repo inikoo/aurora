@@ -69,12 +69,12 @@ function  validate_shelf_type(sType,aArgs){
  Dom.get('shelf_rows').value=rows;
  Dom.get('shelf_columns').value=cols;
 
- alert(rows,cols)
+ //alert(rows,cols)
 
  
  shelf_cols_data=new Object();
  shelf_rows_data=new Object();
-shelf_locations_data=new Object();
+ shelf_locations_data=new Object();
 
 for(i=1;i<rows+1;i++){
     shelf_rows_data[i]={'height':height}
@@ -171,32 +171,27 @@ function add_shelf(){
     }
     var values=new Object();
     var s_values=new Object();
-    
     for(key in shelf_data )
-   s_values[shelf_data[key].dbname]=Dom.get(shelf_data[key].name).value;
-  
-  values['Shelf Data']=s_values;
-  values['Locations Data']=shelf_locations_data;
-  
+    s_values[shelf_data[key].dbname]=Dom.get(shelf_data[key].name).value;
+    values['Shelf Data']=s_values;
+    values['Locations Data']=shelf_locations_data;
     var json_value = YAHOO.lang.JSON.stringify(values);
     var request='ar_edit_warehouse.php?tipo=new_shelf&values=' + (json_value); 
- // alert(json_value);
+    //alert(json_value);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    reset_shelf_type_data();
-		    var table=tables['table3']
+		    var table=tables['table3'];
 		    var datasource=tables['dataSource3'];
-		    
+
 		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
 		}else{
 		    Dom.get('new_warehouse_shelf_type_block').innerHTML=r.msg;
 		}
-			    
 
-			
 	    }
 	});
 
@@ -336,11 +331,11 @@ function add_shelf_type(){
   
     var json_value = YAHOO.lang.JSON.stringify(shelf_type_data);
     var request='ar_edit_warehouse.php?tipo=new_shelf_type&values=' + encodeURIComponent(json_value); 
-    //alert(request);    
+    //alert(request);
     // return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    reset_shelf_type_data();

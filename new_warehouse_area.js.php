@@ -102,7 +102,7 @@ function reset_area_data(){
     Dom.get('warehouse_key').value=Dom.get('warehouse_key').getAttribute('ovalue');
     Dom.get('area_name').value=Dom.get('area_name').getAttribute('ovalue');
     Dom.get('area_code').value=Dom.get('area_code').getAttribute('ovalue');
-    Dom.get('area_description').innerHTML=Dom.get('area_description').getAttribute('ovalue');
+    Dom.get('area_description').value=Dom.get('area_description').getAttribute('ovalue');
 
 }
 
