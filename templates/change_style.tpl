@@ -14,9 +14,9 @@
 
 		<tr>
 			 <td width="200px">Please select the style : </td> 
-			<td><a href="#" onclick="change_style(0);" title="blue theme"><div style="width:20px; height:20px; background-color:Blue; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(1);" title="brown theme"><div style="width:20px; height:20px; background-color:#BD6A14; border:1px;"></div></a></td>
-			
+			<td><a href="#" onclick="change_style(0);" title="Blue theme"><div style="width:20px; height:20px; background-color:Blue; border:1px;"></div></a></td>
+			 <td><a href="#" onclick="change_style(1);" title="Brown theme"><div style="width:20px; height:20px; background-color:#BD6A14; border:1px;"></div></a></td>
+			<td><a href="#" onclick="change_style(2);" title="Green theme"><div style="width:20px; height:20px; background-color:#72B80B; border:1px;"></div></a></td>
 			
 		</tr>
 		
