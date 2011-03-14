@@ -17,6 +17,7 @@
 .remove_filter{ color:#999;cursor:pointer }
 .filter_msg{color:#e96d59  }
 
+
 .yui-dt-hidden{ display:none }
 .yui-dt-hidden div { display:none }
 .aright  {text-align:right;}
@@ -151,8 +152,6 @@ div.hide{margin-right:2.5px;margin-left:0px}
     background-color: #edefca;;color:#777
 
 }
-
-
 
 
 .paginatornext{cursor:pointer}
