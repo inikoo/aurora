@@ -64,7 +64,7 @@ span.onright {float:right}
 		outline: none;
 		text-decoration: none;
 	}
-	#hd #navsite ul li:hover {	background: transparent url("../art/brown_header_menu2h.png") 100%  no-repeat!important;background:none }
+	#hd #navsite ul li:hover {background: transparent url("../art/brown_header_menu2h.png") 100%  no-repeat!important;background:none }
 	#hd #navsite ul li:hover a { text-decoration:none;background: transparent url("../art/brown_header_menu_hover.png") 0%  no-repeat!important;background:none}
 	#hd .selected li, #hd .selected:hover   {
 background:transparent url("../art/header_menu2s.png") 100%  no-repeat !important;
