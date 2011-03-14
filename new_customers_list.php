@@ -7,15 +7,15 @@ header('Location: index.php');
  }
 
 if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
-  $store_id=$_REQUEST['store_key'];
+  $store_id=$_REQUEST['store'];
 
 }else{
-header('Location: index.php?error');
+header('Location: customers.php?error');
 
 }
 
 if(! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
-  header('Location: index.php?error_store='.$store_id);
+  header('Location: customers.php?error_store='.$store_id);
    exit;
 }
 
@@ -43,7 +43,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'common_customers.js.php',
-		'new_customers_list.js.php?store_id='.$store_id,
+		'new_customers_list.js.php',
 		'js/edit_common.js',
 		);
 

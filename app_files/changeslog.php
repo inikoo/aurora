@@ -945,20 +945,23 @@ ALTER TABLE `Order Dimension` ADD `Order Invoiced Total Tax Adjust Amount` DECIM
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Total` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Total Tax Adjust Amount`;
 ALTER TABLE `Order Transaction Fact` ADD `Invoice Transaction Net Adjust` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Outstanding Refund Tax Balance` ,ADD `Invoice Transaction Tax Adjust` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Adjust` ;
 CREATE TABLE IF NOT EXISTS `Theme Dimension` (
-  `Theme Key` int(11) NOT NULL AUTO_INCREMENT,
-  `Theme Name` varchar(255) NOT NULL,
-  `Theme Common Css` varchar(255) NOT NULL,
-  `Theme Table Css` varchar(255) NOT NULL,
-  `Theme Index Css` varchar(255) NOT NULL,
-  `Theme Dropdown Css` varchar(255) NOT NULL,
-  `Theme Campaign Css` varchar(255) NOT NULL,
-  PRIMARY KEY (`Theme Key`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8
+  `Theme Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Theme Name` varchar(255) NOT NULL,
+  `Theme Common Css` varchar(255) NOT NULL,
+  `Theme Table Css` varchar(255) NOT NULL,
+  `Theme Index Css` varchar(255) NOT NULL,
+  `Theme Dropdown Css` varchar(255) NOT NULL,
+  `Theme Campaign Css` varchar(255) NOT NULL,
+  PRIMARY KEY (`Theme Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `Theme Dimension`
+--
 
 INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `Theme Table Css`, `Theme Index Css`, `Theme Dropdown Css`, `Theme Campaign Css`) VALUES
 (1, 'brown', 'brown_common.css', 'brown_table.css', 'brown_index.css', 'brown_dropdown.css', 'brown_marketing_campaigns.css');
 
-;
 
 */
 

@@ -1,7 +1,9 @@
 
 
- var change_view=function(e){
-      var tipo=this.id;
+ function change_view_customers(e){
+    
+     var tipo=this.id;
+     
       var table=tables['table0'];
       old_view=table.view;
       
@@ -104,9 +106,9 @@
   
   
    function common_customer_init(){
-  
+ 
   var ids=['general','contact','address','ship_to_address','balance','rank'];
-YAHOO.util.Event.addListener(ids, "click",change_view);
+YAHOO.util.Event.addListener(ids, "click",change_view_customers);
 
 }
 

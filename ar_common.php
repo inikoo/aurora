@@ -76,10 +76,9 @@ function prepare_values($data,$value_names){
       $tmp=preg_replace('/\\\\\"/','"',$tmp);
       $tmp=preg_replace('/\'/',"\'",$tmp);
 
-      //print ($tmp);
+      
       $raw_data=json_decode($tmp, true);
-      //       print ($raw_data."x");
-
+      
       if(is_array($raw_data)){
 	if(!isset($extra_data['required elements']))
 	  $extra_data['required elements']=array();

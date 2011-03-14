@@ -7,17 +7,27 @@
 
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Customer Static List{/t}</h1>
+    <h1>{t}Customer List{/t}: {$static_list_name}</h1>
   </div>
 
  
-<div class="data_table" style="clear:both">
-   <span class="clean_table_title">{t}List Name : {$static_list_name}{/t}</span>
- {* <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="company_areas" >{t}Export (CSV){/t}</span> *}
-  
-  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
-  </div>
+ <div id="the_table" class="data_table" style="clear:both">
+      <span class="clean_table_title">{t}Customers List{/t}</span>
+      
+ 
+  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	<tr>
+	  <td {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
+	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
+	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
+	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
+	</tr>
+      </table>
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+ <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
+ </div>
 
 </div>
 
@@ -56,18 +66,6 @@
   </div>
    {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="company_areas-table-csv_export" export_options=$csv_export_options } 
   
-
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-    {if $options.tipo=="url"}
-    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-    {else}
-    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-    {/if}
-    {/foreach}
-  </div>
-</div>
 
 
   {include file='footer.tpl'}

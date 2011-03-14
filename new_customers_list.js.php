@@ -3,40 +3,51 @@ include_once('common.php');
 ?>
 
     var Dom   = YAHOO.util.Dom;
- //var store_id=<?php echo $_REQUEST['store_id'];?>;
 
 var searched=false;
-function get_search_list()
+function save_search_list()
 {
-	var textValue;
-	var typeValue;
-	textValue = document.getElementById('list_name').value;
-	if(document.getElementById('static').checked == true)
-	{
-		typeValue = document.getElementById('static').value;	
+
+
+	
+	var store_id=Dom.get('store_id').value;
+	var list_name = Dom.get('list_name').value;
+	
+	if(list_name==''){
+	Dom.get('save_list_msg').innerHTML=Dom.get('error_no_name').innerHTML;
+	return;
 	}
-	if(document.getElementById('dynamic').checked == true)
+	
+	
+	if(Dom.get('dynamic').checked == true)
 	{
-		typeValue = document.getElementById('dynamic').value;	
-	}	
-if (window.XMLHttpRequest)
-  {
-  xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
-  }
-else
-  {
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); // code for IE6, IE5
-  }
-xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-    {
-	//alert(xmlhttp.responseText);
-    document.getElementById("showDiv").innerHTML=xmlhttp.responseText;
-    }
-  }
-xmlhttp.open("GET","ar_customers_list.php?tipo=customers&textValue="+textValue+'&typeValue='+typeValue+'&store_id='+store_id,true);
-xmlhttp.send();	
+		var list_type = 'Dynamic'
+	}else{
+	var list_type = 'Static';	
+	}
+	
+	var awhere=get_awhere();
+	
+	var request="ar_contacts.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
+	
+	
+		YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    alert(o.responseText);
+
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+			location.href='customers_list.php?id='+r.customer_list_key;
+
+		    }else
+			Dom.get('save_list_msg').innerHTML=r.msg;
+		}
+	    });  
+	
+	
+	
+	
+
 }
 
 
@@ -198,15 +209,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-var submit_search = function(e){
-
-
-    //chack woth radio button is cheked
-
-searched=true;
-
-  
-    dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
+function get_awhere(){
+  dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
     dont_have_array= new Array();
     for(x in dont_have){
         dont_have_array[x]=dont_have[x].getAttribute('cat');
@@ -232,18 +236,33 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
 
     }
 
-    var jsonStr = YAHOO.lang.JSON.stringify(data);
+    return YAHOO.lang.JSON.stringify(data);
+
+   
+
+}
+
+
+function submit_search(e){
+
+
+    //chack woth radio button is cheked
+
+searched=true;
+
+  
+   var awhere=get_awhere();
 
 	//alert(jsonStr);
     var table=tables.table0;
     var datasource=tables.dataSource0;
 	
-    var request='&sf=0&where=' +jsonStr;
-   
+    var request='&sf=0&where=' +awhere;
+    Dom.setStyle('the_table','display','none');
+    Dom.setStyle('searching','display','none');
+    Dom.setStyle('save_dialog','visibility','visible');
 
-    Dom.get('the_table').style.display='none';
-    Dom.get('searching').style.display='';
-    //alert(request)
+
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -261,8 +280,9 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init(){
-YAHOO.util.Event.addListener('submit_search', "click",submit_search);
+YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
+YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
 
 
 //var ids=['general','contact'];

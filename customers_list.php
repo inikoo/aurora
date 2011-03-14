@@ -4,24 +4,39 @@ if(!$user->can_view('customers') ){
 header('Location: index.php');
    exit;
 }
-if(isset($_REQUEST['id']))
-$id=$_REQUEST['id'];
-$sql=mysql_fetch_array(mysql_query("select `Customer List Name` from `Customer List Dimension` where `Customer List Key`=$id"));
-$dynamic_list_name=$sql[0];
-$smarty->assign('dynamic_list_name',$dynamic_list_name);
-$smarty->assign('dynamic_list_id',$id);
 //$modify=$user->can_edit('staff');
 $general_options_list=array();
+if(isset($_REQUEST['id']))
+$id=$_REQUEST['id'];
+else{
+  header('Location: index.php?error=no_id_in_customers_list');
+    exit;
+
+}
 
 
-//if($modify)
-//{
-//  $general_options_list[]=array('tipo'=>'url','url'=>'edit_company_areas.php','label'=>_('Edit Areas'));
-//   $general_options_list[]=array('tipo'=>'url','url'=>'new_company_area.php','label'=>_('Add Area'));
-//}
-// $general_options_list[]=array('tipo'=>'url','url'=>'new_campaign.php?customer_list_key='.$id,'label'=>_('Create Campaign'));
+$sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$id);
+
+$res=mysql_query($sql);
+if(!$customer_list_data=mysql_fetch_assoc($res)){
+ header('Location: index.php?error=id_in_customers_list_not_found');
+    exit;
+
+}
+$store=new Store($customer_list_data['Customer List Store Key']);
+
+
+$static_list_name=$customer_list_data['Customer List Name'];
+$smarty->assign('static_list_name',$static_list_name);
+$smarty->assign('static_list_id',$customer_list_data['Customer List Key']);
+
+
+
 $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
-$general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer_list.php?id='.$id,'label'=>_('Print Address Label'));
+ $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer_list.php?id='.$id,'label'=>_('Print Address Label'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
 $smarty->assign('general_options_list',$general_options_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -32,26 +47,30 @@ $css_files=array(
 		 'table.css'
 		 );
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
+   $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              
+		
 		'common.js.php',
 		'table_common.js.php',
 		'js/edit_common.js',
 		'js/csv_common.js',
-		'customer_list_dynamic.js.php?id='.$id
+		'common_customers.js.php',
+		'customers_list.js.php?id='.$id
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','customers');
 //$smarty->assign('sub_parent','areas');
+$smarty->assign('view',$_SESSION['state']['customers']['view']);
 
-$smarty->assign('title', _('Customer Dynamic List'));
+$smarty->assign('title', _('Customer Static List'));
 
 /*$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
 $smarty->assign('filter',$tipo_filter);
@@ -104,5 +123,5 @@ $smarty->assign('export_csv_table_cols',2);
 
                      
 $smarty->assign('csv_export_options',$csv_export_options);*/
-$smarty->display('customer_list_dynamic.tpl');
+$smarty->display('customers_list.tpl');
 ?>

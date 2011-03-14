@@ -20,7 +20,9 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
     exit;
 }
 
+$store=new Store($store_id);
 
+$smarty->assign('store',$store);
 
 
 

@@ -169,12 +169,7 @@ var table=tables['table0'];
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
-			close_dialog(tipo)
-			var table=tables['table0'];
-			var datasource=tables['dataSource0'];
-			var request='';
-			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-
+			
 		    }else
 			Dom.get(tipo+'_msg').innerHTML=r.msg;
 		}
