@@ -3172,8 +3172,45 @@ $default_state=array(
 
 
                                                              )
-                                            )
+                                            ),
+'marketing'=>array(
+                                                'percentages'=>false,
+                                                'view'=>'general',
+                                                'period'=>'year',
+                                                'mode'=>'all',
+                                                'avg'=>'totals',
+                                                'where'=>'where true',
+                                                'f_field'=>'code',
+                                                'f_value'=>'','f_show'=>false,
+                                                'order'=>'name',
+                                                'order_dir'=>'',
+                                                'sf'=>0,
+                                                'nr'=>25,
+                                                'csv_export'=>array(
+                                                                 'code'=>true,
+                                                                 'name'=>true,
+                                                                 'total_customer_contacts'=>true,
+                                                                 'new_customer_contacts'=>true,
+                                                                 'total_customer'=>true,
+                                                                 'active_customer'=>true,
+                                                                 'new_customer'=>true,
+                                                                 'lost_customer'=>true,
 
+
+                                                                 'sales_all'=>false,
+                                                                 'sales_1y'=>false,
+                                                                 'sales_1q'=>false,
+                                                                 'sales_1m'=>false,
+                                                                 'sales_1w'=>false,
+                                                                 'profit_all'=>false,
+                                                                 'profit_1y'=>false,
+                                                                 'profit_1q'=>false,
+                                                                 'profit_1m'=>false,
+                                                                 'profit_1w'=>false
+
+
+                                                             )
+                                            )
 
                             ),
 

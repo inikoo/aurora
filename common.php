@@ -207,7 +207,12 @@ if ($user->can_view('warehouses')) {
         $nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
 }
 //if ($user->can_view('marketing')) {
-$nav_menu[] = array(_('Marketing'), 'marketing.php','marketing');
+
+  if (count($user->stores)==1) {
+        $nav_menu[] = array(_('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing');
+    } else
+        $nav_menu[] = array(_('Marketing'), 'marketing_server.php','marketing');
+
 //}
  
  
