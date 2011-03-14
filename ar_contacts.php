@@ -7,7 +7,7 @@ require_once 'common.php';
 //require_once '_contact.php';
 require_once 'class.Customer.php';
 require_once 'class.Timer.php';
-    require_once 'ar_edit_common.php';
+require_once 'ar_edit_common.php';
 
 
 
@@ -1740,7 +1740,7 @@ function list_contacts() {
 }
 
 function customers_awhere($awhere) {
-   // $awhere=preg_replace('/\\\"/','"',$awhere);
+    // $awhere=preg_replace('/\\\"/','"',$awhere);
     //    print "$awhere";
 
 
@@ -1755,7 +1755,7 @@ function customers_awhere($awhere) {
                     'categories'=>''
                 );
 
-  //  $awhere=json_decode($awhere,TRUE);
+    //  $awhere=json_decode($awhere,TRUE);
 
 
     foreach ($awhere as $key=>$item) {
@@ -1952,35 +1952,64 @@ function list_customers() {
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
 
 
-
+  $where='where true';
     $table='`Customer Dimension` C ';
 
     if ($type=='all_customers') {
         $where_type=sprintf(' and `Actual Customer`="Yes" ');
-            $_SESSION['state']['customers']['table']['type']=$type;
+        $_SESSION['state']['customers']['table']['type']=$type;
 
     }
     elseif($type=='active_customers') {
         $where_type=sprintf(' and `Active Customer`="Yes" ');
-            $_SESSION['state']['customers']['table']['type']=$type;
+        $_SESSION['state']['customers']['table']['type']=$type;
 
-    }elseif($type=='list'){
-       $table='`Customer List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-      $where_type=sprintf(' and `Customer List Key`=%d ',$_REQUEST['list_key']);
-    }else{
-    $where_type='';
+    }
+    elseif($type=='list') {
+
+
+        $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$_REQUEST['list_key']);
+
+        $res=mysql_query($sql);
+        if ($customer_list_data=mysql_fetch_assoc($res)) {
+
+            if ($customer_list_data['Customer List Type']=='Static') {
+                $table='`Customer List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+                $where_type=sprintf(' and `Customer List Key`=%d ',$_REQUEST['list_key']);
+            } else {// Dynamic by DEFAULT
+                $awhere=false;
+
+
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['Customer List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
+
+                $raw_data=json_decode($tmp, true);
+
+                $where_type=customers_awhere($raw_data);
+
+                $where='';
+
+
+            }
+
+        } else {
+            exit();
+        }
+    }
+    else {
+        $where_type='';
     }
 
 
-    $where='where true';
+  
     if ($awhere) {
-     $tmp=preg_replace('/\\\"/','"',$awhere);
-      $tmp=preg_replace('/\\\\\"/','"',$tmp);
-      $tmp=preg_replace('/\'/',"\'",$tmp);
+        $tmp=preg_replace('/\\\"/','"',$awhere);
+        $tmp=preg_replace('/\\\\\"/','"',$tmp);
+        $tmp=preg_replace('/\'/',"\'",$tmp);
 
-      
-      $raw_data=json_decode($tmp, true);
-    
+        $raw_data=json_decode($tmp, true);
+
         $where=customers_awhere($raw_data);
     }
 
@@ -1998,9 +2027,9 @@ function list_customers() {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
-    }else{
+    } else {
         exit();
-    
+
     }
 
 
@@ -2050,7 +2079,7 @@ function list_customers() {
 
 
     $sql="select count(Distinct C.`Customer Key`) as total from $table  $where_type $where $wheref";
-
+//print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5525,8 +5554,8 @@ function new_customers_list($data) {
 
     $awhere=$data['awhere'];
     $table='`Customer Dimension` C ';
-    
-  
+
+
     $where=customers_awhere($awhere);
 
     $where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
@@ -5587,16 +5616,16 @@ function new_customers_list($data) {
 
 
 
-$response=array(
-                                'state'=>200,
-                                'customer_list_key'=>$customer_list_key
-                           
-               );
-echo json_encode($response);
+    $response=array(
+                  'state'=>200,
+                  'customer_list_key'=>$customer_list_key
+
+              );
+    echo json_encode($response);
 
 }
 function list_customers_lists() {
-   
+
     $conf=$_SESSION['state']['customers']['list'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -5611,7 +5640,7 @@ function list_customers_lists() {
     else
         $order=$conf['order'];
 
-  
+
 
     if (isset( $_REQUEST['od']))
         $order_dir=$_REQUEST['od'];
@@ -5648,7 +5677,7 @@ function list_customers_lists() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  
+
 
 
     $_SESSION['state']['customers']['list']['order']=$order;
@@ -5659,17 +5688,17 @@ function list_customers_lists() {
     $_SESSION['state']['customers']['list']['f_field']=$f_field;
     $_SESSION['state']['customers']['list']['f_value']=$f_value;
 
- if (is_numeric($store)) {
+    if (is_numeric($store)) {
         $where=sprintf(' where  `Customer List Store Key`=%d ',$store);
-    
-    }else{
-        exit();
-    
-    }
- 
-$wheref='';
 
-$sql="select count(distinct `Customer List Key`) as total from `Customer List Dimension`  $where  ";  
+    } else {
+        exit();
+
+    }
+
+    $wheref='';
+
+    $sql="select count(distinct `Customer List Key`) as total from `Customer List Dimension`  $where  ";
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5700,8 +5729,8 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Di
 
 
 
-  
-        $filter_msg='';
+
+    $filter_msg='';
 
 
 
@@ -5709,7 +5738,7 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Di
 
     $_order=$order;
     $_dir=$order_direction;
- 
+
 
     if ($order=='name')
         $order='`Customer List Name`';
@@ -5717,7 +5746,7 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Di
     $order='`Customer List Creation Date`';
     elseif($order=='customer_list_type')
     $order='`Customer List Type`';
-   
+
     else
         $order='`Customer List Key`';
 
@@ -5731,34 +5760,34 @@ $sql="select count(distinct `Customer List Key`) as total from `Customer List Di
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-      
 
 
-$cusomer_list_name=" <a href='customers_list.php?id=".$data['Customer List key']."'>".$data['Customer List Name'].'</a>';
-switch ($data['Customer List Type']) {
-    case 'Static':
-        $customer_list_type=_('Static');
-        break;
-    default:
-         $customer_list_type=_('Dynamic');
-        break;
 
-}
+        $cusomer_list_name=" <a href='customers_list.php?id=".$data['Customer List key']."'>".$data['Customer List Name'].'</a>';
+        switch ($data['Customer List Type']) {
+        case 'Static':
+            $customer_list_type=_('Static');
+            break;
+        default:
+            $customer_list_type=_('Dynamic');
+            break;
+
+        }
 
         $adata[]=array(
-		  
-                    
-		     'customer_list_type'=>$customer_list_type,
+
+
+                     'customer_list_type'=>$customer_list_type,
                      'name'=>$cusomer_list_name,
                      'customer_list_key'=>$data['Customer List key'],
                      'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Customer List Creation Date']." +00:00")),
-                     
-                   
-                   
+
+
+
 
                  );
 
-   }
+    }
     mysql_free_result($result);
 
 
