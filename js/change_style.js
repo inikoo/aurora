@@ -36,7 +36,8 @@ function change_style(s) {
 		  theme = 1;	
 		}
 
-	sUrl = "website_style.php?style=+s+&theme=+theme";
+	sUrl = "website_style.php?style="+s+"&theme="+theme;
+
 YAHOO.util.Connect.asyncRequest('GET',sUrl,spawnCallback);
 }
 
