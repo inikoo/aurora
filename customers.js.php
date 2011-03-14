@@ -182,10 +182,8 @@ dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data"
 dialog_export.render();
 Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
-// -------------------------Import(CSV) code for customer list under order --------------------
   YAHOO.util.Event.addListener('import_csv0', "click",popup,'import.php');
  
-// ------------------------------------------------------------------------------------------
   init_search('customers_store');
 
 YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

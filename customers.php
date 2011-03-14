@@ -45,15 +45,17 @@ $modify=$user->can_edit('customers');
 $general_options_list=array();
 
 if ($modify) {
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit Customers'));
-    $general_options_list[]=array('tipo'=>'js','id'=>'new_customer','label'=>_('Add Customer'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit'));
+    $general_options_list[]=array('tipo'=>'js','id'=>'new_customer','label'=>_('Add'));
 }
 
-$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Customers (CSV)'));
+$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export (CSV)'));
 //$general_options_list[]=array('tipo'=>'js','id'=>'export_csv0','label'=>_('Export (CSV)'));
 
 //$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
+
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
 $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
 
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
