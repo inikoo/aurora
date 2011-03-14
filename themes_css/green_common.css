@@ -1,4 +1,4 @@
-html{background-color:#fff;background-image:url('../art/bg/bg4.jpg');background-repeat:no-repeat;}
+html{background-color:#fff;background-image:url('../art/bg/bd2.jpg');background-repeat:no-repeat;}
 body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 td {text-align:left}
 
@@ -39,7 +39,7 @@ span.nav2 span.selected {color:yellow;font-weight:400;border:none;background:non
 
 span.onright {float:right}
 
-#hd{height:3.46em;background:#3b5998 url("../art/2.png") bottom left repeat-x;color:#fff;}
+#hd{height:3.46em;background:#3b5998 url("../art/3.png") bottom left repeat-x;color:#fff;}
 #hd h1{padding:0 15px;font-size:167%;float:left;position:relative;top:10px;}
 	#hd a{color:#fff;text-decoration:none}
 
@@ -47,7 +47,7 @@ span.onright {float:right}
 #hd #navsite ul {padding: 0 15px 0px 0;list-style: none;}
 #hd #navsite li {
 		float: right;
-		background: transparent url("../art/brown_bg_side.png") 100%  no-repeat!important;
+		background: transparent url("../art/green_header_menu_right.png") 100%  no-repeat!important;
                 
                 background: none;	
 		padding: 0 5px 0px 0;
@@ -58,14 +58,14 @@ span.onright {float:right}
 	    	float: left;
 		display: block;
 		padding: 2px 4px 5px 8px;
-		background: transparent url("../art/brown_header_menu.png") 0%  no-repeat!important;
+		background: transparent url("../art/green_header_menu.png") 0%  no-repeat!important;
 		background:none;
 		font-weight: bold;
 		outline: none;
 		text-decoration: none;
 	}
-	#hd #navsite ul li:hover {background: transparent url("../art/brown_header_menu2h.png") 100%  no-repeat!important;background:none }
-	#hd #navsite ul li:hover a { text-decoration:none;background: transparent url("../art/brown_header_menu_hover.png") 0%  no-repeat!important;background:none}
+	#hd #navsite ul li:hover {	background: transparent url("../art/green_header_menu_hover_right.png") 100%  no-repeat!important;background:none }
+	#hd #navsite ul li:hover a { text-decoration:none;		background: transparent url("../art/green_header_menu_hover.png") 0%  no-repeat!important;background:none}
 	#hd .selected li, #hd .selected:hover   {
 background:transparent url("../art/header_menu2s.png") 100%  no-repeat !important;
 background:none;

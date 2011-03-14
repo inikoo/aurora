@@ -28,19 +28,7 @@ $css_files=array(
 		 );
 
 //for changing the theme by the user
-$theme="";
-if($theme)
-{
-array_push($css_files, 'themes_css/'.$Themecss1);   
-array_push($css_files, 'themes_css/'.$Themecss2);
-array_push($css_files, 'themes_css/'.$Themecss3);
-}    
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css'); 
-array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
-}
+ include_once('Theme.php');
 
 
 $js_files=array(
@@ -54,11 +42,16 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+		$yui_path.'yahoo/yahoo-min.js',
+		$yui_path.'event/event-min.js',
+		$yui_path.'connection/connection_core-min.js',
+		$yui_path.'connection/connection-min.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
 		'js/change_user_theme.js'
 		);
+
 
 
 $smarty->assign('parent','users');

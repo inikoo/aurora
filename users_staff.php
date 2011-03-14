@@ -29,22 +29,8 @@ $css_files=array(
 		 'button.css'		 
 		 );		 
 	
-$theme="";
-if($theme)
-{
-array_push($css_files, 'themes_css/'.$Themecss1);   
-array_push($css_files, 'themes_css/'.$Themecss2);
-array_push($css_files, 'themes_css/'.$Themecss3);
-}    
+include_once('Theme.php');
   
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css'); 
-array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
-}
-
 	 
 		 
 $js_files=array(

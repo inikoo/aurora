@@ -94,7 +94,7 @@ function get_area_data(){
     area_data['Warehouse Key']=Dom.get('warehouse_key').value;
     area_data['Warehouse Area Name']=Dom.get('area_name').value;
     area_data['Warehouse Area Code']=Dom.get('area_code').value;
-    area_data['Warehouse Area Description']=Dom.get('area_description').innerHTML;
+    area_data['Warehouse Area Description']=Dom.get('area_description').value;
 
 }
 
@@ -102,7 +102,7 @@ function reset_area_data(){
     Dom.get('warehouse_key').value=Dom.get('warehouse_key').getAttribute('ovalue');
     Dom.get('area_name').value=Dom.get('area_name').getAttribute('ovalue');
     Dom.get('area_code').value=Dom.get('area_code').getAttribute('ovalue');
-    Dom.get('area_description').innerHTML=Dom.get('area_description').getAttribute('ovalue');
+    Dom.get('area_description').value=Dom.get('area_description').getAttribute('ovalue');
 
 }
 
@@ -110,7 +110,7 @@ function add_area(){
 
     get_area_data();
     var json_value = YAHOO.lang.JSON.stringify(area_data);
-    var request='ar_edit_warehouse.php?tipo=new_area&values=' + encodeURIComponent(json_value); 
+    var request='ar_edit_warehouse.php?tipo=new_area&values=' + encodeURIComponent(json_value);
     
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {

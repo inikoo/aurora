@@ -281,7 +281,7 @@ function list_loginhistory(){
   elseif($f_field=='ip' and $f_value!='')
     $wheref.=" and  `IP Address` like '%".addslashes($f_value)."%'";
   
-  $sql="select count(*) as total from `User Dimension`  $where $wheref   ";
+  $sql="select count(*) as total from `User Log Dimension` UL left join `User Dimension` U on (U.`User Key`=UL.`User Key`)  $where $wheref   ";
   
      $res=mysql_query($sql);
      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
