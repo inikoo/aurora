@@ -1,5 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
+{include file='users_navigation.tpl'}
 <div id="no_details_title" style="clear:right;">
     <h1>{t}Administrative User{/t}</h1>
 </div>

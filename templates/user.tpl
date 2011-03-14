@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+{include file='users_navigation.tpl'}
 
 
   <div id="yui-main">
