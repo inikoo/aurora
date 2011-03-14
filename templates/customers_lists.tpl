@@ -11,6 +11,7 @@
    
       <h2 style="clear:both">{t}Customers Lists{/t}</h2>
 
+<input type="hidden" id="store_id" value="{$store->id}">
 
     
     <div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none" >
@@ -49,15 +50,5 @@
 
 
  </div>
- <div id="dialog_new_list" style="padding:10px">
- <imput id="direct_store_key" value="{$direct_store_key}" type="hidden"/>
-  <div id="new_customer_msg"></div>
-  {t}Choose Store{/t}:
-    <div id="store_options"   class="options" style="margin:5px 0">
-     {foreach from=$store_options item=store_option key=store_key name=foo3}
-     <span  class="catbox {if $store_option.selected}selected{/if}"  onclick="new_list({$store_key})"   >{$store_option.code}</span>
-     {/foreach}
-    </div>
-  <span  class="unselectable_text state_details" onClick="close_dialog_new_list()" >{t}Cancel{/t}</span>
-</div>
+
 {include file='footer.tpl'}

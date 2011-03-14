@@ -5,7 +5,9 @@
 
    
       <h2 style="clear:both">{t}New Customers List{/t} ({$store->get('Store Name')})</h2>
-<div style="border:1px solid #ccc;padding:20px;width:690px">
+<div style="border:1px solid #ccc;padding:20px;width:870px">
+<input type="hidden" id="store_id" value="{$store->id}">
+<span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
       <table >
 	<form>
 		<tr><td colspan="2"><b>{t}Contacts who...{/t}</b></td></tr>
@@ -59,16 +61,16 @@
       </form>
        </table>
 </div> 
-<div style="padding:20px;width:790px;xtext-align:right">
-<div id="save_dialog" style="width:600px;float:left">
+<div style="padding:20px;width:890px;xtext-align:right">
+<div id="save_dialog" style="width:600px;float:left;visibility:hidden">
  <div id="the_div" style="xdisplay:none;">    
-	{t}Enter list name{/t} : <input type="text" name="list_name" id="list_name"> &nbsp;&nbsp;{t}Select List Type{/t} : <input type="radio" name="type" id="static" value="static">&nbsp;{t}Static{/t} &nbsp;&nbsp;<input type="radio" name="type"  id="dynamic" value="dynamic">&nbsp;{t}Dynamic{/t}
+	{t}Enter list name{/t} : <input type="text" name="list_name" id="list_name"> &nbsp;&nbsp;{t}Select List Type{/t} : <input type="radio" name="type" checked="checked" id="static" value="Static">&nbsp;{t}Static{/t} &nbsp;&nbsp;<input type="radio" name="type"  id="dynamic" value="Dynamic">&nbsp;{t}Dynamic{/t}
       </div>
-<div id="showDiv"></div>
+<div id="save_list_msg"></div>
 </div>
 <div style="float:left">
-      <span  style="display:none;margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="save_list"  onclick="get_search_list()">{t}Save List{/t}</span>
-      <span  style="display:none;margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="modify_search">{t}Create Again{/t}</span>
+      <span  style="display:none;margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="save_list"  >{t}Save List{/t}</span>
+      <span  style="display:none;margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="modify_search" >{t}Redo List{/t}</span>
       <span  style="margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="submit_search">{t}Create List{/t}</span>
 </div>
 </div>
