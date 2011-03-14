@@ -963,6 +963,8 @@ INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `T
 (1, 'brown', 'brown_common.css', 'brown_table.css', 'brown_index.css', 'brown_dropdown.css', 'brown_marketing_campaigns.css');
 
 
+ ALTER TABLE `User Dimension` ADD `User Themes` INT( 4 ) NOT NULL
+
 */
 
 
