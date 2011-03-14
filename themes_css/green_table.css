@@ -4,7 +4,7 @@
 .clean_table_title{float:left}
 .data_table  {margin:0px}
 
-.data_table_container {width:100%;clear:both;border-top:1px solid #F29E02;border-bottom:1px solid #F29E02;margin-bottom:2px;padding-bottom:1px;}
+.data_table_container {width:100%;clear:both;border-top:1px solid #7BBA59;border-bottom:1px solid #7BBA59;margin-bottom:2px;padding-bottom:1px;}
 
 .data_table .but{margin:0 20px;color:#777;background:none }
 
@@ -51,7 +51,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .kaktus .yui-dt-scrollable .yui-dt-hd{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
 .kaktus .yui-dt-scrollable .yui-dt-bd{border-left:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
 
-.kaktus .yui-dt th{border-bottom:1px solid #F29E02}
+.kaktus .yui-dt th{border-bottom:1px solid #7BBA59}
 
 .kaktus .yui-dt th,.kaktus .yui-dt th a{font-weight:normal;text-decoration:none;color:#000;vertical-align:bottom}
 
@@ -88,10 +88,10 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 
 
-.kaktus .yui-dt-data tr{border-top:1px solid #F29E02}
-.kaktus tr.yui-dt-even{background-color:#F2DFBC;}
+.kaktus .yui-dt-data tr{border-top:1px solid #7BBA59}
+.kaktus tr.yui-dt-even{background-color:#e8fadb;}
 .kaktus tr.yui-dt-odd{background-color:#FFF;}
-.kaktus tr.yui-dt-even td.yui-dt-asc   ,.kaktus tr.yui-dt-even td.yui-dt-desc{background-color:#F2DFBC;}
+.kaktus tr.yui-dt-even td.yui-dt-asc   ,.kaktus tr.yui-dt-even td.yui-dt-desc{background-color:#e8fadb;}
 .kaktus tr.yui-dt-odd td.yui-dt-asc    ,.kaktus tr.yui-dt-odd td.yui-dt-desc{background-color:#FFF;}
 
 .kaktus .yui-dt-list tr.yui-dt-even{background-color:#FFF;}
@@ -108,7 +108,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .kaktus .yui-dt-list tr.yui-dt-even td.yui-dt-selected,.kaktus .yui-dt-list tr.yui-dt-odd td.yui-dt-selected{background-color:#446CD7;color:#FFF;}
 .kaktus .yui-pg-container,.kaktus .yui-dt-paginator{display:block;margin:6px 0;white-space:nowrap;}
 
-.kaktus tr.yui-dt-last{border-bottom:1px solid #F29E02}
+.kaktus tr.yui-dt-last{border-bottom:1px solid #7BBA59}
 
 
 
@@ -120,7 +120,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .kaktus a.yui-pg-page,.kaktus a.yui-dt-page{border:1px solid #CBCBCB;padding:2px 6px;text-decoration:none;background-color:#fff}.kaktus .yui-pg-current-page,.kaktus .yui-dt-selected{border:1px solid #fff;background-color:#fff;}.kaktus .yui-pg-pages{margin-left:1ex;margin-right:1ex;}.kaktus .yui-pg-page{margin-right:1px;margin-left:1px;}.kaktus .yui-pg-first,.kaktus .yui-pg-previous{margin-right:3px;}.kaktus .yui-pg-next,.kaktus .yui-pg-last{margin-left:3px;}.kaktus .yui-pg-current,.kaktus .yui-pg-rpp-options{margin-right:1em;margin-left:1em;}
 
 .tablecaption_backup  {background:#3b5998;color:#fff;height:1.75em;padding:2px 0px 0px 3px;width:100%;font-size:93%;margin-top:10px}
-.btable caption,.tablecaption  {background:orange;color:black;height:13.85em;padding:2px 0px 0px 3px;width:100%;font-size:93%;margin-top:10px;;border-bottom:1px solid #F29E02}
+.btable caption,.tablecaption  {background:orange;color:black;height:13.85em;padding:2px 0px 0px 3px;width:100%;font-size:93%;margin-top:10px;;border-bottom:1px solid #7BBA59}
 .btable .tablecaption_edit{background:#dc4f58;}
 
 .tablecaption{padding:0}
@@ -177,10 +177,10 @@ div.wider{height:1.8em}
     *filter: alpha(opacity=25);  /* Set opacity in IE */
 }
 
-.kaktus .with_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #F29E02;border-bottom:none;background:#fff}
+.kaktus .with_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #7BBA59;border-bottom:none;background:#fff}
 
-.kaktus .with_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid #F29E02;border-bottom:none;background:#fff}
-.kaktus .with_total tr.yui-dt-last  {border-top:1px solid #F29E02;border-bottom:none;background:#fff}
+.kaktus .with_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid #7BBA59;border-bottom:none;background:#fff}
+.kaktus .with_total tr.yui-dt-last  {border-top:1px solid #7BBA59;border-bottom:none;background:#fff}
 .table_top_bar{clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999}
 
 .clean_table_filter span{width:200px;text-align:right}
