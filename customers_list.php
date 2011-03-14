@@ -38,6 +38,9 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.
   $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 $smarty->assign('general_options_list',$general_options_list);
+
+$smarty->assign('options_box_width','450px');
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
@@ -46,6 +49,18 @@ $css_files=array(
 		 'container.css',
 		 'table.css'
 		 );
+		 
+$css_files=array(
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+             'common.css',
+		 'container.css',
+		 'table.css'
+           );		 
+		 
 $js_files=array(
    $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -59,6 +74,7 @@ $js_files=array(
 		
 		'common.js.php',
 		'table_common.js.php',
+		 'js/search.js',
 		'js/edit_common.js',
 		'js/csv_common.js',
 		'common_customers.js.php',
@@ -71,57 +87,8 @@ $smarty->assign('parent','customers');
 $smarty->assign('view',$_SESSION['state']['customers']['view']);
 
 $smarty->assign('title', _('Customer Static List'));
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
-/*$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['hr']['areas']['f_value']);
-$smarty->assign('view',$_SESSION['state']['hr']['view']);
-$filter_menu=array(
-		   'name'=>array('db_key'=>'areas.alias','menu_label'=>'areas name <i>*x*</i>','label'=>'Name'),
-		   'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
-		   'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
-		   );
-$smarty->assign('filter_menu0',$filter_menu);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
-*/
-
-/* $csv_export_options=array(
-                            'description'=>array(
-                                              'title'=>_('Description'),
-                                              'rows'=>
-                                                     array(
-                                                         array(
-                                                             'id'=>array('label'=>_('Id'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['id']),
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['code']),
-                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['name']),
-                                                             'description'=>array('label'=>_('Description'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['description']),
-                                                             
-                                                
-                                                   )
-                            )
-                            ),
-
-
-'Other Details'=>array(
-                                              'title'=>_('Other Details'),
-                                              'rows'=>
-                                                     array(
-                                                         array(
-                                                             'number_of_department'=>array('label'=>_('No. Of Department'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['number_of_department']),
-                                                             'number_of_position'=>array('label'=>_('No. Of Position'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['number_of_position']),
-                                                             'number_of_employee'=>array('label'=>_('No. Of Employee'),'selected'=>$_SESSION['state']['staff']['company_areas']['csv_export']['number_of_employee']),
-                                                            
-                                                             
-                                                
-                                                   )
-                            )
-                            )
-                        );
-$smarty->assign('export_csv_table_cols',2);
-
-                     
-$smarty->assign('csv_export_options',$csv_export_options);*/
 $smarty->display('customers_list.tpl');
 ?>
