@@ -129,26 +129,32 @@ case('export'):
 
 
  function init(){
-YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'company_areas');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'company_areas'});
+ 
+ 
+  init_search('customers_store');
+
+
+  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'customers'});
   csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
 	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);   
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
  YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_export.render();
+Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
+ 
+ 
+ 
 
- var Dom   = YAHOO.util.Dom;
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
 
- var ids=['all','staff','exstaff'];
- YAHOO.util.Event.addListener(ids, "click", change_view);
- 
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
+
 
  }
 
