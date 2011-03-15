@@ -22,36 +22,20 @@ print $s;
 
    
 ?>
-
-
     
     YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 	    
 	    //START OF THE TABLE=========================================================================================================================
-	    
 	 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-
-
-	   
 	    var ColumnDefs = [
-			
-			
-		
 			       {key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"ip", label:"<?php echo _('IP Address')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
-				 
-			      
-	     
-
-
-			
-			
 			];
 			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_loginhistory&tableid=0");
