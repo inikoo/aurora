@@ -15,11 +15,12 @@ $ThemeDropdown=$themeRow['Theme Dropdown Css'];
 $ThemeCampaign=$themeRow['Theme Campaign Css'];
 $background_status=$themeRow['User Theme Background Status'];
 }
+$bg=$user_key.".png";
 if($themeRow)
 {
 if($background_status)
 {
-$bg=$user_key.".png";
+
 
 array_push($css_files, 'themes_css/'.$ThemeCommon.'?c='.$bg);   
 array_push($css_files, 'themes_css/'.$ThemeTable);
