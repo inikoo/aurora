@@ -123,7 +123,7 @@ $js_files=array(
                 'js/php.default.min.js',
                 'common.js.php',
                 'table_common.js.php',
-	            'js/edit_common.js',
+	         'js/edit_common.js',
                 'js/csv_common.js',
                 'js/dropdown.js',
                 'js/assets_common.js'
@@ -141,7 +141,6 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $smarty->assign('plot_tipo',$_SESSION['state']['store']['plot']);
-
 
 
 $_SESSION['state']['assets']['page']=$page;
@@ -166,7 +165,7 @@ $filter_menu=array(
              );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('departments',$store->data['Store Departments']);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name0',$fi$_SESSION['state']['store']['products']['period']lter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 

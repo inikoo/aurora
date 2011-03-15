@@ -52,7 +52,7 @@
 	
 		<div style="padding-top:200px;"> <img src="art/icons/theme.png"/> &nbsp; <a href="change_user_theme.php">Theme Manager</a> (Change your theme)&nbsp;
 		&nbsp;&nbsp;&nbsp;
-Change Your Password
+<a href="#" onclick="chngPass();">Change Your Password</a>
 </div>
   
 
