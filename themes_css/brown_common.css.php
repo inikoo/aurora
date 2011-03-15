@@ -1,5 +1,5 @@
 <?php header("Content-Type: text/css"); ?>
-html{background-color:#fff;background-image:url('<?php if($_GET["c"]) echo "../uploads/".$_GET["c"]; else echo "../art/bg/bg2.jpg"; ?>');
+html{background-color:#fff;background-image:url('<?php if($_GET["c"]) echo "../uploads/".$_GET["c"]; else echo "../art/bg/bg4.jpg"; ?>');
 background-repeat:no-repeat;}
 body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 td {text-align:left}
