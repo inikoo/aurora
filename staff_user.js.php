@@ -1,5 +1,7 @@
 <?php
-include_once('common.php')?>
+include_once('common.php');
+
+?>
 var Dom   = YAHOO.util.Dom;
 var add_user_dialog_others;
 var add_user_dialog;
@@ -21,11 +23,7 @@ print $s;
    
 ?>
 
-            
-            
 
-   
-    
     
     YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -33,45 +31,47 @@ print $s;
 	    
 	    //START OF THE TABLE=========================================================================================================================
 	    
+	 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
-	 
+
 	   
 	    var ColumnDefs = [
 			
 			
-			      {key:"login",label:"<?php echo _('Login')?>" ,className:'aleft',width:150  }
-			      , {key:"alias", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"login_count", label:"<?php echo _('Login Count')?>",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"last_login", label:"<?php echo _('Last Login')?>",width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"failed_login_count", label:"<?php echo _('Failed Login Count')?>",width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"failed_last_login", label:"<?php echo _('Failed Last Login')?>",width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                  
-	                             
+		
+			       {key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"ip", label:"<?php echo _('IP Address')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
+				 
+			      
+	     
 
+
+			
+			
 			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_loginhistory&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		   // rtext:"resultset.rtext",
-		   // rtext_rpp:"resultset.rtext_rpp",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
-		    //filter_msg:"resultset.filter_msg",
+		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		
-	
-              fields: [
-			 "id","login","login_count","last_login","failed_login_count","failed_last_login","lang","tipo","active","alias"
-			 ]};
+		
+		fields: ["user","ip","login_date","logout_date"]};
 
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -79,7 +79,7 @@ print $s;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['staff']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['loginhistory']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -89,8 +89,8 @@ print $s;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['staff']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['staff']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['loginhistory']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['loginhistory']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -104,11 +104,9 @@ print $s;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['loginhistory']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
-
-	    
 
 
 	};
@@ -118,6 +116,8 @@ print $s;
 
 
  function init(){
+
+
  init_search('users');
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;

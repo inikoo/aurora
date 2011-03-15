@@ -29,7 +29,7 @@
  
  <div id="yui-main">
        <div class="data_table" style="margin-top:25px">
-      <span class="clean_table_title">{t}User Login History{/t}</span>
+      <span class="clean_table_title">{t}Staff User Login History{/t}</span>
          {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
       <div  id="table2"   class="data_table_container dtable btable "> </div>
     </div>    
