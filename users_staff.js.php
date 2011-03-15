@@ -290,7 +290,7 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			];
 			       
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_users.php?tipo=loginhistory&tableid=2");
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_loginhistory&tableid=2");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
@@ -315,7 +315,7 @@ var active=function(el, oRecord, oColumn, oData){
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['loginhistory']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['loginhistory']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
