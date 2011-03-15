@@ -18,8 +18,8 @@ if(!$user->can_view('users'))
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 // $yui_path.'container/assets/skins/sam/container.css',
+		 //$yui_path.'datatable/assets/skins/sam/datatable.css',
+		 //$yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		

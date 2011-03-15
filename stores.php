@@ -84,8 +84,7 @@ array_push($css_files, 'themes_css/'.$Themecss1);
 array_push($css_files, 'themes_css/'.$Themecss2);
 array_push($css_files, 'themes_css/'.$Themecss3);
 }    
-   
-
+ 
 else{
 array_push($css_files, 'common.css'); 
 
@@ -114,6 +113,8 @@ $js_files=array(
 
     $js_files[]='js/search.js';
     $js_files[]='stores.js.php';
+
+
 
 
 
