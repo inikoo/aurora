@@ -49,8 +49,39 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/change_style.js'
+		'js/change_style.js',
+		'js/jquery-1.4.4.js'
 		);
+
+
+
+if(isset($_FILES['image']["name"])!='')
+{
+
+$current_image=$_FILES['image']['name'];
+//$new_image = $id.".png";
+
+$new_image =$user_key.".png";
+$destination="uploads/".$new_image;
+$action = copy($_FILES['image']['tmp_name'], $destination);
+if (!$action) 
+{
+die('File copy failed');
+}else{
+	
+
+     $sql="update `User Dimension` set `User Theme Background Status`='1' where `User Key`='$user_key'";
+            mysql_query($sql);
+
+}
+
+}
+
+
+
+
+
+
 
 
 $smarty->assign('parent','users');

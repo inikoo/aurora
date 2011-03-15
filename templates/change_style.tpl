@@ -3,9 +3,27 @@
 	<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Change Theme{/t}</h1>
 </div>
+{literal}
+<script language="javascript">
+ $(document).ready(function(){
+  $("#change").click(function(){
+   $(".show").show();
 
 
+});
 
+});
+function validateForm()
+{
+var x=document.forms["background"]["image"].value
+if (x==null || x=="")
+  {
+  alert("Please choose a image");
+  return false;
+  }
+}
+</script>
+{/literal}
 <br>
 <form action="change_style.php" method="post">
 <div>
@@ -23,10 +41,24 @@
 		
 		
 	</table>
+        
 </div>
 	<div id="display"></div>
 </form>
-	
+          
+
+
+           <p id="change" style="cursor:pointer;color:steelBlue;">Change background image</p>
+
+        <div class="show" style="display:none">
+	<form action="change_style.php" name="background" method="post" enctype="multipart/form-data" onsubmit="return validateForm()" >
+	<table>
+            <tr><td><input type="file" name="image" id="image"></td><td><input type="submit" name="submit" value="submit"></td></tr>
+            
+	</table>
+        </form>
+
+       </div>
 
 </div>
 {include file='footer.tpl'}

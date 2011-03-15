@@ -13,15 +13,30 @@ $ThemeTable=$themeRow['Theme Table Css'];
 $ThemeIndex=$themeRow['Theme Index Css'];
 $ThemeDropdown=$themeRow['Theme Dropdown Css'];
 $ThemeCampaign=$themeRow['Theme Campaign Css'];
-
+$background_status=$themeRow['User Theme Background Status'];
 }
 if($themeRow)
+{
+if($background_status)
+{
+$bg=$user_key.".png";
+
+array_push($css_files, 'themes_css/'.$ThemeCommon.'?c='.$bg);   
+array_push($css_files, 'themes_css/'.$ThemeTable);
+array_push($css_files, 'themes_css/'.$ThemeIndex); 
+array_push($css_files, 'themes_css/'.$ThemeDropdown);
+array_push($css_files, 'themes_css/'.$ThemeCampaign);
+
+}
+else
 {
 array_push($css_files, 'themes_css/'.$ThemeCommon);   
 array_push($css_files, 'themes_css/'.$ThemeTable);
 array_push($css_files, 'themes_css/'.$ThemeIndex); 
 array_push($css_files, 'themes_css/'.$ThemeDropdown);
 array_push($css_files, 'themes_css/'.$ThemeCampaign);
+
+}
 }    
    
 
