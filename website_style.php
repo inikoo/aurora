@@ -13,7 +13,7 @@
 	}
 	else
 	{
-		$sql = "UPDATE `User Dimension` SET `User Themes` = '".$style."' WHERE `User Dimension`.`User Key` = '".$_SESSION['user_key']."'";
+		$sql = "UPDATE `User Dimension` SET `User Themes` = '".$style."',`User Theme Background Status`='0'  WHERE `User Dimension`.`User Key` = '".$_SESSION['user_key']."'";
 	}
 		
 	
