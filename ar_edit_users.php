@@ -486,7 +486,11 @@ function edit_staff_user() {
 
     
 }
+
 function change_user_passwd() {
+
+	
+
     $user=new User($_REQUEST['user_id']);
     $value=$_REQUEST['value'];
     if ($user->id) {

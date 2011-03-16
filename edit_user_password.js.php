@@ -502,12 +502,12 @@ var match_passwd=function(p2,p1,tipo){
 };
 var change_staff_pwd=function(){
     
-	//alert(document.getElementById('user_id').value);
+	//alert(document.getElementById('change_staff_password_alias').value);
     passwd=sha256_digest(Dom.get('change_staff_passwd1').value);
-    user_id=Dom.get('change_staff_password_alias').getAttribute('user_id');
+    user_id=document.getElementById('change_staff_password_alias').value;
     var request='ar_edit_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
     //  alert(request);
-	alert(user_id);
+	//alert(user_id);
     // exit;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
