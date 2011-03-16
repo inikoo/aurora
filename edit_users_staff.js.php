@@ -507,7 +507,7 @@ var change_staff_pwd=function(){
     user_id=Dom.get('change_staff_password_alias').getAttribute('user_id');
     var request='ar_edit_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
     //  alert(request);
-	alert(user_id);
+	//alert(user_id);
     // exit;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
