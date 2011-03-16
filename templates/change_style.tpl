@@ -47,7 +47,7 @@ if (x==null || x=="")
 </form>
           
 <div id="dialog" style="width:100px;" title="Dialog Title">
-			<p id="dialog_text" style="display:none;">Press Yes to select default theme<p>
+			<p id="dialog_text" style="display:none;">Press Yes to change theme for all user<p>
 		</div>
 
            <p id="change" style="cursor:pointer;color:steelBlue;">Change background image</p>
