@@ -9,7 +9,7 @@
 
 	if($theme == 0)
 	{
-		$sql = "UPDATE `User Dimension` SET `User Themes` = '".$style."'";
+		$sql = "UPDATE `User Dimension` SET `User Themes` = '".$style."',`User Theme Background Status`='0'";
 	}
 	else
 	{

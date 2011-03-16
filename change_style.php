@@ -22,7 +22,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skUser Themesins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		
+		'themes_css/ui-lightness/jquery-ui-1.8.10.custom.css',
 		 'button.css',
 		 'container.css'
 		 );
@@ -50,7 +50,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'js/change_style.js',
-		'js/jquery-1.4.4.js'
+		'js/jquery-1.4.4.min.js',
+		'js/jquery-ui-1.8.10.custom.min.js'
 		);
 
 

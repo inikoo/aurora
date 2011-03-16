@@ -25,19 +25,48 @@ timeout: 2000
 
 function change_style(s) {
 
-	var make_default = confirm ("Press Ok to select default theme or Cancel to change the theme ?")
+$(document).ready(function(){
+        $('#dialog_link').live("click",function(){
+	$('#dialog_text').css("display","block");
+         $('#dialog').dialog('open');
+	return false;
+	});
+				// Dialog			
+				$('#dialog').dialog({
+					autoOpen: false,
+					width: 300,
+                                        buttons: {
+						"Yes": function() { 
+							$(this).dialog("close"); 
+                                                         theme = 0;
+							sUrl = "website_style.php?style="+s+"&theme="+theme;
 
-		if(make_default)
-		{
-		   theme = 0;
-		}	
-		else
-		{
-		  theme = 1;	
-		}
+					YAHOO.util.Connect.asyncRequest('GET',sUrl,spawnCallback);								
 
-	sUrl = "website_style.php?style="+s+"&theme="+theme;
+						}, 
+						"No": function() { 
+							$(this).dialog("close");
+                                                   theme = 1; 
+sUrl = "website_style.php?style="+s+"&theme="+theme;
 
-YAHOO.util.Connect.asyncRequest('GET',sUrl,spawnCallback);
+					YAHOO.util.Connect.asyncRequest('GET',sUrl,spawnCallback);
+						} 
+					}
+				});
+				
+				// Dialog Link
+				
+				
+				//hover states on the static widgets
+				$('#dialog_link, ul#icons li').hover(
+					function() { $(this).addClass('ui-state-hover'); }, 
+					function() { $(this).removeClass('ui-state-hover'); }
+				);
+				
+			});
+
+
+
+
 }
 
