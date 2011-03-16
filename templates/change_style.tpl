@@ -32,9 +32,9 @@ if (x==null || x=="")
 
 		<tr>
 			 <td width="200px">Please select the style : </td> 
-			<td><a href="#" onclick="change_style(0);" title="Blue theme"><div style="width:20px; height:20px; background-color:Blue; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(1);" title="Brown theme"><div style="width:20px; height:20px; background-color:#BD6A14; border:1px;"></div></a></td>
-			<td><a href="#" onclick="change_style(2);" title="Green theme"><div style="width:20px; height:20px; background-color:#72B80B; border:1px;"></div></a></td>
+			<td><a href="#" onclick="change_style(0);"  title="Blue theme"><div id="dialog_link" style="width:20px; height:20px; background-color:Blue; border:1px;"></div></a></td>
+			 <td><a href="#" onclick="change_style(1);"  title="Brown theme"><div id="dialog_link" style="width:20px; height:20px; background-color:#BD6A14; border:1px;"></div></a></td>
+			<td><a href="#" onclick="change_style(2);" title="Green theme"><div id="dialog_link" style="width:20px; height:20px; background-color:#72B80B; border:1px;"></div></a></td>
 			
 		</tr>
 		
@@ -46,7 +46,9 @@ if (x==null || x=="")
 	<div id="display"></div>
 </form>
           
-
+<div id="dialog" style="width:100px;" title="Dialog Title">
+			<p id="dialog_text" style="display:none;">Press Yes to select default theme<p>
+		</div>
 
            <p id="change" style="cursor:pointer;color:steelBlue;">Change background image</p>
 
