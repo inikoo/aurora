@@ -20,13 +20,29 @@ include_once('class.User.php');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
+		 //$yui_path.'datatable/assets/skins/sam/datatable.css',
+		 //$yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css'
+		 $yui_path.'build/assets/skins/sam/skin.css',
+		
+		 'css/edit.css'
 		 );
+
+
+if($common)
+{
+array_push($css_files, 'themes_css/'.$common);   
+array_push($css_files, 'themes_css/'.$row['Themes css4']);
+array_push($css_files, 'themes_css/'.$row['Themes css2']); 
+array_push($css_files, 'themes_css/'.$row['Themes css3']);
+}    
+
+else{
+array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/dropdown.css'); 
+array_push($css_files, 'css/index.css');
+array_push($css_files, 'table.css');
+}
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -41,7 +57,11 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/change_password.js'
+		'js/change_password.js',    
+                 'js/edit_common.js',	
+		'sha256.js.php',
+		'passwordmeter.js.php',
+                 'edit_users_staff.js.php'
 		);
 
 
@@ -60,6 +80,15 @@ switch ($user->data['User Type']) {
    $title=_('Staff User');
        $tpl='staff_user.tpl';
        $js_files[]='staff_user.js.php';
+if(isset($_SESSION['user_key']))
+{
+  $sql="select `User Key`,`User Alias` from `User Dimension` where `User Key`='".$_SESSION['user_key']."'";
+  $result=mysql_query($sql);
+  $row=mysql_fetch_assoc($result);
+  $smarty->assign('user_name',$row['User Alias']);
+  $smarty->assign('user_id',$row['User Key']);
+
+}
         break;
     case 'Customer':
        $title=_('Customer User');
@@ -72,6 +101,9 @@ switch ($user->data['User Type']) {
        $js_files[]='supplier_user.js.php';
         break;    
 }
+
+
+
 
 $smarty->assign('title', $title);
 $smarty->assign('css_files',$css_files);
