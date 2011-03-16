@@ -61,7 +61,7 @@ $js_files=array(
                  'js/edit_common.js',	
 		'sha256.js.php',
 		'passwordmeter.js.php',
-                 'edit_users_staff.js.php'
+                 'edit_user_password.js.php'
 		);
 
 
