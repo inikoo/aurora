@@ -499,7 +499,7 @@ function init(){
 
     ids=['general','sales','stock'];
     YAHOO.util.Event.addListener(ids, "click",change_view)
-    ids=['period_all','period_year','period_quarter','period_month','period_week'];
+    ids=['period_all','period_year','period_quarter','period_month','period_week','period_yeartoday','period_three_year','period_six_month','period_three_month','period_ten_day'];
     YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'stores'});
     ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
     YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'stores'});

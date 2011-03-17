@@ -1536,8 +1536,8 @@ $current_from=strtotime($this->data['Store Valid From']);
         $sql="select     sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc  from `Order Transaction Fact`  OTF   where `Store Key`=".$this->id;
 
 
-        //print "$sql\n\n";
-        // exit;
+        print "$sql\n\n";
+         exit;
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
