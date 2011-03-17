@@ -6388,6 +6388,18 @@ function list_stores() {
         elseif($period=='week')
         $order='`Store 1 Week Acc Invoiced Amount`';
 
+        elseif($period=='yeartoday')
+        $order='`Store YearToDay Acc Invoiced Amount`';
+        elseif($period=='three_year')
+        $order='`Store 3 Year Acc Invoiced Amount`';
+        elseif($period=='six_month')
+        $order='`Store 6 Month Acc Invoiced Amount`';
+        elseif($period=='three_month')
+        $order='`Store 3 Month Acc Invoiced Amount`';
+        elseif($period=='ten_day')
+        $order='`Store 10 Day Acc Invoiced Amount`';
+
+
     }
     elseif($order=='name')
     $order='`Store Name`';
@@ -6484,7 +6496,7 @@ function list_stores() {
             mysql_free_result($result);
         } else {
             $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
-            //print $sql;
+           //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -6559,6 +6571,88 @@ function list_stores() {
     }
 
 
+ elseif($period=='yeartoday') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Store YearToDay Acc Profit`<0,`Store YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Store YearToDay Acc Profit`>=0,`Store YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store YearToDay Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $sum_total_sales=$row['sum_total_sales'];
+
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+        mysql_free_result($result);
+    }
+ elseif($period=='three_year') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Store 3 Year Acc Profit`<0,`Store 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 3 Year Acc Profit`>=0,`Store 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 3 Year Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $sum_total_sales=$row['sum_total_sales'];
+
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+        mysql_free_result($result);
+    }
+ elseif($period=='six_month') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Store 6 Month Acc Profit`<0,`Store 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 6 Month Acc Profit`>=0,`Store 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 6 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $sum_total_sales=$row['sum_total_sales'];
+
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+        mysql_free_result($result);
+    }
+ elseif($period=='three_month') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Store 3 Month Acc Profit`<0,`Store 3 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 3 Month Acc Profit`>=0,`Store 3 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 3 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $sum_total_sales=$row['sum_total_sales'];
+
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+        mysql_free_result($result);
+    }
+ elseif($period=='ten_day') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Store 10 Day Acc Profit`<0,`Store 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Store 10 Day Acc Profit`>=0,`Store 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 10 Day Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $sum_total_sales=$row['sum_total_sales'];
+
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+        mysql_free_result($result);
+    }
+
+
 
     $sql="select *  from `Store Dimension` S  left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key`   $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     //print $sql;
@@ -6624,6 +6718,45 @@ function list_stores() {
                 else
                     $tprofit=percentage($row['Store DC 1 Week Acc Profit'],$sum_total_profit_minus,2);
             }
+
+
+	    elseif($period=='yeartoday') {
+                $tsall=percentage($row['Store DC YearToDay Acc Invoiced Amount'],$sum_total_sales,2);
+                if ($row['Store DC YearToDay Acc Profit']>=0)
+                    $tprofit=percentage($row['Store DC YearToDay Acc Profit'],$sum_total_profit_plus,2);
+                else
+                    $tprofit=percentage($row['Store DC YearToDay Acc Profit'],$sum_total_profit_minus,2);
+            }
+            elseif($period=='three_year') {
+                $tsall=percentage($row['Store DC 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
+                if ($row['Store DC 3 Year Acc Profit']>=0)
+                    $tprofit=percentage($row['Store DC 3 Year Acc Profit'],$sum_total_profit_plus,2);
+                else
+                    $tprofit=percentage($row['Store DC 3 Year Acc Profit'],$sum_total_profit_minus,2);
+            }
+            elseif($period=='six_month') {
+                $tsall=percentage($row['Store DC 6 Month Acc Invoiced Amount'],$sum_total_sales,2);
+                if ($row['Store DC 6 Month Acc Profit']>=0)
+                    $tprofit=percentage($row['Store DC 6 Month Acc Profit'],$sum_total_profit_plus,2);
+                else
+                    $tprofit=percentage($row['Store DC 6 Month Acc Profit'],$sum_total_profit_minus,2);
+            }
+            elseif($period=='three_month') {
+                $tsall=percentage($row['Store DC 3 Month Acc Invoiced Amount'],$sum_total_sales,2);
+                if ($row['Store DC 3 Month Acc Profit']>=0)
+                    $tprofit=percentage($row['Store DC 3 Month Acc Profit'],$sum_total_profit_plus,2);
+                else
+                    $tprofit=percentage($row['Store DC 3 Month Acc Profit'],$sum_total_profit_minus,2);
+            }
+	 elseif($period=='ten_day') {
+                $tsall=percentage($row['Store DC 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
+                if ($row['Store DC 10 Day Acc Profit']>=0)
+                    $tprofit=percentage($row['Store DC 10 Day Acc Profit'],$sum_total_profit_plus,2);
+                else
+                    $tprofit=percentage($row['Store DC 10 Day Acc Profit'],$sum_total_profit_minus,2);
+            }
+
+
 
 
         } else {
@@ -6832,6 +6965,192 @@ function list_stores() {
                 $tprofit=($row["Store".$DC_tag." 1 Week Acc Profit"]*$factor);
             }
 
+
+elseif($period=="yeartoday") {
+                if ($avg=="totals")
+                    $factor=1;
+                elseif($avg=="month") {
+                    if ($row["Store YearToDay Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store YearToDay Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month") {
+                    if ($row["Store YearToDay Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store YearToDay Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week") {
+                    if ($row["Store YearToDay Acc Days On Sale"]>0)
+                        $factor=7/$row["Store YearToDay Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month_eff") {
+                    if ($row["Store YearToDay Acc Days Available"]>0)
+                        $factor=30.4368499/$row["Store YearToDay Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week_eff") {
+                    if ($row["Store YearToDay Acc Days Available"]>0)
+                        $factor=7/$row["Store YearToDay Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+
+                $tsall=($row["Store".$DC_tag." YearToDay Acc Invoiced Amount"]*$factor);
+                $tprofit=($row["Store".$DC_tag." YearToDay Acc Profit"]*$factor);
+            }
+elseif($period=="three_year") {
+                if ($avg=="totals")
+                    $factor=1;
+                elseif($avg=="month") {
+                    if ($row["Store 3 Year Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 3 Year Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month") {
+                    if ($row["Store 3 Year Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 3 Year Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week") {
+                    if ($row["Store 3 Year Acc Days On Sale"]>0)
+                        $factor=7/$row["Store 3 Year Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month_eff") {
+                    if ($row["Store 3 Year Acc Days Available"]>0)
+                        $factor=30.4368499/$row["Store 3 Year Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week_eff") {
+                    if ($row["Store 3 Year Acc Days Available"]>0)
+                        $factor=7/$row["Store 3 Year Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+
+                $tsall=($row["Store".$DC_tag." 3 Year Acc Invoiced Amount"]*$factor);
+                $tprofit=($row["Store".$DC_tag." 3 Year Acc Profit"]*$factor);
+            }
+elseif($period=="six_month") {
+                if ($avg=="totals")
+                    $factor=1;
+                elseif($avg=="month") {
+                    if ($row["Store 6 Month Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 6 Month Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month") {
+                    if ($row["Store 6 Month Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 6 Month Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week") {
+                    if ($row["Store 6 Month Acc Days On Sale"]>0)
+                        $factor=7/$row["Store 6 Month Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month_eff") {
+                    if ($row["Store 6 Month Acc Days Available"]>0)
+                        $factor=30.4368499/$row["Store 6 Month Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week_eff") {
+                    if ($row["Store 6 Month Acc Days Available"]>0)
+                        $factor=7/$row["Store 6 Month Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+
+                $tsall=($row["Store".$DC_tag." 6 Month Acc Invoiced Amount"]*$factor);
+                $tprofit=($row["Store".$DC_tag." 6 Month Acc Profit"]*$factor);
+            }
+elseif($period=="three_month") {
+                if ($avg=="totals")
+                    $factor=1;
+                elseif($avg=="month") {
+                    if ($row["Store 3 Month Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 3 Month Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month") {
+                    if ($row["Store 3 Month Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 3 Month Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week") {
+                    if ($row["Store 3 Month Acc Days On Sale"]>0)
+                        $factor=7/$row["Store 3 Month Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month_eff") {
+                    if ($row["Store 3 Month Acc Days Available"]>0)
+                        $factor=30.4368499/$row["Store 3 Month Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week_eff") {
+                    if ($row["Store 3 Month Acc Days Available"]>0)
+                        $factor=7/$row["Store 3 Month Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+
+                $tsall=($row["Store".$DC_tag." 3 Month Acc Invoiced Amount"]*$factor);
+                $tprofit=($row["Store".$DC_tag." 3 Month Acc Profit"]*$factor);
+            }
+elseif($period=="ten_day") {
+                if ($avg=="totals")
+                    $factor=1;
+                elseif($avg=="month") {
+                    if ($row["Store 10 Day Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 10 Day Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month") {
+                    if ($row["Store 10 Day Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store 10 Day Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week") {
+                    if ($row["Store 10 Day Acc Days On Sale"]>0)
+                        $factor=7/$row["Store 10 Day Acc Days On Sale"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="month_eff") {
+                    if ($row["Store 10 Day Acc Days Available"]>0)
+                        $factor=30.4368499/$row["Store 10 Day Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=="week_eff") {
+                    if ($row["Store 10 Day Acc Days Available"]>0)
+                        $factor=7/$row["Store 10 Day Acc Days Available"];
+                    else
+                        $factor=0;
+                }
+
+                $tsall=($row["Store".$DC_tag." 10 Day Acc Invoiced Amount"]*$factor);
+                $tprofit=($row["Store".$DC_tag." 10 Day Acc Profit"]*$factor);
+            }
 
 
         }

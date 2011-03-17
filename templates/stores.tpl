@@ -47,17 +47,14 @@
 	<tr>
 
 	  <td class="option {if $period=='all'}selected{/if}" period="all"  id="period_all" >{t}All{/t}</td>
-
-	 <td class="option {if $period=='yeartoday'}selected{/if}"  period="yeartoday"  id="period_year"  >{t}YTD{/t}</td>
-	 <td class="option {if $period=='three_year'}selected{/if}"  period="three_year"  id="period_year"  >{t}3Y{/t}</td>
-	 <td class="option {if $period=='six_month'}selected{/if}"  period="six_month"  id="period_year"  >{t}6M{/t}</td>
-	 <td class="option {if $period=='three_month'}selected{/if}"  period="three_month"  id="period_year"  >{t}3M{/t}</td>
-	 <td class="option {if $period=='ten_day'}selected{/if}"  period="ten_day"  id="period_year"  >{t}10D{/t}</td>
-
-
+	  <td class="option {if $period=='three_year'}selected{/if}"  period="three_year"  id="period_three_year"  >{t}3Y{/t}</td>
 	  <td class="option {if $period=='year'}selected{/if}"  period="year"  id="period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $period=='yeartoday'}selected{/if}"  period="yeartoday"  id="period_yeartoday"  >{t}YTD{/t}</td>	
+	  <td class="option {if $period=='six_month'}selected{/if}"  period="six_month"  id="period_six_month"  >{t}6M{/t}</td>
 	  <td class="option {if $period=='quarter'}selected{/if}"  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $period=='three_month'}selected{/if}"  period="three_month"  id="period_three_month"  >{t}3M{/t}</td>
 	  <td class="option {if $period=='month'}selected{/if}"  period="month"  id="period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $period=='ten_day'}selected{/if}"  period="ten_day"  id="period_ten_day"  >{t}10D{/t}</td>
 	  <td class="option {if $period=='week'}selected{/if}" period="week"  id="period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
