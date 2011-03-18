@@ -465,8 +465,6 @@ function list_warehouse_areas_for_edition(){
 	$wheref.=" and  `Warehouse Area Code` like '".addslashes($f_value)."%'";
    
    
-
-   
    
    $sql="select count(*) as total from `Warehouse Area Dimension`   $where $wheref";
 

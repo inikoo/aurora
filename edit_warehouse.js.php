@@ -419,7 +419,6 @@ function add_area(){
 	});
 }
 
-
 function change_area_save(){
 
 
