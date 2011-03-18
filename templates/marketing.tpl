@@ -14,7 +14,8 @@
 
 </div>
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-    <li> <span class="item selected{if $view=='Emarketing'}selected{/if}" id="metrics"  ><span>  {t}Emarketing{/t}</span></span></li>
+
+    <li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Stats{/t}</span></span></li>
     <li> <span class="item {if $view=='newsletter'}selected{/if}"  id="newsletter">  <span> {t}eNewsletters{/t}</span></span></li>
     <li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Email Campaigns{/t}</span></span></li>
     <li> <span class="item {if $view=='web_internal'}selected{/if}"  id="web_internal">  <span> {t}Site Campaigns{/t}</span></span></li>
@@ -24,30 +25,19 @@
  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 
-<div id="block_metrics" style="{if $view!='Emarketing'}display:block;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-
-
-<h2>Emarketing</h2>
-<div class="table_top_bar"></div>
-<table class="options" style="float: left; margin: 0pt 0pt 0pt 0px; padding: 0pt;">
-	<tbody><tr><td id="create_list"><a href="#">Create List</a></td>
-        <td id="view_list"><a href="customers_lists.php">View List</a></td>
-	  <td id="create_campaign"><a href="#"  onclick="checkListTable()">Create Campaign</a></td>	  
-          <td id="view_campaign" ><a href="campaign_builder.php">View Campaign</a></td>	</tr>
-      </tbody></table>
-
-
-
-
-
-
+<div id="block_metrics" style="{if $view!='metrics'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<h2>{t}Marketing Metrics{/t}</h2>
 
 </div>
 <div id="block_newsletter" style="{if $view!='newsletter'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 </div>
 <div id="block_email" style="{if $view!='email'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
-
+ <div class="general_options" style="float:right">
+	
+	<a  href="new_email_campaign.php?store={$store->id}" style="margin-right:10px;"  id="save_edit_store" class="state_details">{t}New Email Campaign{/t}</a>
+	
+      </div>
   <span   class="clean_table_title" style="">{t}Email Campaigns{/t}</span>
 
 

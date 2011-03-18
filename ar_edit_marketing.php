@@ -3,44 +3,147 @@ require_once 'common.php';
 require_once 'ar_edit_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
-    $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+    $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
 }
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-case('create_email_marketing'):
-    $data=prepare_values($_REQUEST,array(
-      'store_key'=>array('type'=>'key'),
-                             'name'=>array('type'=>'string'),
-                             'objective'=>array('type'=>'string'),
+
+case('delete_email_campaign'):
+  $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key'),
                          ));
-    new_email_marketing($data);
-
-
+    delete_email_campaign($data);
     break;
+break;
+case('add_emails_from_list'):
+  $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key'),
+                             'list_key'=>array('type'=>'key')
+                         ));
+    add_emails_to_email_campaign_from_list($data);
+    break;
+break;
+case('create_add_email_address_manually'):
+    $data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+                         ));
+    add_email_address_manually($data);
+    break;
+case('create_email_campaign'):
+    $data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array'),
+                           
+                         ));
+    create_email_campaign($data);
+    break;
+default:
+    $response=array('state'=>404,'msg'=>_('Operation not found'));
+    echo json_encode($response);
 }
 
+function add_emails_to_email_campaign_from_list($data) {
+    global $user;
+    require_once 'class.EmailCampaign.php';
 
-function new_email_marketing($data) {
-require_once 'class.EmailCampaign.php';
+    $email_campaign=new EmailCampaign($data['email_campaign_key']);
+    
+     $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$data['list_key']);
 
-$email_campaign_data=array(
-    'Email Campaign Store Key'=>$data['store_key'],
-    'Email Campaign Name'=>$data['name'],
-    'Email Campaign Objective'=>$data['objective']
+$res=mysql_query($sql);
+if (!$customer_list_data=mysql_fetch_assoc($res)) {
+   $response= array('state'=>400,'msg'=>'Customer List not found');
+   return;
 
+}
+   if(!in_array($customer_list_data['Customer List Store Key'],$user->stores)){
+     $response= array('state'=>400,'msg'=>_('Operation forbidden'));
+   return;
+
+   }
+    
+   
+    
+    $email_campaign->add_emails_from_list($data['email_campaign_key']);
+
+    if ($email_campaign->updated) {
+
+        $response= array('state'=>200,'action'=>'created','recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],'msg'=>$email_campaign->msg
 );
-//print_r($email_campaign_data);
-$email_campaign=new EmailCampaign('create',$email_campaign_data);
-if($email_campaign->id){
+    } else {
+        $response= array('state'=>400,'msg'=>$email_campaign->msg);
 
- $response= array('state'=>200,'action'=>'created','email_campaign_key'=>$email_campaign->id);
-}else{
- $response= array('state'=>400,'msg'=>$email_campaign->msg);
-
+    }
+ echo json_encode($response);
 }
+
+function delete_email_campaign($data){
+    require_once 'class.EmailCampaign.php';
+
+    $email_campaign=new EmailCampaign($data['email_campaign_key']);
+    $email_campaign->delete();
+    if ($email_campaign->updated) {
+
+        $response= array('state'=>200,'action'=>'deleted'
+);
+    } else {
+        $response= array('state'=>400,'msg'=>$email_campaign->msg);
+
+    }
+ echo json_encode($response);
+}
+
+function add_email_address_manually($data) {
+    require_once 'class.EmailCampaign.php';
+
+    $email_campaign=new EmailCampaign($data['parent_key']);
+    $email_campaign->add_email_address_manually($data['values']);
+
+    if ($email_campaign->updated) {
+
+        $response= array('state'=>200,'action'=>'created','recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview']
+);
+    } else {
+        $response= array('state'=>400,'msg'=>$email_campaign->msg);
+
+    }
+ echo json_encode($response);
+}
+
+function create_email_campaign($data) {
+    require_once 'class.EmailCampaign.php';
+
+    $email_campaign_data=array(
+                             'Email Campaign Store Key'=>$data['parent_key'],
+                             'Email Campaign Name'=>$data['values']['Email Campaign Name'],
+                             'Email Campaign Objective'=>$data['values']['Email Campaign Objective']
+
+                         );
+//print_r($email_campaign_data);
+    $email_campaign=new EmailCampaign('find',$email_campaign_data,'create');
+    if ($email_campaign->new) {
+
+        $response= array(
+        'state'=>200,
+        'action'=>'created',
+        'email_campaign_key'=>$email_campaign->id
+        );
+    }elseif($email_campaign->found){
+           $response= array(
+        'state'=>200,
+        'action'=>'found',
+        'email_campaign_key'=>$email_campaign->id,
+        'msg'=>_('Another email campaign has that name')
+        
+        );
+    }else {
+        $response= array('state'=>400,'msg'=>$email_campaign->msg);
+
+    }
     echo json_encode($response);
 
 }

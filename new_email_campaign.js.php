@@ -4,59 +4,76 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
-function select_store(store_key){
+var validate_scope_data;
+var validate_scope_metadata;
 
-ids=Dom.getElementsByClassName('option', 'td', 'store_options');
-Dom.removeClass(ids,'selected');
-Dom.addClass('store_button'+store_key,'selected');
-Dom.get('store_key').value=store_key;
 
-}
 
 function cancel_new_email_campaign(){
-location.href='marketing.php'
+location.href='marketing.php';
+}
+
+
+ function post_new_found_actions(branch,response) {
+  Dom.get('new_email_campaign_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 }
 
 function save_new_email_campaign(){
-
-var store_key=Dom.get('store_key').value;
-if(store_key==0){
-alert('Choose a Store');
-return;
-}
-var email_campaign_name=Dom.get('email_campaign_name').value;
-if(email_campaign_name==''){
-alert('Choose a name');
-return;
+save_new_general('email_campaign')
 }
 
-
-
-  var request='ar_edit_marketing.php?tipo=create_email_marketing&store_key='+encodeURIComponent(store_key)+'&name='+encodeURIComponent(email_campaign_name)+'&objective='+encodeURIComponent(Dom.get('email_campaign_objetive').value);
-alert(request)
-  YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.state==200){
-            
-            location.href="email_campaign.php?id="+r.email_campaign_key;
-		   
-		}else{
-		    Dom.get('new_store_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-
-		}
-	    }
-	    
-	    });
-
-
+function post_new_create_actions(branch,response) {
+location.href='email_campaign.php?id='+response.email_campaign_key;
+    cancel_new_general(branch);
+    return;
 }
 
-
-
+function validate_email_campaign_name(query){
+ validate_general('email_campaign','name',unescape(query));
+}
+function validate_email_campaign_objetive(query){
+ validate_general('email_campaign','objetive',unescape(query));
+}
 function init(){
-    Event.addListener('cancel_new_email_campaign', "click", cancel_new_email_campaign);
+store_key=Dom.get('store_id').value;
+validate_scope_data=
+{
+    'email_campaign':{
+	'name':{'dbname':'Email Campaign Name',
+	        'changed':false,
+	        'validated':false,
+	        'required':true,
+	        'group':1,
+	        'type':'item',
+	        'name':'email_campaign_name',
+	        'ar':false,
+	        'ar':'find','ar_request':'ar_marketing.php?tipo=is_email_campaign_name&store_key='+store_key+'&query=',
+	        'validation':[{'regexp':"[a-z\\d]+",
+	        'invalid_msg':Dom.get('invalid_email_campaign_name')}]}
+	,'objetive':{'dbname':'Email Campaign Objective','changed':false,'validated':false,'required':false,'group':1,'type':'item','name':'email_campaign_objetive','validation':[{'regexp':"[a-z\\d]+",
+	'invalid_msg':Dom.get('invalid_email_campaign_objetive')}]}
+	
+  }
+  
+};
+validate_scope_metadata={
+'email_campaign':{'type':'new','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':<?php echo $_SESSION['state']['marketing']['store']?>}
+
+};
+ var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_name);
+    customer_name_oACDS.queryMatchContains = true;
+    var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_name","email_campaign_name_Container", customer_name_oACDS);
+    customer_name_oAutoComp.minQueryLength = 0; 
+    customer_name_oAutoComp.queryDelay = 0.1;
+    
+    var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_objetive);
+    customer_name_oACDS.queryMatchContains = true;
+    var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_objetive","email_campaign_objetive_Container", customer_name_oACDS);
+    customer_name_oAutoComp.minQueryLength = 0; 
+    customer_name_oAutoComp.queryDelay = 0.1;
+    
+
+    Event.addListener('reset_new_email_campaign', "click", cancel_new_email_campaign);
     Event.addListener('save_new_email_campaign', "click", save_new_email_campaign);
 
 }

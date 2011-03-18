@@ -1884,7 +1884,7 @@ function customers_awhere($awhere) {
 function list_customers() {
 
 
-    global $myconf;
+    global $myconf,$user;
 
     $conf=$_SESSION['state']['customers']['table'];
     if (isset( $_REQUEST['sf']))
@@ -2023,7 +2023,7 @@ function list_customers() {
     $wheref='';
 
     $currency='';
-    if (is_numeric($store)) {
+    if (is_numeric($store) and in_array($store,$user->stores)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
@@ -5781,7 +5781,7 @@ function list_customers_lists() {
                      'name'=>$cusomer_list_name,
                      'customer_list_key'=>$data['Customer List key'],
                      'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Customer List Creation Date']." +00:00")),
-
+                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['Customer List key'].')">'._('Add List').'</span>'
 
 
 

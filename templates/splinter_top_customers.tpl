@@ -1,7 +1,7 @@
 <div class="splinter_cell">
 
 <div id="the_table" class="data_table" >
- <span class="clean_table_title">Top Customers</span>
+ <span class="clean_table_title">{t}Top Customers{/t}</span>
  <div class="home_splinter_options">
  <span id="top_customers_50" nr="50" {if $conf_data.top_customers.nr==50}class="selected"{/if} style="float:right;margin-left:5px">50</span>
  <span id="top_customers_20" nr="20" {if $conf_data.top_customers.nr==20}class="selected"{/if} style="float:right;margin-left:5px">20</span>

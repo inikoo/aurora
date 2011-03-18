@@ -422,17 +422,16 @@ function validate_scope_new(branch) {
 
     var changed=false;
     var errors=false;
-
     for (item in validate_scope_data[branch]) {
         if (validate_scope_data[branch][item].required==true && validate_scope_data[branch][item].validated==false) {
             // alert(item+" error")
             errors=true;
         }
     }
+  
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
-
         Dom.removeClass('save_new_'+branch,'disabled');
     }
 
@@ -453,9 +452,9 @@ function validate_general(branch,item,query) {
 function ar_validation(branch,item,query) {
     var data= validate_scope_data[branch][item];
     var request=data.ar_request+query;
-   //alert(request)
+  // alert(request)
    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
-       // alert(o.responseText)
+    //    alert(o.responseText)
         var r =  YAHOO.lang.JSON.parse(o.responseText);
         if (r.state==200) {
             if (r.found==1) {
@@ -550,6 +549,7 @@ function client_validation(branch,item,query) {
 
 
 function validate_general_new(branch,item,query) {
+
     var data= validate_scope_data[branch][item];
     if (''!=trim(query.toLowerCase())    ) {
         validate_scope_data[branch][item].changed=true;
@@ -649,9 +649,13 @@ function cancel_new_general(branch) {
             Dom.get(validate_scope_data[branch][item].name+'_msg').innerHTML='';
         }
     }
-    Dom.setStyle('save_new_'+branch,'visibility','hidden');
-    Dom.setStyle('cancel_new_'+branch,'visibility','hidden');
+    Dom.addClass('save_new_'+branch,'disabled');
+  
+  // Dom.setStyle('cancel_new_'+branch,'visibility','hidden');
+    if(Dom.get('show_new_'+branch+'_dialog_button')!=undefined){
     Dom.setStyle('show_new_'+branch+'_dialog_button','display','');
+    }
+    Dom.get("new_"+branch+"_dialog_msg").innerHTML
     Dom.setStyle('new_'+branch+'_dialog','display','none');
 
 };
@@ -720,6 +724,18 @@ success:function(o) {
 
 }
 function save_new_general(branch) {
+
+if(Dom.hasClass('save_new_'+branch,'disabled')){
+//alert("new_"+branch+"_invalid_msg")
+if(Dom.get("new_"+branch+"_invalid_msg")!=undefined){
+
+Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
+            Dom.get("new_"+branch+"_dialog_msg").innerHTML=Dom.get("new_"+branch+"_invalid_msg").innerHTML;
+}
+
+return;
+}
+
 //alert("within save new general");
     operation='create';
     var values=new Object();
@@ -744,10 +760,13 @@ function save_new_general(branch) {
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-             //alert(o.responseText);
+  //           alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if(r.msg!=undefined){
+            Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
             Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
+            }
             if (r.state==200) {
 
                 if (r.action=='created') {
@@ -758,10 +777,10 @@ success:function(o) {
                 }
             } else {
                 if (r.action=='found') {
-                    post_new_found_actions(branch,r.object_key);
+                    post_new_found_actions(branch,r);
 
                 } else {
-                    post_new_error_actions(branch);
+                    post_new_error_actions(branch,r);
 
                 }
             }
@@ -777,8 +796,11 @@ function post_new_create_actions(branch,response) {
 
     cancel_new_general(branch)
 }
-function post_new_found_actions(branch,response) {}
-function post_new_error_actions(branch) {}
+function post_new_found_actions(branch,response) {
+}
+function post_new_error_actions(branch,response) {
+
+}
 
 
 function SelectUrl()
