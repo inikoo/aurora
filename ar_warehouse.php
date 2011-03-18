@@ -23,6 +23,7 @@ if(!isset($_REQUEST['tipo']))
   }
 
 $tipo=$_REQUEST['tipo'];
+
 switch($tipo){
 case('location_stock_history'):
   history_stock_location();
@@ -68,7 +69,7 @@ case('part_categories'):
 
 default:
 
-   $response=array('state'=>404,'resp'=>_('Operation not found'));
+   $response=array('state'=>404,'resp'=>_('Operation not found ha ha'));
    echo json_encode($response);
    
  
