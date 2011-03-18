@@ -6,12 +6,13 @@ header('Location: index.php');
    exit;
  }
 
+
 if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
   $store_id=$_REQUEST['store'];
 
 }else{
 header('Location: customers.php?error');
-
+exit;
 }
 
 if(! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){

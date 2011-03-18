@@ -3174,8 +3174,9 @@ $default_state=array(
                                                              )
                                             ),
 'marketing'=>array(
+                                                'store'=>0,
                                                 'percentages'=>false,
-                                                'view'=>'general',
+                                                'view'=>'metrics',
                                                 'period'=>'year',
                                                 'mode'=>'all',
                                                 'avg'=>'totals',

@@ -12,25 +12,22 @@
  Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('class.Page.php');
-include_once('class.PageStoreSection.php');
+include_once('class.Email.php');
 
 
 class EmailCampaign extends DB_Table {
 
     var $new=false;
-    function EmailCampaign($arg1=false,$arg2=false) {
+    function EmailCampaign($arg1=false,$arg2=false,$arg3=false) {
         $this->table_name='Email Campaign';
         $this->ignore_fields=array(
-                'Email Campaign Key',
-                'Email Campaign Maximum Emails',
-                'Email Campaign Last Updated Date',
-                'Email Campaign Creation Date',
-                'Email Campaign Date',
-                
-        );
-
-
+                                 'Email Campaign Key',
+                                 'Email Campaign Maximum Emails',
+                                 'Email Campaign Last Updated Date',
+                                 'Email Campaign Creation Date',
+                                 'Email Campaign Date'
+                             );
+                             
         if (!$arg1 and !$arg2) {
             $this->error=true;
             $this->msg='No arguments';
@@ -42,8 +39,8 @@ class EmailCampaign extends DB_Table {
 
 
 
-        if (is_array($arg2) and preg_match('/create|new/i',$arg1)) {
-            $this->find($arg2,'create');
+        if (is_array($arg2) and preg_match('/find/i',$arg1)) {
+            $this->find($arg2,$arg3);
             return;
         }
 
@@ -61,19 +58,18 @@ class EmailCampaign extends DB_Table {
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->id=$this->data['Email Campaign Key'];
-       
+
 
         }
 
 
     }
-
     function find($raw_data,$options) {
 
 
 
 
-     if (isset($raw_data['editor'])) {
+        if (isset($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
                 if (array_key_exists($key,$this->editor))
                     $this->editor[$key]=$value;
@@ -82,6 +78,20 @@ class EmailCampaign extends DB_Table {
 
         $this->found=false;
         $this->found_key=false;
+
+
+        $sql=sprintf("select `Email Campaign Key` from `Email Campaign Dimension` where `Email Campaign Store Key`=%d and `Email Campaign Name`=%s",
+        $raw_data['Email Campaign Store Key'],
+        prepare_mysql($raw_data['Email Campaign Name'])
+        );
+       // print $sql;
+        $result =mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->found_key=$row['Email Campaign Key'];
+            $this->found=true;
+
+        }
+        
 
         $create='';
         $update='';
@@ -98,18 +108,16 @@ class EmailCampaign extends DB_Table {
         }
 
     }
-
-
     function create($raw_data) {
 
         $data=$this->base_data();
-     
-       
-       foreach($raw_data as $key=>$value) {
+
+
+        foreach($raw_data as $key=>$value) {
             if (array_key_exists($key,$data))
-                
-                
-                
+
+
+
                 if (is_array($value))
                     $data[$key]=serialize($value);
                 else
@@ -118,19 +126,19 @@ class EmailCampaign extends DB_Table {
 
         }
 
-  $data['Email Campaign Creation Date']=date("Y-m-d H:i:s");
-  $data['Email Campaign Last Updated Date']=$data['Email Campaign Creation Date'];
-  
-  
+        $data['Email Campaign Creation Date']=date("Y-m-d H:i:s");
+        $data['Email Campaign Last Updated Date']=$data['Email Campaign Creation Date'];
+        $data['Email Campaign Status']='Creating';
+
 
         $keys='(';
         $values='values(';
         foreach($data as $key=>$value) {
             $keys.="`$key`,";
-            if($key=='Email Campaign Objective')
-             $values.=prepare_mysql($value,false).",";
-             else
-            $values.=prepare_mysql($value).",";
+            if ($key=='Email Campaign Objective' or $key='Email Campaign Recipients Preview')
+                $values.=prepare_mysql($value,false).",";
+            else
+                $values.=prepare_mysql($value).",";
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
@@ -140,25 +148,20 @@ class EmailCampaign extends DB_Table {
         if (mysql_query($sql)) {
             $this->id=mysql_insert_id();
             $this->get_data('id',$this->id);
+$this->new=true;
 
-           
 
 
 
 
         } else {
             $this->error=true;
-            $this->msg='Can not insert Email Campaign Dimension';
-            exit("$sql\n");
+            $this->msg="Can not insert Email Campaign Dimension";
+            // exit("$sql\n");
         }
 
 
     }
-
-
-
-
-
     function get($key) {
 
 
@@ -171,16 +174,6 @@ class EmailCampaign extends DB_Table {
         }
         return false;
     }
-
-
-
-
-
-
-
-
-
-
     function update_field_switcher($field,$value,$options='') {
 
 
@@ -201,8 +194,196 @@ class EmailCampaign extends DB_Table {
 
 
     }
+    function add_email_address_manually($data) {
+        $data['Email Address']=_trim($data['Email Address']);
+        if ($data['Email Address']=='') {
+            $this->error=true;
+            $this->msg=_('Wrong Email Address');
+            return;
+        }
+
+        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where `Email Campaign Key`=%d and `Email Address`=%s ",
+                     $this->id,
+                     prepare_mysql($data['Email Address'])
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->error=true;
+            $this->msg=_('Email Address already in mailing list');
+            return;
+
+        }
+
+        $data['Customer Key']=false;
+
+        if ($this->insert_email_to_mailing_list($data)>0) {
+            $this->updated=true;
+            $this->update_number_emails();
+            $this->update_recipients_preview();
+        } else {
+            $this->msg=_('Can not add email to mailing list');
+        }
+
+    }
 
 
+
+
+    function add_emails_from_list($list_key,$force_send_to_customer_who_dont_want_to_receive_email=false) {
+        $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$list_key);
+
+        $res=mysql_query($sql);
+        if (!$customer_list_data=mysql_fetch_assoc($res)) {
+            $this->error=true;
+            $this->msg='Customer List not found';
+            return;
+        }
+        $emails_already_in_the_mailing_list=0;
+        $emails_added=0;
+        $customer_without_email_address=0;
+        $customer_dont_want_to_receive_email=0;
+        $sent_to_customer_dont_want_to_receive_email=0;
+    
+        if ($customer_list_data['Customer List Type']=='Static') {
+
+                $sql=sprintf("select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from `Customer List Customer Bridge` B left join `Customer Dimension` C on (B.`Customer Key`=C.`Customer Key`) where `Customer List Key`=%d ",
+                $list_key
+                );
+                //print $sql;
+                $res=mysql_query($sql);
+                while ($row=mysql_fetch_assoc($res)) {
+                     if(!$row['Customer Main Email Key'] or $row['Customer Main Plain Email']==''){
+                        $customer_without_email_address++;
+                        continue;
+                     }
+                     if($row['Customer Send Email Marketing']=='No'){
+                       $customer_dont_want_to_receive_email++;
+                       if(!$force_send_to_customer_who_dont_want_to_receive_email)
+                        continue;
+                       else
+                        $sent_to_customer_dont_want_to_receive_email++;
+                     }
+                     
+                     $data['Email Address']=$row['Customer Main Plain Email'];
+                     $data['Email Key']=$row['Customer Main Email Key'];
+                     $data['Email Contact Name']=$row['Customer Main Contact Name'];
+
+                     $data['Customer Key']=$row['Customer Key'];
+                     $result=$this->insert_email_to_mailing_list($data);
+                     if($result>0){
+                        $emails_added++;
+                        
+                     }else{
+                     $emails_already_in_the_mailing_list++;
+                     
+                     }
+                     
+                 }
+
+
+        } else {//dynamic
+
+
+        }
+
+        $msg='<table>';
+                    $msg.='<tr><td>'._('Email Address Added').':</td><td>'.number($emails_added).'</td></tr>';
+
+        if($customer_without_email_address){
+            $msg.='<tr><td>'._('Customers without email').':</td><td>'.$customer_without_email_address.'</td></tr>';
+        }
+        if($customer_dont_want_to_receive_email){
+            $msg.='<tr><td>'._('Skipped customers (Emails not wanted)').':</td><td>'.$customer_dont_want_to_receive_email.'</td></tr>';
+        }
+        if($emails_already_in_the_mailing_list){
+            $msg.='<tr><td>'._('Skipped customers (Email already added)').':</td><td>'.$emails_already_in_the_mailing_list.'</td></tr>';
+        }
+          $msg.='</table>';
+        $this->msg=$msg;
+
+        
+            $this->updated=true;
+            $this->update_number_emails();
+            $this->update_recipients_preview();
+            
+
+
+    }
+
+
+    function insert_email_to_mailing_list($data) {
+    
+        if(!array_key_exists('Email Key',$data)){
+        $email=new Email('email',$data['Email Address']);
+        if ($email->id)
+            $data['Email Key']=$email->id;
+        else
+            $data['Email Key']=false;
+        }    
+        $sql=sprintf("insert into `Email Campaign Mailing List` (`Email Campaign Key`,`Email Key`,`Email Address`,`Email Contact Name`,`Customer Key`)
+                     values (%d,%s,%s,%s,%s)",
+                     $this->id,
+                     prepare_mysql($data['Email Key']),
+                     prepare_mysql($data['Email Address']),
+                     prepare_mysql($data['Email Contact Name'],false),
+                     prepare_mysql($data['Customer Key'])
+
+                    );
+        mysql_query($sql);
+        return mysql_affected_rows();
+
+    }
+
+    function update_number_emails() {
+        $this->data['Number of Emails']=0;
+        $sql=sprintf("select count(*) as number from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->data['Number of Emails']=$row['number'];
+        }
+        $sql=sprintf("update `Email Campaign Dimension` set `Number of Emails`=%d where `Email Campaign Key`=%d",
+                     $this->data['Number of Emails'],
+                     $this->id);
+        mysql_query($sql);
+    }
+
+    function update_recipients_preview() {
+        $this->data['Email Campaign Recipients Preview']='';
+        $sql=sprintf("select `Email Address` from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        $num_previews_emails=0;
+        while ($row=mysql_fetch_assoc($res)) {
+            $num_previews_emails++;
+            $this->data['Email Campaign Recipients Preview'].=', '.$row['Email Address'];
+            if (strlen($this->data['Email Campaign Recipients Preview'])>120 and $this->data['Number of Emails']-$num_previews_emails>1)
+                break;
+        }
+        $num_emails_not_previewed=$this->data['Number of Emails']-$num_previews_emails;
+        if ($num_emails_not_previewed>0) {
+            $this->data['Email Campaign Recipients Preview'].=",... $num_emails_not_previewed "._('more').' (<a href="email_campaign_mailing_list.php?id='.$this->id.'">'._('View all').'</a>)';
+        }
+
+        $this->data['Email Campaign Recipients Preview']=preg_replace('/^\,\s*/','',$this->data['Email Campaign Recipients Preview']);
+        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Recipients Preview`=%s where `Email Campaign Key`=%d",
+                     prepare_mysql($this->data['Email Campaign Recipients Preview']),
+                     $this->id);
+        mysql_query($sql);
+    }
+
+function delete(){
+if($this->data['Email Campaign Status']=='Creating'){
+$sql=sprintf("delete from `Email Campaign Dimension` where `Email Campaign Key`=%d",$this->id);
+mysql_query($sql);
+$sql=sprintf("delete from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
+mysql_query($sql);
+$this->updated=true;
+
+}else{
+$this->error=true;
+$this->msg='Email Campaign can not be deleted';
+}
+
+}
 
 }
 ?>

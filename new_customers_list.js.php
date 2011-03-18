@@ -85,7 +85,9 @@ if(    Dom.hasClass(o,'selected')){
 }
 
 }
-    
+ 
+ 
+
     
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -262,7 +264,7 @@ searched=true;
     Dom.setStyle('searching','display','none');
     Dom.setStyle('save_dialog','visibility','visible');
 
-
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }

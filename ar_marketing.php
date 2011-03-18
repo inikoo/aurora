@@ -11,12 +11,22 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('is_email_campaign_name'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_email_campaign_name($data);
+    break;
 case('email_campaigns'):
   
     email_campaigns();
 
 
     break;
+ default:
+    $response=array('state'=>404,'msg'=>_('Operation not found'));
+    echo json_encode($response);   
 }
 
 
@@ -54,7 +64,11 @@ function email_campaigns() {
         $where=$conf['where'];
 
 
-   
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['marketing']['store']=$store;
+    } else
+        $store=$_SESSION['state']['marketing']['store'];
 
 
     if (isset( $_REQUEST['tableid']))
@@ -119,7 +133,7 @@ function email_campaigns() {
 
     $sql="select count(*) as total from `Email Campaign Dimension`  $where $wheref ";
 
-//print $sql;
+
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -175,7 +189,6 @@ function email_campaigns() {
     }
     $sql="select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Last Updated Date`,`Store Code` ,`Store Key` from `Email Campaign Dimension` left join `Store Dimension` S on (`Store Key`=`Email Campaign Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
- //  print $sql;
     $data=array();
 
     $result=mysql_query($sql);
@@ -218,6 +231,54 @@ $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store 
     echo json_encode($response);
 
 }
+function is_email_campaign_name($data) {
+    if (!isset($data['query']) or !isset($data['store_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
 
+    $store_key=$data['store_key'];
+
+    $sql=sprintf("select `Email Campaign Key`,`Email Campaign Objective`,`Email Campaign Name` from `Email Campaign Dimension` where  `Email Campaign Store Key`=%d and  `Email Campaign Name`=%s  "
+                 ,$store_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another Campaign (<a href="email_campaign.php?id=%d">%s</a>) already has this name'
+                     ,$data['Email Campaign Key']
+                     ,$data['Email Campaign Name']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
 
 ?>

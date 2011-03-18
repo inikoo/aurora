@@ -964,6 +964,66 @@ INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `T
 
 
  ALTER TABLE `User Dimension` ADD `User Themes` INT( 4 ) NOT NULL
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Store Key` SMALLINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,ADD INDEX ( `Email Campaign Store Key` ) ;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Last Updated Date` DATETIME NOT NULL AFTER `Email Campaign Store Key` ;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Creation Date` DATETIME NOT NULL AFTER `Email Campaign Store Key` ;
+ALTER TABLE `Email Campaign Dimension` ADD UNIQUE (`Email Campaign Store Key` ,`Email Campaign Name`);
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Subject` VARCHAR( 64 ) NOT NULL AFTER `Email Campaign Engine` ;
+CREATE TABLE `Email Content Dimension` (`Email Content Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,`Email Content Type` ENUM( 'text', 'html' ) NOT NULL ,`Email Content Layout Key` SMALLINT UNSIGNED NULL DEFAULT NULL ,`Email Content Subject` VARCHAR( 64 ) NOT NULL ,`Email Content` MEDIUMTEXT NOT NULL) ENGINE = MYISAM ;
+ALTER TABLE `Email Campaign Mailing List` CHANGE `Email Key` `Email Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Email Campaign Mailing List` ADD `Email Address` VARCHAR( 256 ) NOT NULL AFTER `Email Key` ,ADD `Email Contact Name` VARCHAR( 256 ) NOT NULL AFTER `Email Address` ;
+ALTER TABLE `Email Campaign Mailing List` CHANGE `Customer Key` `Customer Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Email Campaign Mailing List` ADD UNIQUE (`Email Address` ,`Email Campaign Key`);
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Recipients Preview` TEXT NOT NULL AFTER `Email Campaign Content` ;
+
+ALTER TABLE `Store Dimension` ADD `Store 3 Year Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store Delivery Notes For Donations` ,
+ADD `Store 3 Year Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 3 Year Acc Invoiced Amount` ,
+ADD `Store 3 Year Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 3 Year Acc Invoices` ,
+ADD `Store 3 Year Acc Days Available` FLOAT NOT NULL AFTER `Store 3 Year Acc Profit`;
+
+
+ALTER TABLE `Store Dimension` ADD `Store YearToDay Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 1 Year Acc Pending Orders` ,
+ADD `Store YearToDay Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store YearToDay Acc Invoiced Amount` ,
+ADD `Store YearToDay Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store YearToDay Acc Invoices` ,
+ADD `Store YearToDay Acc Days Available` FLOAT NOT NULL AFTER `Store YearToDay Acc Profit`;
+
+
+ALTER TABLE `Store Dimension` ADD `Store 6 Month Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store YearToDay Acc Days Available` ,
+ADD `Store 6 Month Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 6 Month Acc Invoiced Amount` ,
+ADD `Store 6 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 6 Month Acc Invoices` ,
+ADD `Store 6 Month Acc Days Available` FLOAT NOT NULL AFTER `Store 6 Month Acc Profit`;
+
+
+ALTER TABLE `Store Dimension` ADD `Store 3 Month Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 1 Quarter Acc Pending Orders` ,
+ADD `Store 3 Month Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 3 Month Acc Invoiced Amount` ,
+ADD `Store 3 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 3 Month Acc Invoices` ,
+ADD `Store 3 Month Acc Days Available` FLOAT NOT NULL AFTER `Store 3 Month Acc Profit`;
+
+
+ALTER TABLE `Store Dimension` ADD `Store 10 Day Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 1 Month Acc Pending Orders` ,
+ADD `Store 10 Day Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 10 Day Acc Invoiced Amount` ,
+ADD `Store 10 Day Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 10 Day Acc Invoices` ,
+ADD `Store 10 Day Acc Days Available` FLOAT NOT NULL AFTER `Store 10 Day Acc Profit` ;
+
+ALTER TABLE `Store Default Currency` ADD `Store DC YearToDay Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 1 Year Acc Profit` ,
+ADD `Store DC YearToDay Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC YearToDay Acc Invoiced Amount`;
+
+
+ALTER TABLE `Store Default Currency` ADD `Store DC 3 Year Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC Total Profit` ,
+ADD `Store DC 3 Year Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 3 Year Acc Invoiced Amount`;
+
+
+ALTER TABLE `Store Default Currency` ADD `Store DC 6 Month Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC YearToDay Acc Profit` ,
+ADD `Store DC 6 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 6 Month Acc Invoiced Amount`;
+
+
+ALTER TABLE `Store Default Currency` ADD `Store DC 3 Month Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 1 Quarter Acc Profit` ,
+ADD `Store DC 3 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 3 Month Acc Invoiced Amount`;
+
+
+ALTER TABLE `Store Default Currency` ADD `Store DC 10 Day Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 1 Month Acc Profit` ,
+ADD `Store DC 10 Day Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 10 Day Acc Invoiced Amount` ;
+
 
 */
 
