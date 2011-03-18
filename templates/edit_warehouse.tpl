@@ -19,7 +19,7 @@
    <div id="description_block" style="{if $edit!='description'}display:none{/if}" >
 														   
      <div style="float:right">
-	<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">Messages
+	<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
      </div>
 	<span class="save" id="description_save" onclick="save_description_data()">{t}Save{/t}</span>
 	<span id="description_reset" class="undo" onclick="reset_description_data()">{t}Cancel{/t}</span>
