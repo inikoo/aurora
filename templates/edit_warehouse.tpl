@@ -211,11 +211,6 @@
 </div>
 
 
-
-
-
-
-
 </div>
 
 <div id="filtermenu0" class="yuimenu">
