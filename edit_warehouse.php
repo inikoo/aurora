@@ -72,7 +72,6 @@ array_push($css_files, 'table.css');
 }
 
 
-
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',

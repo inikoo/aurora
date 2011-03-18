@@ -342,8 +342,8 @@ function save_description_data(){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//alert(o.responseText);
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.trim() == 'error'){
+		var op =  YAHOO.lang.JSON.parse(o.responseText);
+		if(op.trim() == 'error'){
 			document.getElementById('new_warehouse_area_block').style.display='block';
 			document.getElementById('new_warehouse_area_block').innerHTML='Required Fields are blank';
 			Dom.get('warehouse_code').value=Dom.get('warehouse_code').getAttribute('ovalue');
@@ -351,9 +351,9 @@ function save_description_data(){
 			exit;
 		}
 
-		if (r.trim() != ''){
+		if (op.trim() != ''){
 			document.getElementById('new_warehouse_area_block').style.display='block';
-			document.getElementById('new_warehouse_area_block').innerHTML=r;
+			document.getElementById('new_warehouse_area_block').innerHTML=op;
 		}
 	    }
 	});
@@ -418,7 +418,6 @@ function add_area(){
 	    }
 	});
 }
-
 
 function change_area_save(){
 
