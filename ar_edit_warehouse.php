@@ -21,15 +21,23 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+case('save_description'):
+  save_description();
+  break;
+
 case('add_part_to_location'):
   add_part_to_location();
   break;
+
 case('new_area'):
   new_warehouse_area();
   break;
+
 case('new_shelf_type'):
   new_shelf_type();
   break;
+
   case('new_shelf'):
   $data=prepare_values($_REQUEST,array(
 			     'values'=>array('type'=>'json array')
@@ -105,6 +113,39 @@ case('locations'):
    echo json_encode($response);
    
  }
+
+function save_description(){
+
+	$warehouse_key = $_REQUEST['key'];
+	$warehouse_code = $_REQUEST['code'];
+	$warehouse_name = $_REQUEST['name'];
+if(!isset($_REQUEST['key'])
+     or !isset($_REQUEST['code'])
+     or !isset($_REQUEST['code'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'');
+    echo json_encode($response);
+     return;
+  }
+
+if(trim($warehouse_code) == '' OR trim($warehouse_name) == ''){
+echo json_encode('error');
+exit;
+}
+
+$sql_warehouse = "UPDATE `Warehouse Dimension` SET `Warehouse Code` = '$warehouse_code', `Warehouse Name` = '$warehouse_name' WHERE `Warehouse Dimension`.`Warehouse Key` = '$warehouse_key'";
+
+$query_warehouse = mysql_query($sql_warehouse);
+if(!query_warehouse){
+echo json_encode('Problem in editing');
+exit;
+}
+
+	if(mysql_affected_rows() > 0){
+		echo json_encode('Warehouse edited successfully.');
+	}
+
+}
 
 function update_part_location(){
   global $editor;
@@ -282,13 +323,13 @@ function update_shelf_type(){
  
   if(
       !isset($_REQUEST['id'])
-     or !isset($_REQUEST['newvalue'])
+	or !isset($_REQUEST['newvalue'])
      ){
     $response=array('state'=>400,'action'=>'error','msg'=>'no data');
     echo json_encode($response);
      return;
   }
-    
+
   $id=$_REQUEST['id'];
   $key=$_REQUEST['key'];
   $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
@@ -304,7 +345,6 @@ function update_shelf_type(){
 		   'max_weight'=>'Shelf Type Location Max Weight',
 		   'max_volume'=>'Shelf Type Location Max Volume',
 		   'type'=>'Shelf Type Type',
-		   
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){
     $key=$traslator[$_REQUEST['key']];
@@ -312,8 +352,7 @@ function update_shelf_type(){
     $response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
     echo json_encode($response);
     return;
-  }    
-
+  }
 
   $wa=new ShelfType($id);
   if(!$wa->id){
@@ -321,7 +360,6 @@ function update_shelf_type(){
     echo json_encode($response);
      return;
   }
-  
   $wa->update(array($key=>$new_value));
   if($wa->updated){
     $response=array('state'=>200,'action'=>'updates','msg'=>$wa->msg,'newvalue'=>$wa->data[$key]);

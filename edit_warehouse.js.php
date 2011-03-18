@@ -317,21 +317,58 @@ function change_block(e){
 
 }
 
+var description_data =new Object;
+
+function reset_description_data(){
+    Dom.get('warehouse_code').value=Dom.get('warehouse_code').getAttribute('ovalue');
+    Dom.get('warehouse_name').value=Dom.get('warehouse_name').getAttribute('ovalue');
+    document.getElementById('new_warehouse_area_block').style.display='none';
+    document.getElementById('new_warehouse_area_block').innerHTML='';
+}
+
+function get_description_data(){
+    var key = document.getElementById('warehouse_key').value;
+    var code = document.getElementById('warehouse_code').value;
+    var name = document.getElementById('warehouse_name').value;
+    var str = '&key='+key+'&code='+code+'&name='+name;
+    return str;
+}
+function save_description_data(){
+    str = get_description_data();
+    //var json_value = YAHOO.lang.JSON.stringify(str);
+    //alert(json_value);
+    var request='ar_edit_warehouse.php?tipo=save_description'+str;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.trim() == 'error'){
+			document.getElementById('new_warehouse_area_block').style.display='block';
+			document.getElementById('new_warehouse_area_block').innerHTML='Required Fields are blank';
+			Dom.get('warehouse_code').value=Dom.get('warehouse_code').getAttribute('ovalue');
+			Dom.get('warehouse_name').value=Dom.get('warehouse_name').getAttribute('ovalue');
+			exit;
+		}
+
+		if (r.trim() != ''){
+			document.getElementById('new_warehouse_area_block').style.display='block';
+			document.getElementById('new_warehouse_area_block').innerHTML=r;
+		}
+	    }
+	});
+}
 function show_add_area_dialog(){
 Dom.get('new_warehouse_area_block').style.display='';
 Dom.get('new_warehouse_area_messages').style.display='';
-
 Dom.get('add_area_here').style.display='none';
 Dom.get('close_add_area').style.display='';
 Dom.get('save_area').style.display='';
-
-
 }
 function hide_add_area_dialog(){
 reset_area_data();
 Dom.get('new_warehouse_area_block').style.display='none';
 Dom.get('new_warehouse_area_messages').style.display='none';
-
 Dom.get('add_area_here').style.display='';
 Dom.get('close_add_area').style.display='none';
 Dom.get('save_area').style.display='none';
