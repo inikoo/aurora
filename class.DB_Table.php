@@ -147,7 +147,6 @@ abstract class DB_Table {
 
     protected function update_field($field,$value,$options='') {
 
-
 $null_if_empty=true;
 
 if($options=='no_null'){
@@ -178,7 +177,6 @@ $null_if_empty=false;
 
 
         $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
-  
     mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {

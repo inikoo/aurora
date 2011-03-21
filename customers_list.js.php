@@ -39,9 +39,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",width:120,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",width:120,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
+	store_id=Dom.get('store_id').value;
 
-	
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&type=list&list_key=<?php echo $static_list_id;?>");
+	//alert("ar_contacts.php?tipo=customers&type=list&store_id="+store_id+"&where=&list_key=<?php echo $static_list_id;?>")
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&type=list&store_id="+store_id+"&where=&list_key=<?php echo $static_list_id;?>");
 	      this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

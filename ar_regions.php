@@ -216,6 +216,8 @@ else
 $gnp='$'.number($row['Country GNP']/1000,0).'k';
 
      $adata[]=array(
+  //    'plain_name'=>$row['Country Name'],
+	//	  'plain_code'=>$row['Country Code'],
 		   'name'=>$country_name,
 		  'code'=>$country_code,
 		  'flag'=>$country_flag,
@@ -256,6 +258,8 @@ function list_world_regions(){
      $start_from=$_REQUEST['sf'];
    else
      $start_from=$conf['sf'];
+     
+
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
@@ -386,12 +390,12 @@ function list_world_regions(){
    
 
 
-
+   
 
 
 
    $adata=array();
- $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`World Region Code` from kbase.`Country Dimension` $where $wheref group by `World Region Code` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select group_concat(concat('<img src=\"art/flags/',lower(`Country 2 Alpha Code`),'.gif\"> ') separator ' ') as flags, count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`World Region Code` from kbase.`Country Dimension` $where $wheref group by `World Region Code` order by $order $order_direction  limit $start_from,$number_results;";
 
    // print $sql;
    $res=mysql_query($sql);
@@ -417,6 +421,7 @@ $gnp='$'.number($row['GNP']/1000,0).'k';
 		 'countries'=>number($row['Countries']),
         'population'=>$population,
         'gnp'=>$gnp,
+        'flags'=>$row['flags']
 		   );
 
    }

@@ -151,7 +151,7 @@ var myRequestBuilder = function(oState, oSelf) {
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-
+//alert(request)
 
     return request;
 };

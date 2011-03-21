@@ -975,6 +975,30 @@ ALTER TABLE `Email Campaign Mailing List` ADD `Email Address` VARCHAR( 256 ) NOT
 ALTER TABLE `Email Campaign Mailing List` CHANGE `Customer Key` `Customer Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
 ALTER TABLE `Email Campaign Mailing List` ADD UNIQUE (`Email Address` ,`Email Campaign Key`);
 ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Recipients Preview` TEXT NOT NULL AFTER `Email Campaign Content` ;
+CREATE TABLE `Email Campaign Dimension Content Bridge` (
+`Email Campaign Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Content Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Email Campaign Key` , `Email Content Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Type` `Email Content Type` ENUM( 'Plain', 'HTML Template' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Email Content Layout Key` `Email Content Template Key` SMALLINT( 5 ) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Number Contents` MEDIUMINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Email Campaign Engine` ;
+DROP TABLE `Email Campaign Group Titile`, `Email Campaign Group Titile Name Bridge`, `Email Campaign Group Title`, `Email Campaign Group Title Name Bridge`;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Scope` VARCHAR( 1024 ) NOT NULL AFTER `Email Campaign Objective` ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content` `Email Text Content` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Text Content` `Email Content Text` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Content Dimension` ADD `Email Content HTML` MEDIUMTEXT NOT NULL ,ADD `Email Content Metadata` MEDIUMTEXT NULL DEFAULT NULL ;
+RENAME TABLE `Email Campaign Dimension Content Bridge` TO `Email Campaign Content Bridge` ;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Content Type` ENUM( 'Plain', 'HTML Template', 'Multi Plain', 'Multi HTML Template', 'Multi Mixed', 'Unknown' ) NOT NULL DEFAULT 'Unknown' AFTER `Email Campaign Engine` ;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Subjects` TEXT NOT NULL AFTER `Email Campaign Number Contents` ;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Content` `Email Campaign Contents` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+
+
+
+
+
+
 
 ALTER TABLE `Store Dimension` ADD `Store 3 Year Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store Delivery Notes For Donations` ,
 ADD `Store 3 Year Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 3 Year Acc Invoiced Amount` ,
@@ -1023,6 +1047,7 @@ ADD `Store DC 3 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 3 Mo
 
 ALTER TABLE `Store Default Currency` ADD `Store DC 10 Day Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 1 Month Acc Profit` ,
 ADD `Store DC 10 Day Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 10 Day Acc Invoiced Amount` ;
+
 
 
 */
