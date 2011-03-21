@@ -1,8 +1,11 @@
 <?php
 include_once('common.php');
 ?>
+    var Event   = YAHOO.util.Event;
 
     var Dom   = YAHOO.util.Dom;
+var dialog_country_list;
+var dialog_wregion_list;
 
 var searched=false;
 function save_search_list()
@@ -33,7 +36,7 @@ function save_search_list()
 	
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		 //   alert(o.responseText);
+		  // alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
@@ -87,6 +90,23 @@ if(    Dom.hasClass(o,'selected')){
 }
  
  
+function select_country(oArgs){
+    var geo_constraints=Dom.get('geo_constraints').value;
+    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
+    geo_constraints=geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+    Dom.get('geo_constraints').value=geo_constraints;
+    dialog_country_list.hide();
+    hide_filter(true,2)
+}
+
+function select_wregion(oArgs){
+    var geo_constraints=Dom.get('geo_constraints').value;
+    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
+    geo_constraints='wr('+geo_constraints+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
+    Dom.get('geo_constraints').value=geo_constraints;
+    dialog_wregion_list.hide();
+    hide_filter(true,1)
+}
 
     
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -128,6 +148,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.table_id=tableid;
+
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
@@ -204,6 +226,176 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
 
+
+//=============
+
+   var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+ this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+  elLiner.innerHTML = oData;
+         //   if(oRecord.getData("field3") > 100) {
+       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+
+        };
+        
+        // Add the custom formatter to the shortcuts
+        YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
+
+	   
+	    var ColumnDefs = [
+			
+			
+                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+                   ,{key:"code",formatter:"remove_links", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", formatter:"remove_links",label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			     // ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     //  ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			      
+			   //   ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+			      
+	     
+
+
+			
+			
+			];
+			       
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_regions.php?tipo=country_list&tableid=2&nr=20&sf=0");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    	    this.dataSource2.table_id=tableid;
+
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','population','gnp','wregion'
+			 ]};
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['countries']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['world']['countries']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['countries']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+      this.table2.subscribe("rowClickEvent", select_country);
+     
+
+
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	
+// -----------------------------------------------world regions table starts here --------------
+var tableid=1;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+		      		{key:"wregion_code",formatter:"remove_links", label:"<?php echo _('Code')?>",width:30, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"wregion_name",formatter:"remove_links", label:"<?php echo _('World Region')?>",width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     	,{key:"flags", label:"<?php echo _('Countries')?>",width:240, sortable:false,className:"aleft"}
+
+					];
+		    
+		      
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_regions.php?tipo=wregion&tableid=1&nr=20&sf=0");
+		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource1.connXhrMode = "queueRequests";
+		      	    this.dataSource1.table_id=tableid;
+
+		      this.dataSource1.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			    rowsPerPage:"resultset.records_perpage",
+			    rtext:"resultset.rtext",
+			     rtext_rpp:"resultset.rtext_rpp",
+			    sort_key:"resultset.sort_key",
+			    sort_dir:"resultset.sort_dir",
+			    tableid:"resultset.tableid",
+			    filter_msg:"resultset.filter_msg",
+			    totalRecords: "resultset.total_records"
+			  },
+			  
+			  fields: [
+				  "wregion_name","wregion_code","flags"
+				   ]};
+		      
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource1
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								   
+								   ,sortedBy : {
+								      Key: "<?php echo $_SESSION['state']['world']['wregions']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['world']['wregions']['order_dir']?>"
+								   }
+								   ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+                   this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+                   
+                   this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
+       this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
+      this.table1.subscribe("rowClickEvent", select_wregion);
+     
+
+                   
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['world']['wregions']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['wregions']['f_value']?>'};
+// -------------------------------------------------- continents table starts here --------------------------------------
+
 	
 	};
 
@@ -227,15 +419,18 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
     dont_have:dont_have_array,
     have:have_array,
 
+	geo_constraints:Dom.get('geo_constraints').value,
+
 	product_ordered1:Dom.get('product_ordered_or').value,
 	//	product_ordered2: Dom.get('product_ordered2').value,
 	product_not_ordered1: Dom.get('product_not_ordered1').value,
 	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
 	product_not_received1: Dom.get('product_not_received1').value,
 	//	product_not_received2: Dom.get('product_not_received2').value,
-	from1:Dom.get('v_calpop1').value,
-	to1:Dom.get('v_calpop2').value,
-
+	ordered_from:Dom.get('v_calpop1').value,
+	ordered_to:Dom.get('v_calpop2').value,
+customer_created_from:Dom.get('v_calpop3').value,
+	customer_created_to:Dom.get('v_calpop4').value,
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -258,13 +453,13 @@ searched=true;
 	//alert(jsonStr);
     var table=tables.table0;
     var datasource=tables.dataSource0;
-	
-    var request='&sf=0&where=' +awhere;
+	store_id=Dom.get('store_id').value;
+    var request='&sf=0&store_id='+store_id+'&where=' +awhere;
     Dom.setStyle('the_table','display','none');
-    Dom.setStyle('searching','display','none');
+    Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-alert(request)
+//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -282,6 +477,32 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init(){
+
+
+YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+ oACDS2.table_id=2;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+ oAutoComp2.minQueryLength = 0; 
+ 
+ YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+ var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+ oACDS1.table_id=1;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+
+    dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {context:["country","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_country_list.render();
+    Event.addListener("country", "click", dialog_country_list.show,dialog_country_list , true);
+
+    dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {context:["wregion","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_wregion_list.render();
+    Event.addListener("wregion", "click", dialog_wregion_list.show,dialog_wregion_list , true);
+
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
 YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);

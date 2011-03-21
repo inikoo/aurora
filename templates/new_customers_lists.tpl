@@ -21,6 +21,22 @@
             <div id="customer_first_contacted_to_Container" style="display:none; z-index:2;position:absolute"></div>
         </td>        
       </tr>
+     <tr>
+        <td>{t}based in{/t}:</td>
+        <td>
+        <input id="geo_constraints" style="width:500px"/> 
+        <div class="general_options" >
+                <span id="postal_code" class="state_details">{t}Postal Code{/t}</span>
+                <span id="city" class="state_details">{t}City{/t}</span>
+                <span id="country" class="state_details">{t}Country{/t}</span>
+                <span id="wregion" class="state_details">{t}World Region{/t}</span>
+
+        </div>
+        </td>
+        
+    </tr>  
+      
+      
     <tr>
         <td>{t}have{/t}:</td>
         <td>
@@ -32,7 +48,8 @@
         </td>
         
     </tr>
-    <tr>
+   
+     <tr>
         <td>{t}don't have{/t}:</td>
         <td>
          <div id="dont_have_options" default_cat=""   class="options" style="margin:5px 0">
@@ -45,7 +62,16 @@
     </tr>
     
 	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>
-      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="{$product_ordered_or}" style="width:500px" /></td><tr>
+      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" />
+      <div class="general_options" >
+                <span id="category" class="state_details">{t}Category{/t}</span>
+                <span id="product" class="state_details">{t}Product{/t}</span>
+                <span id="family" class="state_details">{t}Family{/t}</span>
+                <span id="department" class="state_details">{t}Department{/t}</span>
+
+        </div>
+      </td><tr>
+
       <tr style="display:none"><td>{t}but didn't order this product(s){/t}</td><td><input id="product_not_ordered1" value="" style="width:400px" /></td><tr>
       <tr style="display:none"><td>{t}and did't receive this product(s){/t}</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
       <tr>
@@ -80,7 +106,7 @@
 
 
     <div style="padding:30px 40px;display:none" id="searching">
-	{t}Search in progress{/t} <img src="art/progressbar.gif"/>
+	{t}Search in progress{/t} <img style="margin-left:20px;position:relative;top:5px "src="art/progressbar.gif"/>
     </div>
 
     
@@ -96,7 +122,7 @@
 
       <div id="short_menu" class="nodetails" style="clear:both;width:100%;margin-bottom:0px">
  
-  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
+  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
@@ -107,12 +133,7 @@
 	</tr>
       </table>
  
- <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr>
-	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
-	</tr>
-      </table>
+ 
       
     </div>
 
@@ -151,3 +172,85 @@
    </table>
  </div>
 {include file='footer.tpl'}
+<div id="dialog_wregion_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}World Regions{/t}</span>
+            {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
+            <div  id="table1"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+
+<div id="dialog_country_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Country List{/t}</span>
+            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+            <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_city_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}City List{/t}</span>
+            {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
+            <div  id="table3"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_postal_code_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Postal Code List{/t}</span>
+            {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4}
+            <div  id="table4"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_department_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Department List{/t}</span>
+            {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
+            <div  id="table5"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_family_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Family List{/t}</span>
+            {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6}
+            <div  id="table6"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_product_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Product List{/t}</span>
+            {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
+            <div  id="table7"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_category_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Category List{/t}</span>
+            {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8}
+            <div  id="table8"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+
+ 

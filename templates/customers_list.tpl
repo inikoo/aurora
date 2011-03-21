@@ -10,7 +10,8 @@
     <h1>{t}Customer List{/t}: {$static_list_name}</h1>
   </div>
 
- 
+ <input type="hidden" id="store_id" value="{$store->id}">
+
  <div id="the_table" class="data_table" style="clear:both">
       <span class="clean_table_title">{t}Customers List{/t}</span>
       

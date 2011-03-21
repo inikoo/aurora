@@ -2,7 +2,7 @@ function isPositiveInteger(val) {
     if (val==null) {
         return false;
     }
-    if (val.length==0) {
+    if (val.length==0 || val=='0') {
         return false;
     }
     for (var i = 0; i < val.length; i++) {
@@ -377,6 +377,19 @@ function validate_scope(branch) {
 }
 
 
+function is_valid_scope(branch){
+ var valid=true;
+  for (item in validate_scope_data[branch]) {
+ // alert(branch +' '+item+' '+validate_scope_data[branch][item].name+' '+validate_scope_data[branch][item].validated) 
+        if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  ){
+            valid=false;
+            break;
+          }  
+    }
+ return valid;   
+}
+
+
 function validate_scope_edit(branch) {
   var errors=false;
   var changed=false;
@@ -392,7 +405,6 @@ function validate_scope_edit(branch) {
 
 Dom.setStyle('save_edit_'+branch,'visibility','visible');
 Dom.setStyle('reset_edit_'+branch,'visibility','visible');
-
 
 if(changed){
         Dom.setStyle('save_edit_'+branch,'visibility','visible');
@@ -491,6 +503,8 @@ function regex_validation(regexp,query) {
 function numeric_validation(type,query) {
     var valid=false;
     switch ( type ) {
+    
+    
     case 'money':
     case 'number':
         if (isValidNumber(query))
@@ -504,10 +518,7 @@ function numeric_validation(type,query) {
         if (isPositiveInteger(query))
             valid=true
                   break;
-case 'positive integer':
-        if (isPositiveInteger(query))
-            valid=true
-                  break;
+
  case 'positive':
  
         if (isPositiveNumber(query))
@@ -520,7 +531,13 @@ case 'positive integer':
 
 function client_validation(branch,item,query) {
     var data= validate_scope_data[branch][item];
-    Dom.get(data.name+'_msg').innerHTML='';
+    
+    if(Dom.get(data.name+'_msg')==undefined)
+    message_div=false;
+    else
+    message_div=true;
+    
+    if(message_div)Dom.get(data.name+'_msg').innerHTML='';
     validate_scope_data[branch][item].validated=true;
     var valid=true;
     for (validator_index in data.validation) {
@@ -542,7 +559,7 @@ function client_validation(branch,item,query) {
     if (!valid) {
         validate_scope_data[branch][item].validated=false;
 
-        Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
+        if(message_div)Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
     }
 
 }
@@ -692,11 +709,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	     //  alert(request);
+	      // alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
-success:function(o) {
-				//alert(o.responseText)
+            success:function(o) {
+			//	alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 
@@ -760,7 +777,7 @@ return;
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-  //           alert(o.responseText);
+  //alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if(r.msg!=undefined){

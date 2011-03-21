@@ -2,27 +2,32 @@
 <div id="bd" >
 {include file='marketing_navigation.tpl'}
 <div style="clear:left;margin:0 0px">
-<h1>{t}Email Campaign{/t}: {$email_campaign->get('Email Campaign Name')}</h1>
+<h1>{t}Email Campaign{/t}: <span id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></h1>
 
 
 <div class="top_row" >
+<div  style="padding:10px;float:left" id="edit_email_campaign_msg">
+</div>
 <div class="general_options" style="padding:10px;float:right">
 	<span  style="margin-right:10px;" class="disabled"  id="send_email_campaign" class="state_details">{t}Send{/t}</span>
 		<span  style="margin-right:10px;" class="disabled"  id="preview_email_campaign" class="state_details">{t}Preview{/t}</span>
-	<span style="margin-right:10px;display:none" id="save_edit_email_campaign" class="state_details">{t}Save{/t}</span>
-
+	
 	<span style="margin-right:10px;" id="save_and_exit_edit_email_campaign" class="state_details">{t}Continue Later{/t}</span>
 		<span style="margin-right:10px;" id="delete_email_campaign" class="state_details">{t}Delete{/t}</span>
 
-
+<span style="margin-right:20px;visibility:hidden" id="save_edit_email_campaign" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_email_campaign" class="state_details">{t}Reset{/t}</span>
 </div>
 
-<table class="edit" style="margin-top:10px"  >
+<table class="edit" style="clear:both;width:100%" border=0  >
 <input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
 <input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 <span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
 <span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
 <span style="display:none" id="invalid_email_campaign_recipients">{t}Please add recipients{/t}</span>
+<span style="display:none" id="invalid_email_campaign_scope">{t}Invalid Scope Syntax{/t}</span>
+<span style="display:none" id="invalid_email_campaign_subjects">{t}Please add email subject{/t}</span>
+<span style="display:none" id="invalid_email_campaign_contents">{t}Email content is empty{/t}</span>
 
 <tr class="top">
 <td class="label">{t}Store:{/t}</td>
@@ -31,12 +36,14 @@
 
 </td>
 </tr>
-
+<input id="email_campaign_number_recipients" type='hidden' value="{$email_campaign->get('Number of Emails')}" ovalue="{$email_campaign->get('Number of Emails')}"/>
+<input id="email_campaign_subjects" type='hidden' value="{$email_campaign->get('Email Campaign Subjects')}" ovalue="{$email_campaign->get('Email Campaign Subjects')}"/>
+<input id="email_campaign_contents" type='hidden' value="{$email_campaign->get('Email Campaign Contents')}" ovalue="{$email_campaign->get('Email Campaign Contents')}"/>
 
 <tr class=""><td style=";width:160px" class="label" >{t}Campaign Name{/t}:</td>
    <td  style="text-align:left;">
      <div  style="position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="email_campaign_name" value="{$email_campaign->get('Email Campaign Name')}" ovalue="{$email_campaign->get('Email Campaign Name')}" >
+       <input style="text-align:left;width:420px" id="email_campaign_name" value="{$email_campaign->get('Email Campaign Name')}" ovalue="{$email_campaign->get('Email Campaign Name')}" >
        <div id="email_campaign_name_Container" style="" ></div>
      </div>
    </td>
@@ -46,7 +53,7 @@
 <tr class="last"><td style="" class="label" >{t}Campaign Objetive{/t}:</td>
    <td  style="text-align:left;">
      <div  style="position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="email_campaign_objetive" value="{$email_campaign->get('Email Campaign Objective')}" ovalue="{$email_campaign->get('Email Campaign Objective')}" >
+       <input style="text-align:left;width:420px" id="email_campaign_objetive" value="{$email_campaign->get('Email Campaign Objective')}" ovalue="{$email_campaign->get('Email Campaign Objective')}" >
        <div id="email_campaign_objetive_Container" style="" ></div>
      </div>
    </td>
@@ -57,18 +64,27 @@
 <td style="" class="label" >{t}Recipients{/t}:</td>
 <td ><span id="recipients_preview">{$email_campaign->get('Email Campaign Recipients Preview')}</span></td>
 <td>
-<div class="general_options" >
+    <div class="general_options" >
 		<span style="margin-left:0px;;float:none" id="add_email_address_manually" class="state_details">{t}Add manually{/t}</span>
-
-	<span  style="margin-left:20px;float:none"  id="add_email_address_from_customer_list" class="state_details">{t}Add from Customer List{/t}</span>
-	
-      </div>
+	    <span  style="margin-left:20px;float:none"  id="add_email_address_from_customer_list" class="state_details">{t}Add from Customer List{/t}</span>
+	    </div>
+    <div id="recipients_preview_msg" style="visibility:hidden;position:relative;left:-10px;padding:5px 0 0 0;border:1px solid #ccc;font-size:80%">
+    
+    <div>
 
 </td>
 </tr>
 <tr class="last" style="height:40px">
 <td style="" class="label" >{t}Advertising Object{/t}:</td>
-<td ><span id="number_of_recipients">{$email_campaign->get('Email Campaign')}</span></td>
+<td >
+
+     <div  style="position:relative;top:00px" >
+       <input style="text-align:left;;width:420px" id="email_campaign_scope" value="{$email_campaign->get('Email Campaign Scope')}" ovalue="{$email_campaign->get('Email Campaign Scope')}" >
+       <div id="email_campaign_scope_Container" style="" ></div>
+     </div>
+ 
+   <div style="width:300px"id="email_campaign_scope_msg" class="edit_td_alert"></div
+</td>
 <td>
 <div class="general_options" >
 	
@@ -84,28 +100,28 @@
 <tr class="" style="height:40px">
 <td style="" class="label" >{t}Type of Email{/t}:</td>
 <td colspan=2 ><div style="margin-top:2px;font-size:100%">
-<span  style="margin-right:10px;"  id="select_text_email" class="small_button" onClick="text_email()">{t}Text Email{/t}</span>
-<span style="" id="select_html_email" class="small_button" onClick="html_email()">{t}HTML Email{/t}</span>
+<span  style="margin-right:10px;"  id="select_text_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" >{t}Text Email{/t}</span>
+<span style="" id="select_html_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" >{t}HTML Email{/t}</span>
 </div>
 
 </td>
 </tr>
-<tbody id="text_email_fields" style="display:none">
+<tbody id="text_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='Plain'}display:none{/if}">
 <tr class=""  >
 
 <td style="" class="label" >{t}Subject{/t}:</td>
    <td  style="text-align:left;">
      <div  style="position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="email_campaign_subject" value="{$email_campaign->get('Email Campaign Objective')}" ovalue="{$email_campaign->get('Email Campaign Objective')}" >
-       <div id="email_campaign_objetive_Container" style="" ></div>
+       <input style="text-align:left;width:18em" id="email_campaign_subject" value="{$email_campaign->get('Subject')}" ovalue="{$email_campaign->get('Subject')}" >
+       <div id="email_campaign_subject_Container" style="" ></div>
      </div>
    </td>
-   <td id="email_campaign_objetive_msg" class="edit_td_alert"></td>
+   <td id="email_campaign_subject_msg" class="edit_td_alert"></td>
  </tr>
 
 <td style="" class="label" >{t}Content{/t}:</td>
    <td  colspan=2 style="text-align:left;">
-   <textarea style="width:600px;height:250px;background-image:url(art/text_email_guide.png);"></textarea>
+   <textarea style="width:600px;height:250px;background-image:url(art/text_email_guide.png);" ovalue="{$email_campaign->get('Content')}">{$email_campaign->get('Content')}</textarea>
    </td>
  
  </tr>

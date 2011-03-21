@@ -1739,146 +1739,7 @@ function list_contacts() {
     echo json_encode($response);
 }
 
-function customers_awhere($awhere) {
-    // $awhere=preg_replace('/\\\"/','"',$awhere);
-    //    print "$awhere";
 
-
-    $where_data=array(
-                    'product_ordered1'=>'∀',
-                    'product_not_ordered1'=>'',
-                    'product_not_received1'=>'',
-                    'from1'=>'',
-                    'to1'=>'',
-                    'dont_have'=>array(),
-                    'have'=>array(),
-                    'categories'=>''
-                );
-
-    //  $awhere=json_decode($awhere,TRUE);
-
-
-    foreach ($awhere as $key=>$item) {
-        $where_data[$key]=$item;
-    }
-
-
-    $where='where true';
-
-
-//print_r($where_data);
-
-    $use_categories =false;
-    $use_otf =false;
-
-    $where_categories='';
-    if ($where_data['categories']!='') {
-
-        $categories_keys=preg_split('/,/',$where_data['categories']);
-        $valid_categories_keys=array();
-        foreach ($categories_keys as $item) {
-            if (is_numeric($item))
-                $valid_categories_keys[]=$item;
-        }
-        $categories_keys=join($valid_categories_keys,',');
-        if ($categories_keys) {
-            $use_categories =true;
-            $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
-        }
-
-
-    }
-
-
-
-    if ($where_data['product_ordered1']!='') {
-        if ($where_data['product_ordered1']!='∀') {
-            $use_otf=true;
-            $where_product_ordered1=extract_product_groups($where_data['product_ordered1']);
-        } else
-            $where_product_ordered1='true';
-    } else {
-        $where_product_ordered1='false';
-    }
-
-    if ($where_data['product_not_ordered1']!='') {
-        if ($where_data['product_not_ordered1']!='ALL') {
-            $use_otf=true;
-            $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
-        } else
-            $where_product_not_ordered1='false';
-    } else
-        $where_product_not_ordered1='true';
-
-    if ($where_data['product_not_received1']!='') {
-        if ($where_data['product_not_received1']!='∀') {
-            $use_otf=true;
-            $where_product_not_received1=extract_product_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
-        } else {
-            $use_otf=true;
-            $where_product_not_received1=' ((ordered-dispatched)>0)  ';
-        }
-    } else
-        $where_product_not_received1='true';
-
-    $date_interval1=prepare_mysql_dates($where_data['from1'],$where_data['to1'],'`Invoice Date`','only_dates');
-    if ($date_interval1['mysql']) {
-        $use_otf=true;
-    }
-
-
-    if ($use_otf) {
-        $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
-    }
-
-
-    if ($use_categories) {
-
-        $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
-    }
-
-
-
-
-
-    $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") ".$where_categories;
-
-    foreach($where_data['dont_have'] as $dont_have) {
-        switch ($dont_have) {
-        case 'tel':
-            $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
-            break;
-        case 'email':
-            $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
-            break;
-        case 'fax':
-            $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
-            break;
-        case 'address':
-            $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
-            break;
-        }
-    }
-    foreach($where_data['have'] as $dont_have) {
-        switch ($dont_have) {
-        case 'tel':
-            $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
-            break;
-        case 'email':
-            $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
-            break;
-        case 'fax':
-            $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
-            break;
-        case 'address':
-            $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
-            break;
-        }
-    }
-
-    return $where;
-
-}
 
 
 function list_customers() {
@@ -1952,7 +1813,7 @@ function list_customers() {
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
 
 
-  $where='where true';
+    $where='where true';
     $table='`Customer Dimension` C ';
 
     if ($type=='all_customers') {
@@ -1972,12 +1833,13 @@ function list_customers() {
 
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
-
+            $awhere=false;
             if ($customer_list_data['Customer List Type']=='Static') {
                 $table='`Customer List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
                 $where_type=sprintf(' and `Customer List Key`=%d ',$_REQUEST['list_key']);
+
             } else {// Dynamic by DEFAULT
-                $awhere=false;
+
 
 
                 $tmp=preg_replace('/\\\"/','"',$customer_list_data['Customer List Metadata']);
@@ -1986,7 +1848,7 @@ function list_customers() {
 
                 $raw_data=json_decode($tmp, true);
 
-                $where_type=customers_awhere($raw_data);
+        list($where_type,$table)=customers_awhere($raw_data);
 
                 $where='';
 
@@ -1994,7 +1856,7 @@ function list_customers() {
             }
 
         } else {
-            exit();
+            exit("error");
         }
     }
     else {
@@ -2002,7 +1864,7 @@ function list_customers() {
     }
 
 
-  
+
     if ($awhere) {
         $tmp=preg_replace('/\\\"/','"',$awhere);
         $tmp=preg_replace('/\\\\\"/','"',$tmp);
@@ -2010,13 +1872,15 @@ function list_customers() {
 
         $raw_data=json_decode($tmp, true);
 
-        $where=customers_awhere($raw_data);
+        list($where,$table)=customers_awhere($raw_data);
+       
+
     }
 
 
+//print "yyyy $where_type";
 
-
-
+//exit;
 
 
     $filter_msg='';
@@ -2028,7 +1892,7 @@ function list_customers() {
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     } else {
-        exit();
+        exit("no store");
 
     }
 
@@ -2078,15 +1942,15 @@ function list_customers() {
 
 
 
-    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where_type $where $wheref";
-//print $sql;
+    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where_type $where $wheref ";
+     //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total_without_filters from $table  $where_type $where ";
+        $sql="select count(Distinct C.`Customer Key`) as total_without_filters from $table  $where_type $where ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2255,8 +2119,8 @@ function list_customers() {
     $order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table  $where_type  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-// print $sql;
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table  $where_type  $where $wheref  group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
+//print $sql;
     $adata=array();
 
 
@@ -5556,7 +5420,8 @@ function new_customers_list($data) {
     $table='`Customer Dimension` C ';
 
 
-    $where=customers_awhere($awhere);
+//   $where=customers_awhere($awhere);
+    list($where,$table)=customers_awhere($awhere);
 
     $where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
 
@@ -5594,7 +5459,8 @@ function new_customers_list($data) {
     if ($list_type=='Static') {
 
 
-        $sql="select `Customer Key` from $table  $where";
+        $sql="select C.`Customer Key` from $table  $where group by C.`Customer Key`";
+        //   print $sql;
         $result=mysql_query($sql);
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
