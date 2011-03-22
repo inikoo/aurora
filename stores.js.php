@@ -508,7 +508,7 @@ function init(){
   
 ids=['department_general','department_sales','department_stock'];
  YAHOO.util.Event.addListener(ids, "click",change_department_view,{'table_id':1,'parent':'stores'})
- ids=['department_period_all','department_period_year','department_period_quarter','department_period_month','department_period_week'];
+ ids=['department_period_all','department_period_three_year','department_period_year','department_period_yeartoday','department_period_six_month','department_period_quarter','department_period_three_month','department_period_month','department_period_ten_day','department_period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'department'});
  ids=['department_avg_totals','department_avg_month','department_avg_week',"department_avg_month_eff","department_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'department'});
