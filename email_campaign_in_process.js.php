@@ -7,7 +7,7 @@ var dialog_add_email_address;
 var dialog_add_email_address_from_list;
 var validate_scope_data;
 var validate_scope_metadata;
-
+var dialog_preview_text_email;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -140,6 +140,10 @@ function validate_email_campaign_subject(query){
  validate_general('email_campaign','subject',unescape(query));
 }
 
+function validate_email_campaign_content_text(query){
+
+ validate_general('email_campaign','content_text',unescape(query));
+}
 
 
 function validate_add_email_address_manually(query){
@@ -168,12 +172,19 @@ switch ( branch ) {
 }
 }
 
+function check_if_can_preview(){
+    if(is_valid_scope('preview_email_campaign')){
+        Dom.removeClass('preview_email_campaign','disabled');
+    }else{
+        Dom.addClass('preview_email_campaign','disabled');
+    }
+}
+
 function check_if_ready_to_send(){
 if(is_valid_scope('full_email_campaign')){
 Dom.removeClass('send_email_campaign','disabled');
 }else{
 Dom.addClass('send_email_campaign','disabled');
-
 }
 }
 
@@ -220,7 +231,6 @@ Dom.get('email_campaign_number_recipients').value=r.number_recipients;
 function text_email(){
 
 var email_campaign_key=Dom.get('email_campaign_key').value;
-
 var request='ar_edit_marketing.php?tipo=select_plain_email_campaign&email_campaign_key='+encodeURIComponent(email_campaign_key);
 
  YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -246,10 +256,27 @@ Dom.setStyle('text_email_fields','display','')
 }
 
 function html_email(){
-Dom.addClass('select_text_email','selected');
-Dom.removeClass('select_html_email','selected');
+var email_campaign_key=Dom.get('email_campaign_key').value;
+var request='ar_edit_marketing.php?tipo=select_html_email_campaign&email_campaign_key='+encodeURIComponent(email_campaign_key);
+alert(request)
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
 
-Dom.setStyle('text_email_fields','display','')
+            Dom.removeClass('select_text_email','selected');
+            Dom.addClass('select_html_email','selected');
+            Dom.setStyle('text_email_fields','display','none')
+
+		}else{
+		    if(r.msg!=undefined)
+		        Dom.get('add_email_address_from_customer_list_msg').innerHTML='<span class="error">'+r.msg+'</span>';
+	      
+	    }
+	    }
+});
+
 
 }
 
@@ -309,6 +336,11 @@ switch ( branch ) {
 
 }
 
+
+function preview_email_campaign(){
+dialog_preview_text_email.show()
+}
+
 function init(){
  validate_scope_data={
  'email_campaign':{
@@ -351,9 +383,18 @@ function init(){
 	            'group':1,
 	            'type':'item',
 	            'name':'email_campaign_subject',
-	            'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_contents').innerHTML}]
+	            'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_subjects').innerHTML}]
 	            },             
-	            
+	     'content_text':{
+	            'dbname':'Email Campaign Content Text',
+	            'changed':false,
+	            'validated':true,
+	            'required':false,
+	            'group':1,
+	            'type':'item',
+	            'name':'email_campaign_content_text',
+	            'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_contents').innerHTML}]
+	            },               
 	            
 	            
 	   	 //           'validation':[{'regexp':"^(((d|f|c)\\()?[a-z0-9\\-\\)]+,?)+$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
@@ -392,6 +433,14 @@ function init(){
 	'email_contents':{
  	   	'changed':false,'validated':Dom.get('email_campaign_contents').value!=''?true:false,'required':true,'name':'email_campaign_contents','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_contents').innerHTML}]
  	   	},
+ },
+ 'preview_email_campaign':{
+ 	'email_subjects':{
+ 	   	'changed':false,'validated':Dom.get('email_campaign_subjects').value!=''?true:false,'required':true,'name':'email_campaign_subjects','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_subjects').innerHTML}]
+ 	   	},
+	'email_contents':{
+ 	   	'changed':false,'validated':Dom.get('email_campaign_contents').value!=''?true:false,'required':true,'name':'email_campaign_contents','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_contents').innerHTML}]
+ 	   	}
  }
   
   
@@ -404,6 +453,7 @@ function init(){
 'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'add_email_address_manually':{'type':'new','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'full_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
+,'preview_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 
 };
  
@@ -415,6 +465,10 @@ function init(){
   dialog_add_email_address_from_list = new YAHOO.widget.Dialog("dialog_add_email_address_from_list", {context:["add_email_address_from_customer_list","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_add_email_address_from_list.render();
     Event.addListener("add_email_address_from_customer_list", "click", dialog_add_email_address_from_list.show,dialog_add_email_address_from_list , true);
+
+  dialog_preview_text_email = new YAHOO.widget.Dialog("dialog_preview_text_email", {context:["preview_email_campaign","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_preview_text_email.render();
+    Event.addListener("preview_email_campaign", "click", preview_email_campaign);
 
 
     var email_campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_name);
@@ -447,12 +501,12 @@ function init(){
     email_campaign_subject_oAutoComp.minQueryLength = 0; 
     email_campaign_subject_oAutoComp.queryDelay = 0.1;
     
-     var email_campaign_subject_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_subject);
-    email_campaign_subject_oACDS.queryMatchContains = true;
-    var email_campaign_subject_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_subject","email_campaign_subject_Container", email_campaign_subject_oACDS);
-    email_campaign_subject_oAutoComp.minQueryLength = 0; 
-    email_campaign_subject_oAutoComp.queryDelay = 0.1;
-    
+     var email_campaign_content_text_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_content_text);
+    email_campaign_content_text_oACDS.queryMatchContains = true;
+    var email_campaign_content_text_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_content_text","email_campaign_content_text_Container", email_campaign_content_text_oACDS);
+    email_campaign_content_text_oAutoComp.minQueryLength = 0; 
+    email_campaign_content_text_oAutoComp.queryDelay = 0.1;
+
    
     Event.addListener("save_new_add_email_address_manually", "click", save_add_email_address_manually);
     Event.addListener("cancel_new_add_email_address_manually", "click", close_dialog_add_email_address);
@@ -462,11 +516,12 @@ function init(){
     Event.addListener("select_html_email", "click", html_email);
 
     Event.addListener("send_email_campaign", "click", send_email_campaign);
+ 
 
     Event.addListener('reset_edit_email_campaign', "click", reset_edit_email_campaign);
     Event.addListener('save_edit_email_campaign', "click", save_edit_email_campaign);
     check_if_ready_to_send();
-   
+   check_if_can_preview();
 }
 
 Event.onDOMReady(init);
