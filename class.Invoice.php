@@ -96,7 +96,7 @@ $this->update_customer=true;
       $sql=sprintf("select * from `Invoice Dimension` where  `Invoice Public ID`=%s",prepare_mysql($tag));
     else
       return;
-    //print $sql;
+   //print $sql;
 
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
@@ -233,7 +233,8 @@ protected function create($invoice_data) {
 
 $shipping_net=0;
 $shipping_tax=0;
-
+$charges_net=0;
+$charges_tax=0;
 $sql=sprintf('select *  from `Order No Product Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`) '
     ,$dn_keys);
     $res=mysql_query($sql);
@@ -257,12 +258,19 @@ $sql=sprintf('select *  from `Order No Product Transaction Fact` where `Delivery
             $shipping_tax+=$row['Transaction Tax Amount'];
         }
 
+	 if($row['Transaction Type']=='Charges'){
+        
+            $charges_net+=$row['Transaction Net Amount'];
+            $charges_tax+=$row['Transaction Tax Amount'];
+        }
+
     //  print $sql;
     }
 
 
 
 $this->update_shipping(array('Amount'=>$shipping_net,'Tax'=>$shipping_tax),true);
+$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax),true);
 
 
 
@@ -746,7 +754,7 @@ $tax=$data['Tax'];
                          $shipping_tax,
                          $line_number
                        );
-        //print "$sql\n";
+       
         mysql_query ( $sql );
     }
 
@@ -755,6 +763,8 @@ $tax=$data['Tax'];
 }
 
   function update_charges($charge_data){
+
+   
   
   $amount=$charge_data['Transaction Invoice Net Amount'];
    if ($amount==$this->data['Invoice Charges Net Amount']) {
@@ -880,6 +890,8 @@ $this->id
                          $line_number
                        );
         mysql_query ( $sql );
+	print "$sql\n";
+	
     }
   $this->update_totals();  
  }
