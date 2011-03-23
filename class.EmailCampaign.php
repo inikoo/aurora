@@ -186,8 +186,8 @@ class EmailCampaign extends DB_Table {
 
         switch ($key) {
         case('Email Campaign Content Type'):
-        return $this->get_content_type();
-        break;
+            return $this->get_content_type();
+            break;
         default:
             if (isset($this->data[$key]))
                 return $this->data[$key];
@@ -198,7 +198,15 @@ class EmailCampaign extends DB_Table {
 
 
         switch ($field) {
-        
+        case('Email Campaign Content Text'):
+            $this->update_content_text($value);
+            break;
+        case('Email Campaign Subject'):
+            $this->update_subject($value);
+            break;
+        case('Email Campaign Content Type'):
+            $this->update_content_type($value);
+            break;    
         default:
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
@@ -212,23 +220,155 @@ class EmailCampaign extends DB_Table {
     }
 
 
-function get_content_type(){
-$content_keys=$this->get_content_data_keys();
-if(count($content_keys)==0){
-    return 'Unknown';
-}elseif(count($content_keys)==1){
-    $sql=sprintf("select `Email Content Type` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_assoc($res)) {
-           
-            return $row['Email Content Type'];
+    function get_content_type() {
+        $content_keys=$this->get_content_data_keys();
+        if (count($content_keys)==0) {
+            return 'Unknown';
         }
-}
+        elseif(count($content_keys)==1) {
+            $sql=sprintf("select `Email Content Type` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
 
-}
+                return $row['Email Content Type'];
+            }
+        }
+
+    }
+
+    function get_subjects_serialized_array() {
+        $content_keys=$this->get_content_data_keys();
+        $subjects_array=array();
+        if (count($content_keys)==1) {
+            $sql=sprintf("select `Email Content Key`,`Email Content Subject` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+
+                $subjects_array[$row['Email Content Key']]=$row['Email Content Subject'];
+
+            }
+        }
+        if (count($subjects_array)==0) {
+            $subjects='';
+        } else {
+            $subjects=serialize($subjects_array);
+        }
+
+
+        return $subjects;
+    }
+
+    function get_contents_serialized_array() {
+        $content_keys=$this->get_content_data_keys();
+        $email_contents_array=array();
+        if (count($content_keys)==1) {
+            $sql=sprintf("select `Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                if($row['Email Content Type']=='Plain'){
+                    $email_contents_array[$row['Email Content Key']]=$row['Email Content Text'];
+                }else{
+                    $email_contents_array[$row['Email Content Key']]=array('Plain'=>$row['Email Content Text'],'HTML Template'=>$row['Email Content HTML']);
+
+                }
+
+            }
+        }
+        if (count($email_contents_array)==0) {
+            $email_contents='';
+        } else {
+            $email_contents=serialize($email_contents_array);
+        }
+
+
+        return $email_contents;
+    }
+
+    function get_subject($escape=false) {
+        $content_keys=$this->get_content_data_keys();
+        if (count($content_keys)==0) {
+            return '';
+        }
+        elseif(count($content_keys)==1) {
+            $sql=sprintf("select `Email Content Subject` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                
+                if($escape=='addslashes')
+                                return addslashes($row['Email Content Subject']);
+
+                else
+                return $row['Email Content Subject'];
+            }
+        }
+    }
+    
+        function get_content_text() {
+        $content_keys=$this->get_content_data_keys();
+        if (count($content_keys)==0) {
+            return '';
+        }
+        elseif(count($content_keys)==1) {
+            $sql=sprintf("select `Email Content Text` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+
+                return $row['Email Content Text'];
+            }
+        }
+    }
+
+    function update_subject($value) {
+
+        $content_keys=$this->get_content_data_keys();
+        if (count($content_keys)==1) {
+            $sql=sprintf("update `Email Content Dimension` set `Email Content Subject`=%s where `Email Content Key`=%d",
+                         prepare_mysql($value),
+                         array_pop($content_keys)
+                        );
+            mysql_query($sql);
+        }
+       $old_value=$this->data['Email Campaign Subjects'];
+        $this->data['Email Campaign Subjects']=$this->get_subjects_serialized_array();
+        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Subjects`=%s where `Email Campaign Key`=%d",
+                     prepare_mysql($this->data['Email Campaign Subjects']),
+                     $this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()>0) {
+            $this->updated=true;
+            $this->new_value=$this->get_subject();
+        }
+    }
+
+    function update_content_text($value) {
+
+        $content_keys=$this->get_content_data_keys();
+        if (count($content_keys)==1) {
+            $sql=sprintf("update `Email Content Dimension` set `Email Content Text`=%s where `Email Content Key`=%d",
+                         prepare_mysql($value),
+                         array_pop($content_keys)
+                        );
+            mysql_query($sql);
+        }
+       $old_value=$this->data['Email Campaign Contents'];
+        $this->data['Email Campaign Contents']=$this->get_contents_serialized_array();
+        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Contents`=%s where `Email Campaign Key`=%d",
+                     prepare_mysql($this->data['Email Campaign Contents']),
+                     $this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()>0) {
+            $this->updated=true;
+            $this->new_value=$this->get_content_text();
+        }
+    }
+
+
+
 
     function update_content_type($value) {
-
+    
         if (!($value=='Plain' or $value=='HTML Template')) {
             $this->error;
             $this->msg='Wrong email content type '.$value;
@@ -236,28 +376,29 @@ if(count($content_keys)==0){
         }
         $content_keys=$this->get_content_data_keys();
         $sql=sprintf("update `Email Content Dimension` set `Email Content Type`=%s where `Email Content Key` in (%s)",
-        prepare_mysql($value),
-        join(',',$content_keys)
-        );
+                     prepare_mysql($value),
+                     join(',',$content_keys)
+                    );
+                    //print $sql;
         mysql_query($sql);
         if (mysql_affected_rows()>0) {
             $old_value=$this->data['Email Campaign Content Type'];
             $this->data['Email Campaign Content Type']=$this->get_content_type();
-            $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Content Type`=%s where `Email Campaign Key `=%d",
-            mysql_query($this->data['Email Campaign Content Type']),
-            $this->id
-            );
-              mysql_query($sql);
-             if (mysql_affected_rows()>0) {
-            $this->updated=true;
-            $this->new_value=$this->data['Email Campaign Content Type'];
+            $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Content Type`=%s where `Email Campaign Key`=%d",
+                         prepare_mysql($this->data['Email Campaign Content Type']),
+                         $this->id
+                        );
+            mysql_query($sql);
+            if (mysql_affected_rows()>0) {
+                $this->updated=true;
+                $this->new_value=$this->data['Email Campaign Content Type'];
             }
         }
-        
-        
-        
-        
-        
+
+
+
+
+
     }
 
     function add_email_address_manually($data) {

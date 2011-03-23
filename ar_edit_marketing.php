@@ -20,6 +20,16 @@ case('edit_email_campaign'):
                          ));
     edit_email_campaign($data);
     break;
+case('select_html_email_campaign'):
+    $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key')
+
+                         ));
+    $data['newvalue']='HTML Template';
+    $data['key']='Email Campaign Content Type';
+    $data['okey']='email_campaign_content_type';
+    edit_email_campaign($data);
+    break;    
 case('select_plain_email_campaign'):
     $data=prepare_values($_REQUEST,array(
                              'email_campaign_key'=>array('type'=>'key')
@@ -28,9 +38,6 @@ case('select_plain_email_campaign'):
     $data['newvalue']='Plain';
     $data['key']='Email Campaign Content Type';
     $data['okey']='email_campaign_content_type';
-
-
-
     edit_email_campaign($data);
     break;
 case('delete_email_campaign'):

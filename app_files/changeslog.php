@@ -998,7 +998,13 @@ ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Content` `Email Ca
 
 
 
-
+CREATE TABLE `Email Template Dimension` (
+`Email Template Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Template Name` VARCHAR( 64 ) NOT NULL ,
+`Email Template Type` ENUM( 'Basic', 'Newsletter Left', 'Newsletter Right', 'Postcard' ) NOT NULL ,
+`Email Template Metadata` MEDIUMTEXT NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Template Dimension` ADD `Email Template Sorce Code` MEDIUMTEXT NOT NULL ;
 
 ALTER TABLE `Store Dimension` ADD `Store 3 Year Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store Delivery Notes For Donations` ,
 ADD `Store 3 Year Acc Invoices` DECIMAL( 12, 2 ) NOT NULL AFTER `Store 3 Year Acc Invoiced Amount` ,
@@ -1047,6 +1053,7 @@ ADD `Store DC 3 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 3 Mo
 
 ALTER TABLE `Store Default Currency` ADD `Store DC 10 Day Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 1 Month Acc Profit` ,
 ADD `Store DC 10 Day Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 10 Day Acc Invoiced Amount` ;
+
 
 
 
