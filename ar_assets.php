@@ -6294,7 +6294,18 @@ function list_families() {
         $order='`Product Family 1 Month Acc Invoiced Amount`';
         elseif($period=='week')
         $order='`Product Family 1 Week Acc Invoiced Amount`';
-
+// --------------------------------Start for families' 3Y,YTD,6M,3M,10D------------------------------------------------
+       elseif($period=='three_year')
+        $order='`Product Family 3 Year Acc Invoiced Amount`';
+        elseif($period=='yeartoday')
+        $order='`Product Family YearToDay Acc Invoiced Amount`';
+        elseif($period=='six_month')
+        $order='`Product Family 6 Month Acc Invoiced Amount`';
+        elseif($period=='three_month')
+        $order='`Product Family 3 Month Acc Invoiced Amount`';
+        elseif($period=='ten_day')
+        $order='`Product Family 10 Day Acc Invoiced Amount`';
+// --------------------------------Ends for families' 3Y,YTD,6M,3M,10D------------------------------------------------
     }
     elseif($order=='code')
     $order='`Product Family Code`';
@@ -6360,6 +6371,34 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
+// ---------------------------------------Start for families 3 year-----------------------------------------
+   elseif($period=='three_year') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Product Family 3 Year Acc Profit`<0,`Product Family 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 3 Year Acc Profit`>=0,`Product Family 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Family 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $sum_total_sales=$row['sum_total_sales'];
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+    }
+// ---------------------------------------Ends for families 3 year-----------------------------------------
+// ---------------------------------------Start for families YearToDay-----------------------------------------
+   elseif($period=='yeartoday') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Product Family YearToDay Acc Profit`<0,`Product Family YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family YearToDay Acc Profit`>=0,`Product Family YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Product Family YearToDay Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $sum_total_sales=$row['sum_total_sales'];
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+    }
+// ---------------------------------------Ends for families YearToDay-----------------------------------------
     elseif($period=='year') {
 
         $sum_total_sales=0;
@@ -6376,6 +6415,20 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
+// --------------------------------------- Start for families 6 month -----------------------------------------
+   elseif($period=='six_month') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Product Family 6 Month Acc Profit`<0,`Product Family 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 6 Month Acc Profit`>=0,`Product Family 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Family 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $sum_total_sales=$row['sum_total_sales'];
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+    }
+// --------------------------------------- Ends for families 6 month -----------------------------------------
     elseif($period=='quarter') {
 
         $sum_total_sales=0;
@@ -6392,6 +6445,20 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
+// --------------------------------------- Start for families 3 month -----------------------------------------
+   elseif($period=='three_month') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Product Family 3 Month Acc Profit`<0,`Product Family 3 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 3 Month Acc Profit`>=0,`Product Family 3 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Family 3 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $sum_total_sales=$row['sum_total_sales'];
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+    }
+// --------------------------------------- Ends for families 3 month -----------------------------------------
     elseif($period=='month') {
 
         $sum_total_sales=0;
@@ -6408,6 +6475,20 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
+// --------------------------------------- Start for families 10 days -----------------------------------------
+   elseif($period=='ten_day') {
+        $sum_total_sales=0;
+        $sum_month_sales=0;
+        $sql="select sum(if(`Product Family 10 Day Acc Profit`<0,`Product Family 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 10 Day Acc Profit`>=0,`Product Family 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product Family 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $sum_total_sales=$row['sum_total_sales'];
+            $sum_total_profit_plus=$row['total_profit_plus'];
+            $sum_total_profit_minus=$row['total_profit_minus'];
+            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+        }
+    }
+// --------------------------------------- Ends for families 10 days -----------------------------------------
     elseif($period=='week') {
         $sum_families=0;
         $sum_total_sales=0;
@@ -6516,6 +6597,46 @@ function list_families() {
 
 
             }
+
+// ---------------------------------------Start for families 3 year-----------------------------------------
+            elseif($period=='three_year') {
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product Family 3 Year Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 3 Year Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month') {
+                    if ($row['Product Family 3 Year Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 3 Year Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week') {
+                    if ($row['Product Family 3 Year Acc Days On Sale']>0)
+                        $factor=7/$row['Product Family 3 Year Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product Family 3 Year Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product Family 3 Year Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product Family 3 Year Acc Days Available']>0)
+                        $factor=7/$row['Product Family 3 Year Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                $tsall=money($row['Product Family 3 Year Acc Invoiced Amount']*$factor);
+                $tprofit=money($row['Product Family 3 Year Acc Profit']*$factor);
+            }
+// ---------------------------------------Ends for families 3 year-------------------------------------------
+
             elseif($period=='year') {
 
 
@@ -6563,6 +6684,84 @@ function list_families() {
                 $tsall=money($row['Product Family 1 Year Acc Invoiced Amount']*$factor);
                 $tprofit=money($row['Product Family 1 Year Acc Profit']*$factor);
             }
+
+// ---------------------------------------Start for families YearToday-----------------------------------------
+            elseif($period=='yeartoday') {
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product Family YearToDay Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family YearToDay Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month') {
+                    if ($row['Product Family YearToDay Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family YearToDay Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week') {
+                    if ($row['Product Family YearToDay Acc Days On Sale']>0)
+                        $factor=7/$row['Product Family YearToDay Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product Family YearToDay Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product Family YearToDay Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product Family YearToDay Acc Days Available']>0)
+                        $factor=7/$row['Product Family YearToDay Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                $tsall=money($row['Product Family YearToDay Acc Invoiced Amount']*$factor);
+                $tprofit=money($row['Product Family YearToDay Acc Profit']*$factor);
+            }
+// ---------------------------------------Ends for families YearToDay-------------------------------------------
+// ---------------------------------------Start for families 6 month-----------------------------------------
+            elseif($period=='six_month') {
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product Family 6 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 6 Month Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month') {
+                    if ($row['Product Family 6 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 6 Month Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week') {
+                    if ($row['Product Family 6 Month Acc Days On Sale']>0)
+                        $factor=7/$row['Product Family 6 Month Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product Family 6 Month Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product Family 6 Month Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product Family 6 Month Acc Days Available']>0)
+                        $factor=7/$row['Product Family 6 Month Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                $tsall=money($row['Product Family 6 Month Acc Invoiced Amount']*$factor);
+                $tprofit=money($row['Product Family 6 Month Acc Profit']*$factor);
+            }
+// ---------------------------------------Ends for families 6 month-------------------------------------------
+
             elseif($period=='quarter') {
                 if ($avg=='totals')
                     $factor=1;
@@ -6601,6 +6800,47 @@ function list_families() {
                 $tsall=money($row['Product Family 1 Quarter Acc Invoiced Amount']*$factor);
                 $tprofit=money($row['Product Family 1 Quarter Acc Profit']*$factor);
             }
+
+// ---------------------------------------Start for families 3 month-----------------------------------------
+            elseif($period=='three_month') {
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product Family 3 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 3 Month Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month') {
+                    if ($row['Product Family 3 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 3 Month Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week') {
+                    if ($row['Product Family 3 Month Acc Days On Sale']>0)
+                        $factor=7/$row['Product Family 3 Month Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product Family 3 Month Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product Family 3 Month Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product Family 3 Month Acc Days Available']>0)
+                        $factor=7/$row['Product Family 3 Month Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                $tsall=money($row['Product Family 3 Month Acc Invoiced Amount']*$factor);
+                $tprofit=money($row['Product Family 3 Month Acc Profit']*$factor);
+            }
+// ---------------------------------------Ends for families 3 month-------------------------------------------
+
+
             elseif($period=='month') {
                 if ($avg=='totals')
                     $factor=1;
@@ -6639,6 +6879,47 @@ function list_families() {
                 $tsall=money($row['Product Family 1 Month Acc Invoiced Amount']*$factor);
                 $tprofit=money($row['Product Family 1 Month Acc Profit']*$factor);
             }
+
+// ---------------------------------------Start for families 10 days-----------------------------------------
+            elseif($period=='ten_day') {
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product Family 10 Day Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 10 Day Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month') {
+                    if ($row['Product Family 10 Day Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product Family 10 Day Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week') {
+                    if ($row['Product Family 10 Day Acc Days On Sale']>0)
+                        $factor=7/$row['Product Family 10 Day Acc Days On Sale'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product Family 10 Day Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product Family 10 Day Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product Family 10 Day Acc Days Available']>0)
+                        $factor=7/$row['Product Family 10 Day Acc Days Available'];
+                    else
+                        $factor=0;
+                }
+                $tsall=money($row['Product Family 10 Day Acc Invoiced Amount']*$factor);
+                $tprofit=money($row['Product Family 10 Day Acc Profit']*$factor);
+            }
+// ---------------------------------------Ends for families 10 days-------------------------------------------
+
+
             elseif($period=='week') {
                 if ($avg=='totals')
                     $factor=1;

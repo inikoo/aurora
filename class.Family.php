@@ -1031,6 +1031,63 @@ function update_field_switcher($field,$value,$options='') {
 
         // $sql="select  sum(`Product 1 Year Acc Invoiced Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
 
+// ---------------------------------------Starts for 3 year--------------------------------------------------------------------------
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+
+        //	exit($sql);
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Family 3 Year Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Family 3 Year Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Family 3 Year Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 3 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 3 Year Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Family 3 Year Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Family 3 Year Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Family 3 Year Acc Customers']=$row['customers'];
+            $this->data['Product Family 3 Year Acc Invoices']=$row['invoices'];
+            $this->data['Product Family 3 Year Acc Pending Orders']=$pending_orders;
+        } else {
+            $this->data['Product Family 3 Year Acc Invoiced Gross Amount']=0;
+            $this->data['Product Family 3 Year Acc Invoiced Discount Amount']=0;
+            $this->data['Product Family 3 Year Acc Invoiced Amount']=0;
+            $this->data['Product Family 3 Year Acc Profit']=0;
+            $this->data['Product Family 3 Year Acc Quantity Ordered']=0;
+            $this->data['Product Family 3 Year Acc Quantity Invoiced']=0;
+            $this->data['Product Family 3 Year Acc Quantity Delivered']=0;
+            $this->data['Product Family 3 Year Acc Customers']=0;
+            $this->data['Product Family 3 Year Acc Invoices']=0;
+            $this->data['Product Family 3 Year Acc Pending Orders']=$pending_orders;
+        }
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family 3 Year Acc Invoiced Gross Amount`=%.2f,`Product Family 3 Year Acc Invoiced Discount Amount`=%.2f,`Product Family 3 Year Acc Invoiced Amount`=%.2f,`Product Family 3 Year Acc Profit`=%.2f, `Product Family 3 Year Acc Quantity Ordered`=%f , `Product Family 3 Year Acc Quantity Invoiced`=%f,`Product Family 3 Year Acc Quantity Delivered`=%f  ,`Product Family 3 Year Acc Customers`=%d,`Product Family 3 Year Acc Invoices`=%d,`Product Family 3 Year Acc Pending Orders`=%d  where `Product Family Key`=%d "
+                     ,$this->data['Product Family 3 Year Acc Invoiced Gross Amount']
+                     ,$this->data['Product Family 3 Year Acc Invoiced Discount Amount']
+                     ,$this->data['Product Family 3 Year Acc Invoiced Amount']
+                     ,$this->data['Product Family 3 Year Acc Profit']
+                     ,$this->data['Product Family 3 Year Acc Quantity Ordered']
+                     ,$this->data['Product Family 3 Year Acc Quantity Invoiced']
+                     ,$this->data['Product Family 3 Year Acc Quantity Delivered']
+                     ,$this->data['Product Family 3 Year Acc Customers']
+                     ,$this->data['Product Family 3 Year Acc Invoices']
+                     ,$this->data['Product Family 3 Year Acc Pending Orders']
+                     ,$this->id
+                    );
+
+        if (!mysql_query($sql))
+            exit("$sql\ncan not update fam sales 3 year\n");
+// ----------------------------------------Ends for 3 year----------------------------------------------------------------------------
+
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
                      and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
@@ -1085,6 +1142,133 @@ function update_field_switcher($field,$value,$options='') {
 
         if (!mysql_query($sql))
             exit("$sql\ncan not update fam sales 1 year\n");
+// ---------------------------------------Starts for yeartoday--------------------------------------------------------------------------
+function YTD(){
+$first_day_of_year = date('Y').'-01-01';
+$today = date('Y-m-d');
+$diff = abs(strtotime($today) - strtotime($first_day_of_year));
+$years = floor($diff / (365*60*60*24));
+$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+$yeartoday=$years." year ".$months." month ".$days." day";
+//("%d years, %d months, %d days\n", $years, $months, $days);
+return $yeartoday;
+}
+
+$yeartoday=YTD();
+
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
+
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
+
+        //	exit($sql);
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Family YearToDay Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Family YearToDay Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Family YearToDay Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family YearToDay Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family YearToDay Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Family YearToDay Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Family YearToDay Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Family YearToDay Acc Customers']=$row['customers'];
+            $this->data['Product Family YearToDay Acc Invoices']=$row['invoices'];
+            $this->data['Product Family YearToDay Acc Pending Orders']=$pending_orders;
+        } else {
+            $this->data['Product Family YearToDay Acc Invoiced Gross Amount']=0;
+            $this->data['Product Family YearToDay Acc Invoiced Discount Amount']=0;
+            $this->data['Product Family YearToDay Acc Invoiced Amount']=0;
+            $this->data['Product Family YearToDay Acc Profit']=0;
+            $this->data['Product Family YearToDay Acc Quantity Ordered']=0;
+            $this->data['Product Family YearToDay Acc Quantity Invoiced']=0;
+            $this->data['Product Family YearToDay Acc Quantity Delivered']=0;
+            $this->data['Product Family YearToDay Acc Customers']=0;
+            $this->data['Product Family YearToDay Acc Invoices']=0;
+            $this->data['Product Family YearToDay Acc Pending Orders']=$pending_orders;
+        }
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family YearToDay Acc Invoiced Gross Amount`=%.2f,`Product Family YearToDay Acc Invoiced Discount Amount`=%.2f,`Product Family YearToDay Acc Invoiced Amount`=%.2f,`Product Family YearToDay Acc Profit`=%.2f, `Product Family YearToDay Acc Quantity Ordered`=%f , `Product Family YearToDay Acc Quantity Invoiced`=%f,`Product Family YearToDay Acc Quantity Delivered`=%f  ,`Product Family YearToDay Acc Customers`=%d,`Product Family YearToDay Acc Invoices`=%d,`Product Family YearToDay Acc Pending Orders`=%d  where `Product Family Key`=%d "
+                     ,$this->data['Product Family YearToDay Acc Invoiced Gross Amount']
+                     ,$this->data['Product Family YearToDay Acc Invoiced Discount Amount']
+                     ,$this->data['Product Family YearToDay Acc Invoiced Amount']
+                     ,$this->data['Product Family YearToDay Acc Profit']
+                     ,$this->data['Product Family YearToDay Acc Quantity Ordered']
+                     ,$this->data['Product Family YearToDay Acc Quantity Invoiced']
+                     ,$this->data['Product Family YearToDay Acc Quantity Delivered']
+                     ,$this->data['Product Family YearToDay Acc Customers']
+                     ,$this->data['Product Family YearToDay Acc Invoices']
+                     ,$this->data['Product Family YearToDay Acc Pending Orders']
+                     ,$this->id
+                    );
+
+        if (!mysql_query($sql))
+            exit("$sql\ncan not update fam sales yeartoday\n");
+// ----------------------------------------Ends for yeartoday----------------------------------------------------------------------------
+// ---------------------------------------Starts for 6 month--------------------------------------------------------------------------
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
+
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
+
+        //	exit($sql);
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Family 6 Month Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Family 6 Month Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Family 6 Month Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 6 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 6 Month Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Family 6 Month Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Family 6 Month Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Family 6 Month Acc Customers']=$row['customers'];
+            $this->data['Product Family 6 Month Acc Invoices']=$row['invoices'];
+            $this->data['Product Family 6 Month Acc Pending Orders']=$pending_orders;
+        } else {
+            $this->data['Product Family 6 Month Acc Invoiced Gross Amount']=0;
+            $this->data['Product Family 6 Month Acc Invoiced Discount Amount']=0;
+            $this->data['Product Family 6 Month Acc Invoiced Amount']=0;
+            $this->data['Product Family 6 Month Acc Profit']=0;
+            $this->data['Product Family 6 Month Acc Quantity Ordered']=0;
+            $this->data['Product Family 6 Month Acc Quantity Invoiced']=0;
+            $this->data['Product Family 6 Month Acc Quantity Delivered']=0;
+            $this->data['Product Family 6 Month Acc Customers']=0;
+            $this->data['Product Family 6 Month Acc Invoices']=0;
+            $this->data['Product Family 6 Month Acc Pending Orders']=$pending_orders;
+        }
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family 6 Month Acc Invoiced Gross Amount`=%.2f,`Product Family 6 Month Acc Invoiced Discount Amount`=%.2f,`Product Family 6 Month Acc Invoiced Amount`=%.2f,`Product Family 6 Month Acc Profit`=%.2f, `Product Family 6 Month Acc Quantity Ordered`=%f , `Product Family 6 Month Acc Quantity Invoiced`=%f,`Product Family 6 Month Acc Quantity Delivered`=%f  ,`Product Family 6 Month Acc Customers`=%d,`Product Family 6 Month Acc Invoices`=%d,`Product Family 6 Month Acc Pending Orders`=%d  where `Product Family Key`=%d "
+                     ,$this->data['Product Family 6 Month Acc Invoiced Gross Amount']
+                     ,$this->data['Product Family 6 Month Acc Invoiced Discount Amount']
+                     ,$this->data['Product Family 6 Month Acc Invoiced Amount']
+                     ,$this->data['Product Family 6 Month Acc Profit']
+                     ,$this->data['Product Family 6 Month Acc Quantity Ordered']
+                     ,$this->data['Product Family 6 Month Acc Quantity Invoiced']
+                     ,$this->data['Product Family 6 Month Acc Quantity Delivered']
+                     ,$this->data['Product Family 6 Month Acc Customers']
+                     ,$this->data['Product Family 6 Month Acc Invoices']
+                     ,$this->data['Product Family 6 Month Acc Pending Orders']
+                     ,$this->id
+                    );
+
+        if (!mysql_query($sql))
+            exit("$sql\ncan not update fam sales 6 month\n");
+// ----------------------------------------Ends for 6 month----------------------------------------------------------------------------
+
 
 
         //$sql="select  sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
@@ -1146,6 +1330,66 @@ function update_field_switcher($field,$value,$options='') {
         if (!mysql_query($sql))
             exit("$sql\ncan not update fam sales 1 quarter\n");
 
+// ---------------------------------------Starts for 3 month--------------------------------------------------------------------------
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+
+        //	exit($sql);
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Family 3 Month Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Family 3 Month Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Family 3 Month Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 3 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 3 Month Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Family 3 Month Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Family 3 Month Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Family 3 Month Acc Customers']=$row['customers'];
+            $this->data['Product Family 3 Month Acc Invoices']=$row['invoices'];
+            $this->data['Product Family 3 Month Acc Pending Orders']=$pending_orders;
+        } else {
+            $this->data['Product Family 3 Month Acc Invoiced Gross Amount']=0;
+            $this->data['Product Family 3 Month Acc Invoiced Discount Amount']=0;
+            $this->data['Product Family 3 Month Acc Invoiced Amount']=0;
+            $this->data['Product Family 3 Month Acc Profit']=0;
+            $this->data['Product Family 3 Month Acc Quantity Ordered']=0;
+            $this->data['Product Family 3 Month Acc Quantity Invoiced']=0;
+            $this->data['Product Family 3 Month Acc Quantity Delivered']=0;
+            $this->data['Product Family 3 Month Acc Customers']=0;
+            $this->data['Product Family 3 Month Acc Invoices']=0;
+            $this->data['Product Family 3 Month Acc Pending Orders']=$pending_orders;
+        }
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family 3 Month Acc Invoiced Gross Amount`=%.2f,`Product Family 3 Month Acc Invoiced Discount Amount`=%.2f,`Product Family 3 Month Acc Invoiced Amount`=%.2f,`Product Family 3 Month Acc Profit`=%.2f, `Product Family 3 Month Acc Quantity Ordered`=%f , `Product Family 3 Month Acc Quantity Invoiced`=%f,`Product Family 3 Month Acc Quantity Delivered`=%f  ,`Product Family 3 Month Acc Customers`=%d,`Product Family 3 Month Acc Invoices`=%d,`Product Family 3 Month Acc Pending Orders`=%d  where `Product Family Key`=%d "
+                     ,$this->data['Product Family 3 Month Acc Invoiced Gross Amount']
+                     ,$this->data['Product Family 3 Month Acc Invoiced Discount Amount']
+                     ,$this->data['Product Family 3 Month Acc Invoiced Amount']
+                     ,$this->data['Product Family 3 Month Acc Profit']
+                     ,$this->data['Product Family 3 Month Acc Quantity Ordered']
+                     ,$this->data['Product Family 3 Month Acc Quantity Invoiced']
+                     ,$this->data['Product Family 3 Month Acc Quantity Delivered']
+                     ,$this->data['Product Family 3 Month Acc Customers']
+                     ,$this->data['Product Family 3 Month Acc Invoices']
+                     ,$this->data['Product Family 3 Month Acc Pending Orders']
+                     ,$this->id
+                    );
+
+        if (!mysql_query($sql))
+            exit("$sql\ncan not update fam sales 3 month\n");
+// ----------------------------------------Ends for 3 month----------------------------------------------------------------------------
+
+
+
+
         //$sql="select  sum(`Product 1 Month Acc Invoiced Amount`) as net,sum(`Product 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Month Acc Profit`)as profit ,sum(`Product 1 Month Acc Quantity Delivered`) as delivered,sum(`Product 1 Month Acc Quantity Ordered`) as ordered,sum(`Product 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
                      and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
@@ -1204,6 +1448,66 @@ function update_field_switcher($field,$value,$options='') {
 
         if (!mysql_query($sql))
             exit("$sql\ncan not update fam sales 1 month\n");
+
+
+// ---------------------------------------Starts for 10 days--------------------------------------------------------------------------
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
+
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
+
+        //	exit($sql);
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Family 10 Day Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Family 10 Day Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Family 10 Day Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 10 Day Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family 10 Day Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Family 10 Day Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Family 10 Day Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Family 10 Day Acc Customers']=$row['customers'];
+            $this->data['Product Family 10 Day Acc Invoices']=$row['invoices'];
+            $this->data['Product Family 10 Day Acc Pending Orders']=$pending_orders;
+        } else {
+            $this->data['Product Family 10 Day Acc Invoiced Gross Amount']=0;
+            $this->data['Product Family 10 Day Acc Invoiced Discount Amount']=0;
+            $this->data['Product Family 10 Day Acc Invoiced Amount']=0;
+            $this->data['Product Family 10 Day Acc Profit']=0;
+            $this->data['Product Family 10 Day Acc Quantity Ordered']=0;
+            $this->data['Product Family 10 Day Acc Quantity Invoiced']=0;
+            $this->data['Product Family 10 Day Acc Quantity Delivered']=0;
+            $this->data['Product Family 10 Day Acc Customers']=0;
+            $this->data['Product Family 10 Day Acc Invoices']=0;
+            $this->data['Product Family 10 Day Acc Pending Orders']=$pending_orders;
+        }
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family 10 Day Acc Invoiced Gross Amount`=%.2f,`Product Family 10 Day Acc Invoiced Discount Amount`=%.2f,`Product Family 10 Day Acc Invoiced Amount`=%.2f,`Product Family 10 Day Acc Profit`=%.2f, `Product Family 10 Day Acc Quantity Ordered`=%f , `Product Family 10 Day Acc Quantity Invoiced`=%f,`Product Family 10 Day Acc Quantity Delivered`=%f  ,`Product Family 10 Day Acc Customers`=%d,`Product Family 10 Day Acc Invoices`=%d,`Product Family 10 Day Acc Pending Orders`=%d  where `Product Family Key`=%d "
+                     ,$this->data['Product Family 10 Day Acc Invoiced Gross Amount']
+                     ,$this->data['Product Family 10 Day Acc Invoiced Discount Amount']
+                     ,$this->data['Product Family 10 Day Acc Invoiced Amount']
+                     ,$this->data['Product Family 10 Day Acc Profit']
+                     ,$this->data['Product Family 10 Day Acc Quantity Ordered']
+                     ,$this->data['Product Family 10 Day Acc Quantity Invoiced']
+                     ,$this->data['Product Family 10 Day Acc Quantity Delivered']
+                     ,$this->data['Product Family 10 Day Acc Customers']
+                     ,$this->data['Product Family 10 Day Acc Invoices']
+                     ,$this->data['Product Family 10 Day Acc Pending Orders']
+                     ,$this->id
+                    );
+
+        if (!mysql_query($sql))
+            exit("$sql\ncan not update fam sales 10 days\n");
+// ----------------------------------------Ends for 10 days----------------------------------------------------------------------------
+
+
 
         //$sql="select  sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
 
