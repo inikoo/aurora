@@ -106,11 +106,17 @@
 
     <table id="department_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $department_view!='sales' };display:none{/if}"  class="options_mini" >
 	  <tr>
-	    <td class="option {if $department_period=='all'}selected{/if}" period="all"  id="department_period_all" >{t}All{/t}</td>
-	    <td class="option {if $department_period=='year'}selected{/if}"  period="year"  id="department_period_year"  >{t}1Yr{/t}</td>
-	    <td class="option {if $department_period=='quarter'}selected{/if}"  period="quarter"  id="department_period_quarter"  >{t}1Qtr{/t}</td>
-	    <td class="option {if $department_period=='month'}selected{/if}"  period="month"  id="department_period_month"  >{t}1M{/t}</td>
-	    <td class="option {if $department_period=='week'}selected{/if}" period="week"  id="department_period_week"  >{t}1W{/t}</td>
+
+	  <td class="option {if $department_period=='all'}selected{/if}" period="all"  id="department_period_all" >{t}All{/t}</td>
+	  <td class="option {if $department_period=='three_year'}selected{/if}"  period="three_year"  id="department_period_three_year"  >{t}3Y{/t}</td>
+	  <td class="option {if $department_period=='year'}selected{/if}"  period="year"  id="department_period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $department_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="department_period_yeartoday"  >{t}YTD{/t}</td>	
+	  <td class="option {if $department_period=='six_month'}selected{/if}"  period="six_month"  id="department_period_six_month"  >{t}6M{/t}</td>
+	  <td class="option {if $department_period=='quarter'}selected{/if}"  period="quarter"  id="department_period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $department_period=='three_month'}selected{/if}"  period="three_month"  id="department_period_three_month"  >{t}3M{/t}</td>
+	  <td class="option {if $department_period=='month'}selected{/if}"  period="month"  id="department_period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $department_period=='ten_day'}selected{/if}"  period="ten_day"  id="department_period_ten_day"  >{t}10D{/t}</td>
+	  <td class="option {if $department_period=='week'}selected{/if}" period="week"  id="department_period_week"  >{t}1W{/t}</td>
 	  </tr>
       </table>
 	<table  id="department_avg_options" style="float:left;margin:0 0 0 25px ;padding:0 {if $department_view!='sales'};display:none{/if}"  class="options_mini" >
@@ -140,11 +146,15 @@
       </table>
         <table id="family_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $family_view!='sales'};display:none{/if}"  class="options_mini" >
 	<tr>
-
 	  <td class="option {if $family_period=='all'}selected{/if}" period="all"  id="family_period_all" >{t}All{/t}</td>
+	  <td class="option {if $family_period=='three_year'}selected{/if}"  period="three_year"  id="family_period_three_year"  >{t}3Y{/t}</td>
 	  <td class="option {if $family_period=='year'}selected{/if}"  period="year"  id="family_period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $family_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="family_period_yeartoday"  >{t}YTD{/t}</td>	
+	  <td class="option {if $family_period=='six_month'}selected{/if}"  period="six_month"  id="family_period_six_month"  >{t}6M{/t}</td>
 	  <td class="option {if $family_period=='quarter'}selected{/if}"  period="quarter"  id="family_period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $family_period=='three_month'}selected{/if}"  period="three_month"  id="family_period_three_month"  >{t}3M{/t}</td>
 	  <td class="option {if $family_period=='month'}selected{/if}"  period="month"  id="family_period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $family_period=='ten_day'}selected{/if}"  period="ten_day"  id="family_period_ten_day"  >{t}10D{/t}</td>
 	  <td class="option {if $family_period=='week'}selected{/if}" period="week"  id="family_period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
