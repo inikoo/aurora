@@ -384,7 +384,7 @@ function delete_old_data() {
 }
 
 
-function adjust_invoice($invoice,$continue=true) {
+function adjust_invoice($invoice,$order,$continue=true) {
     global $header_data,$tax_category_object;
 
     $adjust_transactions=array();
@@ -428,7 +428,11 @@ function adjust_invoice($invoice,$continue=true) {
 
 
     foreach($adjust_transactions as $adjust_data) {
-        $sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+        $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+		     		     prepare_mysql($order->id),
+
+		     prepare_mysql($order->data['Order Date']),
+
                      $invoice->id,
                      prepare_mysql($invoice->data['Invoice Date']),
                      prepare_mysql('Adjust'),
@@ -445,7 +449,7 @@ function adjust_invoice($invoice,$continue=true) {
                     );
 
         mysql_query($sql);
-        // print "$continue $sql\n";
+        //print "$continue $sql\n";
     }
     $invoice->update_totals();
 
@@ -468,7 +472,7 @@ function adjust_invoice($invoice,$continue=true) {
 
 
     if ($diff_net!=0 or  $diff_tax!=0 or $total_diff!=0 and $continue) {
-        if (adjust_invoice($invoice,false))
+      if (adjust_invoice($invoice,$order,false))
             return;
         $diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
         $diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
@@ -486,6 +490,7 @@ function adjust_invoice($invoice,$continue=true) {
 }
 function get_data($header_data) {
     global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$packer_data,$parcels,$parcel_type,$editor;
+   
     $shipping_net=round($header_data['shipping']+$extra_shipping,2);
     $charges_net=round($header_data['charges'],2);
     $payment_method=parse_payment_method($header_data['pay_method']);
@@ -496,7 +501,9 @@ function get_data($header_data) {
 
 function create_order($data) {
     global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions;
-    $order_data=array(
+ 
+   
+   $order_data=array(
                     'type'=>'system',
                     'Customer Key'=>$customer_key,
                     'Order Original Data MIME Type'=>'application/vnd.ms-excel',
@@ -508,20 +515,27 @@ function create_order($data) {
                     'Order Public ID'=>$data['order id'],
                     'Order Date'=>$date_order,
                     'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
-                    'Order Ship To Key'=>$data['Order Ship To Key']
-                );
-    // print_r($order_data);
-    //if(isset($data['Order Ship To Key']))
-    //    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
+		    //     'Order Ship To Key'=>(array_key_exists('Order Ship To Key',$data)?$data['Order Ship To Key']:false)
+		     );
+   // print_r($order_data);
+   //if(isset($data['Order Ship To Key']))
+   //    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
+   
 
-
+   
+   
     $order=new Order('new',$order_data);
+    
+    if ($header_data['collection']=='Yes'){
+      $order->update_order_is_for_collection('Yes');
+    }else{
+      $order-> update_ship_to($data['Order Ship To Key']);
+      
+    }
 
 
-    if ($header_data['collection']=='Yes')
-        $order->update_order_is_for_collection('Yes');
     $discounts_map=array();
-
+    
 
 
     foreach($data_dn_transactions as $ddt_key=>$transaction) {
@@ -548,7 +562,7 @@ function create_order($data) {
                       'Metadata'=>$store_code.$order_data_id,
                   );
 
-
+	    //  print_r($data);
             $order->skip_update_after_individual_transaction=true;
             $transaction_data=$order->add_order_transaction($data);
             if ($transaction_data['updated'])
@@ -577,7 +591,7 @@ function create_order($data) {
                       'Current Payment State'=>'Waiting Payment',
                       'Metadata'=>$store_code.$order_data_id,
                   );
-//print_r($data);
+	    //   print_r($data);
 
             $order->skip_update_after_individual_transaction=true;
             $transaction_data=$order->add_order_transaction($data);
@@ -620,12 +634,12 @@ function create_order($data) {
     $order->update_charges_amount($charges_data);
 
 
-
+   
 
     $dn=$order->send_to_warehouse($date_order);
 
 
-
+    
 
     return $order;
 
@@ -649,7 +663,7 @@ function send_order($data,$data_dn_transactions) {
 
 
     foreach($data_dn_transactions as $key=>$value) {
-
+      // print_r($value);
         $sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d",$value['otf_key']);
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
@@ -660,7 +674,7 @@ function send_order($data,$data_dn_transactions) {
         }
 
         if (  $value['Shipped Quantity']>0) {
-            $dn->set_as_picked($itf,round($value['Shipped Quantity'],8),$date_order);
+            $dn->set_as_picked($itf,round($value['Shipped Quantity']+$value['given'],8),$date_order);
         }
         if ( $value['No Shipped Due Out of Stock']>0) {
 
@@ -670,7 +684,7 @@ function send_order($data,$data_dn_transactions) {
     }
 
 
-
+  
 
     $dn->update_picking_percentage();
 
@@ -679,15 +693,17 @@ function send_order($data,$data_dn_transactions) {
         $staff_key=$packer_data['id'][0];
     }
     $dn->start_packing($staff_key,$date_order);
-
+   
     foreach($data_dn_transactions as $key=>$value) {
         $dn->set_as_packed($value['itf'],round($value['Shipped Quantity'],8),$date_order);
     }
     $dn->update_packing_percentage();
-
+   
     $dn->set_parcels($parcels,$parcel_type);
-    $dn->ready_to_ship();
-
+    
+ $dn->ready_to_ship();
+ 
+   
     if (!($tipo_order==6 or $tipo_order==7)) {
         if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
 
@@ -733,7 +749,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 
-            adjust_invoice($invoice);
+            adjust_invoice($invoice,$order);
 
 
 

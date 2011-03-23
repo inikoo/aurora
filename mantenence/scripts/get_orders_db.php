@@ -103,8 +103,9 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls' )
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/b/%.xls' or like '%/a/%.xls' or  like '%/c/%.xls' order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/123964.xls'   order by filename";
-
+$sql="select * from  orders_data.orders where filename like '%/120217%.xls'   order by filename";
+//120239
+//120217
 //$sql="select * from  orders_data.orders where filename like '%/6911.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
@@ -1512,7 +1513,7 @@ update_data($to_update);
 //print "\n$tipo_order\n";
 
 function update_data($to_update) {
-
+  return;
     if (false) {
         $tm=new TimeSeries(array('q','invoices'));
         $tm->to_present=true;

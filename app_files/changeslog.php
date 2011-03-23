@@ -993,9 +993,9 @@ ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Content Type` ENUM( '
 ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Subjects` TEXT NOT NULL AFTER `Email Campaign Number Contents` ;
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Content` `Email Campaign Contents` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
-
-
-
+ALTER TABLE `Order Dimension` CHANGE `Order Out of Stock Amount` `Order Out of Stock Net Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+ALTER TABLE `Order Dimension` ADD `Order Out of Stock Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Order Out of Stock Net Amount` ;
+ALTER TABLE `Order Transaction Deal Bridge` ADD INDEX ( `Order Transaction Fact Key` ) ;
 
 
 CREATE TABLE `Email Template Dimension` (

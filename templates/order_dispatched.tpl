@@ -19,35 +19,41 @@
        <div style="border:0px solid #ddd;width:250px;float:right">
 	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 	  
-	   <tr><td  class="aright" >{t}Ordered Amount{/t}</td><td width=100 class="aright">{$order->get('Total Amount')}</td></tr>
-	    {if $order->get('Order Out of Stock Amount')!=0  }
-	   <tr><td  class="aright" >{t}Out of Stock{/t}</td><td width=100 class="aright">-{$order->get('Out of Stock Amount')}</td></tr>
+	   <tr><td  class="aright" >{t}Total Ordered (N){/t}</td><td width=100 class="aright">{$order->get('Total Net Amount')}</td></tr>
+	    {if $order->get('Order Out of Stock Net Amount')!=0  }
+	   <tr><td  class="aright" >{t}Out of Stock (N){/t}</td><td width=100 class="aright">-{$order->get('Out of Stock Net Amount')}</td></tr>
 	   {/if}
 	   
-	   <tr><td colspan=2 style="font-size:70%;border-top:1px solid #ccc;border-bottom:1px solid #eee">{t}Invoiced Amounts (before tax){/t}</td></tr>
+	   <tr><td colspan=2 style="font-size:70%;border-top:1px solid #ccc;border-bottom:1px solid #eee">{t}Invoiced Amounts{/t}</td></tr>
+	   
 	  
-	    {if $order->get('Order Invoiced Refund Net Amount')!=0}
-        <tr><td  class="aright" ><i>{t}Other Order Refunds{/t}</i></td><td width=100 class="aright">{$order->get('Invoiced Refund Net Amount')}</td></tr>
+	   <tr><td  class="aright" >{t}Items (N){/t}</td><td width=100 class="aright">{$order->get('Invoiced Items Amount')}</td></tr>
+	   
+	   <tr><td  class="aright" >{t}Shipping (N){/t}</td><td width=100 class="aright">{$order->get('Invoiced Shipping Amount')}</td></tr>
+	   {if $order->get('Order Invoiced Charges Amount')!=0}
+	   <tr><td  class="aright" >{t}Charges (N){/t}</td><td width=100 class="aright">{$order->get('Invoiced Charges Amount')}</td></tr>
+           {/if}
+	   {if $order->get('Order Invoiced Refund Net Amount')!=0}
+           <tr><td  class="aright" ><i>{t}Other Order Refunds{/t}</i></td><td width=100 class="aright">{$order->get('Invoiced Refund Net Amount')}</td></tr>
 	   {/if}
-	  <tr><td  class="aright" >{t}Items{/t}</td><td width=100 class="aright">{$order->get('Invoiced Items Amount')}</td></tr>
-
-	   	<tr><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$order->get('Invoiced Shipping Amount')}</td></tr>
-	   	{if $order->get('Order Invoiced Charges Amount')!=0}
-	   	<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$order->get('Invoiced Charges Amount')}</td></tr>
-        {/if}
-        {if $order->get('Order Net Refund Amount')!=0}
-        <tr><td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$order->get('Net Refund Amount')}</td></tr>
+	   {if $order->get('Order Invoiced Total Net Adjust Amount')!=0}
+	   <tr class="adjust" style="color:red"><td  class="aright" >{t}Adjusts (N){/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Net Adjust Amount')}</td></tr>
+           {/if}
+           {if $order->get('Order Net Refund Amount')!=0}
+           <tr><td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$order->get('Net Refund Amount')}</td></tr>
 	   {/if}
 	   
 	   
 	   
 	   
 	   <tr style="border-top:1px solid #bbb">
-	   
-	   <td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Net Amount')}</td>
+	     
+	     <td  class="aright" >{t}Total (N){/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Net Amount')}</td>
 	   </tr>
 	   <tr><td  class="aright" >{t}Tax{/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Tax Amount')}</td></tr>
-
+	    {if $order->get('Order Invoiced Total Tax Adjust Amount')!=0}
+	   <tr class="adjust" style="color:red"><td  class="aright" >{t}Tax Adjusts{/t}</td><td width=100 class="aright">{$order->get('Invoiced Total Tax Adjust Amount')}</td></tr>
+           {/if}
 	   <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td></tr>
 	   
 	 </table>
