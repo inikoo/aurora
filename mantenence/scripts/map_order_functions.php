@@ -7231,34 +7231,34 @@ function is_to_be_collected($data){
 
   }
 
- if(preg_match('/^(local *|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
+  if(preg_match('/^(local *|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
     
     $data['shipper_code']='NA';
-     $data['collection']='Yes';
-   
+    $data['collection']='Yes';
+    
      if(preg_match('/^(local|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes2']))){
        $data['notes2']='';
      }
 
-
+     
   }
-
- // print_r($data);
-    return $data;
-
+  
+  // print_r($data);
+  return $data;
+  
 }
 
 function is_showroom($data){
   if(preg_match('/^(showrooms?|Showrooom)$/i',_trim($data['notes']))){
     $data['showroom']='Yes';
     $data['notes']='';
- $data['shipper_code']='NA';
- $data['collection']='Yes';
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
     
   }
   if(preg_match('/^(showrooms?|Showrooom)$/i',_trim($data['notes2']))){
     $data['showroom']='Yes';
- $data['notes2']='';
+    $data['notes2']='';
   $data['shipper_code']='NA';
      $data['collection']='Yes';
   }
@@ -7557,28 +7557,28 @@ function checkPostcode (&$toCheck) {
   $pcexp[1] =  '/^('.$alpha1.'{1}[0-9]{1}'.$alpha3.'{1})([0-9]{1}'.$alpha5.'{2})$/';
 
   // Expression for postcodes: AANA NAA
-  $pcexp[2] =  '^('.$alpha1.'{1}'.$alpha2.'[0-9]{1}'.$alpha4.')([0-9]{1}'.$alpha5.'{2})$/';
+  $pcexp[2] =  '/^('.$alpha1.'{1}'.$alpha2.'[0-9]{1}'.$alpha4.')([0-9]{1}'.$alpha5.'{2})$/';
   
   // Exception for the special postcode GIR 0AA
-  $pcexp[3] =  '^(gir)(0aa)$/';
+  $pcexp[3] =  '/^(gir)(0aa)$/';
   
   // Standard BFPO numbers
-  $pcexp[4] = '^(bfpo)([0-9]{1,4})$/';
+  $pcexp[4] = '/^(bfpo)([0-9]{1,4})$/';
   
   // c/o BFPO numbers
-  $pcexp[5] = '^(bfpo)(c\/o[0-9]{1,3})$/';
+  $pcexp[5] = '/^(bfpo)(c\/o[0-9]{1,3})$/';
 
   // Load up the string to check, converting into lowercase and removing spaces
   $postcode = strtolower($toCheck);
   $postcode = str_replace (' ', '', $postcode);
   $postcode = str_replace ('^', '\^', $postcode);
-
+  // print "--->$postcode <----\n";
   // Assume we are not going to find a valid postcode
   $valid = false;
   
   // Check the string against the six types of postcodes
   foreach ($pcexp as $regexp) {
-  
+    //print "->$regexp <-->$postcode <----\n";
     if (preg_match($regexp,$postcode, $matches)) {
       
       // Load new postcode back into the form element  

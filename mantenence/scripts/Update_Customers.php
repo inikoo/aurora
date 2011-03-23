@@ -34,17 +34,17 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql="select * from `Customer Dimension` where `Customer Key`=66 order by `Customer Key` desc";
+$sql="select * from `Customer Dimension` where `Customer Type by Activity`='Prospect' order by `Customer Key` desc";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   //print $row['Customer Key']."\n";
-  $customer=new Customer($row['Customer Key']);
+   $customer=new Customer($row['Customer Key']);
   $customer->update_orders();
-   $customer->update_temporal_data();
+  //   $customer->update_temporal_data();
   $customer->update_activity();
-  $customer->update_full_search();
- // print $customer->id."\r";
+  //$customer->update_full_search();
+  print $customer->id."\r";
  }
 
 

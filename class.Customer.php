@@ -1662,6 +1662,16 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
         $this->data['Actual Customer']='Yes';
         $orders= $this->data['Customer Orders'];
 
+	$min_interval=30;
+	
+	$sql="select count(*) as num,avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>2";
+	$result2=mysql_query($sql);
+	if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+	  if($row2['num']>30)
+	    $min_interval=$row2['a'];
+	}
+	
+
         //print $this->id." $orders  \n";
 
         if ($orders==0) {
@@ -1675,7 +1685,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
             $result2=mysql_query($sql);
             if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
                 $average_max_interval=$row2['a'];
-                //print "$average_max_interval\n";
+		//  print "-------> $average_max_interval\n";
                 if (is_numeric($average_max_interval)) {
                     if (   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval) {
 
@@ -1721,11 +1731,16 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
 
                 $interval=ceil($this->data['Customer Order Interval']*$factor);
 
-            } else
+		//	print "----------> $interval $factor  \n";
+
+
+	    } else
                 $interval=ceil($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']));
 
 
-
+	    if($interval<$min_interval)
+	      $interval=$min_interval;
+	    // print "----------> $interval\n";
 
             if ( (date('U')-$last_date)/24/3600  <$interval) {
                 $this->data['Active Customer']='Yes';

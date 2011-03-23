@@ -380,7 +380,7 @@ if(!$user->can_view('orders'))
  case('transactions_to_process'):
    
    if(isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ){
-    
+     
      if($_REQUEST['show_all']=='yes')
        $show_all=true;
      else
@@ -388,7 +388,7 @@ if(!$user->can_view('orders'))
      $_SESSION['state']['order']['show_all']=$show_all;
    }else
      $show_all=$_SESSION['state']['order']['show_all'];
-  
+   
    if($show_all)
      products_to_sell();
    else
@@ -701,8 +701,8 @@ $order='`Order Current XHTML State`';
 else if($order=='customer')
      $order='`Order Customer Name`';
 
-  $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  //  print $sql;
+  $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //print $sql;
   global $myconf;
 
    $data=array();
@@ -714,36 +714,59 @@ else if($order=='customer')
      $state=$row['Order Current XHTML State'];
      if($row ['Order Type'] != 'Order')
        $state.=' ('.$row ['Order Type'].')';
-       
-       $mark='';
-       $adjusts=false;
-       $out_of_stock=false;
-        $adjust_color='brown';
-       if($row['Order Current Dispatch State']=='Dispatched' or $row['Order Current Payment State']=='Paid'){
-       
-       if($row['Order Out of Stock Amount']!=0){
+   
+    
+     $mark_out_of_stock="<span style='visibility:hidden'>&otimes</span>";
+     $mark_out_of_credits="<span style='visibility:hidden'>&crarr;</span>";
+     $mark_out_of_error="<span style='visibility:hidden'>&epsilon</span>";
+     $out_of_stock=false;
+     $errors=false;
+     $refunded=false;
+     if($row['Order Out of Stock Amount']!=0){
        $out_of_stock=true;
+       $info='';
+         if($row['Order Out of Stock Net Amount']!=0){
+	   $info.=_('Net').': '.money($row['Order Out of Stock Net Amount'],$row['Order Currency'])."";
+	 }
+	 if($row['Order Out of Stock Tax Amount']!=0){
+	   $info.='; '._('Tax').': '.money($row['Order Out of Stock Tax Amount'],$row['Order Currency']);
+	 }
+	 $info=preg_replace('/^\;\s*/','',$info);
+	 $mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes</span>";
+	 
+     }
+     
+     if($row['Order Adjust Amount']<-0.01 or $row['Order Adjust Amount']>0.01 ){
+       $errors=true;
+       $info='';
+       if($row['Order Invoiced Total Net Adjust Amount']!=0){
+	 $info.=_('Net').': '.money($row['Order Invoiced Total Net Adjust Amount'],$row['Order Currency'])."";
        }
-       
-       $adjust=$row['Order Balance Total Amount']-$row['Order Total Amount']-$row['Order Out of Stock Amount'];
-       if($adjust!=0){
-       
-       $adjusts=true;
-        if(abs($adjust)>1)
-        $adjust_color='red';
-
-       
-       
+       if($row['Order Invoiced Total Tax Adjust Amount']!=0){
+	 $info.='; '._('Tax').': '.money($row['Order Invoiced Total Tax Adjust Amount'],$row['Order Currency']);
        }
+       $info=_('Errors').' '.preg_replace('/^\;\s*/','',$info);
+       if($row['Order Adjust Amount']<-1 or $row['Order Adjust Amount']>1 ){
+	 $mark_out_of_error ="<span style='color:red' title='$info'>&epsilon;</span>";
+       }else{
+	 $mark_out_of_error ="<span style='color:brown'  title='$info'>&epsilon;</span>";
        }
-       if($out_of_stock)
-       $mark.='<span style="'.(!$out_of_stock?'visibility:hidden;':'').'color:brown">&otimes;</span><span style="'.(!$adjusts?'visibility:hidden;':'').'color:'.$adjust_color.'">'.$adjust.'&epsilon;</span>';
-       else
-              $mark.='<span style="'.(!$adjusts?'visibility:hidden;':'').'color:'.$adjust_color.'">&epsilon;</span><span style="'.(!$out_of_stock?'visibility:hidden;':'').'color:brown">&otimes;</span>';
-
+       //$mark_out_of_error.=$row['Order Adjust Amount'];
+     }
+     
+     
+     if(!$out_of_stock and !$refunded)
+       $mark=$mark_out_of_error.$mark_out_of_stock.$mark_out_of_credits;
+     elseif(!$refunded and $out_of_stock and $errors)
+       $mark=$mark_out_of_stock.$mark_out_of_error.$mark_out_of_credits;
+     else
+       $mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
+     
+     
+     
      $data[]=array(
 		   'id'=>$order_id,
-		   'customer'=>$customer,
+		   'customer'=>$customer,//$row['Order Balance Total Amount'].' xx  '.$row['Order Total Amount'].'xx '.$row['Order Out of Stock Amount'],
 		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
 		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
 		   'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
@@ -2281,9 +2304,11 @@ function transactions_dipatched(){
    
    $order=' order by O.`Product Code`';
    
-   $sql="select `Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,PH.`Product ID` ,O.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount 
-   from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) 
-   left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) 
+   $sql="select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount 
+   from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`) 
+   left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
+left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
+ 
    $where $order  ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
@@ -2314,7 +2339,7 @@ function transactions_dipatched(){
      $data[]=array(
 
 		   'code'=>$code
-		   ,'description'=>$row['Product XHTML Short Description']
+		   ,'description'=>$row['Product XHTML Short Description'].' <span style="color:red">'.$row['Deal Info'].'</span>'
 		  
 		   ,'ordered'=>$ordered
 		   ,'dispatched'=>$dispatched

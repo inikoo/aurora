@@ -183,7 +183,9 @@ class DeliveryNote extends DB_Table {
         $this->data ['Delivery Note Title'] = $dn_data ['Delivery Note Title'];
 
         $this->data ['Delivery Note Dispatch Method'] = $dn_data ['Delivery Note Dispatch Method'];
+	
 
+	
 
         if ($this->data ['Delivery Note Dispatch Method']=='Collection') {
 
@@ -232,7 +234,7 @@ class DeliveryNote extends DB_Table {
 
 
         }
-
+	
 
 
         $this->create_header ();
@@ -2029,9 +2031,8 @@ class DeliveryNote extends DB_Table {
     function ready_to_ship() {
 
         foreach($this->get_orders_objects() as $order) {
-            $order->update_shipping($this->id);
-            $order->update_charges($this->id);
-
+	  // $order->update_shipping($this->id);
+          //  $order->update_charges($this->id);
             $order->update_dispatch_state();
 
         }

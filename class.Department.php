@@ -742,6 +742,94 @@ var $external_DB_link=false;
         }
         // days on sale
 
+// --------------------------------------------------------start for 3 year-------------------------------------------------------------------
+        $on_sale_days=0;
+
+
+
+        $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
+// print "$sql\n\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['prods']==0)
+                $on_sale_days=0;
+            else {
+
+
+                if ($row['for_sale']>0)
+                    $to=strtotime('today');
+                else
+                    $to=strtotime($row['to']);
+                // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
+                // print "*** T:$to   ".strtotime('today -1 year')."  \n";
+                if ($to>strtotime('today -3 year')) {
+                    //print "caca";
+                    $from=strtotime($row['ffrom']);
+                    if ($from<strtotime('today -3 year'))
+                        $from=strtotime('today -3 year');
+
+                    //	    print "*** T:$to F:$from\n";
+                    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+                } else {
+                    $on_sale_days=0;
+
+                }
+            }
+        }
+
+
+
+        //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
+        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+        
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+
+	//	print "$sql\n";
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department 3 Year Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department 3 Year Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department 3 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+            $this->data['Product Department 3 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department 3 Year Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department 3 Year Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department 3 Year Acc Quantity Delivered']=$row['delivered'];
+	    $this->data['Product Department 3 Year Acc Customers']=$row['customers'];
+            $this->data['Product Department 3 Year Acc Invoices']=$row['invoices'];
+            $this->data['Product Department 3 Year Acc Pending Orders']=$pending_orders;
+
+            $sql=sprintf("update `Product Department Dimension` set `Product Department 3 Year Acc Invoiced Gross Amount`=%s,`Product Department 3 Year Acc Invoiced Discount Amount`=%s,`Product Department 3 Year Acc Invoiced Amount`=%s,`Product Department 3 Year Acc Profit`=%s, `Product Department 3 Year Acc Quantity Ordered`=%s , `Product Department 3 Year Acc Quantity Invoiced`=%s,`Product Department 3 Year Acc Quantity Delivered`=%s ,`Product Department 3 Year Acc Days On Sale`=%f  ,`Product Department 3 Year Acc Customers`=%d,`Product Department 3 Year Acc Invoices`=%d,`Product Department 3 Year Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Invoiced Amount'])
+
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department 3 Year Acc Quantity Delivered'])
+                         ,$on_sale_days
+			 ,$this->data['Product Department 3 Year Acc Customers']
+                         ,$this->data['Product Department 3 Year Acc Invoices']
+                         ,$this->data['Product Department 3 Year Acc Pending Orders']
+                         ,$this->id
+                        );
+	    //print "$sql\n";
+            if (!mysql_query($sql))
+                exit("$sql\ncan not update dept sales\n");
+        }
+        // exit;
+// --------------------------------------------------------end for 3 year---------------------------------------------------------------------
+
+
         $on_sale_days=0;
 
 
@@ -826,7 +914,265 @@ var $external_DB_link=false;
                 exit("$sql\ncan not update dept sales\n");
         }
         // exit;
-        $on_sale_days=0;
+ 
+
+
+// --------------------------------------start for yeartoday-----------------------------------
+     $on_sale_days=0;
+function YTD(){
+$first_day_of_year = date('Y').'-01-01';
+$today = date('Y-m-d');
+$diff = abs(strtotime($today) - strtotime($first_day_of_year));
+$years = floor($diff / (365*60*60*24));
+$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+$yeartoday=$years." year ".$months." month ".$days." day";
+//("%d years, %d months, %d days\n", $years, $months, $days);
+return $yeartoday;
+}
+
+$yeartoday=YTD();
+
+        $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['prods']==0)
+                $on_sale_days=0;
+            else {
+
+
+                if ($row['for_sale']>0)
+                    $to=strtotime('today');
+                else
+                    $to=strtotime($row['to']);
+                if ($to>strtotime("today -$yeartoday")) {
+
+                    $from=strtotime($row['ffrom']);
+                    if ($from<strtotime("today -$yeartoday"))
+                        $from=strtotime("today -$yeartoday");
+
+
+                    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+                } else
+                    $on_sale_days=0;
+            }
+        }
+
+        //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
+        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
+        
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department YearToDay Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department YearToDay Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department YearToDay Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+            $this->data['Product Department YearToDay Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department YearToDay Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department YearToDay Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department YearToDay Acc Quantity Delivered']=$row['delivered'];
+	    $this->data['Product Department YearToDay Acc Customers']=$row['customers'];
+            $this->data['Product Department YearToDay Acc Invoices']=$row['invoices'];
+            $this->data['Product Department YearToDay Acc Pending Orders']=$pending_orders;
+
+            $sql=sprintf("update `Product Department Dimension` set `Product Department YearToDay Acc Invoiced Gross Amount`=%s,`Product Department YearToDay Acc Invoiced Discount Amount`=%s,`Product Department YearToDay Acc Invoiced Amount`=%s,`Product Department YearToDay Acc Profit`=%s, `Product Department YearToDay Acc Quantity Ordered`=%s , `Product Department YearToDay Acc Quantity Invoiced`=%s,`Product Department 10 Day Acc Quantity Delivered`=%s  ,`Product Department 10 Day Acc Days On Sale`=%f  ,`Product Department 10 Day Acc Customers`=%d,`Product Department YearToDay Acc Invoices`=%d,`Product Department YearToDay Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Invoiced Amount'])
+
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Delivered'])
+                         ,$on_sale_days
+			 ,$this->data['Product Department YearToDay Acc Customers']
+                         ,$this->data['Product Department YearToDay Acc Invoices']
+                         ,$this->data['Product Department YearToDay Acc Pending Orders']
+                         ,$this->id
+                        );
+            // print "$sql\n";
+            if (!mysql_query($sql))
+                exit("$sql\ncan not update dept sales\n");
+        }
+
+// --------------------------------------ends for yeartoday-------------------------------------
+
+
+// ----------------------------------start for 6 month-----------------------------------------
+
+
+       $on_sale_days=0;
+
+
+        $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['prods']==0)
+                $on_sale_days=0;
+            else {
+
+
+                if ($row['for_sale']>0)
+                    $to=strtotime('today');
+                else
+                    $to=strtotime($row['to']);
+                if ($to>strtotime('today -6 month')) {
+
+                    $from=strtotime($row['ffrom']);
+                    if ($from<strtotime('today -6 month'))
+                        $from=strtotime('today -6 month');
+
+
+                    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+                } else
+                    $on_sale_days=0;
+            }
+        }
+
+        //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
+        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
+        
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department 6 Month Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department 6 Month Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department 6 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+            $this->data['Product Department 6 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department 6 Month Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department 6 Month Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department 6 Month Acc Quantity Delivered']=$row['delivered'];
+	    $this->data['Product Department 6 Month Acc Customers']=$row['customers'];
+            $this->data['Product Department 6 Month Acc Invoices']=$row['invoices'];
+            $this->data['Product Department 6 Month Acc Pending Orders']=$pending_orders;
+
+            $sql=sprintf("update `Product Department Dimension` set `Product Department 6 Month Acc Invoiced Gross Amount`=%s,`Product Department 6 Month Acc Invoiced Discount Amount`=%s,`Product Department 6 Month Acc Invoiced Amount`=%s,`Product Department 6 Month Acc Profit`=%s, `Product Department 6 Month Acc Quantity Ordered`=%s , `Product Department 6 Month Acc Quantity Invoiced`=%s,`Product Department 6 Month Acc Quantity Delivered`=%s  ,`Product Department 6 Month Acc Days On Sale`=%f  ,`Product Department 6 Month Acc Customers`=%d,`Product Department 6 Month Acc Invoices`=%d,`Product Department 6 Month Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Invoiced Amount'])
+
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department 6 Month Acc Quantity Delivered'])
+                         ,$on_sale_days
+			 ,$this->data['Product Department 6 Month Acc Customers']
+                         ,$this->data['Product Department 6 Month Acc Invoices']
+                         ,$this->data['Product Department 6 Month Acc Pending Orders']
+                         ,$this->id
+                        );
+            // print "$sql\n";
+            if (!mysql_query($sql))
+                exit("$sql\ncan not update dept sales\n");
+        }
+
+
+// ----------------------------------end for 6 month-----------------------------------------
+
+// --------------------------------------start for 3 months-----------------------------------
+     $on_sale_days=0;
+
+
+        $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['prods']==0)
+                $on_sale_days=0;
+            else {
+
+
+                if ($row['for_sale']>0)
+                    $to=strtotime('today');
+                else
+                    $to=strtotime($row['to']);
+                if ($to>strtotime('today -3 month')) {
+
+                    $from=strtotime($row['ffrom']);
+                    if ($from<strtotime('today -3 month'))
+                        $from=strtotime('today -3 month');
+
+
+                    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+                } else
+                    $on_sale_days=0;
+            }
+        }
+
+        //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
+        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+        
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department 3 Month Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department 3 Month Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department 3 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+            $this->data['Product Department 3 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department 3 Month Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department 3 Month Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department 3 Month Acc Quantity Delivered']=$row['delivered'];
+	    $this->data['Product Department 3 Month Acc Customers']=$row['customers'];
+            $this->data['Product Department 3 Month Acc Invoices']=$row['invoices'];
+            $this->data['Product Department 3 Month Acc Pending Orders']=$pending_orders;
+
+            $sql=sprintf("update `Product Department Dimension` set `Product Department 3 Month Acc Invoiced Gross Amount`=%s,`Product Department 3 Month Acc Invoiced Discount Amount`=%s,`Product Department 3 Month Acc Invoiced Amount`=%s,`Product Department 3 Month Acc Profit`=%s, `Product Department 3 Month Acc Quantity Ordered`=%s , `Product Department 3 Month Acc Quantity Invoiced`=%s,`Product Department 3 Month Acc Quantity Delivered`=%s  ,`Product Department 3 Month Acc Days On Sale`=%f  ,`Product Department 3 Month Acc Customers`=%d,`Product Department 3 Month Acc Invoices`=%d,`Product Department 3 Month Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Invoiced Amount'])
+
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department 3 Month Acc Quantity Delivered'])
+                         ,$on_sale_days
+			 ,$this->data['Product Department 3 Month Acc Customers']
+                         ,$this->data['Product Department 3 Month Acc Invoices']
+                         ,$this->data['Product Department 3 Month Acc Pending Orders']
+                         ,$this->id
+                        );
+            // print "$sql\n";
+            if (!mysql_query($sql))
+                exit("$sql\ncan not update dept sales\n");
+        }
+
+// --------------------------------------ends for 3 month-------------------------------------
+       $on_sale_days=0;
 
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
@@ -978,6 +1324,88 @@ var $external_DB_link=false;
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
+
+
+// --------------------------------------start for 10 days-----------------------------------
+     $on_sale_days=0;
+
+
+        $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['prods']==0)
+                $on_sale_days=0;
+            else {
+
+
+                if ($row['for_sale']>0)
+                    $to=strtotime('today');
+                else
+                    $to=strtotime($row['to']);
+                if ($to>strtotime('today -10 day')) {
+
+                    $from=strtotime($row['ffrom']);
+                    if ($from<strtotime('today -10 day'))
+                        $from=strtotime('today -10 day');
+
+
+                    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+                } else
+                    $on_sale_days=0;
+            }
+        }
+
+        //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
+        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
+        
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
+
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department 10 Day Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department 10 Day Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department 10 Day Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+            $this->data['Product Department 10 Day Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department 10 Day Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department 10 Day Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department 10 Day Acc Quantity Delivered']=$row['delivered'];
+	    $this->data['Product Department 10 Day Acc Customers']=$row['customers'];
+            $this->data['Product Department 10 Day Acc Invoices']=$row['invoices'];
+            $this->data['Product Department 10 Day Acc Pending Orders']=$pending_orders;
+
+            $sql=sprintf("update `Product Department Dimension` set `Product Department 10 Day Acc Invoiced Gross Amount`=%s,`Product Department 10 Day Acc Invoiced Discount Amount`=%s,`Product Department 10 Day Acc Invoiced Amount`=%s,`Product Department 10 Day Acc Profit`=%s, `Product Department 10 Day Acc Quantity Ordered`=%s , `Product Department 10 Day Acc Quantity Invoiced`=%s,`Product Department 10 Day Acc Quantity Delivered`=%s  ,`Product Department 10 Day Acc Days On Sale`=%f  ,`Product Department 10 Day Acc Customers`=%d,`Product Department 10 Day Acc Invoices`=%d,`Product Department 10 Day Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Invoiced Amount'])
+
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department 10 Day Acc Quantity Delivered'])
+                         ,$on_sale_days
+			 ,$this->data['Product Department 10 Day Acc Customers']
+                         ,$this->data['Product Department 10 Day Acc Invoices']
+                         ,$this->data['Product Department 10 Day Acc Pending Orders']
+                         ,$this->id
+                        );
+            // print "$sql\n";
+            if (!mysql_query($sql))
+                exit("$sql\ncan not update dept sales\n");
+        }
+
+// --------------------------------------ends for 10 days-------------------------------------
+
 
         $on_sale_days=0;
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Main Department Key`=".$this->id;
