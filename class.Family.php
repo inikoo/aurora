@@ -1146,26 +1146,21 @@ function update_field_switcher($field,$value,$options='') {
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
-$diff = abs(strtotime($today) - strtotime($first_day_of_year));
-$years = floor($diff / (365*60*60*24));
-$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-$yeartoday=$years." year ".$months." month ".$days." day";
-//("%d years, %d months, %d days\n", $years, $months, $days);
-return $yeartoday;
+//$diff = abs(strtotime($today) - strtotime($first_day_of_year));
+$diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
+return $diff;
 }
 
 $yeartoday=YTD();
-
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
-                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
+                     and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
 
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF    where `Product Family Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
 
         //	exit($sql);
 
@@ -1211,7 +1206,7 @@ $yeartoday=YTD();
 
         if (!mysql_query($sql))
             exit("$sql\ncan not update fam sales yeartoday\n");
-// ----------------------------------------Ends for yeartoday----------------------------------------------------------------------------
+// ----------------------------------------Ends for yeartoday-------------------------------------------------------------------------
 // ---------------------------------------Starts for 6 month--------------------------------------------------------------------------
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
                      and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
