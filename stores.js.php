@@ -524,7 +524,7 @@ ids=['family_general','family_sales','family_stock'];
 
 ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
  YAHOO.util.Event.addListener(ids, "click",change_product_view,{'table_id':3,'parent':'stores'})
- ids=['product_period_all','product_period_year','product_period_quarter','product_period_month','product_period_week'];
+ ids=['product_period_all','product_period_three_year','product_period_year','product_period_yeartoday','product_period_six_month','product_period_quarter','product_period_three_month','product_period_month','product_period_ten_day','product_period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':3,'subject':'product'});
  ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':3,'subject':'product'});

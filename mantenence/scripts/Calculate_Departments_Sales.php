@@ -32,8 +32,8 @@ $sql="select * from `Product Department Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
-
-  $department=new Department($row['Product Department Key']);
+$department=new Department($row['Product Department Key']);
+ // $department=new Department(95);
     $department->update_sales_default_currency();
 
   $department->update_customers();
