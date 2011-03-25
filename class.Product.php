@@ -2713,6 +2713,8 @@ function add_image($image_key,$args='') {
     $keys=preg_replace('/,$/','',$keys);
 */
     $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')  and  `Product ID`=%d",$this->pid);
+//print $sql;
+
     $result=mysql_query($sql);
     $pending_orders=0;
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2780,8 +2782,8 @@ function add_image($image_key,$args='') {
 // -------------------------------------------------- start for 3 year---------------------------------------------
 if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
-    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
-
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+//print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
       $this->data['Product 3 Year Acc Invoiced Gross Amount']=$row['gross'];
@@ -2811,6 +2813,7 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 		 ,prepare_mysql($this->data['Product 3 Year Acc Quantity Delivered'])
 		 ,$this->pid
 		 );
+//print $sql;
     if (!mysql_query($sql)) {
       exit("$sql\ncan not update product sales 3 yr acc\n");
     }
@@ -2820,7 +2823,7 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
-print $sql;
+//print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -2852,22 +2855,24 @@ print $sql;
 		 ,prepare_mysql($this->data['Product 1 Year Acc Quantity Delivered'])
 		 ,$this->pid
 		 );
-print $sql;
+//print $sql;
     if (!mysql_query($sql)) {
       exit("$sql\ncan not update product sales 1 yr acc\n");
 
     }
 // -------------------------------------------------- start for yeartoday---------------------------------------------
 if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+if(!function_exists('YTD')){
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
 $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
 return $diff;
 }
+}
 $yeartoday=YTD();
 
-    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -3266,13 +3271,14 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     }
 if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 // ----------------------------------------------------start for yeartoday----------------------------------------------
+if(!function_exists('YTD')){
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
 $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
 return $diff;
 }
-
+}
 $yeartoday=YTD();
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
 		 ,$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
