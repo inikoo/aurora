@@ -5185,6 +5185,54 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
                 $margin=$row['Product YearToDay Acc Margin'];
             }
 // -------------------------End Product's  YearToDay-------------------------------------------
+// -------------------------Start Product's  6 Month-------------------------------------------
+            elseif($period=='six_month') {
+
+
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product 6 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product 6 Month Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='month') {
+                    if ($row['Product 6 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product 6 Month Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='week') {
+                    if ($row['Product 6 Month Acc Days On Sale']>0)
+                        $factor=7/$row['Product 6 Month Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product 6 Month Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product 6 Month Acc Days Available'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product 6 Month Acc Days Available']>0)
+                        $factor=7/$row['Product 6 Month Acc Days Available'];
+                    else
+                        $factor='ND';
+                }
+                if ($factor=='ND') {
+                    $tsall=_('ND');
+                    $tprofit=_('ND');
+                    $sold=_('ND');
+                } else {
+                    $sold=($row['Product 6 Month Acc Quantity Invoiced']*$factor);
+                    $tsall=($row['Product 6 Month Acc Invoiced Amount']*$factor);
+                    $tprofit=($row['Product 6 Month Acc Profit']*$factor);
+                }
+                $margin=$row['Product 6 Month Acc Margin'];
+            }
+// -------------------------End Product's  6 Month-------------------------------------------
 
 
             elseif($period=='quarter') {
@@ -5233,6 +5281,60 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
                 $margin=$row['Product 1 Quarter Acc Margin'];
 
             }
+
+
+
+// -------------------------Start Product's  3 Month-------------------------------------------
+            elseif($period=='three_month') {
+
+
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product 3 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product 3 Month Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='month') {
+                    if ($row['Product 3 Month Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product 3 Month Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='week') {
+                    if ($row['Product 3 Month Acc Days On Sale']>0)
+                        $factor=7/$row['Product 3 Month Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product 3 Month Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product 3 Month Acc Days Available'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product 3 Month Acc Days Available']>0)
+                        $factor=7/$row['Product 3 Month Acc Days Available'];
+                    else
+                        $factor='ND';
+                }
+                if ($factor=='ND') {
+                    $tsall=_('ND');
+                    $tprofit=_('ND');
+                    $sold=_('ND');
+                } else {
+                    $sold=($row['Product 3 Month Acc Quantity Invoiced']*$factor);
+                    $tsall=($row['Product 3 Month Acc Invoiced Amount']*$factor);
+                    $tprofit=($row['Product 3 Month Acc Profit']*$factor);
+                }
+                $margin=$row['Product 3 Month Acc Margin'];
+            }
+// -------------------------End Product's  3 Month-------------------------------------------
+
+
+
             elseif($period=='month') {
                 if ($avg=='totals')
                     $factor=1;
@@ -5278,6 +5380,57 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
                 }
                 $margin=$row['Product 1 Month Acc Margin'];
             }
+
+
+// -------------------------Start Product's  10 day-------------------------------------------
+            elseif($period=='ten_day') {
+
+
+                if ($avg=='totals')
+                    $factor=1;
+                elseif($avg=='month') {
+                    if ($row['Product 10 Day Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product 10 Day Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='month') {
+                    if ($row['Product 10 Day Acc Days On Sale']>0)
+                        $factor=30.4368499/$row['Product 10 Day Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='week') {
+                    if ($row['Product 10 Day Acc Days On Sale']>0)
+                        $factor=7/$row['Product 10 Day Acc Days On Sale'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='month_eff') {
+                    if ($row['Product 10 Day Acc Days Available']>0)
+                        $factor=30.4368499/$row['Product 10 Day Acc Days Available'];
+                    else
+                        $factor='ND';
+                }
+                elseif($avg=='week_eff') {
+                    if ($row['Product 10 Day Acc Days Available']>0)
+                        $factor=7/$row['Product 10 Day Acc Days Available'];
+                    else
+                        $factor='ND';
+                }
+                if ($factor=='ND') {
+                    $tsall=_('ND');
+                    $tprofit=_('ND');
+                    $sold=_('ND');
+                } else {
+                    $sold=($row['Product 10 Day Acc Quantity Invoiced']*$factor);
+                    $tsall=($row['Product 10 Day Acc Invoiced Amount']*$factor);
+                    $tprofit=($row['Product 10 Day Acc Profit']*$factor);
+                }
+                $margin=$row['Product 10 Day Acc Margin'];
+            }
+// -------------------------End Product's  10 days-------------------------------------------
+
             elseif($period=='week') {
                 if ($avg=='totals')
                     $factor=1;

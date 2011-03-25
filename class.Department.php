@@ -689,6 +689,7 @@ var $external_DB_link=false;
 
         }
         $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')  and  `Product Department Key`=".$this->id;
+//print $sql;
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -696,7 +697,7 @@ var $external_DB_link=false;
         }
         $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF  where `Product Department Key`=".$this->id;
 
-
+//print $sql;
 
 
         $result=mysql_query($sql);
@@ -735,8 +736,9 @@ var $external_DB_link=false;
 
                          ,$this->id
                         );
-            //  print "$sql\n";
-            //  exit;
+
+          //   print "$sql\n";
+           //  exit;
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
@@ -835,7 +837,7 @@ var $external_DB_link=false;
 
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
-// print "$sql\n\n";
+ print "$sql\n\n";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($row['prods']==0)
@@ -869,7 +871,7 @@ var $external_DB_link=false;
         //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
         and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
-        
+   print "$sql\n\n";     
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -877,7 +879,7 @@ var $external_DB_link=false;
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
-	//	print "$sql\n";
+		print "$sql\n";
 
         $result=mysql_query($sql);
 
@@ -909,7 +911,7 @@ var $external_DB_link=false;
                          ,$this->data['Product Department 1 Year Acc Pending Orders']
                          ,$this->id
                         );
-	    //print "$sql\n";
+	   print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
