@@ -1103,7 +1103,6 @@ $current_from=strtotime($this->data['Store Valid From']);
 
     function update_store_sales() {
         $on_sale_days=0;
-
 $current_from=strtotime($this->data['Store Valid From']);
 //print "**** ".$this->data['Store Valid From']."\n";
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
@@ -1236,8 +1235,9 @@ $current_from=strtotime($this->data['Store Valid From']);
                      from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
         $result=mysql_query($sql);
-
+//print $sql;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
             $this->data['Store 1 Year Acc Invoiced Gross Amount']=$row['gross'];
             $this->data['Store 1 Year Acc Invoiced Discount Amount']=$row['disc'];
             $this->data['Store 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
@@ -1265,7 +1265,7 @@ $current_from=strtotime($this->data['Store Valid From']);
                          ,$this->data['Store 1 Year Acc Pending Orders']
                          ,$this->id
                         );
-            //  print "$sql\n";
+           //   print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1324,7 +1324,7 @@ $current_from=strtotime($this->data['Store Valid From']);
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
                      ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
                      from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
-
+//print $sql;
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1355,7 +1355,7 @@ $current_from=strtotime($this->data['Store Valid From']);
                          ,$this->data['Store 3 Year Acc Pending Orders']
                          ,$this->id
                         );
-            //  print "$sql\n";
+          // print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1370,17 +1370,19 @@ $current_from=strtotime($this->data['Store Valid From']);
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
-$diff = abs(strtotime($today) - strtotime($first_day_of_year));
-$years = floor($diff / (365*60*60*24));
-$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-$yeartoday=$years." year ".$months." month ".$days." day";
+//$diff = abs(strtotime($today) - strtotime($first_day_of_year));
+$diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
+//$years = floor($diff / (365*60*60*24));
+//$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+//$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+//$yeartoday=$years." year ".$months." month ".$days." day";
 //("%d years, %d months, %d days\n", $years, $months, $days);
-return $yeartoday;
+//return $yeartoday;
+return $diff;
 }
 
 $yeartoday=YTD();
- 
+
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
         // print "$sql\n\n";
         $result=mysql_query($sql);
@@ -1396,11 +1398,11 @@ $yeartoday=YTD();
                     $to=strtotime($row['to']);
                 // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
                 // print "*** T:$to   ".strtotime('today -1 year')."  \n";
-                if ($to>strtotime("today -$yeartoday")) {
+                if ($to>strtotime("today -$yeartoday day")) {
                    
                     $from=strtotime($row['ffrom']);
-                    if ($from<strtotime("today -$yeartoday"))
-                        $from=strtotime("today -$yeartoday");
+                    if ($from<strtotime("today -$yeartoday day"))
+                        $from=strtotime("today -$yeartoday day");
 
                     //	    print "*** T:$to F:$from\n";
                     $on_sale_days=($to-$from)/ (60 * 60 * 24);
@@ -1416,8 +1418,8 @@ $yeartoday=YTD();
 
         //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
-                     and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
-
+                     and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
+//print $sql;
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1425,10 +1427,10 @@ $yeartoday=YTD();
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
                      ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
-                     from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+                     from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
 
         $result=mysql_query($sql);
-
+//print $sql;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Store YearToDay Acc Invoiced Gross Amount']=$row['gross'];
             $this->data['Store YearToDay Acc Invoiced Discount Amount']=$row['disc'];
@@ -1457,7 +1459,7 @@ $yeartoday=YTD();
                          ,$this->data['Store YearToDay Acc Pending Orders']
                          ,$this->id
                         );
-            //  print "$sql\n";
+         //  print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1516,7 +1518,7 @@ $yeartoday=YTD();
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
                      ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
                      from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
-
+//print $sql;
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1547,7 +1549,7 @@ $yeartoday=YTD();
                          ,$this->data['Store 6 Month Acc Pending Orders']
                          ,$this->id
                         );
-            //  print "$sql\n";
+         //  print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1688,7 +1690,7 @@ $yeartoday=YTD();
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
                      ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
                      from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
-
+//print "$sql\n";
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1719,7 +1721,7 @@ $yeartoday=YTD();
                          ,$this->data['Store 3 Month Acc Pending Orders']
                          ,$this->id
                         );
-            //  print "$sql\n";
+          //  print "$sql\n";
 
 
             if (!mysql_query($sql))

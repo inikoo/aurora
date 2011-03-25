@@ -198,11 +198,16 @@
        
 	    <table id="product_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $product_view!='sales' };display:none{/if}"  class="options_mini" >
 	    <tr>
-    	    <td class="option {if $product_period=='all'}selected{/if}" period="all"  id="product_period_all" >{t}All{/t}</td>
-	        <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="product_period_year"  >{t}1Yr{/t}</td>
-	        <td class="option {if $product_period=='quarter'}selected{/if}"  period="quarter"  id="product_period_quarter"  >{t}1Qtr{/t}</td>
-	        <td class="option {if $product_period=='month'}selected{/if}"  period="month"  id="product_period_month"  >{t}1M{/t}</td>
-	        <td class="option {if $product_period=='week'}selected{/if}" period="week"  id="product_period_week"  >{t}1W{/t}</td>
+	  <td class="option {if $product_period=='all'}selected{/if}" period="all"  id="product_period_all" >{t}All{/t}</td>
+	  <td class="option {if $product_period=='three_year'}selected{/if}"  period="three_year"  id="product_period_three_year"  >{t}3Y{/t}</td>
+	  <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="product_period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $product_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="product_period_yeartoday"  >{t}YTD{/t}</td>	
+	  <td class="option {if $product_period=='six_month'}selected{/if}"  period="six_month"  id="product_period_six_month"  >{t}6M{/t}</td>
+	  <td class="option {if $product_period=='quarter'}selected{/if}"  period="quarter"  id="product_period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $product_period=='three_month'}selected{/if}"  period="three_month"  id="product_period_three_month"  >{t}3M{/t}</td>
+	  <td class="option {if $product_period=='month'}selected{/if}"  period="month"  id="product_period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $product_period=='ten_day'}selected{/if}"  period="ten_day"  id="product_period_ten_day"  >{t}10D{/t}</td>
+	  <td class="option {if $product_period=='week'}selected{/if}" period="week"  id="product_period_week"  >{t}1W{/t}</td>
 	    </tr>
         </table>
         <table  id="product_avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $product_view!='sales' };display:none{/if}"  class="options_mini" >

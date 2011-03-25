@@ -33,7 +33,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
-  $store=new Store($row['Store Key']);
+ $store=new Store($row['Store Key']);
   $store->update_customers_data();
   $store->update_orders();
  $store->update_store_sales();
