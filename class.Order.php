@@ -3374,7 +3374,7 @@ where `Order Key`=%d",
                      ,$this->id
                     );
         mysql_query($sql);
-		print $sql;
+		//print $sql;
         if (mysql_affected_rows()>0) {
             $this->get_data('id',$this->id);
             $this->updated=true;
