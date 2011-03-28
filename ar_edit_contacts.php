@@ -16,6 +16,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
 case('delete_customer_history'):
 $data=prepare_values($_REQUEST,array(
                             'key'=>array('type'=>'key'),
@@ -278,6 +279,7 @@ case('edit_company_area'):
     edit_company_area($data);
     break;
 
+break;
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found'));

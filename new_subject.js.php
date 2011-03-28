@@ -52,7 +52,7 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 		
 		for(x in r.candidates_data){
 		    
-		    Dom.get("results").innerHTML+='<div style="width:100%;"><div style="width:270px;margin:0px 0px 10px 0;float:left;margin-left:40px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:350px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div><div style="font-size:80%">'+r.candidates_data[x]['link']+'</div>  <div style="clear:both"></div><div style="clear:both"> </div>';
+		    Dom.get("results").innerHTML+='<div style="width:100%;"><div style="width:270px;margin:0px 0px 10px 0;float:left;margin-left:10px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:300px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div><div style="font-size:80%">'+r.candidates_data[x]['link']+'</div>  <div style="clear:both"></div><div style="clear:both"> </div>';
 		    
 		    var found_img='';
 		    // alert(r.candidates_data[x]['found']);return;
@@ -328,10 +328,11 @@ function postal_code_inputed(){
 
 }
 function validate_postal_code(){
+
     var postal_code=Dom.get('address_postal_code').value.replace(/\s+/,"");
     var o=Dom.get("address_postal_code");
     var tr=Dom.get('tr_address_postal_code');
-    // alert(postal_regex+' '+postal_code)
+  
     var item='postal_code';
     var valid=postal_regex.test(postal_code);
 
@@ -345,7 +346,7 @@ function validate_postal_code(){
 Dom.get('address_postal_code_warning').setAttribute('title',postcode_help);
     if(validate_data.postal_code.inputed==true){
 	if(valid){
-	    Dom.removeClass(tr,'no_validated');
+	   // Dom.removeClass(tr,'no_validated');
 	    Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
 	    
@@ -353,7 +354,7 @@ Dom.get('address_postal_code_warning').setAttribute('title',postcode_help);
 	}else{
 	    //alert('hard no valid');
 	    Dom.removeClass(tr,'validated');
-	    Dom.addClass(tr,'no_validated');
+	  //  Dom.addClass(tr,'no_validated');
 	    validate_data[item].validated=false;
 	    	    Dom.get('address_postal_code_warning').style.visibility='visible';
 
@@ -363,14 +364,14 @@ Dom.get('address_postal_code_warning').setAttribute('title',postcode_help);
 	
 	Dom.removeClass(o,'no_validated');
 	if(valid){
-	    Dom.addClass(tr,'validated');
+	  //  Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
 	    	    Dom.get('address_postal_code_warning').style.visibility='hidden';
 
 	}else{
 	    // alert('no valid');
 	    validate_data[item].validated=false;
-	    Dom.removeClass(tr,'validated');
+	 //   Dom.removeClass(tr,'validated');
 	    	    Dom.get('address_postal_code_warning').style.visibility='visible';
 
 	}
@@ -508,12 +509,29 @@ function init(){
 	YAHOO.util.Event.addListener('address_postal_code', "blur",postal_code_inputed);
 	YAHOO.util.Event.addListener('Contact_Name', "blur",contact_name_inputed);
 
-
+/*
 	var ids = ["address_description","address_country_d1","address_country_d2","address_town"
 		   ,"address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
 	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change_when_creating);
 	YAHOO.util.Event.addListener(ids, "change",on_address_item_change_when_creating);
-  
+  */
+	if(suggest_country){
+
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex","postcode_help"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
+		Countries_AC.suffix = true; 
+
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+	Countries_AC.resultTypeList = false;
+	Countries_AC.formatResult = countries_format_results;
+    var highlightMatch = countries_highlightMatch;
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+
+	}
+
+
 
 	
 	if(suggest_d1){
@@ -605,19 +623,7 @@ function init(){
 	}
 	
 
-	if(suggest_country){
 
-	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex","postcode_help"]}
-	var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
-	Countries_AC.forceSelection = true; 
-	Countries_AC.useShadow = true;
-	Countries_AC.resultTypeList = false;
-	Countries_AC.formatResult = countries_format_results;
-    var highlightMatch = countries_highlightMatch;
-	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
-
-	}
  
 
 

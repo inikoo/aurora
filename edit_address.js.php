@@ -27,6 +27,9 @@ $country_list=preg_replace('/^\,/','',$country_list);
 
 
 ?>
+
+var dialog_country_list;
+
 var Country_List=[<?php echo$country_list?>];
 var Address_Changes=0;
 var Address_Items_Changes=0;
@@ -38,6 +41,104 @@ var postal_regex=new RegExp('.?');
 
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
 var Address_Meta_Keys=["type","function"];
+
+
+
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+
+
+
+
+  var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+ this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+  elLiner.innerHTML = oData;
+         //   if(oRecord.getData("field3") > 100) {
+       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+
+        };
+        
+        // Add the custom formatter to the shortcuts
+        YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
+
+	   
+	    var ColumnDefs = [
+                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"code",formatter:"remove_links", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", formatter:"remove_links",label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			];
+			       
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_regions.php?tipo=country_list&tableid=2&nr=20&sf=0");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    	    this.dataSource2.table_id=tableid;
+
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','population','gnp','wregion','code3a','code2a','plain_name','postal_regex','postcode_help'
+			 ]};
+
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['countries']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['world']['countries']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['countries']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+this.table2.prefix='';
+ this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+      this.table2.subscribe("rowClickEvent", select_country_from_list);
+     
+
+
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+
+};
+
+    });
+
 
 
 function cancel_edit_address(prefix) {
@@ -804,18 +905,68 @@ var onCountrySelected = function(sType, aArgs) {
     if (this.suffix==undefined)
         this.suffix='';
 
-    // update hidden form field with the selected item's ID
-    Dom.get(this.suffix+"address_country_code").value = oData.code;
-    Dom.get(this.suffix+"address_country_2acode").value = oData.code2a;
-
-//alert(oData.postal_regex)
-    postal_regex=new RegExp(oData.postal_regex,"i");
-    postcode_help=oData.postcode_help;
-//alert(postcode_help)
-    myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
-    update_address_labels(oData.code,this.suffix);
+      myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
+change_country(this.suffix,oData)
 
 };
+function select_default_country(prefix,code){
+ var request='ar_regions.php?tipo=country_info_from_2alpha&2alpha=' +code+'&prefix='+prefix;
+    YAHOO.util.Connect.asyncRequest('POST',request , {
+success:function(o) {
+            //alert(o.responseText);
+            var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state==200) {
+               Dom.get('address_country').value=r.data['Country Name'] + " (" + r.data['Country Code'] + ") ";
+
+              change_country(r.prefix,{
+              'code':r.data['Country Code'],
+              'code2a':r.data['Country 2 Alpha Code'],
+              'postal_regex':r.data['Country Postal Code Regex'],
+              'postcode_help':r.data['Country Postal Code Format'],
+              
+              });
+            } else {
+                
+            }
+        }
+    });
+
+}
+
+function select_country_from_list(oArgs){
+record=tables.table2.getRecord(oArgs.target)
+var data={
+    'code':record.getData('code3a'),
+    'code2a':record.getData('code2a'),
+    'postal_regex':record.getData('postal_regex'),
+    'postcode_help':record.getData('postcode_help'),
+    
+    }
+               Dom.get('address_country').value= record.getData('plain_name')+ " (" + record.getData('code3a') + ") ";
+
+  change_country(tables.table2.prefix,data);
+    dialog_country_list.hide();
+    hide_filter(true,2)
+}
+
+
+function change_country(prefix,oData){
+  Dom.get(prefix+"address_country_code").value = oData.code;
+    Dom.get(prefix+"address_country_2acode").value = oData.code2a;
+    postal_regex=new RegExp(oData.postal_regex,"i");
+    postcode_help=oData.postcode_help;
+    update_address_labels(oData.code,prefix);
+    Dom.setStyle(prefix+'address_components','display','')
+    Dom.setStyle(prefix+'country_options','display','none')
+    Dom.setStyle(prefix+'show_country_options','display','')
+
+
+}
+
+function show_country_options(prefix){
+ Dom.setStyle(prefix+'country_options','display','')
+    Dom.setStyle(prefix+'show_country_options','display','none')
+}
 
 function countries_format_results(oResultData, sQuery, sResultMatch) {
 
@@ -850,3 +1001,19 @@ var countries_highlightMatch = function(full, snippet, matchindex) {
            full.substring(matchindex + snippet.length);
 };
 
+
+
+function show_countries_list(prefix){
+tables.table2.prefix=prefix
+dialog_country_list.show();
+}
+
+
+
+
+function init_address(){
+dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {context:["country","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_country_list.render();
+
+}
+YAHOO.util.Event.onDOMReady(init_address);

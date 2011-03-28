@@ -8,47 +8,50 @@
     </div>
     
     <div >
-      <div id="results" style="margin-top:0px;float:right;width:500px;xheight:800px">
+    
+    
+      <div id="results" style="margin-top:0px;float:right;width:390px;xheight:800px">
 	
       </div>
       
-      <div  style="float:left;width:370px" >
-      <table class="edit" border=0 >
-      
-      	
-      
-	{if $scope=='customer'}
+      <div  style="float:left;" >
+      <table class="edit" border=0  style="width:540px;margin-bottom:0px" >
+  	{if $scope=='customer'}
 <input type="hidden" value="{$store_key}" id="Store_Key"/>
 {/if}
 	{if $scope=='supplier'}
 	<tr class="first"><td style="" class="label">{t}Supplier Code{/t}:</td>
 	  <td  style="text-align:left">
-	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Supplier_Code" value="" ovalue="" valid="0">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Supplier_Code" value="" ovalue="" valid="0">
 	      <div id="Supplier_Code_Container" style="" ></div>
 	    </div>
 	  </td>
+	  <td></td>
 	</tr>
 
 	{/if}
 	
-	<tr class="first"><td style="" class="label">{t}Company Name{/t}:</td>
-	  <td  style="text-align:left">
-	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue="" valid="0">
+	<tr class="first">
+	<td style="width:120px" class="label">{t}Company Name{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Company_Name" value="" ovalue="" valid="0">
 	      <div id="Company_Name_Container" style="" ></div>
 	    </div>
 	  </td>
+	  <td style="width:70px"></td>
 	</tr>
 	<tr style="{if $scope=='corporation'}display:none{/if}" >
 	  
 	  <td class="label">{t}Contact Name{/t}:</td>
 	  <td>
-	    
-	    <input style="width:18em" id="Contact_Name" value="" >
+	    <div>
+	    <input id="Contact_Name" value="" style="width:100%" />
 	    <div id="Contact_Name_Container" style="" ></div>
-	    
+	    </div>
 	  </td>
+	  <td></td>
 	  
 	  
 	<tr id="tr_Contact_Gender" style="display:none">
@@ -74,15 +77,15 @@
 	  
 	  <tr>
 	    <td class="label">{t}First Name(s){/t}:</td>
-	    <td   ><input  onkeyup="name_component_change();"  onblur="" style="width:12em"  name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
+	    <td   ><input  onkeyup="name_component_change();"  onblur="" style=""  name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
 	  </tr>
 	  <tr>
 	    <td class="label">{t}Surname(s){/t}:</td>
-	    <td   ><input  onkeyup="name_component_change();"  onblur="" style="width:12em"  name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
+	    <td   ><input  onkeyup="name_component_change();"  onblur="" style=""  name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
 	  </tr>
 	  <tr style="display:none">
 	    <td class="label">{t}Suffix(s){/t}:</td>
-	    <td   ><input  onkeyup="name_component_change();"  onblur="" style="width:12em"  name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
+	    <td   ><input  onkeyup="name_component_change();"  onblur="" style=""  name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
 	  </tr>
 	  
 	</tbody>
@@ -90,9 +93,10 @@
 	<tr id="email_mould"   style="{if $scope=='corporation'}display:none{/if}"  >
 	  <td  class="label"  >{t}Email{/t}:</td>
 	  <td >
-	    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
+	    <div>
+	    <input style="width:100%" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
 	    <div id="Email_Container" style="" ></div>
-	    
+	    </div>
 	  </td>
 	</tr>
  	<tr id="telephone_mould"  style="{if $scope=='corporation'}display:none{/if}" >
@@ -101,10 +105,11 @@
 	    {t}Telephone{/t}:
 	  </td>
 	  <td>
-	    
-	    <input  style="width:18em" class="Telecom" telecom_key=0 telecom_type="Telephone" id="Telephone" 
+	    <div>
+	    <input  style="width:100%" class="Telecom" telecom_key=0 telecom_type="Telephone" id="Telephone" 
 		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
 	    <div id="Telephone_Container" style="" ></div>
+	    </div>
 	  </td >
 	  
 	</tr>	
@@ -116,7 +121,7 @@
 	</tr>
 	
 	<tr class="Telecom_Details" style="display:none">
-  <td  class="label">{t}Area Code{/t}:</td><td ><input  id="Teleohone_Area_Code" class="Area_Code" style="width:4em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
+  <td  class="label">{t}Area Code{/t}:</td><td ><input  id="Telephone_Area_Code" class="Area_Code" style="width:4em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
 			<tr class="Telecom_Details" style="display:none">
@@ -127,120 +132,37 @@
 		  <td  class="label">{t}Extension{/t}:</td><td ><input id="Telephone_Extension" class="Extension" style="width:5em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
-<tr class="first">
+		
+
+
+{include file='edit_address_splinter.tpl' 
+show_form=1  
+hide_type=1 
+hide_description=1 
+show_default_country=1 
+default_country_2alpha='gb'
+hide_buttons=1
+}
+
+	<tr id="tr_source"     >
+	  <td  class="label"  >{t}Source{/t}:</td>
+	  <td >
 	    
-  <td class="label" style="width:160px">
-    <span id="show_country_d1" onclick="toggle_country_d1()" class="small_button" 
-	  style="padding:0 1px;font-size:50%;position:relative;top:0px;display:none">+</span>
-    Country:</td>
-  <td  style="text-align:left">
-	      <div  style="width:15em;position:relative;top:00px" >
-		<input id="address_country" style="text-align:left;width:18em" type="text">
-		<div id="address_country_container" style="" ></div>
-	      </div>
-	    </td>
-	  </tr>
-	    <input id="address_country_code" value="UNK" type="hidden">
-	    <input id="address_country_2acode" value="XX" type="hidden">
-
-<tr id="tr_address_country_d1">
-	    <td class="label" style="width:160px">
-	    <span id="show_country_d2" onclick="toggle_country_d2()" 
-	        class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:0px;display:none">+</span> 
-	    <span id="label_address_country_d1">{t}Region{/t}</span>:</td>
-	    <td  style="text-align:left">
-	     <div id="myAutoComplete" style="width:15em;" >
-	      <input style="text-align:left;width:18em" id="address_country_d1" value="" ovalue="" >
-	      <input id="address_country_d1_code" value="" type="hidden">
-	    <div id="address_country_d1_container" style="" ></div>
-	      </div>
-	      </td>
-	  </tr>
-	  <tr id="tr_address_country_d2" style="display:none">
-	    <td class="label" style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left">
-	     <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d2_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d2" value="" ovalue="" >
-	      <div id="address_country_d2_container" style="" >
-	      </div>
-	     </div>
-	    </td>
-	  </tr>
-	<tr id="tr_address_country_d3" style="display:none">
-	  <td class="label" style="width:160px"><span id="label_address_country_d3">{t}3d Division{/t}</span>:</td><td  style="text-align:left">
-	    <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d3_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d3" value="" ovalue="" >
-	      <div id="address_country_d3_container" style="" ></div>
-	    </div>
-	  </td>
-	</tr>
-	<tr id="tr_address_country_d4" style="display:none">
-	  <td class="label" style="width:160px"><span id="label_address_country_d4">{t}4d Division{/t}</span>:</td><td  style="text-align:left">
-	    <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d4_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d4" value="" ovalue="" >
-	      <div id="address_country_d4_container" style="" ></div>
-	    </div>
-	  </td>
-	</tr>	
-	<tr id="tr_address_country_d5" style="display:none">
-	  <td class="label" style="width:160px"><span id="label_address_country_d5">{t}5d Division{/t}</span>:</td><td  style="text-align:left">
-	    <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d5_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d5" value="" ovalue="" >
-	      <div id="address_country_d5_container" style="" ></div>
-	    </div>
-	  </td>
-	</tr>	
-	
-	
-
-	<tr   id="tr_address_postal_code">
-	  <td class="label"  style="width:160px;background:none"><img  id="address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="float:left;visibility:hidden" /> {t}Postal Code{/t}:</td>
-	  <td  style="text-align:left">
-	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue="" valid="0"  >
-	    <div id="address_postal_code_container" style="" ></div>
 	  </td>
 	</tr>
 	
-	  <tr>
-	    <td class="label" style="width:160px">
-	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}Town/City{/t}:</td>
-	      <td  style="text-align:left">
-		<div class="AutoComplete" style="width:15em;" >
-		<input style="text-align:left;width:18em" id="address_town" value="" ovalue="" >
-		 <div id="address_town_container" style="" ></div>
-	      </div>
-	      </td>
-	  </tr>
-	  <tr style="display:none" id="tr_address_town_d1">
-	    <td class="label" style="width:160px" >
-	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td>
-	      <td  style="text-align:left">
-		<input style="text-align:left;width:18em" id="address_town_d1" value="" ovalue="" >
-		<div id="address_town_d1_container" style="" ></div>
-	      </td>
-	  </tr>
-	  <tr style="display:none;" id="tr_address_town_d2">
-	    <td class="label" style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town_d2" value="" ovalue="" ></td>
-	  </tr>
-	  <tr>
-	    <td class="label" style="width:160px">{t}Street/Number{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_street" value="" ovalue="" ></td>
-	  <tr>
-	    <td class="label" style="width:160px">{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_building" value="" ovalue="" ></td>
-	  </tr>
-	  <tr >
-	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_internal" value="" ovalue="" ></td>
-	  </tr>
-	  
-      </table>
-
-
-
-
-
-      <table class="options" style="float:right;padding:0;margin:0">
+	<tr id="tr_type"     >
+	  <td  class="label"  >{t}Type{/t}:</td>
+	  <td >
+	    
+	  </td>
+	</tr>
+	
+	
+	
+    
+    </table>
+      <table class="options" border=0 style="margin-right:90px;float:right;padding:0">
 	<tr>
 		<td   id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
 

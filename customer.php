@@ -220,6 +220,7 @@ if($modify)
 //  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
 
   $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer.php?id='.$customer->id,'label'=>_('Print Address Label'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Customers'));
 
 
 $smarty->assign('general_options_list',$general_options_list);
