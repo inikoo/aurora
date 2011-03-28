@@ -138,7 +138,19 @@
 
 <span style="float:none;margin:0px">{t}Choose Template{/t}</span>
 </div>
-</td></tr>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+
+{include file='emails/basic.tpl'}
+
+</td>
+</tr>
+
+
 
 </tbody>
 </table>

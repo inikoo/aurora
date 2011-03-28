@@ -12,6 +12,7 @@
  Version 2.0
 */
 require_once 'common.php';
+require_once 'ar_common.php';
 
 
 
@@ -39,13 +40,32 @@ case('countries_in_continent'):
 case('countries_in_wregion'):
     list_countries_in_wregion();
     break;
+case('country_info_from_2alpha'):
+$data=prepare_values($_REQUEST,array(
+                             '2alpha'=>array('type'=>'string'),
+                                'prefix'=>array('type'=>'string','optional'=>true)
+                         ));
+   $data['tag']=  '2alpha';                    
+    country_info($data);    
+    break;
  default:
    $response=array('state'=>404,'msg'=>_('Operation not found'));
    echo json_encode($response);
    
  }
 
+function country_info($data){
+include_once('class.Country.php');
+$country=new Country($data['tag'],$data[$data['tag']]);
 
+ $response=array('state'=>200,'data'=>$country->data);
+if(array_key_exists('prefix', $data)){
+$response['prefix']=$data['prefix'];
+}
+
+   echo json_encode($response);
+
+}
 
 function list_countries(){
  $conf=$_SESSION['state']['world']['countries'];
@@ -192,7 +212,7 @@ if($f_field=='country_code' and $f_value!='')
 
 
    $adata=array();
- $sql="select  `World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select  `Country Postal Code Format`,`Country Postal Code Regex`,`World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
     
    $res=mysql_query($sql);
@@ -223,7 +243,14 @@ $gnp='$'.number($row['Country GNP']/1000,0).'k';
 		  'flag'=>$country_flag,
         'population'=>$population,
         'gnp'=>$gnp,
-        'wregion'=>$wregion
+        'wregion'=>$wregion,
+        'code3a'=>$row['Country Code'],
+        'code2a'=>$row['Country 2 Alpha Code'],
+         'plain_name'=>$row['Country Name'],
+          'postal_regex'=>$row['Country Postal Code Regex'],
+              'postcode_help'=>$row['Country Postal Code Format'],
+       
+
 		   );
 
    }
