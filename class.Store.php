@@ -543,52 +543,6 @@ class Store extends DB_Table {
 
 
 
-
-
-        /*  if(!isset($data['Store Code'])){ */
-        /*      $this->msg=_("Error: No store code provided"); */
-        /*      return; */
-        /*    } */
-
-        /*    if($data['Store Code']=='' ){ */
-        /*      $this->msg=_("Error: Wrong store code"); */
-        /*      return; */
-        /*    } */
-
-        /*    if(!isset($data['Store Name'])){ */
-        /*      $data['Store Name']=$data['Store Code']; */
-        /*       $this->msg=_("Warning: No store name"); */
-        /*    } */
-
-
-        /*    $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Code`=%s " */
-        /* 		,prepare_mysql($data['Store Code']) */
-        /* 		); */
-        /*    $res=mysql_query($sql); */
-        /*    $row=mysql_fetch_array($res); */
-        /*    if($row['num']>0){ */
-        /*      $this->msg=_("Error: Another store with the same code"); */
-        /*      return; */
-
-        /*    } */
-
-        /*    $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s " */
-        /* 		,prepare_mysql($data['Store Name']) */
-        /* 		); */
-        /*    $res=mysql_query($sql); */
-        /*    $row=mysql_fetch_array($res); */
-        /*    if($row['num']>0){ */
-        /*      $this->msg=_("Warning: Wrong another store with the same name"); */
-
-
-        /*    } */
-
-
-
-        /*    $sql=sprintf("insert into `Store Dimension` (`Store Code`,`Store Name`) values (%s,%s)" */
-        /* 		,prepare_mysql($data['Store Code']) */
-        /* 		,prepare_mysql($data['Store Name']) */
-        /* 		); */
         $this->new=false;
         $basedata=$this->base_data();
 
@@ -631,7 +585,8 @@ class Store extends DB_Table {
 
             return;
         } else {
-            // print $sql;
+            print $sql;
+            exit;
             $this->msg=_(" Error can not create store");
 
         }
