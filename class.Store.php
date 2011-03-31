@@ -1321,7 +1321,8 @@ $current_from=strtotime($this->data['Store Valid From']);
 
 
 //-------------------------------------------------------------start of year to day---------------------------------------------------
-      $on_sale_days=0;
+     $on_sale_days=0;
+if(!function_exists('YTD')){
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
@@ -1335,7 +1336,7 @@ $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24))
 //return $yeartoday;
 return $diff;
 }
-
+}
 $yeartoday=YTD();
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
@@ -1421,6 +1422,7 @@ $yeartoday=YTD();
                 exit("$sql\ncan not update dept sales\n");
         }
         // exit;
+
 // -------------------------------------------------------end of year to day-------------------------------------------------------------
 
 // ----------------------------------------------------------start for 6 month ----------------------------------------------------------
@@ -2035,6 +2037,7 @@ $yeartoday=YTD();
 
 
 // ----------------------------------------------------------------strt for yeartoday------------------------------------------------
+$yeartoday=YTD();
         $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross
                      ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc
                      from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));

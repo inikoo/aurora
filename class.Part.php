@@ -1278,14 +1278,14 @@ return $part_locations;
             exit(" $sql\n error con not uopdate product part when loading sales");
 
 // --------------------------------------- Start of yeartoday -----------------------------------------------------------------------------
-     
+if(!function_exists('YTD')){     
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
 $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
 return $diff;
 }
-
+}
 $yeartoday=YTD();
 
 

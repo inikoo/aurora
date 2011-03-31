@@ -1143,6 +1143,7 @@ function update_field_switcher($field,$value,$options='') {
         if (!mysql_query($sql))
             exit("$sql\ncan not update fam sales 1 year\n");
 // ---------------------------------------Starts for yeartoday--------------------------------------------------------------------------
+if(!function_exists('YTD')){
 function YTD(){
 $first_day_of_year = date('Y').'-01-01';
 $today = date('Y-m-d');
@@ -1150,7 +1151,7 @@ $today = date('Y-m-d');
 $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
 return $diff;
 }
-
+}
 $yeartoday=YTD();
         $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
                      and  `Product Family Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
