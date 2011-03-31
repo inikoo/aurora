@@ -1843,7 +1843,7 @@ class Company extends DB_Table {
                                             ));
                 }
 
-                $customers_keys= get_customer_keys();
+                $customers_keys= $contact->get_customer_keys();
                 foreach($customers_keys as $customer_key) {
                     $customer=new Customer($customer_key);
                     if ($customer->data['Customer Main Contact Key']==$contact->id) {
@@ -1956,14 +1956,9 @@ class Company extends DB_Table {
         return $card;
     }
 
-    /*
-      function: get_customer_key
-      Returns the Customer Key if the company is one
-
-    */
+   
     function get_customer_keys($args='') {
-        $sql=sprintf("select `Customer Key` from `Customer Dimension` where  `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
-        //	print_r($sql);
+                $sql=sprintf("select `Subject Key` as `Customer Key` from `Company Bridge` where `Subject Type`='Customer' and `Company Key`=%d  ",$this->id);
 
         $customer_keys=array();
         $result=mysql_query($sql);
