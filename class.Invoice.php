@@ -890,7 +890,6 @@ $this->id
                          $line_number
                        );
         mysql_query ( $sql );
-	print "$sql\n";
 	
     }
   $this->update_totals();  

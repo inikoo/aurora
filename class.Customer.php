@@ -261,26 +261,20 @@ class Customer extends DB_Table {
 
 
         }
-        
-     //   print_r($child->candidate);
-     //   foreach($child->candidate as $contact_key=>$score){
-            
-       // }
-        
-         $this->candidate=$child->candidate;
-        /*
-        else {
-            $this->candidate=$child->candidate;
 
-        }
- */
+      
+
+        $this->candidate=$child->candidate;
+        
+        
+      
         if ($this->found) {
             $this->get_data('id',$this->found_key);
         }
-       
 
 
-       // $this->child=$child;
+
+        // $this->child=$child;
 
         if ($create and (
                     ($raw_data['Customer Main Contact Name']=='' and  $raw_data['Customer Type']=='Person')
@@ -339,23 +333,23 @@ class Customer extends DB_Table {
                     $child=new Company ("find in customer $type_of_search create update",$raw_data);
 
 
-                   
+
                     //print "ssssssss";
                 }
 
 
-                 $raw_data_to_update=array();
-                    if (isset($raw_data['Customer Old ID']))
-                        $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
-                    if (isset($raw_data['Customer Send Newsletter']))
-                        $raw_data_to_update['Customer Send Newsletter']=$raw_data['Customer Send Newsletter'];
-                    if (isset($raw_data['Customer Send Email Marketing']))
-                        $raw_data_to_update['Customer Send Email Marketing']=$raw_data['Customer Send Email Marketing'];
-                    if (isset($raw_data['Customer Send Postal Marketing']))
-                        $raw_data_to_update['Customer Send Postal Marketing']=$raw_data['Customer Send Postal Marketing'];    
-                    if (isset($raw_data['Customer Sticky Note']))
-                        $raw_data_to_update['Customer Sticky Note']=$raw_data['Customer Sticky Note'];        
-                    $this->update($raw_data_to_update);
+                $raw_data_to_update=array();
+                if (isset($raw_data['Customer Old ID']))
+                    $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
+                if (isset($raw_data['Customer Send Newsletter']))
+                    $raw_data_to_update['Customer Send Newsletter']=$raw_data['Customer Send Newsletter'];
+                if (isset($raw_data['Customer Send Email Marketing']))
+                    $raw_data_to_update['Customer Send Email Marketing']=$raw_data['Customer Send Email Marketing'];
+                if (isset($raw_data['Customer Send Postal Marketing']))
+                    $raw_data_to_update['Customer Send Postal Marketing']=$raw_data['Customer Send Postal Marketing'];
+                if (isset($raw_data['Customer Sticky Note']))
+                    $raw_data_to_update['Customer Sticky Note']=$raw_data['Customer Sticky Note'];
+                $this->update($raw_data_to_update);
 
                 $this->get_data('id',$this->id);
 
@@ -410,6 +404,21 @@ class Customer extends DB_Table {
 
 
 
+    }
+
+
+    function get_correlations(){
+    
+    
+    foreach($this->candidate as $candidate_key=>$score){
+    $candidate=new Contact($candidate_key);
+    $correlated_customer_keys=$candidate->get_customer_keys();
+    print_r($candidate->get_customer_keys());
+    
+    }
+    
+       
+    
     }
 
     function get_name() {
@@ -634,7 +643,7 @@ class Customer extends DB_Table {
 
         $sql="insert into `Customer Dimension` ($keys) values ($values)";
         //  print $sql;
-      
+
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();
@@ -652,7 +661,7 @@ class Customer extends DB_Table {
             if ($this->data['Customer Type']=='Company') {
 
                 if (!$this->data['Customer Company Key']) {
-                        //print_r($raw_data);
+                    //print_r($raw_data);
                     $company=new company('find in customer fast create update',$raw_data);
                 } else {
                     $company=new company('id',$this->data['Customer Company Key']);
@@ -697,7 +706,7 @@ class Customer extends DB_Table {
 
 
             if ($this->data['Customer Type']=='Company') {
- 
+
 
                 $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
@@ -935,10 +944,10 @@ class Customer extends DB_Table {
 
 
 
-function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false){
+    function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false) {
 
 
-   if ($current_ship_to) {
+        if ($current_ship_to) {
             $principal='No';
 
         } else {
@@ -946,7 +955,7 @@ function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false){
             $current_ship_to=$ship_to_key;
         }
 
- $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
+        $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
 
@@ -982,7 +991,7 @@ function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false){
             mysql_query($sql);
         }
 
-}
+    }
 
 
 
@@ -992,9 +1001,9 @@ function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false){
         $ship_to_key=$data['Ship To Key'];
         $current_ship_to=$data['Current Ship To Is Other Key'];
 
-$this->associate_ship_to_key($ship_to_key,$data['Date'],$current_ship_to);
-     
-       
+        $this->associate_ship_to_key($ship_to_key,$data['Date'],$current_ship_to);
+
+
 
         $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
                      $current_ship_to,
@@ -1007,19 +1016,19 @@ $this->associate_ship_to_key($ship_to_key,$data['Date'],$current_ship_to);
         $this->update_ship_to_stats();
     }
 
-function update_last_ship_to_key(){
-$sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Customer Key`=%d  order by `Ship To Last Used` desc  ',$this->id);
+    function update_last_ship_to_key() {
+        $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Customer Key`=%d  order by `Ship To Last Used` desc  ',$this->id);
         $res2=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res2)) {
-           $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%s where `Customer Key`=%d",
-           prepare_mysql($row['Ship To Key']),
+            $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%s where `Customer Key`=%d",
+                         prepare_mysql($row['Ship To Key']),
 
-                     $this->id
-                    );
-        mysql_query($sql);
+                         $this->id
+                        );
+            mysql_query($sql);
         }
 
-}
+    }
 
     function update_ship_to_stats() {
 
@@ -1136,17 +1145,17 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
                 $subject_type='Company';
 
             }
-	    $subject->editor=$this->editor;
+            $subject->editor=$this->editor;
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
-            
-            
+
+
             break;
         case('Customer Main Plain Mobile'):
             $subject=new Contact($this->data['Customer Main Contact Key']);
-	     $subject->editor=$this->editor;
+            $subject->editor=$this->editor;
             $subject->update(array('Contact Main Plain Mobile'=>$value));
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
@@ -1155,7 +1164,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
 
         case('Customer Main Plain Email'):
             $contact=new Contact($this->data['Customer Main Contact Key']);
-	    $contact->editor=$this->editor;
+            $contact->editor=$this->editor;
             $contact->update(array('Contact Main Plain Email'=>$value));
             $this->updated=$contact->updated;
             $this->msg=$contact->msg;
@@ -1662,15 +1671,15 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
         $this->data['Actual Customer']='Yes';
         $orders= $this->data['Customer Orders'];
 
-	$min_interval=30;
-	
-	$sql="select count(*) as num,avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>2";
-	$result2=mysql_query($sql);
-	if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-	  if($row2['num']>30)
-	    $min_interval=$row2['a'];
-	}
-	
+        $min_interval=30;
+
+        $sql="select count(*) as num,avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>2";
+        $result2=mysql_query($sql);
+        if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+            if ($row2['num']>30)
+                $min_interval=$row2['a'];
+        }
+
 
         //print $this->id." $orders  \n";
 
@@ -1685,7 +1694,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
             $result2=mysql_query($sql);
             if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
                 $average_max_interval=$row2['a'];
-		//  print "-------> $average_max_interval\n";
+                //  print "-------> $average_max_interval\n";
                 if (is_numeric($average_max_interval)) {
                     if (   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval) {
 
@@ -1731,16 +1740,16 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
 
                 $interval=ceil($this->data['Customer Order Interval']*$factor);
 
-		//	print "----------> $interval $factor  \n";
+                //	print "----------> $interval $factor  \n";
 
 
-	    } else
+            } else
                 $interval=ceil($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']));
 
 
-	    if($interval<$min_interval)
-	      $interval=$min_interval;
-	    // print "----------> $interval\n";
+            if ($interval<$min_interval)
+                $interval=$min_interval;
+            // print "----------> $interval\n";
 
             if ( (date('U')-$last_date)/24/3600  <$interval) {
                 $this->data['Active Customer']='Yes';
@@ -1970,16 +1979,20 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
 
         if ($key=='Customer Tax Number' or $key=='Tax Number') {
             return $this->get_tax_number();
-        }elseif ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
+        }
+        elseif ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
             return $this->get_fiscal_name();
-        }elseif (array_key_exists($key,$this->data)) {
+        }
+        elseif (array_key_exists($key,$this->data)) {
             return $this->data[$key];
-        }elseif (preg_match('/^contact /i',$key)) {
+        }
+        elseif (preg_match('/^contact /i',$key)) {
             if (!$this->contact_data)
                 $this->load('contact data');
             if (isset($this->contact_data[$key]))
                 return $this->contact_data[$key];
-        }elseif (preg_match('/^ship to /i',$key)) {
+        }
+        elseif (preg_match('/^ship to /i',$key)) {
             if (!$arg1)
                 $ship_to_key=$this->data['Customer Main Delivery Address Key'];
             else
@@ -1998,7 +2011,7 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
             return $this->get_formated_id();
         case("Sticky Note"):
             return nl2br($this->data['Customer Sticky Note']);
-        break;
+            break;
         case('Net Balance'):
             return money($this->data['Customer Net Balance']);
             break;
@@ -2333,34 +2346,34 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
     }
 
     function get_tax_number($reread=false) {
-     return $this->data['Customer Tax Number'];
-    
-    /*
-        if ($this->tax_number_read and $reread)
-            return $this->data['Customer Tax Number'];
+        return $this->data['Customer Tax Number'];
 
-        if ($this->data['Customer Type']=='Person') {
-            $subject='Contact';
-            $subject_key=$this->data['Customer Main Contact Key'];
-        } else {
-            $subject='Company';
-            $subject_key=$this->data['Customer Company Key'];
-        }
+        /*
+            if ($this->tax_number_read and $reread)
+                return $this->data['Customer Tax Number'];
 
-        $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
-        // print $sql;
-        $res=mysql_query($sql);
+            if ($this->data['Customer Type']=='Person') {
+                $subject='Contact';
+                $subject_key=$this->data['Customer Main Contact Key'];
+            } else {
+                $subject='Company';
+                $subject_key=$this->data['Customer Company Key'];
+            }
 
-        if ($row=mysql_fetch_assoc($res)) {
-            $this->data['Customer Tax Number']=$row['tax_number'];
-            $this->tax_number_read=true;
-            return $this->data['Customer Tax Number'];
-        } else {
-            $this->error;
-            return '';
-        }
+            $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+            // print $sql;
+            $res=mysql_query($sql);
 
-*/
+            if ($row=mysql_fetch_assoc($res)) {
+                $this->data['Customer Tax Number']=$row['tax_number'];
+                $this->tax_number_read=true;
+                return $this->data['Customer Tax Number'];
+            } else {
+                $this->error;
+                return '';
+            }
+
+        */
 
 
     }
@@ -2559,36 +2572,36 @@ $sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Custo
     function add_customer_history($history_data,$force_save=true,$deleteable='No') {
         $history_key=$this->add_history($history_data,$force_save=true);
         $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
-      // print $sql;
-       mysql_query($sql);
+        // print $sql;
+        mysql_query($sql);
         return $history_key;
     }
 
 
-function add_attach($file,$data) {
-    $data=array(
-              'file'=>$file,
-              'Attachment Caption'=>$data['Caption'],
-              'Attachment MIME Type'=>$data['Type'],
-              'Attachment File Original Name'=>$data['Original Name']
-          );
-    $attach=new Attachment('find',$data,'create');
-    if ($attach->new) {
-        $history_data=array(
-                          'History Abstract'=>$attach->get_abstract(),
-                          'History Details'=>$attach->get_details(),
-                          'Action'=>'associated',
-                          'Direct Object'=>'Attachment',
-                          'Prepostion'=>'',
-                          'Indirect Object'=>'Customer',
-                          'Indirect Object Key'=>$this->id
-                      );
-        $this->add_customer_history($history_data);
-        $this->updated=true;
-        $this->new_value='';
-    }
+    function add_attach($file,$data) {
+        $data=array(
+                  'file'=>$file,
+                  'Attachment Caption'=>$data['Caption'],
+                  'Attachment MIME Type'=>$data['Type'],
+                  'Attachment File Original Name'=>$data['Original Name']
+              );
+        $attach=new Attachment('find',$data,'create');
+        if ($attach->new) {
+            $history_data=array(
+                              'History Abstract'=>$attach->get_abstract(),
+                              'History Details'=>$attach->get_details(),
+                              'Action'=>'associated',
+                              'Direct Object'=>'Attachment',
+                              'Prepostion'=>'',
+                              'Indirect Object'=>'Customer',
+                              'Indirect Object Key'=>$this->id
+                          );
+            $this->add_customer_history($history_data);
+            $this->updated=true;
+            $this->new_value='';
+        }
 
-}
+    }
 
 
     function delivery_address_xhtml() {
@@ -2681,7 +2694,7 @@ function add_attach($file,$data) {
 
         $line=$address->display('3lines');
 
-   
+
 
         $shipping_addresses['Ship To Line 1']=$line[1];
         $shipping_addresses['Ship To Line 2']=$line[2];
@@ -3215,9 +3228,9 @@ function add_attach($file,$data) {
         }
         $address=new Address($address_key);
         $address->editor=$this->editor;
-       
+
         $address->update_parents('Customer',($this->new?false:true));
-        
+
 
         $this->updated=true;
         $this->new_value=$address_key;
@@ -3319,9 +3332,9 @@ function add_attach($file,$data) {
                          ,$this->id);
             $this->data['Customer Billing Address Key']=$address->id;
             mysql_query($sql);
- 
+
             $address->update_parents(false,($this->new?false:true));
-         
+
             $this->get_data('id',$this->id);
             $this->updated=true;
             $this->new_value=$address->id;
@@ -3391,12 +3404,12 @@ function add_attach($file,$data) {
 
 
     function get_ship_to($date=false) {
-/*
-if($date){
-$this->get_ship_to_historic($date);
-return;
-}
-*/
+        /*
+        if($date){
+        $this->get_ship_to_historic($date);
+        return;
+        }
+        */
 
         if (!$date) {
             $date=date("Y-m-d H:i:s");
@@ -3413,7 +3426,7 @@ return;
             $this->update_ship_to($data_ship_to);
         } else {
 
-            
+
 
             $ship_to= new Ship_To($this->data['Customer Last Ship To Key']);
         }
@@ -3488,25 +3501,25 @@ return;
         $second_full_search=$this->data['Customer Type'];
 
 
-$description='';
+        $description='';
 
- if ($this->data['Customer Type']=='Company') {
+        if ($this->data['Customer Type']=='Company') {
             $name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formated_id_link().')<br/>'.$this->data['Customer Main Contact Name'];
         } else {
             $name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formated_id_link().')';
 
         }
         $name.='<br/>'._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>';
-        
-        
+
+
         $_address=$this->data['Customer Main Plain Email'];
- 
-        if($this->data['Customer Main Telephone Key'])$_address.='<br/>T: '.$this->data['Customer Main XHTML Telephone'];
+
+        if ($this->data['Customer Main Telephone Key'])$_address.='<br/>T: '.$this->data['Customer Main XHTML Telephone'];
         $_address.='<br/>'.$this->data['Customer Main Location'];
-        if($this->data['Customer Main Postal Code'])$_address.=', '.$this->data['Customer Main Postal Code'];
+        if ($this->data['Customer Main Postal Code'])$_address.=', '.$this->data['Customer Main Postal Code'];
         $_address=preg_replace('/^\<br\/\>/','',$_address);
-        
-$description='<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
+
+        $description='<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
 
         $sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
                      values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key

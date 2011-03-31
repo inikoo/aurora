@@ -4107,8 +4107,9 @@ class Contact extends DB_Table {
       Returns the Customer Key if the contact is one
     */
     function get_customer_keys() {
-        $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Person' and `Customer Main Contact Key`=%d  ",$this->id);
+        $sql=sprintf("select `Subject Key` as `Customer Key` from `Contact Bridge` where `Subject Type`='Customer' and `Contact Key`=%d  ",$this->id);
         $customer_keys=array();
+        //print $sql;
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $customer_keys[$row['Customer Key']]= $row['Customer Key'];

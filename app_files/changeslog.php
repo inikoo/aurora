@@ -2038,6 +2038,19 @@ CREATE TABLE IF NOT EXISTS `Store Default Currency` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 
+aqui empieza kaktus 30
+
+
+CREATE TABLE `Customer Correlation` (
+`Customer A` MEDIUMINT UNSIGNED NOT NULL ,
+`Customer B` MEDIUMINT UNSIGNED NOT NULL ,
+`Correlation` FLOAT NOT NULL ,
+PRIMARY KEY ( `Customer A` , `Customer B` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Customer Correlation` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL ,ADD INDEX ( `Store Key` );
+ALTER TABLE `Category Dimension` ADD `Category Label` VARCHAR( 256 ) NOT NULL AFTER `Category Name` ;
+ALTER TABLE `dw`.`Category Dimension` ADD INDEX ( `Category Name` ) ;
 */
 
 

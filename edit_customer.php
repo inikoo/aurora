@@ -14,7 +14,7 @@
 
 include_once('common.php');
 include_once('class.Customer.php');
-include_once('class.Node.php');
+include_once('class.Category.php');
 
 if (!$user->can_view('customers')) {
     header('Location: index.php');
@@ -186,6 +186,10 @@ $smarty->assign('js_files',$js_files);
 //$delivery_addresses=$customer->get_address_objects();
 
 
+$source_category=new Category('name_store','Referrer',$customer->data['Customer Store Key']);
+
+/*
+
 $nodes=new nodes('`Category Dimension`');
 $nodes->sql_condition = "AND `Category Subject`='Customer' AND `Category Store Key`=".$customer->data['Customer Store Key'] ;
 $nodes->load_comb();
@@ -211,7 +215,7 @@ mysql_free_result($res);
 
 $smarty->assign('categories',$comb);
 $smarty->assign('number_categories',count($comb));
-
+*/
 
 
 //$smarty->assign('delivery_addresses',$delivery_addresses);
