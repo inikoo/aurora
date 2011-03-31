@@ -1200,6 +1200,45 @@ return $part_locations;
         if (!mysql_query($sql))
             exit("  error a $margin b $value c $value_free d $amount_in  con not uopdate product part when loading sales");
 
+// --------------------------------------- Start of 3 year -----------------------------------------------------------------------------
+        $sold=0;
+        $required=0;
+        $provided=0;
+        $given=0;
+        $amount_in=0;
+        $value=0;
+        $value_free=0;
+        $margin=0;
+        $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 year")))  );
+        // print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $required=$row['required'];
+            $provided=$row['qty'];
+            $given=$row['given'];
+            $amount_in=$row['amount_in'];
+            $value=$row['value'];
+            $value_free=$row['value_free'];
+            $sold=$row['qty']-$row['given'];
+        }
+        $abs_profit=$amount_in-$value;
+        $profit_sold=$amount_in-$value+$value_free;
+        if ($amount_in==0)
+            $margin=0;
+        else
+            $margin=$profit_sold/$amount_in;
+        $sql=sprintf("update `Part Dimension` set `Part 3 Year Acc Required`=%f ,`Part 3 Year Acc Provided`=%f,`Part 3 Year Acc Given`=%f ,`Part 3 Year Acc Sold Amount`=%f ,`Part 3 Year Acc Absolute Profit`=%f ,`Part 3 Year Acc Profit When Sold`=%f , `Part 3 Year Acc Sold`=%f , `Part 3 Year Acc Margin`=%s where `Part SKU`=%d "
+                     ,$required
+                     ,$provided
+                     ,$given
+                     ,$amount_in
+                     ,$abs_profit
+                     ,$profit_sold,$sold,$margin
+                     ,$this->id);
+        //  print "$sql\n";
+        if (!mysql_query($sql))
+            exit(" $sql\n error con not uopdate product part when loading sales");
+// --------------------------------------- End of 3 year -------------------------------------------------------------------------------
         $sold=0;
         $required=0;
         $provided=0;
@@ -1238,6 +1277,97 @@ return $part_locations;
         if (!mysql_query($sql))
             exit(" $sql\n error con not uopdate product part when loading sales");
 
+// --------------------------------------- Start of yeartoday -----------------------------------------------------------------------------
+     
+function YTD(){
+$first_day_of_year = date('Y').'-01-01';
+$today = date('Y-m-d');
+$diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
+return $diff;
+}
+
+$yeartoday=YTD();
+
+
+        $sold=0;
+        $required=0;
+        $provided=0;
+        $given=0;
+        $amount_in=0;
+        $value=0;
+        $value_free=0;
+        $margin=0;
+        $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -$yeartoday day")))  );
+        // print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $required=$row['required'];
+            $provided=$row['qty'];
+            $given=$row['given'];
+            $amount_in=$row['amount_in'];
+            $value=$row['value'];
+            $value_free=$row['value_free'];
+            $sold=$row['qty']-$row['given'];
+        }
+        $abs_profit=$amount_in-$value;
+        $profit_sold=$amount_in-$value+$value_free;
+        if ($amount_in==0)
+            $margin=0;
+        else
+            $margin=$profit_sold/$amount_in;
+        $sql=sprintf("update `Part Dimension` set `Part YearToDay Acc Required`=%f ,`Part YearToDay Acc Provided`=%f,`Part YearToDay Acc Given`=%f ,`Part YearToDay Acc Sold Amount`=%f ,`Part YearToDay Acc Absolute Profit`=%f ,`Part YearToDay Acc Profit When Sold`=%f , `Part YearToDay Acc Sold`=%f , `Part YearToDay Acc Margin`=%s where `Part SKU`=%d "
+                     ,$required
+                     ,$provided
+                     ,$given
+                     ,$amount_in
+                     ,$abs_profit
+                     ,$profit_sold,$sold,$margin
+                     ,$this->id);
+        //  print "$sql\n";
+        if (!mysql_query($sql))
+            exit(" $sql\n error con not uopdate product part when loading sales");
+// --------------------------------------- End of yeartoday-------------------------------------------------------------------------------
+// ----------------------------------------Start of 6 month ------------------------------------------------------------------------------
+        $sold=0;
+        $required=0;
+        $provided=0;
+        $given=0;
+        $amount_in=0;
+        $value=0;
+        $value_free=0;
+        $margin=0;
+        $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -6 month")))  );
+        //      print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $required=$row['required'];
+            $provided=$row['qty'];
+            $given=$row['given'];
+            $amount_in=$row['amount_in'];
+            $value=$row['value'];
+            $value_free=$row['value_free'];
+            $sold=$row['qty']-$row['given'];
+        }
+        $abs_profit=$amount_in-$value;
+        $profit_sold=$amount_in-$value+$value_free;
+
+        if ($amount_in==0)
+            $margin=0;
+        else
+            $margin=$profit_sold/$amount_in;
+
+        $sql=sprintf("update `Part Dimension` set `Part 6 Month Acc Required`=%f ,`Part 6 Month Acc Provided`=%f,`Part 6 Month Acc Given`=%f ,`Part 6 Month Acc Sold Amount`=%f ,`Part 6 Month Acc Absolute Profit`=%f ,`Part 6 Month Acc Profit When Sold`=%f  , `Part 6 Month Acc Sold`=%f  , `Part 6 Month Acc Margin`=%s where `Part SKU`=%d "
+                     ,$required
+                     ,$provided
+                     ,$given
+                     ,$amount_in
+                     ,$abs_profit
+                     ,$profit_sold,$sold,$margin
+                     ,$this->id);
+        //   print "$sql\n";
+        if (!mysql_query($sql))
+            exit("error con not uopdate product part when loading sales");
+// ----------------------------------------End of 6 month --------------------------------------------------------------------------------
         $sold=0;
         $required=0;
         $provided=0;
@@ -1277,6 +1407,48 @@ return $part_locations;
         //   print "$sql\n";
         if (!mysql_query($sql))
             exit("error con not uopdate product part when loading sales");
+
+// ----------------------------------------Start of 3 month ------------------------------------------------------------------------------
+        $sold=0;
+        $required=0;
+        $provided=0;
+        $given=0;
+        $amount_in=0;
+        $value=0;
+        $value_free=0;
+        $margin=0;
+        $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+        //      print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $required=$row['required'];
+            $provided=$row['qty'];
+            $given=$row['given'];
+            $amount_in=$row['amount_in'];
+            $value=$row['value'];
+            $value_free=$row['value_free'];
+            $sold=$row['qty']-$row['given'];
+        }
+        $abs_profit=$amount_in-$value;
+        $profit_sold=$amount_in-$value+$value_free;
+
+        if ($amount_in==0)
+            $margin=0;
+        else
+            $margin=$profit_sold/$amount_in;
+
+        $sql=sprintf("update `Part Dimension` set `Part 3 Month Acc Required`=%f ,`Part 3 Month Acc Provided`=%f,`Part 3 Month Acc Given`=%f ,`Part 3 Month Acc Sold Amount`=%f ,`Part 3 Month Acc Absolute Profit`=%f ,`Part 3 Month Acc Profit When Sold`=%f  , `Part 3 Month Acc Sold`=%f  , `Part 3 Month Acc Margin`=%s where `Part SKU`=%d "
+                     ,$required
+                     ,$provided
+                     ,$given
+                     ,$amount_in
+                     ,$abs_profit
+                     ,$profit_sold,$sold,$margin
+                     ,$this->id);
+        //   print "$sql\n";
+        if (!mysql_query($sql))
+            exit("error con not uopdate product part when loading sales");
+// ----------------------------------------End of 3 month --------------------------------------------------------------------------------
 
         $sold=0;
         $required=0;
@@ -1318,7 +1490,47 @@ return $part_locations;
         //            print "$sql\n";
         if (!mysql_query($sql))
             exit(" $sql\n error con not uopdate product part when loading sales");
+// --------------------------------------------------------Start of 10 days----------------------------------------------
+        $sold=0;
+        $required=0;
+        $provided=0;
+        $given=0;
+        $amount_in=0;
+        $value=0;
+        $value_free=0;
+        $margin=0;
+        $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -10 day")))  );
+        //        print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $required=$row['required'];
+            $provided=$row['qty'];
+            $given=$row['given'];
+            $amount_in=$row['amount_in'];
+            $value=$row['value'];
+            $value_free=$row['value_free'];
+            $sold=$row['qty']-$row['given'];
+        }
 
+        $abs_profit=$amount_in-$value;
+        $profit_sold=$amount_in-$value+$value_free;
+        if ($amount_in==0)
+            $margin=0;
+        else
+            $margin=$profit_sold/$amount_in;
+
+        $sql=sprintf("update `Part Dimension` set `Part 10 Day Acc Required`=%f ,`Part 10 Day Acc Provided`=%f,`Part 10 Day Acc Given`=%f ,`Part 10 Day Acc Sold Amount`=%f ,`Part 10 Day Acc Absolute Profit`=%f ,`Part 10 Day Acc Profit When Sold`=%f  , `Part 10 Day Acc Sold`=%f , `Part 10 Day Acc Margin`=%s where `Part SKU`=%d "
+                     ,$required
+                     ,$provided
+                     ,$given
+                     ,$amount_in
+                     ,$abs_profit
+                     ,$profit_sold,$sold,$margin
+                     ,$this->id);
+        //            print "$sql\n";
+        if (!mysql_query($sql))
+            exit(" $sql\n error con not uopdate product part when loading sales");
+// ---------------------------------------------------------End of 10 days----------------------------------------------
         $sold=0;
         $required=0;
         $provided=0;
