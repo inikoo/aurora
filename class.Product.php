@@ -2782,7 +2782,7 @@ function add_image($image_key,$args='') {
 // -------------------------------------------------- start for 3 year---------------------------------------------
 if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
-    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->pid,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
 //print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

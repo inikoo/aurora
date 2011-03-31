@@ -5852,6 +5852,18 @@ function list_parts() {
         $order=' `Part 1 Month Acc Margin` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Margin` ';
+// ---------------------------Start for : 3Y,YTD,6M,3M,10D--------------------------
+       elseif($period=='three_year')
+        $order=' `Part 3 Year Acc Margin` ';
+        elseif($period=='yeartoday')
+        $order=' `Part YearToDay Acc Margin` ';
+        elseif($period=='six_month')
+        $order=' `Part 6 Month Acc Margin` ';
+        elseif($period=='three_month')
+        $order=' `Part 3 Month Acc Margin` ';
+        elseif($period=='ten_day')
+        $order=' `Part 10 Day Acc Margin` ';
+// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
 
     } else if ($order=='sold') {
         if ($period=='all')
@@ -5864,6 +5876,18 @@ function list_parts() {
         $order=' `Part 1 Month Acc Sold` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Sold` ';
+// ---------------------------Start for : 3Y,YTD,6M,3M,10D--------------------------
+        elseif($period=='three_year')
+        $order=' `Part 3 Year Acc Sold` ';
+        elseif($period=='yeartoday')
+        $order=' `Part YearToDay Acc Sold` ';
+        elseif($period=='six_month')
+        $order=' `Part 6 Month Acc Sold` ';
+        elseif($period=='three_month')
+        $order=' `Part 3 Month Acc Sold` ';
+        elseif($period=='ten_day')
+        $order=' `Part 10 Day Acc Sold` ';
+// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
 
     } else if ($order=='money_in') {
         if ($period=='all')
@@ -5876,7 +5900,18 @@ function list_parts() {
         $order=' `Part 1 Month Acc Sold Amount` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Sold Amount` ';
-
+// ---------------------------Start for : 3Y,YTD,6M,3M,10D--------------------------
+        elseif($period=='three_year')
+        $order=' `Part 3 Year Acc Sold Amount` ';
+        elseif($period=='yeartoday')
+        $order=' `Part YearToDay Acc Sold Amount` ';
+        elseif($period=='six_month')
+        $order=' `Part 6 Month Acc Sold Amount` ';
+        elseif($period=='three_month')
+        $order=' `Part 3 Month Acc Sold Amount` ';
+        elseif($period=='ten_day')
+        $order=' `Part 10 Day Acc Sold Amount` ';
+// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
     } else if ($order=='profit_sold') {
         if ($period=='all')
             $order=' `Part Total Profit When Sold` ';
@@ -5888,7 +5923,18 @@ function list_parts() {
         $order=' `Part 1 Month Acc Profit When Sold` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Profit When Sold` ';
-
+// ---------------------------Start for : 3Y,YTD,6M,3M,10D--------------------------
+        elseif($period=='three_year')
+        $order=' `Part 3 Year Acc Profit When Sold` ';
+        elseif($period=='yeartoday')
+        $order=' `Part YearToDay Acc Profit When Sold` ';
+        elseif($period=='six_month')
+        $order=' `Part 6 Month Acc Profit When Sold` ';
+        elseif($period=='three_month')
+        $order=' `Part 3 Month Acc Profit When Sold` ';
+        elseif($period=='ten_day')
+        $order=' `Part 10 Day Acc Profit When Sold` ';
+// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
     } else if ($order=='avg_stock') {
         if ($period=='all')
             $order=' `Part Total AVG Stock` ';
@@ -5924,7 +5970,18 @@ function list_parts() {
         $order=' `Part 1 Month Acc Keeping Days` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Keeping Days` ';
-
+// ---------------------------Start for : 3Y,YTD,6M,3M,10D--------------------------
+        elseif($period=='three_year')
+        $order=' `Part 3 Year Acc Keeping Days` ';
+        elseif($period=='yeartoday')
+        $order=' `Part YearToDay Acc Keeping Days` ';
+        elseif($period=='six_month')
+        $order=' `Part 6 Month Acc Keeping Days` ';
+        elseif($period=='three_month')
+        $order=' `Part 3 Month Acc Keeping Days` ';
+        elseif($period=='ten_day')
+        $order=' `Part 10 Day Acc Keeping Days` ';
+// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
     } else if ($order=='outstock_days') {
         if ($period=='all')
             $order=' `Part Total Out of Stock Days` ';
@@ -5968,7 +6025,7 @@ function list_parts() {
 
 
     $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-    //          print $sql;
+   //          print $sql;
     $adata=array();
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -6018,6 +6075,59 @@ function list_parts() {
             $gmroi=number($data['Part Total GMROI'],0);
 
         }
+// ----------------------------------Start for 3 year--------------------------
+        elseif($period=='three_year') {
+
+
+            if ($avg=='totals') {
+                $sold=number($data['Part 3 Year Acc Sold']);
+                $given=number($data['Part 3 Year Acc Given']);
+                $sold_amount=money($data['Part 3 Year Acc Sold Amount']);
+                $abs_profit=money($data['Part 3 Year Acc Absolute Profit']);
+                $profit_sold=money($data['Part 3 Year Acc Profit When Sold']);
+            } else {
+
+                if ($avg=='month')
+                    $factor=$data['Part 3 Year Acc Keeping Days']/30.4368499;
+                elseif($avg=='month_eff')
+                $factor=($data['Part 3 Year Acc Keeping Days']-$data['Part 3 Year Acc Out of Stock Days'])/30.4368499;
+                elseif($avg=='week')
+                $factor=$data['Part 3 Year Acc Keeping Days']/7;
+                elseif($avg=='week_eff')
+                $factor=($data['Part 3 Year Acc Keeping Days']-$data['Part 3 Year Acc Out of Stock Days'])/7;
+                else
+                    $factor=1;
+                if ($factor==0) {
+                    $sold=0;
+                    $given=0;
+                    $sold_amount=money(0);
+                    $abs_profit=money(0);
+                    $profit_sold=money(0);
+                } else {
+                    $sold=number($data['Part 3 Year Acc Sold']/$factor);
+                    $given=number($data['Part 3 Year Acc Given']/$factor);
+                    $sold_amount=money($data['Part 3 Year Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part 3 Year Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part 3 Year Acc Profit When Sold']/$factor);
+                }
+            }
+
+            if ($given!=0)
+                $sold="$sold ($given)";
+
+
+            $margin=percentage($data['Part 3 Year Acc Margin'],1);
+            $avg_stock=number($data['Part 3 Year Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part 3 Year Acc AVG Stock Value']);
+            $keep_days=number($data['Part 3 Year Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part 3 Year Acc Out of Stock Days'],$data['Part 3 Year Acc Keeping Days']);
+            $unknown_days=percentage($data['Part 3 Year Acc Unknown Stock Days'],$data['Part 3 Year Acc Keeping Days']);
+            $gmroi=number($data['Part 3 Year Acc GMROI'],0);
+
+
+
+        }
+// ----------------------------------End for 3 year----------------------------
         elseif($period=='year') {
 
 
@@ -6069,6 +6179,117 @@ function list_parts() {
 
 
         }
+
+
+// ----------------------------------Start for yeartoday--------------------------
+        elseif($period=='yeartoday') {
+
+
+            if ($avg=='totals') {
+                $sold=number($data['Part YearToDay Acc Sold']);
+                $given=number($data['Part YearToDay Acc Given']);
+                $sold_amount=money($data['Part YearToDay Acc Sold Amount']);
+                $abs_profit=money($data['Part YearToDay Acc Absolute Profit']);
+                $profit_sold=money($data['Part YearToDay Acc Profit When Sold']);
+            } else {
+
+                if ($avg=='month')
+                    $factor=$data['Part YearToDay Acc Keeping Days']/30.4368499;
+                elseif($avg=='month_eff')
+                $factor=($data['Part YearToDay Acc Keeping Days']-$data['Part YearToDay Acc Out of Stock Days'])/30.4368499;
+                elseif($avg=='week')
+                $factor=$data['Part YearToDay Acc Keeping Days']/7;
+                elseif($avg=='week_eff')
+                $factor=($data['Part YearToDay Acc Keeping Days']-$data['Part YearToDay Acc Out of Stock Days'])/7;
+                else
+                    $factor=1;
+                if ($factor==0) {
+                    $sold=0;
+                    $given=0;
+                    $sold_amount=money(0);
+                    $abs_profit=money(0);
+                    $profit_sold=money(0);
+                } else {
+                    $sold=number($data['Part YearToDay Acc Sold']/$factor);
+                    $given=number($data['Part YearToDay Acc Given']/$factor);
+                    $sold_amount=money($data['Part YearToDay Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part YearToDay Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part YearToDay Acc Profit When Sold']/$factor);
+                }
+            }
+
+            if ($given!=0)
+                $sold="$sold ($given)";
+
+
+            $margin=percentage($data['Part YearToDay Acc Margin'],1);
+            $avg_stock=number($data['Part YearToDay Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part YearToDay Acc AVG Stock Value']);
+            $keep_days=number($data['Part YearToDay Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part YearToDay Acc Out of Stock Days'],$data['Part YearToDay Acc Keeping Days']);
+            $unknown_days=percentage($data['Part YearToDay Acc Unknown Stock Days'],$data['Part YearToDay Acc Keeping Days']);
+            $gmroi=number($data['Part YearToDay Acc GMROI'],0);
+
+
+
+        }
+// ----------------------------------End for yeartoday----------------------------
+
+// ----------------------------------Start for 6 month--------------------------
+        elseif($period=='six_month') {
+
+
+            if ($avg=='totals') {
+                $sold=number($data['Part 6 Month Acc Sold']);
+                $given=number($data['Part 6 Month Acc Given']);
+                $sold_amount=money($data['Part 6 Month Acc Sold Amount']);
+                $abs_profit=money($data['Part 6 Month Acc Absolute Profit']);
+                $profit_sold=money($data['Part 6 Month Acc Profit When Sold']);
+            } else {
+
+                if ($avg=='month')
+                    $factor=$data['Part 6 Month Acc Keeping Days']/30.4368499;
+                elseif($avg=='month_eff')
+                $factor=($data['Part 6 Month Acc Keeping Days']-$data['Part 6 Month Acc Out of Stock Days'])/30.4368499;
+                elseif($avg=='week')
+                $factor=$data['Part 6 Month Acc Keeping Days']/7;
+                elseif($avg=='week_eff')
+                $factor=($data['Part 6 Month Acc Keeping Days']-$data['Part 6 Month Acc Out of Stock Days'])/7;
+                else
+                    $factor=1;
+                if ($factor==0) {
+                    $sold=0;
+                    $given=0;
+                    $sold_amount=money(0);
+                    $abs_profit=money(0);
+                    $profit_sold=money(0);
+                } else {
+                    $sold=number($data['Part 6 Month Acc Sold']/$factor);
+                    $given=number($data['Part 6 Month Acc Given']/$factor);
+                    $sold_amount=money($data['Part 6 Month Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part 6 Month Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part 6 Month Acc Profit When Sold']/$factor);
+                }
+            }
+
+            if ($given!=0)
+                $sold="$sold ($given)";
+
+
+            $margin=percentage($data['Part 6 Month Acc Margin'],1);
+            $avg_stock=number($data['Part 6 Month Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part 6 Month Acc AVG Stock Value']);
+            $keep_days=number($data['Part 6 Month Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part 6 Month Acc Out of Stock Days'],$data['Part 6 Month Acc Keeping Days']);
+            $unknown_days=percentage($data['Part 6 Month Acc Unknown Stock Days'],$data['Part 6 Month Acc Keeping Days']);
+            $gmroi=number($data['Part 6 Month Acc GMROI'],0);
+
+
+
+        }
+// ----------------------------------End for 6 month----------------------------
+
+
         elseif($period=='quarter') {
 
 
@@ -6118,6 +6339,64 @@ function list_parts() {
             $gmroi=number($data['Part 1 Quarter Acc GMROI'],0);
 
         }
+
+
+// ----------------------------------Start for 3 month--------------------------
+        elseif($period=='three_month') {
+
+
+            if ($avg=='totals') {
+                $sold=number($data['Part 3 Month Acc Sold']);
+                $given=number($data['Part 3 Month Acc Given']);
+                $sold_amount=money($data['Part 3 Month Acc Sold Amount']);
+                $abs_profit=money($data['Part 3 Month Acc Absolute Profit']);
+                $profit_sold=money($data['Part 3 Month Acc Profit When Sold']);
+            } else {
+
+                if ($avg=='month')
+                    $factor=$data['Part 3 Month Acc Keeping Days']/30.4368499;
+                elseif($avg=='month_eff')
+                $factor=($data['Part 3 Month Acc Keeping Days']-$data['Part 3 Month Acc Out of Stock Days'])/30.4368499;
+                elseif($avg=='week')
+                $factor=$data['Part 3 Month Acc Keeping Days']/7;
+                elseif($avg=='week_eff')
+                $factor=($data['Part 3 Month Acc Keeping Days']-$data['Part 3 Month Acc Out of Stock Days'])/7;
+                else
+                    $factor=1;
+                if ($factor==0) {
+                    $sold=0;
+                    $given=0;
+                    $sold_amount=money(0);
+                    $abs_profit=money(0);
+                    $profit_sold=money(0);
+                } else {
+                    $sold=number($data['Part 3 Month Acc Sold']/$factor);
+                    $given=number($data['Part 3 Month Acc Given']/$factor);
+                    $sold_amount=money($data['Part 3 Month Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part 3 Month Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part 3 Month Acc Profit When Sold']/$factor);
+                }
+            }
+
+            if ($given!=0)
+                $sold="$sold ($given)";
+
+
+            $margin=percentage($data['Part 3 Month Acc Margin'],1);
+            $avg_stock=number($data['Part 3 Month Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part 3 Month Acc AVG Stock Value']);
+            $keep_days=number($data['Part 3 Month Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part 3 Month Acc Out of Stock Days'],$data['Part 3 Month Acc Keeping Days']);
+            $unknown_days=percentage($data['Part 3 Month Acc Unknown Stock Days'],$data['Part 3 Month Acc Keeping Days']);
+            $gmroi=number($data['Part 3 Month Acc GMROI'],0);
+
+
+
+        }
+// ----------------------------------End for 3 month----------------------------
+
+
+
         elseif($period=='month') {
 
 
@@ -6171,6 +6450,64 @@ function list_parts() {
 
 
         }
+
+
+// ----------------------------------Start for 10 day--------------------------
+        elseif($period=='ten_day') {
+
+
+            if ($avg=='totals') {
+                $sold=number($data['Part 10 Day Acc Sold']);
+                $given=number($data['Part 10 Day Acc Given']);
+                $sold_amount=money($data['Part 10 Day Acc Sold Amount']);
+                $abs_profit=money($data['Part 10 Day Acc Absolute Profit']);
+                $profit_sold=money($data['Part 10 Day Acc Profit When Sold']);
+            } else {
+
+                if ($avg=='month')
+                    $factor=$data['Part 10 Day Acc Keeping Days']/30.4368499;
+                elseif($avg=='month_eff')
+                $factor=($data['Part 10 Day Acc Keeping Days']-$data['Part 10 Day Acc Out of Stock Days'])/30.4368499;
+                elseif($avg=='week')
+                $factor=$data['Part 10 Day Acc Keeping Days']/7;
+                elseif($avg=='week_eff')
+                $factor=($data['Part 10 Day Acc Keeping Days']-$data['Part 10 Day Acc Out of Stock Days'])/7;
+                else
+                    $factor=1;
+                if ($factor==0) {
+                    $sold=0;
+                    $given=0;
+                    $sold_amount=money(0);
+                    $abs_profit=money(0);
+                    $profit_sold=money(0);
+                } else {
+                    $sold=number($data['Part 10 Day Acc Sold']/$factor);
+                    $given=number($data['Part 10 Day Acc Given']/$factor);
+                    $sold_amount=money($data['Part 10 Day Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part 10 Day Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part 10 Day Acc Profit When Sold']/$factor);
+                }
+            }
+
+            if ($given!=0)
+                $sold="$sold ($given)";
+
+
+            $margin=percentage($data['Part 10 Day Acc Margin'],1);
+            $avg_stock=number($data['Part 10 Day Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part 10 Day Acc AVG Stock Value']);
+            $keep_days=number($data['Part 10 Day Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part 10 Day Acc Out of Stock Days'],$data['Part 10 Day Acc Keeping Days']);
+            $unknown_days=percentage($data['Part 10 Day Acc Unknown Stock Days'],$data['Part 10 Day Acc Keeping Days']);
+            $gmroi=number($data['Part 10 Day Acc GMROI'],0);
+
+
+
+        }
+// ----------------------------------End for 10 day----------------------------
+
+
+
         elseif($period=='week') {
 
 
