@@ -63,37 +63,7 @@ $_SESSION['lang']=1;
 $convert_encoding=true;
 include_once('local_map.php');
 
-$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension`");
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $data=array('Category Name'=>'Type of Business','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
-    $cat_type_business[$row['Store Key']]=new Category('find create',$data);
-    $data=array('Category Name'=>'Referrer','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
-    $cat_referrer[$row['Store Key']]=new Category('find create',$data);
 
-    if ($row['Store Code']=='UK') {
-        $valid_sub_cats_referrals[$row['Store Key']]=array('StartUpPlus','Referral','Google','Ancient Wisdom','Other','Bing','Craft Focus Magazine','Facebook','Garden Shop Catalogue','Gift Focus Magazine','Gifts Today','Giftware Index','Giftware Review','Heritage Shop Catalogue','Market Times','MTN','Progressive Gifts','The Trader Magazine','The Trader Website','The Wholesaler Website','Twitter','Yahoo');
-        foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
-            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
-            $subcat_type_referrer=new Category('find create',$data);
-        }
-    } else {
-        $valid_sub_cats_referrals[$row['Store Key']]=array('Referral','Google','Bing','Yahoo','Other');
-        foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
-            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
-            $subcat_type_referrer=new Category('find create',$data);
-        }
-
-    }
-
-    $valid_sub_cats_type_bussiness[$row['Store Key']]=array('Gift Shop','Internet Shop','Market Trader','Party Planner','Craft Fairs','Tourist Attraction','Wedding Planner','Wholesaler','Department Store','Florist','Ebay Seller','Garden Centre','NPO','Hospitality Industry','Therapist','Event','Other');
-    foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_type_business) {
-        $data=array('Category Name'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
-        $subcat_type_type_business=new Category('find create',$data);
-    }
-
-
-}
 
 
 

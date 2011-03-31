@@ -10,6 +10,8 @@
   <h1>{t}Stores{/t}</h1>
 </div>
 </div>
+
+
 <div style="padding:0px">
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li style="display:none"> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
@@ -22,7 +24,10 @@
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 </div>
+
+
 <div style="padding:0 20px">
+
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
 <div id="block_stores" style="{if $block_view!='stores'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 

@@ -1,45 +1,101 @@
 {include file='header.tpl'}
-<div id="bd" >
- {include file='suppliers_navigation.tpl'}
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Suppliers{/t}</h1>
-  </div>
+<div id="bd" style="padding:0px">
+
+<div style="padding:0 20px">
+
+{include file='assets_navigation.tpl'}
+
+<div style="clear:left;">
+  <h1>{t}Suppliers{/t}</h1>
+</div>
+</div>
 
 
- <div class="data_table" style="clear:both">
+<div style="padding:0px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='suppliers'}selected{/if}"  id="suppliers">  <span> {t}Suppliers{/t}</span></span></li>
+       <li> <span class="item {if $block_view=='sproducts'}selected{/if}"  id="sproducts">  <span> {t}Supplier Products{/t}</span></span></li>
+
+   <li> <span class="item {if $block_view=='porders'}selected{/if}"  id="porders">  <span> {t}Purchase Orders{/t}</span></span></li>
+        <li> <span class="item {if $block_view=='sinvoices'}selected{/if}"  id="sinvoices">  <span> {t}Supplier Invoices{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='idn'}selected{/if}"  id="idn">  <span> {t}Incoming Delivery Notes{/t}</span></span></li>
+
+
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+</div>
+
+
+
+<div style="padding:0 20px">
+
+<div id="block_suppliers" style="{if $block_view!='suppliers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}Suppliers List{/t}</span>
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="suppliers" >{t}Export (CSV){/t}</span>
    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
-	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='products'}class="selected"{/if}  id="products"  >{t}Products{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
+   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	<tr><td  {if $suppliers_view=='general'}class="selected"{/if} id="suppliers_general" >{t}General{/t}</td>
+	  <td {if $suppliers_view=='products'}class="selected"{/if}  id="suppliers_products"  >{t}Products{/t}</td>
+	  {if $view_stock}<td {if $suppliers_view=='stock'}class="selected"{/if}  id="suppliers_stock"  >{t}Stock{/t}</td>{/if}
+	  {if $view_sales}<td  {if $suppliers_view=='sales'}class="selected"{/if}  id="suppliers_sales"  >{t}Sales{/t}</td>{/if}
 	</tr>
       </table>
   
- <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;">
-	   <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
-	 </div>
-	 <div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0}style="display:none"{/if}>{t}filter results{/t}</div>
-	 <div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0}style="display:none"{/if}>
-	   
-
-	   <div class="clean_table_info" style="padding-bottom:1px; ">
-	     
-	     <span id="filter_name0" class="filter_name"  style="margin-right:5px">{$filter_name0}:</span>
-	     <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Hide filter{/t}</span>
-	 <div id='f_container0'></div>
-	   </div>
-	   
-	 </div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-       </div>
  
+     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
+</div>
 
+<div id="block_porders" style="{if $block_view!='porders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+</div>
+<div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+</div>
+<div id="block_idn" style="{if $block_view!='idn'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+</div>
+<div id="block_sproducts" style="{if $block_view!='sproducts'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div class="data_table" style="clear:both;">
+    <span class="clean_table_title">{t}Supplier Products{/t}</span>
+    <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier_products" >{t}Export (CSV){/t}</span>
+     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+     <table  style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	<tr>
+	  <td class="option {if $supplier_products_view=='general'}selected{/if}" id="supplier_products_general" >{t}General{/t}</td>
+	  <td class="option {if $supplier_products_view=='stock'}selected{/if}"  id="supplier_products_stock"  >{t}Stock{/t}</td>
+	  <td class="option {if $supplier_products_view=='sales'}selected{/if}"  id="supplier_products_sales"  >{t}Sales{/t}</td>
+	</tr>
+      </table>
+        <table id="supplier_products_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $supplier_products_view!='sales' };display:none{/if}"  class="options_mini" >
+	<tr>
+
+	  <td class="option {if $supplier_products_period=='all'}selected{/if}" period="all"  id="supplier_products_period_all" >{t}All{/t}</td>
+	  <td class="option {if $supplier_products_period=='year'}selected{/if}"  period="year"  id="supplier_products_period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $supplier_products_period=='quarter'}selected{/if}"  period="quarter"  id="supplier_products_period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $supplier_products_period=='month'}selected{/if}"  period="month"  id="supplier_products_period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $supplier_products_period=='week'}selected{/if}" period="week"  id="supplier_products_period_week"  >{t}1W{/t}</td>
+	</tr>
+      </table>
+
+
+       <table  id="supplier_products_avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $supplier_products_view!='sales'};display:none{/if}"  class="options_mini" >
+	<tr>
+	  <td class="option {if $supplier_products_avg=='totals'}selected{/if}" avg="totals"  id="supplier_products_avg_totals" >{t}Totals{/t}</td>
+	  <td class="option {if $supplier_products_avg=='month'}selected{/if}"  avg="month"  id="supplier_products_avg_month"  >{t}M AVG{/t}</td>
+	  <td class="option {if $supplier_products_avg=='week'}selected{/if}"  avg="week"  id="supplier_products_avg_week"  >{t}W AVG{/t}</td>
+
+	</tr>
+      </table>
+    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+
+      
+  
+    <div  id="table1"   class="data_table_container dtable btable"> </div>
+  </div>
+</div>
+
+</div>
 </div>
 
 <div id="filtermenu0" class="yuimenu">
