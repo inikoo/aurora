@@ -187,6 +187,9 @@ $smarty->assign('js_files',$js_files);
 
 
 $source_category=new Category('name_store','Referrer',$customer->data['Customer Store Key']);
+$smarty->assign('source_category',$source_category);
+$source_category=new Category('name_store','Referrer',$customer->data['Customer Store Key']);
+$smarty->assign('source_category',$source_category);
 
 /*
 

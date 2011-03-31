@@ -300,3 +300,30 @@ YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
 
                                                               });
 }
+
+function change_period(e,data){
+
+
+    tipo=this.id;
+    Dom.removeClass(Dom.getElementsByClassName('option','td' , data.subject+'_period_options'),'selected')
+    Dom.addClass(tipo,"selected");	
+    
+    var table=tables['table'+data.table_id];
+    var datasource=tables['dataSource'+data.table_id];
+    var request='&period=' + this.getAttribute('period');
+    
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+
+function change_avg(e,data){
+    tipo=this.id;
+  Dom.removeClass(Dom.getElementsByClassName('option','td' , data.subject+'_avg_options'),'selected')
+    Dom.addClass(tipo,"selected");	
+    var table=tables['table'+data.table_id];
+    var datasource=tables['dataSource'+data.table_id];
+    var request='&avg=' + this.getAttribute('avg');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+
+
+

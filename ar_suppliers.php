@@ -1333,7 +1333,7 @@ case('new_supplier'):
 function list_suppliers(){
 global $myconf;
 
-    $conf=$_SESSION['state']['suppliers']['table'];
+    $conf=$_SESSION['state']['suppliers']['suppliers'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
@@ -1369,16 +1369,16 @@ if(isset( $_REQUEST['where']))
   else
     $tableid=0;
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
- /* $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);*/
+ /* $_SESSION['state']['suppliers']['suppliers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);*/
  
 
-    $_SESSION['state']['suppliers']['table']['order']=$order;
-    $_SESSION['state']['suppliers']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['suppliers']['table']['nr']=$number_results;
-    $_SESSION['state']['suppliers']['table']['sf']=$start_from;
-    $_SESSION['state']['suppliers']['table']['where']=$where;
-    $_SESSION['state']['suppliers']['table']['f_field']=$f_field;
-    $_SESSION['state']['suppliers']['table']['f_value']=$f_value;
+    $_SESSION['state']['suppliers']['suppliers']['order']=$order;
+    $_SESSION['state']['suppliers']['suppliers']['order_dir']=$order_direction;
+    $_SESSION['state']['suppliers']['suppliers']['nr']=$number_results;
+    $_SESSION['state']['suppliers']['suppliers']['sf']=$start_from;
+    $_SESSION['state']['suppliers']['suppliers']['where']=$where;
+    $_SESSION['state']['suppliers']['suppliers']['f_field']=$f_field;
+    $_SESSION['state']['suppliers']['suppliers']['f_value']=$f_value;
 
  $_order=$order;
   $_dir=$order_direction;

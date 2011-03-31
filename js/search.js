@@ -16,7 +16,6 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init_search(type){
-
 switch(type)
 {
 case 'users':
@@ -57,7 +56,11 @@ search_scope='part';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
   
   break;  
+  case 'suppliers':
+search_scope='suppliers';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_suppliers);
   
+  break;
 default:
  var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   var search_scope='all';
@@ -131,6 +134,10 @@ var submit_search=function(e,data){
 
 function search_part(query){
     search(query,'part','');
+}
+
+function search_suppliers(query){
+    search(query,'suppliers','');
 }
 
 function search_customers(query){

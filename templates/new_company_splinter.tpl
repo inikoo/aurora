@@ -148,18 +148,21 @@ hide_buttons=1
 	  <td  class="label"  >{t}Source{/t}:</td>
 	  <td >
 	    <select>
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-</select>
+	    {foreach from=$sources item=source}
+         <option value="{$source.value}">{$source.label}</option>
+        {/foreach}
+        </select>
 	  </td>
 	</tr>
 	
 	<tr id="tr_type"     >
 	  <td  class="label"  >{t}Type{/t}:</td>
 	  <td >
-	    
+	     <select>
+	    {foreach from=$types item=type}
+         <option value="{$type.value}">{$type.label}</option>
+        {/foreach}
+        </select>
 	  </td>
 	</tr>
 	

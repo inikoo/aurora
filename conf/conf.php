@@ -818,29 +818,7 @@ $default_state=array(
 
 
 
-                   'supplier_products'=>array(
-                                           'details'=>false,
-                                           'percentages'=>false,
-                                           'view'=>'general',
-                                           'from'=>'',
-                                           'to'=>'',
-                                           'period'=>'year',
-                                           'percentage'=>0,
-                                           'mode'=>'',
-                                           'avg'=>'totals',
-                                           'table'=>array(
-                                                       'order'=>'code',
-                                                       'order_dir'=>'',
-                                                       'sf'=>0,
-                                                       'nr'=>25,
-                                                       'where'=>'where true',
-                                                       'f_field'=>'sup_code',
-                                                       'f_value'=>'','f_show'=>false,
-                                                       'from'=>'',
-                                                       'to'=>'',
-                                                       'elements'=>array()
-                                                   )
-                                       ),
+                
 
                    'report_pp'=>array(
 
@@ -1683,10 +1661,38 @@ $default_state=array(
 
                              ),
                    'suppliers'=>array(
-                                   'details'=>false,
-                                   'view'=>'general',
+                                   
+                                   
+                                   'block_view'=>'suppliers',
                                    'edit'=>'suppliers',
-                                   'table'=>array(
+                                   
+                                    'supplier_products'=>array(
+                                     'percentages'=>false,
+                                           'view'=>'general',
+                                           'from'=>'',
+                                           'to'=>'',
+                                           'period'=>'year',
+                                           'percentage'=>0,
+                                           'mode'=>'',
+                                           'avg'=>'totals',
+                                                       'order'=>'code',
+                                                       'order_dir'=>'',
+                                                       'sf'=>0,
+                                                       'nr'=>25,
+                                                       'where'=>'where true',
+                                                       'f_field'=>'sup_code',
+                                                       'f_value'=>'','f_show'=>false,
+                                                       'from'=>'',
+                                                       'to'=>'',
+                                                       'elements'=>array()
+                                                       ),
+                                   
+                                   'suppliers'=>array(
+                                   'period'=>'year',
+                                           'percentage'=>0,
+                                           'mode'=>'',
+                                           'avg'=>'totals',
+                                                'view'=>'general',
                                                'order'=>'name',
                                                'order_dir'=>'',
                                                'sf'=>0,
