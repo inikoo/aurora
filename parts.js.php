@@ -217,7 +217,7 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'parts');
 
  ids=['general','sales','stock','sales_outers'];
  YAHOO.util.Event.addListener(ids, "click",change_view,'parts');
- ids=['period_all','period_three_year','period_year','period_yeartoday','period_six_month','period_three_month','period_quarter','period_month','period_ten_day','period_week'];
+ ids=['period_all','period_three_year','period_year','period_yeartoday','period_six_month','period_quarter','period_month','period_ten_day','period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
