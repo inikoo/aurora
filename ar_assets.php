@@ -5710,7 +5710,7 @@ function list_parts() {
         $order=' `Part 6 Month Acc Sold` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Sold` ';
-// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
+// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
 
     } else if ($order=='money_in') {
         if ($period=='all')
@@ -5789,7 +5789,7 @@ function list_parts() {
         $order=' `Part 1 Month Acc Keeping Days` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Keeping Days` ';
-// ---------------------------Start for : 3Y,YTD,6M,3M,10D--------------------------
+// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Keeping Days` ';
         elseif($period=='yeartoday')
@@ -5798,7 +5798,7 @@ function list_parts() {
         $order=' `Part 6 Month Acc Keeping Days` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Keeping Days` ';
-// ---------------------------End for : 3Y,YTD,6M,3M,10D----------------------------
+// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='outstock_days') {
         if ($period=='all')
             $order=' `Part Total Out of Stock Days` ';
