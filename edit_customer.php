@@ -90,11 +90,11 @@ $js_files=array(
               'table_common.js.php',
               'js/search.js',
               'address_data.js.php?tipo=customer&id='.$customer->id,
-              'edit_delivery_address_common.js.php',
-              'customer.js.php?id='.$customer->id
+              'edit_delivery_address_common.js.php'
+             // 'customer.js.php?id='.$customer->id
           );
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+//$smarty->assign('css_files',$css_files);
+//$smarty->assign('js_files',$js_files);
 
 
 //echo 'date_default_timezone_set: ' . date_default_timezone_get() . strftime("%sH:s %z",strtotime('2010-07-11 09:00:00 +00:00')). '<br />';
@@ -184,12 +184,29 @@ $js_files[]=sprintf('edit_customer.js.php?id=%d',$customer->id);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 //$delivery_addresses=$customer->get_address_objects();
+$categories_value=array();
+$categories=array();
+$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$customer->data['Customer Store Key']);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$tmp=new Category($row['Category Key']);
+$selected_array=$tmp->sub_category_selected_by_subject($customer->id);
 
 
-$source_category=new Category('name_store','Referrer',$customer->data['Customer Store Key']);
-$smarty->assign('source_category',$source_category);
-$source_category=new Category('name_store','Referrer',$customer->data['Customer Store Key']);
-$smarty->assign('source_category',$source_category);
+if(count($selected_array)==0){
+    $tmp_selected='';
+}else{
+    $tmp_selected=array_pop($selected_array);
+}
+
+$categories[$row['Category Key']]=$tmp;
+$categories_value[$row['Category Key']]=$tmp_selected;
+
+}
+$smarty->assign('categories',$categories);
+$smarty->assign('categories_value',$categories_value);
+
+    
 
 /*
 

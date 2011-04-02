@@ -11,6 +11,15 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('disassociate_subject_from_all_sub_categories'):
+$data=prepare_values($_REQUEST,array(
+                          
+                             'subject'  =>array('type'=>'string'),
+                             'subject_key'  =>array('type'=>'key'),
+                             'category_key'  =>array('type'=>'key')
+                         ));
+disassociate_subject_from_all_sub_categories($data);
+break;
 case('disassociate_subject_to_category'):
  $data=prepare_values($_REQUEST,array(
  'cat_id'  =>array('type'=>'string'),
@@ -959,6 +968,35 @@ function delete_categories($data) {
     echo json_encode($response);
 }
 
+
+function disassociate_subject_from_all_sub_categories($data) {
+
+$category=new Category($data['category_key']);
+$sub_cats=$category->get_children_keys();
+if(count($sub_cats)==0){
+ $response=array('state'=>200,'action'=>'nochange','msg'=>_('Category has not children'));
+    echo json_encode($response);
+    return;
+}
+
+    $sql=sprintf("delete from `Category Bridge`  where `Category Key` in (%s) and `Subject`=%s and `Subject Key`=%d",
+                 join(',',$sub_cats), 
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    mysql_query($sql);
+   // print($sql);
+    //print "-->".mysql_affected_rows()."<--  "    ;
+    if(mysql_affected_rows()>0){
+    $response=array('state'=>200,'action'=>'deleted','msg'=>_('Saved'));
+    echo json_encode($response);
+    }else{
+    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+    echo json_encode($response);
+    }
+    
+}
+
 function disassociate_subject_to_category($data) {
     $sql=sprintf("delete from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
                  $data['parent_category_key'], 
@@ -1078,7 +1116,7 @@ function associate_subject_to_category_radio($data) {
     mysql_query($sql);
     
     if(mysql_affected_rows()>0){
-    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key']);
+    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key'],'msg'=>_('Saved'));
     echo json_encode($response);
     }else{
     $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));

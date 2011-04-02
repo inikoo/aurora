@@ -1,5 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0 20px">
+<h1>{t}Adding new customer{/t} ({$store->get('Store Code')})</h1>
 
 <div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
   <div class="general_options">

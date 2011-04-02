@@ -87,6 +87,7 @@ case('edit_address'):
                              'subject_key'=>array('type'=>'key'),
                              'id'=>array('type'=>'key')
                          ));
+                         
     edit_address($data);
     break;
 case('edit_delivery_address'):
@@ -1966,6 +1967,26 @@ function new_customer($data) {
     $customer=new Customer('find create',$data['values']);
     if ($customer->new) {
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
+        
+
+foreach($data['values'] as $data_key=>$data_value){
+
+         if(preg_match('/^cat\d+$/i',$data_key)){
+       //  print"$data_key\n";
+        // $category_key=preg_replace('/^cat/i','',$data_key);
+        //  print"$category_key\n";
+         
+  $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
+                 $data_value,
+               
+                 $customer->id
+                );
+    mysql_query($sql);
+    print($sql);
+        }
+        }
+        
+        
     } else {
         if ($customer->found)
             $response= array('state'=>400,'action'=>'found','customer_key'=>$customer->found_key);

@@ -5,12 +5,18 @@ function find_subject(){
     var json_value = YAHOO.lang.JSON.stringify(subject_data); 
 var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_key}); 
 
-    var request='ar_contacts.php?tipo=find_'+Subject+'&values=' + encodeURIComponent(json_value)+'&scope=' + encodeURIComponent(json_value_scope); 
-    // alert(request) ;
+if(scope=='customer'){
+the_tipo='show_posible_customer_matches';
+}else{
+the_tipo='find_'+Subject
+}
 
+
+    var request='ar_contacts.php?tipo='+the_tipo+'&values=' + encodeURIComponent(json_value)+'&scope=' + encodeURIComponent(json_value_scope); 
+  
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		var old_subject_found=subject_found;
 		var old_subject_found_email=subject_found_email;
@@ -231,6 +237,7 @@ function contact_name_inputed(){
     else
 	validate_data[item].inputed=true;
     display_form_state();
+    
 }    
 function validate_telephone(original_query) {
     
@@ -347,13 +354,13 @@ Dom.get('address_postal_code_warning').setAttribute('title',postcode_help);
     if(validate_data.postal_code.inputed==true){
 	if(valid){
 	   // Dom.removeClass(tr,'no_validated');
-	    Dom.addClass(tr,'validated');
+	  //  Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
 	    
 	    Dom.get('address_postal_code_warning').style.visibility='hidden';
 	}else{
 	    //alert('hard no valid');
-	    Dom.removeClass(tr,'validated');
+	   // Dom.removeClass(tr,'validated');
 	  //  Dom.addClass(tr,'no_validated');
 	    validate_data[item].validated=false;
 	    	    Dom.get('address_postal_code_warning').style.visibility='visible';
@@ -418,8 +425,9 @@ function validate_email_address(email) {
     if(email==''){
 	validate_data['email'].inputed=false;
 	validate_data.email.validated=true;
-	Dom.removeClass(tr,'no_validated');
-	Dom.removeClass(tr,'validated');
+	//Dom.removeClass(tr,'no_validated');
+	//Dom.removeClass(tr,'validated');
+	    	    	    Dom.get('email_warning').style.visibility='hidden';
 
 	return;
     }else
@@ -430,24 +438,33 @@ function validate_email_address(email) {
 
     if(validate_data.email.inputed==true){
 	if(isValidEmail(email)){
-	    Dom.removeClass(tr,'no_validated');
-	    Dom.addClass(tr,'validated');
+	    //Dom.removeClass(tr,'no_validated');
+	    //Dom.addClass(tr,'validated');
 	    validate_data.email.validated=true;
+	    	    	    Dom.get('email_warning').style.visibility='hidden';
+
 	}else{
-	    Dom.removeClass(tr,'validated');
-	    Dom.addClass(tr,'no_validated');
+	   // Dom.removeClass(tr,'validated');
+	   // Dom.addClass(tr,'no_validated');
+	    	    Dom.get('email_warning').style.visibility='visible';
+
+	    
 	    validate_data.email.validated=false;
 	}
     }else{
-	
-	Dom.removeClass(o,'no_validated');
+	Dom.get('email_warning').style.visibility='hidden';
+
+	//Dom.removeClass(o,'no_validated');
 	
 	if(isValidEmail(email) ){
-	    Dom.addClass(tr,'validated');
+	Dom.get('email_warning').style.visibility='hidden';
+
+	//Dom.addClass(tr,'validated');
 	    validate_data.email.validated=true;
 	}else{
-	    Dom.removeClass(tr,'validated');
-	    
+	  //  Dom.removeClass(tr,'validated');
+	    	    	    	  //  Dom.get('email_code_warning').style.visibility='hidden';
+
 	    validate_data.email.validated=false;
 	    //alert('x '+validate_data.email.validated);
 	}
@@ -477,6 +494,7 @@ function get_data(){
     get_subject_data();
     get_contact_data();
     get_address_data();
+   
     get_scope_data();
 }
 
@@ -520,7 +538,7 @@ function init(){
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex","postcode_help"]}
 	var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
-		Countries_AC.suffix = true; 
+		Countries_AC.prefix = ''; 
 
 	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;

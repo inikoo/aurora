@@ -547,11 +547,13 @@ function star_rating($score,$max_score){
 
 function auto_logout_timer()
 {
+
 var t=setTimeout("auto_logout()",<?php echo $max_session_time_in_milliseconds?>);
+
 }
 function auto_logout()
 {
-location.href="index.php?logout=1&r=tos"
+//location.href="index.php?logout=1&r=tos"
 }
 
 function init_common(){

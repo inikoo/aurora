@@ -118,7 +118,7 @@ var save_new_contact=function(e){
    
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	//alert(o.responseText);
+	alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		
@@ -149,11 +149,11 @@ var save_new_contact=function(e){
     var json_value = YAHOO.lang.JSON.stringify(subject_data); 
 	    
     var request='ar_contacts.php?tipo=find_contact&values=' + encodeURIComponent(json_value); 
-  // alert(request) ;
+  alert(request) ;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//	alert(o.responseText)
+			alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		var old_subject_found=subject_found;
 		var old_subject_found_email=subject_found_email;

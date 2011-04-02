@@ -4620,6 +4620,7 @@ class Contact extends DB_Table {
                      ,prepare_mysql($type)
                      ,$this->id);
         $result=mysql_query($sql);
+        //print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $keys[$row['Subject Key']]= $row['Subject Key'];
 
