@@ -638,7 +638,7 @@ class Contact extends DB_Table {
 
         if (!array_empty( $address_work_data)) {
 
-            $address=new Address("find in contact fuzzy",$address_work_data);
+            $address=new Address("find  fuzzy",$address_work_data);
             // print_r($address_work_data);
 
             foreach($address->candidate as $key=>$val) {
@@ -653,7 +653,7 @@ class Contact extends DB_Table {
 
 
         if (!array_empty( $address_home_data)) {
-            $address=new Address("find in contact fuzzy",$address_home_data);
+            $address=new Address("find  fuzzy",$address_home_data);
 
             // $country_code=$address->raw_data['Address Country Code'];
 

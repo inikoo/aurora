@@ -134,13 +134,23 @@ class Address extends DB_Table {
     function prepare_data($raw_data,$options='') {
 
 
-        if (isset($raw_data['Street Data']))
-            $raw_data['Address Line 3']=$raw_data['Street Data'];
+
+
+        if (isset($raw_data['Street Data'])){
+            
+ $tmp=Address::parse_street($raw_data['Street Data']);
+    foreach($tmp as $key=>$value){
+    $raw_data[$key]=$value;
+    }
+unset($raw_data['Street Data']); 
+
+}
+/*
         if (isset($raw_data['Address Building']))
             $raw_data['Address Line 2']=$raw_data['Address Building'];
         if (isset($raw_data['Address Internal']))
             $raw_data['Address Line 1']=$raw_data['Address Internal'];
-
+*/
         $data=$this->base_data();
 
         if (preg_match('/from Company|in company/i',$options)) {
@@ -176,12 +186,12 @@ class Address extends DB_Table {
         }
 
         if (!isset($data['Address Input Format'])) {
-            $data['Address Input Format']='DB Fields';
             if (isset($data['Address Line 1']))
                 $data['Address Input Format']='3 Line';
             else
                 $data['Address Input Format']='DB Fields';
         }
+
 
 
         switch ($data['Address Input Format']) {
@@ -251,11 +261,13 @@ class Address extends DB_Table {
 
 
             }
+            
+            return;
         }
 
 
-        if (!$this->found ) {
-
+     
+//--------------
             if ($data['Address Fuzzy']!='Yes') {
 
                 $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
@@ -300,7 +312,7 @@ class Address extends DB_Table {
                     }
                 }
             }
-        }
+        
     }
 
     function find_fuzzy($data,$subject_data) {
@@ -884,7 +896,7 @@ class Address extends DB_Table {
 
         }
         if (preg_match('/in customer \d+/i',$options,$match)) {
-            $subject_type=preg_replace('/[^\d]/','',$match[0]);
+            $subject_key=preg_replace('/[^\d]/','',$match[0]);
             $subject_type='Customer';
             $subject_object=new Customer($subject_key);
             $in_contact=$subject_object->get_contact_keys();
@@ -1071,6 +1083,10 @@ class Address extends DB_Table {
         // print "XXXXXXXXXXX\n";
         //print_r($data);
         //print"+++++++++++++\n";
+        
+        
+        
+        
         $data=$this->prepare_data($data,$options);
 
         unset($data['Address Main Telephone Key']);
@@ -1355,7 +1371,7 @@ class Address extends DB_Table {
             }
             return $lines;
         case('mini'):
-            $street=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+            $street=$this->display('street');
             if (strlen($street)<2)
                 $street=_($this->data['Address Internal']." ".$this->data['Address Building']);
 
@@ -1377,6 +1393,15 @@ class Address extends DB_Table {
             return $this->plain($this->data);
             break;
         case('street'):
+        
+        if($this->data['Address Street Number Position']=='Right'){
+                    return _trim($this->data['Address Street Name'].' '.$this->data['Address Street Type'].' '.$this->data['Address Street Number']);
+
+        }else{
+            return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+
+        }
+        
             switch ($this->data['Address Country Code']) {
             case('ESP'):
                 return _trim($this->data['Address Street Type'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Number']);
@@ -1463,7 +1488,7 @@ class Address extends DB_Table {
             if ($header_address!='')
                 $address.=$header_address.$separator;
 
-            $street_address=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+            $street_address=$this->display('street');
             if ($street_address!='')
                 $address.=$street_address.$separator;
 
@@ -2036,77 +2061,88 @@ class Address extends DB_Table {
      Todo:
      Country Id not used jet
      */
-    public static function parse_street($line,$country_code='UNK') {
+public static function parse_street($line,$country_code='UNK') {
 
-        // print "********** $line\n";
+    // print "********** $line\n";
 
-        $number='';
-        $name='';
-        $direction='';
-        $type='';
+    $number='';
+    $name='';
+    $direction='';
+    $type='';
+    $position='Left';
 
-        //extract number
-        $line=_trim($line);
-
-        if (preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?(bis)?[a-z]?\s*/i',$line,$match)) {
-
-            $number=$match[0];
-            $len=strlen($number);
-            $name=substr($line,$len);
-        }
-        elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)) {
-            //	 print "--------".$match[0]."-------------";
-            $number=$match[0];
-            $len=strlen($number);
-            $name=_trim(substr($line,0,strlen($line)-$len));
-
-        }
-        else {
-            $name=$line;
-
-        }
-
-        $name=preg_replace('/^\s*,\s*/','',$name);
-
-        $name=_trim($name);
-        $number=_trim($number);
-        $regex='/\s(street|st\.?)$/i';
-        if (preg_match($regex,$name,$match)) {
-            $type="Street";
-            $name=preg_replace($regex,'',$name);
-        }
-
-        if (preg_match('/\s(road|rd\.?)$/i',$name,$match)) {
-            $type="Road";
-            $name=preg_replace('/\s(road|rd\.?)$/i','',$name);
-        }
-        if (preg_match('/\s(close)$/i',$name,$match)) {
-            $type="Close";
-            $name=preg_replace('/\s(close)$/i','',$name);
-        }
-        $regex='/\s(Av\.?|avenue|ave\.?)$/i';
-        if (preg_match($regex,$name,$match)) {
-            $type="Avenue";
-            $name=preg_replace($regex,'',$name);
-        }
+              //extract number
+              $line=_trim($line);
 
 
-        $name=mb_ucwords(_trim($name));
-        $return_data=array(
-                         'Address Street Number'=>$number
-                                                 ,'Address Street Name'=>$name
-                                                                        ,'Address Street Type'=>$type
-                                                                                               ,'Address Street Direction'=>$direction);
-        //    print_r($return_data);
-        return $return_data;
+    if (preg_match('/^\#?\s*(\d.*\d|\d)[^\s]*/i',$line,$match)) {
+
+
+
+        // if (preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?(bis)?[a-z]?\s*/i',$line,$match)) {
+
+        $number=$match[0];
+        $len=strlen($number);
+        $name=substr($line,$len);
+        $position='Left';
+    }
+    elseif(preg_match('/\#?\s*(\d.*\d|\d)[^\s]*$/i',$line,$match)) {
+        // elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)) {
+        //	 print "--------".$match[0]."-------------";
+        $number=$match[0];
+        $len=strlen($number);
+        $name=_trim(substr($line,0,strlen($line)-$len));
+        $position='Right';
+    }
+    else {
+        $name=$line;
 
     }
+
+    $name=preg_replace('/^\s*,\s*/','',$name);
+
+    $name=_trim($name);
+    $number=_trim($number);
+    $regex='/\s(street|st\.?)$/i';
+    if (preg_match($regex,$name,$match)) {
+        $type="Street";
+        $name=preg_replace($regex,'',$name);
+    }
+
+    if (preg_match('/\s(road|rd\.?)$/i',$name,$match)) {
+        $type="Road";
+        $name=preg_replace('/\s(road|rd\.?)$/i','',$name);
+    }
+    if (preg_match('/\s(close)$/i',$name,$match)) {
+        $type="Close";
+        $name=preg_replace('/\s(close)$/i','',$name);
+    }
+    $regex='/\s(Av\.?|avenue|ave\.?)$/i';
+    if (preg_match($regex,$name,$match)) {
+        $type="Avenue";
+        $name=preg_replace($regex,'',$name);
+    }
+
+
+    $name=mb_ucwords(_trim($name));
+    $return_data=array(
+                     'Address Street Number'=>$number,
+                     'Address Street Name'=>$name,
+                     'Address Street Type'=>$type,
+                     'Address Street Direction'=>$direction,
+                    'Address Street Number Position'=>$position
+                 );
+    //    print_r($return_data);
+    return $return_data;
+
+}
 
 
     /*Function:prepare_DBfields
      Cleans address data, look for common errors
      */
     public static function prepare_DBfields($raw_data) {
+       
         return $raw_data;
     }
     /*Function: prepare_3line

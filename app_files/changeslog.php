@@ -2051,6 +2051,9 @@ PRIMARY KEY ( `Customer A` , `Customer B` )
 ALTER TABLE `Customer Correlation` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL ,ADD INDEX ( `Store Key` );
 ALTER TABLE `Category Dimension` ADD `Category Label` VARCHAR( 256 ) NOT NULL AFTER `Category Name` ;
 ALTER TABLE `Category Dimension` ADD INDEX ( `Category Name` ) ;
+
+ALTER TABLE `Address Dimension` ADD `Address Street Number Position` ENUM( 'Left', 'Right' ) NOT NULL DEFAULT 'Left' AFTER `Address Street Number` ;
+
 */
 
 

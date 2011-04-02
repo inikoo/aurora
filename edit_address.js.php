@@ -222,16 +222,17 @@ var save_address=function(e,options) {
         items=Address_Keys;
         var value=new Object()
         for (i in items)
-            value[items[i]]=encodeURIComponent(Dom.get(address_prefix+'address_'+items[i]).value);
+            value[items[i]]=my_encodeURIComponent(Dom.get(address_prefix+'address_'+items[i]).value);
 
         var json_value = YAHOO.lang.JSON.stringify(value);
         var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
-         // alert(request);
-         // return;
+         alert(request);
+          //return;
+                    cancel_edit_address(address_prefix);
 
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //    alert(o.responseText)
+              //  alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
                 if(r.state==200){
                 if (r.action=='updated') {
@@ -337,12 +338,12 @@ success:function(o) {
 
                    edit_address(r.key,address_prefix)
 
-                    cancel_edit_address(address_prefix);
                     save_address_elements++;
                     
                     
                     
                 }
+                //and if updated
                 }
                 else{
                     alert(r.msg);

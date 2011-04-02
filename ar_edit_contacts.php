@@ -1333,6 +1333,7 @@ function edit_address($data) {
     global $editor;
     $warning='';
 
+
     $id=$data['id'];
     $subject=$data['subject'];
     $subject_key=$data['subject_key'];
@@ -1392,23 +1393,30 @@ function edit_address($data) {
             $update_data[$translator[$key]]=$value;
         }
     }
-
 // print_r($update_data);
-    $proposed_address=new Address("find in $subject $subject_key",$update_data);
-
-    if ($proposed_address->found) {
-        $address_parents=  $proposed_address->get_parent_keys($subject);
-        if (array_key_exists($subject_key,$address_parents)) {
-            if ($subject=='Customer') {
+    $proposed_address=new Address("find complete in $subject $subject_key",$update_data);
+     if ($proposed_address->id) {
+      if ($subject=='Customer') {
+      
                 if (preg_match('/^contact$/i',$_REQUEST['key'])) {
+                
+                if($address->id==$proposed_address->id){
+                            $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
+ echo json_encode($response);
+ exit;
+                }else{
                     $subject_object->update_principal_address($proposed_address->id);
 
                     // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
                     $address->delete();
-
+                    
+                    
+                    }
+                    
+                    
                     return;
                 } else {
-                    $msg="This $subject has already another address with this data";
+                    $msg="This Customer has already another address with this data";
                     $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
                     echo json_encode($response);
                     return;
@@ -1428,14 +1436,17 @@ function edit_address($data) {
                     return;
                 }
             }
+     }else{
+         $proposed_address=new Address("find complete ",$update_data);
 
+if($proposed_address->id){
+ $address_parents=$proposed_address->get_parent_keys($subject);
 
-
-        } else {
-            $warning=_('Warning, address found also associated with')." ";
+      $warning=_('Warning, address found also associated with')." ";
             switch ($subject) {
             case 'Customer':
                 $parent_label='';
+               
                 foreach($address_parents as $parent_key) {
                     $parent=new Customer($parent_key);
                     $parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
@@ -1482,27 +1493,10 @@ function edit_address($data) {
             default:
                 break;
             }
-
-
-        }
-
-
-
+     
+     }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
     $address->update($update_data,'cascade');

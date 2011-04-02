@@ -70,11 +70,11 @@ function prepare_values($data,$value_names) {
             break;
         case('json array'):
 
-            $json=$data[$value_name];
+            $tmp=$data[$value_name];
 
-            $tmp=preg_replace('/\\\"/','"',$json);
-            $tmp=preg_replace('/\\\\\"/','"',$tmp);
-            $tmp=preg_replace('/\'/',"\'",$tmp);
+            //$tmp=preg_replace('/\\\"/','"',$json);
+            //$tmp=preg_replace('/\\\\\"/','"',$tmp);
+            //$tmp=preg_replace('/\'/',"\'",$tmp);
 
 
             $raw_data=json_decode($tmp, true);
@@ -88,12 +88,15 @@ function prepare_values($data,$value_names) {
                 }
                 foreach($raw_data as $key=>$value) {
                     if (is_string($value))
-                        $raw_data[$key]=preg_replace('/\\\\\'/',"'",$value);
+                        $raw_data[$key]=html_entity_decode($value);
                 }
 
                 $parsed_data[$value_name]=$raw_data;
             } else
                 exit(json_encode(array('state'=>400,'msg'=>'Error wrong value json')));
+             
+           
+                
             break;
         default:
             $parsed_data[$value_name]=$data[$value_name];

@@ -6,6 +6,15 @@ include_once('common.php');
 //Copyright (c) 2009 LW
 var Dom   = YAHOO.util.Dom;
 
+function addslashes (str) {
+
+    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+function my_encodeURIComponent (str) {
+srt=encodeURIComponent (str);
+
+    return (str + '').replace(/'/g, '%27');
+}
 
 function showdetails(o){
 
