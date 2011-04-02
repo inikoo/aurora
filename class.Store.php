@@ -1599,95 +1599,6 @@ $yeartoday=YTD();
         }
 
 
-// ----------------------------------------------------------start for 3 month ----------------------------------------------------------
-       $on_sale_days=0;
-
-        $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
-        // print "$sql\n\n";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if ($row['prods']==0)
-                $on_sale_days=0;
-            else {
-
-
-                if ($row['for_sale']>0)
-                    $to=strtotime('today');
-                else
-                    $to=strtotime($row['to']);
-                // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
-                // print "*** T:$to   ".strtotime('today -1 year')."  \n";
-                if ($to>strtotime('today -3 month')) {
-                    //print "caca";
-                    $from=strtotime($row['ffrom']);
-                    if ($from<strtotime('today -3 month'))
-                        $from=strtotime('today -3 month');
-
-                    //	    print "*** T:$to F:$from\n";
-                    $on_sale_days=($to-$from)/ (60 * 60 * 24);
-                } else {
-                    //   print "pipi";
-                    $on_sale_days=0;
-
-                }
-            }
-        }
-
-
-
-        //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
-        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
-                     and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
-
-        $result=mysql_query($sql);
-        $pending_orders=0;
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $pending_orders=$row['pending_orders'];
-        }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
-                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
-                     from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
-//print "$sql\n";
-        $result=mysql_query($sql);
-
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 3 Month Acc Invoiced Gross Amount']=$row['gross'];
-            $this->data['Store 3 Month Acc Invoiced Discount Amount']=$row['disc'];
-            $this->data['Store 3 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
-
-            $this->data['Store 3 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-            $this->data['Store 3 Month Acc Quantity Ordered']=$row['ordered'];
-            $this->data['Store 3 Month Acc Quantity Invoiced']=$row['invoiced'];
-            $this->data['Store 3 Month Acc Quantity Delivered']=$row['delivered'];
-            $this->data['Store 3 Month Acc Customers']=$row['customers'];
-            $this->data['Store 3 Month Acc Invoices']=$row['invoices'];
-            $this->data['Store 3 Month Acc Pending Orders']=$pending_orders;
-
-            $sql=sprintf("update `Store Dimension` set `Store 3 Month Acc Invoiced Gross Amount`=%s,`Store 3 Month Acc Invoiced Discount Amount`=%s,`Store 3 Month Acc Invoiced Amount`=%s,`Store 3 Month Acc Profit`=%s, `Store 3 Month Acc Quantity Ordered`=%s , `Store 3 Month Acc Quantity Invoiced`=%s,`Store 3 Month Acc Quantity Delivered`=%s ,`Store 3 Month Acc Days On Sale`=%f ,`Store 3 Month Acc Customers`=%d,`Store 3 Month Acc Invoices`=%d,`Store 3 Month Acc Pending Orders`=%d   where `Store Key`=%d "
-                         ,prepare_mysql($this->data['Store 3 Month Acc Invoiced Gross Amount'])
-                         ,prepare_mysql($this->data['Store 3 Month Acc Invoiced Discount Amount'])
-                         ,prepare_mysql($this->data['Store 3 Month Acc Invoiced Amount'])
-
-                         ,prepare_mysql($this->data['Store 3 Month Acc Profit'])
-                         ,prepare_mysql($this->data['Store 3 Month Acc Quantity Ordered'])
-                         ,prepare_mysql($this->data['Store 3 Month Acc Quantity Invoiced'])
-                         ,prepare_mysql($this->data['Store 3 Month Acc Quantity Delivered'])
-                         ,$on_sale_days
-                         ,$this->data['Store 3 Month Acc Customers']
-                         ,$this->data['Store 3 Month Acc Invoices']
-                         ,$this->data['Store 3 Month Acc Pending Orders']
-                         ,$this->id
-                        );
-          //  print "$sql\n";
-
-
-            if (!mysql_query($sql))
-                exit("$sql\ncan not update dept sales\n");
-        }
-        // exit;
-// -------------------------------------------------------end of 3 month-------------------------------------------------------------
-
-
 
 
 
@@ -1947,7 +1858,7 @@ $yeartoday=YTD();
         $this->data_default_currency['Store DC Total Invoiced Discount Amount']=0;
         $this->data_default_currency['Store DC Total Invoiced Amount']=0;
         $this->data_default_currency['Store DC Total Profit']=0;
-// ----------------------------------start for 3 yr, yeartoday, 6m, 3m, 10 days-----------------------------
+// ----------------------------------start for 3 yr, yeartoday, 6m, 10 days-----------------------------
         $this->data_default_currency['Store DC 3 Year Acc Invoiced Gross Amount']=0;
         $this->data_default_currency['Store DC 3 Year Acc Invoiced Discount Amount']=0;
         $this->data_default_currency['Store DC 3 Year Acc Invoiced Amount']=0;
@@ -1963,16 +1874,11 @@ $yeartoday=YTD();
         $this->data_default_currency['Store DC 6 Month Acc Invoiced Amount']=0;
         $this->data_default_currency['Store DC 6 Month Acc Profit']=0;
 
-        $this->data_default_currency['Store DC 3 Month Acc Invoiced Gross Amount']=0;
-        $this->data_default_currency['Store DC 3 Month Acc Invoiced Discount Amount']=0;
-        $this->data_default_currency['Store DC 3 Month Acc Invoiced Amount']=0;
-        $this->data_default_currency['Store DC 3 Month Acc Profit']=0;
-
         $this->data_default_currency['Store DC 10 Day Acc Invoiced Gross Amount']=0;
         $this->data_default_currency['Store DC 10 Day Acc Invoiced Discount Amount']=0;
         $this->data_default_currency['Store DC 10 Day Acc Invoiced Amount']=0;
         $this->data_default_currency['Store DC 10 Day Acc Profit']=0;
-// --------------------------------- end for 3 yr, yeartoday, 6m, 3m, 10 days-------------------------------------
+// --------------------------------- end for 3 yr, yeartoday, 6m, 10 days-------------------------------------
         $this->data_default_currency['Store DC 1 Year Acc Invoiced Gross Amount']=0;
         $this->data_default_currency['Store DC 1 Year Acc Invoiced Discount Amount']=0;
         $this->data_default_currency['Store DC 1 Year Acc Invoiced Amount']=0;
@@ -2081,22 +1987,7 @@ $yeartoday=YTD();
 
         }
 
-// ----------------------------------------------------------------strt for 3 month------------------------------------------------
-        $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross
-                     ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc
-                     from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
 
-        $result=mysql_query($sql);
-
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data_default_currency['Store DC 3 Month Acc Invoiced Gross Amount']=$row['gross'];
-            $this->data_default_currency['Store DC 3 Month Acc Invoiced Discount Amount']=$row['disc'];
-            $this->data_default_currency['Store DC 3 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
-            $this->data_default_currency['Store DC 3 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-
-        }
-
-// ----------------------------------------------------------------end for 3 month----------------------------------------------------
 
         $sql=sprintf("select    sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross  ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc    from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
 
