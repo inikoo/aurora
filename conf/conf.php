@@ -3567,6 +3567,18 @@ $default_state=array(
                                                 'f_field'=>'continent_code',
                                                 'f_value'=>'',
                                             ),
+
+				'postal_code'=>array(
+                                               'display'=>'all',
+                                               'order'=>'name',
+                                               'order_dir'=>'asc',
+                                               'sf'=>0,
+                                               'nr'=>20,
+                                               'where'=>'where true',
+                                               'f_field'=>'postal_code',
+                                               'f_value'=>'',
+                                           ),
+				
                            ),
 
 
