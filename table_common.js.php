@@ -80,10 +80,12 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
    
   // alert(oResponse.meta.rtext+' '+oResponse.meta.tableid)
    
-    if(oResponse.meta.rtext != undefined)
-
-      YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
+    if(oResponse.meta.rtext != undefined){
+     YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
     
+    
+   // alert(YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML);
+    }
     
     if(oResponse.meta.rtext_rpp != undefined){
 

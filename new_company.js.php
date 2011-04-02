@@ -42,6 +42,7 @@ var subject_data={
     ,"Company Address Country Third Division":""
     ,"Company Address Country Forth Division":""
     ,"Company Address Country Fifth Division":""
+    
 };  
 var suggest_country=true;
 var suggest_d1=true;
@@ -76,6 +77,18 @@ var saved_details=0;
 var error_details=0;
 var values=new Object;
 
+
+
+function update_category(o){
+var parent_category_key=o.getAttribute('cat_key');
+var category_key=o.options[o.selectedIndex].value;
+
+subject_data['Cat'+parent_category_key]=category_key;
+
+
+}
+
+
 function save_new_company(e){
    
     if(!can_add_subject){
@@ -93,11 +106,15 @@ function save_new_company(e){
     }else
         var ar_file='ar_edit_contacts.php';
    
-   
+  // for (x in subject_data){
+//alert(x+' '+subject_data[x])
+//}
+
+
    
     var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + encodeURIComponent(json_value); 
-     //alert(request);return;
+  //  alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//alert(o.responseText);

@@ -1,21 +1,18 @@
  
-  <div class="search_box" >
-      
-
-    </div>
-<div>
+  <div class="search_box" ></div>
+  <div   id="contact_messages_div" >
       <span id="contact_messages"></span>
     </div>
-    
-    <div >
-    
-    
-      <div id="results" style="margin-top:0px;float:right;width:390px;xheight:800px">
-	
-      </div>
+  <div >
+     <div id="results" style="margin-top:0px;float:right;width:390px;"></div>
       
-      <div  style="float:left;" >
-      <table class="edit" border=0  style="width:540px;margin-bottom:0px" >
+      <div  style="float:left;width:540px;" >
+      <table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
+      
+      <tr class="title">
+      <td colspan=3>{t}Company Info{/t}</td>
+      </tr>
+      
   	{if $scope=='customer'}
 <input type="hidden" value="{$store_key}" id="Store_Key"/>
 {/if}
@@ -42,6 +39,9 @@
 	  </td>
 	  <td style="width:70px"></td>
 	</tr>
+	 <tr class="title">
+      <td colspan=3>{t}Contact Info{/t}</td>
+      </tr>
 	<tr style="{if $scope=='corporation'}display:none{/if}" >
 	  
 	  <td class="label">{t}Contact Name{/t}:</td>
@@ -89,9 +89,10 @@
 	  </tr>
 	  
 	</tbody>
-	
+	 
+      
 	<tr id="email_mould"   style="{if $scope=='corporation'}display:none{/if}"  >
-	  <td  class="label"  >{t}Email{/t}:</td>
+	  <td  class="label"  >{t}Email{/t}:<img  id="{$address_identifier}email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /></td>
 	  <td >
 	    <div>
 	    <input style="width:100%" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
@@ -99,10 +100,13 @@
 	    </div>
 	  </td>
 	</tr>
+ 	
+ 	
+ 	
  	<tr id="telephone_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
 	    
-	    {t}Telephone{/t}:
+	    {t}Telephone{/t}:<img  id="{$address_identifier}telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
 	  </td>
 	  <td>
 	    <div>
@@ -133,6 +137,9 @@
 		  </td>
 		</tr>
 		
+ <tr class="title">
+      <td colspan=3>{t}Address Info{/t}</td>
+      </tr>
 
 
 {include file='edit_address_splinter.tpl' 
@@ -144,33 +151,36 @@ default_country_2alpha='gb'
 hide_buttons=1
 }
 
-	<tr id="tr_source"     >
-	  <td  class="label"  >{t}Source{/t}:</td>
-	  <td >
-	    <select>
-	    {foreach from=$sources item=source}
-         <option value="{$source.value}">{$source.label}</option>
-        {/foreach}
-        </select>
-	  </td>
-	</tr>
-	
-	<tr id="tr_type"     >
-	  <td  class="label"  >{t}Type{/t}:</td>
-	  <td >
-	     <select>
-	    {foreach from=$types item=type}
-         <option value="{$type.value}">{$type.label}</option>
-        {/foreach}
-        </select>
-	  </td>
-	</tr>
+
+<tr class="title">
+      <td colspan=3>{t}Other Info{/t}</td>
+      </tr>
+
+{foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
+ <td>
+  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="update_category(this)">
+    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+        {if $smarty.foreach.foo2.first}
+        <option  value="">{t}Unknown{/t}</option>
+        {/if}
+        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+    {/foreach}
+  </select>
+  
+ </td>   
+</tr>
+{/foreach}
+
+
 	
 	
 	
     
     </table>
-      <table class="options" border=0 style="margin-right:90px;float:right;padding:0">
+      <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
 	<tr>
 		<td   id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
 
@@ -188,11 +198,10 @@ hide_buttons=1
       <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has the same email{/t}.
 	<table style="margin:10px 0">
-	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the located contact{/t}</td></tr>
+	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the located company{/t}</td></tr>
 	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Previous contact data (email) will be deleted to avoid muliplicity{/t}</span></td></tr>
 	</table>
       </div>
-
       <div style="clear:both;padding:10px;" id="validation">
 
 	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_Company_found">{t}Company has been found{/t}</div>
@@ -218,6 +227,8 @@ hide_buttons=1
       </div>
 
       </div>
+      
+      
       <div style="clear:both;height:40px"></div>
 	</div>
     

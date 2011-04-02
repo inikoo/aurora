@@ -97,35 +97,21 @@
  <div  class="edit_block" style="{if $edit!="categories"}display:none{/if};min-height:260px"  id="d_categories">
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
+ 
  {foreach from=$categories item=cat key=cat_key name=foo  }
  <tr>
  
- <td class="label">{t}{$cat.name}{/t}:</td>
+ <td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
  <td>
-   {foreach from=$cat.teeth item=cat2 key=cat2_id name=foo2}
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0">
-    <table border=0 >
-    
-     {foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
-    
-        {if $cat3.mod5==0}<tr>{/if}
-            <td style="text-align:center;padding:5px 5px; border:none">   
-                <span  style=""  class="catbox {if $cat3.selected}selected{/if}" 
-                    value="{$cat3.selected}" 
-                    ovalue="{$cat3.selected}" 
-                    onclick="save_radio(this)" 
-                    cat_id="{$cat3_id}" 
-                    id="cat{$cat3_id}" 
-                    parent="{$cat3.parent}" 
-                    position="{$cat3.position}" 
-                    default="{$cat3.default}"  >{$cat3.name}
-                </span>
-            </td>
-        {if $cat3.mod5==4}</tr>{/if}
-     {/foreach}
-     </table>
-    </div>
-   {/foreach}
+  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+        {if $smarty.foreach.foo2.first}
+        <option {if $categories_value[$cat_key]=='' }selected="selected"{/if} value="">{t}Unknown{/t}</option>
+        {/if}
+        <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+    {/foreach}
+  </select>
+  
  </td>   
 </tr>
 {/foreach}
@@ -231,12 +217,12 @@
 
      </table>
 
-   <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px;min-height:300px">
+   <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;min-height:300px">
      <div style="border-bottom:1px solid #777;margin-bottom:5px">
        {t}Contact Address{/t}:
      </div>
-     <table>
-       {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  }
+     <table border=0 style="width:100%">
+       {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}
      </table>
      <div style="display:none" id='contact_current_address' ></div>
      <div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
@@ -375,5 +361,16 @@
     </ul>
   </div>
 </div>
+
+<div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Country List{/t}</span>
+            
+            {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100}
+            <div  id="table100"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
 
 {include file='footer.tpl'}

@@ -14,6 +14,7 @@
 
 include_once('common.php');
 include_once('class.Company.php');
+include_once('class.Category.php');
 
 if(!$user->can_view('contacts'))
   exit();
@@ -28,6 +29,11 @@ if(!$modify or!$create){
 
 
 $store_key=$_SESSION['state']['customers']['store'];
+
+$store=new Store($store_key);
+$smarty->assign('store',$store);
+
+
 $smarty->assign('store_key',$store_key);
 $smarty->assign('scope','customer');
 
@@ -116,6 +122,21 @@ $js_files[]='edit_contact_email.js.php';
 
 
 }
+
+$categories=array();
+$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$tmp=new Category($row['Category Key']);
+
+
+
+$categories[$row['Category Key']]=$tmp;
+
+}
+$smarty->assign('categories',$categories);
+
+
 
 
 

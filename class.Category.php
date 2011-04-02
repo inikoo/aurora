@@ -749,10 +749,25 @@ class Category extends DB_Table {
 
     }
 
+    function sub_category_selected_by_subject($subject_key){
+        $sub_category_keys_selected=array();
+        $sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where `Category Subject`=%s and `Subject Key`=%d and `Category Parent Key`=%d",
+        prepare_mysql($this->data['Category Subject']),
+        $subject_key,
+        $this->id
+        );
+        $res=mysql_query($sql);
+        //print $sql;
+        while($row=mysql_fetch_assoc($res)){
+        $sub_category_keys_selected[$row['Category Key']]=$row['Category Key'];
+        }            
+        return $sub_category_keys_selected;
+    }
+    
     
     function get_children_keys(){
       $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ",
-                       $this->id,
+                       $this->id
                       );
 
         $res=mysql_query($sql);
@@ -760,26 +775,28 @@ class Category extends DB_Table {
         while ($row=mysql_fetch_assoc($res)) {
             $children_keys[$row['Category Key']]=$row['Category Key'];
         }
-    
+            return $children_keys;
+
     }
     
-  }
+  
   
   
   function get_children_objects(){
-      $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ",
-                       $this->id,
+      $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d order by `Category Name` ",
+                       $this->id
                       );
-
+                      print $sql;
         $res=mysql_query($sql);
         $children_keys=array();
         while ($row=mysql_fetch_assoc($res)) {
             $children_keys[$row['Category Key']]=new Category($row['Category Key']);
         }
+        return $children_keys;
     
     }
     
-  }
+  
 
     function update_children_data() {
 

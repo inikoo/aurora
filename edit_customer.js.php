@@ -288,49 +288,39 @@ var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + cat
 
 }
 
-function save_radio(o) {
- 
-var parent_category_key=o.getAttribute('parent');
-var category_key=o.getAttribute('cat_id')
+function save_category(o) {
+
+var parent_category_key=o.getAttribute('cat_key');
+var category_key=o.options[o.selectedIndex].value;
 var subject='Customer';
 var subject_key=Dom.get('customer_key').value;
-if(Dom.hasClass(o,'selected'))
-    var operation_type='disassociate_subject_to_category_radio';
-else
-    var operation_type='associate_subject_to_category_radio';
 
-var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
-		
+//if(Dom.hasClass(o,'selected'))
+//    var operation_type='disassociate_subject_to_category_radio';
+//else
+
+
+if(category_key==''){
+var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+
+}else{
+var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
+
+
+}
+
+
+	//alert(request);
+	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-		//	alert(o.responseText);
+			alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
-				 
-            if (r.action=='deleted') {
-                Dom.removeClass(r.cat_id,'selected');
-
-            }else if(r.action=='added'){
-                          
-                          cat_element=Dom.get(r.cat_id)
-               //     alert('cat_'+r.parent_category_key)
-                            
-                         other_elements=Dom.getElementsByClassName('catbox', 'span', Dom.get('cat_'+r.parent_category_key+'>'))
-                      //  other_elements=Dom.getElementsByClassName('catbox', 'span', Dom.get('cat_1'))
-                        Dom.removeClass(other_elements,'selected');
-                        Dom.addClass(cat_element,'selected');
-                    //parent.setAttribute('value',cat_element.getAttribute('name'));
-                          
-                          
-                          
-                        
-
-            }else{
-                
-            }
+				}
 
 
-        }
+        
     }
                                                                  });
 
@@ -461,6 +451,7 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
 	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;
     Countries_AC.suffix='contact_';
+    Countries_AC.suffix='prefix_';
 	Countries_AC.resultTypeList = false;
 	Countries_AC.formatResult = countries_format_results;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
@@ -473,6 +464,7 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;
     Countries_AC.suffix='billing_';
+    Countries_AC.prefix='billing_';
 	Countries_AC.resultTypeList = false;
 	Countries_AC.formatResult = countries_format_results;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);

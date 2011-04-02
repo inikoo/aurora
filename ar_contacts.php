@@ -20,6 +20,14 @@ if (!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('show_posible_customer_matches'):
+ $data=prepare_values($_REQUEST,array(
+                             'scope'=>array('type'=>'json array')
+                                     ,'values'=>array('type'=>'json array')
+                         ));
+show_posible_customer_matches($data);
+break;
+
 case('customers_lists'):
     list_customers_lists();
     break;
@@ -2978,7 +2986,7 @@ function list_staff() {
 }
 
 
-function show_posible_customer_matches($the_data) {
+function show_posible_customer_matches2($the_data) {
 //print_r($the_data);
     $data=$the_data['values'];
     $scope=$the_data['scope']['scope'];
@@ -3133,6 +3141,277 @@ function show_posible_customer_matches($the_data) {
     $response=array('candidates_data'=>$candidates_data,'action'=>$action,'found_key'=>$found_key);
     echo json_encode($response);
 }
+
+function show_posible_customer_matches($the_data) {
+
+    $found_email=false;
+
+    $candidates_data=array();
+    // print_r($data);
+
+    $data=$the_data['values'];
+
+
+
+    $scope=$the_data['scope']['scope'];
+    if ($scope=='customer') {
+        $scope='Customer';
+        $store_key=$the_data['scope']['store_key'];
+    }
+
+
+
+    // quick try to find the email
+    if ($data['Contact Main Plain Email']!='') {
+        $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
+                     ,prepare_mysql($data['Contact Main Plain Email'])
+                    );
+                    //print $sql;
+        $scope_found_key=0;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result)) {
+            $contact=new Contact($row['Subject Key']);
+           
+             
+                     $customer_keys=$contact->get_parent_keys('Customer');
+                    // print_r($customer_keys);
+                 $in_store=false;
+                    $in_other_store=false;
+                    
+                
+                    
+                    foreach($customer_keys as $customer_key) {
+                    $link='';
+                        $customer=new Customer($customer_key);
+                         $found_email=true;
+                          $scope_found_key=$customer->id;
+                         
+                        if ($customer->data['Customer Store Key']==$store_key) {
+                            $in_store=true;
+                           
+                            
+            
+            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?id=%d">(%s)</a>'
+                                           ,_('Warning')
+                                           ,_('A customer found with similar data in this store')
+                                           ,$customer->id
+                                           ,_('Edit Customer')
+                                          );
+                        }else {
+                        
+                           $other_store=new Store($customer->data['Customer Store Key']);
+                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                                   ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
+                                   ,$customer->id
+                                   ,_('Recollect Data')
+                                  );
+                
+                            $in_other_store=true;
+
+                        }
+
+                    }
+               
+               
+                    $candidates_data[]= array('link'=>$link,'card'=>$customer->display('card'),'score'=>1000,'key'=>$customer->id,'tipo'=>'customer','scope_tipo'=>$customer->data['Customer Type'],'found'=>1);
+                
+                          
+               
+            
+            /*
+            $company_key=$contact->company_key();
+            if ($company_key) {
+                $link='';
+                $_company=new Company ($company_key);
+                $subject_key=$company_key;
+                if ($scope=='Customer') {
+                    $parent_keys=$_company->get_parent_keys($scope);
+                    $in_store=false;
+                    $in_other_store=false;
+                    foreach($parent_keys as $parent_key) {
+                        $parent=new Customer($parent_key);
+                        if ($parent->data['Customer Store Key']==$store_key) {
+                            $in_store=true;
+                            $scope_found_key=$parent->id;
+                            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?id=%d">(%s)</a>'
+                                           ,_('Warning')
+                                           ,_('A customer found with similar data in this store')
+                                           ,$parent->id
+                                           ,_('Edit Customer')
+                                          );
+                        }
+                        elseif(!$in_other_store) {
+                        
+                           $other_store=new Store($parent->data['Customer Store Key']);
+                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                                   ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
+                                   ,$parent->id
+                                   ,_('Recollect Data')
+                                  );
+                
+                            $in_other_store=true;
+
+                        }
+
+                    }
+
+
+                }
+
+                $candidates_data[]= array('link'=>$link,'card'=>$_company->display('card'),'score'=>1000,'key'=>$scope_found_key,'tipo'=>'company','found'=>1);
+            } else {
+                $subject_key=$contact->id;
+
+
+                $link='';
+
+                if ($scope=='Customer') {
+                    $parent_keys=$contact->get_parent_keys($scope);
+                    $in_store=false;
+                    $in_other_store=false;
+                    foreach($parent_keys as $parent_key) {
+                        $parent=new Customer($parent_key);
+                        if ($parent->data['Customer Store Key']==$store_key) {
+                            $in_store=true;
+                            $scope_found_key=$parent->id;
+                            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s (%s)'
+                                           ,_('Warning')
+                                           ,_('A customer found with similar data in this store')
+                                           ,$parent->id
+                                           ,_('Edit Customer')
+                                          );
+                        }
+                        elseif(!$in_other_store) {
+                            $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_company(%s)">%s</span>)'
+                                           ,_('A customer found with similar data in other store')
+                                           ,$parent->id
+                                           ,_('Recollect Data')
+                                          );
+                            $in_other_store=true;
+
+                        }
+
+                    }
+
+
+                }
+
+
+
+                $candidates_data[]= array('link'=>$link,'card'=>$contact->display('card'),'score'=>1000,'key'=>$scope_found_key,'tipo'=>'contact','found'=>1);
+
+                $subject_key=$contact->id;
+            }
+
+*/
+
+            //$response=array('candidates_data'=>$candidates_data,'action'=>'found_email','found_key'=>$scope_found_key);
+            //echo json_encode($response);
+            //return;
+        }
+
+
+
+    }
+
+
+
+
+    $max_results=8;
+
+    $contact=new contact('find complete',$data);
+    $found_key=0;
+    
+    if($found_email){
+        $action='found_email';
+        $found_key=$scope_found_key;
+    }elseif ($contact->found) {
+        $action='found';
+        $found_key=$contact->found_key;
+    } else
+        $action='nothing_found';
+
+
+    $count=0;
+    foreach($contact->candidate as $contact_key=>$score) {
+        $link='';
+
+        if ($score<20)
+            continue;
+
+
+        if ($count>$max_results)
+            break;
+        $_contact=new Contact ($contact_key);
+
+
+
+        $scope_found_key=0;
+ 
+            $customer_keys=$_contact->get_customer_keys('Customer');
+            $in_store=false;
+            $in_other_store=false;
+            // print_r($customer_keys);
+            foreach($customer_keys as $customer_key) {
+$card='';     
+           // print "** $found_email ::  $found_key $customer_key **";
+              if($found_email and $found_key==$customer_key){
+              continue;
+              }
+            $tipo_found='customer';
+                $customer=new Customer($customer_key);
+                 $card=$customer->display('card');
+                if ($customer->data['Customer Store Key']==$store_key) {
+                    $in_store=true;
+                    $scope_found_key=$customer->id;
+                    $link.=sprintf('<br/><img src="art/icons/exclamation.png" alt="%s"/> %s<br/>(<a href="customer.php?id=%d">%s</a>)'
+                                   ,_('Warning').":"
+                                   ,_('Customer in this store')
+                                   ,$customer->id
+                                   ,_('Edit Customer')
+                                  );
+                }
+                elseif(!$in_other_store) {
+                    $other_store=new Store($customer->data['Customer Store Key']);
+                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                                   ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
+                                   ,$customer->id
+                                   ,_('Recollect Data')
+                                  );
+                    $in_other_store=true;
+
+                }
+                 $link=preg_replace('/^\<br\/\>/','',$link);
+
+        $found=0;
+        if ($contact->found_key==$_contact->id)
+            $found=1;
+        //$candidates_data[]= array('card'=>$_contact->display('card'),'score'=>$score,'key'=>$_contact->id,'tipo'=>'contact','found'=>$found);
+        $candidates_data[]= array('link'=>$link,'card'=>$card,'score'=>$score,'key'=>$scope_found_key,'tipo'=>$tipo_found,'found'=>$found);
+
+        $count++;
+            }
+            }
+/*
+            $supplier_keys=$_contact->get_customer_keys('Supplier');
+            foreach($supplier_keys as $supplier_key) {
+                $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_supplier(%s)">%s</span>)'
+                               ,_('Supplier')
+                               ,$supplier_key
+                               ,_('Recollect Data')
+                              );
+                               $card='';
+            }
+*/
+
+      
+    
+    //print_r($company->candidate_companies);
+
+    $response=array('candidates_data'=>$candidates_data,'action'=>$action,'found_key'=>$found_key);
+    echo json_encode($response);
+}
+
 function find_customer($the_data) {
 //print_r($the_data);
     $data=$the_data['values'];
@@ -3512,6 +3791,9 @@ function find_company_department($data) {
 
 
 function find_contact($the_data) {
+
+    $found_email=false;
+
     $candidates_data=array();
     // print_r($data);
 
@@ -3532,10 +3814,55 @@ function find_contact($the_data) {
         $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
                      ,prepare_mysql($data['Contact Main Plain Email'])
                     );
+                    //print $sql;
         $scope_found_key=0;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result)) {
             $contact=new Contact($row['Subject Key']);
+           
+               if ($scope=='Customer') {
+                     $customer_keys=$contact->get_parent_keys('Customer');
+                 $in_store=false;
+                    $in_other_store=false;
+                    
+                
+                    
+                    foreach($customer_keys as $customer_key) {
+                    $link='';
+                        $customer=new Customer($customer_key);
+                        if ($customer->data['Customer Store Key']==$store_key) {
+                            $in_store=true;
+                            $scope_found_key=$customer->id;
+             $found_email=true;
+            $link.=sprintf('<br/><img src="art/icons/warning.png" alt="%s"/> %s <a href="customer.php?id=%d">(%s)</a>'
+                                           ,_('Warning')
+                                           ,_('A customer found with similar data in this store')
+                                           ,$customer->id
+                                           ,_('Edit Customer')
+                                          );
+                        }
+                        elseif(!$in_other_store) {
+                        
+                           $other_store=new Store($customer->data['Customer Store Key']);
+                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                                   ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
+                                   ,$customer->id
+                                   ,_('Recollect Data')
+                                  );
+                
+                            $in_other_store=true;
+
+                        }
+
+                    }
+               
+               
+                    $candidates_data[]= array('link'=>$link,'card'=>$customer->display('card'),'score'=>1000,'key'=>$customer->id,'tipo'=>'customer','scope_tipo'=>$customer->data['Customer Type'],'found'=>1);
+                
+                          
+               }
+            
+            /*
             $company_key=$contact->company_key();
             if ($company_key) {
                 $link='';
@@ -3558,11 +3885,14 @@ function find_contact($the_data) {
                                           );
                         }
                         elseif(!$in_other_store) {
-                            $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_company(%s)">%s</span>)'
-                                           ,_('A customer found with similar data in other store')
-                                           ,$company->id
-                                           ,_('Recollect Data')
-                                          );
+                        
+                           $other_store=new Store($parent->data['Customer Store Key']);
+                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                                   ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
+                                   ,$parent->id
+                                   ,_('Recollect Data')
+                                  );
+                
                             $in_other_store=true;
 
                         }
@@ -3598,7 +3928,7 @@ function find_contact($the_data) {
                         elseif(!$in_other_store) {
                             $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_company(%s)">%s</span>)'
                                            ,_('A customer found with similar data in other store')
-                                           ,$company->id
+                                           ,$parent->id
                                            ,_('Recollect Data')
                                           );
                             $in_other_store=true;
@@ -3614,14 +3944,14 @@ function find_contact($the_data) {
 
                 $candidates_data[]= array('link'=>$link,'card'=>$contact->display('card'),'score'=>1000,'key'=>$scope_found_key,'tipo'=>'contact','found'=>1);
 
-                $subject_key=$contact->key;
+                $subject_key=$contact->id;
             }
 
+*/
 
-
-            $response=array('candidates_data'=>$candidates_data,'action'=>'found_email','found_key'=>$scope_found_key);
-            echo json_encode($response);
-            return;
+            //$response=array('candidates_data'=>$candidates_data,'action'=>'found_email','found_key'=>$scope_found_key);
+            //echo json_encode($response);
+            //return;
         }
 
 
@@ -3635,7 +3965,12 @@ function find_contact($the_data) {
 
     $contact=new contact('find complete',$data);
     $found_key=0;
-    if ($contact->found) {
+    
+    if($found_email){
+        $action='found_email';
+     
+        $found_key=$scope_found_key;
+    }elseif ($contact->found) {
         $action='found';
         $found_key=$contact->found_key;
     } else
@@ -3675,9 +4010,10 @@ function find_contact($the_data) {
                                   );
                 }
                 elseif(!$in_other_store) {
-                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_company(%s)">%s</span>)'
-                                   ,_('Customer in another store')
-                                   ,$company->id
+                    $other_store=new Store($parent->data['Customer Store Key']);
+                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                                   ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
+                                   ,$parent->id
                                    ,_('Recollect Data')
                                   );
                     $in_other_store=true;

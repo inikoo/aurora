@@ -240,7 +240,8 @@ class Customer extends DB_Table {
             $child=new Company ("find in customer $type_of_search",$raw_data);
         }
 
-
+$this->found_in_another_store=false;
+                        $this->found_key_in_another_store=0;
 
 
         if ($child->found) {
@@ -252,9 +253,16 @@ class Customer extends DB_Table {
             if (count($customer_found_keys)>0) {
                 foreach($customer_found_keys as $customer_found_key) {
                     $tmp_customer=new Customer($customer_found_key);
+                    if($tmp_customer->id){
                     if ($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']) {
                         $this->found=true;
                         $this->found_key=$customer_found_key;
+                    }else{
+                    $this->found_in_another_store=true;
+                        $this->found_key_in_another_store=$tmp_customer->id;
+
+                    
+                    }
                     }
                 }
             }
@@ -301,12 +309,15 @@ class Customer extends DB_Table {
 
 
 
-                    if (isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']!='' and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
+                    if (
+                        isset($child->data['Contact Key']) and 
+                        $raw_data['Customer Main Plain Email']!='' and 
+                        $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
                             and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
                             and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/",$raw_data['Customer Main Contact Name'] )
                             and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/",$child->data['Contact Name'] )
                        ) {
-                        print "super change!!\n";
+                        //print "super change!!\n";
                         // exit;
                         $email=new Email($child->data['Contact Main Email Key']);
                         $email->editor=$this->editor;
@@ -353,7 +364,7 @@ class Customer extends DB_Table {
 
                 $this->get_data('id',$this->id);
 
-            } else {// customer not found
+            }else {// customer not found
                 if ($this->found_child) {
 
                     if ($raw_data['Customer Type']=='Person') {
@@ -361,8 +372,11 @@ class Customer extends DB_Table {
                         //print_r($raw_data);
                         //print_r($child->data);
 
-                        if (isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']!='' and  $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
-                                and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
+                        if (
+                            isset($child->data['Contact Key']) and 
+                            $raw_data['Customer Main Plain Email']!='' and  
+                            $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email'] and 
+                            (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
 
                            ) {
                             //print "super change2!\n";
@@ -3443,6 +3457,28 @@ class Customer extends DB_Table {
             return array();
     }
 
+    function display($tipo='card'){
+    switch ($tipo) {
+        case 'card':
+            if($this->data['Customer Type']=='Company'){
+                $company=new Company($this->data['Customer Company Key']);
+                $card=$company->display('card');
+            }else{
+                $contact=new Contact($this->data['Customer Main Contact Key']);
+                $card=$contact->display('card');
+            }
+            $card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><span style="float:left">'.$this->get_formated_id().'</span>',$card);
+            return $card;
+            
+            break;
+        default:
+            
+            break;
+    }
+    
+    
+    }
+    
     function display_delivery_address($tipo) {
         switch ($tipo) {
 

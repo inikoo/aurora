@@ -1,21 +1,15 @@
- 
-  <div class="search_box" >
-      
-
-    </div>
-<div>
+<div class="search_box" ></div>
+<div id="contact_messages_div" >
       <span id="contact_messages"></span>
     </div>
-    
-    <div >
-      <div id="results" style="margin-top:0px;xborder:1px solid #777;float:right;width:500px;xheight:800px">
+<div >
+     <div id="results" style="margin-top:0px;float:right;width:390px;"></div>
+	 <div  style="float:left;width:540px;" >
+    <table class="edit"  border="0" style="width:100%;margin-bottom:0px" >
 	
-      </div>
-      
-      <div  style="float:left;width:370px" >
-      <table class="edit" border=0 >
-	
-
+ <tr class="title">
+      <td colspan=3>{t}Contact Info{/t}</td>
+      </tr>
 	  
 	  <td style=";" class="label">{t}Contact Name{/t}:</td>
 	  <td>
@@ -65,7 +59,7 @@
 	</tbody>
 	
 	<tr id="email_mould" >
-	  <td  class="label"  >{t}Email{/t}:</td>
+	  <td  class="label"  >{t}Email{/t}:<img  id="{$address_identifier}email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /></td>
 	  <td >
 	    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
 	    <div id="Email_Container" style="" ></div>
@@ -78,7 +72,7 @@
 	<tr id="telephone_mould" cstyle="">
 	  <td  class="label">
 	    
-	    {t}Telephone{/t}:
+	    {t}Telephone{/t}:<img  id="{$address_identifier}telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
 	  </td>
 	  <td>
 	    
@@ -142,139 +136,75 @@
 	    <td  class="label">{t}Extension{/t}:</td><td ><input id="Mobile_Extension" class="Extension" style="width:5em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 	    </td>
 	  </tr>
-	  
+	  		
+ <tr class="title">
+      <td colspan=3>{t}Address Info{/t}</td>
+      </tr>
+{include file='edit_address_splinter.tpl' 
+show_form=1  
+hide_type=1 
+hide_description=1 
+show_default_country=1 
+default_country_2alpha='gb'
+hide_buttons=1
+}
+
+
+<tr class="title">
+      <td colspan=3>{t}Other Info{/t}</td>
+      </tr>
+
+{foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
+ <td>
+  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="update_category(this)">
+    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+        {if $smarty.foreach.foo2.first}
+        <option  value="">{t}Unknown{/t}</option>
+        {/if}
+        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+    {/foreach}
+  </select>
+  
+ </td>   
+</tr>
+{/foreach}
 
 
 
 
-<tr class="first">
-	    
-  <td class="label" style="width:160px">
-    <span id="show_country_d1" onclick="toggle_country_d1()" class="small_button" 
-	  style="padding:0 1px;font-size:50%;position:relative;top:0px;display:none">+</span>
-    Country:</td>
-  <td  style="text-align:left">
-	      <div  style="width:15em;position:relative;top:00px" >
-		<input id="address_country" style="text-align:left;width:18em" type="text">
-		<div id="address_country_container" style="" ></div>
-	      </div>
-	    </td>
-	  </tr>
-	    <input id="address_country_code" value="UNK" type="hidden">
-	    <input id="address_country_2acode" value="XX" type="hidden">
-
-<tr id="tr_address_country_d1">
-	    <td class="label" style="width:160px">
-	    <span id="show_country_d2" onclick="toggle_country_d2()" 
-	        class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:0px;display:none">+</span> 
-	    <span id="label_address_country_d1">{t}Region{/t}</span>:</td>
-	    <td  style="text-align:left">
-	     <div id="myAutoComplete" style="width:15em;" >
-	      <input style="text-align:left;width:18em" id="address_country_d1" value="" ovalue="" >
-	      <input id="address_country_d1_code" value="" type="hidden">
-	    <div id="address_country_d1_container" style="" ></div>
-	      </div>
-	      </td>
-	  </tr>
-	  <tr id="tr_address_country_d2" style="display:none">
-	    <td class="label" style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left">
-	     <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d2_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d2" value="" ovalue="" >
-	      <div id="address_country_d2_container" style="" >
-	      </div>
-	     </div>
-	    </td>
-	  </tr>
-	<tr id="tr_address_country_d3" style="display:none">
-	  <td class="label" style="width:160px"><span id="label_address_country_d3">{t}3d Division{/t}</span>:</td><td  style="text-align:left">
-	    <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d3_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d3" value="" ovalue="" >
-	      <div id="address_country_d3_container" style="" ></div>
-	    </div>
-	  </td>
-	</tr>
-	<tr id="tr_address_country_d4" style="display:none">
-	  <td class="label" style="width:160px"><span id="label_address_country_d4">{t}4d Division{/t}</span>:</td><td  style="text-align:left">
-	    <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d4_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d4" value="" ovalue="" >
-	      <div id="address_country_d4_container" style="" ></div>
-	    </div>
-	  </td>
-	</tr>	
-	<tr id="tr_address_country_d5" style="display:none">
-	  <td class="label" style="width:160px"><span id="label_address_country_d5">{t}5d Division{/t}</span>:</td><td  style="text-align:left">
-	    <div class="AutoComplete" style="width:15em;" >
-	      <input id="address_country_d5_code" value="" type="hidden">
-	      <input style="text-align:left;width:18em" id="address_country_d5" value="" ovalue="" >
-	      <div id="address_country_d5_container" style="" ></div>
-	    </div>
-	  </td>
-	</tr>	
-	
-	
-
-	
-	<tr   id="tr_address_postal_code">
-	  <td class="label"  style="width:160px;background:none"><img  id="address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="float:left;visibility:hidden" /> {t}Postal Code{/t}:</td>
-	  <td  style="text-align:left">
-	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue="" valid="0"  >
-	    <div id="address_postal_code_container" style="" ></div>
-	  </td>
-	</tr>
-	  <tr>
-	    <td class="label" style="width:160px">
-	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}Town/City{/t}:</td>
-	      <td  style="text-align:left">
-		<div class="AutoComplete" style="width:15em;" >
-		<input style="text-align:left;width:18em" id="address_town" value="" ovalue="" >
-		 <div id="address_town_container" style="" ></div>
-	      </div>
-	      </td>
-	  </tr>
-	  <tr style="display:none" id="tr_address_town_d1">
-	    <td class="label" style="width:160px" >
-	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td>
-	      <td  style="text-align:left">
-		<input style="text-align:left;width:18em" id="address_town_d1" value="" ovalue="" >
-		<div id="address_town_d1_container" style="" ></div>
-	      </td>
-	  </tr>
-	  <tr style="display:none;" id="tr_address_town_d2">
-	    <td class="label" style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town_d2" value="" ovalue="" ></td>
-	  </tr>
-	  <tr>
-	    <td class="label" style="width:160px">{t}Street/Number{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_street" value="" ovalue="" ></td>
-	  <tr>
-	    <td class="label" style="width:160px">{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_building" value="" ovalue="" ></td>
-	  </tr>
-	  <tr >
-	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_internal" value="" ovalue="" ></td>
-	  </tr>
 	  
       </table>
-
-
-
-
-
-      <table class="options" style="float:right;padding:0;margin:0">
+  <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
 	<td   id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
 	  <td  class="disabled" id="save_new_Contact">{t}Save{/t}</td>
 	  <td  id="cancel_add_Contact" >{t}Cancel{/t}</td>
 	</tr>
       </table>
-      <div id="Contact_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+    
+        <div id="Customer_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+	{t}Another customer has been found with the similar details{/t}.
+	<table style="margin:10px 0">
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded_customer()"    id="pick_founded_customer">{t}Edit the located customer{/t} (<span id="founded_name_customer"></span>)</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline"  id="save_when_founded_customer" >{t}Confirm is new customer and Save{/t}</span></td></tr>
+	</table>
+      </div>
+    
+    
+    <div id="Contact_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has been found with the similar details{/t}.
 	<table style="margin:10px 0">
 	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit the located contact{/t} (<span id="founded_name"></span>)</span></td></tr>
 	  <tr><td><span  style="cursor:pointer;text-decoration:underline"  id="save_when_founded" >{t}Confirm is new contact and Save{/t}</span></td></tr>
 	</table>
       </div>
-      <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+   
+   
+   
+    <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has the same email{/t}.
 	
 	<table style="margin:10px 0">
