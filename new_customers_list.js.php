@@ -6,7 +6,7 @@ include_once('common.php');
     var Dom   = YAHOO.util.Dom;
 var dialog_country_list;
 var dialog_wregion_list;
-
+var dialog_postal_code_list;
 var searched=false;
 function save_search_list()
 {
@@ -97,6 +97,15 @@ function select_country(oArgs){
     Dom.get('geo_constraints').value=geo_constraints;
     dialog_country_list.hide();
     hide_filter(true,2)
+}
+
+function select_postal_code(oArgs){
+    var geo_constraints=Dom.get('geo_constraints').value;
+    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
+    geo_constraints=geo_constraints+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+    Dom.get('geo_constraints').value=geo_constraints;
+    dialog_postal_code_list.hide();
+    hide_filter(true,3)
 }
 
 function select_wregion(oArgs){
@@ -325,7 +334,110 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
-	
+
+// --------------------------------------Postal code table starts here--------------------------------------------------------
+//=============
+
+   var tableid=3; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+ this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+  elLiner.innerHTML = oData;
+         //   if(oRecord.getData("field3") > 100) {
+       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+
+        };
+        
+        // Add the custom formatter to the shortcuts
+        YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
+
+	   
+	    var ColumnDefs = [
+			
+			
+                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+                   ,{key:"code",formatter:"remove_links", label:"<?php echo _('Postal Code')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", formatter:"remove_links",label:"<?php echo _('Country Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			     // ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     //  ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			      
+			   //   ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+			      
+	     
+
+
+			
+			
+			];
+			       
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_regions.php?tipo=postal_code&tableid=3&nr=20&sf=0");
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    	    this.dataSource3.table_id=tableid;
+
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','population','gnp','wregion'
+			 ]};
+
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource3
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['countries']['nr']?>,containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['world']['countries']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['countries']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table3.subscribe("rowMouseoverEvent", this.table3.onEventHighlightRow);
+       this.table3.subscribe("rowMouseoutEvent", this.table3.onEventUnhighlightRow);
+      this.table3.subscribe("rowClickEvent", select_postal_code);
+     
+
+
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+// --------------------------------------Postal code table ends here----------------------------------------------------------
+
+
+
 // -----------------------------------------------world regions table starts here --------------
 var tableid=1;
 		      var tableDivEL="table"+tableid;
@@ -502,6 +614,10 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {context:["wregion","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_wregion_list.render();
     Event.addListener("wregion", "click", dialog_wregion_list.show,dialog_wregion_list , true);
+
+    dialog_postal_code_list = new YAHOO.widget.Dialog("dialog_postal_code_list", {context:["postal_code","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_postal_code_list.render();
+    Event.addListener("postal_code", "click", dialog_postal_code_list.show,dialog_postal_code_list , true);
 
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
