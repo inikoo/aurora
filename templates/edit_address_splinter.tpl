@@ -131,11 +131,7 @@
   
     <tr id="{$address_identifier}tr_address_country_d1">
 	    <td class="label" >
-	    <span 
-	        id="{$address_identifier}show_country_subregions" 
-	        onclick="show_country_subregions('{$address_identifier}')" 
-	        
-	        style="cursor:pointer">&oplus;</span> 
+	    
 	    <span id="{$address_identifier}label_address_country_d1">{t}Region{/t}</span>:</td>
 	    <td  style="text-align:left">
 	     <div style="" >
@@ -145,31 +141,14 @@
 	      </div>
 	      </td>
   </tr>
- 
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-   
-  
-	
-	
-  
-  
-   
-   
-   
-    
     </tbody>
 <tr id="{$address_identifier}tr_address_country" class="first">
         <td class="label"  style="width:120px">
-            <span id="{$address_identifier}show_country_d1" onclick="toggle_country_d1()" class="small_button" style="padding:0 1px;font-size:50%;display:none">+</span>
+<span 
+	        id="{$address_identifier}show_country_subregions" 
+	        onclick="show_country_subregions('{$address_identifier}')" 
+	        
+	        style="cursor:pointer;display:none">&oplus;</span> 
             {t}Country{/t}:</td>
         <td  >
         <div id="{$address_identifier}myAutoComplete" >
@@ -179,15 +158,15 @@
         
     </td>
     <td  style="width:70px">
-    <div id="{$address_identifier}country_options" class="general_options" >
+   
         {if $default_country_2alpha}
         <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onClick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"  ><img style="cursor:pointer;vertical-align:-1px;"  src="art/flags/{$default_country_2alpha}.gif" alt="({$default_country_2alpha})"/></span>	
+	    <span  id="{$address_identifier}default_country_selector"></span>
+	    {else}
 	    {/if}
-	    <span  style="margin-left:0px;;float:none"   id="{$address_identifier}browse_countries"  onClick="show_countries_list(this,'{$address_identifier}')"   class="state_details">{t}Browse{/t}</span>
-    </div>
-    <div id="{$address_identifier}show_country_options"  class="general_options" style="display:none">
-        <span  style="margin-left:0px;;float:none"   id="{$address_identifier}change_country_address" onClick="show_country_options('{$address_identifier}')"  class="state_details">{t}Change{/t}</span>
-    </div>
+	    <span  style="margin-left:0px;;float:none"   id="{$address_identifier}browse_countries"  onClick="show_countries_list(this,'{$address_identifier}')"   class="state_details">{t}List{/t}</span>
+   
+  
 
 </td>
        

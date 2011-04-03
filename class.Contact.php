@@ -35,6 +35,7 @@ class Contact extends DB_Table {
     private  $new_home_telephone_keys=array();
     public $inserted_email=false;
     public $add_telecom=false;
+    public $parent=false;
 
 
 
@@ -1039,7 +1040,7 @@ class Contact extends DB_Table {
     Key of the Compnay found, if create is found in the options string  returns the new key
     */
     function find($raw_data,$options) {
-        //  print $options."---------------------------------------------------\n";
+     //    print $options."---------------------------------------------------\n";
         //   print_r($raw_data);
 
         $find_type='complete';
@@ -1121,6 +1122,7 @@ class Contact extends DB_Table {
                 $data[$_key]=$val;
             }
             $parent='supplier';
+            
         }
         elseif(preg_match('/from customer|in customer/i',$options)) {
             foreach($raw_data as $key=>$val) {
@@ -1146,7 +1148,7 @@ class Contact extends DB_Table {
             }
             $parent='customer';
 
-
+			
         }
 
 
@@ -1228,7 +1230,7 @@ class Contact extends DB_Table {
         }
         // print " $find_type $options 8888888\n";
         //exit;
-
+$this->parent=$parent;
         $options.=' parent:'.$parent;
 
 
@@ -1603,7 +1605,14 @@ class Contact extends DB_Table {
 
 
             $home_address_key=0;
+            
+            
+           
+            
             if (is_array($address_home_data) and !array_empty($address_home_data)) {
+            
+           
+            
                 $address_home_data['editor']=$this->editor;
                 $home_address=new Address("find in contact ".$this->id." $options create update",$address_home_data);
                 $home_address->editor=$this->editor;

@@ -33,6 +33,13 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
+if($store->id){
+$_SESSION['state']['customers']['store']=$store->id;
+}else{
+ header('Location: index.php?error=store_not_found');
+    exit();
+}
+
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);

@@ -222,11 +222,11 @@ var save_address=function(e,options) {
         items=Address_Keys;
         var value=new Object()
         for (i in items)
-            value[items[i]]=my_encodeURIComponent(Dom.get(address_prefix+'address_'+items[i]).value);
+            value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
 
-        var json_value = YAHOO.lang.JSON.stringify(value);
+        var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(value));
         var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
-         alert(request);
+       //  alert(request);
           //return;
                     cancel_edit_address(address_prefix);
 
@@ -620,8 +620,10 @@ function edit_address(index,address_identifier) {
         Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none');
     }
 
-    Dom.setStyle([address_identifier+'country_options'], 'display', 'none');
-    Dom.setStyle([address_identifier+'show_country_options'], 'display', '');
+    //Dom.setStyle([address_identifier+'country_options'], 'display', 'none');
+    //Dom.setStyle([address_identifier+'show_country_options'], 'display', '');
+    
+    
     Dom.setStyle([address_identifier+'address_form'], 'display', '');
 
     // Dom.setStyle([address_identifier+'reset_address_button'], 'visibility', 'visible');
@@ -981,9 +983,13 @@ function change_country(prefix,oData){
     postcode_help=oData.postcode_help;
     update_address_labels(oData.code,prefix);
     Dom.setStyle(prefix+'address_components','display','')
-    Dom.setStyle(prefix+'country_options','display','none')
-    Dom.setStyle(prefix+'show_country_options','display','')
-    Dom.get(prefix+'address_street').focus()
+ //   Dom.setStyle(prefix+'country_options','display','none')
+//    Dom.setStyle(prefix+'show_country_options','display','')
+ Dom.setStyle(prefix+'default_country_selector','display','none');
+ 
+     Dom.setStyle(prefix+'show_country_subregions','display','')
+
+ Dom.get(prefix+'address_street').focus()
 
 }
 
@@ -1029,8 +1035,8 @@ var countries_highlightMatch = function(full, snippet, matchindex) {
 
 function show_countries_list(o,prefix){
 tables.table100.prefix=prefix
-  var y=(Dom.getY(o))
-    var x=(Dom.getX(o))
+  var y=(Dom.getY(o))-160
+    var x=(Dom.getX(o))-25
  Dom.setX('dialog_country_list', x)
     Dom.setY('dialog_country_list', y)
 dialog_country_list.show();

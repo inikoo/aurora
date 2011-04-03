@@ -33,17 +33,19 @@ $data=array(
 
 if(isset($_REQUEST['data'])){
   $json=$_REQUEST['data'];
-      $tmp=stripslashes ($json);
-      $raw_data=json_decode($tmp, true);
+    //  $tmp=stripslashes ($json);
+    //  print_r($json);
+      $raw_data=json_decode($json, true);
+     // print($json);
       foreach($raw_data as $key=>$value){
 	if(array_key_exists($key,$data)){
-	  $data[$key]=$value;
+	  $data[$key]=html_entity_decode($value);
 	}
       }
 
 }
 
-
+//print_r($data);
 
 
 

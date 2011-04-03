@@ -34,6 +34,7 @@ $store=new Store($store_key);
 $smarty->assign('store',$store);
 
 
+
 $smarty->assign('store_key',$store_key);
 $smarty->assign('scope','customer');
 
@@ -95,25 +96,32 @@ $smarty->assign('edit',$editing_block);
 
 
 
-$tipo='company';
+$tipo='Company';
 if(isset($_REQUEST['tipo']) and $_REQUEST['tipo']=='person'){
-  $tipo='person';
+  $tipo='Person';
 }
+$smarty->assign('customer_type',$tipo);
 
 
-if($tipo=='company'){
+
+//if($tipo=='company'){
 $js_files[]='company.js.php';
 $js_files[]='js/validate_telecom.js';
-$js_files[]='new_company.js.php?scope=customer&store_key='.$store_key;
+//$js_files[]='new_company.js.php?scope=customer&store_key='.$store_key;
+$js_files[]='new_customer.js.php?&store_key='.$store_key;
+
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
+/*
 }else{
 $js_files[]='contact.js.php';
 $js_files[]='js/validate_telecom.js';
 $js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
+$js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
+
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
@@ -122,7 +130,7 @@ $js_files[]='edit_contact_email.js.php';
 
 
 }
-
+*/
 $categories=array();
 $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
 $res=mysql_query($sql);
@@ -144,7 +152,6 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','customers');
-$smarty->assign('tipo',$tipo);
 
 $smarty->assign('title','Creating New Customer');
 $smarty->display('new_customer.tpl');

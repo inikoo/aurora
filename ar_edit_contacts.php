@@ -1930,9 +1930,19 @@ function new_customer($data) {
 
 
 
+if($data['values']['Customer Type']=='Person'){
+$data['values']['Customer Name']=$data['values']['Customer Main Contact Name'];
+$data['values']['Customer Company Name']='';
+}else{
+ $data['values']['Customer Company Name']=$data['values']['Customer Name'];
+}
 
+if($data['values']['Customer Address Country Code']=='')
+$data['values']['Customer Address Country Code']='UNK';
 
-
+//print_r($data['values']);
+//exit;
+/*
     foreach($data['values'] as $key=>$value) {
         $data['values'][preg_replace('/^Company / ','Customer ',$key)]=$value;
     }
@@ -1942,7 +1952,9 @@ function new_customer($data) {
     if (isset($data['values']['Company Name']))
         $data['values']['Customer Company Name']=$data['values']['Company Name'];
 //print_r($data['values']);
-    $data['values']['editor']=$editor;
+  */
+  
+  $data['values']['editor']=$editor;
 
 
     if (isset($_REQUEST['delete_email']) and  $_REQUEST['delete_email']) {

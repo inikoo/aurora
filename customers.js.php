@@ -18,7 +18,7 @@ function close_dialog(tipo){
 }
 
 function new_customer(tipo){
-    location.href='new_customer.php?tipo='+tipo;
+    location.href='new_customer.php';
     dialog_new_customer.hide();
 }
 
@@ -69,7 +69,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",width:120,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",width:120,<?php echo($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&where=");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&sf=0&where=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -214,7 +214,7 @@ YAHOO.util.Event.addListener(ids, "click",change_table_type);
 
 
 
-dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {context:["new_customer","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {context:["new_customer","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_new_customer.render();
 Event.addListener("new_customer", "click", dialog_new_customer.show,dialog_new_customer , true);
 

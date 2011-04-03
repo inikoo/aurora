@@ -209,8 +209,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-       //    if($row>5000)
-        //   break;
+           if($row>10000)
+           break;
         //      print "$row\r";
 
         // print_r($cols);
