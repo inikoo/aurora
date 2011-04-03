@@ -66,6 +66,32 @@ include_once('local_map.php');
 
 
 
+$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+ 
+    if ($row['Store Code']=='UK') {
+        $valid_sub_cats_referrals[$row['Store Key']]=array('StartUpPlus','Referral','Google','Ancient Wisdom','Other','Bing','Craft Focus Magazine','Facebook','Garden Shop Catalogue','Gift Focus Magazine','Gifts Today','Giftware Index','Giftware Review','Heritage Shop Catalogue','Market Times','MTN','Progressive Gifts','The Trader Magazine','The Trader Website','The Wholesaler Website','Twitter','Yahoo');
+       
+    } else {
+        $valid_sub_cats_referrals[$row['Store Key']]=array('Referral','Google','Bing','Yahoo','Other');
+       
+
+    }
+
+    $valid_sub_cats_type_bussiness[$row['Store Key']]=array('Gift Shop','Internet Shop','Market Trader','Party Planner','Craft Fairs','Tourist Attraction','Wedding Planner','Wholesaler','Department Store','Florist','Ebay Seller','Garden Centre','NPO','Hospitality Industry','Therapist','Event','Other');
+   
+
+}
+
+
+
+
+
+
+
+
+
 
 $map_act=$_map_act;
 $map_act[90]='creation_date';
@@ -583,7 +609,8 @@ $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object
         if (preg_match('/Giftwareindex/i',$act_data['where_find_us']))
             $act_data['where_find_us']='Giftware Index';
 
-        if ($act_data['where_find_us']!=''   and  in_array($act_data['where_find_us'],  $valid_sub_cats_referrals[$customer->data['Customer Store Key']]) ) {
+        if ($act_data['where_find_us']!=''   
+            and  in_array($act_data['where_find_us'],  $valid_sub_cats_referrals[$customer->data['Customer Store Key']]) ) {
             $data=array('Category Name'=>$act_data['where_find_us'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
 
             $subcat_type_referrer=new Category('find create',$data);
