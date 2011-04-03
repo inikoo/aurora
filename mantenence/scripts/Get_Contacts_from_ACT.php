@@ -578,11 +578,11 @@ $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object
 
 
         if ($act_data['business_type']!=''  and  in_array($act_data['business_type'],  $valid_sub_cats_type_bussiness[$customer->data['Customer Store Key']]) ) {
-            $data=array('Category Name'=>$act_data['business_type'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
-            $subcat_type_business=new Category('find create',$data);
+          //  $data=array('Category Name'=>$act_data['business_type'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
+            $subcat_type_business=new Category('name_store',$act_data['business_type'],$customer->data['Customer Store Key']);
 
             $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                         $cat_type_business[$customer->data['Customer Store Key']]->id,
+                         $subcat_type_business->data['Category Parent Key'],
                          prepare_mysql('Customer'),
                          $customer->id
                         );
@@ -611,9 +611,13 @@ $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object
 
         if ($act_data['where_find_us']!=''   
             and  in_array($act_data['where_find_us'],  $valid_sub_cats_referrals[$customer->data['Customer Store Key']]) ) {
-            $data=array('Category Name'=>$act_data['where_find_us'],'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$customer->data['Customer Store Key']]->id,'Category Store Key'=>$customer->data['Customer Store Key']);
-
-            $subcat_type_referrer=new Category('find create',$data);
+            /*$data=array(
+                'Category Name'=>$act_data['where_find_us'],
+                'Category Subject'=>'Customer',
+                'Category Parent Key'=>$cat_referrer[$customer->data['Customer Store Key']]->id,
+                'Category Store Key'=>$customer->data['Customer Store Key']);
+*/
+            $subcat_type_referrer=new Category('name_store',$act_data['where_find_us'],$customer->data['Customer Store Key']);
             if ($subcat_type_referrer->id) {
                 $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
                              $subcat_type_referrer->data['Category Parent Key'],
