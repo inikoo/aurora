@@ -616,7 +616,7 @@ $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object
             $subcat_type_referrer=new Category('find create',$data);
             if ($subcat_type_referrer->id) {
                 $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                             $cat_referrer[$customer->data['Customer Store Key']]->id,
+                             $subcat_type_referrer->data['Category Parent Key'],
                              prepare_mysql('Customer'),
                              $customer->id
                             );
