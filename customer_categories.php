@@ -51,8 +51,8 @@ array_push($css_files, 'themes_css/'.$Themecss3);
 
 else{
 array_push($css_files, 'common.css');  
-array_push($css_files,  'css/dropdown.css');
-array_push($css_files, 'css/table.css');
+array_push($css_files,  'dropdown.css');
+array_push($css_files, 'table.css');
 }	
 
 

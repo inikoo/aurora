@@ -861,7 +861,7 @@ class Category extends DB_Table {
                      $this->id
                     );
         mysql_query($sql);
-
+        print "$sql\n";
     }
 
 
