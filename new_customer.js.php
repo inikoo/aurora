@@ -5,16 +5,11 @@ include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
 
-$scope='company';
+$scope='customer';
 $action_after_create='continue';
-if(isset($_REQUEST['scope']) and preg_match('/supplier|customer|corporation/',$_REQUEST['scope']))
-    $scope=$_REQUEST['scope'];
-$store_key=0;
-if($scope=='customer'){
-    $store_key=$_REQUEST['store_key'];
-}
-if($scope!='corporation')    
-$action_after_create=$_SESSION['state'][$scope]['action_after_create'];
+
+$store_key=$_REQUEST['store_key'];
+
 print "var scope='$scope';\n";
 print "var store_key='$store_key';\n";
 print "var action_after_create='$action_after_create';\n";
@@ -23,29 +18,27 @@ var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var can_add_subject=false;
 
-<?php if($scope=='company'){?>
 var subject_data={
-    "Company Name":""
-    ,"Company Main Contact Name":""
-    ,"Company Main Plain Email":""
-    ,"Company Main Plain Telephone":""
-    ,"Company Address Line 1":""
-    ,"Company Address Line 2":""
-    ,"Company Address Line 3":""
-    ,"Company Address Town":""
-    ,"Company Address Postal Code":""
-    ,"Company Address Country Name":""
-    ,"Company Address Country Code":""
-    ,"Company Address Town Second Division":""
-    ,"Company Address Town First Division":""
-    ,"Company Address Country First Division":""
-    ,"Company Address Country Second Division":""
-    ,"Company Address Country Third Division":""
-    ,"Company Address Country Forth Division":""
-    ,"Company Address Country Fifth Division":""
+    "Customer Name":""
+    ,"Customer Main Contact Name":""
+    ,"Customer Main Plain Email":""
+    ,"Customer Main Plain Telephone":""
+    ,"Customer Address Line 1":""
+    ,"Customer Address Line 2":""
+    ,"Customer Address Line 3":""
+    ,"Customer Address Town":""
+    ,"Customer Address Postal Code":""
+    ,"Customer Address Country Name":""
+    ,"Customer Address Country Code":""
+    ,"Customer Address Town Second Division":""
+    ,"Customer Address Town First Division":""
+    ,"Customer Address Country First Division":""
+    ,"Customer Address Country Second Division":""
+    ,"Customer Address Country Third Division":""
+    ,"Customer Address Country Forth Division":""
+    ,"Customer Address Country Fifth Division":""
     
 };  
-<?php }?>
 var suggest_country=true;
 var suggest_d1=true;
 var suggest_d2=true;
@@ -70,7 +63,7 @@ var validate_data={'postal_code':{'inputed':false,'validated':false,'required':f
 		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item'}
 		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item'}
 };
-var Subject='Company';
+var Subject='Customer';
 var Subject_Key=0;
 var Current_Address_Index=0;
 var changes_details=0;
@@ -91,7 +84,7 @@ subject_data['Cat'+parent_category_key]=category_key;
 }
 
 
-function save_new_company(e){
+function save_new_customer(e){
    
     if(!can_add_subject){
 
@@ -99,24 +92,28 @@ function save_new_company(e){
     }
 
  Dom.setStyle("creating_message",'display','');
-	  Dom.setStyle(["save_new_Company","cancel_add_Company"],'display','none');
+	  Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
 
     get_data();
 
-    if(scope=='supplier'){
-        var ar_file='ar_edit_suppliers.php';
-    }else
+ 
         var ar_file='ar_edit_contacts.php';
    
   // for (x in subject_data){
 //alert(x+' '+subject_data[x])
 //}
 
+ //var value=new Object();
 
-   
-    var json_value = YAHOO.lang.JSON.stringify(subject_data); 
-    var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + encodeURIComponent(json_value); 
-  //  alert(request);return;
+// for (i in subject_data)
+  //          value[i]=my_encodeURIComponent(subject_data[i]);
+
+
+   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(subject_data));
+    //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
+    var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
+  // alert(request);
+   //return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//alert(o.responseText);
@@ -134,7 +131,7 @@ function save_new_company(e){
 		           window.location='edit_supplier.php?id='+r.supplier_key;
 
 		        }else if(scope=='customer'){
-		           window.location='customer.php?id='+r.customer_key;
+		           window.location='customer.php?r=nc&id='+r.customer_key;
 
 		        }
 		        
@@ -153,8 +150,30 @@ function save_new_company(e){
 	});
 
 }
+
+
+function customer_is_a_person(){
+Dom.get('Customer_Type').value='Person'
+validate_data.company_name.validated=true;
+Dom.setStyle('company_section','display','none');
+Dom.setStyle('set_as_company','display','');
+
+}
+function customer_is_a_company(){
+Dom.get('Customer_Type').value='Company'
+Dom.setStyle('company_section','display','');
+Dom.setStyle('set_as_company','display','none');
+
+validate_company_name(Dom.get('Company_Name').value);
+
+}
+
 function validate_company_name (query) {
-    
+
+if(Dom.get('Customer_Type').value=='Person'){
+validate_data.company_name.validated=true;
+}else{
+
     var validator=new RegExp(validate_data.company_name.regexp,"i");
 
     if(validator.test(query)){
@@ -162,16 +181,17 @@ function validate_company_name (query) {
     }else{
 	validate_data.company_name.validated=false;
     }
-    
+ }   
     get_subject_data();
     find_subject();
     validate_form();
 
 };
-function name_inputed(){
+function name_inputed_to_be_deleted(){
+
     var item='company_name';
     var value=Dom.get('Company_Name').value.replace(/\s+/,"");
-    //  alert(value)
+   //   alert(value)
     if(value=='')
 	validate_data[item].inputed=false;
     else
@@ -201,9 +221,9 @@ subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 }
 function init(){
     
-	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_company);
+	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_customer);
       	YAHOO.util.Event.addListener(['cancel_add_'+Subject], "click",cancel_new_company);
-	YAHOO.util.Event.addListener('Company_Name', "blur",name_inputed);
+	//YAHOO.util.Event.addListener('Company_Name', "blur",name_inputed);
 
 	var company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_name);
 	company_name_oACDS.queryMatchContains = true;

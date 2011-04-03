@@ -1951,7 +1951,7 @@ function list_customers() {
 
 
     $sql="select count(Distinct C.`Customer Key`) as total from $table  $where_type $where $wheref ";
-     //print $sql;
+   //  print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3152,17 +3152,25 @@ function show_posible_customer_matches($the_data) {
     $data=$the_data['values'];
 
 
+if($data['Customer Type']=='Person'){
+$data['Customer Name']=$data['Customer Main Contact Name'];
+$data['Customer Company Name']='';
+}else{
+ $data['Customer Company Name']=$data['Customer Name'];
+}
 
-    $scope=$the_data['scope']['scope'];
-    if ($scope=='customer') {
-        $scope='Customer';
-        $store_key=$the_data['scope']['store_key'];
-    }
 
+
+    $scope='Customer';
+    $store_key=$the_data['scope']['store_key'];
+
+
+
+    
 
 
     // quick try to find the email
-    if ($data['Contact Main Plain Email']!='') {
+    if ($data['Customer Main Plain Email']!='') {
         $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
                      ,prepare_mysql($data['Contact Main Plain Email'])
                     );
@@ -3319,21 +3327,60 @@ function show_posible_customer_matches($the_data) {
 
     $max_results=8;
 
-    $contact=new contact('find complete',$data);
+
+if($data['Customer Type']=='Person')
+    $subject=new contact('find from customer complete',$data);
+else
+        $subject=new company('find from customer complete',$data);
+
+
     $found_key=0;
     
     if($found_email){
         $action='found_email';
         $found_key=$scope_found_key;
-    }elseif ($contact->found) {
-        $action='found';
-        $found_key=$contact->found_key;
+    }elseif ($subject->found) {
+       // $action='found';
+        
+        //$found_key=$contact->found_key;
+        
+        $customer_found_keys=$subject->get_customer_keys();
+
+            if (count($customer_found_keys)>0) {
+                foreach($customer_found_keys as $customer_found_key) {
+                    $tmp_customer=new Customer($customer_found_key);
+                    if($tmp_customer->id){
+                    if ($tmp_customer->data['Customer Store Key']==$store_key) {
+                        $action='found';
+                       
+                        $found_key=$contact->customer_found_key;
+                    }else{
+                    $found_in_another_store=true;
+                        $found_key_in_another_store=$tmp_customer->id;
+
+                    
+                    }
+                    }
+                }
+            }
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     } else
         $action='nothing_found';
 
 
     $count=0;
-    foreach($contact->candidate as $contact_key=>$score) {
+    foreach($subject->candidate as $contact_key=>$score) {
         $link='';
 
         if ($score<20)
@@ -3384,7 +3431,7 @@ $card='';
                  $link=preg_replace('/^\<br\/\>/','',$link);
 
         $found=0;
-        if ($contact->found_key==$_contact->id)
+        if ($subject->found_key==$_contact->id)
             $found=1;
         //$candidates_data[]= array('card'=>$_contact->display('card'),'score'=>$score,'key'=>$_contact->id,'tipo'=>'contact','found'=>$found);
         $candidates_data[]= array('link'=>$link,'card'=>$card,'score'=>$score,'key'=>$scope_found_key,'tipo'=>$tipo_found,'found'=>$found);

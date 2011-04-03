@@ -1,6 +1,6 @@
  var valid_form=false;
 function find_subject(){
-   
+    get_data();
 
     var json_value = YAHOO.lang.JSON.stringify(subject_data); 
 var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_key}); 
@@ -12,11 +12,11 @@ the_tipo='find_'+Subject
 }
 
 
-    var request='ar_contacts.php?tipo='+the_tipo+'&values=' + encodeURIComponent(json_value)+'&scope=' + encodeURIComponent(json_value_scope); 
+    var request='ar_contacts.php?tipo='+the_tipo+'&values=' + my_encodeURIComponent(json_value)+'&scope=' + my_encodeURIComponent(json_value_scope); 
   
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		var old_subject_found=subject_found;
 		var old_subject_found_email=subject_found_email;
@@ -250,8 +250,8 @@ function validate_telephone(original_query) {
     if(original_query==''){
 	validate_data[item].inputed=false;
 	validate_data[item].validated=true;
-	Dom.removeClass(tr,'no_validated');
-	Dom.removeClass(tr,'validated');
+	//Dom.removeClass(tr,'no_validated');
+	//Dom.removeClass(tr,'validated');
 
 	return;
     }
@@ -263,20 +263,20 @@ function validate_telephone(original_query) {
     
     if(validate_data[item].inputed==true){
 	if(validator.test(value)){
-	    Dom.removeClass(tr,'no_validated');
-	    Dom.addClass(tr,'validated');
+	    //Dom.removeClass(tr,'no_validated');
+	    //Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
 	}else{
-	    Dom.removeClass(tr,'validated');
-	    Dom.addClass(tr,'no_validated');
+	    //Dom.removeClass(tr,'validated');
+	    //Dom.addClass(tr,'no_validated');
 	    validate_data[item].validated=false;
 	}
     }else{
 	if(validator.test(value) ){
-	    Dom.addClass(tr,'validated');
+	    //Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
 	}else{
-	    Dom.removeClass(tr,'validated');
+	    //Dom.removeClass(tr,'validated');
 	    
 	    validate_data[item].validated=false;
 
@@ -509,6 +509,7 @@ if(scope=='supplier'){
 if(scope=='customer'){
     // alert(Dom.get('Store_Key'))
     subject_data['Customer Store Key']=Dom.get('Store_Key').value;
+    subject_data['Customer Type']=Dom.get('Customer_Type').value;
 
 }
 

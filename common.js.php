@@ -11,9 +11,11 @@ function addslashes (str) {
     return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
 }
 function my_encodeURIComponent (str) {
-srt=encodeURIComponent (str);
+str=encodeURIComponent (str);
 
-    return (str + '').replace(/'/g, '%27');
+return (str + '').replace(/'/g, '%27');
+
+
 }
 
 function showdetails(o){

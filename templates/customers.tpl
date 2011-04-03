@@ -81,14 +81,12 @@
   {t}Create new Customer{/t}:
   <table style="margin:10px">
     <tr>
-        <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer('company')" >{t}Company{/t}</span></td>
-        <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer('person')" >{t}Individual{/t}</span></td>
-    </tr>
-    <tr>
-        <td colspan=2 style="text-align:center"> <span class="unselectable_text state_details" onClick="new_customer_from_file()" >{t}Import from file{/t}</span></td>
-    </tr>
+        <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer()" >{t}Manually{/t}</span></td>
+           <td > <span class="unselectable_text state_details" onClick="new_customer_from_file()" >{t}Import from file{/t}</span></td>
+
+   </tr>
+  
   </table>
-  <span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span>
 </div>
 
 {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="customers-csv_export0" export_options=$csv_export_options0 }

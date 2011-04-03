@@ -25,11 +25,18 @@ function make_order(){
     };
     // alert('customer_csv.php?id='+customer_id+'&data='+encodeURIComponent(YAHOO.lang.JSON.stringify(data)))
 
-    window.open('customer_csv.php?id='+customer_id+'&data='+YAHOO.lang.JSON.stringify(data),'Download');
+// var value=new Object()
+  //      for (i in data)
+    //        value[i]=my_encodeURIComponent(data[i]);
+
+        var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data));
+
+//alert('customer_csv.php?id='+customer_id+'&data='+json_value);
+  //return;
+    window.open('customer_csv.php?id='+customer_id+'&data='+json_value,'Download');
     close_dialog('make_order');
 
 }
-
 
 function showdetails(o){
 

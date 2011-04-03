@@ -696,9 +696,9 @@ $this->found_in_another_store=false;
             }
             elseif($this->data['Customer Type']=='Person') {
 
-
+              
                 if (!$this->data['Customer Main Contact Key']) {
-
+                   
                     $contact=new contact('find in customer fast create update',$raw_data);
                 } else {
                     $contact=new contact('id',$this->data['Customer Main Contact Key']);
@@ -3212,6 +3212,7 @@ $this->found_in_another_store=false;
     }
 
     function update_principal_address($address_key,$update_other_address_type=true) {
+
 
 
         $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",

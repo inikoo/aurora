@@ -196,7 +196,7 @@ class Company extends DB_Table {
 
     function find_complete($raw_data) {
 
-
+//print_r($raw_data);
 
         $this->find_contact=new Contact("find in company complete ",$raw_data);
 
@@ -235,29 +235,44 @@ class Company extends DB_Table {
 
         if ($raw_data['Company Name']!='') {
 
+
+
+
+
+
+
+
+
+
+
+
+
+
             $max_score=80;
             $score_plus_for_match=40;
 
 
 
+$companies_with_same_name=array();
 
-
-            $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
+            $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 50"
                          ,prepare_mysql($raw_data['Company Name'])
                         );
-
+// print "$sql\n";         
             $result=mysql_query($sql);
             while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
                 $score=$max_score;
                 $extra_score=0;
                 $company_key=$row['Company Key'];
-
+$companies_with_same_name[$company_key]=$company_key;
                 foreach($this->candidate as $candidate_key=>$candidate_score) {
                     $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
                                  ,$candidate_key
                                  ,$company_key
                                 );
+                                
+                 //   print "$sql\n";            
                     $res=mysql_query($sql);
                     $match_data=mysql_fetch_array($res);
                     if ($match_data['matched']>0) {
@@ -273,7 +288,21 @@ class Company extends DB_Table {
                 else
                     $this->candidate_companies[$company_key]=$score+$extra_score;
             }
-
+            if(count($companies_with_same_name)>0){
+            $sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Company' and `Subject Key` in (%s)  ",
+            join(',',$companies_with_same_name));
+            $res=mysql_query($sql);
+            while($row=mysql_fetch_assoc($res)){
+            if (isset($this->candidate[$row['Contact Key']]))
+                    $this->candidate[$row['Contact Key']]+=30;
+                else
+                    $this->candidate[$row['Contact Key']]=30;
+            
+            }
+            
+            
+            }
+         
 
 
 
@@ -294,7 +323,7 @@ class Company extends DB_Table {
 
         }
 
-//print_r($this->candidate_companies);
+
 
         $this->number_candidate_companies=count($this->candidate_companies);
 
