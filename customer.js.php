@@ -196,7 +196,7 @@ function change(e,o,tipo){
     case('note'):
 	if(o.value!=''){
 	    enable_save(tipo);
-
+/*
 	    if(window.event)
 		key = window.event.keyCode; //IE
 	    else
@@ -204,7 +204,7 @@ function change(e,o,tipo){
 	    
 	    if (key == 13)
 		save(tipo);
-
+*/
 
 	}else
 	    disable_save(tipo);
