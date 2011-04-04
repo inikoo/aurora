@@ -4268,7 +4268,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
   //first read the act part
 
   $raw_act_data=array_shift($raw_header_data);
-  // print_r($raw_act_data);
+
   if($raw_act_data){
 
     foreach($raw_act_data as $key=>$col){
@@ -4278,6 +4278,9 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 	$cols[$key]=$col;
     }
  
+    $act_data['customer_id_from_kaktus']=0;
+    if($cols[65]=='kaktus')
+    $act_data['customer_id_from_kaktus']=1;
     
     $act_data['name']=mb_ucwords($cols[$map_act['name']]);
     $act_data['contact']=mb_ucwords($cols[$map_act['contact']]);
