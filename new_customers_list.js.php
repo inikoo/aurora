@@ -11,6 +11,7 @@ var dialog_city_list;
 var dialog_department_list;
 var dialog_family_list;
 var dialog_product_list;
+var dialog_category_list;
 
 var searched=false;
 function save_search_list()
@@ -154,6 +155,14 @@ function select_product(oArgs){
     Dom.get('product_ordered_or').value=product_ordered_or;
     dialog_product_list.hide();
     hide_filter(true,7)
+}
+function select_category(oArgs){
+    var product_ordered_or=Dom.get('product_ordered_or').value;
+    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
+    product_ordered_or=product_ordered_or+tables.table8.getRecord(oArgs.target).getData('category_code').replace(/<.*?>/g, '');
+    Dom.get('product_ordered_or').value=product_ordered_or;
+    dialog_category_list.hide();
+    hide_filter(true,8)
 }
     
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -1072,6 +1081,10 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     dialog_product_list = new YAHOO.widget.Dialog("dialog_product_list", {context:["product","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_product_list.render();
     Event.addListener("product", "click", dialog_product_list.show,dialog_product_list , true);
+
+    dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {context:["category","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_category_list.render();
+    Event.addListener("category", "click", dialog_category_list.show,dialog_category_list , true);
 
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
