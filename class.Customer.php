@@ -1168,12 +1168,12 @@ $this->found_in_another_store=false;
 
             break;
         case('Customer Main Plain Mobile'):
-            $subject=new Contact($this->data['Customer Main Contact Key']);
-            $subject->editor=$this->editor;
-            $subject->update(array('Contact Main Plain Mobile'=>$value));
-            $this->updated=$subject->updated;
-            $this->msg=$subject->msg;
-            $this->new_value=$subject->new_value;
+            $contact=new Contact($this->data['Customer Main Contact Key']);
+            $contact->editor=$this->editor;
+            $contact->update(array('Contact Main Plain Mobile'=>$value));
+            $this->updated=$contact->updated;
+            $this->msg=$contact->msg;
+            $this->new_value=$contact->new_value;
             break;
 
         case('Customer Main Plain Email'):
@@ -3988,6 +3988,26 @@ $this->found_in_another_store=false;
     function close_account() {
         $sql=sprintf("update `Customer Dimension` set `Customer Account Operative`='No' where `Customer Key`=%d ",$this->id);
         mysql_query();
+
+    }
+
+
+    function get_mobiles() {
+
+
+        $sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+        $mobiles=array();
+        $result=mysql_query($sql);
+//print $sql;
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $mobile= new Telecom($row['Telecom Key']);
+            $mobile->set_scope('Contact',$this->id);
+            $mobiles[]= $mobile;
+            $mobile->data['Mobile Is Main']=$row['Is Main'];
+
+        }
+        $this->number_mobiles=count($mobiles);
+        return $mobiles;
 
     }
 

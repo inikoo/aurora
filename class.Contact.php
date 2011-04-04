@@ -2957,11 +2957,24 @@ $this->parent=$parent;
             break;
         case('Contact Main Plain Mobile'):
             $main_mobile_key=$this->get_principal_mobile_key();
-            if ($main_mobile_key) {
-                $mobile=new Telecom($main_mobile_key);
+        
+                    
+           if ($main_mobile_key) {
+           
+                
+            if($value==''){
+            	  $telecom=new Telecom($main_mobile_key);
+                    $telecom->delete();
+                    
+                    	$this->updated=$telecom->deleted;
+                    }else{
+           
+           
+           $mobile=new Telecom($main_mobile_key);
                 $mobile->editor=$this->editor;
                 $mobile->update_number($value,$this->data['Contact Main Country Code']);
 				$this->updated=$mobile->updated;
+}
 
             } else {
                 $mobile_data=array();
