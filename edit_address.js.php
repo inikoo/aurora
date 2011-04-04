@@ -976,12 +976,14 @@ var data={
 
 function change_country(prefix,oData){
 
+// alert(prefix)
   Dom.get(prefix+"address_country_code").value = oData.code;
     Dom.get(prefix+"address_country_2acode").value = oData.code2a;
-    
+    //alert("xaxa1")
     postal_regex=new RegExp(oData.postal_regex,"i");
     postcode_help=oData.postcode_help;
     update_address_labels(oData.code,prefix);
+    
     Dom.setStyle(prefix+'address_components','display','')
  //   Dom.setStyle(prefix+'country_options','display','none')
 //    Dom.setStyle(prefix+'show_country_options','display','')
@@ -990,7 +992,6 @@ function change_country(prefix,oData){
      Dom.setStyle(prefix+'show_country_subregions','display','')
 
  Dom.get(prefix+'address_street').focus()
-
 }
 
 function show_country_options(prefix){
