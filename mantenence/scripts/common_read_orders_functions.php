@@ -200,6 +200,9 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 
     }
 
+
+//print_r($data_dn_transactions);
+
 }
 
 
@@ -651,6 +654,9 @@ function send_order($data,$data_dn_transactions) {
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
     global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 
+
+
+
     if (count($picker_data['id'])==0)$staff_key=0;
     else {
         $staff_key=$picker_data['id'][0];
@@ -674,7 +680,7 @@ function send_order($data,$data_dn_transactions) {
         }
 
         if (  $value['Shipped Quantity']>0) {
-            $dn->set_as_picked($itf,round($value['Shipped Quantity']+$value['given'],8),$date_order);
+            $dn->set_as_picked($itf,round($value['Shipped Quantity'],8),$date_order);
         }
         if ( $value['No Shipped Due Out of Stock']>0) {
 
