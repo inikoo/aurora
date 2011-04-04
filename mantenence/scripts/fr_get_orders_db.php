@@ -148,7 +148,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0509.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR3065.xls'  order by filename";
 
 
 $contador=0;
@@ -1328,17 +1328,29 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
 
-        if ($customer_key_from_excel_order) {
-            $customer = new Customer($customer_key_from_excel_order);
-        }
-        elseif($customer_key_from_order_data) {
+
+
+    if($customer_key_from_order_data) {
+  //     exit('pipi');
+       
             //print "using customer key from order data   $customer_key_from_order_data ";
             $customer = new Customer($customer_key_from_order_data);
 
+        } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+//print_r($act_data['act']);
+     //     exit("caca");
+
+            $customer = new Customer($act_data['act']);
         }
         else {
-            $customer = new Customer ( 'find create update', $data['Customer Data'] );
+        //        exit("popop");
+            //print_r( $data['Customer Data']);
+            //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
+            $customer = new Customer ( 'find create', $data['Customer Data'] );
         }
+
+
+    
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             continue;

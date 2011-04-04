@@ -1308,23 +1308,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $customer = new Customer($customer_key_from_order_data);
 
         } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-
-
-
-
-
+// print_r($act_data['act']);
+  //        exit("caca");
 
             $customer = new Customer($act_data['act']);
         }
         else {
-        
-//        exit("popop");
+        //        exit("popop");
             //print_r( $data['Customer Data']);
             //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
             $customer = new Customer ( 'find create', $data['Customer Data'] );
-
-
         }
+        
+        
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             continue;
