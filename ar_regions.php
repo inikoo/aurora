@@ -40,6 +40,9 @@ case('department'):
 case('family'):
     list_family();
     break;
+case('product'):
+    list_product();
+    break;
 case('wregion'):
     list_world_regions();
     break;
@@ -1242,6 +1245,231 @@ $gnp='$'.number($row['Country GNP']/1000,0).'k';
 
 // -----------------------------------ends  for family----------------------------
 
+// -----------------------------------starts for products----------------------------
+
+function list_product(){
+ $conf=$_SESSION['state']['world']['product'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+
+
+ $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+
+  $_SESSION['state']['world']['product']['order']=$order;
+  $_SESSION['state']['world']['product']['order_dir']=$order_direction;
+  $_SESSION['state']['world']['product']['nr']=$number_results;
+  $_SESSION['state']['world']['product']['sf']=$start_from;
+  $_SESSION['state']['world']['product']['where']=$where;
+  $_SESSION['state']['world']['product']['f_field']=$f_field;
+  $_SESSION['state']['world']['product']['f_value']=$f_value;
+
+
+
+
+
+
+  $where=sprintf('where true ');
+
+
+  $filter_msg='';
+  $wheref='';
+  
+
+if($f_field=='country_code' and $f_value!='')
+    $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'"; 
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";     
+ elseif($f_field=='city' and $f_value!='')
+    $wheref.=" and  `Customer Main Town` like '".addslashes($f_value)."%'";     
+  elseif($f_field=='product_name' and $f_value!='')
+    $wheref.=" and  `Product Name` like '".addslashes($f_value)."%'"; 
+    
+  $sql="select count(DISTINCT `Product Name`) as total from `Product Dimension` $where $wheref  ";
+
+     $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      $total=$row['total'];
+     }
+     mysql_free_result($res);
+     if($wheref==''){
+       $filtered=0;
+       $total_records=$total;
+     } else{
+       $sql="select count(DISTINCT `Product Name`) as total from `Product Dimension`  $where   ";
+       $res=mysql_query($sql);
+       if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	 $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+       }
+  mysql_free_result($res);
+   }
+
+     
+   $rtext=$total_records." ".ngettext('Product','Products',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+       $rtext_rpp=_('(Showing all)');
+
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('country_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any country with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('countries with code like')." <b>$f_value</b>)";
+       break;
+      case('wregion_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any world region with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+       break;
+       case('continent_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any continent with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+       break;  
+
+
+      case('postal_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any postal code with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('postal codes with code like')." <b>$f_value</b>)";
+       break;  
+      case('city'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any city with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('city with code like')." <b>$f_value</b>)";
+       break;  
+      case('department_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any department with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('department with code like')." <b>$f_value</b>)";
+       break;  
+      case('family_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('family with code like')." <b>$f_value</b>)";
+       break;  
+      case('product_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('product with code like')." <b>$f_value</b>)";
+       break;  
+     }
+
+
+
+
+
+  $_order=$order;
+   $_dir=$order_direction;
+
+   
+ 
+   if($order=='population')
+     $order='`Country Population`';
+ elseif($order=='gnp')
+     $order='`Country GNP`';
+     else
+      $order='`Product Name`';
+
+
+
+
+
+   $adata=array();
+ $sql="select  * from `Product Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+ 
+   $res=mysql_query($sql);
+   
+   while($row=mysql_fetch_array($res)) {
+  
+     $adata[]=array(
+ 
+		  'product_name'=>$row['Product Short Description'],
+		  'product_code'=>$row['Product Code'],
+    
+
+		   );
+
+   }
+  mysql_free_result($res);
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+	 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$total,
+			 'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			 'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+			 )
+		   );
+     
+   echo json_encode($response);
+}
+
+// -----------------------------------ends  for product----------------------------
 function list_world_regions(){
  $conf=$_SESSION['state']['world']['wregions'];
   if(isset( $_REQUEST['sf']))
