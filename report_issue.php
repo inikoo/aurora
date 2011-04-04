@@ -5,10 +5,11 @@ include_once('common.php');
 
 if(isset($_REQUEST['t']) and $_REQUEST['t']=='feature'){
 $type='feature';
-$email='new_feature.kaktus@logos-wissen.com';
+
+$email='raul@ancientwisdom.biz';
 }else{
 $type='bug';
-$email='issues.kaktus@logos-wissen.com';
+$email='raul@ancientwisdom.biz';
 }
 $metadata="Client: ".$myconf['name']."\n";
 $metadata.="User: ".$user->data['User Alias']." (".$user->id.")\n";
