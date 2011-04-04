@@ -97,7 +97,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE1053.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/%DE0986.xls' ) order by filename";
 
 
 $contador=0;
@@ -223,6 +223,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $header_data['date_order']='';
         list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
 //print_r($header_data);
+//exit;
+
 //print "$date_index,$date_order,$date_inv $tipo_order\n";
 
 
@@ -1298,16 +1300,25 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-        if ($customer_key_from_excel_order) {
-
-            $customer = new Customer($customer_key_from_excel_order);
-        }
-        elseif($customer_key_from_order_data) {
+     
+       if($customer_key_from_order_data) {
+  //     exit('pipi');
+       
             //print "using customer key from order data   $customer_key_from_order_data ";
             $customer = new Customer($customer_key_from_order_data);
 
+        } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+
+
+
+
+
+
+            $customer = new Customer($act_data['act']);
         }
         else {
+        
+//        exit("popop");
             //print_r( $data['Customer Data']);
             //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
             $customer = new Customer ( 'find create', $data['Customer Data'] );
