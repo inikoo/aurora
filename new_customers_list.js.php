@@ -9,6 +9,7 @@ var dialog_wregion_list;
 var dialog_postal_code_list;
 var dialog_city_list;
 var dialog_department_list;
+var dialog_family_list;
 
 var searched=false;
 function save_search_list()
@@ -136,6 +137,16 @@ function select_department(oArgs){
     dialog_department_list.hide();
     hide_filter(true,5)
 }
+
+function select_family(oArgs){
+    var product_ordered_or=Dom.get('product_ordered_or').value;
+    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
+    product_ordered_or=product_ordered_or+tables.table6.getRecord(oArgs.target).getData('family_name').replace(/<.*?>/g, '');
+    Dom.get('product_ordered_or').value=product_ordered_or;
+    dialog_family_list.hide();
+    hide_filter(true,6)
+}
+
     
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -626,7 +637,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}"
+									      ,template : "{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -654,6 +665,105 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 // --------------------------------------Department table ends here----------------------------------------------------------
 
+
+// --------------------------------------Family table starts here--------------------------------------------------------
+   var tableid=6; 
+	    var tableDivEL="table"+tableid;
+
+ this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+  elLiner.innerHTML = oData;
+         //   if(oRecord.getData("field3") > 100) {
+       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+
+        };
+        
+        // Add the custom formatter to the shortcuts
+        YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
+
+	   
+	    var ColumnDefs = [
+			
+			 {key:"store_code", formatter:"remove_links",label:"<?php echo _('Store Code')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                    ,{key:"family_code", label:"<?php echo _('Product Family Code')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+                   ,{key:"family_name",formatter:"remove_links", label:"<?php echo _('Product Family Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      
+
+			     // ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     //  ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			      
+			   //   ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+			      
+	     
+
+
+			
+			
+			];
+			       
+	    this.dataSource6 = new YAHOO.util.DataSource("ar_regions.php?tipo=family&tableid=6&nr=20&sf=0");
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    	    this.dataSource6.table_id=tableid;
+
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "store_code","family_code",'family_name','population','gnp','wregion'
+			 ]};
+
+	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource6
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['family']['nr']?>,containers : 'paginator6', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['world']['family']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['family']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table6.subscribe("rowMouseoverEvent", this.table6.onEventHighlightRow);
+       this.table6.subscribe("rowMouseoutEvent", this.table6.onEventUnhighlightRow);
+      this.table6.subscribe("rowClickEvent", select_family);
+     
+
+
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table6.filter={key:'<?php echo$_SESSION['state']['world']['family']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['family']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+// --------------------------------------Family table ends here----------------------------------------------------------
 
 
 // -----------------------------------------------world regions table starts here --------------
@@ -845,6 +955,10 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_department_list.render();
     Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);
+
+    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_family_list.render();
+    Event.addListener("family", "click", dialog_family_list.show,dialog_family_list , true);
 
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
