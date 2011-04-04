@@ -17,6 +17,11 @@
 
 <div style="font-weight:800;clear:both;margin:20px 50px;padding:20px 50px;border:1px solid #ccc">
 Hello, here i am going to place the announcements about bug fixed and new features.
+<ul style="padding:20px">
+<li  style="list-style-type: square;color:red">Update your browser to Firefox 4, for better performance</li>
+
+<li  style="list-style-type: square">By default quick note is delectable</li>
+</ul>
 </div>
 
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
