@@ -3589,6 +3589,16 @@ $default_state=array(
                                                'f_field'=>'city',
                                                'f_value'=>'',
                                            ),
+				'department'=>array(
+                                               'display'=>'all',
+                                               'order'=>'store_code',
+                                               'order_dir'=>'asc',
+                                               'sf'=>0,
+                                               'nr'=>20,
+                                               'where'=>'where true',
+                                               'f_field'=>'department_name',
+                                               'f_value'=>'',
+                                           ),
 				
                            ),
 

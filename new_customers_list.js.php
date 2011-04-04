@@ -8,6 +8,8 @@ var dialog_country_list;
 var dialog_wregion_list;
 var dialog_postal_code_list;
 var dialog_city_list;
+var dialog_department_list;
+
 var searched=false;
 function save_search_list()
 {
@@ -126,7 +128,14 @@ function select_city(oArgs){
     dialog_wregion_list.hide();
     hide_filter(true,4)
 }
-
+function select_department(oArgs){
+    var product_ordered_or=Dom.get('product_ordered_or').value;
+    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
+    product_ordered_or=product_ordered_or+tables.table5.getRecord(oArgs.target).getData('department_name').replace(/<.*?>/g, '');
+    Dom.get('product_ordered_or').value=product_ordered_or;
+    dialog_department_list.hide();
+    hide_filter(true,5)
+}
     
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -511,7 +520,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['world']['countries']['nr']?>,containers : 'paginator3', 
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['city']['nr']?>,containers : 'paginator4', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -521,8 +530,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['world']['countries']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['world']['countries']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['world']['city']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['city']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -541,9 +550,110 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table4.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
+	    this.table4.filter={key:'<?php echo$_SESSION['state']['world']['city']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['city']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 // --------------------------------------City code table ends here----------------------------------------------------------
+
+
+// --------------------------------------Department table starts here--------------------------------------------------------
+   var tableid=5; 
+	    var tableDivEL="table"+tableid;
+
+ this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+  elLiner.innerHTML = oData;
+         //   if(oRecord.getData("field3") > 100) {
+       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+
+        };
+        
+        // Add the custom formatter to the shortcuts
+        YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
+
+	   
+	    var ColumnDefs = [
+			
+			 {key:"store_code", formatter:"remove_links",label:"<?php echo _('Store Code')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                    ,{key:"department_code", label:"<?php echo _('Product Department Code')?>",width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+                   ,{key:"department_name",formatter:"remove_links", label:"<?php echo _('Product Department Name')?>",width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      
+
+			     // ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     //  ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			      
+			   //   ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+			      
+	     
+
+
+			
+			
+			];
+			       
+	    this.dataSource5 = new YAHOO.util.DataSource("ar_regions.php?tipo=department&tableid=5&nr=20&sf=0");
+	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource5.connXhrMode = "queueRequests";
+	    	    this.dataSource5.table_id=tableid;
+
+	    this.dataSource5.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "store_code","department_code",'department_name','population','gnp','wregion'
+			 ]};
+
+	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource5
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['department']['nr']?>,containers : 'paginator5', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['world']['department']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['department']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table5.subscribe("rowMouseoverEvent", this.table5.onEventHighlightRow);
+       this.table5.subscribe("rowMouseoutEvent", this.table5.onEventUnhighlightRow);
+      this.table5.subscribe("rowClickEvent", select_department);
+     
+
+
+	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table5.filter={key:'<?php echo$_SESSION['state']['world']['department']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['department']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+// --------------------------------------Department table ends here----------------------------------------------------------
+
 
 
 // -----------------------------------------------world regions table starts here --------------
@@ -731,6 +841,10 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     dialog_postal_code_list = new YAHOO.widget.Dialog("dialog_postal_code_list", {context:["postal_code","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_postal_code_list.render();
     Event.addListener("postal_code", "click", dialog_postal_code_list.show,dialog_postal_code_list , true);
+
+    dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_department_list.render();
+    Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);
 
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
