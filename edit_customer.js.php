@@ -451,7 +451,7 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
 	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;
     Countries_AC.suffix='contact_';
-    Countries_AC.suffix='prefix_';
+    Countries_AC.prefix='contact_';
 	Countries_AC.resultTypeList = false;
 	Countries_AC.formatResult = countries_format_results;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);

@@ -1335,17 +1335,27 @@ $customer_key_from_order_data=$row2['customer_id'];
 
 
 
-        if ($customer_key_from_excel_order) {
-            $customer = new Customer($customer_key_from_excel_order);
-        }
-        elseif($customer_key_from_order_data) {
+         if($customer_key_from_order_data) {
+  //     exit('pipi');
+       
             //print "using customer key from order data   $customer_key_from_order_data ";
             $customer = new Customer($customer_key_from_order_data);
 
+        } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+// print_r($act_data['act']);
+  //        exit("caca");
+
+            $customer = new Customer($act_data['act']);
         }
         else {
-            $customer = new Customer ( 'find create update', $data['Customer Data'] );
+        //        exit("popop");
+            //print_r( $data['Customer Data']);
+            //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
+            $customer = new Customer ( 'find create', $data['Customer Data'] );
         }
+        
+        
+        
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             print_r($customer);

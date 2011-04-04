@@ -196,7 +196,7 @@ function change(e,o,tipo){
     case('note'):
 	if(o.value!=''){
 	    enable_save(tipo);
-
+/*
 	    if(window.event)
 		key = window.event.keyCode; //IE
 	    else
@@ -204,7 +204,7 @@ function change(e,o,tipo){
 	    
 	    if (key == 13)
 		save(tipo);
-
+*/
 
 	}else
 	    disable_save(tipo);
@@ -318,7 +318,7 @@ Event.addListener(window, "load", function() {
 
 					   ];
 		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&tid="+tableid);
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&sf=0&tid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

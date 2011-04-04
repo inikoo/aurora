@@ -97,7 +97,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/%DE0986.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/%DE1122.xls' ) order by filename";
 
 
 $contador=0;
@@ -1153,10 +1153,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 
             create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
-
+//print "xcaca\n";
         }
 
-
+//print_r($data_dn_transactions);
 
         $data['Order For']='Customer';
 
@@ -1308,23 +1308,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $customer = new Customer($customer_key_from_order_data);
 
         } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-
-
-
-
-
+// print_r($act_data['act']);
+  //        exit("caca");
 
             $customer = new Customer($act_data['act']);
         }
         else {
-        
-//        exit("popop");
+        //        exit("popop");
             //print_r( $data['Customer Data']);
             //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
             $customer = new Customer ( 'find create', $data['Customer Data'] );
-
-
         }
+        
+        
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             continue;

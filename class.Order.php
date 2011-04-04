@@ -2414,7 +2414,7 @@ where `Order Key`=%d",
     function update_payment_state() {
         $sql = sprintf("select `Current Payment State` as payment_state from `Order Transaction Fact` where `Order Key`=%d order by `Current Payment State`",
                        $this->id);
-        //print "$sql\n";
+        
         $result = mysql_query ( $sql );
         $array_payment_state=array();
         while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -2428,6 +2428,8 @@ where `Order Key`=%d",
                      ,prepare_mysql($this->calculate_state())
                      ,$this->id);
         mysql_query($sql);
+  
+
     }
 
 
