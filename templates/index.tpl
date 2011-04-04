@@ -19,6 +19,7 @@
 Hello, here i am going to place the announcements about bug fixed and new features.
 <ul style="padding:20px">
 <li  style="list-style-type: square;color:red">Update your browser to Firefox 4, for better performance</li>
+<li  style="list-style-type: square">Report Problem / Request new feature now works, all your previous requests where lost forever (13:41 4th April 11)</li>
 
 <li  style="list-style-type: square">By default quick note is delectable</li>
 <li  style="list-style-type: square">Change country in edit customer now works</li>
