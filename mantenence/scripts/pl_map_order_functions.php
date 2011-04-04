@@ -4342,6 +4342,10 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     }
  
     
+      $act_data['customer_id_from_kaktus']=0;
+    if($cols[65]=='kaktus')
+    $act_data['customer_id_from_kaktus']=1;
+    
     $act_data['name']=mb_ucwords($cols[$map_act['name']]);
     $act_data['contact']=mb_ucwords($cols[$map_act['contact']]);
     if($act_data['name']=='' and $act_data['contact']!='') // Fix only contact

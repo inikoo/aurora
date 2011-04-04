@@ -782,6 +782,9 @@ class DeliveryNote extends DB_Table {
         }
     }
     private function handle_to_customer($data) {
+    
+ //   print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+    
         if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date']  ) {
             $data['Delivery Note Date']=date('Y-m-d H:i:s');
         }
@@ -1676,6 +1679,8 @@ class DeliveryNote extends DB_Table {
 
         $res=mysql_query ( $sql );
         if ($row=mysql_fetch_assoc($res)) {
+//print_r($row);
+
             $original_qty=$qty;
 
             $out_of_stock=$row['Out of Stock'];
@@ -1686,6 +1691,9 @@ class DeliveryNote extends DB_Table {
                 $picking_factor=round($qty/$pending,4);
             } else
                 $picking_factor=0;
+
+//print "*** $qty\n";
+            
 
             $sku=$row['Part SKU'];
             $part=new Part($sku);
@@ -1865,6 +1873,9 @@ class DeliveryNote extends DB_Table {
     }
 
     function set_as_packed($itf_key,$qty,$date=false,$packer_key=false) {
+   
+    
+    
         if (!$date)
             $date=date("Y-m-d H:i:s");
         $this->updated=false;
@@ -1877,7 +1888,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-        $sql=sprintf("select `Inventory Transaction Amount`,`Inventory Transaction Storing Charge Amount`,`Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1)  as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+        $sql=sprintf("select `Note`,`Inventory Transaction Amount`,`Inventory Transaction Storing Charge Amount`,`Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1)  as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                      ,$itf_key
                     );
         $res=mysql_query ( $sql );
@@ -1886,7 +1897,7 @@ class DeliveryNote extends DB_Table {
             if ($row['Required']-$row['Out of Stock']<=0 or $row['Picked']==0) {
                 return;
             }
-
+ //print "YYYYY".$row['Note']."YYYYYYYYYYYYY\n";
             $original_qty=$qty;
             $qty=$qty+$row['Packed'];
 
@@ -1935,7 +1946,7 @@ class DeliveryNote extends DB_Table {
                              $otf_key
                            );
             mysql_query ( $sql );
-
+//            print "$sql\n";
 
             $weight=$this->get_packed_estimated_weight();
             $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note Weight`=%f,`Delivery Note Date Finish Packing`=%s where `Delivery Note Key`=%d",

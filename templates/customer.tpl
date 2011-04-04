@@ -247,10 +247,10 @@
 <div id="dialog_note">
   <div id="note_msg"></div>
   <table style="padding:10px;margin:10px" >
-  <tr id="note_type" class="options_list" prefix="note_type_" value="permanent">
-  <td class="selected" id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
+  <tr id="note_type" class="options_list" prefix="note_type_" value="deletable">
+  <td class="" id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
   </td>
-  <td class="" id="note_type_deletable" onclick="radio_changed(this)" name="deletable" >{t}Deletable{/t}
+  <td class="selected" id="note_type_deletable" onclick="radio_changed(this)" name="deletable" >{t}Deletable{/t}
   </td>
   </tr>
   
