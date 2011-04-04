@@ -31,6 +31,9 @@ case('country_list'):
 case('postal_code'):
     list_postal_code();
     break;
+case('city'):
+    list_city();
+    break;
 case('wregion'):
     list_world_regions();
     break;
@@ -509,6 +512,241 @@ $gnp='$'.number($row['Country GNP']/1000,0).'k';
 }
 
 // -----------------------------------ends  for postal code----------------------------
+
+
+
+
+// -----------------------------------starts for city code----------------------------
+
+function list_city(){
+ $conf=$_SESSION['state']['world']['city'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+
+
+ $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+
+  $_SESSION['state']['world']['city']['order']=$order;
+  $_SESSION['state']['world']['city']['order_dir']=$order_direction;
+  $_SESSION['state']['world']['city']['nr']=$number_results;
+  $_SESSION['state']['world']['city']['sf']=$start_from;
+  $_SESSION['state']['world']['city']['where']=$where;
+  $_SESSION['state']['world']['city']['f_field']=$f_field;
+  $_SESSION['state']['world']['city']['f_value']=$f_value;
+
+
+
+
+
+
+  $where=sprintf('where true ');
+
+
+  $filter_msg='';
+  $wheref='';
+  
+
+if($f_field=='country_code' and $f_value!='')
+    $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'"; 
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";     
+ elseif($f_field=='postal_code' and $f_value!='')
+    $wheref.=" and  `Customer Main Town` like '".addslashes($f_value)."%'";     
+ 
+  $sql="select count(DISTINCT `Customer Main Town`) as total from `Customer Dimension` $where $wheref  ";
+
+     $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      $total=$row['total'];
+     }
+     mysql_free_result($res);
+     if($wheref==''){
+       $filtered=0;
+       $total_records=$total;
+     } else{
+       $sql="select count(DISTINCT `Customer Main Town`) as total from `Customer Dimension`  $where   ";
+       $res=mysql_query($sql);
+       if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	 $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+       }
+  mysql_free_result($res);
+   }
+
+     
+   $rtext=$total_records." ".ngettext('City','Cities',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+       $rtext_rpp=_('(Showing all)');
+
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('country_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any country with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('countries with code like')." <b>$f_value</b>)";
+       break;
+      case('wregion_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any world region with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+       break;
+       case('continent_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any continent with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+       break;  
+
+
+      case('postal_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any postal code with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('postal codes with code like')." <b>$f_value</b>)";
+       break;  
+      case('city'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any city with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('city with code like')." <b>$f_value</b>)";
+       break;  
+     }
+
+
+
+
+
+  $_order=$order;
+   $_dir=$order_direction;
+
+   
+ 
+   if($order=='population')
+     $order='`Country Population`';
+ elseif($order=='gnp')
+     $order='`Country GNP`';
+     else
+      $order='`Customer Main Country`';
+
+
+
+
+
+   $adata=array();
+ $sql="select  * from `Customer Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+ 
+   $res=mysql_query($sql);
+   
+   while($row=mysql_fetch_array($res)) {
+     //  $wregion=sprintf('<a href="wregion.php?country=%s">%s</a>',$row['World Region Code'],$row['World Region']);
+    $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Country 2 Alpha Code'],$row['Customer Main Country']);
+       // $country_code=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Postal Code'],$row['Customer Main Country Code']);
+        $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Customer Main Country 2 Alpha Code']));
+
+/*if($row['Country Population']<100000){
+$population='>0.1M';
+}else{
+$population=number($row['Country Population']/1000000,1).'M';
+}
+if($row['Country GNP']=='')
+$gnp='ND';
+elseif($row['Country GNP']<1000)
+$gnp='$'.number($row['Country GNP'],0);
+else
+$gnp='$'.number($row['Country GNP']/1000,0).'k';
+*/
+     $adata[]=array(
+  //    'plain_name'=>$row['Country Name'],
+	//	  'plain_code'=>$row['Country Code'],
+		   'name'=>$country_name,
+		  'city'=>$row['Customer Main Town'],
+		  'flag'=>$country_flag,
+       // 'population'=>$population,
+        //'gnp'=>$gnp,
+       // 'wregion'=>$wregion,
+       // 'code3a'=>$row['Country Code'],
+       // 'code2a'=>$row['Country 2 Alpha Code'],
+       //  'plain_name'=>$row['Country Name'],
+       //   'postal_regex'=>$row['Country Postal Code Regex'],
+         //     'postcode_help'=>$row['Country Postal Code Format'],
+       
+
+		   );
+
+   }
+  mysql_free_result($res);
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+	 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$total,
+			 'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			 'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+			 )
+		   );
+     
+   echo json_encode($response);
+}
+
+// -----------------------------------ends  for city code----------------------------
 
 
 function list_world_regions(){
