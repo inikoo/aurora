@@ -4,6 +4,7 @@
 	<script src="js/index_sliding_tabs.js" type="text/javascript"></script>
 
 
+
 <div  class="general_options" style="margin:5px 20px 0 0">
  {foreach from=$search_options_list item=options }
     {if $options.tipo=="url"}
@@ -12,6 +13,10 @@
     <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
     {/if}
     {/foreach}
+</div>
+
+<div style="font-weight:800;clear:both;margin:20px 50px;padding:20px 50px;border:1px solid #ccc">
+Hello, here i am going to place the announcements about bug fixed and new features.
 </div>
 
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
