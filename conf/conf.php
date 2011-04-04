@@ -3610,6 +3610,17 @@ $default_state=array(
                                                'f_field'=>'family_name',
                                                'f_value'=>'',
                                            ),
+				'product'=>array(
+                                               'display'=>'all',
+                                               'order'=>'product_code',
+                                               'order_dir'=>'asc',
+                                               'sf'=>0,
+                                               'nr'=>20,
+                                               'where'=>'where true',
+                                               'f_field'=>'product_name',
+                                               'f_value'=>'',
+                                           )
+
 				
                            ),
 
