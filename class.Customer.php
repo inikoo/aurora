@@ -240,8 +240,8 @@ class Customer extends DB_Table {
             $child=new Company ("find in customer $type_of_search",$raw_data);
         }
 
-$this->found_in_another_store=false;
-                        $this->found_key_in_another_store=0;
+        $this->found_in_another_store=false;
+        $this->found_key_in_another_store=0;
 
 
         if ($child->found) {
@@ -253,16 +253,16 @@ $this->found_in_another_store=false;
             if (count($customer_found_keys)>0) {
                 foreach($customer_found_keys as $customer_found_key) {
                     $tmp_customer=new Customer($customer_found_key);
-                    if($tmp_customer->id){
-                    if ($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']) {
-                        $this->found=true;
-                        $this->found_key=$customer_found_key;
-                    }else{
-                    $this->found_in_another_store=true;
-                        $this->found_key_in_another_store=$tmp_customer->id;
+                    if ($tmp_customer->id) {
+                        if ($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']) {
+                            $this->found=true;
+                            $this->found_key=$customer_found_key;
+                        } else {
+                            $this->found_in_another_store=true;
+                            $this->found_key_in_another_store=$tmp_customer->id;
 
-                    
-                    }
+
+                        }
                     }
                 }
             }
@@ -270,12 +270,12 @@ $this->found_in_another_store=false;
 
         }
 
-      
+
 
         $this->candidate=$child->candidate;
-        
-        
-      
+
+
+
         if ($this->found) {
             $this->get_data('id',$this->found_key);
         }
@@ -310,13 +310,13 @@ $this->found_in_another_store=false;
 
 
                     if (
-                        isset($child->data['Contact Key']) and 
-                        $raw_data['Customer Main Plain Email']!='' and 
+                        isset($child->data['Contact Key']) and
+                        $raw_data['Customer Main Plain Email']!='' and
                         $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
-                            and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
-                            and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/",$raw_data['Customer Main Contact Name'] )
-                            and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/",$child->data['Contact Name'] )
-                       ) {
+                        and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
+                        and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/",$raw_data['Customer Main Contact Name'] )
+                        and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/",$child->data['Contact Name'] )
+                    ) {
                         //print "super change!!\n";
                         // exit;
                         $email=new Email($child->data['Contact Main Email Key']);
@@ -364,7 +364,7 @@ $this->found_in_another_store=false;
 
                 $this->get_data('id',$this->id);
 
-            }else {// customer not found
+            } else {// customer not found
                 if ($this->found_child) {
 
                     if ($raw_data['Customer Type']=='Person') {
@@ -373,12 +373,12 @@ $this->found_in_another_store=false;
                         //print_r($child->data);
 
                         if (
-                            isset($child->data['Contact Key']) and 
-                            $raw_data['Customer Main Plain Email']!='' and  
-                            $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email'] and 
+                            isset($child->data['Contact Key']) and
+                            $raw_data['Customer Main Plain Email']!='' and
+                            $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email'] and
                             (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
 
-                           ) {
+                        ) {
                             //print "super change2!\n";
                             // $child->remove_email($child->data['Contact Main Email Key']);
                             $email=new Email($child->data['Contact Main Email Key']);
@@ -421,18 +421,18 @@ $this->found_in_another_store=false;
     }
 
 
-    function get_correlations(){
-    
-    
-    foreach($this->candidate as $candidate_key=>$score){
-    $candidate=new Contact($candidate_key);
-    $correlated_customer_keys=$candidate->get_customer_keys();
-    print_r($candidate->get_customer_keys());
-    
-    }
-    
-       
-    
+    function get_correlations() {
+
+
+        foreach($this->candidate as $candidate_key=>$score) {
+            $candidate=new Contact($candidate_key);
+            $correlated_customer_keys=$candidate->get_customer_keys();
+            print_r($candidate->get_customer_keys());
+
+        }
+
+
+
     }
 
     function get_name() {
@@ -604,7 +604,7 @@ $this->found_in_another_store=false;
 
 
     function create($raw_data,$args='') {
-//print_r($raw_data);
+
 
         $main_telephone_key=false;
         $main_fax_key=false;
@@ -696,9 +696,9 @@ $this->found_in_another_store=false;
             }
             elseif($this->data['Customer Type']=='Person') {
 
-              
+
                 if (!$this->data['Customer Main Contact Key']) {
-                   
+
                     $contact=new contact('find in customer fast create update',$raw_data);
                 } else {
                     $contact=new contact('id',$this->data['Customer Main Contact Key']);
@@ -1131,6 +1131,7 @@ $this->found_in_another_store=false;
             break;
         case('Customer Sticky Note'):
             $this->update_field($field,$value,'no_null');
+            $this->new_value=html_entity_decode($this->new_value);
             break;
         case('Note'):
             $this->add_note($value);
@@ -2514,11 +2515,11 @@ $this->found_in_another_store=false;
         return $order_key;
     }
 
-    function add_note($note,$details='',$date=false,$deleteable='No') {
+    function prepare_note($note,$details) {
         $note=_trim($note);
         if ($note=='') {
             $this->msg=_('Empty note');
-            return;
+            return array(0,0,0);
         }
 
 
@@ -2549,8 +2550,45 @@ $this->found_in_another_store=false;
             }
 
         }
+        return array(1,$note,$details);
+
+    }
 
 
+    function edit_note($note_key,$note,$details='',$change_date) {
+
+        list($ok,$note,$details)=$this->prepare_note($note,$details);
+        if (!$ok) {
+            return;
+        }
+        $sql=sprintf("update `History Dimension` set `History Abstract`=%s ,`History Details`=%s where `History Key`=%d and `Indirect Object`='Customer' and `Indirect Object Key`=%s ",
+                     prepare_mysql($note),
+                     prepare_mysql($details),
+                     $note_key,
+                     $this->id);
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+        if($change_date=='update_date'){
+             $sql=sprintf("update `History Dimension` set `History Date`=%s where `History Key`=%d  ",
+                      prepare_mysql(date("Y-m-d H:i:s")),
+                     $note_key
+                 );
+        mysql_query($sql);
+        }
+        
+            $this->updated=true;
+            $this->new_value=$note;
+        }
+
+    }
+
+    function add_note($note,$details='',$date=false,$deleteable='No') {
+
+
+        list($ok,$note,$details)=$this->prepare_note($note,$details);
+        if (!$ok) {
+            return;
+        }
 
 
 
@@ -2572,7 +2610,7 @@ $this->found_in_another_store=false;
 
 
 
-        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable);
+        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable,'Notes');
 
 
         $this->updated=true;
@@ -2583,9 +2621,14 @@ $this->found_in_another_store=false;
 
 
 
-    function add_customer_history($history_data,$force_save=true,$deleteable='No') {
+    function add_customer_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
         $history_key=$this->add_history($history_data,$force_save=true);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s)",$this->id,$history_key,prepare_mysql($deleteable));
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s,%s)",
+                     $this->id,
+                     $history_key,
+                     prepare_mysql($deleteable),
+                     prepare_mysql($type)
+                    );
         // print $sql;
         mysql_query($sql);
         return $history_key;
@@ -3458,28 +3501,28 @@ $this->found_in_another_store=false;
             return array();
     }
 
-    function display($tipo='card'){
-    switch ($tipo) {
+    function display($tipo='card') {
+        switch ($tipo) {
         case 'card':
-            if($this->data['Customer Type']=='Company'){
+            if ($this->data['Customer Type']=='Company') {
                 $company=new Company($this->data['Customer Company Key']);
                 $card=$company->display('card');
-            }else{
+            } else {
                 $contact=new Contact($this->data['Customer Main Contact Key']);
                 $card=$contact->display('card');
             }
             $card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><span style="float:left">'.$this->get_formated_id().'</span>',$card);
             return $card;
-            
+
             break;
         default:
-            
+
             break;
+        }
+
+
     }
-    
-    
-    }
-    
+
     function display_delivery_address($tipo) {
         switch ($tipo) {
 
@@ -3632,7 +3675,7 @@ $this->found_in_another_store=false;
                       );
 
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
 
         mysql_query($sql);
 
@@ -3699,7 +3742,7 @@ $this->found_in_another_store=false;
                     );
         mysql_query($sql);
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -3780,7 +3823,7 @@ $this->found_in_another_store=false;
                     );
         mysql_query($sql);
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -3844,7 +3887,7 @@ $this->found_in_another_store=false;
         //   print_r($history_data);
 
         $history_key=$dn->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -3943,7 +3986,7 @@ $this->found_in_another_store=false;
                           'Metadata'=>'Process'
                       );
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
     }

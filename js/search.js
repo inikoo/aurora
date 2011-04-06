@@ -108,16 +108,20 @@ default:
 
 
 var submit_search=function(e,data){
+//alert("caca")
     if(typeof( data ) == 'string')
 	var data={tipo:data,container:data};
     
     var q =Dom.get(data.container+'_search').value;
     if(q=='')
 	return;
-    var request='ar_search.php?tipo='+data.tipo+'&q='+escape(q);
+	
+    var request='ar_search.php?tipo='+data.tipo+'&q='+my_encodeURIComponent(q);
+       
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//		alert(o.responseText)
+//				alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 	
 		if (r.state == 200){
@@ -194,13 +198,13 @@ function search(query,subject,search_scope){
 
     var ar_file='ar_search.php';
 
-    var request='tipo='+subject+'&q='+escape(query)+'&scope='+search_scope;
+    var request='tipo='+subject+'&q='+query+'&scope='+search_scope;
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					//alert(o.responseText)
+				//	alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					

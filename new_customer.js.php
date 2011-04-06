@@ -124,23 +124,14 @@ function save_new_customer(e){
 
 
 		    }else{
-		        if(scope=='corporation'){
-		           window.location='edit_company_areas.php?edit=new_company_areas';
-
-		        }else if(scope=='supplier'){
-		           window.location='edit_supplier.php?id='+r.supplier_key;
-
-		        }else if(scope=='customer'){
+		       
 		           window.location='customer.php?r=nc&id='+r.customer_key;
 
-		        }
-		        
-		        else{
-		        window.location='company.php?id='+r.company_key;
-		        }
+		      
+		      
 		    }
 		    
-		}else if(r.action=='error'){
+		}else{
 		    alert(r.msg);
 		}
 			    
@@ -157,7 +148,7 @@ Dom.get('Customer_Type').value='Person'
 validate_data.company_name.validated=true;
 Dom.setStyle('company_section','display','none');
 Dom.setStyle('set_as_company','display','');
-
+validate_form();
 }
 function customer_is_a_company(){
 Dom.get('Customer_Type').value='Company'
@@ -165,7 +156,7 @@ Dom.setStyle('company_section','display','');
 Dom.setStyle('set_as_company','display','none');
 
 validate_company_name(Dom.get('Company_Name').value);
-
+validate_form();
 }
 
 function validate_company_name (query) {
@@ -219,6 +210,90 @@ function get_contact_data(){
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
+
+function find_subject(){
+    get_data();
+
+    var json_value = YAHOO.lang.JSON.stringify(subject_data); 
+var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_key}); 
+
+
+    var request='ar_contacts.php?tipo=show_posible_customer_matches&values=' + my_encodeURIComponent(json_value)+'&scope=' + my_encodeURIComponent(json_value_scope); 
+  
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		var old_subject_found=subject_found;
+		var old_subject_found_email=subject_found_email;
+
+		if(r.action=='found_email'){
+		    subject_found=true;
+		    subject_found_email=true;
+		    subject_found_key=r.found_key;
+		    display_form_state();
+		    contact_with_same_email=r.found_key;
+		    
+		    		    Dom.get('email_founded_name').innerHTML=r.found_name;
+
+		    //alert(subject_found+' '+subject_found_email);
+		     update_save_button();
+		}else if(r.action=='found'){
+		    subject_found=true;
+		    subject_found_email=false;
+		    subject_found_key=r.found_key;
+		    subject_found_name=r.found_name;
+		    Dom.get('founded_name').innerHTML=r.found_name;
+		    display_form_state();
+		     update_save_button();
+		}else if(r.action=='found_candidates'){
+		    subject_found=false; subject_found_email=false;
+		    subject_found_key=0;
+		     display_form_state();
+		      update_save_button();
+		}else{
+		    subject_found=false; subject_found_email=false;
+		    subject_found_key=0; 
+		       display_form_state();
+		        update_save_button();
+		        
+		}
+		//if(old_subject_found!=subject_found || old_subject_found_email!=subject_found_email){
+		//    update_save_button();
+		//	}
+		//var old_subject_found=subject_found;
+		//var old_subject_found_email=subject_found_email;
+
+
+		Dom.get("results").innerHTML='';
+		var count=0;
+		
+		for(x in r.candidates_data){
+		    
+		    Dom.get("results").innerHTML+='<div style="width:100%;"><div style="width:270px;margin:0px 0px 10px 0;float:left;margin-left:10px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:300px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div><div style="font-size:80%">'+r.candidates_data[x]['link']+'</div>  <div style="clear:both"></div><div style="clear:both"> </div>';
+		    
+		    var found_img='';
+		    // alert(r.candidates_data[x]['found']);return;
+		    if(r.candidates_data[x]['found']==1)
+			found_img='<img src="art/icons/award_star_gold_1.png"/>';
+		    
+		    Dom.get('score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']).innerHTML=star_rating(r.candidates_data[x]['score'],200).innerHTML+found_img+'<span style="font-size:80%;margin-left:0px"> Score ('+Math.round(r.candidates_data[x]['score'])+')</span>';
+		    
+		    
+		    
+		    //	    if(count % 2 || count==0)
+		    //	Dom.get("results").innerHTML+='<tr>'+td;
+		    //else
+		    //	Dom.get("results").innerHTML+=td+'</tr>';
+		}
+		//	Dom.get("results").innerHTML+='</table>';
+		
+	    }
+	});
+
+}
+
+
 function init(){
     
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_customer);

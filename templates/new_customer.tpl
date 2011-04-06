@@ -204,15 +204,16 @@ hide_buttons=1
       <div id="Customer_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has been found with the similar details{/t}.
 	<table style="margin:10px 0">
-	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit the located contact{/t} (<span id="founded_name"></span>)</span></td></tr>
-	  <tr><td><span  style="cursor:pointer;text-decoration:underline"  id="save_when_founded" >{t}Confirm is new contact and Save{/t}</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit the Customer found{/t} (<span id="founded_name"></span>)</span></td></tr>
+	  <tr><td><span style="color:red">{t}Creating this customer is likely to produce duplicate contacts.{/t}</span></br<span  style="cursor:pointer;text-decoration:underline;color:red"  id="save_when_founded" >{t}Create customer anyway{/t}</span></td></tr>
+
 	</table>
       </div>
       <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-	{t}Another contact has the same email{/t}.
+	<b>{t}Another contact has the same email{/t}</b>.
 	<table style="margin:10px 0">
-	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the located company{/t}</td></tr>
-	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Previous contact data (email) will be deleted to avoid muliplicity{/t}</span></td></tr>
+	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the Customer found{/t} (<span id="email_founded_name"></span>)</td></tr>
+	  <tr><td><span style="color:red">{t}Creating this customer will produce duplicate contacts. The email will not be added.{/t}</span></br><span  style="cursor:pointer;text-decoration:underline;color:red" id="force_new">{t}Create customer anyway{/t}</span></td></tr>
 	</table>
       </div>
       <div style="clear:both;padding:10px;" id="validation">

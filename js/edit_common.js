@@ -228,7 +228,8 @@ var onCellClick = function(oArgs) {
 
 
     switch (column.action) {
-
+   
+   
     case 'delete':
         if (record.getData('delete')!='') {
 

@@ -1437,7 +1437,7 @@ $this->parent=$parent;
        (example end)
 
     */
-    private function create ($data,$address_home_data,$options='') {
+     function create ($data,$address_home_data='',$options='') {
         global $myconf;
         if (is_string($data))
             $data['Contact Name']=$data;
