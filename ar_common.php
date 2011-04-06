@@ -60,7 +60,7 @@ function prepare_values($data,$value_names) {
             if (!is_type($spected_type,$data[$value_name]))
                 exit(json_encode(array('state'=>400,'msg'=>'Error wrong value 3')));
 
-            $parsed_data[$value_name]=stripslashes(urldecode($data[$value_name]));
+            $parsed_data[$value_name]=$data[$value_name];
             break;
         case('enum'):
             if (!preg_match($extra_data['valid values regex'],$data[$value_name]))

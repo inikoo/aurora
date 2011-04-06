@@ -18,13 +18,15 @@
 <div style="font-weight:800;clear:both;margin:20px 50px;padding:20px 50px;border:1px solid #ccc">
 Hello, here i am going to place the announcements about bug fixed and new features.
 <ul style="padding:20px">
+
+
+<li  style="list-style-type: square;color:red">Report Problem / Request  using the links at the bottom of the page</li>
 <li  style="list-style-type: square;color:red">Update your browser to Firefox 4, for better performance</li>
+
+<li  style="list-style-type: square">Improvements in adding new Customers</li>
+<li  style="list-style-type: square">Customer Telephones & Mobiles are now searchable</li>
+<li  style="list-style-type: square">Quick notes now can be edited</li>
 <li  style="list-style-type: square">Now you can delete mobiles (16:35 4th April 11)</li>
-
-<li  style="list-style-type: square">Report Problem / Request new feature now works, all your previous requests where lost forever (13:41 4th April 11)</li>
-
-
-<li  style="list-style-type: square">By default quick note is delectable</li>
 <li  style="list-style-type: square">Change country in edit customer now works</li>
 
 </ul>
