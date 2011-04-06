@@ -1263,7 +1263,7 @@ function search_parts($data) {
 
 function search_full_text($data) {
 
-
+  $user=$data['user'];
 
 
     $the_results=array();
@@ -1278,13 +1278,21 @@ function search_full_text($data) {
         echo json_encode($response);
         return;
     }
+$store_keys=join(',',$user->stores);
+
+if($store_keys=='')
+return;
 
     $candidates=array();
 
     $q_parts=preg_split('/\s+/',$q);
     foreach($q_parts as $q_part) {
-        $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
-        //  print $sql;
+        $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)      where S.`Store Key` in (%s) and `Search Result Name`='%s' limit 20",
+        $store_keys,
+        addslashes($q_part))
+        
+        ;;
+        
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $store_code=$row['Store Code'];
@@ -1320,7 +1328,11 @@ function search_full_text($data) {
         }
     }
 
-    $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",addslashes($q),addslashes($q));;
+    $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where  S.`Store Key` in (%s) and match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",
+   
+    addslashes($q),
+     $store_keys,
+    addslashes($q));;
 
 
     $res=mysql_query($sql);

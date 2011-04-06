@@ -2055,6 +2055,7 @@ ALTER TABLE `Category Dimension` ADD INDEX ( `Category Name` ) ;
 ALTER TABLE `Address Dimension` ADD `Address Street Number Position` ENUM( 'Left', 'Right' ) NOT NULL DEFAULT 'Left' AFTER `Address Street Number` ;
 ALTER TABLE `Customer History Bridge` ADD `Type` ENUM( 'Note', 'Order', 'Changes' ) NOT NULL ,ADD INDEX ( `Type` ) ;
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
+
 ALTER TABLE `Session Dimension` CHANGE `Session Data` `Session Data` LONGBLOB NOT NULL ;
 
 */
