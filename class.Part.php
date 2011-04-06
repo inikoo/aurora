@@ -937,7 +937,7 @@ return $this->get_supplier_products_historic($date);
     left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) 
     left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes';
     ",$this->data['Part SKU']);
-   print $sql;
+   //print $sql;
    $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         $supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
@@ -965,7 +965,7 @@ function get_supplier_products_historic($date) {
                  prepare_mysql($date),
                  prepare_mysql($date)
                 );
-   // print "$sql\n\n";
+    print "$sql\n\n";
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
