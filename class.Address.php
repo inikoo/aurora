@@ -4636,8 +4636,8 @@ public static function parse_street($line,$country_code='UNK') {
 
                     $sql=sprintf('update `Customer Dimension` set `Customer Main Plain Postal Code`=%s, `Customer Main Address Incomplete`=%s where `Customer Key`=%d ',
                                   prepare_mysql(
-                                  preg_replace('/[^a-z^A-Z^\d]/','',$this->data['Address Postal Code'])
-                                  ),
+						preg_replace('/[^a-z^A-Z^\d]/','',$this->data['Address Postal Code'])
+						,false),
                                  prepare_mysql(($this->data['Address Fuzzy'])),
                                  $row['Parent Key']
                                 );
