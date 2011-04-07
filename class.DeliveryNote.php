@@ -717,7 +717,7 @@ class DeliveryNote extends DB_Table {
                     $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
                 } else {
-                    //print_r($part);
+                    print_r($part);
                     exit("\nError geting supplier products\n");
 
                 }

@@ -1,14 +1,14 @@
 <?php
 /*
- File: part.php 
+ File: part.php
 
  UI part page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Kaktus 
- 
+
+ Copyright (c) 2009, Kaktus
+
  Version 2.0
 */
 
@@ -45,61 +45,45 @@ $smarty->assign('parts_period_title',$parts_period_title[$parts_period]);
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 $yui_path.'container/assets/skins/sam/container.css',
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               $yui_path.'container/assets/skins/sam/container.css',
+               'button.css'
+           );
 
-		
-		
-		 'button.css'
-		 );
-
-if($common)
-{
-array_push($css_files, 'themes_css/'.$common);   
-array_push($css_files, 'themes_css/'.$row['Themes css4']);
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-}    
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css');
-array_push($css_files, 'table.css');
+if ($common) {
+    array_push($css_files, 'themes_css/'.$common);
+    array_push($css_files, 'themes_css/'.$row['Themes css4']);
+    array_push($css_files, 'themes_css/'.$row['Themes css2']);
 }
 
+else {
+    array_push($css_files, 'common.css');
+    array_push($css_files, 'css/dropdown.css');
+    array_push($css_files, 'table.css');
+}
 
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'dragdrop/dragdrop-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-debug.js',
-		$yui_path.'container/container-min.js',
-		
-		$yui_path.'menu/menu-min.js',
-		'common.js.php',
-				'external_libs/amstock/amstock/swfobject.js',
-
-		'table_common.js.php',
-			'js/search.js',
-		
-		'edit_stock.js.php',
-		'js/dropdown.js'
-		);
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'dragdrop/dragdrop-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-debug.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'common.js.php',
+              'external_libs/amstock/amstock/swfobject.js',
+              'table_common.js.php',
+              'js/search.js',
+              'edit_stock.js.php',
+              'js/dropdown.js'
+          );
 
 
-
-
-
-// $_SESSION['views']['product_blocks'][5]=0;
-// foreach($_SESSION['views']['product_blocks'] as $key=>$value){
-//   $hide[$key]=($value==1?0:1);
-// }
-// //print_r($hide);
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','part');
@@ -107,28 +91,24 @@ $smarty->assign('search_scope','part');
 
 $smarty->assign('view',$_SESSION['state']['part']['view']);
 
-// $smarty->assign('view_plot',$_SESSION['views']['part_plot']);
-
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
-  $part_id=$_REQUEST['id'];
-  $_SESSION['state']['part']['id']=$part_id;
-  $part= new part($part_id);
-  $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
- }else if(isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])){
-  $part= new part('sku',$_REQUEST['sku']);
-  $part_id=$part->id;
-  $_SESSION['state']['part']['id']=$part_id;
-  $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
- }else{
-  $part_id=$_SESSION['state']['part']['id'];
-  $_SESSION['state']['part']['id']=$part_id;
-  $part= new part($part_id);
-  $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
-  
- }
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
+    $part_id=$_REQUEST['id'];
+    $_SESSION['state']['part']['id']=$part_id;
+    $part= new part($part_id);
+    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+} else if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
+    $part= new part('sku',$_REQUEST['sku']);
+    $part_id=$part->id;
+    $_SESSION['state']['part']['id']=$part_id;
+    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+} else {
+    $part_id=$_SESSION['state']['part']['id'];
+    $_SESSION['state']['part']['id']=$part_id;
+    $part= new part($part_id);
+    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+}
 
 $subject_id=$part->id;
-
 
 $smarty->assign('part',$part);
 $smarty->assign('parent','products');
@@ -137,7 +117,6 @@ $smarty->assign('title',$part->get('SKU'));
 $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
-//$js_files[]= 'js/search.js';
 $js_files[]='part.js.php';
 
 $smarty->assign('css_files',$css_files);
@@ -146,12 +125,10 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
 
 $transactions=array('all_transactions'=>0,'in_transactions'=>0,'out_transactions'=>0,'audit_transactions'=>0,'oip_transactions'=>0,'move_transactions'=>0);
-
 $sql=sprintf("select count(*) as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate' or `Inventory Transaction Type`='Adjust',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move In' or `Inventory Transaction Type`='Move Out',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",$part_id);
 $res=mysql_query($sql);
-if($row=mysql_fetch_assoc($res)){
-$transactions=array('all_transactions'=>$row['all_transactions'],'in_transactions'=>$row['in_transactions'],'out_transactions'=>$row['out_transactions'],'audit_transactions'=>$row['audit_transactions'],'oip_transactions'=>$row['oip_transactions'],'move_transactions'=>$row['move_transactions']);
-
+if ($row=mysql_fetch_assoc($res)) {
+    $transactions=array('all_transactions'=>$row['all_transactions'],'in_transactions'=>$row['in_transactions'],'out_transactions'=>$row['out_transactions'],'audit_transactions'=>$row['audit_transactions'],'oip_transactions'=>$row['oip_transactions'],'move_transactions'=>$row['move_transactions']);
 }
 $smarty->assign('transactions',$transactions);
 $smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
@@ -163,17 +140,14 @@ $smarty->assign('filter_show1',$_SESSION['state']['part']['transactions']['f_sho
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',($q==''?$_SESSION['state']['part']['transactions']['f_value']:addslashes($q)));
 $filter_menu=array(
-		   'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
-		   'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
-		   );
+                 'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
+                 'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+             );
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
-
-
-
 
 $smarty->display('part.tpl');
 ?>

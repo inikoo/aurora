@@ -1320,7 +1320,7 @@ $default_state=array(
                             ),
 
                    'customers'=>array(
-                                   'store'=>'',
+                                   'store'=>'3',
                                    'view'=>'general',
 
                                    'stats_view'=>'population',
@@ -1559,7 +1559,7 @@ $default_state=array(
                                               'from'=>'',
                                               'to'=>'',
                                               'details'=>0,
-                                              'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
+                                              'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1)
                                           )
                               ),
 // ------------------------------ history for staff.php starts here ---------------------------------------------------------

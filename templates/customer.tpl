@@ -191,6 +191,18 @@
  
  <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}History/Notes{/t}</span>
+           <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Changes}selected{/if}"  id="elements_changes" table_type="changes"   >{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Orders}selected{/if}"  id="elements_orders" table_type="orders"   >{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Notes}selected{/if}"  id="elements_notes" table_type="notes"   >{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span>
+
+        </div>
+     </div>
+          <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
+
+      
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>
@@ -263,6 +275,34 @@
     <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
     <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
+</table>
+</div>
+
+
+<div id="dialog_edit_note" style="position:absolute;top-100px;left:-500px">
+  <div id="edit_note_msg"></div>
+  <input type="hidden" value="" id="edit_note_history_key">
+    <input type="hidden" value="" id="record_index">
+
+
+  <table style="padding:10px;margin:10px" >
+  <tr id="edit_note_date" class="options_list" prefix="note_date_" value="keep_date">
+ 
+  <td class="selected" id="note_date_keep_date" onclick="radio_changed(this)" name="keep_date" >{t}Keep Date{/t}
+  </td>
+   <td class="" id="note_date_update_date" onclick="radio_changed(this)" name="update_date" >{t}Update Date{/t}
+  </td>
+  </tr>
+  
+    <tr><td colspan=2>
+	<textarea style="width:200px;height:100px" id="edit_note_input" onkeyup="change(event,this,'edit_note')"></textarea>
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text button" onClick="close_dialog('edit_note')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('edit_note')" id="edit_note_save"  class="unselectable_text button"     style="" >{t}Save{/t}</span></td></tr>
 </table>
 </div>
 

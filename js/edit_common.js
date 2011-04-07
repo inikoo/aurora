@@ -228,7 +228,8 @@ var onCellClick = function(oArgs) {
 
 
     switch (column.action) {
-
+   
+   
     case 'delete':
         if (record.getData('delete')!='') {
 
@@ -710,7 +711,7 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	      // alert(request);
+	     // alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {

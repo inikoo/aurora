@@ -40,12 +40,13 @@ $_SESSION['state']['customers']['store']=$store->id;
     exit();
 }
 
+//print_r($_SESSION['state']['customers']);
+
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
 
-$_SESSION['state']['customers']['store']=$store_id;
-$smarty->assign('store_id',$store_id);
+$smarty->assign('store_id',$store->id);
 $modify=$user->can_edit('customers');
 
 
@@ -252,5 +253,6 @@ $smarty->assign('export_csv_table_cols',2);
 
 
 $smarty->assign('csv_export_options',$csv_export_options);
+//print_r($_SESSION['state']['customers']);
 $smarty->display('customers.tpl');
 ?>
