@@ -1,5 +1,10 @@
 <?php
-
+/*
+0,20,40  *  * * *  raul     date "+%c Start." >> /home/raul/output.read_uk;cd /home/raul/dw/mantenence/scripts; php Read_Old_XLS_Orders.php>>/home/raul/output.read_uk;date "+%c End." >>/home/raul/output.read_uk;                                       
+1,15,31,46  *  * * *  raul     date "+%c Start." >> /home/raul/output.read_de;cd  /home/raul/dw/mantenence/scripts; php read_xls_orders_de.php >>/home/raul/output.read_de;date "+%c End." >>/home/raul/output.read_de;                                   
+11,25,41,56  *  * * *  raul     date "+%c Start." >> /home/raul/output.read_fr; cd  /home/raul/dw/mantenence/scripts; php read_xls_orders_fr.php >>/home/raul/output.read_fr;date "+%c End." >>/home/raul/output.read_fr;                                 
+21,35,51,06  *  * * *  raul     date "+%c Start." >> /home/raul/output.read_pl;cd  /home/raul/dw/mantenence/scripts; php read_xls_orders_pl.php >>/home/raul/output.read_pl;date "+%c End." >>/home/raul/output.read_pl;              
+*/
 
 $report_data=array('ES1'=>array('umbral'=>3000,'year'=>date('Y')-1));
 
@@ -1326,8 +1331,8 @@ $default_state=array(
                                    'stats_view'=>'population',
 
                                    'table'=>array(
-                                               'order'=>'name',
-                                               'order_dir'=>'last_orders',
+                                               'order'=>'id',
+                                               'order_dir'=>'desc',
                                                'sf'=>0,
                                                'nr'=>25,
                                                'type'=>'all_contacts',

@@ -607,15 +607,17 @@ function search_customer($data) {
     $max_results=10;
 
     $user=$data['user'];
-    $q=html_entity_decode($data['q']);
+    $q=$data['q'];
     // $q=_trim($_REQUEST['q']);
-  
+
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
         echo json_encode($response);
-
+return;
     }
 
+
+//print "->$q <-";
     if ($data['scope']=='store') {
         $stores=$_SESSION['state']['customers']['store'];
 
@@ -636,7 +638,7 @@ function search_customer($data) {
 
         }
     }
-    
+//    print "->$q <-";
     $q_just_numbers=preg_replace('/[^\d]/','',$q);
     if(strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6){
     
@@ -676,7 +678,7 @@ function search_customer($data) {
         }
     }
 
-
+//print "->$q <-";
     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
     //print $sql;
     $res=mysql_query($sql);
@@ -709,23 +711,25 @@ function search_customer($data) {
     //print_r($candidates);
 
 
-
-
-    $sql=sprintf('select `Customer Key`,`Customer Main Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Postal Code`!="" and   `Customer Main Postal Code` like "%s%%"  limit 150'
+//print "->$q <-";
+$q_postal_code=preg_replace('/[^a-z^A-Z^\d]/','',$q);
+if($q_postal_code!=''){
+    $sql=sprintf('select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Plain Postal Code`!="" and   `Customer Main Plain Postal Code` like "%s%%"  limit 150'
                  ,$stores
-                 ,addslashes($q)
+                 ,addslashes($q_postal_code)
                 );
-    // print $sql;
+   //  print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
 
-        if ($row['Customer Main Postal Code']==$q) {
+        if ($row['Customer Main Plain Postal Code']==$q_postal_code) {
 
             $candidates[$row['Customer Key']]=50;
         } else {
 
-            $len_name=$row['Customer Main Postal Code'];
-            $len_q=strlen($q);
+            $len_name=strlen($row['Customer Main Plain Postal Code']);
+          
+            $len_q=strlen($q_postal_code);
             $factor=$len_q/$len_name;
 
 
@@ -734,7 +738,7 @@ function search_customer($data) {
 
     }
 
-
+}
 
 
     $sql=sprintf('select `Subject Key`,`Contact Name` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  REGEXP "[[:<:]]%s"  limit 100 ',$stores,$q);

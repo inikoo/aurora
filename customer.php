@@ -300,6 +300,21 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);
 
+$gold_reward=0;
+//print_r($customer->data);
+if($customer->data['Customer Last Order Date']    ){
+  $last_order_date=$customer->data['Customer Last Order Date'];
+  $last_order_date='2011-01-15';
+  $last_order_time=strtotime( $last_order_date);
+  // print $last_order_time;
+  if( (date('U')-$last_order_time)<2592000 )
+    $gold_reward='Gold Reward Member';
+
+}
+
+$smarty->assign('gold_reward',$gold_reward);
+
+
 $smarty->display('customer.tpl');
 
 ?>

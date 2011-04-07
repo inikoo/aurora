@@ -885,7 +885,7 @@ $current_from=strtotime($this->data['Store Valid From']);
                      $this->id
                     );
         mysql_query($sql);
-       print "\n$sql\n";
+       //print "\n$sql\n";
 
 
 
