@@ -100,10 +100,10 @@ function make_order(){
     var data={
 	'courier':Dom.get('make_order_courier').value,
 	'special_instructions':Dom.get('make_order_special_instructions').value,
-	'payment_method':Dom.get('make_order_payment_method').value
-
+	'payment_method':Dom.get('make_order_payment_method').value,
+'gold_reward':Dom.get('gold_reward').value
     };
-    // alert('customer_csv.php?id='+customer_id+'&data='+encodeURIComponent(YAHOO.lang.JSON.stringify(data)))
+    //alert('customer_csv.php?id='+customer_id+'&data='+encodeURIComponent(YAHOO.lang.JSON.stringify(data)))
 
 // var value=new Object()
   //      for (i in data)

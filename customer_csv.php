@@ -27,6 +27,7 @@ $data=array(
 	    'payment_method'=>'',
 	    'courier'=>'',
 	    'special_instructions'=>'',
+	    'gold_reward'=>'Standard Order'
 	    );
 
 
@@ -52,17 +53,7 @@ if(isset($_REQUEST['data'])){
 $customer=new customer($customer_id);
 
 
-$gold='Not Current';
-//print_r($customer->data);
-if($customer->data['Customer Last Order Date']    ){
-  $last_order_date=$customer->data['Customer Last Order Date'];
-  $last_order_date='2011-01-15';
-  $last_order_time=strtotime( $last_order_date);
-  // print $last_order_time;
-  if( (date('U')-$last_order_time)<2592000 )
-    $gold='Gold Reward Member';
 
-}
 
 //print $gold;
 //exit("s");
@@ -76,6 +67,10 @@ $address_lines=$address->display('3lines');
 
 $number_orders=$customer->data['Customer Orders'];
 
+if(preg_match('/^[a-z]+/i', $user->get("User Alias"),$match))
+$alias=$match[0];
+else
+$alias=$user->get("User Alias");
 
 $export_data=array(
 		   "Public"
@@ -110,8 +105,8 @@ $export_data=array(
 		   ,"k"
 		   ,"2"
 		   ,"l"
-		   ,$gold
-		   ,$user->get("User Alias")
+		   ,$data['gold_reward']
+		   ,$alias
 		   ,"m"
 		   ,"n"
 		   ,"o"

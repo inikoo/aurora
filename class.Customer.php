@@ -3576,7 +3576,7 @@ class Customer extends DB_Table {
         if ($address->id) {
             $address_plain=$address->display('Plain');
         }
-        $address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'];
+        $address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'].' '.preg_replace('/[^a-z^A-Z^\d]/','',$address->data['Address Postal Code']);
         $first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
         $second_full_search=$this->data['Customer Type'];
 

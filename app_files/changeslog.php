@@ -2058,6 +2058,40 @@ ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Order
 
 ALTER TABLE `Session Dimension` CHANGE `Session Data` `Session Data` LONGBLOB NOT NULL ;
 
+ALTER TABLE `Store Dimension` ADD `Store 3 Year New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Year New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 6 Month New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Quarter New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Month New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 10 Day New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Week New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Day New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE `Store Dimension` ADD `Store YearToDay New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE `Store Dimension` ADD `Store 3 Year Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Year Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 6 Month Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Quarter Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Month Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 10 Day Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Week Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Day Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE `Store Dimension` ADD `Store YearToDay Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE `Store Dimension` ADD `Store 3 Year New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Year New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 6 Month New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Quarter New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Month New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 10 Day New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Week New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 1 Day New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store YearToDay New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Customer Dimension` ADD `Customer Main Plain Postal Code` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Customer Main Postal Code` ,ADD INDEX ( `Customer Main Plain Postal Code` );
+
+
 */
 
 

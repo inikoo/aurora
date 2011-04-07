@@ -425,7 +425,7 @@
   <div id="long_note_msg"></div>
   <table >
 <input type="hidden" id="make_order_customer_id" value="{$customer->id}">
-    <tr><td colspan=2>{t}Paymnet Method{/t}:</td></tr><tr><td colspan=2>
+    <tr><td colspan=2>{t}Payment Method{/t}:</td></tr><tr><td colspan=2>
 	<select id="make_order_payment_method">
 	  <option>Credit Card</option>
 	  <option>Paypal</option>
@@ -436,7 +436,13 @@
 	  <option>Postal Order</option>
 	</select>
     </td></tr>
-
+<tr><td colspan=2>Gold Reward:</td></tr><tr><td colspan=2>
+	<select id="gold_reward">
+	  
+	  <option value="Standard Order"  >No</option>
+	<option value="Gold Reward Member"  {if $gold_reward}selected="selected"{/if}>Yes</option>
+	</select>
+    </td></tr>
 
     <tr><td colspan=2>{t}Courier{/t}:</td></tr><tr><td colspan=2><input  id="make_order_courier"  /></td></tr>
     

@@ -21,10 +21,11 @@ Hello, here i am going to place the announcements about bug fixed and new featur
 
 
 <li  style="list-style-type: square;color:red">Report Problem / Request  using the links at the bottom of the page</li>
-<li  style="list-style-type: square;color:red">Update your browser to Firefox 4, for better performance</li>
+
+<li  style="list-style-type: square">Gold Reward/ Only First Name in QO Data</li>
+<li  style="list-style-type: square">Improvements in Search (Telephones & Mobiles &Postal Code)</li>
 
 <li  style="list-style-type: square">Improvements in adding new Customers</li>
-<li  style="list-style-type: square">Customer Telephones & Mobiles are now searchable</li>
 <li  style="list-style-type: square">Quick notes now can be edited</li>
 <li  style="list-style-type: square">Now you can delete mobiles (16:35 4th April 11)</li>
 <li  style="list-style-type: square">Change country in edit customer now works</li>

@@ -100,7 +100,7 @@ function select_country(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
     geo_constraints=geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value=geo_constraints;
+    Dom.get('geo_constraints').value='c('+geo_constraints+')';
     dialog_country_list.hide();
     hide_filter(true,2)
 }
@@ -109,7 +109,7 @@ function select_postal_code(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
     geo_constraints=geo_constraints+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value=geo_constraints;
+    Dom.get('geo_constraints').value='pc('+geo_constraints+')';
     dialog_postal_code_list.hide();
     hide_filter(true,3)
 }
@@ -118,7 +118,7 @@ function select_wregion(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
     geo_constraints='wr('+geo_constraints+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
+    Dom.get('geo_constraints').value='wr('+geo_constraints+')';
     dialog_wregion_list.hide();
     hide_filter(true,1)
 }
@@ -127,7 +127,7 @@ function select_city(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
     geo_constraints=geo_constraints+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value=geo_constraints;
+    Dom.get('geo_constraints').value='t('+geo_constraints+')';
     dialog_wregion_list.hide();
     hide_filter(true,4)
 }
@@ -135,7 +135,7 @@ function select_department(oArgs){
     var product_ordered_or=Dom.get('product_ordered_or').value;
     if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
     product_ordered_or=product_ordered_or+tables.table5.getRecord(oArgs.target).getData('department_code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value=product_ordered_or;
+    Dom.get('product_ordered_or').value='d('+product_ordered_or+')';
     dialog_department_list.hide();
     hide_filter(true,5)
 }
@@ -144,7 +144,7 @@ function select_family(oArgs){
     var product_ordered_or=Dom.get('product_ordered_or').value;
     if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
     product_ordered_or=product_ordered_or+tables.table6.getRecord(oArgs.target).getData('family_code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value=product_ordered_or;
+    Dom.get('product_ordered_or').value='f('+product_ordered_or+')';
     dialog_family_list.hide();
     hide_filter(true,6)
 }
@@ -160,7 +160,7 @@ function select_category(oArgs){
     var product_ordered_or=Dom.get('product_ordered_or').value;
     if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
     product_ordered_or=product_ordered_or+tables.table8.getRecord(oArgs.target).getData('category_code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value=product_ordered_or;
+    Dom.get('product_ordered_or').value='cat('+product_ordered_or+')';
     dialog_category_list.hide();
     hide_filter(true,8)
 }
@@ -288,12 +288,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
-         //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
-
-        };
         
         // Add the custom formatter to the shortcuts
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -388,12 +382,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=3; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
-         //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
 
-        };
         
         // Add the custom formatter to the shortcuts
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -487,12 +476,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=4; 
 	    var tableDivEL="table"+tableid;
 
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
-         //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
 
-        };
         
         // Add the custom formatter to the shortcuts
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -587,12 +571,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=5; 
 	    var tableDivEL="table"+tableid;
 
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
-         //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
 
-        };
         
         // Add the custom formatter to the shortcuts
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -687,12 +666,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=6; 
 	    var tableDivEL="table"+tableid;
 
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
+// this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+ // elLiner.innerHTML = oData;
          //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+   //    elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
 
-        };
+     //   };
         
         // Add the custom formatter to the shortcuts
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -788,12 +767,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=7; 
 	    var tableDivEL="table"+tableid;
 
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
-         //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
+// this.remove_links = function(elLiner, oRecord, oColumn, oData) {
+ // elLiner.innerHTML = oData;
+        
+   //    elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
 
-        };
+     //   };
         
         // Add the custom formatter to the shortcuts
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -1017,7 +996,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
