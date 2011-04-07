@@ -30,15 +30,15 @@ function save_search_list()
 	
 	if(Dom.get('dynamic').checked == true)
 	{
-		var list_type = 'Dynamic';
+		var list_type = 'Dynamic'
 	}else{
 	var list_type = 'Static';	
 	}
 	
 	var awhere=get_awhere();
-	
-	var request="ar_contacts.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
-	
+	//alert(awhere);
+	var request="ar_assets.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
+	//alert(request);
 	
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -962,7 +962,8 @@ var tableid=1;
 
 
 function get_awhere(){
-  dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
+/*  
+ dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
     dont_have_array= new Array();
     for(x in dont_have){
         dont_have_array[x]=dont_have[x].getAttribute('cat');
@@ -972,10 +973,10 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
     for(x in have){
         have_array[x]=have[x].getAttribute('cat');
     }
-
+*/
     var data={ 
-    dont_have:dont_have_array,
-    have:have_array,
+    //dont_have:dont_have_array,
+   // have:have_array,
 
 	geo_constraints:Dom.get('geo_constraints').value,
 
@@ -985,8 +986,8 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
 	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
 	product_not_received1: Dom.get('product_not_received1').value,
 	//	product_not_received2: Dom.get('product_not_received2').value,
-	ordered_from:Dom.get('v_calpop1').value,
-	ordered_to:Dom.get('v_calpop2').value,
+//////	ordered_from:Dom.get('v_calpop1').value,
+//////	ordered_to:Dom.get('v_calpop2').value,
 customer_created_from:Dom.get('v_calpop3').value,
 	customer_created_to:Dom.get('v_calpop4').value,
     }
@@ -1017,7 +1018,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+	//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -1094,7 +1095,7 @@ YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
 //var ids=['general','contact'];
 //YAHOO.util.Event.addListener(ids, "click",change_view);
 
-cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+/* cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal1.update=updateCal;
  cal1.id='1';
  cal1.render();
@@ -1107,7 +1108,7 @@ cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_f
  cal2.render();
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
-
+*/
 cal3 = new YAHOO.widget.Calendar("customer_first_contacted_from","customer_first_contacted_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal3.update=updateCal;
  cal3.id='3';
@@ -1131,8 +1132,8 @@ cal4.selectEvent.subscribe(handleSelect, cal4, true);
 
 
 
-YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
-YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
+//YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
+//YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
 YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
 YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
 
