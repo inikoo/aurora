@@ -37,6 +37,29 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+// -------------------------------start for product list ------------------------------------------
+case('new_list'):
+
+
+
+  
+
+    $data=prepare_values($_REQUEST,array(
+                             'awhere'=>array('type'=>'json array'),
+                             'store_id'=>array('type'=>'key'),
+                             'list_name'=>array('type'=>'string'),
+                             'list_type'=>array('type'=>'enum',
+                                                'valid values regex'=>'/static|Dynamic/i'
+                                               )
+                         ));
+
+
+    new_products_list($data);
+    break;
+
+// -------------------------------end for product list -------------------------------------------
+
+
 case('is_valid_family_code'):
 
 
@@ -12222,4 +12245,108 @@ function part_stock_history() {
                    );
     echo json_encode($response);
 }
+
+
+// -----------------------------------------start for product list-------------------------------------------
+
+function new_products_list($data) {
+
+    $list_name=$data['list_name'];
+    $store_id=$data['store_id'];
+
+    $sql=sprintf("select * from `Product List Dimension`  where `Product List Name`=%s and `Product List Store Key`=%d ",
+                 prepare_mysql($list_name),
+                 $store_id
+                );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $response=array('resultset'=>
+                                    array(
+                                        'state'=>400,
+                                        'msg'=>_('Another list has the same name')
+                                    )
+                       );
+        echo json_encode($response);
+        return;
+    }
+
+    $list_type=$data['list_type'];
+
+    $awhere=$data['awhere'];
+    $table='`Product Dimension` C ';
+//print_r($awhere);
+
+ //  $where=customers_awhere($awhere);print_r($where);
+    list($where,$table)=customers_awhere($awhere);
+
+    $where.=sprintf(' and `Product Store Key`=%d ',$store_id);
+
+    $sql="select count(Distinct C.`Product ID`) as total from $table  $where";
+//echo "<br>1st: ".$sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        if ($row['total']==0) {
+            $response=array('resultset'=>
+                                        array(
+                                            'state'=>400,
+                                            'msg'=>_('No product match this criteria')
+                                        )
+                           );
+            echo json_encode($response);
+            return;
+
+        }
+
+
+    }//echo "<br>2nd: ".$sql;
+    mysql_free_result($res);
+
+    $list_sql=sprintf("insert into `Product List Dimension` (`Product List Store Key`,`Product List Name`,`Product List Type`,`Product List Metadata`,`Product List Creation Date`) values (%d,%s,%s,%s,NOW())",
+                      $store_id,
+                      prepare_mysql($list_name),
+                      prepare_mysql($list_type),
+                      prepare_mysql(json_encode($data['awhere']))
+
+                     );
+    mysql_query($list_sql);
+    $customer_list_key=mysql_insert_id();
+
+    if ($list_type=='Static') {
+
+
+        $sql="select C.`Product ID` from $table  $where group by C.`Product ID`";
+//echo "<br>3nd: ".$sql;
+        //   print $sql;
+        $result=mysql_query($sql);
+        while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $customer_key=$data['Product ID'];
+            $sql=sprintf("insert into `Product List Product Bridge` (`Product List Key`,`Product Key`) values (%d,%d)",
+                         $customer_list_key,
+                         $customer_key
+                        );
+            mysql_query($sql);
+
+        }
+        mysql_free_result($result);
+
+
+
+
+    }
+
+
+
+
+    $response=array(
+                  'state'=>200,
+                  'product_list_key'=>$customer_list_key
+
+              );
+    echo json_encode($response);
+
+}
+// -------------------------------------------end for product list------------------------------------------
 ?>

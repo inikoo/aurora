@@ -1836,8 +1836,6 @@ function list_customers() {
 
     }
     elseif($type=='list') {
-
-
         $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$_REQUEST['list_key']);
 
         $res=mysql_query($sql);
