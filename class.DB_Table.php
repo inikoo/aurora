@@ -222,7 +222,7 @@ $null_if_empty=false;
 
                 $history_key=$this->add_history($history_data);
                 if($this->table_name=='Customer'){
-                 $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No')",$this->id,$history_key);
+                 $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Changes')",$this->id,$history_key);
                 mysql_query($sql);
               
                 }

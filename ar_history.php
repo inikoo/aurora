@@ -124,16 +124,19 @@ function list_customer_history() {
         $to=$_REQUEST['to'];
     else
         $to=$conf['to'];
+//ids=['elements_changes','elements_orders','elements_notes'];
 
     $elements=$conf['elements'];
-    if (isset( $_REQUEST['element_orden']))
-        $elements['orden']=$_REQUEST['e_orden'];
-    if (isset( $_REQUEST['element_h_cust']))
-        $elements['h_cust']=$_REQUEST['e_orden'];
-    if (isset( $_REQUEST['element_h_cont']))
-        $elements['h_cont']=$_REQUEST['e_orden'];
-    if (isset( $_REQUEST['element_note']))
-        $elements['note']=$_REQUEST['e_orden'];
+    if (isset( $_REQUEST['elements_changes'])){
+        $elements['Changes']=$_REQUEST['elements_changes'];
+      
+    }
+    if (isset( $_REQUEST['elements_orders'])){
+        $elements['Orders']=$_REQUEST['elements_orders'];
+        }
+    if (isset( $_REQUEST['elements_notes'])){
+        $elements['Notes']=$_REQUEST['elements_notes'];
+  }
 
 
     if (isset( $_REQUEST['tableid']))
@@ -146,7 +149,19 @@ function list_customer_history() {
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_SESSION['state']['customer']['id']=$customer_id;
-    $_SESSION['state']['customer']['table']=array('details'=>$details,'elements'=>$elements,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+$_SESSION['state']['customer']['table']['details']=$details;
+$_SESSION['state']['customer']['table']['elements']=$elements;
+$_SESSION['state']['customer']['table']['order']=$order;
+$_SESSION['state']['customer']['table']['order_dir']=$order_direction;
+$_SESSION['state']['customer']['table']['nr']=$number_results;
+$_SESSION['state']['customer']['table']['sf']=$start_from;
+$_SESSION['state']['customer']['table']['where']=$where;
+$_SESSION['state']['customer']['table']['f_field']=$f_field;
+$_SESSION['state']['customer']['table']['f_value']=$f_value;
+$_SESSION['state']['customer']['table']['elements']=$elements;
+
+
     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
     if ($date_interval['error']) {
         $date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
@@ -170,6 +185,18 @@ function list_customer_history() {
 //  }
 
     $where.=$date_interval['mysql'];
+    $_elements='';
+    foreach($elements as $_key=>$_value){
+    if($_value)
+       $_elements.=','.prepare_mysql($_key);
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if($_elements==''){
+         $where.=' and false' ;
+    }else{
+         $where.=' and Type in ('.$_elements.')' ;
+    }
+
 
     $wheref='';
 
@@ -193,7 +220,7 @@ function list_customer_history() {
 
     //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
     $sql="select count(*) as total from  `Customer History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
- //   print $sql;
+  // print $sql;
     // exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -271,7 +298,7 @@ function list_customer_history() {
 
 
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-    $sql="select `Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)  left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
+    $sql="select `Type`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)  left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
 
 //  print $sql;
@@ -299,6 +326,7 @@ function list_customer_history() {
                     'note'=>$note,
                     'handle'=>$author,
                     'delete'=>($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':''),
+                     'edit'=>(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':''),
                     'can_delete'=>($row['Deletable']=='Yes'?1:0),
 'delete_type'=>_('delete')
                 );

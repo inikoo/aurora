@@ -78,6 +78,8 @@ case('customer_name'):
     break;
 case('customer'):
 case('customers'):
+
+//print_r($_REQUEST);
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
                                  ,'scope'=>array('type'=>'string')
@@ -205,7 +207,7 @@ function search($data) {
     $q_parts=preg_split('/\s+/',$q);
     foreach($q_parts as $q_part) {
         $sql=sprintf("select `Search Full Text Key`,S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
-       // print $sql;
+        // print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
 
@@ -254,69 +256,69 @@ function search($data) {
 
 
 
-$sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
+    $sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
 
 // print $sql;
-$res = mysql_query($sql);
+    $res = mysql_query($sql);
 
 
 
 
-while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $total_records++;
-    switch ($row['Subject']) {
-    case 'Product':
-        $subject=_('Product');
-        $result_name=sprintf('<a href="product.php?id=%d">%s</a>',$row['Subject Key'],$row['Search Result Name']);
-        break;
-    default:
-        $subject=$row['Subject'];
-        $result_name=$row['Search Result Name'];
-        break;
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total_records++;
+        switch ($row['Subject']) {
+        case 'Product':
+            $subject=_('Product');
+            $result_name=sprintf('<a href="product.php?id=%d">%s</a>',$row['Subject Key'],$row['Search Result Name']);
+            break;
+        default:
+            $subject=$row['Subject'];
+            $result_name=$row['Search Result Name'];
+            break;
+        }
+
+
+
+
+        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+        if (array_key_exists($row['Search Full Text Key'],  $ascore)) {
+            $ascore[$row['Search Full Text Key']]+=$store;
+        } else {
+            $ascore[$row['Search Full Text Key']]=$store;
+        }
+
+
+        $adata[$row['Search Full Text Key']]=array(
+                                                 'score'=>$ascore[$row['Search Full Text Key']],
+                                                 'store'=>$store,
+                                                 'subject'=>$subject,
+                                                 'result'=>$result_name,
+
+                                                 'description'=>$row['Search Result Description']
+
+                                             );
     }
+    mysql_free_result($res);
+
+    array_multisort($ascore, SORT_DESC , $adata);
 
 
-
-
-    $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
-
-    if (array_key_exists($row['Search Full Text Key'],  $ascore)) {
-        $ascore[$row['Search Full Text Key']]+=$store;
-    } else {
-        $ascore[$row['Search Full Text Key']]=$store;
-    }
-
-
-    $adata[$row['Search Full Text Key']]=array(
-                                             'score'=>$ascore[$row['Search Full Text Key']],
-                                             'store'=>$store,
-                                             'subject'=>$subject,
-                                             'result'=>$result_name,
-
-                                             'description'=>$row['Search Result Description']
-
-                                         );
-}
-mysql_free_result($res);
-
-array_multisort($ascore, SORT_DESC , $adata);
-
-
-$response=array('resultset'=>
-                            array('state'=>200,
-                                  'data'=>$adata,
-                                  'sort_key'=>$_order,
-                                  'sort_dir'=>$_dir,
-                                  'tableid'=>$tableid,
-                                  'filter_msg'=>$filter_msg,
-                                  'rtext'=>$rtext,
-                                  'rtext_rpp'=>$rtext_rpp,
-                                  'total_records'=>$total_records,
-                                  'records_offset'=>$start_from,
-                                  'records_perpage'=>$number_results,
-                                 )
-               );
-echo json_encode($response);
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 function search_departments($data) {
@@ -601,12 +603,13 @@ function search_orders($data) {
 
 function search_customer($data) {
 
+
     $max_results=10;
 
     $user=$data['user'];
-    $q=$data['q'];
+    $q=html_entity_decode($data['q']);
     // $q=_trim($_REQUEST['q']);
-
+  
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
         echo json_encode($response);
@@ -620,21 +623,60 @@ function search_customer($data) {
         $stores=join(',',$user->stores);
 
     $candidates=array();
-    
-    if(is_numeric($q)){
-     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Key`=%d',$stores,$q);
-    //print $sql;
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-    
-    $candidates[$row['Customer Key']]=2000;
-      
-    
+
+    if (is_numeric($q)) {
+        $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Key`=%d',
+                     $stores,$q);
+        //print $sql;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+
+            $candidates[$row['Customer Key']]=2000;
+
+
+        }
     }
+    
+    $q_just_numbers=preg_replace('/[^\d]/','',$q);
+    if(strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6){
+    
+     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%s%%"  ',
+                     $stores,
+                     $q_just_numbers
+                     );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $candidates[$row['Customer Key']]=100;
+        }
+            $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%s%%"  ',
+                     $stores,
+                     $q_just_numbers
+                     );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $candidates[$row['Customer Key']]=100;
+        }
+    }if(strlen($q_just_numbers)>6){
+    
+     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%%%s%%"  ',
+                     $stores,
+                     $q_just_numbers
+                     );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $candidates[$row['Customer Key']]=100;
+        }
+            $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%%%s%%"  ',
+                     $stores,
+                     $q_just_numbers
+                     );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $candidates[$row['Customer Key']]=100;
+        }
     }
-    
-    
-    
+
+
     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
     //print $sql;
     $res=mysql_query($sql);
@@ -666,8 +708,8 @@ function search_customer($data) {
     }
     //print_r($candidates);
 
- 
-  
+
+
 
     $sql=sprintf('select `Customer Key`,`Customer Main Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Postal Code`!="" and   `Customer Main Postal Code` like "%s%%"  limit 150'
                  ,$stores
@@ -685,9 +727,9 @@ function search_customer($data) {
             $len_name=$row['Customer Main Postal Code'];
             $len_q=strlen($q);
             $factor=$len_q/$len_name;
- 
- 
- $candidates[$row['Customer Key']]=20*$factor;
+
+
+            $candidates[$row['Customer Key']]=20*$factor;
         }
 
     }
@@ -751,15 +793,15 @@ function search_customer($data) {
             $name=$row['Customer Name'];
 
         }
-        
+
         $address=$row['Customer Main Plain Email'];
- 
-        if($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
+
+        if ($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
         $address.='<br/>'.$row['Customer Main Location'];
-        if($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
+        if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
         $address=preg_replace('/^\<br\/\>/','',$address);
-        
-        
+
+
         $results[$row['Customer Key']]=array('key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
     }
 //$customer_card.='</table>';
@@ -1221,7 +1263,7 @@ function search_parts($data) {
 
 function search_full_text($data) {
 
-
+  $user=$data['user'];
 
 
     $the_results=array();
@@ -1236,13 +1278,21 @@ function search_full_text($data) {
         echo json_encode($response);
         return;
     }
+$store_keys=join(',',$user->stores);
+
+if($store_keys=='')
+return;
 
     $candidates=array();
 
     $q_parts=preg_split('/\s+/',$q);
     foreach($q_parts as $q_part) {
-        $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
-        //  print $sql;
+        $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)      where S.`Store Key` in (%s) and `Search Result Name`='%s' limit 20",
+        $store_keys,
+        addslashes($q_part))
+        
+        ;;
+        
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $store_code=$row['Store Code'];
@@ -1278,7 +1328,11 @@ function search_full_text($data) {
         }
     }
 
-    $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",addslashes($q),addslashes($q));;
+    $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where  S.`Store Key` in (%s) and match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",
+   
+    addslashes($q),
+     $store_keys,
+    addslashes($q));;
 
 
     $res=mysql_query($sql);

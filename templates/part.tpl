@@ -212,7 +212,6 @@
             <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}"  id="restrictions_in_transactions" table_type="in_transactions"   >{t}In{/t} ({$transactions.in_transactions})</span>
             <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}"  id="restrictions_audit_transactions" table_type="audit_transactions"   >{t}Audits{/t} ({$transactions.audit_transactions})</span>
             <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}"  id="restrictions_move_transactions" table_type="move_transactions"   >{t}Movements{/t} ({$transactions.move_transactions})</span>
-
         </div>
      </div>
     

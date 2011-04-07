@@ -18,20 +18,32 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('delete_customer_history'):
-$data=prepare_values($_REQUEST,array(
-                            'key'=>array('type'=>'key'),
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
                          ));
-delete_customer_history($data);
-break;
+    delete_customer_history($data);
+    break;
 case('customer_add_note'):
     $data=prepare_values($_REQUEST,array(
-                            'customer_key'=>array('type'=>'key'),
-                            'note'=>array('type'=>'string'),
-                            'details'=>array('type'=>'string'),
-                            'note_type'=>array('type'=>'string'),
+                             'customer_key'=>array('type'=>'key'),
+                             'note'=>array('type'=>'string'),
+                             'details'=>array('type'=>'string'),
+                             'note_type'=>array('type'=>'string'),
                          ));
     customer_add_note($data);
-break;
+    break;
+
+case('customer_edit_note'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'note_key'=>array('type'=>'key'),
+                             'note'=>array('type'=>'string'),
+                             'date'=>array('type'=>'string'),
+                             'record_index'=>array('type'=>'string')
+                         ));
+    customer_edit_note($data);
+    break;
+
 case('set_main_address'):
 
     update_main_address();
@@ -87,7 +99,7 @@ case('edit_address'):
                              'subject_key'=>array('type'=>'key'),
                              'id'=>array('type'=>'key')
                          ));
-                         
+
     edit_address($data);
     break;
 case('edit_delivery_address'):
@@ -280,7 +292,7 @@ case('edit_company_area'):
     edit_company_area($data);
     break;
 
-break;
+    break;
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -1395,58 +1407,58 @@ function edit_address($data) {
     }
 // print_r($update_data);
     $proposed_address=new Address("find complete in $subject $subject_key",$update_data);
-     if ($proposed_address->id) {
-      if ($subject=='Customer') {
-      
-                if (preg_match('/^contact$/i',$_REQUEST['key'])) {
-                
-                if($address->id==$proposed_address->id){
-                            $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
- echo json_encode($response);
- exit;
-                }else{
-                    $subject_object->update_principal_address($proposed_address->id);
+    if ($proposed_address->id) {
+        if ($subject=='Customer') {
 
-                    // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
-                    $address->delete();
-                    
-                    
-                    }
-                    
-                    
-                    return;
-                } else {
-                    $msg="This Customer has already another address with this data";
-                    $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+            if (preg_match('/^contact$/i',$_REQUEST['key'])) {
+
+                if ($address->id==$proposed_address->id) {
+                    $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
                     echo json_encode($response);
-                    return;
-                }
-            } else if ($subject=='Supplier') {
-                if (preg_match('/^contact$/i',$_REQUEST['key'])) {
+                    exit;
+                } else {
                     $subject_object->update_principal_address($proposed_address->id);
 
                     // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
                     $address->delete();
 
-                    return;
-                } else {
-                    $msg="This $subject has already another address with this data";
-                    $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
-                    echo json_encode($response);
-                    return;
+
                 }
+
+
+                return;
+            } else {
+                $msg="This Customer has already another address with this data";
+                $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+                echo json_encode($response);
+                return;
             }
-     }else{
-         $proposed_address=new Address("find complete ",$update_data);
+        } else if ($subject=='Supplier') {
+            if (preg_match('/^contact$/i',$_REQUEST['key'])) {
+                $subject_object->update_principal_address($proposed_address->id);
 
-if($proposed_address->id){
- $address_parents=$proposed_address->get_parent_keys($subject);
+                // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
+                $address->delete();
 
-      $warning=_('Warning, address found also associated with')." ";
+                return;
+            } else {
+                $msg="This $subject has already another address with this data";
+                $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+                echo json_encode($response);
+                return;
+            }
+        }
+    } else {
+        $proposed_address=new Address("find complete ",$update_data);
+
+        if ($proposed_address->id) {
+            $address_parents=$proposed_address->get_parent_keys($subject);
+
+            $warning=_('Warning, address found also associated with')." ";
             switch ($subject) {
             case 'Customer':
                 $parent_label='';
-               
+
                 foreach($address_parents as $parent_key) {
                     $parent=new Customer($parent_key);
                     $parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
@@ -1493,10 +1505,10 @@ if($proposed_address->id){
             default:
                 break;
             }
-     
-     }
+
+        }
     }
-    
+
 
 
     $address->update($update_data,'cascade');
@@ -1643,21 +1655,21 @@ function delete_email() {
     echo json_encode($response);
 }
 
-function delete_customer_history($data){
+function delete_customer_history($data) {
 
-$history_key=$data['key'];
-$sql=sprintf("delete from `Customer History Bridge` where `History Key`=%d and `Deletable`='Yes'",$history_key);
-mysql_query($sql);
-if(mysql_affected_rows()){
-$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$history_key);
-mysql_query($sql);
-$action='deleted';
-$msg=_('History record Deleted');
-}else{
-$action='no_change';
-$msg='Record can not be deleted';
-}
-$response=array('state'=>200,'action'=>$action,'msg'=>$msg);
+    $history_key=$data['key'];
+    $sql=sprintf("delete from `Customer History Bridge` where `History Key`=%d and `Deletable`='Yes'",$history_key);
+    mysql_query($sql);
+    if (mysql_affected_rows()) {
+        $sql=sprintf("delete from `History Dimension` where `History Key`=%d",$history_key);
+        mysql_query($sql);
+        $action='deleted';
+        $msg=_('History record Deleted');
+    } else {
+        $action='no_change';
+        $msg='Record can not be deleted';
+    }
+    $response=array('state'=>200,'action'=>$action,'msg'=>$msg);
     echo json_encode($response);
 }
 
@@ -1928,76 +1940,161 @@ function new_customer($data) {
     //Timer::timing_milestone('begin');
     global $editor;
 
+    if ($data['values']['Customer Address Country Code']=='')
+        $data['values']['Customer Address Country Code']='UNK';
+
+    $data['values']['editor']=$editor;
 
 
-if($data['values']['Customer Type']=='Person'){
-$data['values']['Customer Name']=$data['values']['Customer Main Contact Name'];
-$data['values']['Customer Company Name']='';
-}else{
- $data['values']['Customer Company Name']=$data['values']['Customer Name'];
-}
+    if ($data['values']['Customer Type']=='Person') {
+        $data['values']['Customer Name']=$data['values']['Customer Main Contact Name'];
+        $data['values']['Customer Company Name']='';
 
-if($data['values']['Customer Address Country Code']=='')
-$data['values']['Customer Address Country Code']='UNK';
+        $contact=new Contact();
+        $contact->editor=$editor;
+        $address_home_data=array(
+                               'Contact Home Address Line 1'=>'',
+                               'Contact Home Address Town'=>'',
+                               'Contact Home Address Line 2'=>'',
+                               'Contact Home Address Line 3'=>'',
+                               'Contact Home Address Postal Code'=>'',
+                               'Contact Home Address Country Name'=>'',
+                               'Contact Home Address Country Code'=>'',
+                               'Contact Home Address Country First Division'=>'',
+                               'Contact Home Address Country Second Division'=>''
+                           );
+
+        $contact_data=array();
+        foreach($data['values'] as $key=>$val) {
+            if ($key=='Customer Main Contact Name') {
+                $_key='Contact Name';
+            } else if (preg_match('/Customer Address/i',$key)) {
+                $_key=preg_replace('/Customer Address/i','Contact Home Address',$key);
+            } else {
+                $_key=preg_replace('/Customer /','Contact ',$key);
+            }
+            $contact_data[$_key]=$val;
+
+            if (array_key_exists($_key,$address_home_data))
+                $address_home_data[$_key]=$val;
+        }
+
+
+        $contact->create($contact_data,$address_home_data);
+
+        // print_r($contact_data);
+        //exit;
+        $data['values']['Customer Main Contact Key']=$contact->id;
+
+    } else {
+        $data['values']['Customer Company Name']=$data['values']['Customer Name'];
+
+        $contact=new Contact();
+        $contact->editor=$editor;
+
+        $contact_data=array();
+        foreach($data['values'] as $key=>$val) {
+            if ($key=='Customer Main Contact Name') {
+                $_key='Contact Name';
+            } else {
+                $_key=preg_replace('/Customer /','Contact ',$key);
+            }
+
+            if (preg_match('/telephone|fax/i',$key)) {
+                $val='';
+            }
+            $contact_data[$_key]=$val;
+        }
+        $contact->create($contact_data);
+        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
+
+        $company_data=array();
+        foreach($data['values'] as $key=>$val) {
+            if ($key!='Customer Type') {
+                $_key=preg_replace('/Customer /','Company ',$key);
+                $company_data[$_key]=$val;
+            }
+        
+          if (array_key_exists($_key,$address_data))
+                $address_data[$_key]=$val;
+        
+        }
+        
+
+        $company=new Company();
+        $company->editor=$editor;
+
+        $company->create($company_data,$address_data,'use contact '.$contact->id);
+        $data['values']['Customer Main Contact Key']=$contact->id;
+        $data['values']['Customer Company Key']=$company->id;
+
+    }
+
+
+
+    $customer=new Customer();
+    $customer->editor=$editor;
+    $customer->create($data['values']);
+
+
+
 
 //print_r($data['values']);
 //exit;
-/*
-    foreach($data['values'] as $key=>$value) {
-        $data['values'][preg_replace('/^Company / ','Customer ',$key)]=$value;
-    }
-    foreach($data['values'] as $key=>$value) {
-        $data['values'][preg_replace('/^Contact / ','Customer ',$key)]=$value;
-    }
-    if (isset($data['values']['Company Name']))
-        $data['values']['Customer Company Name']=$data['values']['Company Name'];
-//print_r($data['values']);
-  */
-  
-  $data['values']['editor']=$editor;
-
-
-    if (isset($_REQUEST['delete_email']) and  $_REQUEST['delete_email']) {
-
-        $email=new Email('email',$data['values']['Customer Main Plain Email']);
-        if ($email->id) {
-            $email->delete();
+    /*
+        foreach($data['values'] as $key=>$value) {
+            $data['values'][preg_replace('/^Company / ','Customer ',$key)]=$value;
         }
-    }
+        foreach($data['values'] as $key=>$value) {
+            $data['values'][preg_replace('/^Contact / ','Customer ',$key)]=$value;
+        }
+        if (isset($data['values']['Company Name']))
+            $data['values']['Customer Company Name']=$data['values']['Company Name'];
+    //print_r($data['values']);
+      */
 
 
+
+    /*
+        if (isset($_REQUEST['delete_email']) and  $_REQUEST['delete_email']) {
+
+            $email=new Email('email',$data['values']['Customer Main Plain Email']);
+            if ($email->id) {
+                $email->delete();
+            }
+        }
+
+    */
 //print_r($data['values']);
 
 
 
-    $customer=new Customer('find create',$data['values']);
+    // $customer=new Customer('find create',$data['values']);
     if ($customer->new) {
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
-        
 
-foreach($data['values'] as $data_key=>$data_value){
 
-         if(preg_match('/^cat\d+$/i',$data_key)){
-       //  print"$data_key\n";
-        // $category_key=preg_replace('/^cat/i','',$data_key);
-        //  print"$category_key\n";
-         
-  $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
-                 $data_value,
-               
-                 $customer->id
-                );
-    mysql_query($sql);
-    print($sql);
+        foreach($data['values'] as $data_key=>$data_value) {
+
+            if (preg_match('/^cat\d+$/i',$data_key)) {
+                //  print"$data_key\n";
+                // $category_key=preg_replace('/^cat/i','',$data_key);
+                //  print"$category_key\n";
+
+                $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
+                             $data_value,
+
+                             $customer->id
+                            );
+                mysql_query($sql);
+                print($sql);
+            }
         }
-        }
-        
-        
+
+
     } else {
-        if ($customer->found)
-            $response= array('state'=>400,'action'=>'found','customer_key'=>$customer->found_key);
-        else
-            $response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg);
+
+        $response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg);
     }
 
     //Timer::dump_profile();
@@ -2084,46 +2181,68 @@ function new_contact($data) {
 
 
 function customer_add_note($data) {
-      global $editor;
+    global $editor;
 
 
     $customer=new customer($data['customer_key']);
-  
+
     $customer->editor=$editor;
 
-if( $data['note_type']=='deletable')
-$data['note_type']='Yes';
-else
-$data['note_type']='No';
+    if ( $data['note_type']=='deletable')
+        $data['note_type']='Yes';
+    else
+        $data['note_type']='No';
 
 //print_r($data['note_type']);
 
-$customer->add_note($data['note'],$data['details'],false,$data['note_type']);
+    $customer->add_note($data['note'],$data['details'],false,$data['note_type']);
 
 
 
-   
+
     if ($customer->updated) {
         $response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>'note');
 
     } else {
-        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$_REQUEST['key']);
+        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>'note');
     }
     echo json_encode($response);
 
 }
 
+function customer_edit_note($data) {
+    global $editor;
 
+//print_r($data);
+    $customer=new customer($data['customer_key']);
+
+    $customer->editor=$editor;
+
+
+    $customer->edit_note($data['note_key'],$data['note'],'',$data['date']);
+
+
+
+
+    if ($customer->updated) {
+        $response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>'note','record_index'=>(float)$data['record_index']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>'note');
+    }
+    echo json_encode($response);
+
+}
 function edit_customer() {
     $key=$_REQUEST['key'];
 
 
     $customer=new customer($_REQUEST['customer_key']);
-    if(!$customer->id){
-      $response= array('state'=>400,'msg'=>'Customer not found','key'=>$_REQUEST['key']);
-    echo json_encode($response);
+    if (!$customer->id) {
+        $response= array('state'=>400,'msg'=>'Customer not found','key'=>$_REQUEST['key']);
+        echo json_encode($response);
 
-	exit;
+        exit;
     }
 
     global $editor;
@@ -2168,11 +2287,14 @@ function edit_customer() {
                      "new_sticky_note"=>'Customer Sticky Note'
 
                  );
+
+
+
         if (array_key_exists($_REQUEST['key'],$key_dic))
             $key=$key_dic[$_REQUEST['key']];
-            
-            $the_new_value=_trim(stripslashes(urldecode($_REQUEST['newvalue'])  ));
-            
+
+        $the_new_value=_trim($_REQUEST['newvalue']);
+
 
         if ($key=='Customer Fiscal Name') {
             $customer->update_fiscal_name($the_new_value );
@@ -2200,22 +2322,20 @@ function edit_customer_send_post() {
     $key=$_REQUEST['key'];
     $new_value=$_REQUEST['newvalue'];
     $customer_key=$_REQUEST['customer_key'];
-	if($key=='Post Type')
-		{
-		$sql=sprintf("update `Customers Send Post` set `Post Type`=%s",prepare_mysql($new_value));
-		}
-        else{
-            $sql=sprintf("insert into `Customers Send Post` (`Customer Send Post Key`,`Customer Key`,`Send Post Status`,`Date Creation`,`Date Send`,`Post Type`) values (%d,%d,%s,%s,%s,%s)",
-                         '1',
-                         $customer_key,
-                         prepare_mysql($new_value),
-                         prepare_mysql($dt),
-                        '\'\'',
-                        prepare_mysql('Letter') 
-                        );
-            }
-          $query=mysql_query($sql);
-if ($query) {
+    if ($key=='Post Type') {
+        $sql=sprintf("update `Customers Send Post` set `Post Type`=%s",prepare_mysql($new_value));
+    } else {
+        $sql=sprintf("insert into `Customers Send Post` (`Customer Send Post Key`,`Customer Key`,`Send Post Status`,`Date Creation`,`Date Send`,`Post Type`) values (%d,%d,%s,%s,%s,%s)",
+                     '1',
+                     $customer_key,
+                     prepare_mysql($new_value),
+                     prepare_mysql($dt),
+                     '\'\'',
+                     prepare_mysql('Letter')
+                    );
+    }
+    $query=mysql_query($sql);
+    if ($query) {
         $response= array('state'=>200,'newvalue'=>$new_value,'key'=>$_REQUEST['key']);
 
     } else {
@@ -2288,7 +2408,7 @@ function list_customers() {
 
     $filter_msg='';
     $wheref='';
-$where='where true ';
+    $where='where true ';
 
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);

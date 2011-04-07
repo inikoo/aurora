@@ -133,9 +133,9 @@
 	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span>
       </div>
   
-   <table class="edit" border=0 style="clear:both;margin-bottom:40px">
- <tr style="display:none"><td class="label" style="width:12em">{t}Type{/t}:</td>
-	       <td style="width:19em"> 
+   <table class="edit" border=0 style="clear:both;margin-bottom:40px;width:640px">
+ <tr style="display:none"><td class="label">{t}Type{/t}:</td>
+	       <td > 
 		 <div class="options" style="margin:5px 0" id="shelf_type_type_container">
 		   <input type="hidden" value="{$shelf_default_type}" ovalue="{$shelf_default_type}" id="shelf_type_type"  >
 		  <span class="radio{if $customer_type=='Company'} selected{/if}"  id="radio_shelf_type_{$customer_type}" radio_value="{$customer_type}">{t}Company{/t}</span> 
@@ -143,32 +143,33 @@
 
 		 </div>
 
-<tr class=""><td style="" class="label">{t}Tax Number{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
+<tr class="">
+ <td style="" style="width:280px" class="label">{t}Tax Number{/t}:</td>
+   <td  style="text-align:left;width:250px">
+     <div   >
+       <input style="text-align:left;" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
        <div id="Customer_Tax_Number_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
+   <td id="Customer_Tax_Number_msg" style="width:200px" class="edit_td_alert"></td>
  </tr>
 
 		 
  </td></tr>
  <tr {if $customer_type!='Company'}style="display:none"{/if} class="first"><td style="" class="label">{t}Company Name{/t}:</td>
-   <td  style="text-align:left;width:12em">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0">
+   <td  style="text-align:left;">
+     <div  >
+       <input style="text-align:left;" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0">
        <div id="Customer_Name_Container" style="" ></div>
      </div>
    </td>
    <td id="Customer_Name_msg"  class="edit_td_alert"></td>
  </tr>
 
- <tr class=""><td style=";width:12em" class="label" >{t}Contact Name{/t}:</td>
-   <td  style="text-align:left;width:18em;">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Main_Contact_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
+ <tr class=""><td style="" class="label" >{t}Contact Name{/t}:</td>
+   <td  style="text-align:left;">
+     <div   >
+       <input style="text-align:left;" id="Customer_Main_Contact_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
        <div id="Customer_Main_Contact_Name_Container" style="" ></div>
      </div>
    </td>
@@ -176,8 +177,8 @@
  </tr>
  <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
+     <div   >
+       <input style="text-align:left;" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
        <div id="Customer_Main_Email_Container" style="" ></div>
      </div>
    </td>
@@ -185,8 +186,8 @@
  </tr>
  <tr class=""><td style="" class="label">{t}Contact Telephone{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
+     <div   >
+       <input style="text-align:left;" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
        <div id="Customer_Main_Telephone_Container" style="" ></div>
      </div>
    </td>
@@ -194,8 +195,8 @@
  </tr>
   <tr class=""><td style="" class="label">{t}Contact Mobile{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
+     <div   >
+       <input style="text-align:left;" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
        <div id="Customer_Main_Mobile_Container" style="" ></div>
      </div>
    </td>
@@ -205,8 +206,8 @@
  
 <tr class=""><td style="" class="label">{t}Contact Fax{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
+     <div   >
+       <input style="text-align:left;" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
        <div id="Customer_Main_FAX_Container" style="" ></div>
      </div>
    </td>
@@ -239,9 +240,9 @@
        <table border=0>
 	 {if $customer->get('Customer Type')=='Company'}
      <tr><td class="lavel">{t}Fiscal Name{/t}:</td>
-        <td  style="text-align:left;width:18em;">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
+        <td style="text-align:left;">
+     <div   >
+       <input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
        <div id="Customer_Fiscal_Name_Container" style="" ></div>
      </div>
    </td>

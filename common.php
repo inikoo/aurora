@@ -160,7 +160,12 @@ $smarty->assign('lang_menu',$lang_menu);
 $smarty->assign('page_layout','doc4');
 $smarty->assign('timezone',date("e P"));
  
+ //print_r($_SESSION['state']['customers']['store']);
+
 include_once('set_state.php');
+//print_r($_SESSION['state']['customers']['store']);
+
+
 //print_r($_SESSION['state']['department']);
 //$_SESSION['state']['department']['id']=3;
 $smarty->assign('user',$user->data['User Alias']);
