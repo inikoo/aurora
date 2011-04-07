@@ -638,7 +638,7 @@ return;
 
         }
     }
-//    print "->$q <-";
+    //  print "->$q <-";
     $q_just_numbers=preg_replace('/[^\d]/','',$q);
     if(strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6){
     
@@ -718,7 +718,7 @@ if($q_postal_code!=''){
                  ,$stores
                  ,addslashes($q_postal_code)
                 );
-   //  print $sql;
+    //  print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
 

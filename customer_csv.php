@@ -17,6 +17,10 @@ include_once('class.Customer.php');
 if(!$user->can_view('customers')){
   exit();
 }
+
+
+
+
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $_SESSION['state']['customer']['id']=$_REQUEST['id'];
   $customer_id=$_REQUEST['id'];
@@ -30,12 +34,14 @@ $data=array(
 	    'gold_reward'=>'Standard Order'
 	    );
 
+//print_r($_REQUEST);
+
 
 
 if(isset($_REQUEST['data'])){
   $json=$_REQUEST['data'];
     //  $tmp=stripslashes ($json);
-    //  print_r($json);
+  //   print_r($json);
       $raw_data=json_decode($json, true);
      // print($json);
       foreach($raw_data as $key=>$value){
@@ -47,7 +53,7 @@ if(isset($_REQUEST['data'])){
 }
 
 //print_r($data);
-
+//exit;
 
 
 $customer=new customer($customer_id);
