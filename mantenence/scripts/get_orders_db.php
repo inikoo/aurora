@@ -21,6 +21,7 @@ function microtime_float() {
     list($utime, $time) = explode(" ", microtime());
     return ((float)$utime + (float)$time);
 }
+ print "->Start.(GO UK) ".date("r")."\n";
 
 
 $myFile = "orders_time.txt";
@@ -45,6 +46,7 @@ $to_update=array(
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
     print "Error can not connect with database server\n";
+     print "->End.(GO UK) ".date("r")."\n";
     exit;
 }
 
@@ -54,6 +56,7 @@ if (!$con) {
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
+     print "->End.(GO UK) ".date("r")."\n";
     exit;
 }
 date_default_timezone_set('UTC');
@@ -95,7 +98,6 @@ $fam_no_fam=new Family('code','PND_UK',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
-
 
 
 $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' order by name  ";
@@ -985,6 +987,8 @@ $customer_key_from_order_data=$row2['customer_id'];
             if (!$product->id) {
                 print_r($product_data);
                 print "Error inserting a product\n";
+                 print "->End.(GO UK) ".date("r")."\n";
+        
                 exit;
             }
 
@@ -1071,7 +1075,9 @@ $customer_key_from_order_data=$row2['customer_id'];
                     $part_sku=$row_x['Part SKU'];
                 } else {
                     print_r($product);
+                      print "->End.(GO UK) ".date("r")."\n";
                     exit("error: $sql");
+                    
                 }
                 mysql_free_result($res_x);
 
@@ -1091,7 +1097,9 @@ $customer_key_from_order_data=$row2['customer_id'];
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
                 if (!$product_part_key) {
+                  print "->End.(GO UK) ".date("r")."\n";
                     exit("Error can not find product part list (get_orders_db)\n");
+                   
                 }
 
                 $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
@@ -1269,8 +1277,9 @@ $customer_key_from_order_data=$row2['customer_id'];
             chdir('mantenence/scripts/');
 
             if ($exchange==0) {
-
+  print "->End.(GO UK) ".date("r")."\n";
                 exit("error exhange is zero for $exchange_date\n");
+               
             }
         }
         // print_r($products_data);
@@ -1359,7 +1368,9 @@ $customer_key_from_order_data=$row2['customer_id'];
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             print_r($customer);
-           exit;
+         print "->End.(GO UK) ".date("r")."\n";
+        exit;
+        
         }
 
          $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
@@ -1396,7 +1407,7 @@ $customer_key_from_order_data=$row2['customer_id'];
             $data['Order Ship To Key']=$ship_to->id;
 
         } else {
-
+  print "->End.(GO UK) ".date("r")."\n";
             exit("no ship tp in de_get_otders shit\n");
         }
 
@@ -1518,7 +1529,7 @@ $customer_key_from_order_data=$row2['customer_id'];
 }
 mysql_free_result($res);
 update_data($to_update);
-
+ print "->End.(GO UK) ".date("r")."\n";
 //  print_r($data);
 //print "\n$tipo_order\n";
 

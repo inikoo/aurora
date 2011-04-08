@@ -866,7 +866,9 @@ function customers_awhere($awhere) {
                     'customer_created_to'=>'',
                     'dont_have'=>array(),
                     'have'=>array(),
-                    'categories'=>''
+                    'allow'=>array(),
+                    'categories'=>'',
+                   
                 );
 
     //  $awhere=json_decode($awhere,TRUE);
@@ -1005,6 +1007,33 @@ function customers_awhere($awhere) {
             break;
         }
     }
+
+    $allow_where='';
+   foreach($where_data['allow'] as $allow) {
+        switch ($allow) {
+        case 'newsletter':
+            $allow_where.=sprintf(" or `Customer Send Newsletter`='Yes' ");
+            break;
+        case 'marketing_email':
+            $allow_where.=sprintf(" or `Customer Send Email Marketing`='Yes'  ");
+            break;
+        case 'marketing_post':
+            $allow_where.=sprintf(" or  `Customer Send Postal Marketing`='Yes'  ");
+            break;
+       
+        }
+        
+        
+        
+    }
+    $allow_where=preg_replace('/^\s*or/','',$allow_where);
+    if($allow_where!=''){
+    $where.="and ($allow_where)";
+    }
+
+
+
+
 
     return array($where,$table);
 

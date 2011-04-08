@@ -27,9 +27,9 @@ $store=new Store($customer_list_data['Customer List Store Key']);
 $smarty->assign('store',$store);
 
 
-$static_list_name=$customer_list_data['Customer List Name'];
-$smarty->assign('static_list_name',$static_list_name);
-$smarty->assign('static_list_id',$customer_list_data['Customer List Key']);
+$customer_list_name=$customer_list_data['Customer List Name'];
+$smarty->assign('customer_list_name',$customer_list_name);
+$smarty->assign('customer_list_id',$customer_list_data['Customer List Key']);
 
 
 

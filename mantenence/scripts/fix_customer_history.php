@@ -8,12 +8,12 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.Store.php');
-include_once('../../class.Order.php');
+include_once('../../class.Customer.php');
 
 error_reporting(E_ALL);
 
-date_default_timezone_set('UTC');
 
+date_default_timezone_set('UTC');
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
@@ -27,49 +27,32 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-global $myconf;
-$sql='select * from `History Dimension` where `Subject`="Customer"   ';
+
+
+$sql="select * from `Customer History Bridge` B left join  `History Dimension` H on (B.`History Key`=H.`History Key`)";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-$sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",
-$row['Subject Key'],
-$row['History Key']
+  //print $row['Customer Key']."\n";
+  //$customer=new Customer($row['Customer Key']);
+  $type='Changes';  
+  if($row['Subject']=='Customer' and $row['Direct Object']=='Order'){
+    $type='Orders';
+  }elseif($row['Direct Object']=='Note'){
+    $type='Notes';
+  }
 
-);
-mysql_query($sql);
+    $sql=sprintf('update `Customer History Bridge` set `Type`=%s where `History Key`=%d ',
+                                  prepare_mysql($type),
+                                
+                                 $row['History Key']
+                                );
+                    mysql_query($sql);
+		    // print "$sql\n";
 
+		    // print $customer->id."\r";
  }
-mysql_free_result($result);
-
-$sql='select * from `History Dimension` where  `Direct Object`="Customer"   ';
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
-$sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",
-$row['Direct Object Key'],
-$row['History Key']
-
-);
-mysql_query($sql);
 
 
- }
-mysql_free_result($result);
-
-$sql='select * from `History Dimension` where  `Indirect Object`="Customer"  ';
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
-$sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",
-$row['Indirect Object Key'],
-$row['History Key']
-
-);
-mysql_query($sql);
-
-
- }
-mysql_free_result($result);
 
 ?>

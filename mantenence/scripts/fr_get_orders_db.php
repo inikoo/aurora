@@ -71,6 +71,7 @@ $myconf['country_id']='165';
 $software='Get_Orders_DB.php';
 $version='V 1.0';
 
+ print "->Start.(GO FR) ".date("r")."\n";
 
 
 
@@ -1490,6 +1491,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 }
 mysql_free_result($res);
 update_data($to_update);
+ print "->End.(GO FR) ".date("r")."\n";
 
 //  print_r($data);
 //print "\n$tipo_order\n";

@@ -74,6 +74,43 @@ var data_returned=function(){
     }
     
     
+        function checkbox_changed_allow(o){
+
+cat=Dom.get(o).getAttribute('cat');
+
+if(cat=='all'){
+
+if(    Dom.hasClass(o,'selected')){
+return;
+}else{
+Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'),'selected');
+Dom.addClass(o,'selected');
+
+}
+
+
+
+}else{
+
+Dom.removeClass('allow_all','selected');
+
+    
+if(    Dom.hasClass(o,'selected')){
+    Dom.removeClass(o,'selected');
+        
+
+}else{
+    Dom.addClass(o,'selected');
+  
+
+}
+
+}
+
+}
+ 
+    
+    
     function checkbox_changed_have(o){
 
 cat=Dom.get(o).getAttribute('cat');
@@ -952,10 +989,17 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
         have_array[x]=have[x].getAttribute('cat');
     }
 
+allow=Dom.getElementsByClassName('selected', 'span', 'allow_options');
+    allow_array= new Array();
+    for(x in allow){
+        allow_array[x]=allow[x].getAttribute('cat');
+    }
+
+
     var data={ 
     dont_have:dont_have_array,
     have:have_array,
-
+    allow:allow_array,
 	geo_constraints:Dom.get('geo_constraints').value,
 
 	product_ordered1:Dom.get('product_ordered_or').value,
@@ -996,7 +1040,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-alert(request)
+//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }

@@ -14,6 +14,7 @@ include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('common_read_orders_functions.php');
 
+
 $store_code='P';
 $__currency_code='PLN';
 
@@ -56,7 +57,7 @@ $_SESSION['locale_info'] = localeconv();
 
 
 $_SESSION['lang']=1;
-
+ print "->Start.(GO PL) ".date("r")."\n";
 
 $shipping_transactions=array();
 
@@ -940,6 +941,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             if (!$product->id) {
                 print_r($product_data);
                 print "Error inserting a product\n";
+                 print "->End.(GO PL) ".date("r")."\n";
                 exit;
             }
 
@@ -1063,7 +1065,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $part_sku=$row_x['Part SKU'];
                 } else {
                     print_r($product);
-                    exit("error: $sql");
+                    print "error: $sql";
+                     print "->End.(GO PL) ".date("r")."\n";
+                    exit();
                 }
                 mysql_free_result($res_x);
 
@@ -1083,7 +1087,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
                 if (!$product_part_key) {
-                    exit("Error can not find product part list (get_orders_db)\n");
+                 print "Error can not find product part list (get_orders_db)\n";
+                 print "->End.(GO PL) ".date("r")."\n";
+                 
+                    exit();
                 }
 
                 $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
@@ -1239,8 +1246,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         chdir('mantenence/scripts/');
 
         if ($exchange==0) {
-
-            exit("error exhange is zero for $exchange_date\n");
+ print "->End.(GO PL) ".date("r")."\n";
+ print "error exhange is zero for $exchange_date\n";
+            exit();
         }
         list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 
@@ -1357,8 +1365,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $data['Order Ship To Key']=$ship_to->id;
 
         } else {
-
-            exit("no ship tp in de_get_otders shit\n");
+ print "->End.(GO PL) ".date("r")."\n";
+ print "no ship tp in de_get_otders shit\n";
+            exit();
         }
 
         $data['Order Customer Key']=$customer->id;
@@ -1457,6 +1466,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 }
 mysql_free_result($res);
 update_data($to_update);
+
+ print "->End.(GO PL) ".date("r")."\n";
 
 //  print_r($data);
 //print "\n$tipo_order\n";

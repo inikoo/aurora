@@ -22,7 +22,7 @@ include_once('fr_map_order_functions.php');
 //require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 
-
+ print "->Start.(RO FR) ".date("r")."\n";
 
 
 //$db =& MDB2::factory($dsn);       
@@ -65,9 +65,11 @@ $orders_array_full_path = glob("/mnt/z/Orders-france/*.xls");
 //$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
-if(count($orders_array_full_path)==0)
-  exit;
+if(count($orders_array_full_path)==0){
+  print "->End.(RO FR) ".date("r")."\n";
 
+ exit;
+}
 foreach($orders_array_full_path as $key=>$order){
   $tmp=str_replace('.xls','',$order);
   $tmp=preg_replace('/.*rders-france\//i','',$tmp);
@@ -246,6 +248,7 @@ foreach($good_files_number as $order_index=>$order){
 }
 
 
+ print "->End.(RO FR) ".date("r")."\n";
 
 
 
