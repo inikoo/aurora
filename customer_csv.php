@@ -130,7 +130,9 @@ $export_data=array(
 		   ,"","","","","","","","","","","","",""
 		   ,$data['courier']
 		   ,$data['special_instructions']
-		   ,"Yes","","","","",""
+		   ,"Yes",
+		   $customer->data['Customer Tax Number'],
+		   "","","",""
 		   ,$customer->data['Customer Main Plain Email']
                          ,""
                          ,

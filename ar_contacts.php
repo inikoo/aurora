@@ -5776,6 +5776,8 @@ function new_customers_list($data) {
 }
 function list_customers_lists() {
 
+  global $user;
+
     $conf=$_SESSION['state']['customers']['list'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -5846,6 +5848,12 @@ function list_customers_lists() {
 
     }
 
+    $where='';
+    if(in_array($store,$user->stores)){
+      $where.=sprintf(' where `Customer List Store Key`=%d  ',$store);
+    
+    }
+
     $wheref='';
 
     $sql="select count(distinct `Customer List Key`) as total from `Customer List Dimension`  $where  ";
@@ -5901,7 +5909,7 @@ function list_customers_lists() {
         $order='`Customer List Key`';
 
 
-    $sql="select  CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date`,CLD.`Customer List Type` from `Customer List Dimension` CLD   order by $order $order_direction limit $start_from,$number_results";
+    $sql="select  CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date`,CLD.`Customer List Type` from `Customer List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
     $adata=array();
 
 

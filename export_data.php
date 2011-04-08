@@ -197,6 +197,14 @@ if ($data == "") {
     $data = "no matching records found";
 }
 $filename = mt_rand(11111,99999).'-'.time().'.csv'; // Define the way of your exported file name here //
+header('Content-Type: application/csv; iso-8859-1');
+    header("Content-Disposition: attachment; filename=$filename");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+echo utf8_decode($header."\n".$data);
+
+
+/*
 if (trim($header)!='') {
     header("Content-type: application/octet-stream");
     header("Content-Disposition: attachment; filename=$filename");
@@ -209,7 +217,8 @@ if (trim($header)!='') {
     header("Pragma: no-cache");
     header("Expires: 0");
     echo $header.$data;
-}
+    }*/
+
 
 ### USER DEFINED FUNCTIONS ###
 // COMMON USED //
