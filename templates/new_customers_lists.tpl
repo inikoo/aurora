@@ -13,7 +13,7 @@
 	<form>
 		<tr><td colspan="2"><b>{t}Contacts who...{/t}</b></td></tr>
       <tr>
-        <td>{t}First contacted between{/t}:</td>
+        <td>{t}Register between{/t}:</td>
         <td>
             <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="customer_first_contacted_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
             <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="customer_first_contacted_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
@@ -22,7 +22,7 @@
         </td>        
       </tr>
      <tr>
-        <td>{t}based in{/t}:</td>
+        <td>{t}based in (location){/t}:</td>
         <td>
         <input id="geo_constraints" style="width:500px"/> 
         <div class="general_options" >
@@ -61,10 +61,31 @@
         
     </tr>
     
+    
+     <tr>
+        <td>{t}wish to receive{/t}:</td>
+        <td>
+         <div id="allow_options" default_cat=""   class="options" style="margin:5px 0">
+     {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
+     <span  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}margin-left:20px{/if}"onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_"  cat="{$cat_key}" >{$cat3.name}</span>
+     {/foreach}
+    </div>    
+        </td>
+        
+    </tr>
+     <tr><td>{t}Categories{/t}</td><td><input id="customer_categories" value="" style="width:500px" />
+      <div class="general_options" >
+                <span id="customer_category" class="state_details">{t}Other Categories{/t}</span>
+                <span id="category_business_type" class="state_details" style="{if !$business_type}display:none{/if}">{t}Type of Business{/t}</span>
+               
+
+        </div>
+      </td><tr>
+    
 	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>
       <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" />
       <div class="general_options" >
-                <span id="category" class="state_details">{t}Category{/t}</span>
+                <span id="product_category" class="state_details">{t}Product Categories{/t}</span>
                 <span id="product" class="state_details">{t}Product{/t}</span>
                 <span id="family" class="state_details">{t}Family{/t}</span>
                 <span id="department" class="state_details">{t}Department{/t}</span>

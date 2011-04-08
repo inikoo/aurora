@@ -72,6 +72,21 @@ $dont_have_options=array(
                    );
 $smarty->assign('dont_have_options',$dont_have_options);
 
+
+
+$allow_options=array(
+                      
+                       'newsletter'=>array('name'=>_('Newsletter')),
+                       'marketing_email'=>array('name'=>_('Marketing Email')),
+                       'marketing_post'=>array('name'=>_('Marketing Post')),
+                        'all'=>array('name'=>'No restrictions','selected'=>true), 
+                   );
+$smarty->assign('allow_options',$allow_options);
+
+
+$smarty->assign('business_type',true);
+
+
 $smarty->assign('view',$_SESSION['state']['customers']['view']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
