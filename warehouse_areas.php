@@ -34,23 +34,10 @@ $css_files=array(
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 
 		 'button.css',
-		 'container.css',
-		 
-		 'css/dropdown.css'
+		 'container.css'
 		 );
 
-if($common)
-{
-array_push($css_files, 'themes_css/'.$common);   
-array_push($css_files, 'themes_css/'.$row['Themes css4']); 
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-}    
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'dropdown.css');
-array_push($css_files, 'table.css');
-}
+include_once('Theme.php');
 
 
 $js_files=array(

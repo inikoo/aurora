@@ -52,18 +52,7 @@ $css_files=array(
 		
 		 'css/dropdown.css'
 		 );	 
-	if($common)
-{
-array_push($css_files, 'themes_css/'.$common);   
-
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-}    
-
-else{
-array_push($css_files, 'common.css'); 
-
-array_push($css_files, 'table.css');
-}
+	include_once('Theme.php');
 	 
 	
 $js_files=array(
