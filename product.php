@@ -24,12 +24,11 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
-		 'common.css',
+		
 		 'container.css',
-		 'button.css',
-		 'table.css',
-		 'css/dropdown.css'
+		 'button.css'
 		 );
+include_once('Theme.php');
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
