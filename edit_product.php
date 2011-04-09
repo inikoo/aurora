@@ -100,7 +100,7 @@ $css_files=array(
 		  'css/dropdown.css',
 		 );
 
-
+include_once('Theme.php');
 
 
 $js_files=array(
