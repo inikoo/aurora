@@ -1,10 +1,7 @@
-<?php 
-include_once('common.php');
-?>
-
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 var Dom   = YAHOO.util.Dom;
+
 
 function addslashes (str) {
 
@@ -102,28 +99,29 @@ function percentage($a,$b,$fixed,$error_txt,$psign,$plus_sing){
 }
 
 
-function parse_money($a){
+function parse_money(a){
    
-    if(is_string($a)){
-	$a=$a.replace ( /[^\d\<?php echo $_SESSION['locale_info']['decimal_point']?>]/g,'')
-
+    if(is_string(a)){
+    
+var sRegExInput = new RegExp("[^\\d\\"+Dom.get('decimal_point')+"]", "g");;a=a.replace (sRegExInput,'');
     }    
 
-    return parse_number($a);
+    return parse_number(a);
 }
 
 
-function parse_number($a){
-    if(is_string($a)){
-    <?php
-    if($_SESSION['locale_info']['thousands_sep']!=''){
-    print 'a.replace ( /\\'.$_SESSION['locale_info']['thousands_sep']."/,'');";
+function parse_number(a){
+    if(is_string(a)){
+    
+    if(Dom.get('thousands_sep')!=''){
+var sRegExInput = new RegExp(Dom.get('thousands_sep'), "g");;a=a.replace (sRegExInput,'');
+
     }
-    ?>
-	
-	$a.replace ( /\<?php echo $_SESSION['locale_info']['decimal_point']?>/,'.');
-    }    
-    return parseFloat($a);
+    
+    var sRegExInput = new RegExp(Dom.get('decimal_point'), "g");;a=a.replace (sRegExInput,'.');
+
+}
+    return parseFloat(a);
 }
 
 
@@ -142,7 +140,7 @@ function number($a,$fixed,$force_fix){
   if($floored==$a && !$force_fix)
     $fixed=0;
 
-  $a=number_format($a,$fixed,'<?php echo $_SESSION['locale_info']['decimal_point']?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
+  $a=number_format($a,$fixed,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
   
   return $a;
 }
@@ -166,20 +164,21 @@ function money($amount,$locale,$force_sign){
   $amount=abs($amount);
   
   if(!$locale){
-    $amount=number_format($amount,2,'<?php echo $_SESSION['locale_info']['decimal_point'] ?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
-    $symbol='<?php echo $_SESSION['locale_info']['currency_symbol']?>';
+    $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
+        $symbol=Dom.get('currency_symbol');
+
     $amount=($neg?'-':$positive_sign)+$symbol+$amount;
     return $amount;
   }else{
     switch($locale){
     case('EUR'):
-      $amount=number_format($amount,2,'<?php echo $_SESSION['locale_info']['decimal_point'] ?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
+      $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
       $symbol='€';
       $amount=($neg?'-':$positive_sign)+$symbol+$amount;
       return $amount;
       break;
     case('GBP'):
-      $amount=number_format($amount,2,'<?php echo $_SESSION['locale_info']['decimal_point'] ?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
+      $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
       $symbol='£';
       $amount=($neg?'-':$positive_sign)+$symbol+$amount;
       return $amount;
@@ -369,7 +368,7 @@ keychar = String.fromCharCode(keynum);
 		this.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
 		this.render();
 	    } else {
-		alert("<?php echo _("Cannot select a date before 1/1/2006 or after 12/31/2008")?>");
+		alert("Cannot select a date before 1/1/2006 or after 12/31/2008");
 	    }
 	    
 	}
@@ -397,7 +396,8 @@ function change_details(e,the_scope){
 	Dom.get("info").style.display='none';
 	Dom.get("plot").style.display='none';
 	Dom.get("no_details_title").style.display='';
-	this.innerHTML='<?php echo _('Show Details')?>';
+	this.innerHTML=Dom.get('show_details_label').innerHTML;
+	
 	this.setAttribute('state',0);
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=0',{});
@@ -405,7 +405,7 @@ function change_details(e,the_scope){
 	Dom.get("info").style.display='';
 	Dom.get("plot").style.display='';
 	Dom.get("no_details_title").style.display='none';
-	this.innerHTML='<?php echo _('Hide Details')?>';
+	this.innerHTML=Dom.get('hide_details_label').innerHTML;
 	this.setAttribute('state',1);
 	//alert('ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1',{});
@@ -558,8 +558,7 @@ function star_rating($score,$max_score){
 
 function auto_logout_timer()
 {
-
-var t=setTimeout("auto_logout()",<?php echo $max_session_time_in_milliseconds?>);
+var t=setTimeout("auto_logout()", Dom.get('max_session_time_in_milliseconds'));
 
 }
 function auto_logout()

@@ -92,8 +92,8 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'js/search.js',		
 		);
 $smarty->assign('css_files',$css_files);

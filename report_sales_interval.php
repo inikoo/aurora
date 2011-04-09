@@ -214,8 +214,8 @@ $js_files=array(
 		$yui_path.'datasource/datasource-beta.js',
 		$yui_path.'datatable/datatable-beta.js',
 		$yui_path.'json/json-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'js/js/common.js',
+		'js/js/table_common.js',
 		'js/report_sales.js.php'
 		);
 

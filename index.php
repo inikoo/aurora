@@ -85,13 +85,13 @@ $js_files=array(
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
-              'common.js.php',
-              'table_common.js.php',
+              'js/common.js',
+              'js/table_common.js',
               'js/search.js',
 		 'external_libs/ampie/ampie/swfobject.js',
 
         //      'js/index_tools.js',
-              'index.js.php',
+              'js/index.js',
 
           //    'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );

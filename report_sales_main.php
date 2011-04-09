@@ -46,8 +46,8 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
               'external_libs/amstock/amstock/swfobject.js',
-              'common.js.php',
-              'table_common.js.php',
+              'js/common.js',
+              'js/table_common.js',
 
               //		'report_sales.js.php',
               'report_sales_main.js.php',

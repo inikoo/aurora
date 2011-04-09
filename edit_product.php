@@ -114,10 +114,10 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'editor/editor-min.js',
 		'js/php.default.min.js',
-		'common.js.php',
+		'js/common.js',
 		'js/search.js',
 		 'js/dropdown.js',
-		'table_common.js.php',
+		'js/table_common.js',
 		'js/upload_image.js',
 		'js/edit_common.js'
 		);

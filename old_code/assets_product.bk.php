@@ -227,9 +227,9 @@ $js_files=array(
 		$yui_path.'editor/editor-beta-min.js',
 
 		$yui_path.'json/json-min.js',
-		'js/calendar_common.js.php',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'js/calendar_js/common.js',
+		'js/js/common.js',
+		'js/js/table_common.js',
 		'js/assets_product.js.php'
 		);
 

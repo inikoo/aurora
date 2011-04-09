@@ -55,8 +55,8 @@ $js_files=array(
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-		'common.js.php',
-		'table_common.js.php','js/edit_common.js','js/csv_common.js',
+		'js/common.js',
+		'js/table_common.js','js/edit_common.js','js/csv_common.js',
 		'hr.js.php'
 		);
 $smarty->assign('css_files',$css_files);

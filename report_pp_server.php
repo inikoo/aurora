@@ -70,7 +70,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 
 
-		'common.js.php',
+		'js/common.js',
 		'report_sales_server.js.php'
 		);
 

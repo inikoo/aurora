@@ -63,7 +63,7 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
+		'js/common.js',
 		'report_issue.js.php'
 		);
 

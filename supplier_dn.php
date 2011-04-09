@@ -145,9 +145,9 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
-		'table_common.js.php',
-		'supplier_dn_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
+		'supplier_dn_js/common.js',
 		);
 
 

@@ -53,8 +53,8 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/jquery-1.4.4.js',
 		'js/plain_campaign_builder.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'js/search.js',
 		'marketing_create_campaign.js.php',
 		'js/track.js'

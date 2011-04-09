@@ -73,8 +73,8 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
 
 
-              'common.js.php',
-              'table_common.js.php',
+              'js/common.js',
+              'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
               'js/csv_common.js',
