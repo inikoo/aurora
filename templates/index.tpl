@@ -25,7 +25,7 @@ Hello, here i am going to place the announcements about bug fixed and new featur
 <li  style="list-style-type: square">New Feature: Customer Lists (Used to make Newsletters and Marketing Emails)</li>
 <li  style="list-style-type: square">Tax number expored in QO Data Excel Cell[CJ1]</li>
 <li  style="list-style-type: square">Gold Reward/ Only First Name in QO Data</li>
-<li  style="list-style-type: square">Improvements in Search (Telephones & Mobiles &Postal Code)</li>
+<li  style="list-style-type: square">Improvements in Search (Telephones, Mobiles and Postal Code)</li>
 <li  style="list-style-type: square">Improvements in adding new Customers</li>
 <li  style="list-style-type: square">Now you can delete mobiles (16:35 4th April 11)</li>
 <li  style="list-style-type: square">Change country in edit customer now works</li>
@@ -35,7 +35,7 @@ Hello, here i am going to place the announcements about bug fixed and new featur
 
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
     <span  >{t}Search{/t}:</span>
-    <input size="45" class="text" id="all_search" value="" state="" name="search"/><img style="position:relative;left:-18px;display:none"align="absbottom" id="all_clean_search"  class="submitsearch" src="art/icons/cross_bw.png" >
+    <input size="45" class="text" id="all_search" value="" state="" name="search"/><img style="position:relative;left:-18px;display:none"  id="all_clean_search"  class="submitsearch" src="art/icons/cross_bw.png" alt="{t}cross{/t}" />
    
     <div id="all_search_Container" style="display:none"></div>
     <div style="position:relative;font-size:80%">
@@ -49,7 +49,7 @@ Hello, here i am going to place the announcements about bug fixed and new featur
 
 
 	<div id="wrapper">
-	<input type="hidden" value='{$store_keys}' id="store_keys">
+	<input type="hidden" value='{$store_keys}' id="store_keys"/>
 		<div id="wid_menu" >
 			<img style="position:relative;top:3px;display:none" src="art/icons/previous.png" alt="" id="previous"/>
 			<ul id="buttons">

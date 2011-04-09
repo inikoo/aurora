@@ -81,8 +81,8 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'js/search.js',
 		'js/dropdown.js',
 		'report_tax_ES1.js.php?umbral='.$umbral.'&year='.$year

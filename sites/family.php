@@ -42,10 +42,10 @@ $js_files=array(
               $yui_path.'container/container_core-min.js',
               $yui_path.'menu/menu-min.js',
               'js/dropdown.js',
-              'common.js.php',
+              'js/common.js',
 
-              'js/table_common.js.php',
-              'js/table_sites_common.js.php',
+              'js/js/table_common.js',
+              'js/table_sites_js/common.js',
 
               'family.js.php?key='.$family->id
           );

@@ -166,6 +166,18 @@ include_once('set_state.php');
 //print_r($_SESSION['state']['customers']['store']);
 
 
+
+
+$smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
+$smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
+$smarty->assign('currency_symbol',$_SESSION['locale_info']['currency_symbol']);
+$smarty->assign('max_session_time_in_milliseconds',$max_session_time_in_milliseconds);
+
+
+
+
+
+
 //print_r($_SESSION['state']['department']);
 //$_SESSION['state']['department']['id']=3;
 $smarty->assign('user',$user->data['User Alias']);

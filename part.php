@@ -75,9 +75,9 @@ $js_files=array(
               $yui_path.'datatable/datatable-debug.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
-              'common.js.php',
+              'js/common.js',
               'external_libs/amstock/amstock/swfobject.js',
-              'table_common.js.php',
+              'js/table_common.js',
               'js/search.js',
               'edit_stock.js.php',
               'js/dropdown.js'

@@ -45,8 +45,8 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 	        'supplier_products.js.php',
                 'js/edit_common.js',
                 'js/csv_common.js'

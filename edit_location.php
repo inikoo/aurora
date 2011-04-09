@@ -76,9 +76,9 @@ $js_files=array(
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-		'common.js.php',
+		'js/common.js',
 		'js/search.js',
-		'table_common.js.php',
+		'js/table_common.js',
 		'js/dropdown.js',
 		'js/edit_common.js',
 		'edit_location.js.php'

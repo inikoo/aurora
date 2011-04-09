@@ -26,8 +26,8 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/dropdown.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'js/js/common.js',
+		'js/js/table_common.js',
 		'js/edit_common.js',
 		'js/checkout.js.php'
 		);

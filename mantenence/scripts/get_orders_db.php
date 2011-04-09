@@ -21,7 +21,6 @@ function microtime_float() {
     list($utime, $time) = explode(" ", microtime());
     return ((float)$utime + (float)$time);
 }
- print "->Start.(GO UK) ".date("r")."\n";
 
 
 $myFile = "orders_time.txt";
@@ -77,6 +76,7 @@ $_SESSION['lang']=1;
 
 include_once('local_map.php');
 include_once('map_order_functions.php');
+ print "->Start.(GO UK) ".date("r")."\n";
 
 $software='Get_Orders_DB.php';
 $version='V 1.0';

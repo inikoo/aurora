@@ -2091,6 +2091,11 @@ ALTER TABLE `Store Dimension` ADD `Store 1 Day New Customers Contacts` MEDIUMINT
 ALTER TABLE `Store Dimension` ADD `Store YearToDay New Customers Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Customer Dimension` ADD `Customer Main Plain Postal Code` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Customer Main Postal Code` ,ADD INDEX ( `Customer Main Plain Postal Code` );
 
+ALTER TABLE `User Dimension` ADD `User Theme Background Status` SMALLINT UNSIGNED NULL DEFAULT NULL ;
+INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `Theme Table Css`, `Theme Index Css`, `Theme Dropdown Css`, `Theme Campaign Css`) VALUES
+(1, 'brown', 'brown_common.css.php', 'brown_table.css', 'brown_index.css', 'brown_dropdown.css', 'brown_marketing_campaigns.css'),
+(2, 'green', 'green_common.css.php', 'green_table.css', 'green_index.css', 'green_marketing_campaigns.css', 'green_dropdown.css');
+
 
 */
 

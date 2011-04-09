@@ -63,11 +63,11 @@ $js_files=array(
 
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'edit_address.js.php',
 		'address_data.js.php?tipo=customer&id='.$customer->id,
-		'edit_delivery_address_common.js.php',
+		'edit_delivery_address_js/common.js',
 		'js/edit_common.js',
 		'new_post_order.js.php?order_key='.$order_id
 		);

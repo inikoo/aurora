@@ -37,8 +37,8 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'uploader/uploader-debug.js',
 		'js/php.default.min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'js/import_csv_data.js',
 		'js/dropdown.js'
         	);

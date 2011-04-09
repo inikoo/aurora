@@ -46,8 +46,8 @@ $js_files=array(
 		$yui_path.'event/event-min.js',
 		$yui_path.'connection/connection_core-min.js',
 		$yui_path.'connection/connection-min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'js/search.js',
 		'js/change_user_theme.js',
 		'js/jquery-1.4.4.js'

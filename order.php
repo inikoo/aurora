@@ -37,8 +37,8 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
-		'table_common.js.php',
+		'js/common.js',
+		'js/table_common.js',
 		'js/search.js'
 		);
 
@@ -117,7 +117,7 @@ if(isset($_REQUEST['pick_aid'])){
     $js_files[]='edit_address.js.php';
 		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 		
-		$js_files[]='edit_delivery_address_common.js.php';
+		$js_files[]='edit_delivery_address_js/common.js';
     	  $js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
     	
     	$css_files[]='css/edit_address.css';
