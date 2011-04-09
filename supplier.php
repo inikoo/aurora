@@ -85,6 +85,7 @@ $css_files=array(
                'container.css',
                'table.css'
            );
+include_once('Theme.php');
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',
