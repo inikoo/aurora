@@ -63,22 +63,7 @@ $css_files=array(
 		 'container.css'
 		 );
 
-$theme="";
-if($theme)
-{
-array_push($css_files, 'themes_css/'.$Themecss1);   
-array_push($css_files, 'themes_css/'.$Themecss2);
-array_push($css_files, 'themes_css/'.$Themecss3);
-}    
-   
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css'); 
-array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
-}
-
+include_once('Theme.php');
 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
