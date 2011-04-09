@@ -22,10 +22,11 @@ $css_files=array(
 		 // $yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
-		 'common.css',
-		 'css/edit.css',
-		 'table.css'
+		 
+		 'css/edit.css'
 		 );
+include_once('Theme.php');
+
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',

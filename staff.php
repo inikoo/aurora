@@ -285,11 +285,12 @@ $css_files=array(
 		 $yui_path.'assets/skins/sam/autocomplete.css',
 
 		 'text_editor.css',
-		 'common.css',
+		 
 		 'button.css',
-		 'container.css',
-		 'table.css'
+		 'container.css'
+		 
 		 );
+ include_once('Theme.php');
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',

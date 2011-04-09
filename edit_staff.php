@@ -41,20 +41,7 @@ $css_files=array(
 		 'container.css'
 		 );
 
-if($common)
-{
-array_push($css_files, 'themes_css/'.$common);   
-array_push($css_files, 'themes_css/'.$common2); 
-array_push($css_files, 'themes_css/'.$common3); 
-array_push($css_files, 'themes_css/'.$common4); 
-}    
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css'); 
-array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
-}
+include_once('Theme.php');
 
 
 
