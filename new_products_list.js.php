@@ -202,7 +202,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products_list");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.table_id=tableid;
 
@@ -1008,7 +1008,7 @@ searched=true;
 
   
    var awhere=get_awhere();
-
+alert(awhere);
 	//alert(jsonStr);
     var table=tables.table0;
     var datasource=tables.dataSource0;
