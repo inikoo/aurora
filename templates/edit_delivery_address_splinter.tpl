@@ -62,7 +62,7 @@
 		 		  {if $key==$customer->get('Customer Billing Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Billing{/t}</span>	  {/if}
 {/if}
 		 <span {if $key==$customer->get('Customer Main Address Key') or $key==$customer->get('Customer Billing Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Remove{/t}</span>
-		  <span {if $key==$customer->get('Customer Main Address Key')or $key==$customer->get('Customer Billing Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id},'delivery_')" >{t}Edit{/t}</span>
+		  <span {if $key==$customer->get('Customer Main Address Key')or $key==$customer->get('Customer Billing Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="display_edit_delivery_address({$address->id},'delivery_')" >{t}Edit{/t}</span>
 		  
 		</div>
 	

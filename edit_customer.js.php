@@ -110,6 +110,20 @@ Dom.addClass(this,'selected');
 
 }
 
+function change_to_delivery_block(){
+ var ids = ["details","company","delivery","categories","communications"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications"]; 
+
+
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('d_delivery','display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass('delivery','selected');
+
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value=delivery' ,{});
+
+}
+
 
 function validate_customer_tax_number(query){
   original_query= query;
@@ -419,6 +433,9 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     oAutoComp.minQueryLength = 0; 
     var ids = ["details","company","delivery","categories","communications"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
+    YAHOO.util.Event.addListener( "delivery2",  "click",change_to_delivery_block);
+    
+    
     Event.addListener("back_to_take_order", "click", back_to_take_order , true);
     
         YAHOO.util.Event.addListener('show_edit_billing_address', "click",display_edit_billing_address );

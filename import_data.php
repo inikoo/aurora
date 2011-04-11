@@ -15,7 +15,7 @@ include_once('common.php');
 include_once('class.Store.php');
 include_once('assets_header_functions.php');
 
-
+ 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -91,7 +91,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
- 
+
   $smarty->display('import_data.tpl');
 
 ?>

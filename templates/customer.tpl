@@ -51,6 +51,52 @@
             </table>
         </td>
     </tr>
+    
+     <tr style="font-size:90%;height:30px;vertical-align:bottom">
+  <td style=";vertical-align:bottom">{t}Billing{/t}:</td>
+   <td style=";vertical-align:bottom">{t}Delivery{/t}:</td>
+    </tr>
+  <tr style="font-size:90%;border-top:1px solid #ccc">
+  <td >
+  
+ 
+ 
+  <span>{$customer->get('Customer Fiscal Name')}</span><br/>
+  <div>
+  {if ($customer->get('Customer Billing Address Link')=='Contact')   }
+   <span>{t}Billing Address Same as contact address{/t}</span> 
+   {else}
+   {$customer->billing_address_xhtml()}
+   {/if}
+  </div>
+</td>
+<td>
+
+ 
+  <div>
+  {if ($customer->get('Customer Delivery Address Link')=='Contact') or ( $customer->get('Customer Delivery Address Link')=='Billing'  and  ($customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key'))   )   }
+     
+     <span style="font-weight:600">{t}Same as contact address{/t}</span> 
+
+     
+     {elseif $customer->get('Customer Delivery Address Link')=='Billing'}
+     
+     <span style="font-weight:600">{t}Same as billing address{/t}</span> 
+
+     
+     {else}
+     {$customer->delivery_address_xhtml()}
+    
+     
+     {/if}
+  </div>
+  </div>
+  </td>
+  </tr>
+    
+ 
+    
+    
 </table>
 <div  >
   <h2 style="font-size:150% ">{t}Orders Overview{/t}</h2>

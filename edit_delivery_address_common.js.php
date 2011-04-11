@@ -6,12 +6,27 @@ function display_new_delivery_address(){
   
 }
 
+function display_edit_delivery_address(address_id){
+  
+edit_address(address_id,'delivery_')
+  Dom.setStyle('new_delivery_address_table','display','')
+  
+}
 
-function hide_new_delivery_address(prefix){
-reset_address(false,prefix)
+
+function hide_new_delivery_address(){
+reset_address(false,'delivery_')
   Dom.setStyle('add_new_delivery_address','display','')
   Dom.setStyle('new_delivery_address_table','display','none')
 }
+
+
+function post_create_address_function(r){
+
+hide_new_delivery_address();
+}
+
+
 
 
 function init(){
