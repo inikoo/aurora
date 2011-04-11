@@ -96,7 +96,7 @@ foreach($contacts as $contact){
 if(isset($contact_address->data['Address Type'][$scope_related_address_type]) ){
 
 
-    $tels=$contact->get_telephones($contact_address->id);
+alert("get_telephones no longer exists");// $tels=$contact->get_telephones($contact_address->id);
   $number_of_telephones=count($tels);
 
     $tels_data='';

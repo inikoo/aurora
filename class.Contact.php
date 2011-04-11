@@ -1438,6 +1438,10 @@ $this->parent=$parent;
 
     */
      function create ($data,$address_home_data='',$options='') {
+     
+   
+     
+     
         global $myconf;
         if (is_string($data))
             $data['Contact Name']=$data;
@@ -1629,8 +1633,7 @@ $this->parent=$parent;
             }
 
 
-
-
+//print "***** address: $home_address_key \n";
 
 
             $telephone_keys=array();
@@ -1638,7 +1641,7 @@ $this->parent=$parent;
             $mobile_keys=array();
 
 
-            if ($telephone!='' or $fax!='' and !$home_address_key) {
+            if (  ($telephone!='' or $fax!='' )and !$home_address_key) {
                 $home_address=new Address("find create update",array('Address Country Code'=>'UNK','editor'=>$this->editor));
                 $home_address_key=$home_address->id;
 
@@ -1681,7 +1684,6 @@ $this->parent=$parent;
 
 
             if ($telephone!='') {
-
                 $telephone_data=array();
                 $telephone_data['editor']=$this->editor;
                 $telephone_data['Telecom Raw Number']=$telephone;
@@ -1689,6 +1691,9 @@ $this->parent=$parent;
 //print_r($home_address);
                 $telephone=new Telecom("find in company fast create country code ".$home_address->data['Address Country Code'],$telephone_data);
                 $telephone->editor=$this->editor;
+                
+               
+                
                 if (!$telephone->error) {
                     // if ($telephone->is_mobile())
                     //   $mobile_keys[]=$telephone->id;
@@ -1725,8 +1730,9 @@ $this->parent=$parent;
 
 
 
-
             foreach($telephone_keys as $telecom_key) {
+           // print "address $home_address_key =".$home_address->id." ; tel: $telecom_key\n";
+            
                 $home_address->associate_telecom($telecom_key,'Telephone');
             }
 
@@ -2783,7 +2789,12 @@ $this->parent=$parent;
 //print "Update contact $field,$value\n";
         switch ($field) {
 
-
+  case('Contact Tax Number'):
+            $this->update_field($field,$value,$options);
+            if($this->updated){
+                $this->update_parents_tax_number();
+            }
+        break;
 
         case('Contact Main Plain FAX'):
         case('Contact Main Plain Telephone'):
@@ -3291,18 +3302,18 @@ $this->parent=$parent;
     public static function prepare_name_data($raw_data) {
 
         if (isset($raw_data['Contact Salutation']))
-            $data['Contact Salutation']=mb_ucwords(_trim($raw_data['Contact Salutation']));
+            $data['Contact Salutation']=_trim($raw_data['Contact Salutation']);
         if (isset($raw_data['Contact First Name']))
-            $data['Contact First Name']=mb_ucwords(_trim($raw_data['Contact First Name']));
+            $data['Contact First Name']=_trim($raw_data['Contact First Name']);
         else
             $data['Contact First Name']='';
         if ( isset($raw_data['Contact Middle Name']))
-            $data['Contact First Name'].=mb_ucwords(_trim(' '.$raw_data['Contact Middle Name']));
+            $data['Contact First Name'].=_trim(' '.$raw_data['Contact Middle Name']);
 
         if (isset($raw_data['Contact Surname']))
-            $data['Contact Surname']=mb_ucwords(_trim($raw_data['Contact Surname']));
+            $data['Contact Surname']=_trim($raw_data['Contact Surname']);
         if (isset($raw_data['Contact Suffix']))
-            $data['Contact Suffix']=mb_ucwords(_trim($raw_data['Contact Suffix']));
+            $data['Contact Suffix']=_trim($raw_data['Contact Suffix']);
 
         $data['Contact Gender']='Unknown';
         if (isset($raw_data['Contact Gender']) and ($raw_data['Contact Gender']=='Male' or $raw_data['Contact Gender']=='Female'))
@@ -3532,11 +3543,7 @@ $this->parent=$parent;
 
         }
 
-        foreach($name as $key=>$value) {
-            $name[$key]=mb_ucwords($value);
-
-        }
-
+        
 
 
 
@@ -4231,56 +4238,7 @@ $this->parent=$parent;
 
     }
 
-    function get_telephones($address_key=0) {
-
-
-        if ($address_key) {
-            $sql=sprintf("select * from `Telecom Bridge` TB  left join `Address Telecom Bridge` ATB  on  (TB.`Telecom Key`=ATB.`Telecom Key`)   where   `Telecom Type` like '%%Telephone%%' and `Subject Type`='Contact' and `Subject Key`=%d  and `Address Key`=%d   group by TB.`Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id,$address_key);
-        } else {
-            $sql=sprintf("select * from `Telecom Bridge` TB where   `Telecom Type` like '%%Telephone%%' and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.``Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id);
-        }
-
-
-        $telecoms=array();
-        $result=mysql_query($sql);
-        //print $sql;
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $tel= new Telecom($row['Telecom Key']);
-
-            if ($this->scope=='Company' and $this->scope_key and !$tel->is_associated('Company',$this->scope_key) )
-                continue;
-            $tel->set_scope('Contact',$this->id);
-
-
-            $telecoms[]= $tel;
-        }
-        $this->number_telecoms=count($telecoms);
-        return $telecoms;
-
-    }
-
-    function get_faxes($address_key=false) {
-
-        if ($address_key) {
-            $sql=sprintf("select * from `Telecom Bridge` TB  left join `Address Telecom Bridge` ATB  on  (TB.`Telecom Key`=ATB.`Telecom Key`)   where   `Telecom Type` like '%%Fax%%' and `Subject Type`='Contact' and `Subject Key`=%d  and `Address Key`=%d   group by TB.`Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id,$address_key);
-        } else {
-            $sql=sprintf("select * from `Telecom Bridge` TB where   `Telecom Type` like '%%Fax%%' and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.``Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id);
-        }
-
-        $telecoms=array();
-        $result=mysql_query($sql);
-
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $tel= new Telecom($row['Telecom Key']);
-            $tel->set_scope('Contact',$this->id);
-            $telecoms[]= $tel;
-        }
-        $this->number_telecoms=count($telecoms);
-        return $telecoms;
-
-    }
-
-
+   
 
 
 
@@ -4649,6 +4607,91 @@ $this->parent=$parent;
         }
         return $keys;
     }
+
+ function update_parents_tax_number() {
+
+        $parents=array('Customer');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key` from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_contact_changed=false;
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+
+                $old_principal_name=$parent_object->data[$parent.' Tax Number'];
+                $parent_object->data[$parent.' Tax Number']=$this->data['Contact Tax Number'];
+                $sql=sprintf("update `$parent Dimension` set  `$parent Tax Number`=%s  where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$parent.' Tax Number'])
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+
+                if ($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Person')) {
+                    $sql=sprintf("update `$parent Dimension` set `$parent Tax Number`=%s where `$parent Key`=%d"
+                                 ,prepare_mysql($parent_object->data[$parent.' Tax Number'])
+                              
+
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+                    //   print "$sql\n";
+                }
+
+
+
+
+                if ($old_principal_name!=$parent_object->data[$parent.' Tax Number'])
+                    $principal_contact_changed=true;
+
+                if ($principal_contact_changed) {
+
+                    if ($old_principal_name=='') {
+
+                        $history_data['History Abstract']='Tax Number Associated '.$this->data['Contact Tax Number'];
+                        $history_data['History Details']=$this->data['Contact Tax Number']." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['Action']='associated';
+                         $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object Key']=$parent_object->id;
+                        $history_data['Indirect Object']=$parent.' Tax Name';
+                        $history_data['Indirect Object Key']='';
+                       
+                    } else {
+                        $history_data['History Abstract']='Tax Number changed to '.$this->data['Contact Tax Number'];
+                        $history_data['History Details']=_('Tax Number changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Contact Tax Number'].", ".$parent_label.": ".$parent_object->get_name();
+                        $history_data['Action']='changed';
+                        $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object Key']=$parent_object->id;
+                        $history_data['Indirect Object']=$parent.' Tax Name';
+                        $history_data['Indirect Object Key']='';
+
+                       
+
+                    }
+                       if ($parent=='Customer') {
+                        $parent_object->add_customer_history($history_data);
+                    } else {
+                        $this->add_history($history_data);
+                    }
+
+                }
+
+
+
+
+            }
+        }
+    }
+
+
 
 
 }

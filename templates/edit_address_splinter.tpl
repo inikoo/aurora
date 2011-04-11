@@ -4,21 +4,23 @@
     <input type="hidden" id="{$address_identifier}address_fuzzy" value="Yes" ovalue="Yes" />
     <input id="{$address_identifier}address_country_code" value="" type="hidden"/>
     <input id="{$address_identifier}address_country_2acode" value="" type="hidden"/>
+    
+    
      <tr id="{$address_identifier}tr_address_type" {if $hide_type}style="display:none"{/if}>
     <td class="label">
       <span id="{$address_identifier}show_description" onclick="show_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">+</span> {t}Address Type{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_type" value="" ovalue=""  >
-      <span id="{$address_identifier}address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type" style="margin:0">Office</span>
-      <span id="{$address_identifier}address_type_Shop" label="Shop" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Shop</span>
-      <span id="{$address_identifier}address_type_Warehouse" label="Warehouse" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Warehouse</span>
-      <span id="{$address_identifier}address_type_Other" label="Other" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Other</span>
+      <span id="{$address_identifier}address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type {if $address_type=='Office'}selected{/if}" style="margin:0">{t}Office{/t}</span>
+      <span id="{$address_identifier}address_type_Shop" label="Shop" onclick="toggle_address_type(this)" class="small_button  address_type {if $address_type=='Shop'}selected{/if}" style="margin-left:3px">{t}Shop{/t}</span>
+      <span id="{$address_identifier}address_type_Warehouse" label="Warehouse" onclick="toggle_address_type(this)" class="small_button  address_type {if $address_type=='Warehouse'}selected{/if}" style="margin-left:3px">{t}Warehouse{/t}</span>
+      <span id="{$address_identifier}address_type_Other" label="Other" onclick="toggle_address_type(this)" class="small_button  address_type {if $address_type=='Other'}selected{/if}" style="margin-left:3px">{t}Other{/t}</span>
     </td>
 	    </tr>
        <tr id="{$address_identifier}tr_address_function" style="{if  $hide_description}display:none;{/if}" >
     <td class="label">{t}Address Function{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_function" value="{$function_value}" ovalue=""  >
-      <span id="{$address_identifier}address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function" style="margin:0">Contact</span>
-      <span id="{$address_identifier}address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Billing</span>
-      <span id="{$address_identifier}address_function_Shipping" label="Shipping" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Shipping</span>
-      <span id="{$address_identifier}address_function_Other" label="Other" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Other</span>
+      <span id="{$address_identifier}address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function {if $address_function=='Contact'}selected{/if}" style="margin:0">{t}Contact{/t}</span>
+      <span id="{$address_identifier}address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function {if $address_function=='Billing'}selected{/if}" style="margin-left:3px">{t}Billing{/t}</span>
+      <span id="{$address_identifier}address_function_Shipping" label="Shipping" onclick="toggle_address_function(this)" class="small_button address_function {if $address_function=='Shipping'}selected{/if}" style="margin-left:3px">{t}Shipping{/t}</span>
+      <span id="{$address_identifier}address_function_Other" label="Other" onclick="toggle_address_function(this)" class="small_button address_function {if $address_function=='Other'}selected{/if}" style="margin-left:3px">{t}Other{/t}</span>
     </td>
   </tr>
     <tr id="{$address_identifier}tr_address_description" style="display:none"> 
@@ -142,7 +144,8 @@
 	      </td>
   </tr>
     </tbody>
-<tr id="{$address_identifier}tr_address_country" class="first">
+
+<tr id="{$address_identifier}tr_address_country"  class="first">
         <td class="label"  style="width:120px">
 <span 
 	        id="{$address_identifier}show_country_subregions" 

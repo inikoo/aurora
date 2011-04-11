@@ -91,8 +91,8 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'address_data.js.php?tipo=customer&id='.$customer->id,
-              'edit_delivery_address_js/common.js'
-             // 'customer.js.php?id='.$customer->id
+              'edit_delivery_address_common.js.php'
+              // 'customer.js.php?id='.$customer->id
           );
 //$smarty->assign('css_files',$css_files);
 //$smarty->assign('js_files',$js_files);
@@ -189,25 +189,25 @@ $categories_value=array();
 $categories=array();
 $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$customer->data['Customer Store Key']);
 $res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
-$tmp=new Category($row['Category Key']);
-$selected_array=$tmp->sub_category_selected_by_subject($customer->id);
+while ($row=mysql_fetch_assoc($res)) {
+    $tmp=new Category($row['Category Key']);
+    $selected_array=$tmp->sub_category_selected_by_subject($customer->id);
 
 
-if(count($selected_array)==0){
-    $tmp_selected='';
-}else{
-    $tmp_selected=array_pop($selected_array);
-}
+    if (count($selected_array)==0) {
+        $tmp_selected='';
+    } else {
+        $tmp_selected=array_pop($selected_array);
+    }
 
-$categories[$row['Category Key']]=$tmp;
-$categories_value[$row['Category Key']]=$tmp_selected;
+    $categories[$row['Category Key']]=$tmp;
+    $categories_value[$row['Category Key']]=$tmp_selected;
 
 }
 $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);
 
-    
+
 
 /*
 
@@ -225,8 +225,8 @@ while($row=mysql_fetch_array($res)){
   $root=preg_replace('/>.*$/','',$row['Category Position']);
   // print "$root $parents ".$row['Category Key']."\n";
   $comb[$root]['teeth'][$parents]['elements'][$row['Category Key']]['selected']=true;
-  
-  
+
+
 
 }
 mysql_free_result($res);
@@ -238,6 +238,24 @@ $smarty->assign('categories',$comb);
 $smarty->assign('number_categories',count($comb));
 */
 
+$main_telephone_warning=false;
+$main_telephone_warnings='';
+if ($customer->data['Customer Main Telephone Key']) {
+    $main_telephone= new Telecom($customer->data['Customer Main Telephone Key']);
+    $main_telephone_parents=$main_telephone->get_parent_keys();
+    foreach($main_telephone_parents as $_key=>$_value) {
+
+        if (($_value['Subject Type']=='Customer' and $_value['Subject Key']!=$customer->id)or $_value['Subject Type']=='Supplier') {
+        $main_telephone_warning=true;
+        
+        }
+    }
+}
+if($main_telephone_warning){
+$main_telephone_warning='<img style="cursor:pointer" title="Other Customers/Supplier has this telephone" src="art/icons/error.png" alt="warning"/>';
+}
+$smarty->assign('main_telephone_warnings',$main_telephone_warnings);
+$smarty->assign('main_telephone_warning',$main_telephone_warning);
 
 //$smarty->assign('delivery_addresses',$delivery_addresses);
 $smarty->display('edit_customer.tpl');
