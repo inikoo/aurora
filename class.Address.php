@@ -253,7 +253,10 @@ $address_keys=$subject_object->get_address_keys();
 
 }
 
+function find_fast($data=false,$subject_data=false){
 
+
+}
   
     function find_complete($data,$subject_data) {
 
