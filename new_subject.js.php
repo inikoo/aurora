@@ -510,6 +510,13 @@ if(scope=='customer'){
     // alert(Dom.get('Store_Key'))
     subject_data['Customer Store Key']=Dom.get('Store_Key').value;
     subject_data['Customer Type']=Dom.get('Customer_Type').value;
+    
+  
+    
+    
+    subject_data['Customer Send Newsletter']=Dom.get('allow_newsletter').value;
+    subject_data['Customer Send Email Marketing']=Dom.get('allow_marketing_email').value;
+    subject_data['Customer Send Postal Marketing']=Dom.get('allow_marketing_postal').value;
 
 }
 

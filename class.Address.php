@@ -136,21 +136,21 @@ class Address extends DB_Table {
 
 
 
-        if (isset($raw_data['Street Data'])){
-            
- $tmp=Address::parse_street($raw_data['Street Data']);
-    foreach($tmp as $key=>$value){
-    $raw_data[$key]=$value;
-    }
-unset($raw_data['Street Data']); 
+        if (isset($raw_data['Street Data'])) {
 
-}
-/*
-        if (isset($raw_data['Address Building']))
-            $raw_data['Address Line 2']=$raw_data['Address Building'];
-        if (isset($raw_data['Address Internal']))
-            $raw_data['Address Line 1']=$raw_data['Address Internal'];
-*/
+            $tmp=Address::parse_street($raw_data['Street Data']);
+            foreach($tmp as $key=>$value) {
+                $raw_data[$key]=$value;
+            }
+            unset($raw_data['Street Data']);
+
+        }
+        /*
+                if (isset($raw_data['Address Building']))
+                    $raw_data['Address Line 2']=$raw_data['Address Building'];
+                if (isset($raw_data['Address Internal']))
+                    $raw_data['Address Line 1']=$raw_data['Address Internal'];
+        */
         $data=$this->base_data();
 
         if (preg_match('/from Company|in company/i',$options)) {
@@ -211,21 +211,11 @@ unset($raw_data['Street Data']);
     }
 
 
-
-    function find_fast() {
-
-    }
-    function find_complete($data,$subject_data) {
-
-//print_r($data);
-
-        $subject_type=$subject_data['subject_type'];
+function find_in_subject ($data,$subject_data){
+ $subject_type=$subject_data['subject_type'];
         $subject_object=$subject_data['subject_object'];
 
-
-        if ($subject_type!='') {
-
-            $address_keys=$subject_object->get_address_keys();
+$address_keys=$subject_object->get_address_keys();
             foreach($address_keys as $address_key) {
                 $address=new Address($address_key);
                 $same_address=true;
@@ -257,22 +247,62 @@ unset($raw_data['Street Data']);
 
                 }
 
-
-
-
             }
-            
+
+    
+
+}
+
+function find_fast($data=false,$subject_data=false){
+
+
+}
+  
+    function find_complete($data,$subject_data) {
+
+
+
+       
+ $subject_type=$subject_data['subject_type'];
+      
+
+        if ($subject_type!='') {
+
+            $this->find_in_subject ($data,$subject_data);
             return;
         }
 
 
-     
-//--------------
-            if ($data['Address Fuzzy']!='Yes') {
 
-                $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+//--------------
+        if ($data['Address Fuzzy']!='Yes') {
+
+            $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+
+            $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+            foreach($fields as $field) {
+                $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+            }
+
+            $result=mysql_query($sql);
+            $num_results=mysql_num_rows($result);
+            if ($num_results==1) {
+                $row=mysql_fetch_array($result, MYSQL_ASSOC);
+                $this->found=true;
+                $this->found_key=$row['Address Key'];
+                $this->get_data('id',$row['Address Key']);
+                $this->candidate[$row['Subject Key']]=110;
+            }
+
+
+        } else {
+
+            if ( $data['Address Fuzzy Type']=='Town') {
+
+                $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
                 $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+
                 foreach($fields as $field) {
                     $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
                 }
@@ -285,34 +315,11 @@ unset($raw_data['Street Data']);
                     $this->found_key=$row['Address Key'];
                     $this->get_data('id',$row['Address Key']);
                     $this->candidate[$row['Subject Key']]=110;
-                }
 
-
-            } else {
-
-                if ( $data['Address Fuzzy Type']=='Town') {
-
-                    $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
-
-                    $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-
-                    foreach($fields as $field) {
-                        $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-                    }
-
-                    $result=mysql_query($sql);
-                    $num_results=mysql_num_rows($result);
-                    if ($num_results==1) {
-                        $row=mysql_fetch_array($result, MYSQL_ASSOC);
-                        $this->found=true;
-                        $this->found_key=$row['Address Key'];
-                        $this->get_data('id',$row['Address Key']);
-                        $this->candidate[$row['Subject Key']]=110;
-
-                    }
                 }
             }
-        
+        }
+
     }
 
     function find_fuzzy($data,$subject_data) {
@@ -362,7 +369,7 @@ unset($raw_data['Street Data']);
                 }
                 break;
             case 'Address Town':
-             
+
                 $sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' and `Address Town`=%s ",
                              prepare_mysql($value)
                             );
@@ -378,8 +385,8 @@ unset($raw_data['Street Data']);
                     else
                         $this->candidate[$row['Subject Key']]=$val;
                 }
-                break;   
-                
+                break;
+
             default:
 
                 break;
@@ -824,6 +831,7 @@ unset($raw_data['Street Data']);
 
     function find($raw_data,$options='') {
 
+
         $find_type='complete';
         if (preg_match('/fuzzy/i',$options)) {
             $find_type='fuzzy';
@@ -875,9 +883,11 @@ unset($raw_data['Street Data']);
 
             }
         }
-
+//print_r($raw_data);
         $data=$this->prepare_data($raw_data,$options);
-        $subject_key=0;
+   //    print_r($data);
+    //   print "---------------\n";
+       $subject_key=0;
         $subject_type='';
         $in_contact=array();
         $subject_object=false;
@@ -1003,7 +1013,7 @@ unset($raw_data['Street Data']);
 
     function create($data) {
 
-        //   print_r($data);
+        // print_r($data);
 //exit;
 
 
@@ -1080,14 +1090,17 @@ unset($raw_data['Street Data']);
 
             }
         }
-        // print "XXXXXXXXXXX\n";
+       //  print "XXXXXXXXXXX\n";
         //print_r($data);
         //print"+++++++++++++\n";
-        
-        
-        
-        
+
+
+
+
         $data=$this->prepare_data($data,$options);
+
+     //   print_r($data);
+
 
         unset($data['Address Main Telephone Key']);
         unset($data['Address Main Plain Telephone']);
@@ -1115,7 +1128,7 @@ unset($raw_data['Street Data']);
                 $this->update_country_code($code);
             }
             elseif (array_key_exists($key,$base_data)) {
-
+             //   print "xx--> $value $key\n";
                 if ($value!=$this->data[$key]) {
                     $this->update_field_switcher($key,$value,$options);
                 }
@@ -1168,7 +1181,7 @@ unset($raw_data['Street Data']);
     // function update($data){
     // }
     function update_field_switcher($field,$value,$options='') {
-        //print "$field\n";
+        // print "**** $field\n";
         switch ($field) {
         case('Address First Postal Code'):
         case('Address Second Postal Code'):
@@ -1176,6 +1189,7 @@ unset($raw_data['Street Data']);
         case('Address Plain'):
         case('Address Input Format'):
         case('Address Fuzzy'):
+        case('Address Data Creation'):
             break;
         case('Address Postal Code'):
             $data=$this->parse_postcode($value,$this->data['Address Country Code']);
@@ -1201,6 +1215,10 @@ unset($raw_data['Street Data']);
             }
 
             break;
+         case('Address Data Last Update'):
+            $this->update_field($field,$this->editor['Date'],$options);
+            break;    
+            
         default:
             $this->update_field($field,$value,$options);
         }
@@ -1393,15 +1411,15 @@ unset($raw_data['Street Data']);
             return $this->plain($this->data);
             break;
         case('street'):
-        
-        if($this->data['Address Street Number Position']=='Right'){
-                    return _trim($this->data['Address Street Name'].' '.$this->data['Address Street Type'].' '.$this->data['Address Street Number']);
 
-        }else{
-            return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+            if ($this->data['Address Street Number Position']=='Right') {
+                return _trim($this->data['Address Street Name'].' '.$this->data['Address Street Type'].' '.$this->data['Address Street Number']);
 
-        }
-        
+            } else {
+                return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+
+            }
+
             switch ($this->data['Address Country Code']) {
             case('ESP'):
                 return _trim($this->data['Address Street Type'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Number']);
@@ -2061,89 +2079,98 @@ unset($raw_data['Street Data']);
      Todo:
      Country Id not used jet
      */
-public static function parse_street($line,$country_code='UNK') {
+    public static function parse_street($line,$country_code='UNK') {
 
-    // print "********** $line\n";
+        // print "********** $line\n";
 
-    $number='';
-    $name='';
-    $direction='';
-    $type='';
-    $position='Left';
-
-              //extract number
-              $line=_trim($line);
-
-
-    if (preg_match('/^\#?\s*(\d.*\d|\d)[^\s]*/i',$line,$match)) {
-
-
-
-        // if (preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?(bis)?[a-z]?\s*/i',$line,$match)) {
-
-        $number=$match[0];
-        $len=strlen($number);
-        $name=substr($line,$len);
+        $number='';
+        $name='';
+        $direction='';
+        $type='';
         $position='Left';
-    }
-    elseif(preg_match('/\#?\s*(\d.*\d|\d)[^\s]*$/i',$line,$match)) {
-        // elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)) {
-        //	 print "--------".$match[0]."-------------";
-        $number=$match[0];
-        $len=strlen($number);
-        $name=_trim(substr($line,0,strlen($line)-$len));
-        $position='Right';
-    }
-    else {
-        $name=$line;
 
-    }
-
-    $name=preg_replace('/^\s*,\s*/','',$name);
-
-    $name=_trim($name);
-    $number=_trim($number);
-    $regex='/\s(street|st\.?)$/i';
-    if (preg_match($regex,$name,$match)) {
-        $type="Street";
-        $name=preg_replace($regex,'',$name);
-    }
-
-    if (preg_match('/\s(road|rd\.?)$/i',$name,$match)) {
-        $type="Road";
-        $name=preg_replace('/\s(road|rd\.?)$/i','',$name);
-    }
-    if (preg_match('/\s(close)$/i',$name,$match)) {
-        $type="Close";
-        $name=preg_replace('/\s(close)$/i','',$name);
-    }
-    $regex='/\s(Av\.?|avenue|ave\.?)$/i';
-    if (preg_match($regex,$name,$match)) {
-        $type="Avenue";
-        $name=preg_replace($regex,'',$name);
-    }
+        //extract number
+        $line=_trim($line);
 
 
-    $name=mb_ucwords(_trim($name));
-    $return_data=array(
-                     'Address Street Number'=>$number,
-                     'Address Street Name'=>$name,
-                     'Address Street Type'=>$type,
-                     'Address Street Direction'=>$direction,
-                    'Address Street Number Position'=>$position
-                 );
-    //    print_r($return_data);
-    return $return_data;
+        if (preg_match('/^\#?\s*(\d.*\d|\d)[^\s]*/i',$line,$match)) {
 
-}
+
+
+            // if (preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?(bis)?[a-z]?\s*/i',$line,$match)) {
+
+            $number=$match[0];
+            $len=strlen($number);
+            $name=substr($line,$len);
+            $position='Left';
+        }
+        elseif(preg_match('/\#?\s*(\d.*\d|\d)[^\s]*$/i',$line,$match)) {
+            // elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)) {
+            //	 print "--------".$match[0]."-------------";
+            $number=$match[0];
+            $len=strlen($number);
+            $name=_trim(substr($line,0,strlen($line)-$len));
+            $position='Right';
+        }
+        else {
+            $name=$line;
+
+        }
+
+        $name=preg_replace('/^\s*,\s*/','',$name);
+
+        $name=_trim($name);
+        $number=_trim($number);
+        $regex='/\s(street|st\.?)$/i';
+        if (preg_match($regex,$name,$match)) {
+            $type="Street";
+            $name=preg_replace($regex,'',$name);
+        }
+
+        if (preg_match('/\s(road|rd\.?)$/i',$name,$match)) {
+            $type="Road";
+            $name=preg_replace('/\s(road|rd\.?)$/i','',$name);
+        }
+        if (preg_match('/\s(close)$/i',$name,$match)) {
+            $type="Close";
+            $name=preg_replace('/\s(close)$/i','',$name);
+        }
+        $regex='/\s(Av\.?|avenue|ave\.?)$/i';
+        if (preg_match($regex,$name,$match)) {
+            $type="Avenue";
+            $name=preg_replace($regex,'',$name);
+        }
+
+
+        $return_data=array(
+                         'Address Street Number'=>$number,
+                         'Address Street Name'=>$name,
+                         'Address Street Type'=>$type,
+                         'Address Street Direction'=>$direction,
+                         'Address Street Number Position'=>$position
+                     );
+        //    print_r($return_data);
+        return $return_data;
+
+    }
 
 
     /*Function:prepare_DBfields
      Cleans address data, look for common errors
      */
     public static function prepare_DBfields($raw_data) {
-       
-        return $raw_data;
+    
+    
+  //  print "---------------------\n";
+   
+        $country_data=Address::prepare_country_data($raw_data);
+        //print_r($country_data);
+       foreach ($country_data as $key=>$value) {
+            $raw_data[$key]=$value;
+        }
+       //  print_r($raw_data);
+         //print "===================\n";
+       return $raw_data;
     }
     /*Function: prepare_3line
      Cleans address data, look for common errors
@@ -3148,7 +3175,6 @@ public static function parse_street($line,$country_code='UNK') {
                     $raw_data['Address Line 2']='';
                 }
             }
-            $data['Address Country Second Division']=mb_ucwords($data['Address Country Second Division']);
 
             $data['Address Postal Code']=str_replace('-','',$data['Address Postal Code']);
             $data['Address Postal Code']=preg_replace('/MUNSTER|County RK/i','',$data['Address Postal Code']);
@@ -4319,13 +4345,10 @@ public static function parse_street($line,$country_code='UNK') {
         $data['Address Town']=preg_replace('/(\,|\-)$\s*/','',$data['Address Town']);
 
         foreach($data as $key=>$val) {
-            if ($key=='Address Postal Code' or $key=='Address Country Code' or $key=='Address Country 2 Alpha Code')
-                $data[$key]=_trim($val);
-            else
-                $data[$key]=mb_ucwords(_trim($val));
+            $data[$key]=_trim($val);
         }
 
-        $street_data=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
+        $street_data=Address::parse_street(_trim($raw_data['Address Line 3']));
 
         foreach($street_data as $key=>$value) {
             if (array_key_exists($key,$data)) {
@@ -4626,18 +4649,18 @@ public static function parse_street($line,$country_code='UNK') {
                 if ($parent=='Contact') {
                     $parent_object=new Contact($row['Parent Key']);
                     $parent_label=_('Contact');
-                      $parent_object->editor=$this->editor;
+                    $parent_object->editor=$this->editor;
                 }
                 elseif($parent=='Customer') {
                     $parent_object=new Customer($row['Parent Key']);
-                      $parent_object->editor=$this->editor;
+                    $parent_object->editor=$this->editor;
                     $parent_label=_('Customer');
 
 
                     $sql=sprintf('update `Customer Dimension` set `Customer Main Plain Postal Code`=%s, `Customer Main Address Incomplete`=%s where `Customer Key`=%d ',
-                                  prepare_mysql(
-						preg_replace('/[^a-z^A-Z^\d]/','',$this->data['Address Postal Code'])
-						,false),
+                                 prepare_mysql(
+                                     preg_replace('/[^a-z^A-Z^\d]/','',$this->data['Address Postal Code'])
+                                     ,false),
                                  prepare_mysql(($this->data['Address Fuzzy'])),
                                  $row['Parent Key']
                                 );
@@ -4660,7 +4683,7 @@ public static function parse_street($line,$country_code='UNK') {
                                      ,$this->data['Address Country Key']
                                      ,$row2['Customer Key']
                                     );
-                                   
+
                         mysql_query($sql);
                     }
 
@@ -4690,7 +4713,7 @@ public static function parse_street($line,$country_code='UNK') {
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
                 }
-                  $parent_object->editor=$this->editor;
+                $parent_object->editor=$this->editor;
                 $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
                 $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
                 $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
@@ -4752,9 +4775,9 @@ public static function parse_street($line,$country_code='UNK') {
 
 
                     }
-                    
+
                     if ($parent=='Customer') {
-                        
+
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
@@ -4908,6 +4931,7 @@ public static function parse_street($line,$country_code='UNK') {
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+            //  print $sql;
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
 

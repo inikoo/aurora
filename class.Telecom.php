@@ -1314,5 +1314,23 @@ function delete() {
 
 }
 
+function get_parent_keys($type=false) {
+    $where_type='';
+    if ($type) {
+        $where_type=' and `Subject Type`='.prepare_mysql($type);
+    }
+
+    $keys=array();
+    $sql=sprintf("select `Subject Key`,`Subject Type` from `Telecom Bridge` where  `Telecom Key`=%d $where_type",
+                 $this->id);
+    $res=mysql_query($sql);
+    //print $sql;
+    while ($row=mysql_fetch_assoc($res)) {
+        $keys[$row['Subject Key']]=array('Subject Key'=>$row['Subject Key'],'Subject Type'=>$row['Subject Type']);
+    }
+    return $keys;
+}
+
+
 }
 ?>

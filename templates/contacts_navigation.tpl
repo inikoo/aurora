@@ -24,7 +24,7 @@
 </div>
 
 
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
+<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}300px{/if};float:right;margin-bottom:10px" class="right_box">
   <div class="general_options">
     {foreach from=$general_options_list item=options }
     {if $options.tipo=="url"}

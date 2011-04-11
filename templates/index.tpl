@@ -22,13 +22,11 @@ Hello, here i am going to place the announcements about bug fixed and new featur
 
 <li  style="list-style-type: square;color:red">Report Problem / Request  using the links at the bottom of the page</li>
 
-<li  style="list-style-type: square">New Feature: Customer Lists (Used to make Newsletters and Marketing Emails)</li>
-<li  style="list-style-type: square">Tax number expored in QO Data Excel Cell[CJ1]</li>
+<li  style="list-style-type: square;color:navy">New Feature: Customer Lists (Used to make Newsletters and Marketing Emails)</li>
+
+<li  style="list-style-type: square">Accept/Reject Marketing Emails is asked when creating a customer</li>
+<li  style="list-style-type: square">Tax number exported in QO Data Excel Cell[CJ1]</li>
 <li  style="list-style-type: square">Gold Reward/ Only First Name in QO Data</li>
-<li  style="list-style-type: square">Improvements in Search (Telephones, Mobiles and Postal Code)</li>
-<li  style="list-style-type: square">Improvements in adding new Customers</li>
-<li  style="list-style-type: square">Now you can delete mobiles (16:35 4th April 11)</li>
-<li  style="list-style-type: square">Change country in edit customer now works</li>
 
 </ul>
 </div>
