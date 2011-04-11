@@ -1547,7 +1547,12 @@ function edit_address($data) {
         if ($subject_object->get_main_address_key()==$address->id) {
             $is_main='Yes';
         }
-        if ($subject=='Customer' and $subject_object->data['Customer Main Delivery Address Key']==$address->id) {
+        if ($subject=='Customer'  ) {
+         
+         
+                
+            if($subject_object->data['Customer Main Delivery Address Key']==$address->id){
+                
             $is_main_delivery='Yes';
 
             if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
@@ -1560,6 +1565,8 @@ function edit_address($data) {
             else {
                 $address_comment=$subject_object->delivery_address_xhtml();
             }
+
+}
 
 
             if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {

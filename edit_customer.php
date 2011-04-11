@@ -90,8 +90,12 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
-              'address_data.js.php?tipo=customer&id='.$customer->id,
-              'edit_delivery_address_common.js.php'
+            
+                   'edit_address.js.php',
+              'edit_delivery_address_common.js.php',
+              'js/edit_common.js',
+              'js/validate_telecom.js',
+         
               // 'customer.js.php?id='.$customer->id
           );
 //$smarty->assign('css_files',$css_files);
@@ -116,8 +120,7 @@ $smarty->assign('customer_type',$customer->data['Customer Type']);
 $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
 $css_files[]='css/edit_address.css';
 $css_files[]='css/edit.css';
-$js_files[]='js/edit_common.js';
-$js_files[]='js/validate_telecom.js';
+
 
 if ($customer->data['Customer Type']=='Company') {
     $company=new Company($customer->data['Customer Company Key']);
@@ -172,8 +175,8 @@ if (isset($_REQUEST['return_to_order'])) {
 }
 
 
+  $js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-$js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
 
 $js_files[]='edit_contact_telecom.js.php';

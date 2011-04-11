@@ -263,7 +263,7 @@
        <table border=0>
 	 {if $customer->get('Customer Type')=='Company'}
      <tr><td class="lavel">{t}Fiscal Name{/t}:</td>
-        <td style="text-align:left;">
+        <td style="text-align:left;width:300px">
      <div   >
        <input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
        <div id="Customer_Fiscal_Name_Container" style="" ></div>
@@ -286,8 +286,7 @@
        
        <div id="billing_address" style="margin-bottom:10px">
             {if ($customer->get('Customer Billing Address Link')=='Contact')   }
-
-   <span style="font-weight:600">{t}Billing Address Same as contact address{/t}</span> 
+   <span style="font-weight:600">{t}Same as contact address{/t}</span> 
    {else}
    {$customer->billing_address_xhtml()}
    {/if}

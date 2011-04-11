@@ -47,5 +47,4 @@ array_push($css_files, 'css/dropdown.css');
 array_push($css_files, 'css/index.css');
 array_push($css_files, 'table.css');
 }
-
-?> 
+?>
