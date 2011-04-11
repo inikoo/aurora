@@ -2238,4 +2238,290 @@ function xml2array_to_delete($xml) {
     return $xmlary;
 }
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function products_awhere($awhere) {
+    // $awhere=preg_replace('/\\\"/','"',$awhere);
+    //    print "$awhere";
+
+
+    $where_data=array(
+                    'product_ordered1'=>'∀',
+                    'geo_constraints'=>'',
+                    'product_not_ordered1'=>'',
+                    'product_not_received1'=>'',
+                    'ordered_from'=>'',
+                    'ordered_to'=>'',
+                    'customer_created_from'=>'',
+                    'customer_created_to'=>'',
+                    'dont_have'=>array(),
+                    'have'=>array(),
+                    'categories'=>''
+                );
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key=>$item) {
+        $where_data[$key]=$item;
+    }
+
+
+    $where='where true';
+    $table='`Product Dimension` C ';
+
+//print_r($where_data);
+    $use_product=false;
+    $use_categories =false;
+    $use_otf =false;
+
+ 
+    $where_geo_constraints='';
+    if ($where_data['geo_constraints']!='') {
+        $where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints']);
+    }
+
+
+    if ($where_data['product_ordered1']=='')
+        $where_data['product_ordered1']='∀';
+
+
+    if ($where_data['product_ordered1']!='') {
+        if ($where_data['product_ordered1']!='∀') {
+            $use_otf=true;
+            list($where_product_ordered1,$use_product)=extract_products_groups($where_data['product_ordered1']);
+        } else
+            $where_product_ordered1='true';
+    } else {
+        $where_product_ordered1='false';
+    }
+
+    if ($where_data['product_not_ordered1']!='') {
+        if ($where_data['product_not_ordered1']!='ALL') {
+            $use_otf=true;
+            $where_product_not_ordered1=extract_products_groups($where_data['product_ordered1'],'O.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','O.`Product Family Key` like');
+        } else
+            $where_product_not_ordered1='false';
+    } else
+        $where_product_not_ordered1='true';
+
+    if ($where_data['product_not_received1']!='') {
+        if ($where_data['product_not_received1']!='∀') {
+            $use_otf=true;
+            $where_product_not_received1=extract_products_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+        } else {
+            $use_otf=true;
+            $where_product_not_received1=' ((ordered-dispatched)>0)  ';
+        }
+    } else
+        $where_product_not_received1='true';
+
+    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Invoice Date`','only_dates');
+    if ($date_interval_when_ordered['mysql']) {
+        $use_otf=true;
+    }
+    $date_interval_when_customer_created=prepare_mysql_dates($where_data['customer_created_from'],$where_data['customer_created_to'],'`Product Valid From`','only_dates');
+    if ($date_interval_when_customer_created['mysql']) {
+
+    }
+
+
+    if ($use_otf) {
+        $table='`Product Dimension` C   ';
+    }
+    if ($use_product) {
+        $table=' `Product Dimension` C ';
+    }
+
+
+
+  
+
+
+
+
+
+    $where='where (  '.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].")  $where_geo_constraints";
+
+  
+    return array($where,$table);
+
+}
+
+//--------------------------------------------------------------------------------------------------------------
+
+function extract_products_groups($str,$q_prod_name='C.`Product Code` like',$q_prod_id='C.`Product ID`',$q_department_name='C.`Product Main Department Code` like',$q_department_id='C.`Product Main Department Key` like') {
+    if ($str=='')
+        return '';
+    $where='';
+    $where_g='';
+    $where_d='';
+    $use_product=false;
+
+    if (preg_match_all('/d\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+
+
+        foreach($matches[0] as $match) {
+
+            $_departments=preg_replace('/\)$/i','',preg_replace('/^d\(/i','',$match));
+            $_departments=preg_split('/\s*,\s*/i',$_departments);
+
+            foreach($_departments as $department) {
+                $department_ordered=addslashes($department);
+                if (is_numeric($department_ordered))
+                    $where_d.=" or $q_department_id  '$department_ordered'";
+                else {
+                    $where_d.=" or $q_department_name '$department_ordered'";
+                    $use_product=true;
+                }
+            }
+        }
+        $str=preg_replace('/d\([a-z0-9\-\,]*\)/i','',$str);
+    }
+
+    if (preg_match_all('/f\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+
+
+        foreach($matches[0] as $match) {
+
+            $_groups=preg_replace('/\)$/i','',preg_replace('/^f\(/i','',$match));
+            $_groups=preg_split('/\s*,\s*/i',$_groups);
+
+            foreach($_groups as $group) {
+                $group_ordered=addslashes($group);
+                if (is_numeric($group_ordered))
+                    $where_g.=" or $q_group_id  '$group_ordered'";
+                else {
+                    $where_g.=" or $q_group_name '$group_ordered'";
+                    $use_product=true;
+                }
+            }
+        }
+        $str=preg_replace('/f\([a-z0-9\-\,]*\)/i','',$str);
+    }
+
+
+    $products=preg_split('/\s*,\s*/i',$str);
+
+    $where_p='';
+    foreach($products as $product) {
+        if ($product!='') {
+            $product=addslashes($product);
+            if (is_numeric($product))
+                $where_p.= " or $q_prod_id  '$product'";
+            else
+                $where_p.= " or $q_prod_name  '$product'";
+        }
+    }
+
+
+
+    $where=preg_replace('/^\s*or\s*/i','',$where_d.$where_g.$where_p);
+    return array('('.$where.')',$use_product);
+
+}
+function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Country Code`',$q_wregion_code='C.`Customer Main Country Code`',$q_town_name='C.`Customer Main Town`',$q_post_code='C.`Customer Main Postal Code`') {
+    if ($str=='')
+        return '';
+    $where='';
+    $where_c='';
+    $where_t='';
+    $where_pc='';
+    $where_wr='';
+    $use_product=false;
+    $town_names=array();
+    $post_code_names=array();
+
+    $country_codes=array();
+    $wregion_codes=array();
+
+    if (preg_match_all('/t\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+        foreach($matches[0] as $match) {
+            $_towns=preg_replace('/\)$/i','',preg_replace('/^t\(/i','',$match));
+            $_towns=preg_split('/\s*,\s*/i',$_towns);
+            foreach($_towns as $town) {
+                if ($town!='') {
+                    $town=addslashes($town);
+                    $town_names[$town]=$town;
+                }else{
+                    $town_names['_none_']='';
+                }
+            }
+        }
+        if (count($town_names)>0)
+            $where_t.= " or $q_town_name in ('".join("','",$town_names)."')";
+
+        $str=preg_replace('/t\([a-z0-9\-\,]*\)/i','',$str);
+    }
+
+    if (preg_match_all('/pc\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+        foreach($matches[0] as $match) {
+            $_post_codes=preg_replace('/\)$/i','',preg_replace('/^pc\(/i','',$match));
+            $_post_codes=preg_split('/\s*,\s*/i',$_post_codes);
+            foreach($_post_codes as $post_code) {
+                if ($post_code!='') {
+                    $post_code=addslashes($post_code);
+                    $post_code_names[$post_code]=$post_code;
+                }else{
+                    $town_names['_none_']='';
+                }
+            }
+        }
+        if (count($post_code_names)>0)
+            $where_t.= " or $q_post_code in ('".join("','",$post_code_names)."')";
+
+        $str=preg_replace('/pc\([a-z0-9\-\,]*\)/i','',$str);
+    }
+    if (preg_match_all('/wr\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+
+
+        foreach($matches[0] as $match) {
+
+            $_world_regions=preg_replace('/\)$/i','',preg_replace('/^wr\(/i','',$match));
+            $_world_regions=preg_split('/\s*,\s*/i',$_world_regions);
+
+            // print_r($_world_regions);
+            foreach($_world_regions as $world_region) {
+                if ($world_region!='' and strlen($world_region)==4) {
+                    $world_region=addslashes($world_region);
+                    $wregion_codes[$world_region]=$world_region;
+                }
+
+            }
+        }
+        $sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `World Region Code` in (%s)","'".join("','",$wregion_codes)."'");
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $country_codes[$row['Country Code']]=$row['Country Code'];
+
+        }
+        $str=preg_replace('/wr\([a-z0-9\-\,]*\)/i','',$str);
+    }
+    $products=preg_split('/\s*,\s*/i',$str);
+    $where_c='';
+    foreach($products as $product) {
+        if ($product!='' and strlen($product)==3) {
+            $product=addslashes($product);
+            $country_codes[$product]=$product;
+
+        }
+    }
+    if (count($country_codes)>0)
+        $where_c.= " or $q_country_code in ('".join("','",$country_codes)."')";
+
+    $where=preg_replace('/^\s*or\s*/i','',$where_wr.$where_c.$where_pc.$where_t);
+    if ($where!='')
+        $where=' and '.$where;
+    return $where;
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 ?>

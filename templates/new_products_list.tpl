@@ -87,12 +87,11 @@
 
     
     <div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none" >
-    <span class="clean_table_title">Customers List</span>
- <div id="table_type">
-         <a  style="float:right"  class="table_type state_details"  href="customers_lists_csv.php" >{t}Export (CSV){/t}</a>
-
+    <span class="clean_table_title">Products List</span>
+{*     <div id="table_type">
+       	 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products" >{t}Export (CSV){/t}</span>
      </div>
-
+*}
 
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
