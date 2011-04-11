@@ -27,6 +27,8 @@
      <div id="results" style="margin-top:0px;float:right;width:390px;"></div>
       
       <div  style="float:left;width:540px;" >
+      
+      
       <table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
       <input type="hidden" value="{$store_key}" id="Store_Key"/>
       <input type="hidden" value="{$customer_type}" id="Customer_Type"/>
@@ -188,9 +190,35 @@ hide_buttons=1
 {/foreach}
 
 
+	 <tr>
+ <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
+ <input type="hidden" value="No" id="allow_newsletter"  />
+ <input type="hidden" value="No" id="allow_marketing_email"  />
+ <input type="hidden" value="No" id="allow_marketing_postal"  />
+
+ <td>
+   <div  class="options" style="margin:0">
+   <span class="option" onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</span> <span class="option selected" onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</span>
+   </div>
+ </td>
+ </tr>
+  <tr>
+ <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
+ <td>
+   <div class="options" style="margin:0">
+   <span class="option" onclick="change_allow(this,'allow_marketing_email','Yes')" >{t}Yes{/t}</span> <span class="option selected" onclick="change_allow(this,'allow_marketing_email','No')" >{t}No{/t}</span>
+   </div>
+ </td>
+ </tr>
 	
-	
-	
+ <tr>
+ <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
+ <td>
+   <div  class="options" style="margin:0">
+   <span class="option" onclick="change_allow(this,'allow_marketing_postal','Yes')" >{t}Yes{/t}</span> <span class="option selected" onclick="change_allow(this,'allow_marketing_postal','No')" >{t}No{/t}</span><br/><br/>
+   </div>
+ </td>
+ </tr>	
     
     </table>
       <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">

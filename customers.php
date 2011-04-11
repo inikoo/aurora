@@ -254,5 +254,7 @@ $smarty->assign('export_csv_table_cols',2);
 
 $smarty->assign('csv_export_options',$csv_export_options);
 //print_r($_SESSION['state']['customers']);
+$smarty->assign('options_box_width','600px');
+
 $smarty->display('customers.tpl');
 ?>

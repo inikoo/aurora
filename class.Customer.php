@@ -782,6 +782,9 @@ class Customer extends DB_Table {
                 $address->new=true;
 
                 $this->create_contact_address_bridge($address->id);
+                 $address->update_parents_principal_telecom_keys('Telephone',($this->new?false:true));
+                $address->update_parents_principal_telecom_keys('FAX',($this->new?false:true));
+
 
                 $address->update_parents(false,($this->new?false:true));
 
@@ -791,6 +794,10 @@ class Customer extends DB_Table {
                 //  exit;
 
                 $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+                
+                
+                
+                
                 $tel->editor=$this->editor;
                 $tel->new=true;
                 if ($tel->id)

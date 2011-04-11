@@ -20,8 +20,11 @@
   
  <div class="tabbed_container" > 
    
-   
-    <div  class="edit_block" style="{if $edit!="communications"}display:none{/if};min-height:260px"  id="d_communications">
+<div  class="edit_block" style="{if $edit!="communications"}display:none{/if};min-height:260px"  id="d_communications">
+    
+    
+    
+    
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Emails{/t}</td></tr>
  
@@ -54,6 +57,9 @@
  </td>
  </tr>
 
+
+<tbody id="add_to_post_cue" style="display:none">
+
   <tr class="title"><td colspan=5>{t}Send Post {/t}</td></tr>
  <tr>
  <td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
@@ -71,6 +77,8 @@
    </div>
  </td>
  </tr>
+ </tbody>
+ 
  
 {*} 
  {foreach from=$categories item=cat key=cat_key name=foo  }
@@ -92,9 +100,7 @@
 
 </table>
 </div>
-  
-   
- <div  class="edit_block" style="{if $edit!="categories"}display:none{/if};min-height:260px"  id="d_categories">
+<div  class="edit_block" style="{if $edit!="categories"}display:none{/if};min-height:260px"  id="d_categories">
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
  
@@ -119,21 +125,38 @@
 
 </table>
 </div>
-  
 <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if};min-height:260px"  id="d_delivery">
  {include file='edit_delivery_address_splinter.tpl'}
 
 </div>
-
-
-   <div  class="edit_block" style="{if $edit!="details"}display:none{/if};"  id="d_details">
+<div  class="edit_block" style="{if $edit!="details"}display:none{/if};"  id="d_details">
   
        <div class="general_options" style="float:right">
 	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_customer" class="state_details">{t}Save{/t}</span>
 	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span>
       </div>
-  
+
    <table class="edit" border=0 style="clear:both;margin-bottom:40px;width:640px">
+<tr>
+<td></td>
+<td style="text-align:right;color:#777;font-size:90%">
+<span id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</span>
+<span id="cancel_convert_to_company" class="state_details" style="display:none" >{t}Cancel{/t}</span>
+<span id="save_convert_to_company" class="disabled state_details" style="display:none;margin-left:10px;;color:#777;">{t}Save Conversion to Company{/t}</span>
+
+</td>
+</tr>
+   
+  <tr id="New_Company_Name_tr"  style="display:none" class="first"><td style=""  class="label">{t}Company Name{/t}:</td>
+   <td  style="text-align:left;;width:250px">
+     <div  >
+       <input style="text-align:left;width:100%" id="New_Company_Name" value="" ovalue="" valid="0">
+       <div id="New_Company_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="New_Company_Name_msg"  class="edit_td_alert"></td>
+ </tr> 
+   
  <tr style="display:none"><td class="label">{t}Type{/t}:</td>
 	       <td > 
 		 <div class="options" style="margin:5px 0" id="shelf_type_type_container">
@@ -191,7 +214,7 @@
        <div id="Customer_Main_Telephone_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
+   <td id="Customer_Main_Telephone_msg" class="edit_td_alert">{$main_telephone_warning}</td>
  </tr>
   <tr class=""><td style="" class="label">{t}Contact Mobile{/t}:</td>
    <td  style="text-align:left">

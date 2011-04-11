@@ -227,12 +227,12 @@ var save_address=function(e,options) {
         var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(value));
         var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
        //  alert(request);
-          //return;
+         // return;
                     cancel_edit_address(address_prefix);
 
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-              //  alert(o.responseText)
+              // alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
                 if(r.state==200){
                 if (r.action=='updated') {
@@ -439,14 +439,17 @@ var create_address=function(options) {
 
 
 
-    var json_value = YAHOO.lang.JSON.stringify(value);
+        var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(value));
 
 
 
     var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-    YAHOO.util.Connect.asyncRequest('POST',request , {
+  
+ 
+  
+  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            // 	alert(o.responseText);
+             //	alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='created') {
 
@@ -524,6 +527,9 @@ var update_address_buttons=function() {
 };
 
 function reset_address(e,prefix) {
+
+
+
     changes_address=0;
     index=Dom.get(prefix+"reset_address_button").getAttribute('address_key');
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', '');
@@ -805,6 +811,9 @@ var on_address_item_change_when_creating=function() {
 
 
 var on_address_item_change=function(o,prefix) {
+
+
+
     var address_prefix='';
     if (prefix!= undefined) {
         address_prefix=prefix;
@@ -992,6 +1001,9 @@ function change_country(prefix,oData){
      Dom.setStyle(prefix+'show_country_subregions','display','')
 
  Dom.get(prefix+'address_street').focus()
+ 
+ on_address_item_change(false,prefix)
+ 
 }
 
 function show_country_options(prefix){

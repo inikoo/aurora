@@ -20,7 +20,7 @@ include_once('map_order_functions.php');
 //require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 
-  print "->Start.(RO UK) ".date("r")."\n";
+ 
 
 
 //$db =& MDB2::factory($dsn);       
@@ -39,7 +39,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
   
-
+ print "->Start.(RO UK) ".date("r")."\n";
 
 $tmp_directory='/tmp/';
 
