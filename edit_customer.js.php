@@ -360,6 +360,54 @@ function back_to_take_order(){
 
 }
 
+function save_convert_to_company(){
+if(Dom.hasClass('save_convert_to_company','disabled')){
+return;
+}
+
+var request='ar_edit_contacts.php?tipo=convert_customer_to_company&company_name=' + encodeURIComponent(Dom.get('New_Company_Name').value) +'&customer_key=' + customer_id
+	           
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           // alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+        location.href='edit_customer.php?id='+customer_id;
+                                  }else{
+                                  Dom.get('New_Company_Name_msg').innerHTML=r.msg
+                                  }
+   			}
+    });
+
+
+}
+
+function cancel_convert_to_company(){
+Dom.setStyle(['New_Company_Name_tr','save_convert_to_company','cancel_convert_to_company'],'display','none');
+Dom.setStyle('convert_to_company','display','');
+Dom.get('New_Company_Name').value='';
+}
+
+function convert_to_company(){
+Dom.setStyle(['New_Company_Name_tr','save_convert_to_company','cancel_convert_to_company'],'display','');
+Dom.setStyle('convert_to_company','display','none');
+Dom.get('New_Company_Name').focus();
+}
+
+
+function validate_new_company_name(query){
+
+  var validator=new RegExp('/[a-z0-9]/',"i");
+    if (!validator.test(query)) {
+        Dom.removeClass('save_convert_to_company','disabled')
+
+    } else {
+   Dom.addClass('save_convert_to_company','disabled')
+   
+    }
+    
+}
+
 function post_change_main_delivery_address(){}
 
 function init(){
@@ -382,6 +430,17 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
      YAHOO.util.Event.addListener('save_edit_billing_data', "click", save_edit_billing_data);
     YAHOO.util.Event.addListener('reset_edit_billing_data', "click", reset_edit_billing_data);
     
+    YAHOO.util.Event.addListener('convert_to_company', "click", convert_to_company);
+    YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
+    YAHOO.util.Event.addListener('save_convert_to_company', "click", save_convert_to_company);
+
+
+  var new_company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_new_company_name);
+    new_company_name_oACDS.queryMatchContains = true;
+    var new_company_name_oAutoComp = new YAHOO.widget.AutoComplete("New_Company_Name","New_Company_Name_Container", new_company_name_oACDS);
+    new_company_name_oAutoComp.minQueryLength = 0; 
+    new_company_name_oAutoComp.queryDelay = 0.1;
+
 
    var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
     customer_name_oACDS.queryMatchContains = true;

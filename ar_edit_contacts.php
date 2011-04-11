@@ -16,7 +16,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('convert_customer_to_company'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'company_name'=>array('type'=>'string'),
 
+                         ));
+    convert_customer_to_company($data);
+    break;
 case('delete_customer_history'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -892,19 +899,19 @@ function new_address() {
     }
 
     $translator=array(
-                    'country_code'=>'Address Country Code'
-                                   ,'country_d1'=>'Address Country First Division'
-                                                 ,'country_d2'=>'Address Country Second Division'
-                                                               ,'town'=>'Address Town'
-                                                                       ,'town_d1'=>'Address Town First Division'
-                                                                                  ,'town_d2'=>'Address Town Second Division'
-                                                                                             ,'postal_code'=>'Address Postal Code'
-                                                                                                            ,'street'=>'Street Data'
-                                                                                                                      ,'internal'=>'Address Internal'
-                                                                                                                                  ,'building'=>'Address Building'
-                                                                                                                                              ,'type'=>'Address Type'
-                                                                                                                                                      ,'function'=>'Address Function'
-                                                                                                                                                                  ,'description'=>'Address Description'
+                    'country_code'=>'Address Country Code',
+                    'country_d1'=>'Address Country First Division',
+                    'country_d2'=>'Address Country Second Division',
+                    'town'=>'Address Town',
+                    'town_d1'=>'Address Town First Division',
+                    'town_d2'=>'Address Town Second Division',
+                    'postal_code'=>'Address Postal Code',
+                    'street'=>'Street Data',
+                    'internal'=>'Address Internal',
+                    'building'=>'Address Building',
+                    'type'=>'Address Type',
+                    'function'=>'Address Function',
+                    'description'=>'Address Description'
 
                 );
 
@@ -916,7 +923,7 @@ function new_address() {
         }
     }
     // print $subject;
-
+//print_r($data);
     $address=new Address("find in $subject $subject_key create",$data);
 
     if (!$address->id) {
@@ -1344,6 +1351,8 @@ function edit_billing_address($raw_data) {
 function edit_address($data) {
     global $editor;
     $warning='';
+    
+   
 
 
     $id=$data['id'];
@@ -1413,9 +1422,9 @@ function edit_address($data) {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
                 if ($address->id==$proposed_address->id) {
-                    $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
-                    echo json_encode($response);
-                    exit;
+                   // $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
+                   // echo json_encode($response);
+                   // exit;
                 } else {
                     $subject_object->update_principal_address($proposed_address->id);
 
@@ -1426,7 +1435,7 @@ function edit_address($data) {
                 }
 
 
-                return;
+              
             } else {
                 $msg="This Customer has already another address with this data";
                 $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
@@ -1509,7 +1518,7 @@ function edit_address($data) {
         }
     }
 
-
+//print_r($update_data);
 
     $address->update($update_data,'cascade');
 
@@ -1936,9 +1945,89 @@ function new_company($data) {
 
 }
 
+function convert_customer_to_company($data) {
+
+    global $editor;
+
+    if (!preg_match('/[a-z0-9]+/i',$data['company_name'])) {
+        $response= array('state'=>400,'action'=>'error','msg'=>_('Invalid company name'));
+        echo json_encode($response);
+        return;
+
+    }
+
+
+    $customer=new Customer($data['customer_key']);
+    if (!$customer->id) {
+        $response= array('state'=>400,'action'=>'error','msg'=>'customer not found');
+        echo json_encode($response);
+        return;
+    }
+
+    if ($customer->data['Customer Type']=='Company') {
+        $response= array('state'=>400,'action'=>'error','msg'=>_('Customer is already a company'));
+        echo json_encode($response);
+        return;
+
+    }
+
+    $contact_key=$customer->data['Customer Main Contact Key'];
+    $address_key=$customer->data['Customer Main Address Key'];
+
+    $company_data=array(
+                      'Company Name'=>$data['company_name'],
+                      'Company Tax Number'=>$customer->data['Customer Tax Number']
+                  );
+    $company=new Company();
+    $company->create($company_data,array(),'use contact '.$contact_key.' use address '.$address_key);
+
+
+
+    $sql=sprintf('update `Customer Dimension` set `Customer Type`="Company", `Customer Company Key`=%d ,`Customer Name`=%s,`Customer Company Name`=%s where `Customer Key`=%d',
+                 $company->id,
+                 prepare_mysql($company->data['Company Name']),
+                 prepare_mysql( $company->data['Company Name']),
+                 $customer->id
+
+                );
+
+    $sql=sprintf('update `Customer Dimension` set `Customer Type`="Company"  where `Customer Key`=%d',
+
+                 $customer->id
+
+                );
+
+    mysql_query($sql);
+    $customer->create_company_bridge($company->id);
+
+
+    $history_data=array(
+                      'History Abstract'=>_('Customer set up as Company'),
+                      'History Details'=>_trim(_('Customer now known as')." ".$company->data['Company Name']),
+                      'Action'=>'edited'
+                  );
+    $customer->add_customer_history($history_data);
+    $response= array('state'=>200,'action'=>'changed','name'=>$company->data['Company Name']);
+    echo json_encode($response);
+
+
+}
+
 function new_customer($data) {
     //Timer::timing_milestone('begin');
-    global $editor;
+    global $editor,$user;
+
+
+
+
+    if (!in_array($data['values']['Customer Store Key'],$user->stores)) {
+        $response= array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
+        echo json_encode($response);
+        return;
+
+    }
+
+
 
     if ($data['values']['Customer Address Country Code']=='')
         $data['values']['Customer Address Country Code']='UNK';
@@ -1979,7 +2068,6 @@ function new_customer($data) {
                 $address_home_data[$_key]=$val;
         }
 
-
         $contact->create($contact_data,$address_home_data);
 
         // print_r($contact_data);
@@ -2014,12 +2102,12 @@ function new_customer($data) {
                 $_key=preg_replace('/Customer /','Company ',$key);
                 $company_data[$_key]=$val;
             }
-        
-          if (array_key_exists($_key,$address_data))
+
+            if (array_key_exists($_key,$address_data))
                 $address_data[$_key]=$val;
-        
+
         }
-        
+
 
         $company=new Company();
         $company->editor=$editor;
@@ -2071,6 +2159,14 @@ function new_customer($data) {
 
     // $customer=new Customer('find create',$data['values']);
     if ($customer->new) {
+        $store=new Store($customer->data['Customer Store Key']);
+        $store->update_customers_data();
+
+        $customer->update_orders();
+        $customer->update_temporal_data();
+        $customer->update_activity();
+
+
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
 
 
@@ -2087,7 +2183,7 @@ function new_customer($data) {
                              $customer->id
                             );
                 mysql_query($sql);
-                print($sql);
+                // print($sql);
             }
         }
 

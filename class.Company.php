@@ -763,6 +763,13 @@ $companies_with_same_name[$company_key]=$company_key;
                 $sql=sprintf("insert into `Company Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Company Old ID'])));
                 mysql_query($sql);
             }
+            
+            
+             if (preg_match('/use address \d+/',$options,$match)) {
+            
+            $address=new Address(preg_replace('/[^\d]/','',$match[0]));
+            }else{
+            
             $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
             foreach($raw_address_data as $key=>$value) {
                 if (array_key_exists($key,$address_data))
@@ -779,14 +786,15 @@ $companies_with_same_name[$company_key]=$company_key;
             $address=new Address("find in company ".$this->id." $options create",$address_data);
             $address->editor=$this->editor;
             //print_r($address);
+            }
             $this->associate_address($address->id);
 
 
             $use_contact=0;
             //print "$options\n";
 
-            if (preg_match('/use contact \d+/',$options)) {
-                $use_contact=preg_replace('/use contact /','',$options);
+            if (preg_match('/use contact \d+/',$options,$match)) {
+                $use_contact=preg_replace('/use contact /','',$match[0]);
             }
 
             if ($use_contact) {

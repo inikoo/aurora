@@ -12,8 +12,8 @@
        <div style="margin-top:5px">
        <span id="add_new_delivery_address" class="state_details">Add New Delivery Address</span>
        </div>
-       <table border=1 style="width:540px">
-       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_function='Shipping'  hide_type=true hide_description=true show_form=false  show_components=false }
+       <table id="new_delivery_address_table" border=0 style="width:540px;display:none">
+       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' address_function='Shipping'  hide_type=true hide_description=true show_form=false  show_components=false }
 
      </table>
       <table>

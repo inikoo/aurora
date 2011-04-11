@@ -112,11 +112,11 @@ function save_new_customer(e){
    var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(subject_data));
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
-  // alert(request);
+   //alert(request);
    //return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+	//	alert(o.responseText);
 		//return;
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
@@ -293,6 +293,14 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 
 }
 
+function change_allow(o,key,value){
+
+Dom.get(key).value=value;
+Dom.removeClass(Dom.getElementsByClassName('option', 'span', o.parentNode ),'selected');
+Dom.addClass(o,'selected');
+
+
+}
 
 function init(){
     
