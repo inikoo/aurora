@@ -13,52 +13,30 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
-
 if(!$user->can_view('customers')){
   header('Location: index.php');
   exit();
 }
-
 if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
   $store_id=$_REQUEST['store'];
-
 }else{
   $store_id=$_SESSION['state']['customers']['store'];
-
 }
-
 if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
   header('Location: index.php');
    exit;
 }
-
 $store=new Store($store_id);
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
-
 $_SESSION['state']['customers']['store']=$store_id;
-
 $modify=$user->can_edit('customers');
-
-
-
 $general_options_list=array();
-
-
-   $general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Exit Customer Stats'));
-
-
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Exit Customer Stats'));
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
-
-
-
- 
-
-
-		 
 		 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -66,14 +44,13 @@ $smarty->assign('search_scope','customers');
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
 		 'text_editor.css',
 		 'common.css',
 		 'button.css',
 		 'container.css',
 		 'table.css'
 		 );
-		 
+include_once('Theme.php');
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',

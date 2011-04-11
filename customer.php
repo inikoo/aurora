@@ -72,6 +72,7 @@ $css_files=array(
                'css/customer.css'
 
            );
+include_once('Theme.php');
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
