@@ -61,7 +61,6 @@ if(!isset($_REQUEST['subject_key'])){
 
 }else{
 	$scope_args=$_REQUEST['subject_key'];
-
 }
 
 /*
@@ -105,7 +104,6 @@ else
 {
 	$showerror = '';
 }
-
 $smarty->assign('subject',$scope);
 $smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
