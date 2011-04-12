@@ -15,10 +15,10 @@
       <tr>
         <td>{t}Product valid between{/t}:</td>
         <td>
-            <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="customer_first_contacted_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
-            <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="customer_first_contacted_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
-            <div id="customer_first_contacted_from_Container" style="position:absolute;display:none; z-index:2"></div>
-            <div id="customer_first_contacted_to_Container" style="display:none; z-index:2;position:absolute"></div>
+            <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_first_validated_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_first_validated_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="product_first_validated_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="product_first_validated_to_Container" style="display:none; z-index:2;position:absolute"></div>
         </td>        
       </tr>
 <tr><td colspan="2"><b>{t}Some features...{/t}</b></td></tr> 

@@ -2254,8 +2254,8 @@ function products_awhere($awhere) {
                     'product_not_received1'=>'',
                     'ordered_from'=>'',
                     'ordered_to'=>'',
-                    'customer_created_from'=>'',
-                    'customer_created_to'=>'',
+                    'product_valid_from'=>'',
+                    'product_valid_to'=>'',
                     'dont_have'=>array(),
                     'have'=>array(),
                     'categories'=>''
@@ -2322,7 +2322,7 @@ function products_awhere($awhere) {
     if ($date_interval_when_ordered['mysql']) {
         $use_otf=true;
     }
-    $date_interval_when_customer_created=prepare_mysql_dates($where_data['customer_created_from'],$where_data['customer_created_to'],'`Product Valid From`','only_dates');
+    $date_interval_when_customer_created=prepare_mysql_dates($where_data['product_valid_from'],$where_data['product_valid_to'],'`Product Valid From`','only_dates');
     if ($date_interval_when_customer_created['mysql']) {
 
     }

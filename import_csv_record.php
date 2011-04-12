@@ -14,6 +14,7 @@
 	$h = $csv->getHeaders();
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
+
 	//echo '<pre>'; print_r($colorArray);
 	//$r =  $csv->getRow($index); 
 	$raw = $csv->getrawArray();
@@ -149,7 +150,7 @@
 			if((isset($prev[$j]) == TRUE))
 			{
 		?>
-		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php echo $tt[$j];} ?> ><?php echo $value;?></option>
+		<option value="<?php echo $key;?>" <?php if($prev[$j]==$key) { ?>selected="selected"<?php echo $prev[$j];} ?> ><?php echo $value;?></option>
 		<?php
 		}
 		else
