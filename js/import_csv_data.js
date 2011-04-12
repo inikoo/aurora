@@ -5,7 +5,6 @@ try { return new XMLHttpRequest();} catch(e) {} //Native Javascript
 alert("XMLHttpRequest not supported");
 return null;
 };
-
 function get_default(v) {
  var v;
  var qstring = window.location.toString();
@@ -22,7 +21,6 @@ function get_default(v) {
            }
       }
  };
-
  req.open("GET", "import_csv_record.php?v="+v+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null);
