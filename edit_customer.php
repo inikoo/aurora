@@ -261,6 +261,7 @@ $smarty->assign('main_telephone_warnings',$main_telephone_warnings);
 $smarty->assign('main_telephone_warning',$main_telephone_warning);
 
 //$smarty->assign('delivery_addresses',$delivery_addresses);
+$smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 $smarty->display('edit_customer.tpl');
 exit();
 
