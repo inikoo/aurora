@@ -53,7 +53,7 @@ function getPrev(v,limit) {
            }
       }
  };
-v = v-1;
+v = v-1;//alert(v);
  //req.open("GET", "getPage.php?data="+r+"&val="+val); 
  req.open("GET", "import_csv_record.php?v="+v+"&prevArray="+prevArray+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
