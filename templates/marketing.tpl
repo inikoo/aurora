@@ -21,9 +21,13 @@
     <li> <span class="item {if $view=='web_internal'}selected{/if}"  id="web_internal">  <span> {t}Site Campaigns{/t}</span></span></li>
     <li> <span class="item {if $view=='web'}selected{/if}"  id="web">  <span> {t}Internet Campaigns{/t}</span></span></li>
     <li> <span class="item {if $view=='other'}selected{/if}"  id="other">  <span> {t}Other Media Campaigns{/t}</span></span></li>
+        <li> <span class="item {if $view=='follow'}selected{/if}"  id="follow">  <span> {t}Follow-up's{/t}</span></span></li>
+
 </ul>
  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
-
+<div id="block_follow" style="{if $view!='follow'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<h2>{t}Follow-up's Emails{/t}</h2>
+</div>
 
 <div id="block_metrics" style="{if $view!='metrics'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 <h2>{t}Marketing Metrics{/t}</h2>
