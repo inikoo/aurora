@@ -328,9 +328,9 @@ class Telecom extends DB_Table {
 
 
         if ($raw_number!='') {
-            $_data=preg_replace('/[^\d]/','',$raw_number);
+           
 
-            if (strlen($_data)<3) {
+            if (strlen($raw_number)<3) {
 
                 $this->error=true;
                 $this->msg=_('Error, invalid telecom data');
@@ -340,7 +340,7 @@ class Telecom extends DB_Table {
 
             }
 
-            $tmp=$this->parse_plain_number($raw_number,$country_code);
+            $tmp=$this->parse_inputed_number($raw_number,$country_code);
             //print_r($tmp);
             foreach($tmp as $key=>$value) {
 
@@ -589,11 +589,11 @@ function parse_inputed_number($number,$country_code='UNK') {
           $number=_trim($number);
           
           
-    
+  //  print $number;
           
           
     if (preg_match('/^\+\d{1,3}\s{1,}(\((0|1)\)\s*)?(?:[0-9] ?){3,13}[0-9](\s*(ext|x|e)\s*\d+)?$/',$number)) {
-
+//print"xxxxxxxx";
 
  if (preg_match('/\s*(ext|x|e)\s*\d+$/i',$number,$match)) {
          $extension_length=strlen($match[0]);
@@ -647,11 +647,11 @@ $data['Telecom Plain Number']=Telecom::plain_number($data);
     
     }else{
    
-    
+     $number=preg_replace('/[^\d]/','',$number);
     $data=$this->parse_plain_number($number,$country_code);
     
     }
-     
+  // print_r( $data);  
 return $data;
 }
 
@@ -1148,10 +1148,11 @@ return $data;
 
         $base_data=$this->base_data();
         foreach($data as $key=>$value) {
-       //  print "** $key,$value <- ".$this->data[$key]."  \n";
-            if ( array_key_exists($key,$this->data) and   $value!=$this->data[$key] and $key!='Telecom Plain Number') {
-           
-                $this->update_field_switcher($key,$value,$options);
+        
+     //   print "** $key,$value <- ".$this->data[$key]."  \n";
+            if ( array_key_exists($key,$this->data) and   strcmp($value,$this->data[$key])   and $key!='Telecom Plain Number') {
+     //       print "**to change  $key,$value <- ".$this->data[$key]."  \n";
+                $this->update_field_switcher($key,strval($value),$options);
             }
 
         }
@@ -1191,7 +1192,7 @@ return $data;
         }
 
         $data=$this->parse_inputed_number($value,$country_code);
-        	//print_r($data);
+      //  	print_r($data);
      //   exit;
         $this->update($data);
     }
