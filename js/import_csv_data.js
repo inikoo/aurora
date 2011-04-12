@@ -6,6 +6,7 @@ alert("XMLHttpRequest not supported");
 return null;
 };
 function get_default(v) {
+
  var v;
  var qstring = window.location.toString();
  arr=qstring.split("?");
