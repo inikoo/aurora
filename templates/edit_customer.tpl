@@ -4,7 +4,7 @@
 <input type="hidden" value="{$customer->id}" id="customer_key"/>
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Edit Customer{/t}: <span id="title_name">{$customer->get('Customer Name')}</span></h1>
+    <h1>{t}Edit Customer{/t}: <span style="color:SteelBlue">{$id}</span>, <span id="title_name">{$customer->get('Customer Name')}</span></h1>
   </div>
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
