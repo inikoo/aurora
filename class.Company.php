@@ -843,8 +843,8 @@ $companies_with_same_name[$company_key]=$company_key;
                 if ($telephone==$fax) {
                     $fax='';
                 } else {
-                    $_tel_data=Telecom::parse_number($telephone);
-                    $_fax_data=Telecom::parse_number($fax);
+                    $_tel_data=Telecom::parse_plain_number($telephone);
+                    $_fax_data=Telecom::parse_plain_number($fax);
                     if ($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
                         $fax='';
                 }

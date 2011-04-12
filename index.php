@@ -88,7 +88,21 @@ $js_files=array(
 
 
 $splinters=array(
-
+'sales'=>array(
+                                       'title'=>_('Sales Overview'),
+                                       'index'=>0,
+                                       'php'=>'splinter_sales.php',
+                                       'tpl'=>'splinter_sales.tpl',
+                                       'js'=>'js/splinter_sales.js'
+                                   ),
+                                   
+'store_sales'=>array(
+                                       'title'=>_('Store Sales'),
+                                       'index'=>0,
+                                       'php'=>'splinter_store_sales.php',
+                                       'tpl'=>'splinter_store_sales.tpl',
+                                       'js'=>'js/splinter_store_sales.js'
+                                   ),                                   
 'messages'=>array(
                                        'title'=>_('Display Board'),
                                        'index'=>0,
