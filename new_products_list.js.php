@@ -988,8 +988,8 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
 	//	product_not_received2: Dom.get('product_not_received2').value,
 //////	ordered_from:Dom.get('v_calpop1').value,
 //////	ordered_to:Dom.get('v_calpop2').value,
-customer_created_from:Dom.get('v_calpop3').value,
-	customer_created_to:Dom.get('v_calpop4').value,
+product_valid_from:Dom.get('v_calpop3').value,
+	product_valid_to:Dom.get('v_calpop4').value,
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -1109,14 +1109,14 @@ YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
 */
-cal3 = new YAHOO.widget.Calendar("customer_first_contacted_from","customer_first_contacted_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+cal3 = new YAHOO.widget.Calendar("product_first_validated_from","product_first_validated_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal3.update=updateCal;
  cal3.id='3';
  cal3.render();
  cal3.update();
 cal3.selectEvent.subscribe(handleSelect, cal3, true); 
 
-cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to","customer_first_contacted_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
+cal4 = new YAHOO.widget.Calendar("product_first_validated_to","product_first_validated_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
  cal4.update=updateCal;
  cal4.id='4';
  cal4.render();
@@ -1134,8 +1134,8 @@ cal4.selectEvent.subscribe(handleSelect, cal4, true);
 
 //YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
 //YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
-YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
-YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
+YAHOO.util.Event.addListener("product_first_validated_from", "click", cal3.show, cal3, true);
+YAHOO.util.Event.addListener("product_first_validated_to", "click", cal4.show, cal4, true);
 
 }
 

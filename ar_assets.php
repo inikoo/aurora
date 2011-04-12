@@ -12292,7 +12292,7 @@ echo "<br>*".$table;
     $where.=sprintf(' and `Product Store Key`=%d ',$store_id);
 
     $sql="select count(Distinct C.`Product ID`) as total from $table  $where";
-echo "<br>1st: ".$sql;
+echo "<br>1st Query: ".$sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
