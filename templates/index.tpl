@@ -35,6 +35,8 @@ Hello, here i am going to place the announcements about bug fixed and new featur
 
 <li  style="list-style-type: square;color:red">Delivery Address Implemented (Display, Creation and Edition)</li>
 
+<li  style="list-style-type: square">Better Telephone Formatting (editing)</li>
+<li  style="list-style-type: square">Customer Orders now ordered by default by date</li>
 
 <li  style="list-style-type: square">Accept/Reject Marketing Emails is asked when creating a customer</li>
 <li  style="list-style-type: square">Tax number exported in QO Data Excel Cell[CJ1]</li>
