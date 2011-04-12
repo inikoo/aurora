@@ -29,7 +29,7 @@
                             <div class="framedsection">
 		
 			 {php}
-          echo "The Ignored array from the field<br>";
+          echo "The Ignored array fields:<br>";
          $ignored_array = $this->get_template_vars('ignored_array');
                 echo "<pre>";
                 print_r($ignored_array);
