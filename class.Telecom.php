@@ -340,7 +340,7 @@ class Telecom extends DB_Table {
 
             }
 
-            $tmp=$this->parse_number($raw_number,$country_code);
+            $tmp=$this->parse_plain_number($raw_number,$country_code);
             //print_r($tmp);
             foreach($tmp as $key=>$value) {
 
@@ -575,8 +575,88 @@ class Telecom extends DB_Table {
 
 
 
+function parse_inputed_number($number,$country_code='UNK') {
+    $data=array(
+              'Telecom Technology Type'=>'Unknown',
+              'Telecom Country Telephone Code'=>'',
+              'Telecom National Access Code'=>'',
+              'Telecom Area Code'=>'',
+              'Telecom Number'=>'',
+              'Telecom Extension'=>'',
+              'National Only Telecom'=>'No',
+              'Telecom Plain Number'=>''
+          );
+          $number=_trim($number);
+          
+          
+    
+          
+          
+    if (preg_match('/^\+\d{1,3}\s{1,}(\((0|1)\)\s*)?(?:[0-9] ?){3,13}[0-9](\s*(ext|x|e)\s*\d+)?$/',$number)) {
 
-    /*Function: parse_number
+
+ if (preg_match('/\s*(ext|x|e)\s*\d+$/i',$number,$match)) {
+         $extension_length=strlen($match[0]);
+        $data['Telecom Extension']=preg_replace('/[^\d]/','',$match[0]);
+        $number=_trim(substr($number,0,strlen($number)-$extension_length));
+        }
+
+
+
+
+        if (preg_match('/^\+\d{1,3}\s/',$number,$match)) {
+            $country_code_section_length=strlen($match[0]);
+            $data['Telecom Country Telephone Code']=preg_replace('/[^\d]/','',$match[0]);
+            $number=substr($number,$country_code_section_length);
+        }
+        if (preg_match('/^\s*\((0|1)\)\s*/',$number,$match)) {
+            $national_access_code_section_length=strlen($match[0]);
+            $data['Telecom National Access Code']=preg_replace('/[^\d]/','',$match[0]);
+            $number=substr($number,$national_access_code_section_length);
+        }
+      $number=_trim($number);
+       if (preg_match('/^\d+\s/',$number,$match)) {
+            $area_code_section_length=strlen($match[0]);
+            $data['Telecom Area Code']=preg_replace('/[^\d]/','',$match[0]);
+            $number=substr($number,$area_code_section_length);
+        }
+      
+         $data['Telecom Number']=preg_replace('/[^\d]/','',$number);
+        
+$data['Telecom Plain Number']=Telecom::plain_number($data);
+    }elseif (preg_match('/^(\((0|1)\)\s*)?(?:[0-9] ?){6,14}[0-9](\s*(ext|x|e)\s*\d+)?$/',$number)) {
+      if (preg_match('/\s*(ext|x|e)\s*\d+$/i',$number,$match)) {
+     $extension_length=strlen($match[0]);
+        $data['Telecom Extension']=preg_replace('/[^\d]/','',$match[0]);
+        $number=_trim(substr($number,0,strlen($number)-$extension_length));
+        }
+ if (preg_match('/^\s*\((0|1)\)\s*/',$number,$match)) {
+            $national_access_code_section_length=strlen($match[0]);
+            $data['Telecom National Access Code']=preg_replace('/[^\d]/','',$match[0]);
+            $number=substr($number,$national_access_code_section_length);
+        }
+      $number=_trim($number);
+       if (preg_match('/^\d+\s/',$number,$match)) {
+            $area_code_section_length=strlen($match[0]);
+            $data['Telecom Area Code']=preg_replace('/[^\d]/','',$match[0]);
+            $number=substr($number,$area_code_section_length);
+        }
+      
+         $data['Telecom Number']=preg_replace('/[^\d]/','',$number);
+    
+    
+    }else{
+   
+    
+    $data=$this->parse_plain_number($number,$country_code);
+    
+    }
+     
+return $data;
+}
+
+
+    /*Function: parse_plain_number
       Parse the number in its componets
 
       Parameters:
@@ -584,22 +664,23 @@ class Telecom extends DB_Table {
 
 
      */
-    public static  function parse_number($number,$country_code='UNK') {
+    public static  function parse_plain_number($number,$country_code='UNK') {
         //    print "parsing number $number $country_code\n";
 
-        $data=array('Telecom Technology Type'=>'Unknown'
-                                              ,'Telecom Country Telephone Code'=>''
-                                                                                ,'Telecom National Access Code'=>''
-                                                                                                                ,'Telecom Area Code'=>''
-                                                                                                                                     ,'Telecom Number'=>''
-                                                                                                                                                       ,'Telecom Extension'=>''
-                                                                                                                                                                            ,'National Only Telecom'=>'No'
-                                                                                                                                                                                                     ,'Telecom Plain Number'=>''
-                   );
+        $data=array(
+                  'Telecom Technology Type'=>'Unknown',
+                  'Telecom Country Telephone Code'=>'',
+                  'Telecom National Access Code'=>'',
+                  'Telecom Area Code'=>'',
+                  'Telecom Number'=>'',
+                  'Telecom Extension'=>'',
+                  'National Only Telecom'=>'No',
+                  'Telecom Plain Number'=>''
+              );
 
         $number=_trim($number);
-        if (preg_match('/e/i',$number)) {
-            $tmp=preg_split('/\s*(ext|e)\s*/i',$number);
+        if (preg_match('/(e|x)/i',$number)) {
+            $tmp=preg_split('/\s*(ext|e|x)\s*/i',$number);
             if (count($tmp)==2) {
                 $number=$tmp[0];
                 $data['Telecom Extension']=$tmp[1];
@@ -847,10 +928,17 @@ class Telecom extends DB_Table {
       Returns the formated  telephone number
      */
     public static function formated_number($data) {
+    
+    $the_number=$data['Telecom Number'];
+    /*
+    
         switch (strlen($data['Telecom Number'])) {
+        case 4:
+        case 5:
         case 6:
-            $the_number=preg_replace('/^\d{2}/','$0 ',$data['Telecom Number']);
-            $the_number=preg_replace('/^\d{2} \d{2}/','$0 ',$the_number);
+       $the_number=$data['Telecom Number'];
+           // $the_number=preg_replace('/^\d{2}/','$0 ',$data['Telecom Number']);
+           // $the_number=preg_replace('/^\d{2} \d{2}/','$0 ',$the_number);
 
             break;
         case 8:
@@ -866,9 +954,9 @@ class Telecom extends DB_Table {
             $the_number=strrev(chunk_split(strrev($data['Telecom Number']),4," "));
         }
         $the_number=_trim($the_number)."";
-
+*/
         if ($data['Telecom National Access Code']!='')
-            $nac=sprintf("(%d) ",$data['Telecom National Access Code']);
+            $nac=sprintf("(%d)",$data['Telecom National Access Code']);
         else
             $nac='';
 
@@ -1060,7 +1148,9 @@ class Telecom extends DB_Table {
 
         $base_data=$this->base_data();
         foreach($data as $key=>$value) {
+       //  print "** $key,$value <- ".$this->data[$key]."  \n";
             if ( array_key_exists($key,$this->data) and   $value!=$this->data[$key] and $key!='Telecom Plain Number') {
+           
                 $this->update_field_switcher($key,$value,$options);
             }
 
@@ -1088,7 +1178,7 @@ class Telecom extends DB_Table {
 
     function update_number($value,$country_code='UNK') {
 
-
+        //print "$value,$country_code";
         $_data=preg_replace('/[^\d]/','',$value);
 
         if (strlen($_data)<3) {
@@ -1100,8 +1190,9 @@ class Telecom extends DB_Table {
 
         }
 
-        $data=$this->parse_number($value,$country_code);
-        //	print_r($data);
+        $data=$this->parse_inputed_number($value,$country_code);
+        	//print_r($data);
+     //   exit;
         $this->update($data);
     }
 
@@ -1160,7 +1251,7 @@ class Telecom extends DB_Table {
                     $parent_object=new Address($row["Parent Key"]);
                     $parent_label=_("Address");
                 }
-  $parent_object->editor=$this->editor;
+                $parent_object->editor=$this->editor;
                 $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
                 $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
                 $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
@@ -1219,117 +1310,117 @@ class Telecom extends DB_Table {
 
 
 
-function delete() {
-    $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
-    mysql_query($sql);
-    $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
-    mysql_query($sql);
-    $this->deleted=true;
-    $history_data['History Abstract']='Telecom Deleted';
-    $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
-    $history_data['Action']='deleted';
-    $history_data['Direct Object']='Telecom';
-    $history_data['Direct Object Key']=$this->id;
-    $history_data['Indirect Object']='';
-    $history_data['Indirect Object Key']='';
-    $this->add_history($history_data);
+    function delete() {
+        $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
+        mysql_query($sql);
+        $this->deleted=true;
+        $history_data['History Abstract']='Telecom Deleted';
+        $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
+        $history_data['Action']='deleted';
+        $history_data['Direct Object']='Telecom';
+        $history_data['Direct Object Key']=$this->id;
+        $history_data['Indirect Object']='';
+        $history_data['Indirect Object Key']='';
+        $this->add_history($history_data);
 
 
-    $type=$this->data['Telecom Type'];
-    if ($type=='Fax')
-        $type="FAX";
+        $type=$this->data['Telecom Type'];
+        if ($type=='Fax')
+            $type="FAX";
 
 
-    if ($type=='Mobile')
-        $parents=array('Contact','Customer');
-    else
-        $parents=array('Contact','Company','Customer','Supplier');
+        if ($type=='Mobile')
+            $parents=array('Contact','Customer');
+        else
+            $parents=array('Contact','Company','Customer','Supplier');
 
 
 
-    foreach($parents as $parent) {
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
-                     ,$this->id);
-        // print "$sql";
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
+                         ,$this->id);
+            // print "$sql";
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_Telecom_changed=false;
+
+                if ($parent=='Contact') {
+                    $parent_object=new Contact($row['Parent Key']);
+                    $parent_label=_('Contact');
+                }
+                elseif($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+
+
+
+                $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
+
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+
+
+
+                $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
+                $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['Action']='disassociate';
+                $history_data['Direct Object']=$parent;
+                $history_data['Direct Object Key']=$parent_object->id;
+                $history_data['Indirect Object']='Telecom';
+                $history_data['Indirect Object Key']=$this->id;
+
+
+
+                if ($parent=='Customer') {
+                    $parent_object->add_customer_history($history_data);
+                } else {
+                    $parent_object->add_history($history_data);
+                }
+
+
+            }
+
+            if (($parent=='Contact' or  $parent=='Customer' ) and $type=='Mobile') {
+                $mobiles=$parent_object->get_mobiles();
+                foreach($mobiles as $mobile) {
+                    $parent_object->update_principal_mobil($mobile->id);
+                    break;
+                }
+            }
+
+
+        }
+
+    }
+
+    function get_parent_keys($type=false) {
+        $where_type='';
+        if ($type) {
+            $where_type=' and `Subject Type`='.prepare_mysql($type);
+        }
+
+        $keys=array();
+        $sql=sprintf("select `Subject Key`,`Subject Type` from `Telecom Bridge` where  `Telecom Key`=%d $where_type",
+                     $this->id);
         $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $principal_Telecom_changed=false;
-
-            if ($parent=='Contact') {
-                $parent_object=new Contact($row['Parent Key']);
-                $parent_label=_('Contact');
-            }
-            elseif($parent=='Customer') {
-                $parent_object=new Customer($row['Parent Key']);
-                $parent_label=_('Customer');
-            }
-            elseif($parent=='Supplier') {
-                $parent_object=new Supplier($row['Parent Key']);
-                $parent_label=_('Supplier');
-            }
-            elseif($parent=='Company') {
-                $parent_object=new Company($row['Parent Key']);
-                $parent_label=_('Company');
-            }
-
-
-
-            $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
-
-                         ,$parent_object->id
-                        );
-            mysql_query($sql);
-
-
-
-            $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
-            $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-            $history_data['Action']='disassociate';
-            $history_data['Direct Object']=$parent;
-            $history_data['Direct Object Key']=$parent_object->id;
-            $history_data['Indirect Object']='Telecom';
-            $history_data['Indirect Object Key']=$this->id;
-
-
-
-            if ($parent=='Customer') {
-                $parent_object->add_customer_history($history_data);
-            } else {
-                $parent_object->add_history($history_data);
-            }
-
-
+        //print $sql;
+        while ($row=mysql_fetch_assoc($res)) {
+            $keys[$row['Subject Key']]=array('Subject Key'=>$row['Subject Key'],'Subject Type'=>$row['Subject Type']);
         }
-
-        if (($parent=='Contact' or  $parent=='Customer' ) and $type=='Mobile') {
-            $mobiles=$parent_object->get_mobiles();
-            foreach($mobiles as $mobile) {
-                $parent_object->update_principal_mobil($mobile->id);
-                break;
-            }
-        }
-
-
+        return $keys;
     }
-
-}
-
-function get_parent_keys($type=false) {
-    $where_type='';
-    if ($type) {
-        $where_type=' and `Subject Type`='.prepare_mysql($type);
-    }
-
-    $keys=array();
-    $sql=sprintf("select `Subject Key`,`Subject Type` from `Telecom Bridge` where  `Telecom Key`=%d $where_type",
-                 $this->id);
-    $res=mysql_query($sql);
-    //print $sql;
-    while ($row=mysql_fetch_assoc($res)) {
-        $keys[$row['Subject Key']]=array('Subject Key'=>$row['Subject Key'],'Subject Type'=>$row['Subject Type']);
-    }
-    return $keys;
-}
 
 
 }

@@ -217,7 +217,7 @@ default:
 
 }
 function list_customer_orders() {
-    $conf=$_SESSION['state']['customer']['assets'];
+    $conf=$_SESSION['state']['customer']['orders'];
     if (isset( $_REQUEST['id']))
         $customer_id=$_REQUEST['id'];
     else
@@ -261,10 +261,6 @@ function list_customer_orders() {
 
 
 
-    if (isset( $_REQUEST['type']))
-        $type=$_REQUEST['type'];
-    else
-        $type=$conf['type'];
 
     if (isset( $_REQUEST['tid']))
         $tableid=$_REQUEST['tid'];
@@ -274,40 +270,24 @@ function list_customer_orders() {
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_SESSION['state']['customer']['id']=$customer_id;
-    $_SESSION['state']['customer']['assets']=array('type'=>$type,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
-    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     $_SESSION['state']['customer']['orders']['order']=$order;
+       $_SESSION['state']['customer']['orders']['order_dir']=$order_direction;
+     $_SESSION['state']['customer']['orders']['nr']=$number_results;
+     $_SESSION['state']['customer']['orders']['sf']=$start_from;
+     $_SESSION['state']['customer']['orders']['f_field']=$f_field;
+     $_SESSION['state']['customer']['orders']['f_value']=$f_value;
+
+  
+  
+  $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
     if ($date_interval['error']) {
         $date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
     } else {
-        $_SESSION['state']['customer']['assets']['from']=$date_interval['from'];
-        $_SESSION['state']['customer']['assets']['to']=$date_interval['to'];
+        $_SESSION['state']['customer']['orders']['from']=$date_interval['from'];
+        $_SESSION['state']['customer']['orders']['to']=$date_interval['to'];
     }
 
-    switch ($type) {
-    case('Family'):
-        $group_by='Product Family Key';
-        $subject='Product Family Code';
-        $description='Product Family Name';
-        $subject_label='family';
-        $subject_label_plural='families';
-        break;
-    case('Department'):
-        $group_by='Product Department Key';
-        $description='Product Department Name';
-
-        $subject='Product Department Code';
-        $subject_label='department';
-        $subject_label_plural='departments';
-        break;
-    default:
-        $group_by='Product Code';
-        $subject='Product Code';
-        $description='Product XHTML Short Description';
-
-        $subject_label='product';
-        $subject_label_plural='products';
-    }
-
+  
 
 
     // $where=sprintf("    where `Current Dispatching State` not in ('Cancelled','Dispatched',) and `Customer Key`=%d  ",$customer_id);
@@ -360,7 +340,7 @@ function list_customer_orders() {
     }
 
 //print $sql;
-    $rtext=$total_records." ".ngettext($subject_label,$subject_label_plural,$total_records);
+    $rtext=$total_records." ".ngettext('Order','Orders',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -392,7 +372,7 @@ function list_customer_orders() {
     $_dir=$order_direction;
     $_order=$order;
 
-    if ($order=='subject') {
+    if ($order=='public_id') {
 
         $order='`Order Public ID`';
 
@@ -421,21 +401,63 @@ function list_customer_orders() {
 
 // $sql.=" $wheref ";
 // $sql.=sprintf("  group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$group_by);
-    $sql="select `Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //  $sql="select `Order Invoiced Total Tax Adjust Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Adjust Amount`,`Order Out of Stock Amount `,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
     $res = mysql_query($sql);
-
+//print_r($sql);
     $total=mysql_num_rows($res);
 //print $sql;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-        if ($row['Order Balance Total Amount']!=$row['Order Total Amount']) {
-            $mark='<span style="color:red">*</span>';
-        } else {
-            $mark='<span style="visibility:hidden">*</span>';
-        }
+   $mark_out_of_stock="<span style='visibility:hidden'>&otimes;</span>";
+     $mark_out_of_credits="<span style='visibility:hidden'>&crarr;</span>";
+     $mark_out_of_error="<span style='visibility:hidden'>&epsilon;</span>";
+     $out_of_stock=false;
+     $errors=false;
+     $refunded=false;
+     if($row['Order Out of Stock Amount']!=0){
+       $out_of_stock=true;
+       $info='';
+         if($row['Order Out of Stock Net Amount']!=0){
+	   $info.=_('Net').': '.money($row['Order Out of Stock Net Amount'],$row['Order Currency'])."";
+	 }
+	 if($row['Order Out of Stock Tax Amount']!=0){
+	   $info.='; '._('Tax').': '.money($row['Order Out of Stock Tax Amount'],$row['Order Currency']);
+	 }
+	 $info=preg_replace('/^\;\s*/','',$info);
+	 $mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes;</span>";
+	 
+     }
+     
+     if($row['Order Adjust Amount']<-0.01 or $row['Order Adjust Amount']>0.01 ){
+       $errors=true;
+       $info='';
+       if($row['Order Invoiced Total Net Adjust Amount']!=0){
+	 $info.=_('Net').': '.money($row['Order Invoiced Total Net Adjust Amount'],$row['Order Currency'])."";
+       }
+       if($row['Order Invoiced Total Tax Adjust Amount']!=0){
+	 $info.='; '._('Tax').': '.money($row['Order Invoiced Total Tax Adjust Amount'],$row['Order Currency']);
+       }
+       $info=_('Errors').' '.preg_replace('/^\;\s*/','',$info);
+       if($row['Order Adjust Amount']<-1 or $row['Order Adjust Amount']>1 ){
+	 $mark_out_of_error ="<span style='color:red' title='$info'>&epsilon;</span>";
+       }else{
+	 $mark_out_of_error ="<span style='color:brown'  title='$info'>&epsilon;</span>";
+       }
+       //$mark_out_of_error.=$row['Order Adjust Amount'];
+     }
+     
+     
+     if(!$out_of_stock and !$refunded)
+       $mark=$mark_out_of_error.$mark_out_of_stock.$mark_out_of_credits;
+     elseif(!$refunded and $out_of_stock and $errors)
+       $mark=$mark_out_of_stock.$mark_out_of_error.$mark_out_of_credits;
+     else
+       $mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
+     
+      
         $adata[]=array(
-                     'subject'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
+                     'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
                      'last_update'=>strftime("%a %e %b %Y %T", strtotime($row['Order Last Updated Date'].' UTC')) ,
                      'current_state'=>$row['Order Current XHTML State'],
                      'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
