@@ -1,5 +1,5 @@
 <?php header("Content-Type: text/css"); ?>
-html{background-color:#fff;background-image:url('<?php if(isset($_GET["c"])) echo "../uploads/".isset($_GET["c"]); else echo "../art/bg/bd2.jpg"; ?>');background-repeat:no-repeat;}
+html{background-color:#fff;background-image:url('<?php if(isset($_GET["c"])) echo "../uploads/".isset($_GET["c"]); else echo "../art/bg/bd3.jpg"; ?>');background-repeat:no-repeat;}
 body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 td {text-align:left}
 
@@ -31,7 +31,7 @@ span.aslink:hover{text-decoration:underline;}
 .aright .yui-dt-liner{ text-align:right; }
 .aleft,td.aleft {text-align:left}
 .aleft .yui-dt-liner{text-align:left}
-span.nav2 {float:left;background:#95C287;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
+span.nav2 {float:left;background:#B665D2;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 span.nav2 a {color:#fff}
 span.nav2 a.selected {color:yellow;font-weight:400}
 span.nav2 span {color:#fff;cursor:pointer}
@@ -40,7 +40,7 @@ span.nav2 span.selected {color:yellow;font-weight:400;border:none;background:non
 
 span.onright {float:right}
 
-#hd{height:3.46em;background:#3b5998 url("../art/3.png") bottom left repeat-x;color:#fff;}
+#hd{height:3.46em;background:#3b5998 url("../art/4.png") bottom left repeat-x;color:#fff;}
 #hd h1{padding:0 15px;font-size:167%;float:left;position:relative;top:10px;}
 	#hd a{color:#fff;text-decoration:none}
 
@@ -59,7 +59,7 @@ span.onright {float:right}
 	    	float: left;
 		display: block;
 		padding: 2px 4px 5px 8px;
-		background: transparent url("../art/green_header_menu.png") 0%  no-repeat!important;
+		background: transparent url("../art/onion_header_menu.png") 0%  no-repeat!important;
 		background:none;
 		font-weight: bold;
 		outline: none;
@@ -322,7 +322,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 
 .options td:hover,  .options span:hover{border:1px solid #777;color:#777}
 
-.options td.selected,.options span.selected{background:#7EC325;border:1px solid #7BBA59;color:#f6f6f6;text-decoration:none}
+.options td.selected,.options span.selected{background:#B665D2;border:1px solid #B665D2;color:#f6f6f6;text-decoration:none}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
@@ -345,7 +345,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 
 .options_mini td{border:1px solid #aaa;color:#888;text-align:center;padding:1px 2px 2px 2px;cursor:pointer}
 .options_mini td:hover{border:1px solid #777;color:#777}
-.options_mini td.selected{background:#7EC325;border:1px solid #7BBA59;color:#f6f6f6}
+.options_mini td.selected{background:#B665D2;border:1px solid #B665D2;color:#f6f6f6}
 .options_mini td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 
 
@@ -660,7 +660,7 @@ position:relative;top:1px;
 .diff_ins{color:green}
 
 
-.quick_button td{color:#fff;background:#72ab61;font-weight:800;border:2px solid #fff;cursor:pointer}
+.quick_button td{color:#fff;background:#334556;font-weight:800;border:2px solid #fff;cursor:pointer}
 .quick_button td:hover{background:#131536;}
 
 .table_type {margin-top:.6em}

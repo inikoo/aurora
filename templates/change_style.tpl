@@ -27,14 +27,17 @@ if (x==null || x=="")
 <br>
 <form action="change_style.php" method="post">
 <div>
-	<table border="0" width="350">
+	<table border="0" width="350" cellpadding="10">
 		
 
 		<tr>
-			 <td width="200px">Please select the style : </td> 
-			<td><a href="#" onclick="change_style(0);"  title="Blue theme"><div id="dialog_link" style="width:20px; height:20px; background-color:Blue; border:1px;"></div></a></td>
-			 <td><a href="#" onclick="change_style(1);"  title="Brown theme"><div id="dialog_link" style="width:20px; height:20px; background-color:#BD6A14; border:1px;"></div></a></td>
-			<td><a href="#" onclick="change_style(2);" title="Green theme"><div id="dialog_link" style="width:20px; height:20px; background-color:#72B80B; border:1px;"></div></a></td>
+			 <td width="200px">Please select the style : </td>
+               </tr>
+               <tr>             
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(0);"  title="Default theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/ScreenshotDefault.png"></div></a></td>
+			 <td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(1);"  title="Brown theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img src="art/ScreenshotBrown.png"></div></a></td>
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(2);" title="Green theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img src="art/ScreenshotGreen.png"></div></a></td>
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(3);" title="Magento theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/ScreenshotMagento.png"></div></a></td>
 			
 		</tr>
 		
@@ -46,7 +49,7 @@ if (x==null || x=="")
 	<div id="display"></div>
 </form>
           
-<div id="dialog" style="width:100px;" title="Dialog Title">
+<div id="dialog" style="width:100px;" title="">
 			<p id="dialog_text" style="display:none;">Press Yes to change theme for all user<p>
 		</div>
 
