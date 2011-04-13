@@ -2680,7 +2680,12 @@ class Customer extends DB_Table {
         else
             $address=new Address($this->data['Customer Main Address Key']);
 
-        return $address->display('xhtml');
+    $tel=$address->get_formated_principal_telephone();
+    if($tel!=''){
+        $tel=_('Tel').': '.$tel.'</br>';
+    }
+
+        return $tel.$address->display('xhtml');
 
     }
 

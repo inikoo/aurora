@@ -240,7 +240,7 @@ $smarty->assign('number_orders',$customer->get('Customer Orders'));
 $smarty->assign('parent','customers');
 $smarty->assign('title','Customer: '.$customer->get('customer name'));
 $customer_home=_("Customers List");
-$smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
+
 $total_orders=$customer->get('Customer Orders');
 $smarty->assign('orders',number($total_orders)  );
 $total_net=$customer->get('Customer Total Net Payments');

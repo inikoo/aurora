@@ -709,6 +709,58 @@ function edit_mobile($data) {
 }
 
 
+function edit_address_main_telephone($number,$address_key) {
+// Dont use it to change customer/supplier main telephone
+    global $editor;
+
+    $address=new Address($address_key);
+    if (!$address->id) {
+        $response=array('state'=>400,'msg'=>"Address not found $address_key");
+        echo json_encode($response);
+        exit;
+    }
+    $telecom_key=$address->get_principal_telecom_key('Telephone');
+
+    if ($telecom_key and $number=='') {
+
+        $telephone=new Telecom($telecom_key);
+        $telephone->delete();
+        return 1;
+    }
+
+    $telephone_data=array();
+    $telephone_data['editor']=$editor;
+    $telephone_data['Telecom Raw Number']=$number;
+    $telephone_data['Telecom Type']='Telephone';
+
+
+
+
+    $proposed_telephone=new Telecom("find complete country code ".$address->data['Address Country Code'],$telephone_data);
+    if ($proposed_telephone->found) {
+        $response=array('state'=>400,'msg'=>'Telephone found in another address');
+        echo json_encode($response);
+        exit;
+    }
+
+
+    if (!$telecom_key) {
+
+        $telephone=new Telecom("find complete create country code ".$address->data['Address Country Code'],$telephone_data);
+        $address->associate_telecom($telephone->id,'Telephone');
+        return 1;
+
+    } else {
+
+        $address->update_telecom($telecom_key,$number);
+        return $address->updated;
+    }
+
+
+
+}
+
+
 function edit_telecom($data) {
     global $editor;
 
@@ -1000,32 +1052,43 @@ function new_address() {
             return;
         }
 
+        if ($raw_data['use_tel'] and $raw_data['telephone']!='') {
+
+            edit_address_main_telephone($raw_data['telephone'],$address->id);
+
+        }
+
+
+
         $updated_address_data=array(
-                                  'country'=>$address->data['Address Country Name']
-                                            ,'country_code'=>$address->data['Address Country Code']
-                                                            ,'country_d1'=> $address->data['Address Country First Division']
-                                                                          ,'country_d2'=> $address->data['Address Country Second Division']
-                                                                                        ,'town'=> $address->data['Address Town']
-                                                                                                ,'postal_code'=> $address->data['Address Postal Code']
-                                                                                                               ,'town_d1'=> $address->data['Address Town First Division']
-                                                                                                                          ,'town_d2'=> $address->data['Address Town Second Division']
-                                                                                                                                     ,'fuzzy'=> $address->data['Address Fuzzy']
-                                                                                                                                              ,'street'=> $address->display('street')
-                                                                                                                                                        ,'building'=>  $address->data['Address Building']
-                                                                                                                                                                    ,'internal'=> $address->data['Address Internal']
-                                                                                                                                                                                ,'type'=>$address_bridge_data['Address Type']
-                                                                                                                                                                                        ,'function'=>$address_bridge_data['Address Function']
-                                                                                                                                                                                                    ,'description'=>$address->data['Address Description']
+                                  'country'=>$address->data['Address Country Name'],
+                                  'country_code'=>$address->data['Address Country Code'],
+                                  'country_d1'=> $address->data['Address Country First Division'],
+                                  'country_d2'=> $address->data['Address Country Second Division'],
+                                  'town'=> $address->data['Address Town'],
+                                  'postal_code'=> $address->data['Address Postal Code'],
+                                  'town_d1'=> $address->data['Address Town First Division'],
+                                  'town_d2'=> $address->data['Address Town Second Division'],
+                                  'fuzzy'=> $address->data['Address Fuzzy'],
+                                  'street'=> $address->display('street'),
+                                  'building'=>  $address->data['Address Building'],
+                                  'internal'=> $address->data['Address Internal'],
+                                  'type'=>$address_bridge_data['Address Type'],
+                                  'function'=>$address_bridge_data['Address Function'],
+                                  'description'=>$address->data['Address Description'],
+                                  'telephone'=>$address->get_formated_principal_telephone(),
+                                  'key'=>$address->id  
+                                  
                               );
 
 
         $response=array(
-                      'state'=>200
-                              ,'action'=>'created'
-                                        ,'msg'=>$subject_object->msg
-                                               ,'updated_data'=>$updated_address_data
-                                                               ,'xhtml_address'=>$address->display('xhtml')
-                                                                                ,'address_key'=>$address->id
+                      'state'=>200,
+                      'action'=>'created',
+                      'msg'=>$subject_object->msg,
+                      'updated_data'=>$updated_address_data,
+                      'xhtml_address'=>$address->display('xhtml'),
+                      'address_key'=>$address->id
                   );
         echo json_encode($response);
         return;
@@ -1351,8 +1414,8 @@ function edit_billing_address($raw_data) {
 function edit_address($data) {
     global $editor;
     $warning='';
-    
-   
+
+
 
 
     $id=$data['id'];
@@ -1414,33 +1477,58 @@ function edit_address($data) {
             $update_data[$translator[$key]]=$value;
         }
     }
-// print_r($update_data);
+
     $proposed_address=new Address("find complete in $subject $subject_key",$update_data);
+//print_r($proposed_address);
+//exit;
     if ($proposed_address->id) {
+
+        //  print "xxxxaaxxx";
+
         if ($subject=='Customer') {
 
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
                 if ($address->id==$proposed_address->id) {
-                   // $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
-                   // echo json_encode($response);
-                   // exit;
+                    $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
+                    echo json_encode($response);
+                    exit;
                 } else {
                     $subject_object->update_principal_address($proposed_address->id);
 
-                    // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
-                    $address->delete();
-
+                    $response=address_response($proposed_address,$subject,$subject_object);
+                    $response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
+                    echo json_encode($response);
+                    return;
 
                 }
 
 
-              
+
             } else {
-                $msg="This Customer has already another address with this data";
-                $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
-                echo json_encode($response);
-                return;
+
+                //print_r($data['value']);
+
+                if ($data['value']['use_tel']) {
+
+                    edit_address_main_telephone($data['value']['telephone'],$proposed_address->id);
+                    $response=address_response($proposed_address,$subject,$subject_object);
+
+
+
+                    echo json_encode($response);
+                    return;
+
+                    exit();
+
+
+
+                } else {
+                    $msg="This Customer has already another address with this data";
+                    $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+                    echo json_encode($response);
+                    return;
+                }
             }
         } else if ($subject=='Supplier') {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
@@ -1457,7 +1545,7 @@ function edit_address($data) {
                 return;
             }
         }
-    } else {
+    } else {// address not found inside customer
         $proposed_address=new Address("find complete ",$update_data);
 
         if ($proposed_address->id) {
@@ -1523,73 +1611,27 @@ function edit_address($data) {
     $address->update($update_data,'cascade');
 
 
-    if ($address->updated) {
-        $updated_address_data=array(
-                                  'country'=>$address->data['Address Country Name'],
-                                  'country_code'=>$address->data['Address Country Code'],
-                                  'country_d1'=> $address->data['Address Country First Division'],
-                                  'country_d2'=> $address->data['Address Country Second Division'],
-                                  'town'=> $address->data['Address Town'],
-                                  'postal_code'=> $address->data['Address Postal Code'],
-                                  'town_d1'=> $address->data['Address Town First Division'],
-                                  'town_d2'=> $address->data['Address Town Second Division'],
-                                  'fuzzy'=> $address->data['Address Fuzzy'],
-                                  'street'=> $address->display('street'),
-                                  'building'=>  $address->data['Address Building'],
-                                  'internal'=> $address->data['Address Internal'],
-                                  'description'=>$address->data['Address Description']
+//print "-------------";
 
-                              );
-        $is_main='No';
-        $is_main_delivery='No';
-        $address_comment='';
-
-        if ($subject_object->get_main_address_key()==$address->id) {
-            $is_main='Yes';
-        }
-        if ($subject=='Customer'  ) {
-         
-         
-                
-            if($subject_object->data['Customer Main Delivery Address Key']==$address->id){
-                
-            $is_main_delivery='Yes';
-
-            if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
-                $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
-
-            }
-            elseif($subject_object->get('Customer Delivery Address Link')=='Billing') {
-                $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
-            }
-            else {
-                $address_comment=$subject_object->delivery_address_xhtml();
-            }
-
-}
-
-
-            if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
-                $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
-
-            } else {
-
-                $billing_address=$subject_object->billing_address_xhtml();
-            }
-
+    $updated=$address->updated;
+    if ($data['value']['use_tel']) {
+        if ($data['value']['telephone']!='') {
+            $tel_updated=edit_address_main_telephone($data['value']['telephone'],$address->id);
+            if (!$updated and $tel_updated)
+                $updated=true;
 
         }
+    }
 
 
 
-        $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
-
-        if ($subject=='Customer') {
-            $response['xhtml_delivery_address_bis']=$address_comment;
-            $response['xhtml_billing_address']=$billing_address;
+//print_r($data);
 
 
-        }
+    if ($updated) {
+
+
+        $response=address_response($address,$subject,$subject_object,$warning);
 
 
     } else {
@@ -1604,6 +1646,77 @@ function edit_address($data) {
     echo json_encode($response);
 
 }
+
+function address_response($address,$subject,$subject_object,$warning='') {
+    $updated_address_data=array(
+                              'country'=>$address->data['Address Country Name'],
+                              'country_code'=>$address->data['Address Country Code'],
+                              'country_d1'=> $address->data['Address Country First Division'],
+                              'country_d2'=> $address->data['Address Country Second Division'],
+                              'town'=> $address->data['Address Town'],
+                              'postal_code'=> $address->data['Address Postal Code'],
+                              'town_d1'=> $address->data['Address Town First Division'],
+                              'town_d2'=> $address->data['Address Town Second Division'],
+                              'fuzzy'=> $address->data['Address Fuzzy'],
+                              'street'=> $address->display('street'),
+                              'building'=>  $address->data['Address Building'],
+                              'internal'=> $address->data['Address Internal'],
+                              'description'=>$address->data['Address Description'],
+                              'telephone'=>$address->get_formated_principal_telephone()
+
+                          );
+    $is_main='No';
+    $is_main_delivery='No';
+    $address_comment='';
+
+    if ($subject_object->get_main_address_key()==$address->id) {
+        $is_main='Yes';
+    }
+    if ($subject=='Customer'  ) {
+
+
+
+        if ($subject_object->data['Customer Main Delivery Address Key']==$address->id) {
+
+            $is_main_delivery='Yes';
+
+            if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+                $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+
+            }
+            elseif($subject_object->get('Customer Delivery Address Link')=='Billing') {
+                $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+            }
+            else {
+                $address_comment=$subject_object->delivery_address_xhtml();
+            }
+
+        }
+
+
+        if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
+            $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
+
+        } else {
+
+            $billing_address=$subject_object->billing_address_xhtml();
+        }
+
+
+    }
+    $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
+    if ($subject=='Customer') {
+        $response['xhtml_delivery_address_bis']=$address_comment;
+        $response['xhtml_billing_address']=$billing_address;
+
+
+    }
+
+    return $response;
+
+}
+
+
 function delete_email() {
     global $editor;
     if ( !isset($_REQUEST['value'])  ) {
@@ -1806,19 +1919,19 @@ function delete_address() {
     $main_address_key=$subject_object->get_main_address_key();
     $main_address=new Address($main_address_key);
     $main_address_data=array(
-                           'country'=>$main_address->data['Address Country Name']
-                                     ,'country_code'=>$main_address->data['Address Country Code']
-                                                     ,'country_d1'=> $main_address->data['Address Country First Division']
-                                                                   ,'country_d2'=> $main_address->data['Address Country Second Division']
-                                                                                 ,'town'=> $main_address->data['Address Town']
-                                                                                         ,'postal_code'=> $main_address->data['Address Postal Code']
-                                                                                                        ,'town_d1'=> $main_address->data['Address Town First Division']
-                                                                                                                   ,'town_d2'=> $main_address->data['Address Town Second Division']
-                                                                                                                              ,'fuzzy'=> $main_address->data['Address Fuzzy']
-                                                                                                                                       ,'street'=> $main_address->display('street')
-                                                                                                                                                 ,'building'=>  $main_address->data['Address Building']
-                                                                                                                                                             ,'internal'=> $main_address->data['Address Internal']
-                                                                                                                                                                         ,'description'=>$main_address->data['Address Description']
+                           'country'=>$main_address->data['Address Country Name'],
+                           'country_code'=>$main_address->data['Address Country Code'],
+                           'country_d1'=> $main_address->data['Address Country First Division'],
+                           'country_d2'=> $main_address->data['Address Country Second Division'],
+                           'town'=> $main_address->data['Address Town'],
+                           'postal_code'=> $main_address->data['Address Postal Code'],
+                           'town_d1'=> $main_address->data['Address Town First Division'],
+                           'town_d2'=> $main_address->data['Address Town Second Division'],
+                           'fuzzy'=> $main_address->data['Address Fuzzy'],
+                           'street'=> $main_address->display('street'),
+                           'building'=>  $main_address->data['Address Building'],
+                           'internal'=> $main_address->data['Address Internal'],
+                           'description'=>$main_address->data['Address Description']
 
                        );
 
@@ -1830,7 +1943,9 @@ function delete_address() {
 
     $billing_address='';
     if ($subject=='Customer' ) {
-
+    
+    
+        
         $address_main_delivery=$subject_object->delivery_address_xhtml();
 
         if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {

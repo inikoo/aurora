@@ -41,10 +41,11 @@ foreach($addresses as $index) {
     $function=preg_replace('/,]$/',']',$function);
 
 
-    $address_data.="\n".sprintf('Address_Data[%d]={"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s}; ',
+    $address_data.="\n".sprintf('Address_Data[%d]={"key":%d,"telephone":%s, "country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s}; ',
 
                                 $address->id
                                 ,$address->id
+                                 ,prepare_mysql($address->get_formated_principal_telephone(),false)
                                 ,prepare_mysql($address->data['Address Country Name'],false)
                                 ,prepare_mysql($address->data['Address Country Code'],false)
                                 ,prepare_mysql($address->data['Address Country First Division'],false)

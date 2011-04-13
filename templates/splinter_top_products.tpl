@@ -1,3 +1,12 @@
+<input type="hidden" value="{$top_products_index}" id="top_products_index"  />
+<input type="hidden" value="{$top_products_nr}" id="top_products_nr"  />
+
+<input type="hidden" value="{t}Fam{/t}" id="label_Fam"  />
+<input type="hidden" value="{t}Product{/t}" id="label_Product"  />
+<input type="hidden" value="{t}Sales{/t}" id="label_Sales"  />
+
+
+
 <div class="splinter_cell" style="width:910px">
     <div id="the_table" class="data_table" >
     <div style="float:left;margin-right:10px">

@@ -254,9 +254,9 @@ var Event = YAHOO.util.Event;
 var Contact_Data={<?php echo$contact_data?>};
 
 
-var Address_Data={<?php echo$address_data?>};
-var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
-var Address_Meta_Keys=["type","function"];
+//var Address_Data={<?php  $address_data?>};
+//var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
+//var Address_Meta_Keys=["type","function"];
 
 var current_salutation='salutation<?php echo$contact->get('Salutation Key')?>';
 
