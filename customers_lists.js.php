@@ -38,13 +38,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-                                        {key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    
+	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+
+                                        ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                      ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					//,{key:"no_of_customer", label:"<?php echo _('No. Of Customer')?>",  width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"customer_list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  //  ,{key:"name", label:"<?php echo _('Customer Name')?>", width:190,sortable:true,hidden:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                  //                     ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   ];
+				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
+
+				 
+				 ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&store_id="+Dom.get('store_id').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -60,7 +63,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		
-		fields: ["name","customer_list_key","creation_date","customers","customer_list_type"]};
+		fields: ["name","key","creation_date","customers","customer_list_type","delete"]};
 		
 
 	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -95,7 +98,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-	    
+	       this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table0.subscribe("cellClickEvent", onCellClick);      
 	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
