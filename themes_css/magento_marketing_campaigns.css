@@ -114,7 +114,7 @@
 }
 .button{
     -moz-border-radius: 4px 4px 4px 4px;
-    background-color: #72ab61;
+    background-color: #336699;
     border: 0 none;
     color: #FFFFFF !important;
     cursor: pointer;
@@ -273,7 +273,7 @@ color:#ffffff;
 .button_campaignListCreate
 {
   -moz-border-radius: 4px 4px 4px 4px;
-    background-color: #72ab61;
+    background-color: #336699;
     border: 0 none;
     color: #FFFFFF;
     cursor: pointer;
