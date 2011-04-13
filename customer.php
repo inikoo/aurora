@@ -315,7 +315,8 @@ if($customer->data['Customer Last Order Date']    ){
 
 $smarty->assign('gold_reward',$gold_reward);
 
-$smarty->assign('options_box_width','700px');
+$smarty->assign('options_box_width','550px');
+$smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 
 $smarty->display('customer.tpl');
 
