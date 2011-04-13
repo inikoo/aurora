@@ -239,7 +239,7 @@ var onCellClick = function(oArgs) {
 
 
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
-                if (column.object=='company' || column.object=='company_area' || column.object=='customer_history')
+                if (column.object=='company' || column.object=='company_area' || column.object=='customer_history' || column.object=='customer_list')
                     ar_file='ar_edit_contacts.php';
                 else if (column.object=='warehouse_area' || column.object=='location')
                     ar_file='ar_edit_warehouse.php';
@@ -257,7 +257,7 @@ var onCellClick = function(oArgs) {
 
 
 
-  //         	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+  //        	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 //return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
