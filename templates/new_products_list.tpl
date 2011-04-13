@@ -27,8 +27,8 @@
         <td>
         <input id="geo_constraints" style="width:500px"/> 
         <div class="general_options" >
-                <span id="family" class="state_details">{t}Family{/t}</span>
-                <span id="department" class="state_details">{t}Department{/t}</span>
+                <span id="family1" class="state_details">{t}Family{/t}</span>
+                <span id="department1" class="state_details">{t}Department{/t}</span>
                
 
         </div>
