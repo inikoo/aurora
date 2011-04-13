@@ -1,3 +1,13 @@
+<input type="hidden" value="{$top_customers_index}" id="top_customers_index"  />
+<input type="hidden" value="{$top_customers_nr}" id="top_customers_nr"  />
+<input type="hidden" value="{$top_customers_order}" id="top_customers_order"  />
+
+<input type="hidden" value="{t}Customer Name{/t}" id="label_Customer_Name"  />
+<input type="hidden" value="{t}Last Order{/t}" id="label_Last_Order"  />
+<input type="hidden" value="{t}Invoices{/t}" id="label_Invoices"  />
+<input type="hidden" value="{t}Balance{/t}" id="label_Balance"  />
+
+
 <div class="splinter_cell">
 
 <div id="the_table" class="data_table" >

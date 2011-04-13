@@ -222,10 +222,10 @@ $address_keys=$subject_object->get_address_keys();
 
                 foreach($data as $key=>$value ) {
 
-                    if ($value!='' and !preg_match('/World|Continent|Fuzzy|Location|Format|FAX|Telephone/',$key)) {
+                    if ($value!='' and !preg_match('/World|Continent|Fuzzy|Location|Format|FAX|Telephone|Update/',$key)) {
 
                         if ($data[$key]!=$address->data[$key]) {
-
+     //  print "$key ".$data[$key].' '.$address->data[$key].'\n';
                             $same_address=false;
                             break;
                         }
@@ -4855,7 +4855,32 @@ function find_fast($data=false,$subject_data=false){
 
     }
 
-    function get_principal_telecom_key($type) {
+  
+  function get_formated_principal_telephone(){
+ // include_once 'class.Telecom.php';
+  
+   $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
+                     ,prepare_mysql('Telephone')
+                     ,$this->id );
+        // print $sql;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_telecom_key=$row['Telecom Key'];
+        } else {
+            $main_telecom_key=0;
+        }
+        
+        if($main_telecom_key){
+            $telecom=new Telecom($main_telecom_key);
+            return $telecom->display('html');
+        }else{
+            return '';
+        }
+        
+  
+  }
+  
+  function get_principal_telecom_key($type) {
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                      ,prepare_mysql($type)
@@ -5195,11 +5220,15 @@ function find_fast($data=false,$subject_data=false){
 
 
         $sql=sprintf("select `Customer Key`  ,`Customer Main Address Key` from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d ",$this->id);
+        //print "$sql\n";
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $customer=new Customer($row['Customer Key']);
             $addresses=$customer->get_delivery_address_keys();
-            if (count($addresses)==0) {
+            unset($addresses[$row['Customer Main Address Key']]);
+            unset($addresses[$this->id]);
+          //print_r($addresses);
+          if (count($addresses)==0) {
 
                 $address_key=$row['Customer Main Address Key'];
 
@@ -5209,7 +5238,7 @@ function find_fast($data=false,$subject_data=false){
 
             $customer->update_principal_delivery_address($address_key);
         }
-
+//exit;
 
         $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
         mysql_query($sql);

@@ -1,35 +1,14 @@
-<?php include_once('common.php');
-
-print "var product_nr=parseInt(".$_SESSION['state']['home']['splinters']['top_products']['nr'].");";
-print "var criteria='".$_SESSION['state']['home']['splinters']['top_products']['order']."';";
-?>
 top_products_tables= new Object();
-YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", function () {
 
- 
+function top_products_init(){
 
-	     //START OF THE TABLE=========================================================================================================================
-
-		<?php print "var tableid=".$_REQUEST['table_id'].";";?>
-
+        var tableid=Dom.get('top_products_index').value;
 	    var tableDivEL="table"+tableid;
-
-
 	    var ProductsColumnDefs = [
 				       {key:"position", label:"", width:2,sortable:false,className:"aleft"}
-				       ,{key:"family", label:"<?php echo _('Fam')?>", width:25,sortable:false,className:"aleft"}
-				      // ,{key:"code", label:"<?php echo _('Code')?>", width:45,sortable:false,className:"aleft"}
-				       ,{key:"description", label:"<?php echo _('Product')?>", width:280,sortable:false,className:"aleft"}
-
-				       ,{key:"net_sales", label:"<?php echo _('Sales')?>", width:65,sortable:false,className:"aright"}
-
-				      
-				     
-				      
-				      
-				     
-				       
-
+				       ,{key:"family", label:Dom.get('label_Fam').value, width:25,sortable:false,className:"aleft"}
+				       ,{key:"description", label:Dom.get('label_Fam').value, width:280,sortable:false,className:"aleft"}
+				       ,{key:"net_sales", label:Dom.get('label_Fam').value, width:65,sortable:false,className:"aright"}
 					 ];
 	    top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&tableid="+tableid);
 	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -51,23 +30,18 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 			 'position',
 			 'store','family','code','description','net_sales'
 			 ]};
-	    //__You shouls not change anything from here
-
-	    //top_products_tables.dataSource.doBeforeCallback = mydoBeforeCallback;
-
-
-	    top_products_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, ProductsColumnDefs,
+		    top_products_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, ProductsColumnDefs,
 								   top_products_tables.dataSourcetopprod
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : product_nr,containers : 'paginator', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      rowsPerPage    : Dom.get('top_products_nr').value,containers : 'paginator'+tableid, 
+ 									      pageReportTemplate : '(Page {currentPage} of {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info"+tableid+"'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 
 
 
@@ -93,16 +67,17 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 	    top_products_tables.table1.filter={key:'',value:''};
 
-	});
+}
 
 
 
+YAHOO.util.Event.onDOMReady(top_products_init);
 
 
 function change_product_period(){
 stores_keys=Dom.get('store_keys').value;
 var period=this.getAttribute('period');
-var tableid=<?php print $_REQUEST['table_id']?>;
+var tableid=Dom.get('top_products_index').value
 
 
 

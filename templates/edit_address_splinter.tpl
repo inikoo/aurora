@@ -39,7 +39,24 @@
     <tr><td></td></tr>
 </tbody>
 
+
+ 
+
+
+
 <tbody id="{$address_identifier}address_components"  style="{if !$show_components}display:none{/if}">
+
+ <tr id="{$address_identifier}tr_address_telephone"   style="{if !$show_tel}display:none{/if}"     >
+    <td class="label" >{t}Telephone{/t}:</td>
+    <td  style="text-align:left">
+     <div >
+     <input type="hidden" id="{$address_identifier}address_use_tel" value="{$show_tel}"   ovalue="{$show_tel}"  >
+    <input style="text-align:left;width:100%" id="{$address_identifier}address_telephone" value="" ovalue="" />
+     
+<div id="{$address_identifier}address_telephone_container" style="" ></div>
+	      </div>
+    </td>
+  </tr>
     
     <tr id="{$address_identifier}tr_address_internal">
     <td class="label">{t}Internal{/t}:</td>

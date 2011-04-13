@@ -868,7 +868,7 @@ function customers_awhere($awhere) {
                     'have'=>array(),
                     'allow'=>array(),
                     'categories'=>'',
-                   
+                   'store_key'=>false
                 );
 
     //  $awhere=json_decode($awhere,TRUE);
@@ -918,17 +918,17 @@ function customers_awhere($awhere) {
     if ($where_data['product_ordered1']!='') {
         if ($where_data['product_ordered1']!='∀') {
             $use_otf=true;
-            list($where_product_ordered1,$use_product)=extract_product_groups($where_data['product_ordered1']);
+            list($where_product_ordered1,$use_product)=extract_product_groups($where_data['product_ordered1'],$where_data['store_key']);
         } else
             $where_product_ordered1='true';
     } else {
         $where_product_ordered1='false';
     }
-
+/*
     if ($where_data['product_not_ordered1']!='') {
         if ($where_data['product_not_ordered1']!='ALL') {
             $use_otf=true;
-            $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'O.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','O.`Product Family Key` like');
+            $where_product_not_ordered1=extract_product_groups($where_data['product_ordered1'],'O.`Product Code` not like','transaction.product_id not like','OTF.`Product Family Key` not in ','O.`Product Family Key` like');
         } else
             $where_product_not_ordered1='false';
     } else
@@ -944,6 +944,8 @@ function customers_awhere($awhere) {
         }
     } else
         $where_product_not_received1='true';
+
+*/
 
     $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Invoice Date`','only_dates');
     if ($date_interval_when_ordered['mysql']) {
@@ -973,7 +975,7 @@ function customers_awhere($awhere) {
 
 
 
-    $where='where (  '.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].") $where_categories $where_geo_constraints";
+    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].") $where_categories $where_geo_constraints";
 
     foreach($where_data['dont_have'] as $dont_have) {
         switch ($dont_have) {
@@ -1039,35 +1041,67 @@ function customers_awhere($awhere) {
 
 }
 
-function extract_product_groups($str,$q_prod_name='OTF.`Product Code` like',$q_prod_id='OTF.`Product ID`',$q_group_name='P.`Product Family Code` like',$q_group_id='OTF.`Product Family Key` like',$q_department_name='P.`Product Main Department Code` like',$q_department_id='OTF.`Product Main Department Key` like') {
-    if ($str=='')
+function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Code` like',$q_prod_id='OTF.`Product ID`',$q_group_id='OTF.`Product Family Key` in',$q_department_id='OTF.`Product Department Key`  in') {
+ 
+  
+  if ($str=='')
         return '';
     $where='';
     $where_g='';
     $where_d='';
     $use_product=false;
 
+   
+
+
+    $department_names=array();
+    $department_ids=array();
+    
     if (preg_match_all('/d\([a-z0-9\-\,]*\)/i',$str,$matches)) {
 
 
         foreach($matches[0] as $match) {
 
-            $_departments=preg_replace('/\)$/i','',preg_replace('/^d\(/i','',$match));
-            $_departments=preg_split('/\s*,\s*/i',$_departments);
+            $_groups=preg_replace('/\)$/i','',preg_replace('/^d\(/i','',$match));
+            $_groups=preg_split('/\s*,\s*/i',$_groups);
 
-            foreach($_departments as $department) {
-                $department_ordered=addslashes($department);
-                if (is_numeric($department_ordered))
-                    $where_d.=" or $q_department_id  '$department_ordered'";
-                else {
-                    $where_d.=" or $q_department_name '$department_ordered'";
-                    $use_product=true;
-                }
-            }
+            foreach($_groups as $group) {
+             //$use_product=true;
+                 if (is_numeric($group)){
+                    $department_ids[$group]=$group;
+                 }else{
+                  $department_names[$group]=prepare_mysql($group);
+                 
+                 }
+   
+      }
         }
         $str=preg_replace('/d\([a-z0-9\-\,]*\)/i','',$str);
     }
+    if(count($department_names)>0){
+    if($store_key and is_numeric($store_key))
+        $store_where=' and `Product Department Store Key`='.$store_key;
+    else
+        $store_where='';
+    $sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s) %s ",join($department_names),$store_where);
+    $res=mysql_query($sql);
+ 
+    while($row=mysql_fetch_assoc($res)){
+    $department_ids[$row['Product Department Key']]=$row['Product Department Key'];
+    }
+  
+  }
 
+ if(count($department_ids)>0){
+    $where_d='or '.$q_department_id.' ('.join(',',$department_ids).') ';
+  //   $use_product=true;
+    }
+
+
+
+    $family_names=array();
+    $family_ids=array();
+    
     if (preg_match_all('/f\([a-z0-9\-\,]*\)/i',$str,$matches)) {
 
 
@@ -1077,17 +1111,37 @@ function extract_product_groups($str,$q_prod_name='OTF.`Product Code` like',$q_p
             $_groups=preg_split('/\s*,\s*/i',$_groups);
 
             foreach($_groups as $group) {
-                $group_ordered=addslashes($group);
-                if (is_numeric($group_ordered))
-                    $where_g.=" or $q_group_id  '$group_ordered'";
-                else {
-                    $where_g.=" or $q_group_name '$group_ordered'";
-                    $use_product=true;
-                }
-            }
+             //$use_product=true;
+                 if (is_numeric($group)){
+                    $family_ids[$group]=$group;
+                 }else{
+                  $family_names[$group]=prepare_mysql($group);
+                 
+                 }
+   
+      }
         }
         $str=preg_replace('/f\([a-z0-9\-\,]*\)/i','',$str);
     }
+    if(count($family_names)>0){
+    if($store_key and is_numeric($store_key))
+        $store_where=' and `Product Family Store Key`='.$store_key;
+    else
+        $store_where='';
+    $sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Code` in (%s) %s ",join($family_names),$store_where);
+    $res=mysql_query($sql);
+ 
+    while($row=mysql_fetch_assoc($res)){
+    $family_ids[$row['Product Family Key']]=$row['Product Family Key'];
+    }
+  
+  }
+    
+    if(count($family_ids)>0){
+    $where_g='or '.$q_group_id.' ('.join(',',$family_ids).') ';
+    // $use_product=true;
+    }
+    //print_r($family_ids);
 
 
     $products=preg_split('/\s*,\s*/i',$str);
@@ -1106,6 +1160,10 @@ function extract_product_groups($str,$q_prod_name='OTF.`Product Code` like',$q_p
 
 
     $where=preg_replace('/^\s*or\s*/i','',$where_d.$where_g.$where_p);
+    
+    
+ 
+    
     return array('('.$where.')',$use_product);
 
 }
