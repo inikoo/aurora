@@ -2097,7 +2097,8 @@ INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `T
 VALUES
 (1, 'brown', 'brown_common.css.php', 'brown_table.css', 'brown_index.css', 'brown_dropdown.css', 'brown_marketing_campaigns.css'),
 (2, 'green', 'green_common.css.php', 'green_table.css', 'green_index.css', 'green_marketing_campaigns.css', 'green_dropdown.css');
-
+INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `Theme Table Css`, `Theme Index Css`, `Theme Dropdown Css`, `Theme Campaign Css`) VALUES
+(3, 'magento', 'magento_common.css.php', 'magento_table.css', 'magento_index.css', 'magento_marketing_campaigns.css', 'magento_dropdown.css');
 
 */
 
