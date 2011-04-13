@@ -46,7 +46,7 @@ function save_search_list()
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
-			location.href='customers_list.php?id='+r.customer_list_key;
+			location.href='products_list.php?id='+r.product_list_key;
 
 		    }else
 			Dom.get('save_list_msg').innerHTML=r.msg;
