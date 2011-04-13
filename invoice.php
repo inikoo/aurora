@@ -82,6 +82,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
+$smarty->assign('customer_id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 
 
 

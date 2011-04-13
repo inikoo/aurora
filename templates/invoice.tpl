@@ -8,18 +8,19 @@
 
     <div class="yui-b">
 
-      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
- 
-       <div style="width:400px;float:left"> 
+    <div class="yui-b" style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+    {if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}<img style="position:absolute;top:20px;left:220px;z-index:4" src="art/stamp.paid.en.png"/>{/if}
+
+    <div style="width:340px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>
-        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}">{$invoice->get('Invoice Customer Key')}</a></h2>
+        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a></h2>
 	
 	
 	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><b>{$invoice->get('Invoice Main Contact Name')}</b><br/>{$invoice->get('Invoice XHTML Address')}</div>
 	<div style="clear:both"></div>
        </div>
+    <div style="border:0px solid #ddd;width:250px;float:right">
 
-<div style="border:0px solid #ddd;width:190px;float:right">
 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px" >
   {if $invoice->get('Invoice Items Discount Amount')!=0 }
   <tr><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright">{$invoice->get('Items Gross Amount')}</td></tr>
@@ -49,17 +50,19 @@
 
 	</table>
       </div>
-
- <div style="border:0px solid #ddd;width:290px;float:right">
+    <div style="border:0px solid #ddd;width:300px;float:right">
        {if $note}<div class="notes">{$note}</div>{/if}
 
 
-<table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin:0 30px;float:right" >
+<table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin-right:30px;float:right" >
 
 <tr><td>{t}Invoice Date{/t}:</td><td class="aright">{$invoice->get('Invoice Date')}</td></tr>
 
 <tr><td>{t}Order{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Orders')}</td></tr>
 <tr><td>{t}Delivery Notes{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td></tr>
+<tr><td>{t}Payment Method{/t}:</td><td class="aright">{$invoice->get('Payment Method')}</td></tr>
+<tr><td>{t}Payment State{/t}:</td><td class="aright">{$invoice->get('Payment State')}</td></tr>
+
 </table>
 
       </div>
