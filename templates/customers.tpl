@@ -22,8 +22,10 @@
       
    <div  style="font-size:90%">
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Customers{/t} ({$store->get('Active Customers')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Contacts with Orders{/t} ({$store->get('Total Customers')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Total Customers')})</span>
+
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Contacts{/t} ({$store->get('Active Customers')})</span>
 
 	
 
@@ -41,9 +43,7 @@
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
  <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
  </div>
-  
-  
-  
+
   
 </div>
 
