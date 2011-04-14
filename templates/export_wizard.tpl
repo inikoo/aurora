@@ -1,7 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
 <div style="clear:both" >
-<h1 style="padding:40px;">Export Wizard</h1>
+<h1 style="color:red;font-size:400%">DONT USE THIS</h1>
+<h1 style="color:red;font-size:400%">USE THE DEFAULT MAP</h1>
+
+<h1 style="padding:40px;">{t}Export Wizard{/t}</h1>
 <form action="export_wizard_step2.php?subject={$subject}&subject_key={$subject_key}" method="POST" name="frm_export" onSubmit="return validate1({$param});">
 <table style="margin-left:60px;" border="1" width="600">
 <tr><td colspan="2"><B>Select Fields to export</B></td></tr>

@@ -13,10 +13,21 @@
 
 
 <div class="data_table" style="clear:both">
-    <span class="clean_table_title">{t}Customers per Store{/t}</span>
-<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers_per_store" >{t}Export (CSV){/t}</span>
+    <span class="clean_table_title">{t}Customers per Store{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+
+  <div  style="font-size:90%">
+            <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Contacts with Orders{/t}</span>
+
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t}</span>
+
+
+	
+
+     </div>
 
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+ 
+ 
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
 
 
