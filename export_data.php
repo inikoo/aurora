@@ -86,8 +86,9 @@ if (isset($_REQUEST['source']) && $_REQUEST['source'] =='db') {
 # Fields to be included in default export #
         if ($map_db_type == 'Customer') {
             $included_data=array();
-            $included_data[] = 'Customer Name';
 
+	    $included_data[] = 'Customer Key';
+            $included_data[] = 'Customer Name';
             $included_data[] = 'Customer Main Contact Name';
             $included_data[] = 'Customer Main Plain Email';
 	   
