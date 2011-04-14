@@ -52,7 +52,9 @@
         </td>
     </tr>
     
-     <tr style="font-size:90%;height:30px;vertical-align:bottom">
+  {if $customer->get('Customer Billing Address Link')!='Contact' or $customer->get('Customer Delivery Address Link')!='Contact' }  
+  <tbody>  
+  <tr style="font-size:90%;height:30px;vertical-align:bottom">
   <td style=";vertical-align:bottom">{t}Billing{/t}:</td>
    <td style=";vertical-align:bottom">{t}Delivery{/t}:</td>
     </tr>
@@ -90,16 +92,38 @@
      
      {/if}
   </div>
-  </div>
+
   </td>
   </tr>
-    
- 
+  </tbody>  
+ {/if}
     
     
 </table>
-<div  >
-  <h2 style="font-size:150% ">{t}Orders Overview{/t}</h2>
+<div id="overviews" style="border-top:1px solid #eee;width:850px">
+{if  $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
+
+<div id="orders_overview" style="float:left;;margin-right:40px" >
+  <h2 style="font-size:120% ">{t}Contact Overview{/t}</h2>
+  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;min-width:245px">
+   <tr><td>
+   <div style="font-size:90%">
+   {if $customer->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}<span><br/>{/if}
+   {if $customer->get('Customer Send Email Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by email{/t}<span><br/>{/if}
+   {if $customer->get('Customer Send Postal Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't marketing by post{/t}<span><br/>{/if}
+   </div>
+
+ 
+ 
+	
+	</td></tr>
+  </table>
+
+</div>
+{/if}
+{if $customer->get('Customer Orders')>0}
+<div id="customer_overview"  style="float:left" >
+  <h2 style="font-size:120% ">{t}Orders Overview{/t}</h2>
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;">
     <tr><td>
 	{if $customer->get('Customer Orders')==1}
@@ -110,9 +134,11 @@
 	{else}
 	Customer has not place any order yet.
 	{/if}
-	
-    </td></tr>
+	</td></tr>
   </table>
+</div>
+{/if}
+
 </div>
 </div>
 
