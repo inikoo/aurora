@@ -21,7 +21,6 @@ if (!$user->can_view('customers')) {
 
 
 
-
 ### To check whether the form has proper parameters in query string ###
 if (!isset($_REQUEST['subject_key'])) {
     header('Location: customers_server.php');
@@ -71,13 +70,16 @@ else{
 }*/
 
 
+
+
 ### Load from saved maps ... Case: "Export Data (using last map)" & "Export from another map" ###
-if (isset($_GET['source']) && $_GET['source'] =='db') {
+if (isset($_REQUEST['source']) && $_REQUEST['source'] =='db') {
     $no_of_maps_saved = numExportMapData($map_db_type);
 ## If maps exist in database ##
     if ($no_of_maps_saved > 0) {
-        $exported_data = getExportMapData($map_db_type);
-        //print_r(exported_data);
+     
+      $exported_data = getExportMapData($map_db_type);
+        
     }
 ## If no map exists then assign "Default Export Fields" ##
     else {
@@ -88,10 +90,13 @@ if (isset($_GET['source']) && $_GET['source'] =='db') {
 
             $included_data[] = 'Customer Main Contact Name';
             $included_data[] = 'Customer Main Plain Email';
-           
+	   
             switch($map_type){
             case('customers_list'):
-                    $exported_data = fetch_records_from_customers_list($included_data, $customers_list_id);
+     
+
+
+               $exported_data = fetch_records_from_customers_list($included_data, $customers_list_id);
 
             
             }
@@ -196,7 +201,9 @@ $data = str_replace("\r", "", $data);
 if ($data == "") {
     $data = "no matching records found";
 }
-$filename = mt_rand(11111,99999).'-'.time().'.csv'; // Define the way of your exported file name here //
+$filename = 'export_data-'.time().'.csv'; // Define the way of your exported file name here //
+
+
 header('Content-Type: application/csv; iso-8859-1');
     header("Content-Disposition: attachment; filename=$filename");
     header("Pragma: no-cache");
@@ -204,20 +211,6 @@ header('Content-Type: application/csv; iso-8859-1');
 echo utf8_decode($header."\n".$data);
 
 
-/*
-if (trim($header)!='') {
-    header("Content-type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=$filename");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    echo $header."\n".$data;
-} else {
-    header("Content-type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=$filename");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    echo $header.$data;
-    }*/
 
 
 ### USER DEFINED FUNCTIONS ###
@@ -231,6 +224,8 @@ function getExportMapData($subject) {
         $s="SELECT `Map Data` FROM `Export Map` WHERE `Map Type` = '$subject' ORDER BY `Export Map`.`Exported Date` DESC
            LIMIT 0 , 1";
     }
+
+  
     $q = mysql_query($s);
     $r = mysql_fetch_assoc($q);
     $data= unserialize(base64_decode($r['Map Data']));
@@ -254,6 +249,7 @@ function getExportMapHeader($subject) {
 }
 function numExportMapData($subject) {
     $q = mysql_query("SELECT `Map Key` FROM `Export Map` WHERE `Map Type` = '$subject'");
+    // print "SELECT `Map Key` FROM `Export Map` WHERE `Map Type` = '$subject'";
     $num = mysql_num_rows($q);
     return $num;
 }
