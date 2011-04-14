@@ -100,12 +100,12 @@
     
     
 </table>
-<div id="overviews" style="border-top:1px solid #eee;width:850px">
+<div id="overviews" style="border-top:1px solid #eee;width:900px">
 {if  $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
 
-<div id="orders_overview" style="float:left;;margin-right:40px" >
+<div id="orders_overview" style="float:left;;margin-right:40px;width:300px" >
   <h2 style="font-size:120% ">{t}Contact Overview{/t}</h2>
-  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;min-width:245px">
+  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;min-width:300px">
    <tr><td>
    <div style="font-size:90%">
    {if $customer->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}<span><br/>{/if}
@@ -122,7 +122,7 @@
 </div>
 {/if}
 {if $customer->get('Customer Orders')>0}
-<div id="customer_overview"  style="float:left" >
+<div id="customer_overview"  style="float:left;width:500px" >
   <h2 style="font-size:120% ">{t}Orders Overview{/t}</h2>
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;">
     <tr><td>
