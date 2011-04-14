@@ -87,10 +87,10 @@ if (isset($_REQUEST['source']) && $_REQUEST['source'] =='db') {
         if ($map_db_type == 'Customer') {
             $included_data=array();
 
-	    $included_data[] = 'Customer Key';
-            $included_data[] = 'Customer Name';
-            $included_data[] = 'Customer Main Contact Name';
-            $included_data[] = 'Customer Main Plain Email';
+	    $included_data[] = 'C.`Customer Key`';
+            $included_data[] = '`Customer Name`';
+            $included_data[] = '`Customer Main Contact Name`';
+            $included_data[] = '`Customer Main Plain Email`';
 	   
             switch($map_type){
             case('customers_list'):
@@ -309,7 +309,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
     $customers_data=array();
     $id=array();
     foreach($exported_data as $key=>$value) {
-        $fields .= '`'.addslashes($value).'`,';
+        $fields .= ''.addslashes($value).',';
     }
     $fields = substr($fields,0,-1);
 
@@ -357,7 +357,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
 
 
-
+    //  print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
 
