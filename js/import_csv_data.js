@@ -103,7 +103,7 @@ function getIgnore(v) {
 
 		}
 	
-	//alert(document.getElementById('ignore_message').innerHTML);
+	//alert(document.getElementById('ignore_msg').innerHTML);
 
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
