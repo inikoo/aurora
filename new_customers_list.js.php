@@ -137,7 +137,7 @@ function select_country(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
     geo_constraints=geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value='c('+geo_constraints+')';
+    Dom.get('geo_constraints').value=geo_constraints;
     dialog_country_list.hide();
     hide_filter(true,2)
 }
@@ -145,8 +145,8 @@ function select_country(oArgs){
 function select_postal_code(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value='pc('+geo_constraints+')';
+    geo_constraints=geo_constraints+'pc('+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
+    Dom.get('geo_constraints').value=geo_constraints;
     dialog_postal_code_list.hide();
     hide_filter(true,3)
 }
@@ -154,8 +154,8 @@ function select_postal_code(oArgs){
 function select_wregion(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints='wr('+geo_constraints+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value='wr('+geo_constraints+')';
+    geo_constraints=geo_constraints+'wr('+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
+    Dom.get('geo_constraints').value=geo_constraints;
     dialog_wregion_list.hide();
     hide_filter(true,1)
 }
@@ -163,16 +163,16 @@ function select_wregion(oArgs){
 function select_city(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value='t('+geo_constraints+')';
+    geo_constraints=geo_constraints+'t('+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '')+')';
+    Dom.get('geo_constraints').value=geo_constraints;
     dialog_wregion_list.hide();
     hide_filter(true,4)
 }
 function select_department(oArgs){
     var product_ordered_or=Dom.get('product_ordered_or').value;
     if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+tables.table5.getRecord(oArgs.target).getData('department_code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value='d('+product_ordered_or+')';
+    product_ordered_or=product_ordered_or+'d('+tables.table5.getRecord(oArgs.target).getData('department_code').replace(/<.*?>/g, '')+')';
+    Dom.get('product_ordered_or').value=product_ordered_or;
     dialog_department_list.hide();
     hide_filter(true,5)
 }
@@ -180,8 +180,8 @@ function select_department(oArgs){
 function select_family(oArgs){
     var product_ordered_or=Dom.get('product_ordered_or').value;
     if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+tables.table6.getRecord(oArgs.target).getData('family_code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value='f('+product_ordered_or+')';
+    product_ordered_or=product_ordered_or+'f('+tables.table6.getRecord(oArgs.target).getData('family_code').replace(/<.*?>/g, '')+')';
+    Dom.get('product_ordered_or').value=product_ordered_or;
     dialog_family_list.hide();
     hide_filter(true,6)
 }
@@ -196,8 +196,8 @@ function select_product(oArgs){
 function select_category(oArgs){
     var product_ordered_or=Dom.get('product_ordered_or').value;
     if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+tables.table8.getRecord(oArgs.target).getData('category_code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value='cat('+product_ordered_or+')';
+    product_ordered_or=product_ordered_or+'cat('+tables.table8.getRecord(oArgs.target).getData('category_code').replace(/<.*?>/g, '')+')';
+    Dom.get('product_ordered_or').value=product_ordered_or;
     dialog_category_list.hide();
     hide_filter(true,8)
 }
@@ -338,10 +338,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                    ,{key:"code",formatter:"remove_links", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			       ,{key:"name", formatter:"remove_links",label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-			     // ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			     //  ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			      
-			   //   ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      
 
 				 
 			      
@@ -372,7 +369,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "name","flag",'code','population','gnp','wregion'
+			 "name","flag",'code','wregion'
 			 ]};
 
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -438,7 +435,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			      
 			   //   ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				 
+				 			     ,{key:"times_used", label:"<?php echo _('Times Used')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 			      
 	     
 
@@ -467,7 +465,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "name","flag",'code','population','gnp','wregion'
+			 "name","flag",'code','times_used'
 			 ]};
 
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
