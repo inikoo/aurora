@@ -21,7 +21,7 @@
 	<label  for="fileUpload" class="import_level" style="font-size:14px;">
 	Step 2 - Verify fields</label>
         <span style="font-size:12px;">
-		We've scanned your file and found the following fields. It's important you verify that your contact information is assigned to the appropriate field in Capsule. When you're happy that the fields are assigned correctly press the continue button.
+                {t}After scanned your file we found the subsequent fields that are needed to verify. Please make sure that all of your contacts information is filled up properly to the associated fields in the website. Once you filled up the fields properly, the next task you have to do is to hit on the continue button.{/t}
         </span>
 	    </div></div>    
                     </div>
