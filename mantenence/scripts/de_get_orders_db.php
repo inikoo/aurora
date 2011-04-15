@@ -1319,7 +1319,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             //print "using customer key from order data   $customer_key_from_order_data ";
             $customer = new Customer($customer_key_from_order_data);
 
-        } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+        } if (  isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
 // print_r($act_data['act']);
   //        exit("caca");
 
@@ -1440,6 +1440,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "Unknown ".$header_data['ltipo'];
             break;
         }
+        
+        $customer->update_orders();
+        
+        
         $store->update_orders();
         $store->update_customers_data();
 
@@ -1467,6 +1471,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         }
+        
+        
+        
     }
     mysql_free_result($result);
 }
@@ -1624,9 +1631,6 @@ function update_data($to_update) {
 
           );
 }
-
-
-
 function is_same_address($data) {
     $address1=$data['address_data'];
     $address2=$data['shipping_data'];

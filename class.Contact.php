@@ -4691,7 +4691,14 @@ $this->parent=$parent;
         }
     }
 
+function delete(){
 
+	$email_keys=$this->get_emails_keys();
+	$telecom_keys=$this->get_telecom_keys();
+
+
+
+}
 
 
 }

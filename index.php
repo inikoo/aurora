@@ -50,17 +50,17 @@ $smarty->assign('search_options_list',$search_options_list);
 
 
 
-     $css_files=array(
+$css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
-              
+
                'button.css',
                'container.css'
-               
-               
-           ); 
+
+
+           );
 include_once('Theme.php');
 $js_files=array(
 
@@ -76,96 +76,105 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
-		 'external_libs/ampie/ampie/swfobject.js',
+              'external_libs/ampie/ampie/swfobject.js',
 
-        //      'js/index_tools.js',
+              //      'js/index_tools.js',
               'js/index.js',
 
-          //    'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
+              //    'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );
 
-  /*
-  'sales'=>array(
-                                       'title'=>_('Sales Overview'),
-                                       'index'=>0,
-                                       'php'=>'splinter_sales.php',
-                                       'tpl'=>'splinter_sales.tpl',
-                                       'js'=>'js/splinter_sales.js'
-                                   ),
-                                   
+/*
+'sales'=>array(
+                                     'title'=>_('Sales Overview'),
+                                     'index'=>0,
+                                     'php'=>'splinter_sales.php',
+                                     'tpl'=>'splinter_sales.tpl',
+                                     'js'=>'js/splinter_sales.js'
+                                 ),
+
 'store_sales'=>array(
-                                       'title'=>_('Store Sales'),
-                                       'index'=>0,
-                                       'php'=>'splinter_store_sales.php',
-                                       'tpl'=>'splinter_store_sales.tpl',
-                                       'js'=>'js/splinter_store_sales.js'
-                                   ),                                   
-  
-  
-               'orders_in_process'=>array(
-                                       'title'=>_('Pending orders'),
-                                       'index'=>1,
-                                       'php'=>'splinter_orders_in_process.php',
-                                       'tpl'=>'splinter_orders_in_process.tpl',
-                                       'js'=>'splinter_orders_in_process.js.php'
-                                   ),
-   
-  
-  
-     
-  */
+                                     'title'=>_('Store Sales'),
+                                     'index'=>0,
+                                     'php'=>'splinter_store_sales.php',
+                                     'tpl'=>'splinter_store_sales.tpl',
+                                     'js'=>'js/splinter_store_sales.js'
+                                 ),
+
+
+             'orders_in_process'=>array(
+                                     'title'=>_('Pending orders'),
+                                     'index'=>1,
+                                     'php'=>'splinter_orders_in_process.php',
+                                     'tpl'=>'splinter_orders_in_process.tpl',
+                                     'js'=>'splinter_orders_in_process.js.php'
+                                 ),
+
+
+
+
+*/
 
 
 $splinters=array(
-'messages'=>array(
-                                       'title'=>_('Display Board'),
-                                       'index'=>0,
-                                       'php'=>'splinter_messages.php',
-                                       'tpl'=>'splinter_messages.tpl',
-                                       'js'=>'splinter_messages.js.php'
-                                   ),
-  'top_customers'=>array(
-                  		'title'=>_('Top Customers'),
+               'messages'=>array(
+                              'title'=>_('Display Board'),
+                              'index'=>200,
+                              'php'=>'splinter_messages.php',
+                              'tpl'=>'splinter_messages.tpl',
+                              'js'=>'splinter_messages.js.php'
+                          ),
+               'top_customers'=>array(
+                                   'title'=>_('Top Customers'),
                                    'index'=>201,
                                    'php'=>'splinter_top_customers.php',
                                    'tpl'=>'splinter_top_customers.tpl',
                                    'js'=>'js/splinter_top_customers.js',
                                    'order'=>$_SESSION['state']['home']['splinters']['top_customers']['order'],
                                    'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
-                                   
+
                                ),
 
- 'top_products'=>array(
-                                    'title'=>_('Top Products'),
-                                  'index'=>200,
+
+               'sales'=>array(
+                           'title'=>_('Sales Overview'),
+                           'index'=>203,
+                           'php'=>'splinter_sales.php',
+                           'tpl'=>'splinter_sales.tpl',
+                           'js'=>'js/splinter_sales.js',
+                             'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
+                                  'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
+
+                       ),
+
+
+
+
+
+               'top_products'=>array(
+                                  'title'=>_('Top Products'),
+                                  'index'=>202,
                                   'php'=>'splinter_top_products.php',
                                   'tpl'=>'splinter_top_products.tpl',
                                   'js'=>'js/splinter_top_products.js',
                                   'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
                                   'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
 
-                                
+
                               ),
-       'sales'=>array(
-                                       'title'=>_('Sales Overview'),
-                                       'index'=>0,
-                                       'php'=>'splinter_sales.php',
-                                       'tpl'=>'splinter_sales.tpl',
-                                       'js'=>'js/splinter_sales.js'
-                                   ),     
-             
+
            );
 
 foreach($splinters as $splinter_name=>$splinter) {
 
-if(array_key_exists('order',$splinter))
-$smarty->assign($splinter_name.'_order',$splinter['order']);
-if(array_key_exists('nr',$splinter))
-$smarty->assign($splinter_name.'_nr',$splinter['nr']);
+    if (array_key_exists('order',$splinter))
+        $smarty->assign($splinter_name.'_order',$splinter['order']);
+    if (array_key_exists('nr',$splinter))
+        $smarty->assign($splinter_name.'_nr',$splinter['nr']);
 
 
 
-$smarty->assign($splinter_name.'_index',$splinter['index']);
+    $smarty->assign($splinter_name.'_index',$splinter['index']);
 
 
     if ($splinter['js']!='')

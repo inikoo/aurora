@@ -98,10 +98,11 @@ $myconf=array(
 $default_state=array(
                    'export'=>'xls',
                    'home'=>array(
-                              'display'=>'top_customers',
+                              'display'=>'sales',
                               'splinters'=>array(
                                               'top_products'=>array('nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc'),
                                               'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
+                                               'sales'=>array('type'=>'stores','period'=>'mtd','currency'=>'store'),
                                               'orders_in_process'=>array(
                                                                       'store_keys'=>'all',
                                                                       'sf'=>0,
