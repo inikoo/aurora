@@ -71,6 +71,15 @@ header("Content-Disposition: attachment; filename=\"out.txt\"");
 $address=new Address($customer->data['Customer Main Address Key']);
 $address_lines=$address->display('3lines');
 
+$tel=($customer->data['Customer Main XHTML Telephone']==''?$customer->data['Customer Main XHTML Mobile']:$customer->data['Customer Main XHTML Telephone']);
+
+$delivery_address=new Address($customer->data['Customer Main Delivery Address Key']);
+$delivery_address_lines=$delivery_address->display('3lines');
+
+
+$delivery_tel=$delivery_address->get_formated_principal_telephone();
+if($delivery_tel=='')
+    $delivery_tel=$tel;
 $number_orders=$customer->data['Customer Orders'];
 
 if(preg_match('/^[a-z]+/i', $user->get("User Alias"),$match))
@@ -86,12 +95,12 @@ $export_data=array(
 		   ,$address_lines[1]
 		   ,$address_lines[3]
 		   ,$address_lines[2]
-		   ,$customer->data['Customer Main Town']
+		   ,$address->display('Town with Divisions')
 		   ,$address->display('Country Divisions')
-		   ,$customer->data['Customer Main Postal Code']
-		   ,$customer->data['Customer Main Country']
+		   ,$address->data['Address Postal Code']
+		   ,$address->data['Address Country Name']
 		   ,"Staff"
-		   ,($customer->data['Customer Main XHTML Telephone']==''?$customer->data['Customer Main XHTML Mobile']:$customer->data['Customer Main XHTML Telephone'])
+		   ,$tel
 		   ,$customer->data['Customer Main XHTML FAX']
 		   ,"a"
 		   ,"mobile"
@@ -122,10 +131,28 @@ $export_data=array(
 		   ,""
 		   ,""
 		   ,""
+		   
+		   
+		   ,"kaktus_del_address"
+		   ,$delivery_tel
+		   ,$delivery_address_lines[1]
+		   ,$delivery_address_lines[3]
+		   ,$delivery_address_lines[2]
+		   ,$delivery_address->display('Town with Divisions')
+		   ,$delivery_address->display('Country Divisions')
+		   ,$delivery_address->data['Address Postal Code']
+		   ,$delivery_address->data['Address Country Name']
+		   
+		   
+		   
+		   
+		   
+		   
+		   
+		   
 		   ,""
-		   ,""
-		   ,""
-		   ,"","","","","","","","","","","","","","","","","","","","kaktus","kaktus","c","d","e"
+		   
+		   ,"","","","","","","","","","","","","kaktus","kaktus","c","d","e"
 		   ,$number_orders+1
 		   ,"","","","","","","","","","","","",""
 		   ,$data['courier']
