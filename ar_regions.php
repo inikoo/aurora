@@ -357,7 +357,7 @@ function list_postal_code(){
 
 
 
-  $where=sprintf('where true ');
+  $where=sprintf('where `Customer Main Postal Code`!="" ');
 
 
   $filter_msg='';
@@ -441,55 +441,34 @@ if($f_field=='country_code' and $f_value!='')
 
    
  
-   if($order=='population')
-     $order='`Country Population`';
- elseif($order=='gnp')
-     $order='`Country GNP`';
+   if($order=='times_used')
+     $order='`times_used`';
+ else if($order=='name')
+     $order='`Customer Main Country`';
      else
-      $order='`Customer Main Country`';
+      $order='`Customer Main Postal Code`';
 
 
 
 
 
    $adata=array();
- $sql="select  * from `Customer Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select  count(*) times_used,`Customer Main Postal Code`,`Customer Main Country 2 Alpha Code`,`Customer Main Country` from `Customer Dimension` $where $wheref  group by `Customer Main Postal Code` order by $order $order_direction  limit $start_from,$number_results;";
 
  
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
-     //  $wregion=sprintf('<a href="wregion.php?country=%s">%s</a>',$row['World Region Code'],$row['World Region']);
     $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Country 2 Alpha Code'],$row['Customer Main Country']);
-       // $country_code=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Postal Code'],$row['Customer Main Country Code']);
         $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Customer Main Country 2 Alpha Code']));
 
-/*if($row['Country Population']<100000){
-$population='>0.1M';
-}else{
-$population=number($row['Country Population']/1000000,1).'M';
-}
-if($row['Country GNP']=='')
-$gnp='ND';
-elseif($row['Country GNP']<1000)
-$gnp='$'.number($row['Country GNP'],0);
-else
-$gnp='$'.number($row['Country GNP']/1000,0).'k';
-*/
+
      $adata[]=array(
-  //    'plain_name'=>$row['Country Name'],
-	//	  'plain_code'=>$row['Country Code'],
+  
 		   'name'=>$country_name,
 		  'code'=>$row['Customer Main Postal Code'],
 		  'flag'=>$country_flag,
-       // 'population'=>$population,
-        //'gnp'=>$gnp,
-       // 'wregion'=>$wregion,
-       // 'code3a'=>$row['Country Code'],
-       // 'code2a'=>$row['Country 2 Alpha Code'],
-       //  'plain_name'=>$row['Country Name'],
-       //   'postal_regex'=>$row['Country Postal Code Regex'],
-         //     'postcode_help'=>$row['Country Postal Code Format'],
+    'times_used'=>number($row['times_used']),
        
 
 		   );

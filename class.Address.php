@@ -1388,6 +1388,19 @@ function find_fast($data=false,$subject_data=false){
                 $lines[2]=$this->display('street');
             }
             return $lines;
+            break;
+            
+       case('Town with Divisions'):
+        
+        $town =$this->data['Address Town Second Division'];
+        if($this->data['Address Town First Division']!='')
+        $town.=', '.$this->data['Address Town First Division'];
+         if($this->data['Address Town']!='')
+        $town.=', '.$this->data['Address Town'];
+        $town=preg_replace('/^\,\s*/','',$town);
+            return $town;
+            
+         break;   
         case('mini'):
             $street=$this->display('street');
             if (strlen($street)<2)
@@ -1462,7 +1475,9 @@ function find_fast($data=false,$subject_data=false){
 
                 $subtown_address=$this->data['Address Town Second Division'];
                 if ($this->data['Address Town First Division'])
-                    $subtown_address.=' ,'.$this->data['Address Town First Division'];
+                    $subtown_address.=', '.$this->data['Address Town First Division'];
+                    
+                 $subtown_address=preg_replace('/^\,\s*/','',$subtown_address);   
                 $subtown_address=_trim($subtown_address);
                 if ($subtown_address!='')
                     $address.=$subtown_address.$separator;

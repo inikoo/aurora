@@ -16,6 +16,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('delete_customer_list'):
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+                           
+
+                         ));
+    delete_customer_list($data);
+    break;
 case('convert_customer_to_company'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
@@ -3427,5 +3435,43 @@ function edit_company_department() {
     echo json_encode($response);
 
 }
+function delete_customer_list($data){
+global $user;
+$sql=sprintf("select `Customer List Store Key`,`Customer List Key` from `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+
+if(in_array($row['Customer List Store Key'],$user->stores)){
+$sql=sprintf("delete from  `Customer List Customer Bridge` where `Customer List Key`=%d",$data['key']);
+mysql_query($sql);
+$sql=sprintf("delete from  `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+mysql_query($sql);
+$response=array('state'=>200,'action'=>'deleted');
+        echo json_encode($response);
+        return;
+
+
+
+}else{
+ $response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+        echo json_encode($response);
+        return;
+}
+
+
+
+}else{
+  $response=array('state'=>400,'msg'=>'Error no customer list');
+        echo json_encode($response);
+        return;
+
+}
+
+
+
+
+}
+
 
 ?>

@@ -178,7 +178,7 @@
   	$search = in_array($index,$colorArray);
  
 	if(isset($search) && $search>0)
-	{
+	{       //$_SESSION['ignore_msg']="ignore_msg";
 		echo "<span id=\"ignore_msg\" style=\"color:red;\">This data will be ignored</span>";
 	}
 ?>

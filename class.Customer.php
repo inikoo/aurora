@@ -2028,6 +2028,13 @@ class Customer extends DB_Table {
 
 
         switch ($key) {
+        case('Send Newsletter'):
+        case('Send Email Marketing'):
+        case('Send Postal Marketing'):
+        
+        return ($this->data['Customer '.$key]=='Yes'?_('Yes'):_('No'));
+        
+        break;
         case("ID"):
         case("Formated ID"):
             return $this->get_formated_id();
