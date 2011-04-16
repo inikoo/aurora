@@ -1098,7 +1098,43 @@ function get($key){
     case('Total Tax Adjust Amount'):
 
     return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
-  } 
+    break;
+  case('Payment Method'):
+
+  switch ($this->data['Invoice Main Payment Method']) {
+      case 'Credit Card':
+      return _('Credit Card');
+          break;
+      case 'Cash':
+      return _('Cash');
+      break;
+       case 'Paypal':
+      return _('Paypal');
+      break;
+          case 'Check':
+      return _('Check');
+      break;
+          case 'Bank Transfer':
+      return _('Bank Transfer');
+      break;
+          case 'Other':
+      return _('Other');
+      break;
+          case 'Unknown':
+      return _('Unknown');
+      break;
+     
+
+ 
+      break;
+      default:
+          return $this->data['Invoice Main Payment Method'];
+          break;
+  }
+  break;
+    case('Payment State'):
+return $this->get_xhtml_payment_state();
+  }
   
   
   if(isset($this->data[$key]))
@@ -1107,7 +1143,32 @@ function get($key){
   return false;
 }
 
+function get_xhtml_payment_state(){
 
+ switch ($this->data['Invoice Paid']) {
+      case 'Yes':
+      return _('Paid in full');
+          break;
+      case 'Cash':
+      return _('Cash');
+      break;
+       case 'Paypal':
+      return _('Paypal');
+      break;
+          case 'Check':
+      return _('Check');
+      break;
+          case 'Bank Transfer':
+      return _('Bank Transfer');
+      break;
+          case 'Other':
+      return _('Other');
+      break;
+          case 'Unknown':
+      return _('Unknown');
+
+}
+}
 
  /*Function: update_field_switcher
   */

@@ -51,6 +51,8 @@ $js_files=array(
 
 
 
+
+
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
 $smarty->assign('title', _('Customers Lists'));
@@ -114,6 +116,11 @@ $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2',$_SESSION['state']['world']['countries']['f_value']);
+
+
+$general_options_list=array();
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php','label'=>_('Exit'));
+$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->display('new_customers_lists.tpl');

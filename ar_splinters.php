@@ -23,12 +23,135 @@ case('customers'):
   case('products'):
   $results=list_products();
   break;
+  case('sales'):
+  $results=sales_overview();
+  break; 
  case('orders_in_process'):
   orders_in_process();
   break;
 }
 
+function sales_overview(){
 
+
+  global $myconf,$output_type,$user;
+
+  $conf=$_SESSION['state']['home']['splinters']['sales'];
+  $start_from=0;
+  
+
+
+
+ 
+ if(isset( $_REQUEST['period'])){
+    $period=$_REQUEST['period'];
+    $_SESSION['state']['home']['splinters']['sales']['period']=$period;
+  }else
+    $period=$conf['period'];
+
+
+
+
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+ 
+  
+      $store=join(',',$user->stores);
+
+  
+   
+  
+   $filter_msg='';
+   $wheref='';
+
+     if(!$store)
+          $where=sprintf(' and false ');
+
+     else
+     $where=sprintf(' and `Store Key` in (%s) ',$store);
+
+  
+   
+
+   $filtered=0;
+   $rtext='';
+   $total=0;
+   
+
+switch($period){
+case('1w'):
+ $fields=sprinf(" `Store 1 Week Acc Invoices` as invoices,`Store 1 Week Acc Invoiced Amount` as sales " );
+break;
+case('1m'):
+ $sales=money($data['Product 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
+break;
+case('1q'):
+ $sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+break;
+case('1y'):
+ $sales=money($data['Product 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
+break;
+ default:
+ $sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+
+}
+  
+
+  
+   $sql="select  * from `Store Dimension`"; 
+   $adata=array();
+   //print $sql;
+   $position=1;
+  $result=mysql_query($sql);
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
+  $total++;
+
+
+
+   
+    $code="<a href='product.php?pid=".$data['Product ID']."'>".$data['Product Code'].'</a>'; 
+    $family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>'; 
+    $store="<a href='store.php?id=".$data['Product Store Key']."'>".$data['Store Code'].'</a>'; 
+*/
+    $store="<a href='report_sales.php?store_key=".$data['Store Key']."'>".$data['Store Name'].'</a>'; 
+
+    $adata[]=array(
+		  
+		   'store'=>$store
+		 
+		   );
+  }
+mysql_free_result($result);
+
+
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'rtext'=>$rtext,
+			
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+
+			 'records_perpage'=>$total,
+			 'records_order'=>'store',
+			 'records_order_dir'=>'',
+			 'filtered'=>$filtered
+			 )
+		   );
+  if($output_type=='ajax'){
+    echo json_encode($response);
+    return;
+  }else{
+    return $response;
+  }
+
+}
 
 function list_products(){
 
@@ -391,7 +514,6 @@ mysql_free_result($result);
   }
 
 }
-
 function orders_in_process(){
 
   $conf=$_SESSION['state']['home']['splinters']['orders_in_process'];
