@@ -369,6 +369,9 @@ function getmicrotime() {
 
 function delta($current_value,$old_value) {
 
+if($current_value==$old_value){
+return '--';
+}
     return percentage($current_value-$old_value,$old_value,1,'NA','%',true);
 }
 
