@@ -855,6 +855,10 @@ return;
     }
 
 
+
+
+
+
 function delete() {
     $sql=sprintf("delete from `Email Dimension` where `Email Key`=%d",$this->id);
     mysql_query($sql);

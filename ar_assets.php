@@ -38,15 +38,15 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('products_list'):
-list_products_list();
-break;
+    list_products_list();
+    break;
 
 // -------------------------------start for product list ------------------------------------------
 case('new_list'):
 
 
 
-  
+
 
     $data=prepare_values($_REQUEST,array(
                              'awhere'=>array('type'=>'json array'),
@@ -165,7 +165,7 @@ case('customers_per_store'):
     break;
 case('marketing_per_store'):
     list_marketing_per_store();
-    break;    
+    break;
 case('orders_per_store'):
     list_orders_per_store();
     break;
@@ -2819,7 +2819,7 @@ function list_departments() {
             $where=sprintf("where  false");
         break;
     default:
-      
+
         $where=sprintf("where `Product Department Store Key` in (%s)",join(',',$user->stores));
 
     }
@@ -3657,7 +3657,7 @@ function list_departments() {
 
 // --------------------------------------------------Added for 3 year,yeartoday,6 month, 10 days---------------
 
-           elseif($period=='three_year') {
+            elseif($period=='three_year') {
                 $tsall=percentage($row['Product Department 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 3 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 3 Year Acc Profit'],$sum_total_profit_plus,2);
@@ -3678,7 +3678,7 @@ function list_departments() {
                 else
                     $tprofit=percentage($row['Product Department 6 Month Acc Profit'],$sum_total_profit_minus,2);
             }
- 
+
             elseif($period=='ten_day') {
                 $tsall=percentage($row['Product Department 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 10 Day Acc Profit']>=0)
@@ -4196,10 +4196,10 @@ function list_departments() {
     $total_records=ceil($total/$number_results)+$total;
     $number_results++;
 
-if($start_from==0)
-$record_offset=0;
-else
-$record_offset=$start_from+1;
+    if ($start_from==0)
+        $record_offset=0;
+    else
+        $record_offset=$start_from+1;
 
     $response=array('resultset'=>
                                 array('state'=>200,
@@ -4380,7 +4380,7 @@ function list_products() {
     $db_table='`Product Dimension`';
 
 
-$where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
+    $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
     switch ($parent) {
     case('store'):
 
@@ -4399,7 +4399,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
         $where.=sprintf(' and `Product Family Key`=%d',$parent_key);
         break;
     default:
-      
+
 
     }
     $group='';
@@ -4655,7 +4655,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
             }
         }
 // ---------------------------------Start for Product's 3 year------------------------------------------
-       elseif($period=='three_year') {
+        elseif($period=='three_year') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 3 Year Acc Profit`<0,`Product 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 3 Year Acc Profit`>=0,`Product 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -4688,7 +4688,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
             }
         }
 // ---------------------------------Start for Product's yeartoday------------------------------------------
-       elseif($period=='yeartoday') {
+        elseif($period=='yeartoday') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product YearToDay Acc Profit`<0,`Product YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Product YearToDay Acc Profit`>=0,`Product YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Product YearToDay Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -4705,7 +4705,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
         }
 // ---------------------------------End for Product's yeartoday------------------------------------------
 // ---------------------------------Start for Product's 6 month------------------------------------------
-       elseif($period=='six_month') {
+        elseif($period=='six_month') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 6 Month Acc Profit`<0,`Product 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 6 Month Acc Profit`>=0,`Product 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -4757,7 +4757,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
         }
 
 // ---------------------------------Start for Product's 10 day------------------------------------------
-       elseif($period=='ten_day') {
+        elseif($period=='ten_day') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 10 Day Acc Profit`<0,`Product 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product 10 Day Acc Profit`>=0,`Product 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -5427,20 +5427,20 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
     }
 
 
-if ($total<=$number_results) {
+    if ($total<=$number_results) {
 
-    if ($percentages) {
-        $tsall='100.00%';
-        $tprofit='100.00%';
-        $tstock_value='100.00%';
-    } else {
-        $tsall=money($sum_total_sales);
-        $tprofit=money($sum_total_profit);
-        $tstock_value=money($sum_total_stock_value);
+        if ($percentages) {
+            $tsall='100.00%';
+            $tprofit='100.00%';
+            $tstock_value='100.00%';
+        } else {
+            $tsall=money($sum_total_sales);
+            $tprofit=money($sum_total_profit);
+            $tstock_value=money($sum_total_stock_value);
 
-    }
+        }
 
-   
+
         $total_title='Total';
         if ($view=='sales')
             $total_title=_('Total');
@@ -5467,12 +5467,12 @@ if ($total<=$number_results) {
                  );
 
 
-       // $total_records=ceil($total_records/$number_results)+$total_records;
-    }else {
+        // $total_records=ceil($total_records/$number_results)+$total_records;
+    } else {
         $adata[]=array();
 
     }
-      $total_records=ceil($total/$number_results)+$total;
+    $total_records=ceil($total/$number_results)+$total;
     $number_results++;
 
 
@@ -5707,7 +5707,7 @@ function list_parts() {
         elseif($period=='week')
         $order=' `Part 1 Week Acc Margin` ';
 // ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
-       elseif($period=='three_year')
+        elseif($period=='three_year')
         $order=' `Part 3 Year Acc Margin` ';
         elseif($period=='yeartoday')
         $order=' `Part YearToDay Acc Margin` ';
@@ -5869,7 +5869,7 @@ function list_parts() {
 
 
     $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-   //          print $sql;
+    //          print $sql;
     $adata=array();
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -6803,7 +6803,7 @@ function list_families() {
         elseif($period=='week')
         $order='`Product Family 1 Week Acc Invoiced Amount`';
 // --------------------------------Start for families' 3Y,YTD,6M,10D------------------------------------------------
-       elseif($period=='three_year')
+        elseif($period=='three_year')
         $order='`Product Family 3 Year Acc Invoiced Amount`';
         elseif($period=='yeartoday')
         $order='`Product Family YearToDay Acc Invoiced Amount`';
@@ -6878,7 +6878,7 @@ function list_families() {
         }
     }
 // ---------------------------------------Start for families 3 year-----------------------------------------
-   elseif($period=='three_year') {
+    elseif($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family 3 Year Acc Profit`<0,`Product Family 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 3 Year Acc Profit`>=0,`Product Family 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Family 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -6892,7 +6892,7 @@ function list_families() {
     }
 // ---------------------------------------Ends for families 3 year-----------------------------------------
 // ---------------------------------------Start for families YearToDay-----------------------------------------
-   elseif($period=='yeartoday') {
+    elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family YearToDay Acc Profit`<0,`Product Family YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family YearToDay Acc Profit`>=0,`Product Family YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Product Family YearToDay Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -6922,7 +6922,7 @@ function list_families() {
         }
     }
 // --------------------------------------- Start for families 6 month -----------------------------------------
-   elseif($period=='six_month') {
+    elseif($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family 6 Month Acc Profit`<0,`Product Family 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 6 Month Acc Profit`>=0,`Product Family 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Family 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -6969,7 +6969,7 @@ function list_families() {
         }
     }
 // --------------------------------------- Start for families 10 days -----------------------------------------
-   elseif($period=='ten_day') {
+    elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family 10 Day Acc Profit`<0,`Product Family 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 10 Day Acc Profit`>=0,`Product Family 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product Family 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -7802,7 +7802,7 @@ function list_stores() {
             mysql_free_result($result);
         } else {
             $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
-           //print $sql;
+            //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -7877,7 +7877,7 @@ function list_stores() {
     }
 
 
- elseif($period=='yeartoday') {
+    elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store YearToDay Acc Profit`<0,`Store YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Store YearToDay Acc Profit`>=0,`Store YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store YearToDay Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -7893,7 +7893,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
- elseif($period=='three_year') {
+    elseif($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 3 Year Acc Profit`<0,`Store 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 3 Year Acc Profit`>=0,`Store 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 3 Year Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -7909,7 +7909,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
- elseif($period=='six_month') {
+    elseif($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 6 Month Acc Profit`<0,`Store 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 6 Month Acc Profit`>=0,`Store 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 6 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -7925,8 +7925,8 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
- 
- elseif($period=='ten_day') {
+
+    elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 10 Day Acc Profit`<0,`Store 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Store 10 Day Acc Profit`>=0,`Store 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 10 Day Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -8011,7 +8011,7 @@ function list_stores() {
             }
 
 
-	    elseif($period=='yeartoday') {
+            elseif($period=='yeartoday') {
                 $tsall=percentage($row['Store DC YearToDay Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC YearToDay Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC YearToDay Acc Profit'],$sum_total_profit_plus,2);
@@ -8032,8 +8032,8 @@ function list_stores() {
                 else
                     $tprofit=percentage($row['Store DC 6 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-  
-	 elseif($period=='ten_day') {
+
+            elseif($period=='ten_day') {
                 $tsall=percentage($row['Store DC 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 10 Day Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 10 Day Acc Profit'],$sum_total_profit_plus,2);
@@ -8251,7 +8251,7 @@ function list_stores() {
             }
 
 
-elseif($period=="yeartoday") {
+            elseif($period=="yeartoday") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -8288,7 +8288,7 @@ elseif($period=="yeartoday") {
                 $tsall=($row["Store".$DC_tag." YearToDay Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." YearToDay Acc Profit"]*$factor);
             }
-elseif($period=="three_year") {
+            elseif($period=="three_year") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -8325,7 +8325,7 @@ elseif($period=="three_year") {
                 $tsall=($row["Store".$DC_tag." 3 Year Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 3 Year Acc Profit"]*$factor);
             }
-elseif($period=="six_month") {
+            elseif($period=="six_month") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -8362,7 +8362,7 @@ elseif($period=="six_month") {
                 $tsall=($row["Store".$DC_tag." 6 Month Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 6 Month Acc Profit"]*$factor);
             }
-elseif($period=="ten_day") {
+            elseif($period=="ten_day") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -9332,80 +9332,128 @@ function list_customers_per_store() {
     elseif($order=='name')
     $order='`Store Name`';
     elseif($order=='contacts')
-    $order='contacts';
-    elseif($order=='active')
+    $order='`Store Contacts`';
+    elseif($order=='active_contacts')
     $order='active';
-    elseif($order=='new')
-    $order='new';
     elseif($order=='new_contacts')
-    $order='new_contacts';
-    elseif($order=='customers')
-    $order='customers';
-    elseif($order=='lost')
-    $order='lost';
+    $order='`Store New Contacts`';
+    elseif($order=='lost_contacts')
+    $order='`Store Lost Contacts`';
+    elseif($order=='losing_contacts')
+    $order='`Store Losing Contacts`';
+   
+   elseif($order=='contacts_with_orders')
+    $order='`Store Contacts`';
+    elseif($order=='active_contacts_with_orders')
+    $order='active';
+    elseif($order=='new_contacts_with_orders')
+    $order='`Store New Contacts`';
+    elseif($order=='lost_contacts_with_orders')
+    $order='`Store Lost Contacts`';
+    elseif($order=='losing_contacts_with_orders')
+    $order='`Store Losing Contacts`';
+   
     else
         $order='`Store Code`';
 
-    $total_customers=0;
-    $sql="select  sum(`Store Total Customer Contacts`) as total_contacts,sum(`Store New Customer Contacts`) new_contacts,sum(`Store Total Customers`) as customers,sum(`Store Active Customers`) as active,sum(`Store New Customers`) as new, sum(`Store Lost Customers`) as lost from `Store Dimension` $where     ";
-    // print $sql;
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $total_customers=$row['customers'];
-        $total_new=$row['new'];
-        $total_active=$row['active'];
-        $total_lost=$row['lost'];
-        $total_contacts=$row['total_contacts'];
-        $total_new_contacts=$row['new_contacts'];
-    }
 
-
-
-
-
-    $sql="select `Store Name`,`Store Code`,`Store Key`, `Store Total Customer Contacts` as contacts,`Store New Customer Contacts` as new_contacts,`Store Total Customers` as customers ,`Store Active Customers` as active ,`Store New Customers` as new ,`Store Lost Customers` as lost from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,(`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
+         `Store Contacts With Orders`,(`Store Active Contacts With Orders`+`Store Losing Contacts With Orders`)as active_with_orders,`Store New Contacts With Orders`,`Store Lost Contacts With Orders`,`Store Losing Contacts With Orders` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
 
 
+    $total_contacts=0;
+    $total_active_contacts=0;
+    $total_new_contacts=0;
+    $total_lost_contacts=0;
+    $total_losing_contacts=0;
+    $total_contacts_with_orders=0;
+    $total_active_contacts_with_orders=0;
+    $total_new_contacts_with_orders=0;
+    $total_lost_contacts_with_orders=0;
+    $total_losing_contacts_with_orders=0;
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $name=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
         $code=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-        if ($percentages) {
-            $customers=percentage($row['customers'],$total_customers);
-            $active=percentage($row['active'],$total_active);
-            $new=percentage($row['new'],$total_new);
-            $lost=percentage($row['lost'],$total_lost);
-            $contacts=percentage($row['contacts'],$total_contacts);
-            $new_contacts=percentage($row['new_contacts'],$total_new_contacts);
+        $total_contacts+=$row['Store Contacts'];
 
-        } else {
-            $customers=number($row['customers']);
-            $active=number($row['active']);
-            $new=number($row['new']);
-            $lost=number($row['lost']);
-            $contacts=number($row['contacts']);
-            $new_contacts=number($row['new_contacts']);
+        $total_active_contacts+=$row['active'];
+        $total_new_contacts+=$row['Store New Contacts'];
+        $total_lost_contacts+=$row['Store Lost Contacts'];
+        $total_losing_contacts+=$row['Store Losing Contacts'];
 
-        }
+        $total_contacts_with_orders+=$row['Store Contacts With Orders'];
+        $total_active_contacts_with_orders+=$row['active_with_orders'];
+        $total_new_contacts_with_orders+=$row['Store New Contacts With Orders'];
+        $total_lost_contacts_with_orders+=$row['Store Lost Contacts With Orders'];
+        $total_losing_contacts_with_orders+=$row['Store Losing Contacts With Orders'];
 
+
+
+
+        $contacts=number($row['Store Contacts']);
+        $new_contacts=number($row['Store New Contacts']);
+        $active_contacts=number($row['active']);
+        $losing_contacts=number($row['Store Losing Contacts']);
+        $lost_contacts=number($row['Store Lost Contacts']);
+
+        $contacts_with_orders=number($row['Store Contacts With Orders']);
+        $new_contacts_with_orders=number($row['Store New Contacts With Orders']);
+        $active_contacts_with_orders=number($row['active_with_orders']);
+        $losing_contacts_with_orders=number($row['Store Losing Contacts With Orders']);
+        $lost_contacts_with_orders=number($row['Store Lost Contacts With Orders']);
+
+        //  $contacts_with_orders=number($row['contacts_with_orders']);
+        // $active_contacts=number($row['active_contacts']);
+        // $new_contacts=number($row['new_contacts']);
+        // $lost_contacts=number($row['lost_contacts']);
+        // $new_contacts_with_orders=number($row['new_contacts']);
+
+
+        /*
+                if ($percentages) {
+                    $contacts_with_orders=percentage($row['contacts_with_orders'],$total_contacts_with_orders);
+                    $active_contacts=percentage($row['active_contacts'],$total_active);
+                    $new_contacts=percentage($row['new_contacts'],$total_new);
+                    $lost_contacts=percentage($row['los_contactst'],$total_lost);
+                    $contacts=percentage($row['contacts'],$total_contacts);
+                    $new_contacts_with_orders=percentage($row['new_contacts'],$total_new_contacts);
+
+                } else {
+                    $contacts_with_orders=number($row['contacts_with_orders']);
+                    $active_contacts=number($row['active_contacts']);
+                    $new_contacts=number($row['new_contacts']);
+                    $lost_contacts=number($row['lost_contacts']);
+                    $contacts=number($row['contacts']);
+                    $new_contacts_with_orders=number($row['new_contacts']);
+
+                }
+        */
         $adata[]=array(
                      'code'=>$code,
                      'name'=>$name,
-                     'customers'=>$customers,
-                     'active'=>$active,
-                     'new'=>$new,
-                     'lost'=>$lost,
                      'contacts'=>$contacts,
-                     'new_contacts'=>$new_contacts
+                     'active_contacts'=>$active_contacts,
+                     'new_contacts'=>$new_contacts,
+                     'lost_contacts'=>$lost_contacts,
+                     'losing_contacts'=>$losing_contacts,
+                     'contacts_with_orders'=>$contacts_with_orders,
+                     'active_contacts_with_orders'=>$active_contacts_with_orders,
+                     'new_contacts_with_orders'=>$new_contacts_with_orders,
+                     'lost_contacts_with_orders'=>$lost_contacts_with_orders,
+                     'losing_contacts_with_orders'=>$losing_contacts_with_orders,
 
 
                  );
     }
     mysql_free_result($res);
+
+
+
 
     if ($percentages) {
         $sum_total='100.00%';
@@ -9415,24 +9463,46 @@ function list_customers_per_store() {
         $sum_contacts='100.00%';
         $sum_new_contacts='100.00%';
     } else {
-        $sum_total=number($total_customers);
-        $sum_active=number($total_active);
-        $sum_new=number($total_new);
-        $sum_lost=number($total_lost);
-        $sum_contacts=number($total_contacts);
-        $sum_new_contacts=number($total_new_contacts);
+        $total_contacts=number($total_contacts);
+        $total_active_contacts=number($total_active_contacts);
+        $total_new_contacts=number($total_new_contacts);
+        $total_lost_contacts=number($total_lost_contacts);
+        $total_losing_contacts=number($total_losing_contacts);
+        $total_contacts_with_orders=number($total_contacts_with_orders);
+        $total_active_contacts_with_orders=number($total_active_contacts_with_orders);
+        $total_new_contacts_with_orders=number($total_new_contacts_with_orders);
+        $total_lost_contacts_with_orders=number($total_lost_contacts_with_orders);
+        $total_losing_contacts_with_orders=number($total_losing_contacts_with_orders);
+
+        // $sum_total=number($total_contacts_with_orders);
+        // $sum_active=number($total_active_contacts);
+        // $sum_new=number($total_new_contacts);
+        // $sum_lost=number($total_lost_contacts);
+        // $sum_contacts=number($total_contacts);
+        // $sum_new_contacts=number($total_new_contacts);
     }
 
 
     $adata[]=array(
                  'name'=>'',
                  'code'=>_('Total'),
-                 'customers'=>$sum_total,
-                 'active'=>$sum_active,
-                 'new'=>$sum_new,
-                 'lost'=>$sum_lost,
-                 'contacts'=>$sum_contacts,
-                 'new_contacts'=>$sum_new_contacts
+                 'contacts'=>$total_contacts,
+                 'active_contacts'=>$total_active_contacts,
+                 'new_contacts'=>$total_new_contacts,
+                 'lost_contacts'=>$total_lost_contacts,
+                 'losing_contacts'=>$total_losing_contacts,
+                 'contacts_with_orders'=>$total_contacts_with_orders,
+                 'active_contacts_with_orders'=>$total_active_contacts_with_orders,
+                 'new_contacts_with_orders'=>$total_new_contacts_with_orders,
+                 'lost_contacts_with_orders'=>$total_lost_contacts_with_orders,
+                 'losing_contacts_with_orders'=>$total_losing_contacts_with_orders,
+
+                 //               'customers'=>$sum_total,
+                 //             'active'=>$sum_active,
+                 //           'new'=>$sum_new,
+                 //         'lost'=>$sum_lost,
+                 //
+                 //     'new_contacts'=>$sum_new_contacts
              );
 
 
@@ -12283,16 +12353,16 @@ function new_products_list($data) {
 
     $awhere=$data['awhere'];
     $table='`Product Dimension` C ';
-echo "<br>*".$table;
+    echo "<br>*".$table;
 //print_r($awhere);
 
- //  $where=customers_awhere($awhere);print_r($where);
+//  $where=customers_awhere($awhere);print_r($where);
     list($where,$table)=products_awhere($awhere);
 
     $where.=sprintf(' and `Product Store Key`=%d ',$store_id);
 
     $sql="select count(Distinct C.`Product ID`) as total from $table  $where";
-echo "<br>1st Query: ".$sql;
+    echo "<br>1st Query: ".$sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -12323,7 +12393,7 @@ echo "<br>1st Query: ".$sql;
     mysql_query($list_sql);
     $customer_list_key=mysql_insert_id();
 
-  if ($list_type=='Static') {
+    if ($list_type=='Static') {
 
 
         $sql="select C.`Product ID` from $table  $where group by C.`Product ID`";
@@ -12364,10 +12434,9 @@ echo "<br>1st Query: ".$sql;
 
 
 
-function list_products_list() 
-{
+function list_products_list() {
 
-   global $user;
+    global $user;
 
     $display_total=false;
 
@@ -12526,7 +12595,7 @@ function list_products_list()
     $db_table='`Product Dimension`';
 
 
-$where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
+    $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
     switch ($parent) {
     case('store'):
 
@@ -12545,7 +12614,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
         $where.=sprintf(' and `Product Family Key`=%d',$parent_key);
         break;
     default:
-      
+
 
     }
     $group='';
@@ -12590,7 +12659,7 @@ $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
     //        $number_results=25;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if($type=='list') {
+    if ($type=='list') {
         $sql=sprintf("select * from `Product List Dimension` where `Product List Key`=%d",$_REQUEST['list_key']);
 
         $res=mysql_query($sql);
@@ -12610,20 +12679,19 @@ if($type=='list') {
 
                 $raw_data=json_decode($tmp, true);
 
-               list($where_type,$table)=products_awhere($raw_data);
+                list($where_type,$table)=products_awhere($raw_data);
 
-            $where='';
+                $where='';
 
 
-          }
+            }
 
-       } else {
-           exit("error");
-      }
-   }
-  else {
+        } else {
+            exit("error");
+        }
+    } else {
         $where_type='';
-   }
+    }
 
 
 
@@ -12858,7 +12926,7 @@ if($type=='list') {
             }
         }
 // ---------------------------------Start for Product's 3 year------------------------------------------
-       elseif($period=='three_year') {
+        elseif($period=='three_year') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 3 Year Acc Profit`<0,`Product 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 3 Year Acc Profit`>=0,`Product 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -12891,7 +12959,7 @@ if($type=='list') {
             }
         }
 // ---------------------------------Start for Product's yeartoday------------------------------------------
-       elseif($period=='yeartoday') {
+        elseif($period=='yeartoday') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product YearToDay Acc Profit`<0,`Product YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Product YearToDay Acc Profit`>=0,`Product YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Product YearToDay Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -12908,7 +12976,7 @@ if($type=='list') {
         }
 // ---------------------------------End for Product's yeartoday------------------------------------------
 // ---------------------------------Start for Product's 6 month------------------------------------------
-       elseif($period=='six_month') {
+        elseif($period=='six_month') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 6 Month Acc Profit`<0,`Product 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 6 Month Acc Profit`>=0,`Product 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -12960,7 +13028,7 @@ if($type=='list') {
         }
 
 // ---------------------------------Start for Product's 10 day------------------------------------------
-       elseif($period=='ten_day') {
+        elseif($period=='ten_day') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 10 Day Acc Profit`<0,`Product 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product 10 Day Acc Profit`>=0,`Product 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -13630,20 +13698,20 @@ if($type=='list') {
     }
 
 
-if ($total<=$number_results) {
+    if ($total<=$number_results) {
 
-    if ($percentages) {
-        $tsall='100.00%';
-        $tprofit='100.00%';
-        $tstock_value='100.00%';
-    } else {
-        $tsall=money($sum_total_sales);
-        $tprofit=money($sum_total_profit);
-        $tstock_value=money($sum_total_stock_value);
+        if ($percentages) {
+            $tsall='100.00%';
+            $tprofit='100.00%';
+            $tstock_value='100.00%';
+        } else {
+            $tsall=money($sum_total_sales);
+            $tprofit=money($sum_total_profit);
+            $tstock_value=money($sum_total_stock_value);
 
-    }
+        }
 
-   
+
         $total_title='Total';
         if ($view=='sales')
             $total_title=_('Total');
@@ -13670,12 +13738,12 @@ if ($total<=$number_results) {
                  );
 
 
-       // $total_records=ceil($total_records/$number_results)+$total_records;
-    }else {
+        // $total_records=ceil($total_records/$number_results)+$total_records;
+    } else {
         $adata[]=array();
 
     }
-      $total_records=ceil($total/$number_results)+$total;
+    $total_records=ceil($total/$number_results)+$total;
     $number_results++;
 
 
