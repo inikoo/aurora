@@ -4,7 +4,16 @@
 
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;">
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
+
+<p style="width:500px;margin-top:20px;border-top:1px solid black;border-bottom:1px solid black">
+{$overview_text}
+</p>
+
   </div>
+
+
+
+
 
 	<!-- added code by kallol for demo only -->
 	<div id="dialog_export">
@@ -21,12 +30,15 @@
       <span class="clean_table_title">{t}Customers List{/t}</span>
       
    <div  style="font-size:90%">
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Contacts with Orders{/t} ({$store->get('Total Customers')})</span>
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Total Customers')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='all_contacts'}selected{/if}"  id="all_contacts"   >{t}All Contacts{/t} ({$store->get('Contacts')})</span>
+             <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='active_contacts'}selected{/if}"  id="active_contacts"   >{t}Active Contacts{/t} ({$store->get('Active Contacts')})</span>
+                  <span style="float:right;margin-left:20px;display:none" class="table_type  state_details {if $type=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders"   >{t}Contacts with Orders{/t} ({$store->get('Contacts With Orders')})</span>
 
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Contacts{/t} ({$store->get('Active Customers')})</span>
+   {*
 
+        <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='lost_contacts'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Lost Contacts')})</span>
+
+*}
 	
 
      </div>

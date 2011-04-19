@@ -56,12 +56,11 @@ $js_files=array(
 		'js/search.js',
 		'js/edit_category_common.js',
 		'common_customers.js.php',
-		'customer_categories.js.php',
+	
 		'js/dropdown.js',
 		
 		);
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
 
 $smarty->assign('options_box_width','200px');
 
@@ -87,6 +86,7 @@ if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
 
 }
+$js_files[]='customer_categories_base.js.php';
 $tpl_file='customer_categories_base.tpl';
 
 }else{
@@ -112,9 +112,10 @@ $store_id=$category->data['Category Store Key'];
 
 $smarty->assign('category',$category);
 
-
+$js_files[]='customer_categories.js.php';
 $tpl_file='customer_category.tpl';
 
+//print_r($category->data);
 
 }
 
@@ -137,5 +138,8 @@ $smarty->assign('subject','Customer');
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
 $smarty->assign('store_id',$store_id);
+
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 $smarty->display($tpl_file);
 ?>

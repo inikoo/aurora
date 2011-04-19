@@ -102,7 +102,7 @@ $default_state=array(
                               'splinters'=>array(
                                               'top_products'=>array('nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc'),
                                               'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
-                                               'sales'=>array('type'=>'stores','period'=>'mtd','currency'=>'store'),
+                                               'sales'=>array('type'=>'stores','period'=>'ytd','currency'=>'corporate'),
                                               'orders_in_process'=>array(
                                                                       'store_keys'=>'all',
                                                                       'sf'=>0,
@@ -1330,13 +1330,13 @@ $default_state=array(
                                    'view'=>'general',
 
                                    'stats_view'=>'population',
-
+                                   'type'=>'active_contacts',
                                    'table'=>array(
                                                'order'=>'id',
                                                'order_dir'=>'desc',
                                                'sf'=>0,
                                                'nr'=>25,
-                                               'type'=>'all_contacts',
+                                               
 
                                                'where'=>'',
                                                'f_field'=>'customer name',
@@ -2907,7 +2907,7 @@ $default_state=array(
                                                           )
 
                                          ),
-                                                                'departments'=>array(
+                                 'departments'=>array(
                                                  'where'=>'where true',
                                                  'f_field'=>'code',
                                                  'f_value'=>'','f_show'=>false,
@@ -2949,7 +2949,6 @@ $default_state=array(
                                                               )
 
                                              ),
-
                                'families'=>array(
                                               'where'=>'where true',
                                               'f_field'=>'code',
@@ -3036,7 +3035,6 @@ $default_state=array(
                                                            )
 
                                           ),
-
                                     'history'=>array(
                                              'where'=>'where true',
                                              'f_field'=>'abstract',
@@ -3172,13 +3170,15 @@ $default_state=array(
                                                  ),
                                 'customers'=>array(
                                                 'percentages'=>false,
+                                                'type'=>'all_contacts',
                                                 'view'=>'general',
                                                 'period'=>'year',
                                                 'mode'=>'all',
                                                 'avg'=>'totals',
                                                 'where'=>'where true',
                                                 'f_field'=>'code',
-                                                'f_value'=>'','f_show'=>false,
+                                                'f_value'=>'',
+                                                'f_show'=>false,
                                                 'order'=>'name',
                                                 'order_dir'=>'',
                                                 'sf'=>0,

@@ -268,16 +268,16 @@ function list_customer_orders() {
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_SESSION['state']['customer']['id']=$customer_id;
-     $_SESSION['state']['customer']['orders']['order']=$order;
-       $_SESSION['state']['customer']['orders']['order_dir']=$order_direction;
-     $_SESSION['state']['customer']['orders']['nr']=$number_results;
-     $_SESSION['state']['customer']['orders']['sf']=$start_from;
-     $_SESSION['state']['customer']['orders']['f_field']=$f_field;
-     $_SESSION['state']['customer']['orders']['f_value']=$f_value;
+    $_SESSION['state']['customer']['orders']['order']=$order;
+    $_SESSION['state']['customer']['orders']['order_dir']=$order_direction;
+    $_SESSION['state']['customer']['orders']['nr']=$number_results;
+    $_SESSION['state']['customer']['orders']['sf']=$start_from;
+    $_SESSION['state']['customer']['orders']['f_field']=$f_field;
+    $_SESSION['state']['customer']['orders']['f_value']=$f_value;
 
-  
-  
-  $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+
+
+    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
     if ($date_interval['error']) {
         $date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
     } else {
@@ -285,7 +285,7 @@ function list_customer_orders() {
         $_SESSION['state']['customer']['orders']['to']=$date_interval['to'];
     }
 
-  
+
 
 
     // $where=sprintf("    where `Current Dispatching State` not in ('Cancelled','Dispatched',) and `Customer Key`=%d  ",$customer_id);
@@ -399,61 +399,61 @@ function list_customer_orders() {
 
 // $sql.=" $wheref ";
 // $sql.=sprintf("  group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$group_by);
-  //  $sql="select `Order Invoiced Total Tax Adjust Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Adjust Amount`,`Order Out of Stock Amount `,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    //  $sql="select `Order Invoiced Total Tax Adjust Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Adjust Amount`,`Order Out of Stock Amount `,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
     $res = mysql_query($sql);
 //print_r($sql);
     $total=mysql_num_rows($res);
 //print $sql;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-   $mark_out_of_stock="<span style='visibility:hidden'>&otimes;</span>";
-     $mark_out_of_credits="<span style='visibility:hidden'>&crarr;</span>";
-     $mark_out_of_error="<span style='visibility:hidden'>&epsilon;</span>";
-     $out_of_stock=false;
-     $errors=false;
-     $refunded=false;
-     if($row['Order Out of Stock Amount']!=0){
-       $out_of_stock=true;
-       $info='';
-         if($row['Order Out of Stock Net Amount']!=0){
-	   $info.=_('Net').': '.money($row['Order Out of Stock Net Amount'],$row['Order Currency'])."";
-	 }
-	 if($row['Order Out of Stock Tax Amount']!=0){
-	   $info.='; '._('Tax').': '.money($row['Order Out of Stock Tax Amount'],$row['Order Currency']);
-	 }
-	 $info=preg_replace('/^\;\s*/','',$info);
-	 $mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes;</span>";
-	 
-     }
-     
-     if($row['Order Adjust Amount']<-0.01 or $row['Order Adjust Amount']>0.01 ){
-       $errors=true;
-       $info='';
-       if($row['Order Invoiced Total Net Adjust Amount']!=0){
-	 $info.=_('Net').': '.money($row['Order Invoiced Total Net Adjust Amount'],$row['Order Currency'])."";
-       }
-       if($row['Order Invoiced Total Tax Adjust Amount']!=0){
-	 $info.='; '._('Tax').': '.money($row['Order Invoiced Total Tax Adjust Amount'],$row['Order Currency']);
-       }
-       $info=_('Errors').' '.preg_replace('/^\;\s*/','',$info);
-       if($row['Order Adjust Amount']<-1 or $row['Order Adjust Amount']>1 ){
-	 $mark_out_of_error ="<span style='color:red' title='$info'>&epsilon;</span>";
-       }else{
-	 $mark_out_of_error ="<span style='color:brown'  title='$info'>&epsilon;</span>";
-       }
-       //$mark_out_of_error.=$row['Order Adjust Amount'];
-     }
-     
-     
-     if(!$out_of_stock and !$refunded)
-       $mark=$mark_out_of_error.$mark_out_of_stock.$mark_out_of_credits;
-     elseif(!$refunded and $out_of_stock and $errors)
-       $mark=$mark_out_of_stock.$mark_out_of_error.$mark_out_of_credits;
-     else
-       $mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
-     
-      
+        $mark_out_of_stock="<span style='visibility:hidden'>&otimes;</span>";
+        $mark_out_of_credits="<span style='visibility:hidden'>&crarr;</span>";
+        $mark_out_of_error="<span style='visibility:hidden'>&epsilon;</span>";
+        $out_of_stock=false;
+        $errors=false;
+        $refunded=false;
+        if ($row['Order Out of Stock Amount']!=0) {
+            $out_of_stock=true;
+            $info='';
+            if ($row['Order Out of Stock Net Amount']!=0) {
+                $info.=_('Net').': '.money($row['Order Out of Stock Net Amount'],$row['Order Currency'])."";
+            }
+            if ($row['Order Out of Stock Tax Amount']!=0) {
+                $info.='; '._('Tax').': '.money($row['Order Out of Stock Tax Amount'],$row['Order Currency']);
+            }
+            $info=preg_replace('/^\;\s*/','',$info);
+            $mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes;</span>";
+
+        }
+
+        if ($row['Order Adjust Amount']<-0.01 or $row['Order Adjust Amount']>0.01 ) {
+            $errors=true;
+            $info='';
+            if ($row['Order Invoiced Total Net Adjust Amount']!=0) {
+                $info.=_('Net').': '.money($row['Order Invoiced Total Net Adjust Amount'],$row['Order Currency'])."";
+            }
+            if ($row['Order Invoiced Total Tax Adjust Amount']!=0) {
+                $info.='; '._('Tax').': '.money($row['Order Invoiced Total Tax Adjust Amount'],$row['Order Currency']);
+            }
+            $info=_('Errors').' '.preg_replace('/^\;\s*/','',$info);
+            if ($row['Order Adjust Amount']<-1 or $row['Order Adjust Amount']>1 ) {
+                $mark_out_of_error ="<span style='color:red' title='$info'>&epsilon;</span>";
+            } else {
+                $mark_out_of_error ="<span style='color:brown'  title='$info'>&epsilon;</span>";
+            }
+            //$mark_out_of_error.=$row['Order Adjust Amount'];
+        }
+
+
+        if (!$out_of_stock and !$refunded)
+            $mark=$mark_out_of_error.$mark_out_of_stock.$mark_out_of_credits;
+        elseif(!$refunded and $out_of_stock and $errors)
+        $mark=$mark_out_of_stock.$mark_out_of_error.$mark_out_of_credits;
+        else
+            $mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
+
+
         $adata[]=array(
                      'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
                      'last_update'=>strftime("%a %e %b %Y %T", strtotime($row['Order Last Updated Date'].' UTC')) ,
@@ -1792,7 +1792,7 @@ function list_customers() {
     if (isset( $_REQUEST['type']))
         $type=$_REQUEST['type'];
     else
-        $type=$conf['type'];
+        $type=$_SESSION['state']['customers']['type'];
 
 
     if (isset( $_REQUEST['od']))
@@ -1841,19 +1841,21 @@ function list_customers() {
     $_SESSION['state']['customers']['table']['f_field']=$f_field;
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
 
-
     $where='where true';
     $table='`Customer Dimension` C ';
-
-    if ($type=='all_customers') {
-        $where_type=sprintf(' and `Actual Customer`="Yes" ');
-        $_SESSION['state']['customers']['table']['type']=$type;
+  if ($type=='all_contacts') {
+        $where_type='';
+        $_SESSION['state']['customers']['type']=$type;
 
     }
-    elseif($type=='active_customers') {
-        $where_type=sprintf(' and `Active Customer`="Yes" ');
-        $_SESSION['state']['customers']['table']['type']=$type;
+    elseif ($type=='contacts_with_orders') {
+        $where_type=sprintf(' and `Customer With Orders`="Yes" ');
+        $_SESSION['state']['customers']['type']=$type;
 
+    }
+    elseif($type=='active_contacts') {
+        $where_type=sprintf(' and `Customer Active`="Yes" ');
+      $_SESSION['state']['customers']['type']=$type;
     }
     elseif($type=='list') {
         $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$_REQUEST['list_key']);
@@ -1875,7 +1877,7 @@ function list_customers() {
 
                 $raw_data=json_decode($tmp, true);
 
-$raw_data['store_key']=$store;
+                $raw_data['store_key']=$store;
                 list($where_type,$table)=customers_awhere($raw_data);
 
                 $where='';
@@ -1899,7 +1901,7 @@ $raw_data['store_key']=$store;
         $tmp=preg_replace('/\'/',"\'",$tmp);
 
         $raw_data=json_decode($tmp, true);
-$raw_data['store_key']=$store;
+        $raw_data['store_key']=$store;
         list($where,$table)=customers_awhere($raw_data);
 
 
@@ -1970,15 +1972,15 @@ $raw_data['store_key']=$store;
 
 
 
-    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where_type $where $wheref ";
-    // print $sql;
+    $sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
+   // print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(Distinct C.`Customer Key`) as total_without_filters from $table  $where_type $where ";
+        $sql="select count(Distinct C.`Customer Key`) as total_without_filters from $table  $where  $where_type";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2147,14 +2149,14 @@ $raw_data['store_key']=$store;
     $order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table  $where_type  $where $wheref  group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
 //print $sql;
     $adata=array();
 
 
 
     $result=mysql_query($sql);
-   // print $sql;
+    // print $sql;
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
@@ -2772,7 +2774,7 @@ function list_staff() {
 function show_posible_customer_matches($the_data) {
 
     $found_email=false;
-$found_name='';
+    $found_name='';
     $candidates_data=array();
     // print_r($data);
 
@@ -2823,7 +2825,7 @@ $found_name='';
 
                 if ($customer->data['Customer Store Key']==$store_key) {
                     $in_store=true;
-$found_name=$customer->data['Customer Name'];
+                    $found_name=$customer->data['Customer Name'];
 
 
                     $link.=sprintf('<br/><img src="art/icons/exclamation.png" alt="%s"/> %s <a href="customer.php?id=%d">(%s)</a>'
@@ -2876,7 +2878,8 @@ $found_name=$customer->data['Customer Name'];
     if ($found_email) {
         $action='found_email';
         $found_key=$scope_found_key;
-    }elseif ($subject->found) {
+    }
+    elseif ($subject->found) {
         // $action='found';
 
         //$found_key=$contact->found_key;
@@ -2902,7 +2905,7 @@ $found_name=$customer->data['Customer Name'];
             }
         }
     }
-    else{
+    else {
         $action='nothing_found';
     }
 
@@ -4898,7 +4901,7 @@ function list_customer_categories() {
 
 
     $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-// print $sql;
+    // print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -5404,7 +5407,7 @@ function new_customers_list($data) {
 }
 function list_customers_lists() {
 
-  global $user;
+    global $user;
 
     $conf=$_SESSION['state']['customers']['list'];
     if (isset( $_REQUEST['sf']))
@@ -5477,9 +5480,9 @@ function list_customers_lists() {
     }
 
     $where='';
-    if(in_array($store,$user->stores)){
-      $where.=sprintf(' where `Customer List Store Key`=%d  ',$store);
-    
+    if (in_array($store,$user->stores)) {
+        $where.=sprintf(' where `Customer List Store Key`=%d  ',$store);
+
     }
 
     $wheref='';
@@ -5568,7 +5571,7 @@ function list_customers_lists() {
                      'key'=>$data['Customer List key'],
                      'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Customer List Creation Date']." +00:00")),
                      'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['Customer List key'].')">'._('Add List').'</span>',
-                      'delete'=>'<img src="art/icons/cross.png"/>'   
+                     'delete'=>'<img src="art/icons/cross.png"/>'
 
 
                  );

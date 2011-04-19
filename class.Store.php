@@ -252,8 +252,18 @@ class Store extends DB_Table {
 
 
         switch ($key) {
-        case('Total Customer Contacts'):
-            return number($this->data['Store Total Customer Contacts']);
+        case('Contacts'):
+        case('Active Contacts'):
+        case('New Contacts'):
+        case('Lost Contacts'):
+        case('Losing Contacts'):
+        case('Contacts With Orders'):
+        case('Active Contacts With Orders'):
+        case('New Contacts With Orders'):
+        case('Lost Contacts With Orders'):
+        case('Losing Contacts With Orders'):
+            return number($this->data['Store '.$key]);
+            
         case('Total Users'):
             return number($this->data['Store Total Users']);
         case('All To Pay Invoices'):
@@ -661,21 +671,87 @@ class Store extends DB_Table {
 
     }
 
-    function update_customers_data() {
+function update_customers_data() {
 
-$current_from=strtotime($this->data['Store Valid From']);
+  $this->data['Store Contacts']=0;
+            $this->data['Store New Contacts']=0;
+            $this->data['Store Contacts With Orders']=0;
+            $this->data['Store Active Contacts']=0;
+            $this->data['Store Losing Contacts']=0;
+            $this->data['Store Lost Contacts']=0;
+            $this->data['Store New Contacts With Orders']=0;
+            $this->data['Store Active Contacts With Orders']=0;
+            $this->data['Store Losing Contacts With Orders']=0;
+            $this->data['Store Lost Contacts With Orders']=0;
 
-  $sql="select min(`Customer First Contacted Date`) as ffrom ,count(*) as number   from `Customer Dimension` as C   where `Customer Store Key`=".$this->id;
+    $sql=sprintf("select count(*) as num ,sum(IF(`Customer New`='Yes',1,0)) as new,sum(IF(`Customer New`='Yes',1,0)) as new,sum(IF(`Customer Type by Activity`='Active'   ,1,0)) as active, sum(IF(`Customer Type by Activity`='Losing',1,0)) as losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d ",$this->id);
+       //  print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Store Contacts']=$row['num'];
+            $this->data['Store New Contacts']=$row['new'];
+            $this->data['Store Active Contacts']=$row['active'];
+            $this->data['Store Losing Contacts']=$row['losing'];
+            $this->data['Store Lost Contacts']=$row['lost'];
+        } 
+        
+   $sql=sprintf("select count(*) as num ,sum(IF(`Customer New`='Yes',1,0)) as new,sum(IF(`Customer New`='Yes',1,0)) as new,sum(IF(`Customer Type by Activity`='Active'   ,1,0)) as active, sum(IF(`Customer Type by Activity`='Losing',1,0)) as losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d and `Customer With Orders`='Yes'",$this->id);
+         //print "$sql\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Store Contacts With Orders']=$row['num'];
+            $this->data['Store New Contacts With Orders']=$row['new'];
+            $this->data['Store Active Contacts With Orders']=$row['active'];
+            $this->data['Store Losing Contacts With Orders']=$row['losing'];
+            $this->data['Store Lost Contacts With Orders']=$row['lost'];
+        } 
+                
+     $sql=sprintf("update `Store Dimension` set 
+     `Store Contacts`=%d,
+     `Store New Contacts`=%d,
+     `Store Active Contacts`=%d ,
+     `Store Losing Contacts`=%d ,
+     `Store Lost Contacts`=%d ,
+     
+     `Store Contacts With Orders`=%d,
+     `Store New Contacts With Orders`=%d,
+     `Store Active Contacts With Orders`=%d,
+     `Store Losing Contacts With Orders`=%d,
+     `Store Lost Contacts With Orders`=%d 
+     where `Store Key`=%d  ",
+                   $this->data['Store Contacts'],
+            $this->data['Store New Contacts'],
+            $this->data['Store Active Contacts'],
+            $this->data['Store Losing Contacts'],
+            $this->data['Store Lost Contacts'],
+            
+             $this->data['Store Contacts With Orders'],
+            $this->data['Store New Contacts With Orders'],
+            $this->data['Store Active Contacts With Orders'],
+            $this->data['Store Losing Contacts With Orders'],
+            $this->data['Store Lost Contacts With Orders'],
+                     $this->id
+                    );
+         //print "$sql\n";
+        mysql_query($sql);
+
+}
+
+    function update_customers_data_old() {
+
+        $current_from=strtotime($this->data['Store Valid From']);
+
+        $sql="select min(`Customer First Contacted Date`) as ffrom ,count(*) as number   from `Customer Dimension` as C   where `Customer Store Key`=".$this->id;
 // print "C: $current_from $sql";
- $result=mysql_query($sql);
+        $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $from=strtotime($row['ffrom']);
-            //print "-->".$row['ffrom']."\n" ;    
-            if(($from<$current_from or !$current_from  )and $row['number']>0 and $row['ffrom']!=''){
-            $_from=date("Y-m-d H:i:s",$from);
-           $this->data['Store Valid From']=$_from;
+            //print "-->".$row['ffrom']."\n" ;
+            if (($from<$current_from or !$current_from  )and $row['number']>0 and $row['ffrom']!='') {
+                $_from=date("Y-m-d H:i:s",$from);
+                $this->data['Store Valid From']=$_from;
 
-           }
+            }
         }
 
 
@@ -785,10 +861,10 @@ $current_from=strtotime($this->data['Store Valid From']);
             $this->data['Store 1 Week New Customers']=$row['new'];
         } else {
             $this->data['Store 1 Week New Customers']=0;
-        }        
-        
-        
-        
+        }
+
+
+
         $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
                      $this->id,
                      prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 year")))
@@ -799,7 +875,7 @@ $current_from=strtotime($this->data['Store Valid From']);
         } else {
             $this->data['Store 1 Year New Customers Contacts']=0;
         }
-         $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
+        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
                      $this->id,
                      prepare_mysql(date("Y-m-d H:i:s",strtotime("-3 months")))
                     );
@@ -809,21 +885,21 @@ $current_from=strtotime($this->data['Store Valid From']);
         } else {
             $this->data['Store 1 Quarter New Customers Contacts']=0;
         }
-        
-         $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
+
+        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
                      $this->id,
                      prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 month")))
                     );
-                   
+
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Store 1 Month New Customers Contacts']=$row['new'];
         } else {
             $this->data['Store 1 Month New Customers Contacts']=0;
         }
-        
-       
-         $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
+
+
+        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
                      $this->id,
                      prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 week")))
                     );
@@ -833,9 +909,9 @@ $current_from=strtotime($this->data['Store Valid From']);
         } else {
             $this->data['Store 1 Week New Customers Contacts']=0;
         }
-       
-       
-         $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
+
+
+        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
                      $this->id,
                      prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 day")))
                     );
@@ -845,24 +921,24 @@ $current_from=strtotime($this->data['Store Valid From']);
         } else {
             $this->data['Store 1 Day New Customers Contacts']=0;
         }
-       
-       
+
+
         $sql=sprintf("update `Store Dimension` set `Store Valid From`=%s,`Store Total Customer Contacts`=%d , `Store New Customer Contacts`=%d ,`Store Total Customers`=%d,`Store Active Customers`=%d,`Store New Customers`=%d , `Store Lost Customers`=%d ,
-        `Store 1 Year New Customers`=%d,
-        `Store 1 Quarter New Customers`=%d,
-        `Store 1 Month New Customers`=%d,
-        `Store 1 Week New Customers`=%d,
-        `Store 1 Year Lost Customers`=%d,
-        `Store 1 Quarter Lost Customers`=%d,
-        `Store 1 Month Lost Customers`=%d,
-        `Store 1 Week Lost Customers`=%d,
-         `Store 1 Year New Customers Contacts`=%d,
-        `Store 1 Quarter New Customers Contacts`=%d,
-        `Store 1 Month New Customers Contacts`=%d,
-        `Store 1 Week New Customers Contacts`=%d,
-          `Store 1 Day New Customers Contacts`=%d
-        where `Store Key`=%d  ",
-       prepare_mysql( $this->data['Store Valid From']),
+                     `Store 1 Year New Customers`=%d,
+                     `Store 1 Quarter New Customers`=%d,
+                     `Store 1 Month New Customers`=%d,
+                     `Store 1 Week New Customers`=%d,
+                     `Store 1 Year Lost Customers`=%d,
+                     `Store 1 Quarter Lost Customers`=%d,
+                     `Store 1 Month Lost Customers`=%d,
+                     `Store 1 Week Lost Customers`=%d,
+                     `Store 1 Year New Customers Contacts`=%d,
+                     `Store 1 Quarter New Customers Contacts`=%d,
+                     `Store 1 Month New Customers Contacts`=%d,
+                     `Store 1 Week New Customers Contacts`=%d,
+                     `Store 1 Day New Customers Contacts`=%d
+                     where `Store Key`=%d  ",
+                     prepare_mysql( $this->data['Store Valid From']),
                      $this->data['Store Total Customer Contacts'],
                      $this->data['Store New Customer Contacts'],
                      $this->data['Store Total Customers'],
@@ -877,15 +953,15 @@ $current_from=strtotime($this->data['Store Valid From']);
                      $this->data['Store 1 Quarter Lost Customers'],
                      $this->data['Store 1 Month Lost Customers'],
                      $this->data['Store 1 Week Lost Customers'],
-                      $this->data['Store 1 Year New Customers Contacts'],
+                     $this->data['Store 1 Year New Customers Contacts'],
                      $this->data['Store 1 Quarter New Customers Contacts'],
                      $this->data['Store 1 Month New Customers Contacts'],
                      $this->data['Store 1 Week New Customers Contacts'],
-                       $this->data['Store 1 Week New Customers Contacts'],
+                     $this->data['Store 1 Week New Customers Contacts'],
                      $this->id
                     );
         mysql_query($sql);
-       //print "\n$sql\n";
+        //print "\n$sql\n";
 
 
 
@@ -1055,10 +1131,335 @@ $current_from=strtotime($this->data['Store Valid From']);
 
     }
 
+    function update_up_today_sales() {
+   $this->update_sales_from_invoices('Today');
+ $this->update_sales_from_invoices('Week To Day');
+    $this->update_sales_from_invoices('Month To Day');
+    $this->update_sales_from_invoices('Year To Day');
+    }
 
-    function update_store_sales() {
+ function update_last_period_sales() {
+   
+ $this->update_sales_from_invoices('Yesterday');
+ $this->update_sales_from_invoices('Last Week');
+ $this->update_sales_from_invoices('Last Month');
+    }
+
+
+    function update_interval_sales() {
+    $this->update_sales_from_invoices('3 Year');
+    $this->update_sales_from_invoices('1 Year');
+    $this->update_sales_from_invoices('6 Month');
+    $this->update_sales_from_invoices('1 Quarter');
+    $this->update_sales_from_invoices('1 Month');
+    $this->update_sales_from_invoices('10 Day');
+    $this->update_sales_from_invoices('1 Week');
+    }
+
+
+    function update_sales_from_invoices($interval) {
+    
+    $to_date='';
+    
+        switch ($interval) {
+        
+          case 'Last Month':
+            $db_interval='Last Month';
+            $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+            $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+            
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+        
+        case 'Last Week':
+            $db_interval='Last Week';
+            
+            
+             $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+           $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+            
+        }else{
+        return;
+        }
+            
+            
+            
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            break;
+        
+         case 'Yesterday':
+            $db_interval='Yesterday';
+            $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+            $to_date=date('Y-m-d 00:00:00',strtotime('today'));
+            
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            break;
+        
+         case 'Week To Day':
+         case 'wtd':
+            $db_interval='Week To Day';
+            
+             $from_date=false;
+        $from_date_1yb=false;
+
+        $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $from_date=$row['First Day'].' 00:00:00';
+            $lapsed_seconds=strtotime('now')-strtotime($from_date);
+            
+        }else{
+        return;
+        }
+
+        $sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $from_date_1yb=$row['First Day'].' 00:00:00';
+        }
+
+      
+            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+            
+            
+            
+            break;
+            case 'Today':
+       
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-d 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break; 
+            
+            
+         case 'Month To Day':
+         case 'mtd':
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+         case 'Year To Day':
+         case 'ytd':
+            $db_interval='Year To Day';
+            $from_date=date('Y-01-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;        
+        case '3 Year':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+            $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case '1 Year':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '6 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Quarter':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '10 Day':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;               
+        case '1 Week':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+          
+        default:
+            return;
+            break;
+        }
+        
+     //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+
+        $this->data["Store $db_interval Acc Invoiced Discount Amount"]=0;
+        $this->data["Store $db_interval Acc Invoiced Amount"]=0;
+        $this->data["Store $db_interval Acc Invoices"]=0;
+        $this->data["Store $db_interval Acc Profit"]=0;
+        $this->data["Store DC $db_interval Acc Invoiced Amount"]=0;
+        $this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=0;
+        $this->data["Store DC $db_interval Acc Profit"]=0;
+
+        $sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data["Store $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
+            $this->data["Store $db_interval Acc Invoiced Amount"]=$row["net"];
+            $this->data["Store $db_interval Acc Invoices"]=$row["invoices"];
+            $this->data["Store $db_interval Acc Profit"]=$row["profit"];
+            $this->data["Store DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
+            $this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
+            $this->data["Store DC $db_interval Acc Profit"]=$row["dc_profit"];
+        }
+
+        $sql=sprintf("update `Store Dimension` set
+                     `Store $db_interval Acc Invoiced Discount Amount`=%.2f,
+                     `Store $db_interval Acc Invoiced Amount`=%.2f,
+                     `Store $db_interval Acc Invoices`=%d,
+                     `Store $db_interval Acc Profit`=%.2f
+                     where `Store Key`=%d "
+                     ,$this->data["Store $db_interval Acc Invoiced Discount Amount"]
+                     ,$this->data["Store $db_interval Acc Invoiced Amount"]
+                     ,$this->data["Store $db_interval Acc Invoices"]
+                     ,$this->data["Store $db_interval Acc Profit"]
+                     ,$this->id
+                    );
+
+        mysql_query($sql);
+//print "$sql\n\n";
+        $sql=sprintf("update `Store Default Currency` set
+                     `Store DC $db_interval Acc Invoiced Discount Amount`=%.2f,
+                     `Store DC $db_interval Acc Invoiced Amount`=%.2f,
+                     `Store DC $db_interval Acc Profit`=%.2f
+                     where `Store Key`=%d "
+                     ,$this->data["Store DC $db_interval Acc Invoiced Discount Amount"]
+                     ,$this->data["Store DC $db_interval Acc Invoiced Amount"]
+                     ,$this->data["Store DC $db_interval Acc Profit"]
+                     ,$this->id
+                    );
+
+        mysql_query($sql);
+
+
+
+      if ($from_date_1yb) {
+        $this->data["Store $db_interval Acc 1YB Invoices"]=0;
+        $this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+        $this->data["Store $db_interval Acc 1YB Invoiced Amount"]=0;
+        $this->data["Store $db_interval Acc 1YB Profit"]=0;
+        $this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+        $this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]=0;
+        $this->data["Store DC $db_interval Acc 1YB Profit"]=0;
+
+        $sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>%s and `Invoice Date`<%s" ,
+                     $this->id,
+                     prepare_mysql($from_date_1yb),
+                     prepare_mysql($to_1yb)
+                    );
+          // print "$sql\n\n";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
+            $this->data["Store $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+            $this->data["Store $db_interval Acc 1YB Invoices"]=$row["invoices"];
+            $this->data["Store $db_interval Acc 1YB Profit"]=$row["profit"];
+            $this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
+            $this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
+            $this->data["Store DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+        }
+
+        $sql=sprintf("update `Store Dimension` set
+                     `Store $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                     `Store $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                     `Store $db_interval Acc 1YB Invoices`=%.2f,
+                     `Store $db_interval Acc 1YB Profit`=%.2f
+                     where `Store Key`=%d "
+                     ,$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]
+                     ,$this->data["Store $db_interval Acc 1YB Invoiced Amount"]
+                     ,$this->data["Store $db_interval Acc 1YB Invoices"]
+                     ,$this->data["Store $db_interval Acc 1YB Profit"]
+                     ,$this->id
+                    );
+
+        mysql_query($sql);
+        //print "$sql\n";
+        $sql=sprintf("update `Store Default Currency` set
+                     `Store DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                     `Store DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                     `Store DC $db_interval Acc 1YB Profit`=%.2f
+                     where `Store Key`=%d "
+                     ,$this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]
+                     ,$this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]
+                     ,$this->data["Store DC $db_interval Acc 1YB Profit"]
+                     ,$this->id
+                    );
+// print "$sql\n";
+        mysql_query($sql);
+        }
+
+
+    }
+
+
+     function update_customer_activity_interval(){
+     
+     
+ 
+     
+     $losing_interval=false;
+      
+     
+ $sigma_factor=3.2906;//99.9% value assuming normal distribution
+ $sql="select count(*) as num,avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>2";
+        $result2=mysql_query($sql);
+        if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+            if ($row2['num']>30){
+                $this->data['Store Losing Customer Interval']=$row2['a'];
+                $this->data['Store Lost Customer Interval']=$this->data['Store Losing Customer Interval']*4.0/3.0;
+            }
+        }
+      
+      if(!$losing_interval){
+      $losing_interval=5259487;
+       $lost_interval=7889231;
+      }
+        $sql=sprintf("update `Store Dimension` set
+                     `Store Losing Customer Interval`=%d,
+                     `Store Lost Customer Interval`=%d
+                     where `Store Key`=%d "
+                     ,$this->data["Store Losing Customer Interval"]
+                     ,$this->data["Store Lost Customer Interval"]
+                  
+                     ,$this->id
+                    );
+//print "$sql\n";
+        mysql_query($sql);
+      
+}
+
+
+    function update_store_sales_to_delete() {
         $on_sale_days=0;
-$current_from=strtotime($this->data['Store Valid From']);
+        $current_from=strtotime($this->data['Store Valid From']);
 //print "**** ".$this->data['Store Valid From']."\n";
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
 
@@ -1068,15 +1469,15 @@ $current_from=strtotime($this->data['Store Valid From']);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $from=strtotime($row['ffrom']);
             $_from=date("Y-m-d H:i:s",$from);
-            
-           
-              if($from<$current_from and $row['prods']>0 and $row['ffrom']!=''){
-            $_from=date("Y-m-d H:i:s",$from);
-           $this->data['Store Valid From']=$_from;
 
-           }
-          
-            
+
+            if ($from<$current_from and $row['prods']>0 and $row['ffrom']!='') {
+                $_from=date("Y-m-d H:i:s",$from);
+                $this->data['Store Valid From']=$_from;
+
+            }
+
+
             if ($row['for_sale']>0) {
                 $to=strtotime('today');
                 $_to=date("Y-m-d H:i:s");
@@ -1135,8 +1536,8 @@ $current_from=strtotime($this->data['Store Valid From']);
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
-  //    print "$sql\n\n";
- //    exit;
+        //    print "$sql\n\n";
+//    exit;
         // days on sale
 
         $on_sale_days=0;
@@ -1220,7 +1621,7 @@ $current_from=strtotime($this->data['Store Valid From']);
                          ,$this->data['Store 1 Year Acc Pending Orders']
                          ,$this->id
                         );
-           //   print "$sql\n";
+            //   print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1230,7 +1631,7 @@ $current_from=strtotime($this->data['Store Valid From']);
 
 
 // ----------------------------------------------------------start for 3 yr----------------------------------------------------------
-       $on_sale_days=0;
+        $on_sale_days=0;
 
 
 
@@ -1310,7 +1711,7 @@ $current_from=strtotime($this->data['Store Valid From']);
                          ,$this->data['Store 3 Year Acc Pending Orders']
                          ,$this->id
                         );
-          // print "$sql\n";
+            // print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1321,23 +1722,23 @@ $current_from=strtotime($this->data['Store Valid From']);
 
 
 //-------------------------------------------------------------start of year to day---------------------------------------------------
-     $on_sale_days=0;
-if(!function_exists('YTD')){
-function YTD(){
-$first_day_of_year = date('Y').'-01-01';
-$today = date('Y-m-d');
+        $on_sale_days=0;
+        if (!function_exists('YTD')) {
+            function YTD() {
+                $first_day_of_year = date('Y').'-01-01';
+                $today = date('Y-m-d');
 //$diff = abs(strtotime($today) - strtotime($first_day_of_year));
-$diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
+                $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
 //$years = floor($diff / (365*60*60*24));
 //$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
 //$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 //$yeartoday=$years." year ".$months." month ".$days." day";
 //("%d years, %d months, %d days\n", $years, $months, $days);
 //return $yeartoday;
-return $diff;
-}
-}
-$yeartoday=YTD();
+                return $diff;
+            }
+        }
+        $yeartoday=YTD();
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
         // print "$sql\n\n";
@@ -1355,7 +1756,7 @@ $yeartoday=YTD();
                 // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
                 // print "*** T:$to   ".strtotime('today -1 year')."  \n";
                 if ($to>strtotime("today -$yeartoday day")) {
-                   
+
                     $from=strtotime($row['ffrom']);
                     if ($from<strtotime("today -$yeartoday day"))
                         $from=strtotime("today -$yeartoday day");
@@ -1415,7 +1816,7 @@ $yeartoday=YTD();
                          ,$this->data['Store YearToDay Acc Pending Orders']
                          ,$this->id
                         );
-         //  print "$sql\n";
+            //  print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1426,7 +1827,7 @@ $yeartoday=YTD();
 // -------------------------------------------------------end of year to day-------------------------------------------------------------
 
 // ----------------------------------------------------------start for 6 month ----------------------------------------------------------
-       $on_sale_days=0;
+        $on_sale_days=0;
 
 
 
@@ -1506,7 +1907,7 @@ $yeartoday=YTD();
                          ,$this->data['Store 6 Month Acc Pending Orders']
                          ,$this->id
                         );
-         //  print "$sql\n";
+            //  print "$sql\n";
 
 
             if (!mysql_query($sql))
@@ -1684,7 +2085,7 @@ $yeartoday=YTD();
 
 
 // ----------------------------------------------------------start for 10 days ----------------------------------------------------------
-       $on_sale_days=0;
+        $on_sale_days=0;
 
 
 
@@ -1849,10 +2250,7 @@ $yeartoday=YTD();
 
 
     }
-
-
-
-    function update_sales_default_currency() {
+    function update_sales_default_currency_to_delete() {
         $this->data_default_currency=array();
         $this->data_default_currency['Store DC Total Invoiced Gross Amount']=0;
         $this->data_default_currency['Store DC Total Invoiced Discount Amount']=0;
@@ -1900,8 +2298,8 @@ $yeartoday=YTD();
         $sql="select     sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc  from `Order Transaction Fact`  OTF   where `Store Key`=".$this->id;
 
 
-       // print "$sql\n\n";
-       //  exit;
+        // print "$sql\n\n";
+        //  exit;
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1943,7 +2341,7 @@ $yeartoday=YTD();
 
 
 // ----------------------------------------------------------------strt for yeartoday------------------------------------------------
-$yeartoday=YTD();
+        $yeartoday=YTD();
         $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross
                      ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc
                      from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday"))));
