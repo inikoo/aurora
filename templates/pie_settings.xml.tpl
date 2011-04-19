@@ -23,12 +23,12 @@
                                                                   
   <pie>
     <x></x>                                                   <!-- [50%](Number / Number% / !Number) -->
-    <y>50%</y>                                                   <!-- [45%](Number / Number% / !Number) -->
+    <y>40%</y>                                                   <!-- [45%](Number / Number% / !Number) -->
     <radius>25%</radius>                                       <!-- [25%] (Number / Number%) -->
     <inner_radius></inner_radius>                             <!-- [0] (Number / Number%) the radius of the hole (if you want to have donut, use > 0) -->
     <height>0</height>                                        <!-- [0] (Number) pie height (for 3D effect) -->
     <angle>0</angle>                                          <!-- [0] (0 - 90) lean angle (for 3D effect) -->
-    <start_angle></start_angle>                               <!-- [90] (0-360) angle of a first slice. This will work properly only if <pie><height> is set to 0. If height is > 0, then there can be two angles only: 90 and 270 -->
+    <start_angle>45</start_angle>                               <!-- [90] (0-360) angle of a first slice. This will work properly only if <pie><height> is set to 0. If height is > 0, then there can be two angles only: 90 and 270 -->
     <outline_color></outline_color>                           <!-- [#FFFFFF] (hex color code) -->    
     <outline_alpha></outline_alpha>                           <!-- [0] (Number) -->
     <base_color></base_color>                                 <!-- [] (hex color code) color of first slice -->
@@ -65,7 +65,7 @@
     <show_lines></show_lines>                                 <!-- [true] (true / false) whether to show lines from slices to data labels or not -->                                                                                              
     <line_color></line_color>                                 <!-- [#000000] (hex color code) -->
     <line_alpha></line_alpha>                                 <!-- [15] (Number) -->
-    <hide_labels_percent></hide_labels_percent>               <!-- [0] data labels of slices less then skip_labels_percent% will be hidden (to avoid label overlapping if there are many small pie slices)-->
+    <hide_labels_percent>1</hide_labels_percent>               <!-- [0] data labels of slices less then skip_labels_percent% will be hidden (to avoid label overlapping if there are many small pie slices)-->
     <avoid_overlapping></avoid_overlapping>                   <!-- [true] (true / false) Whether to change data labels positions so that they wouldn't overlap or not -->                                       
   </data_labels>
 
