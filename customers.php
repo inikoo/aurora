@@ -50,6 +50,20 @@ $smarty->assign('store_id',$store->id);
 $modify=$user->can_edit('customers');
 
 
+$overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base."
+			 ,$store->get('Contacts')
+			 ,$store->get('Active Contacts')
+			 ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
+
+			 ,$store->get('New Contacts')
+		       ,ngettext('customer','customers',$store->data['Store New Contacts'])
+		       ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
+		       )
+;
+ $smarty->assign('overview_text',$overview_text);
+
+
+
 $general_options_list=array();
 
 if ($modify) {

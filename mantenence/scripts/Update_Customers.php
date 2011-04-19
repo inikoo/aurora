@@ -34,19 +34,44 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql="select * from `Customer Dimension` where `Customer Type by Activity`='Prospect' order by `Customer Key` desc";
+$sql="select * from `Customer Dimension` order by `Customer Key`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
+ 
   //print $row['Customer Key']."\n";
    $customer=new Customer($row['Customer Key']);
-  $customer->update_orders();
-     $customer->update_temporal_data();
-  $customer->update_activity();
-  //$customer->update_full_search();
-  print $customer->id."\r";
- }
+   //$store=new Store($customer->data['Customer Store Key']);
+   // $customer->update_orders();
+   //  $customer->update_orders();
+   //     $store->update_customer_activity_interval();
 
+   $customer->update_activity();
+         $customer->update_is_new();
+  
+
+
+
+//     $customer->update_temporal_data();
+  //$customer->update_activity();
+  //$customer->update_full_search();
+  print $customer->id."\t\t\r";
+ }
+ 
+
+
+$sql="select * from `Store Dimension`";
+$result=mysql_query($sql);
+
+
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
+
+ $store=new Store($row['Store Key']);
+
+$store->update_interval_sales();
+$store->update_customers_data();
+
+ }
 
 
 ?>

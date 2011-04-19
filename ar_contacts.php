@@ -4901,7 +4901,7 @@ function list_customer_categories() {
 
 
     $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-// print $sql;
+    // print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
