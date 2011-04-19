@@ -20,15 +20,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Store Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"contacts", label:"<?php echo _('Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"new_contacts", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"customers", label:"<?php echo _('Customers')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"active", label:"<?php echo _('Active')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"new", label:"<?php echo _('New')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				       ,{key:"lost", label:"<?php echo _('Lost')?>",<?php echo($_SESSION['state']['stores']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"contacts", label:"<?php echo _('Total Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='all_contacts'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       ,{key:"new_contacts", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='all_contacts'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       	,{key:"active_contacts", label:"<?php echo _('Active Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='all_contacts'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       	,{key:"losing_contacts", label:"<?php echo _('Losing Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='all_contacts'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       	,{key:"lost_contacts", label:"<?php echo _('Lost Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='all_contacts'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 
+				     ,{key:"contacts_with_orders", label:"<?php echo _('Total Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       ,{key:"new_contacts_with_orders", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       	,{key:"active_contacts_with_orders", label:"<?php echo _('Active Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       	,{key:"losing_contacts_with_orders", label:"<?php echo _('Losing Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				       	,{key:"lost_contacts_with_orders", label:"<?php echo _('Lost Contacts')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+     
+				   
 					 ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=customers_per_store&tableid="+tableid);
@@ -48,7 +54,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 'code','name','contacts','active','new','lost','customers','new_contacts'
+			 'code','name','contacts','active_contacts','new_contacts','lost_contacts','losing_contacts',
+			'contacts_with_orders','active_contacts_with_orders','new_contacts_with_orders','lost_contacts_with_orders','losing_contacts_with_orders'
 			 ]};
 	    //__You shouls not change anything from here
 
@@ -105,9 +112,63 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+function change_table_type(){
 
+if(this.id=='all_contacts'){
+Dom.removeClass('contacts_with_orders','selected')
+Dom.addClass('all_contacts','selected')
+tipo='all_contacts'
+  tables.table0.hideColumn('contacts_with_orders');
+ tables.table0.hideColumn('new_contacts_with_orders');
+  tables.table0.hideColumn('active_contacts_with_orders');
+tables.table0.hideColumn('losing_contacts_with_orders');
+ tables.table0.hideColumn('lost_contacts_with_orders');
+ 
+ tables.table0.showColumn('contacts');
+ tables.table0.showColumn('new_contacts');
+  tables.table0.showColumn('active_contacts');
+tables.table0.showColumn('losing_contacts');
+ tables.table0.showColumn('lost_contacts');
+  
+
+  
+  
+}else{
+Dom.addClass('contacts_with_orders','selected')
+Dom.removeClass('all_contacts','selected')
+tipo='contacts_with_orders';
+ 
+  tables.table0.hideColumn('contacts');
+ tables.table0.hideColumn('new_contacts');
+  tables.table0.hideColumn('active_contacts');
+tables.table0.hideColumn('losing_contacts');
+ tables.table0.hideColumn('lost_contacts');
+  
+  tables.table0.showColumn('contacts_with_orders');
+ tables.table0.showColumn('new_contacts_with_orders');
+  tables.table0.showColumn('active_contacts_with_orders');
+tables.table0.showColumn('losing_contacts_with_orders');
+ tables.table0.showColumn('lost_contacts_with_orders');
+ 
+}
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-customers-type&value=' + escape(tipo) ,{success:function(o) {}});
+
+
+
+
+
+
+
+
+
+}
 
  function init(){
+ 
+ 
+  YAHOO.util.Event.addListener(['contacts_with_orders','all_contacts'], "click",change_table_type);
+
+
 // -----------------------------------------------------------------
 
 YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers_per_store');
@@ -140,15 +201,6 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers_per_
   
 
 
-
-YAHOO.util.Event.addListener('but_show_details', "click",show_details,'customers');
-//var ids=['general','contact','address','ship_to_address','balance','rank'];
-//YAHOO.util.Event.addListener(ids, "click",change_view);
-//YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
-
-var search_data={tipo:'customer_name',container:'customer'};
-Event.addListener('customer_submit_search', "click",submit_search,search_data);
-Event.addListener('customer_search', "keydown", submit_search_on_enter,search_data);
 
  
 }

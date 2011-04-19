@@ -162,6 +162,13 @@ else {
 
 
 ### EXPORT PART ===== COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB ###
+
+  $data='';
+foreach ($exported_data as $fields) {
+    $data.=fputcsv($fp, $fields);
+}
+
+  /*
 $header_flag=1;
 for ($i=0; $i<count($exported_data); $i++) {
     foreach($exported_data[$i] as $key=>$value) {
@@ -188,7 +195,7 @@ for ($i=0; $i<count($exported_data); $i++) {
     $data .= trim($line)."\n";
     $line = '';
 }
-
+  */
 
 
 
@@ -197,11 +204,11 @@ unset($my_exported_data);
 unset($exported_data);
 
 ### Processing Export file ###
-$data = str_replace("\r", "", $data);
+//$data = str_replace("\r", "", $data);
 
-if ($data == "") {
-    $data = "no matching records found";
-}
+//if ($data == "") {
+  //$data = "no matching records found";
+    //}
 $filename = 'export_data-'.time().'.csv'; // Define the way of your exported file name here //
 
 
@@ -209,7 +216,7 @@ header('Content-Type: application/csv; iso-8859-1');
     header("Content-Disposition: attachment; filename=$filename");
     header("Pragma: no-cache");
     header("Expires: 0");
-echo utf8_decode($header."\n".$data);
+echo utf8_decode($data);
 
 
 

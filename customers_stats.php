@@ -83,58 +83,6 @@ $smarty->assign('js_files',$js_files);
 
 
 
-
-$new_window=30;
-
-$sigma_factor=3.2906;//99.9% value assuming normal distribution
-$sql=sprintf("select sum(if(`Customer Type by Activity`='New',1,0)) as new from `Customer Dimension` where DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= `Customer First Order Date` and `Customer Store Key`=%d"
-,$store_id
-);;
-$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
- if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-   
-   $new_customers_1m=$row['new'];
- }
-mysql_free_result($result);
-
- $sql=sprintf("select count(distinct `Customer Key`) as customers,sum(if(`Customer Type by Activity`='New',1,0)) as new,sum(if(`Customer Type by Activity`='Active',1,0)) as active ,sum(if(`Customer Type by Activity`='Inactive',1,0)) as inactive from `Customer Dimension` where `Customer Store Key`=%d"
- ,$store_id
- );
- $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
- if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-   $total_customers=$row['customers'];
-   $active_customers=$row['active'];
-   $new_customers=$row['new'];
-   $inactive_customers=$row['inactive'];
-  }
-mysql_free_result($result);
-
-
-
- /* $now="NOW()"; */
-/*  $sql="select count(*) as active_customers from `Customer Dimension` where  (`Customer Order Interval`)>DATEDIFF($now,`Customer Last Order Date`)"; */
-/*  $result = mysql_query($sql) or die('Query failed: ' . mysql_error()); */
-/*  $active_customers=0; */
-/*  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) { */
-/*    $active_customers=$row['active_customers']; */
-/*   } */
-
-/*  $sql="select count(*) as new_customers from `Customer Dimension` where   (91.25)>DATEDIFF($now,`Customer First Order Date`)"; */
-/*  $result = mysql_query($sql) or die('Query failed: ' . mysql_error()); */
-/*  $new_customers=0; */
-/*  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) { */
-/*    $new_customers=$row['new_customers']; */
-/*   } */
-
-
-$overview_text=translate("We have had  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last month we acquired  %4\$s new customers representing  %5\$s of the total active customer base."
-			 ,number($total_customers)
-			 ,number($active_customers+$new_customers)
-			 ,percentage($active_customers,$total_customers)
-
-			 ,$new_customers_1m
-			 ,percentage($new_customers_1m,$active_customers+$new_customers));
- $smarty->assign('overview_text',$overview_text);
 //$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
 
 

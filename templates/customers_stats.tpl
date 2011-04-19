@@ -5,9 +5,7 @@
 
 <h2 style="clear:left">{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
 
-<p style="wifth:500px;margin-top:10px">
-{$overview_text}
-</p>
+
 </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
