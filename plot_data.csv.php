@@ -1018,8 +1018,8 @@ function customer_referral_assigned_pie($data) {
     $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
-        printf("%s;%d;;;;%s\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
-        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
+        printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
+        printf("%s;%d;true;B0DE09;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
     }
 }
 
@@ -1030,7 +1030,7 @@ $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Categ
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d",$row['Category Key']);
+    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc",$row['Category Key']);
     $res2=mysql_query($sql);
     while ($row2=mysql_fetch_assoc($res2)) {
         printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
@@ -1039,11 +1039,11 @@ $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Categ
 }
 
 function customer_business_type_assigned_pie($data) {
-    $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d ",$data['store_key']);
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
-        printf("%s;%d;;;;%s\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
-        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
+        printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
+        printf("%s;%d;true;B0DE09;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
     }
 }
 
@@ -1054,7 +1054,7 @@ $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Categ
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d",$row['Category Key']);
+    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc ",$row['Category Key']);
     $res2=mysql_query($sql);
     while ($row2=mysql_fetch_assoc($res2)) {
         printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');

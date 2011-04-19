@@ -28,11 +28,13 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "250", "250", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_referral_assigned_pie&store_key={$store->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_settings", "LOADING SETTINGS"); 
+			
+		// you can set custom "loading settings" text here
 		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
 
 		so.write("plot_referral_1");
@@ -45,11 +47,12 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "400", "8", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_referral_pie&store_key={$store->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_settings", "LOADING SETTINGS");
+		so.addVariable("loading_settings", "LOADING SETTINGS");  // you can set custom "loading settings" text here
 		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
 
 		so.write("plot_referral_2");
@@ -64,7 +67,7 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "250", "250", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_business_type_assigned_pie&store_key={$store->id}")); 
@@ -81,7 +84,7 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "400", "8", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_business_type_pie&store_key={$store->id}")); 
