@@ -2636,6 +2636,8 @@ ADD `Store Losing Contacts With Orders` INT UNSIGNED NOT NULL DEFAULT '0',
 ADD `Store Lost Contacts With Orders` INT UNSIGNED NOT NULL DEFAULT '0';
 
 
+ALTER TABLE `Category Dimension` ADD `Category Number Subjects Not Assigned` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
 */
 
 
