@@ -1434,9 +1434,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         }
 
 
+  $customer->update_orders();
+        $store->update_customer_activity_interval();
+        $customer->update_activity();
+         $customer->update_is_new();
         $store->update_orders();
         $store->update_customers_data();
+        
+         $store->update_up_today_sales();
+         $store->update_last_period_sales();
+        $store->update_interval_sales();
+        
+        
 
+      
         print "\n";
         $sql="update pl_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
         mysql_query($sql);
