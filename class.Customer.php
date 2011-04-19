@@ -4277,6 +4277,10 @@ function remove_email($email_key){
 function delete(){
 $company_keys=$this->get_company_keys();
 $contacts_keys=$this->get_contacts_keys();
+
+
+
+
 }
 
 
