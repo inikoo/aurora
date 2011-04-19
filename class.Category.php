@@ -861,9 +861,15 @@ class Category extends DB_Table {
                      $this->id
                     );
         mysql_query($sql);
-        print "$sql\n";
+	//        print "$sql\n";
     }
 
+
+
+    function update_no_assigned_subjects(){
+      
+      
+    }
 
 
 
