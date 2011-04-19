@@ -1873,20 +1873,24 @@ class Customer extends DB_Table {
 
     function update_is_new($new_interval=604800) {
 
-        if ( (date('U')-strtotime($this->data['Customer First Contacted Date']))<$new_interval
-                or $this->data['Customer Type by Activity']='Lost'
+      $interval=date('U')-strtotime($this->data['Customer First Contacted Date']);
+
+        if ( $interval<$new_interval
+	     //        or $this->data['Customer Type by Activity']=='Lost'
            ) {
-            $this->data['Customer New']='No';
-        } else {
             $this->data['Customer New']='Yes';
+        } else {
+            $this->data['Customer New']='No';
         }
         
          $sql=sprintf("update `Customer Dimension` set `Customer New`=%s where `Customer Key`=%d",
                          prepare_mysql($this->data['Customer New']),
                          $this->id
                         );
-//print "$sql\n";
-            if (!mysql_query($sql))
+	 // if($this->data['Customer New']=='Yes')
+	 //	   print (date('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
+		   //	   print $sql;           
+ if (!mysql_query($sql))
                 exit("$sql error");
         
 
