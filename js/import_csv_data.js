@@ -22,7 +22,7 @@ function get_default(v) {
            }
       }
  };
- req.open("GET", "import_csv_record.php?v="+v+"&"+str);
+ req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null);
 }
@@ -54,7 +54,7 @@ function getPrev(v,limit) {
  };
 v = v-1;//alert(v);
  //req.open("GET", "getPage.php?data="+r+"&val="+val); 
- req.open("GET", "import_csv_record.php?v="+v+"&prevArray="+prevArray+"&"+str);
+ req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&prevArray="+prevArray+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -84,7 +84,7 @@ document.getElementById('ignore_message').innerHTML="";
  };
 	v=v+1;
 
- req.open("GET", "import_csv_record.php?v="+v+"&myArray="+myArray+"&"+str);
+ req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&myArray="+myArray+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null);
 }
