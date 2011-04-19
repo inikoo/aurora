@@ -1,4 +1,42 @@
 <?php
+/*
+ File: ar_assets.php
+
+ Ajax Server Anchor for the Product,Family,Department and Part Clases
+
+ About:
+ Autor: Raul Perusquia <rulovico@gmail.com>
+
+ Copyright (c) 2009, Kaktus
+
+ Version 2.0
+*/
+
+if (!isset($_REQUEST['tipo'])) {
+    $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+    echo json_encode($response);
+    exit;
+}
+
+$tipo=$_REQUEST['tipo'];
+switch ($tipo) {
+
+case('import_csv'):
+list_import_csv_data();
+break;
+
+
+default:
+
+    $response=array('state'=>404,'msg'=>_('Operation not found'));
+    echo json_encode($response);
+
+}
+
+
+function list_import_csv_data()
+{
+
 	include('removeResult.php');
 
 	require_once 'csvparser.php';
@@ -183,3 +221,6 @@
 ?>
 
 </div>
+<?php
+}
+?>
