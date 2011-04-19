@@ -861,16 +861,69 @@ class Category extends DB_Table {
                      $this->id
                     );
         mysql_query($sql);
+
+	$this->update_no_assigned_subjects();
 	//        print "$sql\n";
     }
 
 
 
     function update_no_assigned_subjects(){
+      $children_keys=$this->get_children_keys();
+      $no_assigned_subjects=0;
+
+      
+      if(count($children_keys)>0){
+	
+	
+      switch($this->data['Category Subject']){
+	
+      default:
+	$table=$this->data['Category Subject'];
+	$store=sprintf(" where `%s Store Key`=%d",
+		       addslashes($this->data['Category Subject']),
+		       $this->data['Category Store Key']);
+	break;
+      }
+
+		       $sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
+		     
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	  $total_subjects=$row['num'];
+	  
+	  $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key` in (%s)  ",
+		       join(',',$children_keys)
+		       );
+	  $res=mysql_query($sql);
+	  $num_assigned=0;
+	  if ($row=mysql_fetch_assoc($res)) {
+            $num_assigned=$row['num'];
+	  }
+	  $no_assigned_subjects=$total_subjects-$num_assigned;
+	    
+	    
+	}
+	
+
+	
+	
       
       
+      
+      
+    
+      }
+      
+       $sql=sprintf("update `Category Dimension` set `Category Number Subjects Not Assigned`=%d where `Category Key`=%d ",
+                     $no_assigned_subjects,
+                     $this->id
+                    );
+       print "$sql\n";
+        mysql_query($sql);
+
     }
 
-
+    
 
 }

@@ -40,7 +40,7 @@ $sql="select * from `Category Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $category=new Category($row['Category Key']);
-print_r( $category->data);
+//print_r( $category->data);
  $category->update_number_of_subjects();
  $category->update_children_data();
   print $category->id."\r";
