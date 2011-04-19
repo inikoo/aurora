@@ -871,7 +871,7 @@ class Category extends DB_Table {
     function update_no_assigned_subjects(){
       $children_keys=$this->get_children_keys();
       $no_assigned_subjects=0;
-
+$assigned_subjects=0;
       
       if(count($children_keys)>0){
 	
@@ -896,11 +896,11 @@ class Category extends DB_Table {
 		       join(',',$children_keys)
 		       );
 	  $res=mysql_query($sql);
-	  $num_assigned=0;
+	  $assigned_subjects=0;
 	  if ($row=mysql_fetch_assoc($res)) {
-            $num_assigned=$row['num'];
+            $assigned_subjects=$row['num'];
 	  }
-	  $no_assigned_subjects=$total_subjects-$num_assigned;
+	  $no_assigned_subjects=$total_subjects-$assigned_subjects;
 	    
 	    
 	}
@@ -915,11 +915,12 @@ class Category extends DB_Table {
     
       }
       
-       $sql=sprintf("update `Category Dimension` set `Category Number Subjects Not Assigned`=%d where `Category Key`=%d ",
+       $sql=sprintf("update `Category Dimension` set `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
                      $no_assigned_subjects,
+                     $assigned_subjects,
                      $this->id
                     );
-       print "$sql\n";
+      // print "$sql\n";
         mysql_query($sql);
 
     }

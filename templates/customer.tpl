@@ -316,6 +316,8 @@
 		so.write("plot2");
 		// ]]>
 	</script>
+	
+	
       <span class="clean_table_title" style="clear:both">{t}Product Families Ordered{/t}</span>
  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
        <div  id="table1"   class="data_table_container dtable btable "> </div>

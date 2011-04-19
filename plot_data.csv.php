@@ -14,9 +14,32 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('customer_business_type_pie'):
+ $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+customer_business_type_pie($data);
+break;
+case('customer_business_type_assigned_pie'):
+ $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+customer_business_type_assigned_pie($data);
+break;
+case('customer_referral_pie'):
+ $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+customer_referral_pie($data);
+break;
+case('customer_referral_assigned_pie'):
+ $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+customer_referral_assigned_pie($data);
+break;
 case('top_families'):
-//print_r($_REQUEST);
+
     $data=prepare_values($_REQUEST,array(
                              'store_keys'=>array('type'=>'string'),
                              'period'=>array('type'=>'string')
@@ -990,5 +1013,54 @@ function store_families_pie($data) {
     }
 
 }
+
+function customer_referral_assigned_pie($data) {
+    $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        printf("%s;%d;;;;%s\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
+        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
+    }
+}
+
+
+function customer_referral_pie($data) {
+
+$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d",$row['Category Key']);
+    $res2=mysql_query($sql);
+    while ($row2=mysql_fetch_assoc($res2)) {
+        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
+    }
+    }
+}
+
+function customer_business_type_assigned_pie($data) {
+    $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        printf("%s;%d;;;;%s\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
+        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
+    }
+}
+
+
+function customer_business_type_pie($data) {
+
+$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d",$row['Category Key']);
+    $res2=mysql_query($sql);
+    while ($row2=mysql_fetch_assoc($res2)) {
+        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
+    }
+    }
+}
+
 
 ?>
