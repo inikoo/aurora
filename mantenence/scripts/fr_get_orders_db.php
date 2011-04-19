@@ -1337,7 +1337,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             //print "using customer key from order data   $customer_key_from_order_data ";
             $customer = new Customer($customer_key_from_order_data);
 
-        } if (isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+        } if (  isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
 //print_r($act_data['act']);
      //     exit("caca");
 
@@ -1458,9 +1458,18 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
             break;
         }
-
+        
+        $customer->update_orders();
+        $store->update_customer_activity_interval();
+        $customer->update_activity();
+         $customer->update_is_new();
         $store->update_orders();
         $store->update_customers_data();
+        
+         $store->update_up_today_sales();
+         $store->update_last_period_sales();
+        $store->update_interval_sales();
+        
         print "\n";
         $sql="update fr_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
         mysql_query($sql);

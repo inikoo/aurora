@@ -1,5 +1,6 @@
 <input type="hidden" value="{$sales_index}" id="sales_index"  />
-<input type="hidden" value="{$sales_nr}" id="sales_nr"  />
+<input type="hidden" value="{$conf_data.sales.currency}" id="sales_currency"  />
+<input type="hidden" value="{$conf_data.sales.type}" id="sales_type"  />
 
 <input type="hidden" value="{t}Store{/t}" id="label_Store"  />
 <input type="hidden" value="{t}Invoices{/t}" id="label_Invoices"  />
@@ -18,8 +19,8 @@
        
         <div class="home_splinter_options">
          
-          <span id="type_stores"  {if $conf_data.sales.currency=='corporate'}class="selected"{/if} style="float:right;margin-left:10px">{t}Corporate Currency{/t}</span>
-            <span id="type_categories"  {if $conf_data.sales.currency=='store'}class="selected"{/if} style="float:right;margin-left:35px">{t}Store Currencies{/t}</span>
+          <span id="currency_corporate"  {if $conf_data.sales.currency=='corporate'}class="selected"{/if} style="float:right;margin-left:10px">{t}Corporate Currency{/t}</span>
+            <span id="currency_stores"  {if $conf_data.sales.currency=='store'}class="selected"{/if} style="float:right;margin-left:35px">{t}Store Currencies{/t}</span>
              <span id="type_stores"  {if $conf_data.sales.type=='stores'}class="selected"{/if} style="float:right;margin-left:10px">{t}Stores{/t}</span>
             <span id="type_categories"  {if $conf_data.sales.type=='categories'}class="selected"{/if} style="float:right;margin-left:35px">{t}Categories{/t}</span>
             <span id="ytd"  {if $conf_data.sales.period=='ytd'}class="selected"{/if} style="float:right;margin-left:10px">{t}YTD{/t}</span>
@@ -29,16 +30,17 @@
             <span id="yesterday" {if $conf_data.sales.period=='yesterday'}class="selected"{/if} style="float:right;margin-left:10px">{t}yesterday{/t}</span>
             <span id="last_w"  {if $conf_data.sales.period=='last_w'}class="selected"{/if} style="float:right;margin-left:10px">{t}last w{/t}</span>
             <span id="last_m"  {if $conf_data.sales.period=='last_m'}class="selected"{/if} style="float:right;margin-left:10px">{t}last m{/t}</span>
-            <span id="sales_1y" {if $conf_data.sales.period=='1y'}class="selected"{/if} style="float:right;margin-left:10px">{t}1y{/t}</span>
-            <span id="sales_1q"  {if $conf_data.sales.period=='1q'}class="selected"{/if} style="float:right;margin-left:10px">{t}1q{/t}</span>
-            <span id="sales_1m" {if $conf_data.sales.period=='1m'}class="selected"{/if} style="float:right;margin-left:10px">{t}1m{/t}</span>
-            <span id="sales_10d" {if $conf_data.sales.period=='10d'}class="selected"{/if} style="float:right;margin-left:10px">{t}10d{/t}</span>
-            <span id="sales_1w" {if $conf_data.sales.period=='1m'}class="selected"{/if} style="float:right;margin-left:10px">{t}1w{/t}</span>
+            <span id="3y" {if $conf_data.sales.period=='3y'}class="selected"{/if} style="float:right;margin-left:10px">{t}3y{/t}</span>
+            <span id="1y" {if $conf_data.sales.period=='1y'}class="selected"{/if} style="float:right;margin-left:10px">{t}1y{/t}</span>
+            <span id="1q"  {if $conf_data.sales.period=='1q'}class="selected"{/if} style="float:right;margin-left:10px">{t}1q{/t}</span>
+            <span id="1m" {if $conf_data.sales.period=='1m'}class="selected"{/if} style="float:right;margin-left:10px">{t}1m{/t}</span>
+            <span id="10d" {if $conf_data.sales.period=='10d'}class="selected"{/if} style="float:right;margin-left:10px">{t}10d{/t}</span>
+            <span id="1w" {if $conf_data.sales.period=='1w'}class="selected"{/if} style="float:right;margin-left:10px">{t}1w{/t}</span>
 
    
    </div>
         {include file='table_splinter.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
-        <div  id="table{$index}"   class="data_table_container dtable btable "> </div>
+        <div  id="table{$index}"   class="data_table_container dtable btable with_total"> </div>
        </div>
       
        

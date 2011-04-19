@@ -149,7 +149,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
-function change_table_type(){
+function change_type(){
 
 
 	var table_id=0;
@@ -157,11 +157,10 @@ function change_table_type(){
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
 
-    var request='&sf=0&type=' +this.getAttribute('table_type');
-    Dom.removeClass('restrictions_all_contacts','selected');
-      Dom.removeClass('restrictions_all_customers','selected');
-    Dom.removeClass('restrictions_active_customers','selected');
-
+    var request='&sf=0&type=' +this.id;
+  //  alert(request)
+    Dom.removeClass(['all_contacts','contacts_with_orders','active_contacts'],'selected');
+ 
   Dom.addClass(this.id,'selected');
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
 
@@ -204,8 +203,8 @@ YAHOO.util.Event.addListener('details', "click",change_details,'customers');
 
 
 
-var ids=['restrictions_all_contacts','restrictions_all_customers','restrictions_active_customers'];
-YAHOO.util.Event.addListener(ids, "click",change_table_type);
+var ids=['all_contacts','contacts_with_orders','active_contacts'];
+YAHOO.util.Event.addListener(ids, "click",change_type);
 
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 
