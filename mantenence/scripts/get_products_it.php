@@ -1,7 +1,4 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
-//include("../../external_libs/adminpro/mysql_dialog.php");
-
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Campaign.php');
@@ -42,8 +39,8 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='/data/plaza/AWorder2009Germany.xls';
-$csv_file='de.csv';
+$file_name='/data/plaza/Mauro/Aw-ItalyOF.xls';
+$csv_file='it.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
@@ -52,13 +49,13 @@ $products=false;
 $count=0;
 
 
-$store=new Store("code","DE");
+$store=new Store("code","IT");
 $store_key=$store->id;
 
-$gold_camp=new Campaign('code','DE.GR');
-$vol_camp=new Campaign('code','DE.Vol');
-$bogof_camp=new Campaign('code','DE.BOGOF');
-$fam_promo=$fam_promo=new Family('code','Promo_DE',$store_key);
+$gold_camp=new Campaign('code','IT.GR');
+$vol_camp=new Campaign('code','IT.Vol');
+$bogof_camp=new Campaign('code','IT.BOGOF');
+$fam_promo=$fam_promo=new Family('code','Promo_IT',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 
@@ -166,10 +163,10 @@ $rrp=$cols[18];
 
     
     $deals=array();
-    if(preg_match('/oder mehr/i',_trim($current_promotion))){
+    if(preg_match('/or più/i',_trim($current_promotion))){
       if(preg_match('/^\d+\%/i',$current_promotion,$match))
 	$allowance=$match[0];
-      if(preg_match('/\d+ oder mehr/i',$current_promotion,$match))
+      if(preg_match('/\d+ or più/i',$current_promotion,$match))
 	$terms=$match[0];
       
       //	print "************".$current_promotion."\n";
@@ -390,7 +387,7 @@ $codigos[$code]=1;
     $data=array(
 		'product code'=>$code,
 		'product store key'=>$store_key,
-		'product locale'=>'de_DE',
+		'product locale'=>'it_IT',
 		'product currency'=>'EUR',
 		'product sales type'=>'Public Sale',
 		'product type'=>'Normal',
