@@ -74,7 +74,7 @@
 		<?php //echo $h[$j]; 	$leftColumnArray = $h; ?>
 		</td>-->
 		<td align=center id="middle_column">
-		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>" style="margin:2px 0px 2px 0px;">
+		<select name="assign_field[]" id="assign_field_<?php echo $j; ?>" style="margin:2px 0px 2px 0px;border-botttom:#ddd 1px solid;">
 		<?php
 		/*$selectBox = array('Ignore'=>'Ignore','Customer Main Contact Name'=>'Contact Name','Customer Name'=>'Name','Customer Type'=>'Type','Customer Company Name'=>'Company Name','Customer Main Plain Email'=>'Email','Contact Main Plain Mobile'=>'Mobile','Customer Main Plain Telephone'=>'Telephone','Customer Main Plain FAX'=>'FAX','Customer Main Plain Address'=>'Address','Customer Address Line 1'=>'Address Line1','Customer Address Line 2'=>'Address Line2','Customer Address Line 3'=>'Address Line3','Customer Address Town'=>'Town','Customer Address Postal Code'=>'Postal Code','Customer Address Country Name'=>'Country Name','Customer Address Country First Division'=>'First Division','Customer Address Country Second Division'=>'Second Division','Customer Tax Number'=>'Tax Number');*/
 

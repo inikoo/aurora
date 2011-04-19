@@ -81,7 +81,7 @@ break;
 default:
 $scope_args='';
 }
-$smarty->assign('title',"xml_import");
+$smarty->assign('title',"Import Data");
 $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
