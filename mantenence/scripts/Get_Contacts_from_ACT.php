@@ -209,8 +209,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-        //   if($row>5000)
-         //  break;
+          if($row>5000)
+           break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -331,8 +331,8 @@ foreach($contacts as $act_data_contact_key=>$act_data) {
     $send_emails=true;
 
 
-  if ($customer_data['Customer Store Key']!=1)
-    continue;
+  //if ($customer_data['Customer Store Key']!=1)
+   // continue;
 
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
