@@ -30,11 +30,13 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);
+
+
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
  $store=new Store($row['Store Key']);
-
+ $store->update_customer_activity_interval();
 $store->update_interval_sales();
  }
 mysql_free_result($result);

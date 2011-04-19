@@ -4,7 +4,16 @@
 
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;">
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
+
+<p style="width:500px;margin-top:20px;border-top:1px solid black;border-bottom:1px solid black">
+{$overview_text}
+</p>
+
   </div>
+
+
+
+
 
 	<!-- added code by kallol for demo only -->
 	<div id="dialog_export">

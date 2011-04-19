@@ -9356,19 +9356,6 @@ function list_customers_per_store() {
     else
         $order='`Store Code`';
 
-    $total_customers=0;
-    $sql="select  sum(`Store Total Customer Contacts`) as total_contacts,sum(`Store New Customer Contacts`) new_contacts,sum(`Store Total Customers`) as customers,sum(`Store Active Customers`) as active,sum(`Store New Customers`) as new, sum(`Store Lost Customers`) as lost from `Store Dimension` $where     ";
-
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $total_customers=$row['customers'];
-        $total_new=$row['new'];
-        $total_active=$row['active'];
-        $total_lost=$row['lost'];
-        $total_contacts=$row['total_contacts'];
-        $total_new_contacts=$row['new_contacts'];
-    }
-
 
 
 

@@ -8,8 +8,8 @@ function sales_init(){
 				       {key:"store", label:Dom.get('label_Store').value, width:100,sortable:false,className:"aleft"}
 				       ,{key:"invoices", label:Dom.get('label_Invoices').value, width:65,sortable:false,className:"aright"}
 				       ,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:65,sortable:false,className:"aright"}
-				        ,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:65,sortable:false,className:"aright"}
-				         ,{key:"dc_sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?true:false),width:65,sortable:false,className:"aright"}
+				        ,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:100,sortable:false,className:"aright"}
+				         ,{key:"dc_sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?true:false),width:100,sortable:false,className:"aright"}
 				        ,{key:"sales_share", label:Dom.get('label_Sales_Share').value, width:65,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?false:true)}
 				      	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:65,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 

@@ -14,9 +14,9 @@
   <h1>{t}Category{/t}: {$category->get('Category Name')}</h1>
 </div>
 
-sss
+
 {$category->get('Category Number Children')}
-<div class="data_table" style="{if $category->get('Category Number Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
+<div class="data_table" style="{if $category->get('Category Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
     <span class="clean_table_title">Subcategories</span>
 
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value0  }
