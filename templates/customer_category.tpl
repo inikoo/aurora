@@ -11,7 +11,7 @@
  </div> 
   
 <div style="clear:left;">
-  <h1>{t}Category{/t}: {$category->get('Category Name')}</h1>
+  <h1>{t}Category{/t}: {$category->get('Category Label')}</h1>
 </div>
 
 

@@ -501,7 +501,7 @@ function list_edit_customer_categories() {
 $adata=array();
 while($row=mysql_fetch_assoc($res)){
 
-    $name=$row['Category Name'];
+    $name=$row['Category Label'];
 
     $delete='<img src="art/icons/delete.png"/>';
     $adata[]=array(
@@ -919,7 +919,7 @@ echo json_encode($response);
 function edit_categories($data) {
     $category=new Category($data['id']);
 
-    $translate_keys=array('id'=>'Category Key','name'=>'Category Name');
+    $translate_keys=array('id'=>'Category Key','name'=>'Category Label');
 
 //if($data['key']=='name'){$data['key']='Category Name';}
     $category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
@@ -933,7 +933,7 @@ function edit_categories($data) {
 
 function edit_category($data) {
     $category=new Category($data['category_key']);
-    $translate_keys=array('category_key'=>'Category Key','name'=>'Category Name');
+    $translate_keys=array('category_key'=>'Category Key','name'=>'Category Label');
     $category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
     if ($category->updated) {
         $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);

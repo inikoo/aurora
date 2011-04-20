@@ -174,14 +174,14 @@ hide_buttons=1
 {foreach from=$categories item=cat key=cat_key name=foo  }
  <tr>
  
- <td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
+ <td class="label">{t}{$cat->get('Category Label')}{/t}:</td>
  <td>
   <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="update_category(this)">
     {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
         {if $smarty.foreach.foo2.first}
         <option  value="">{t}Unknown{/t}</option>
         {/if}
-        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
     {/foreach}
   </select>
   
@@ -192,13 +192,13 @@ hide_buttons=1
 
 	 <tr>
  <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
- <input type="hidden" value="No" id="allow_newsletter"  />
- <input type="hidden" value="No" id="allow_marketing_email"  />
- <input type="hidden" value="No" id="allow_marketing_postal"  />
+ <input type="hidden" value="Yes" id="allow_newsletter"  />
+ <input type="hidden" value="Yes" id="allow_marketing_email"  />
+ <input type="hidden" value="Yes" id="allow_marketing_postal"  />
 
  <td>
    <div  class="options" style="margin:0">
-   <span class="option" onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</span> <span class="option selected" onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</span>
+   <span class="option selected" onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</span> <span class="option" onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</span>
    </div>
  </td>
  </tr>
@@ -206,7 +206,7 @@ hide_buttons=1
  <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
  <td>
    <div class="options" style="margin:0">
-   <span class="option" onclick="change_allow(this,'allow_marketing_email','Yes')" >{t}Yes{/t}</span> <span class="option selected" onclick="change_allow(this,'allow_marketing_email','No')" >{t}No{/t}</span>
+   <span class="option selected" onclick="change_allow(this,'allow_marketing_email','Yes')" >{t}Yes{/t}</span> <span class="option" onclick="change_allow(this,'allow_marketing_email','No')" >{t}No{/t}</span>
    </div>
  </td>
  </tr>
@@ -215,7 +215,7 @@ hide_buttons=1
  <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
  <td>
    <div  class="options" style="margin:0">
-   <span class="option" onclick="change_allow(this,'allow_marketing_postal','Yes')" >{t}Yes{/t}</span> <span class="option selected" onclick="change_allow(this,'allow_marketing_postal','No')" >{t}No{/t}</span><br/><br/>
+   <span class="option selected" onclick="change_allow(this,'allow_marketing_postal','Yes')" >{t}Yes{/t}</span> <span class="option" onclick="change_allow(this,'allow_marketing_postal','No')" >{t}No{/t}</span><br/><br/>
    </div>
  </td>
  </tr>	
