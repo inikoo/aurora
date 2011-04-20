@@ -80,12 +80,10 @@ class Telecom extends DB_Table {
         case('plain'):
             return   $this->plain_number($this->data);
         case('formated'):
-            return $this->formated_number($this->data);
-            break;
         case('xhtml'):
         case('number'):
         default:
-            return $this->formated_number($this->data);
+            return $this->get_formated_number();
         }
     }
 
@@ -927,9 +925,12 @@ return $data;
     /*Function: formated_number
       Returns the formated  telephone number
      */
-    public static function formated_number($data) {
+    function get_formated_number() {
     
-    $the_number=$data['Telecom Number'];
+      //  print "****";
+      //print_r($data);
+
+    $the_number=$this->data['Telecom Number'];
     /*
     
         switch (strlen($data['Telecom Number'])) {
@@ -955,12 +956,15 @@ return $data;
         }
         $the_number=_trim($the_number)."";
 */
-        if ($data['Telecom National Access Code']!='')
+        if ($this->data['Telecom National Access Code']!='')
             $nac=sprintf("(%d)",$data['Telecom National Access Code']);
         else
             $nac='';
 
-        $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').$nac.($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$the_number.($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
+	//	print_r($this->data);
+        $tmp=($this->data['Telecom Country Telephone Code']!=''?'+'.$this->data['Telecom Country Telephone Code'].' ':'').$nac.($this->data['Telecom Area Code']!=''?$this->data['Telecom Area Code'].' ':'').$the_number.($this->data['Telecom Extension']!=''?' '._('ext').' '.$this->data['Telecom Extension']:'');
+
+	//print "*** $tmp\n";
 
         return $tmp;
 
@@ -1167,7 +1171,7 @@ return $data;
             //	print "old:  $old_plain -> $new_plain\n";
 
 
-            if ($old_plain!=$new_plain) {
+            if ($old_xhtml!=$new_xhtml) {
                 $this->update_field_switcher('Telecom Plain Number',$new_plain,$options);
                 $this->update_parents();
             }
@@ -1192,7 +1196,7 @@ return $data;
         }
 
         $data=$this->parse_inputed_number($value,$country_code);
-      //  	print_r($data);
+        //	print_r($data);
      //   exit;
         $this->update($data);
     }
@@ -1212,6 +1216,7 @@ return $data;
     function update_parents($add_parent_history=true) {
 
         //print $this->id;
+      
 
 
 
@@ -1253,7 +1258,7 @@ return $data;
                     $parent_label=_("Address");
                 }
                 $parent_object->editor=$this->editor;
-                $old_princial_telecom=$parent_object->data[$parent." Main Plain $type"];
+                $old_princial_telecom=$parent_object->data[$parent." Main XHTML $type"];
                 $parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
                 $parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
                 $sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
@@ -1261,12 +1266,12 @@ return $data;
                              ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
                              ,$parent_object->id
                             );
-                //  print "$sql\n";
+                 
                 mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
 
-                if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
+                if ($old_princial_telecom!=$parent_object->data[$parent." Main XHTML $type"])
                     $principal_telecom_changed=true;
 
                 if ($principal_telecom_changed and $add_parent_history) {
