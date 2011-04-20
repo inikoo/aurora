@@ -2640,7 +2640,8 @@ ALTER TABLE `Category Dimension` ADD `Category Number Subjects Not Assigned` MED
 ALTER TABLE `Category Dimension` CHANGE `Category Number Subjects Not Assigned` `Category Children Subjects Not Assigned` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Category Dimension` ADD `Category Children Subjects Assigned` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Subjects` ;
 
-
+ALTER TABLE `Customer Correlation` ADD INDEX ( `Customer A` ) ;
+ALTER TABLE `Customer Correlation` ADD INDEX ( `Customer B` ) ;
 
 
 */

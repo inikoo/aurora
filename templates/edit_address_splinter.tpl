@@ -68,7 +68,7 @@
     <td class="label" >{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:100%" id="{$address_identifier}address_building" value="" ovalue="" /></td>
   </tr>
    <tr id="{$address_identifier}tr_address_street">
-    <td class="label" >{t}Street/Number{/t}:</td>
+    <td class="label" >{t}Street{/t}:</td>
     <td  style="text-align:left"><input style="text-align:left;width:100%" id="{$address_identifier}address_street" value="" ovalue="" /></td>
     </tr>
   

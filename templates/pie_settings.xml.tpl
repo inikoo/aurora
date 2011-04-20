@@ -22,13 +22,13 @@
   <js_enabled></js_enabled>                                   <!-- [true] (true / false) In case you don't use any flash - JavaScript communication, you shuold set this setting to false - this will save some CPU and will disable the security warning message which appears when opening the chart from hard drive. -->
                                                                   
   <pie>
-    <x></x>                                                   <!-- [50%](Number / Number% / !Number) -->
-    <y>40%</y>                                                   <!-- [45%](Number / Number% / !Number) -->
-    <radius>25%</radius>                                       <!-- [25%] (Number / Number%) -->
+    <x>{$data.x}</x>                                                   <!-- [50%](Number / Number% / !Number) -->
+    <y>{$data.y}</y>                                                   <!-- [45%](Number / Number% / !Number) -->
+    <radius>{$data.radius}</radius>                                       <!-- [25%] (Number / Number%) -->
     <inner_radius></inner_radius>                             <!-- [0] (Number / Number%) the radius of the hole (if you want to have donut, use > 0) -->
     <height>0</height>                                        <!-- [0] (Number) pie height (for 3D effect) -->
     <angle>0</angle>                                          <!-- [0] (0 - 90) lean angle (for 3D effect) -->
-    <start_angle>45</start_angle>                               <!-- [90] (0-360) angle of a first slice. This will work properly only if <pie><height> is set to 0. If height is > 0, then there can be two angles only: 90 and 270 -->
+    <start_angle>{$data.start_angle}</start_angle>                               <!-- [90] (0-360) angle of a first slice. This will work properly only if <pie><height> is set to 0. If height is > 0, then there can be two angles only: 90 and 270 -->
     <outline_color></outline_color>                           <!-- [#FFFFFF] (hex color code) -->    
     <outline_alpha></outline_alpha>                           <!-- [0] (Number) -->
     <base_color></base_color>                                 <!-- [] (hex color code) color of first slice -->
@@ -55,7 +55,7 @@
   </animation>
   
   <data_labels>
-    <radius>10%</radius>                                         <!-- [20%] (Number / Number%) distance of the labels from the pie. Use negative value to place labels on the pie -->
+    <radius>{$data.data_labels_radius}</radius>                                         <!-- [20%] (Number / Number%) distance of the labels from the pie. Use negative value to place labels on the pie -->
     <text_color></text_color>                                 <!-- [text_color] (hex color code) -->
     <text_size></text_size>                                   <!-- [text_size] (Number) -->
     <max_width></max_width>                                   <!-- [120] (Number) -->

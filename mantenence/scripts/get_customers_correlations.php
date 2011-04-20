@@ -31,24 +31,13 @@ $sql="select * from `Customer Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-    $customer_data = new Customer ($row['Customer Key']);
+ $customer = new Customer ($row['Customer Key']);
+ 
+ $customer->update_correlations();
+
+print "XXXXXXXXXXXXXXXX ".$row['Customer Key']." \r";
 
 
-
-    $customer = new Customer ( 'find',  $customer_data->data);
-
-$x=$customer->get_correlations();
-exit;
-
-//$candidates=$customer->candidate;
-//unset($candidates[$row['Customer Key']]);
-
-//print_r($customer->candidate);
-//print_r($candidates);
-//print "XXXXXXXXXXXXXXXX ".$row['Customer Key']." \n";
-
-
-//$customer_A=new Customer($row['Customer Key']);
 
 
 

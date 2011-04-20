@@ -4900,7 +4900,7 @@ function list_customer_categories() {
 
 
 
-    $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select S.`Category Key`, `Category Label`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
     // print $sql;
     $res = mysql_query($sql);
 
@@ -5212,7 +5212,7 @@ function list_customer_categories() {
         */
 
         if ($stores_mode=='grouped')
-            $name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+            $name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
         else
             $name=$row['Category Key'].' '.$row['Category Name']." (".$row['Category Store Key'].")";
         $adata[]=array(

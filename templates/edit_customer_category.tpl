@@ -7,7 +7,7 @@
 <div class="branch"> 
  <span ><a  href="edit_customer_category.php?store_id={$store->id}&id=0">{t}Customer Categories{/t}</a> &rarr; {$category->get_smarty_tree('edit_customer_category.php')}
  </div> 
-    <h1 style="clear:both">{t}Editing Category{/t}: <span id="cat_title">{$category->get('Category Name')}</span></h1>
+    <h1 style="clear:both">{t}Editing Category{/t}: <span id="cat_title">{$category->get('Category Label')}</span></h1>
 {else}
 <h1 style="clear:both">{t}Editing Main Categories{/t}</h1>
 {/if}
@@ -36,7 +36,7 @@
 	<tr class="first"><td style="" class="label">{t}Category Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Name')}" ovalue="{$category->get('Category Name')}">
+	      <input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Label')}" ovalue="{$category->get('Category Label')}">
 	      <div id="Category_Name_Container" style="" ></div>
 	    </div>
 	  </td>

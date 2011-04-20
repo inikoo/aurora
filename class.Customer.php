@@ -421,15 +421,54 @@ class Customer extends DB_Table {
     }
 
 
-    function get_correlations() {
+    function update_correlations() {
+
+$sql=sprintf("delete from  `Customer Correlation` where `Customer A`=%d or `Customer B`=%d  ",$this->id,$this->id);
+mysql_query($sql);
+ 
+$correlated_customers=array();
+$data=$this->data;
+ if ($data['Customer Type']=='Person')
+        $subject=new contact('find from customer complete',$data);
+    else
+        $subject=new company('find from customer complete',$data);
 
 
-        foreach($this->candidate as $candidate_key=>$score) {
-            $candidate=new Contact($candidate_key);
-            $correlated_customer_keys=$candidate->get_customer_keys();
-            print_r($candidate->get_customer_keys());
 
-        }
+ foreach($subject->candidate as $contact_key=>$score) {
+ if($score<30)
+ continue;
+  $contact=new Contact($contact_key);
+  $customer_keys=$contact->get_customer_keys('Customer');
+ 
+ foreach($customer_keys as $customer_key){
+ $customer_correlated=new Customer($customer_key);
+ if($customer_correlated->data['Customer Store Key']=$this->data['Customer Store Key'])
+ $correlated_customers[$customer_key]=$score;
+ }
+ 
+ }
+   
+
+foreach ($correlated_customers as $key=>$value) {
+
+if($key==$this->id){
+continue;
+}elseif($key<$this->id){
+$customer_a=$key;
+$customer_b=$this->id;
+}else{
+$customer_a=$this->id;
+$customer_b=$key;
+}
+
+$sql=sprintf("insert into  `Customer Correlation` values (%d,%d,%f,%d)  ",$customer_a,$customer_b,$value,$this->data['Customer Store Key']);
+mysql_query($sql);
+}
+
+
+
+
 
 
 
