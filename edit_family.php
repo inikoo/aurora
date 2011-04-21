@@ -70,6 +70,7 @@ $_SESSION['state']['family']['editing']=$edit;
   $edit=$_SESSION['state']['family']['editing'];
 }
 
+$smarty->assign('edit',$edit);
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
@@ -83,9 +84,7 @@ get_header_info($user,$smarty);
 
 
 
-$show_details=$_SESSION['state']['family']['details'];
 
-$smarty->assign('table_type',$_SESSION['state']['family']['table_type']);
 $general_options_list=array();
 
 
@@ -93,14 +92,6 @@ $general_options_list=array();
 
 
   $smarty->assign('general_options_list',$general_options_list);
-$show_only=$_SESSION['state']['family']['table']['show_only'];
-$show_only_labels=array('forsale'=>_('For Sale Only'));
-
-$_SESSION['state']['products']['table']['restrictions']=$show_only;
-//print_r($_SESSION['state']['products']['table']);exit;
-
-$smarty->assign('show_only',$show_only);
-$smarty->assign('show_only_label',$show_only_labels[$show_only]);
 
 
 $css_files=array(
@@ -134,7 +125,7 @@ $js_files=array(
 
 
 
-  $smarty->assign('edit',$_SESSION['state']['family']['edit']);
+ 
   $css_files[]='css/edit.css';
   $css_files[]='css/upload_files.css';
   $js_files[]='js/edit_common.js';
@@ -170,7 +161,7 @@ if(isset($_REQUEST['view'])){
 
  }
 
-$department_order=$_SESSION['state']['department']['table']['order'];
+$department_order=$_SESSION['state']['department']['families']['order'];
 $department_period=$_SESSION['state']['department']['period'];
 $department_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
   
@@ -183,7 +174,7 @@ $smarty->assign('department_period_title',$department_period_title[$department_p
 
 if(isset($_REQUEST['department_id']) and $_REQUEST['department_id']>0){
   $department_id=$_REQUEST['department_id'];
-  $order=$_SESSION['state']['department']['table']['order'];
+  $order=$_SESSION['state']['department']['families']['order'];
   if($order=='per_tsall' or $order=='tsall')
     $order='total_sales';
   if($order=='per_tsm' or $order=='tms')
@@ -256,9 +247,9 @@ $smarty->assign('home',$product_home);
 
 
 $q='';
-  $tipo_filter=($q==''?$_SESSION['state']['family']['table']['f_field']:'code');
+  $tipo_filter=($q==''?$_SESSION['state']['family']['products']['f_field']:'code');
   $smarty->assign('filter_name0',$tipo_filter);
-  $smarty->assign('filter_value0',($q==''?$_SESSION['state']['family']['table']['f_value']:addslashes($q)));
+  $smarty->assign('filter_value0',($q==''?$_SESSION['state']['family']['products']['f_value']:addslashes($q)));
   $filter_menu=array(
 		    
 
@@ -268,14 +259,6 @@ $q='';
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->assign('view',$_SESSION['state']['products']['view']);
-$smarty->assign('show_details',$_SESSION['state']['family']['details']);
-$smarty->assign('period',$_SESSION['state']['products']['period']);
-$smarty->assign('avg',$_SESSION['state']['products']['avg']);
-
-
-$table_title=_('Product List');
-$smarty->assign('table_title',$table_title);
 
 $info_period_menu=array(
 			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
@@ -291,7 +274,6 @@ $smarty->assign('info_period_menu',$info_period_menu);
 
 
 
-$smarty->assign('view',$_SESSION['state']['family']['edit_view']);
 $units_tipo=array(
 		  'Piece'=>array('fname'=>_('Piece'),'name'=>'Piece','selected'=>false),
 		  'Grams'=>array('fname'=>_('Grams'),'name'=>'Grams','selected'=>false),

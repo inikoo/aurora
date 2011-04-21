@@ -49,7 +49,7 @@ $corporation=new Corporation();
 $smarty->assign('corporation',$corporation);
 
 $number_of_stores=count($user->stores);
- $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Exit Edit'));
+ $general_options_list[]=array('tipo'=>'url','url'=>'stores.php','label'=>_('Exit Edit'));
 
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -104,11 +104,6 @@ $smarty->assign('js_files',$js_files);
 
 
 $_SESSION['state']['assets']['page']='stores';
-$smarty->assign('view',$_SESSION['state']['stores']['view']);
-$smarty->assign('show_details',$_SESSION['state']['stores']['details']);
-
-$smarty->assign('avg',$_SESSION['state']['stores']['avg']);
-$smarty->assign('period',$_SESSION['state']['stores']['period']);
 
 
 $smarty->assign('parent','products');
@@ -136,25 +131,6 @@ $mode_options=array(
               );
 
 
-$display_mode='value';
-$display_mode_label=_('Values');
-if ($_SESSION['state']['product_categories']['percentages']) {
-    $display_mode='percentages';
-    $display_mode_label=_('Percentages');
-}
-
-if ($distinct_currencies>1) {
-    $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
-
-    if ($_SESSION['state']['stores']['table']['show_default_currency']) {
-        $display_mode='value_default_d2d';
-        $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
-    }
-}
-
-
-$smarty->assign('display_mode',$display_mode);
-$smarty->assign('display_mode_label',$display_mode_label);
 
 
 $smarty->assign('search_label',_('Products'));
@@ -162,10 +138,10 @@ $smarty->assign('search_scope','products');
 
 
 $q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
+$tipo_filter=($q==''?$_SESSION['state']['stores']['stores']['f_field']:'code');
 //$smarty->assign('filter_show0',$_SESSION['state']['stores']['table']['f_show']);
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['stores']['f_value']:addslashes($q)));
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
                  'name'=>array('db_key'=>'name','menu_label'=>_('Store Name'),'label'=>_('Name')),

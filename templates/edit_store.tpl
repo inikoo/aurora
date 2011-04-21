@@ -84,8 +84,6 @@ DB: `Site Dimension`
 	
      
       </div>
-    
-    
     <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
       
      
@@ -100,9 +98,10 @@ DB: `Site Dimension`
      
 	
 	
-      <table style="margin:0;clear:both" class="edit" border=0>
-	<tr><td class="label" >{t}Store Code{/t}:</td><td>
-		 <div  style="width:15em" >
+      <table style="margin:0;clear:both;width:800px" class="edit" border=0 >
+	<tr><td style="width:120px" class="label" >{t}Store Code{/t}:</td>
+	<td style="width:400px">
+		 <div  >
 
 	      <input  
 		 id="code" 
@@ -111,7 +110,7 @@ DB: `Site Dimension`
 		 changed=0 
 		 type='text' 
 		 class='text' 
-		 style="width:15em" 
+		 
 		 MAXLENGTH="16" 
 		 value="{$store->get('Store Code')}" 
 		 ovalue="{$store->get('Store Code')}"  
@@ -119,80 +118,80 @@ DB: `Site Dimension`
 		 <div id="code_Container" style="" ></div>
          </div>
 	    </td>
-	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
+	     <td id="code_msg" class="edit_td_alert" style="xwidth:300px"></td>
 
 	  </tr>
 
 	  <tr><td class="label">{t}Store Name{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="name" name="name" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
+	  <div  >
+	   <input  id="name" name="name" changed=0 type='text' MAXLENGTH="255"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
 	   <div id="name_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="name_msg" class="edit_td_alert" ></td>
 	  </tr>
 	  
 	    <tr><td class="label">{t}Store Slogan{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="slogan" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	  <div  >
+	   <input  id="slogan" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Slogan')}" ovalue="{$store->get('Store Slogan')}" />
 	   <div id="slogan_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="slogan_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="slogan_msg" class="edit_td_alert" ></td>
 	  </tr>
 	  
 	  
 	  <tr><td class="label">{t}Store Contact{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="contact" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	  <div  >
+	   <input  id="contact" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Contact Name')}" ovalue="{$store->get('Store Contact Name')}" />
 	   <div id="contact_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="contact_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="contact_msg" class="edit_td_alert" ></td>
 	  </tr>
 	  
 	
 	 
 	  <tr><td class="label">{t}Store Email{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="email" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	  <div  >
+	   <input  id="email" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Email')}" ovalue="{$store->get('Store Email')}" />
 	   <div id="email_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="email_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="email_msg" class="edit_td_alert" ></td>
 	  </tr>
 	 
 	   <tr><td class="label">{t}Store Telephone{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="telephone" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	  <div  >
+	   <input  id="telephone" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Telephone')}" ovalue="{$store->get('Store Telephone')}" />
 	   <div id="telephone_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="telephone_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="telephone_msg" class="edit_td_alert" ></td>
 	  </tr>
 	 
 	  <tr><td class="label">{t}Store Fax{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="fax" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	  <div  >
+	   <input  id="fax" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Fax')}" ovalue="{$store->get('Store Fax')}" />
 	   <div id="fax_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="fax_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="fax_msg" class="edit_td_alert" ></td>
 	  </tr>
 	
 	 <tr><td class="label">{t}Store URL{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="url" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	  <div  >
+	   <input  id="url" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
 	   <div id="url_Container" style="" ></div>
        </div>
 	   </td>
-	   <td id="url_msg" class="edit_td_alert" style="width:300px"></td>
+	   <td id="url_msg" class="edit_td_alert" ></td>
 	  </tr>
 	
 	
@@ -212,8 +211,8 @@ DB: `Site Dimension`
 
 
 	   <table class="edit" >
-	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
@@ -235,13 +234,12 @@ DB: `Site Dimension`
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
 	 </div>
       </div>
-
        <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="campaigns"}display:none{/if}"  id="d_campaigns">
 	 <div  class="new_item_dialog"  id="new_campaign_dialog" style="display:none">
 	   <div id="new_campaign_messages" class="messages_block"></div>
 	   <table class="edit" >
-	     <tr><td>{t}Campaign Name{/t}:</td><td><input  id="new_campaign_name" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)"  changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	     <tr><td>{t}Campaign Description{/t}:</td><td><input   id="new_campaign_description" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	     <tr><td>{t}Campaign Name{/t}:</td><td><input  id="new_campaign_name" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Campaign Description{/t}:</td><td><input   id="new_campaign_description" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
@@ -270,8 +268,8 @@ DB: `Site Dimension`
 	<div  class="new_item_dialog"  id="new_charge_dialog" style="display:none">
 	  <div id="new_charge_messages" class="messages_block"></div>
 	  <table class="edit" >
-	    <tr><td>{t}Charge Name{/t}:</td><td><input  id="new_charge_name" onKeyUp="new_charge_changed(this)"    onMouseUp="new_charge_changed(this)"  onChange="new_charge_changed(this)"  changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	    <tr><td>{t}Charge Description{/t}:</td><td><input   id="new_charge_description" onKeyUp="new_charge_changed(this)"    onMouseUp="new_charge_changed(this)"  onChange="new_charge_changed(this)" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	    <tr><td>{t}Charge Name{/t}:</td><td><input  id="new_charge_name" onKeyUp="new_charge_changed(this)"    onMouseUp="new_charge_changed(this)"  onChange="new_charge_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	    <tr><td>{t}Charge Description{/t}:</td><td><input   id="new_charge_description" onKeyUp="new_charge_changed(this)"    onMouseUp="new_charge_changed(this)"  onChange="new_charge_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	    </tr>
 	  </table>
 	</div>
@@ -295,9 +293,7 @@ DB: `Site Dimension`
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="shipping"}display:none{/if}"  id="d_shipping">
       </div>
-      
-
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
+       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
       
       <div  class="data_table" style="clear:both">
       <span class="clean_table_title">{t}Store Pages{/t}</span>
@@ -311,7 +307,6 @@ DB: `Site Dimension`
  
  
       </div>
-      
       <div  class="edit_block" style="{if $edit!="departments"}display:none{/if}"  id="d_departments">
        <div class="general_options" style="float:right">
 	<span   style="margin-right:10px"  id="add_department" class="state_details" >Create Department</span>
@@ -322,8 +317,8 @@ DB: `Site Dimension`
       <div  class="new_item_dialog"  id="new_department_dialog" style="display:none"  >
       <div id="new_department_messages" class="messages_block"></div>
 	  <table class="edit">
-	    <tr><td>{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	    <tr><td>{t}Full Name{/t}:</td><td><input   id="new_name" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	    <tr><td>{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="code" changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	    <tr><td>{t}Full Name{/t}:</td><td><input   id="new_name" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	    </tr>
 	  </table>
 	  </div>

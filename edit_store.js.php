@@ -10,13 +10,8 @@ var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
-var id=<?php echo$_SESSION['state']['store']['id']?>;
-var editing='<?php echo $_SESSION['state']['store']['edit']?>';
 
-var scope='store';
-var scope_edit_ar_file='ar_edit_assets.php';
-var scope_key_name='id';
-var scope_key=<?php echo$_SESSION['state']['family']['id']?>;
+
 
 	
 

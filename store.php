@@ -75,8 +75,8 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 
 if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php?edit=1','label'=>_('Edit Store'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_store.php?id='.$store->id,'label'=>_('Edit Store'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
 
 
 $smarty->assign('general_options_list',$general_options_list);
