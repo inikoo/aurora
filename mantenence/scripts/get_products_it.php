@@ -67,7 +67,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   $code=$_cols[3];
 
  
-  if($code=='FO-A1' and !$inicio){
+  if($code=='AWFO-01' and !$inicio){
     $inicio=true;
     $x=$__cols[count($__cols)-4];
     $z=$__cols[count($__cols)-3];
@@ -291,18 +291,17 @@ $codigos[$code]=1;
 	 
     }else{
     
-      if($department_name=='Gegenstände für Sammler')
-        $department_code='Collect';
-      if($department_name=='Ökotaschen')
-        $department_code='EcoBag';
-       if($department_name=='Deko-Artikel')
-        $department_code='Deko';
+      // if($department_name=='Gegenstände für Sammler')
+      //  $department_code='Collect';
+    
 
       $dep_data=array(
 		      'Product Department Code'=>$department_code,
 		      'Product Department Name'=>$department_name,
 		      'Product Department Store Key'=>$store_key
 		      );
+      //print_r($dep_data);
+      //exit("DEBUG 2");
       $department=new Department('find',$dep_data,'create');
 
       if($department->error){
@@ -322,6 +321,9 @@ $codigos[$code]=1;
 		      'Product Family Store Key'=>$store_key,
 		      'Product Family Special Characteristic'=>$fam_special_char
 		      );
+      
+      //print_r($fam_data);
+      //exit("DEBUG 3");
       $family=new Family('find',$fam_data,'create');		 
 
     }
@@ -335,8 +337,9 @@ $codigos[$code]=1;
 
 
     foreach($deals as $deal_data){
-      //         print_r($deal_data);
-      //exit;
+      continue;
+               print_r($deal_data);
+	       exit("Debug 4");
 
       $deal_data['Store Key']=$store_key;
 
@@ -416,6 +419,9 @@ $codigos[$code]=1;
       print("product not found in uk: ".$code."\n");
       continue;
     }
+
+    // print_r($data);
+      //exit("DEBUG");
     $product=new Product('find',$data,'create');
     if($product->new){
       $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
