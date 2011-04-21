@@ -164,8 +164,11 @@ else {
 ### EXPORT PART ===== COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB ###
 
   $data='';
+  
+  $output = fopen('php://output', 'w');
+  
 foreach ($exported_data as $fields) {
-    $data.=fputcsv($fp, $fields);
+ fputcsv($output, $fields);
 }
 
   /*
@@ -209,7 +212,7 @@ unset($exported_data);
 //if ($data == "") {
   //$data = "no matching records found";
     //}
-$filename = 'export_data-'.time().'.csv'; // Define the way of your exported file name here //
+$filename = 'data_'.date("Ymd_Hmi").'.csv'; // Define the way of your exported file name here //
 
 
 header('Content-Type: application/csv; iso-8859-1');

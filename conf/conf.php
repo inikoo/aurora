@@ -3597,58 +3597,7 @@ $default_state=array(
                                                 'f_value'=>'',
                                             ),
 
-				'postal_code'=>array(
-                                               'display'=>'all',
-                                               'order'=>'name',
-                                               'order_dir'=>'asc',
-                                               'sf'=>0,
-                                               'nr'=>20,
-                                               'where'=>'where true',
-                                               'f_field'=>'postal_code',
-                                               'f_value'=>'',
-                                           ),
 				
-				'city'=>array(
-                                               'display'=>'all',
-                                               'order'=>'name',
-                                               'order_dir'=>'asc',
-                                               'sf'=>0,
-                                               'nr'=>20,
-                                               'where'=>'where true',
-                                               'f_field'=>'city',
-                                               'f_value'=>'',
-                                           ),
-				'department'=>array(
-                                               'display'=>'all',
-                                               'order'=>'store_code',
-                                               'order_dir'=>'asc',
-                                               'sf'=>0,
-                                               'nr'=>20,
-                                               'where'=>'where true',
-                                               'f_field'=>'department_name',
-                                               'f_value'=>'',
-                                           ),
-				
-				'family'=>array(
-                                               'display'=>'all',
-                                               'order'=>'store_code',
-                                               'order_dir'=>'asc',
-                                               'sf'=>0,
-                                               'nr'=>20,
-                                               'where'=>'where true',
-                                               'f_field'=>'family_name',
-                                               'f_value'=>'',
-                                           ),
-				'product'=>array(
-                                               'display'=>'all',
-                                               'order'=>'product_code',
-                                               'order_dir'=>'asc',
-                                               'sf'=>0,
-                                               'nr'=>20,
-                                               'where'=>'where true',
-                                               'f_field'=>'product_name',
-                                               'f_value'=>'',
-                                           )
 
 				
                            ),

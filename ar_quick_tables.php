@@ -1,0 +1,1230 @@
+<?php
+/*
+
+ About:
+ Autor: Raul Perusquia <rulovico@gmail.com>
+
+ Copyright (c) 2011, Kaktus
+
+ Version 2.0
+*/
+
+require_once 'common.php';
+//require_once 'stock_functions.php';
+require_once 'class.Product.php';
+require_once 'class.Department.php';
+require_once 'class.Family.php';
+
+require_once 'class.Order.php';
+require_once 'class.Location.php';
+require_once 'class.PartLocation.php';
+//require_once 'common_functions.php';
+require_once 'ar_common.php';
+
+if (!isset($_REQUEST['tipo'])) {
+    $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+    echo json_encode($response);
+    exit;
+}
+
+$tipo=$_REQUEST['tipo'];
+switch ($tipo) {
+case('department_list'):
+    department_list();
+    break;
+case('family_list'):
+    family_list();
+    break;
+case('product_list'):
+    product_list();
+    break;
+case('world_regions_list'):
+    world_region_list();
+    break;
+case('country_list'):
+    country_list();
+    break;
+case('postal_codes_list'):
+    postal_code_list();
+    break;
+case('towns_list'):
+    town_list();
+    break;
+default:
+
+    $response=array('state'=>404,'msg'=>_('Operation not found'));
+    echo json_encode($response);
+
+}
+
+
+function world_region_list() {
+
+    if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='wregion_code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='wregion_code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+
+
+    $where=sprintf('where `World Region Code`!="UNKN"    ');
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='wregion_code' and $f_value!='')
+        $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+
+    $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Region','Regions',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+
+    case('wregion_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any world region with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+        break;
+    case('continent_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any continent with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+        break;
+    }
+
+
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='wregion_code' )
+        $order='`World Region Code`';
+    else
+        $order='`World Region`';
+
+
+
+
+
+
+
+    $adata=array();
+    $sql="select group_concat(concat('<img src=\"art/flags/',lower(`Country 2 Alpha Code`),'.gif\"> ') separator ' ') as flags, count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`World Region Code` from kbase.`Country Dimension` $where $wheref group by `World Region Code` order by $order $order_direction  limit $start_from,$number_results;";
+
+    // print $sql;
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+        $adata[]=array(
+                     'wregion_name'=>$row['World Region'],
+                     'wregion_code'=>$row['World Region Code'],
+                     'countries'=>number($row['Countries']),
+                     'flags'=>$row['flags']
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+
+function department_list() {
+
+    global $user;
+
+    if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+
+    if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+    else$store_key='';
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+
+    if (!in_array($store_key,$user->stores)) {
+        $where=sprintf('where false ');
+    } else {
+        $where=sprintf('where `Product Department Store Key`=%d',$store_key);
+    }
+
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
+
+
+    $sql="select count(DISTINCT `Product Department Name`) as total from `Product Department Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Product Department Name`) as total from `Product Department Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Department','Departments',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any department with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('departments with code like')." <b>$f_value</b>)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any department with name")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('departments with name like')." <b>$f_value</b>)";
+        break;
+
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='name')
+        $order='`Product Department Name`';
+    else
+        $order='`Product Department Code`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  `Product Department Name`,`Product Department Code` from `Product Department Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+
+        $adata[]=array(
+
+                     'name'=>$row['Product Department Name'],
+                     'code'=>$row['Product Department Code'],
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+
+function family_list() {
+
+    global $user;
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=0;
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=20;
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order='code';
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir='';
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field='code';
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value='';
+
+    if (isset( $_REQUEST['store_key']))
+        $store_key=$_REQUEST['store_key'];
+    else
+        $store_key='';
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+
+    if (!in_array($store_key,$user->stores)) {
+        $where=sprintf('where false ');
+    } else {
+        $where=sprintf('where `Product Family Store Key`=%d',$store_key);
+
+    }
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Family Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Family Name` like '".addslashes($f_value)."%'";
+
+    $sql="select count(DISTINCT `Product Family Name`) as total from `Product Family Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Product Family Name`) as total from `Product Family Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Family','Families',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any family with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('families with code like')." <b>$f_value</b>)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any family with name")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('families with name like')." <b>$f_value</b>)";
+        break;
+
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='name')
+        $order='`Product Family Name`';
+    else
+        $order='`Product Family Code`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  `Product Family Name`,`Product Family Code` from `Product Family Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+
+        $adata[]=array(
+
+                     'name'=>$row['Product Family Name'],
+                     'code'=>$row['Product Family Code'],
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+
+function product_list() {
+
+    global $user;
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=0;
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=20;
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order='code';
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir='';
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field='code';
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value='';
+
+    if (isset( $_REQUEST['store_key']))
+        $store_key=$_REQUEST['store_key'];
+    else
+        $store_key='';
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+
+    if (!in_array($store_key,$user->stores)) {
+        $where=sprintf('where false ');
+    } else {
+        $where=sprintf('where `Product Store Key`=%d',$store_key);
+
+    }
+
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Name` like '".addslashes($f_value)."%'";
+
+
+    $sql="select count(DISTINCT `Product Name`) as total from `Product Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Product Name`) as total from `Product Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Product','Products',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any product with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('products with code like')." <b>$f_value</b>)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any product with name")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('products with name like')." <b>$f_value</b>)";
+        break;
+
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='name')
+        $order='`Product Name`';
+    else
+        $order='`Product Code`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  `Product Name`,`Product Code` from `Product Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+
+        $adata[]=array(
+
+                     'name'=>$row['Product Name'] ,
+                     'code'=>$row['Product Code'],
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+
+function country_list() {
+    if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='wregion_code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='wregion_code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+    $where=sprintf('where true ');
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='country_code' and $f_value!='')
+        $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+
+    $sql="select count(*) as total from kbase.`Country Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from kbase.`Country Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Country','Countries',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('country_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any country with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('countries with code like')." <b>$f_value</b>)";
+        break;
+    case('wregion_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any world region with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+        break;
+    case('continent_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any continent with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+        break;
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='population')
+        $order='`Country Population`';
+    elseif($order=='gnp')
+    $order='`Country GNP`';
+    else
+        $order='`Country Name`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  `Country Postal Code Format`,`Country Postal Code Regex`,`World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+        $wregion=sprintf('<a href="wregion.php?country=%s">%s</a>',$row['World Region Code'],$row['World Region']);
+        $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Name']);
+        $country_code=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Code']);
+        $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Country 2 Alpha Code']));
+
+        if ($row['Country Population']<100000) {
+            $population='>0.1M';
+        } else {
+            $population=number($row['Country Population']/1000000,1).'M';
+        }
+        if ($row['Country GNP']=='')
+            $gnp='ND';
+        elseif($row['Country GNP']<1000)
+        $gnp='$'.number($row['Country GNP'],0);
+        else
+            $gnp='$'.number($row['Country GNP']/1000,0).'k';
+
+        $adata[]=array(
+                     //    'plain_name'=>$row['Country Name'],
+                     //	  'plain_code'=>$row['Country Code'],
+                     'name'=>$country_name,
+                     'code'=>$country_code,
+                     'flag'=>$country_flag,
+                     'population'=>$population,
+                     'gnp'=>$gnp,
+                     'wregion'=>$wregion,
+                     'code3a'=>$row['Country Code'],
+                     'code2a'=>$row['Country 2 Alpha Code'],
+                     'plain_name'=>$row['Country Name'],
+                     'postal_regex'=>$row['Country Postal Code Regex'],
+                     'postcode_help'=>$row['Country Postal Code Format'],
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+
+function postal_code_list() {
+  global $user;
+    if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='wregion_code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='wregion_code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+       if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+    else$store_key='';
+    
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+    if (!in_array($store_key,$user->stores)) {
+        $where=sprintf('where false ');
+    } else {
+        $where=sprintf('where `Customer Store Key`=%d',$store_key);
+    }
+
+
+    $where.=sprintf(' and `Customer Main Postal Code`!="" ');
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='country_code' and $f_value!='')
+        $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='postal_code' and $f_value!='')
+    $wheref.=" and  `Customer Main Postal Code` like '".addslashes($f_value)."%'";
+
+    $sql="select count(DISTINCT `Customer Main Postal Code`) as total from `Customer Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Customer Main Postal Code`) as total from `Customer Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Postal Code','Postal Codes',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('country_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any country with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('countries with code like')." <b>$f_value</b>)";
+        break;
+    case('wregion_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any world region with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+        break;
+    case('continent_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any continent with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+        break;
+
+
+    case('postal_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any postal code with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('postal codes with code like')." <b>$f_value</b>)";
+        break;
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='times_used')
+        $order='`times_used`';
+    else if ($order=='name')
+        $order='`Customer Main Country`';
+    else
+        $order='`Customer Main Postal Code`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  count(*) times_used,`Customer Main Postal Code`,`Customer Main Country 2 Alpha Code`,`Customer Main Country` from `Customer Dimension` $where $wheref  group by `Customer Main Postal Code` order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+        $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Country 2 Alpha Code'],$row['Customer Main Country']);
+        $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Customer Main Country 2 Alpha Code']));
+
+
+        $adata[]=array(
+
+                     'name'=>$country_name,
+                     'code'=>$row['Customer Main Postal Code'],
+                     'flag'=>$country_flag,
+                     'times_used'=>number($row['times_used']),
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+
+function town_list() {
+   global $user;
+  if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='wregion_code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='wregion_code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+    if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+    else$store_key='';
+    
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+    if (!in_array($store_key,$user->stores)) {
+        $where=sprintf('where false ');
+    } else {
+        $where=sprintf('where `Customer Main Town`!="" and  `Customer Store Key`=%d',$store_key);
+    }
+
+
+   
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='country_code' and $f_value!='')
+        $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='postal_code' and $f_value!='')
+    $wheref.=" and  `Customer Main Town` like '".addslashes($f_value)."%'";
+
+    $sql="select count(DISTINCT `Customer Main Town`) as total from `Customer Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Customer Main Town`) as total from `Customer Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('City','Cities',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('country_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any country with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('countries with code like')." <b>$f_value</b>)";
+        break;
+    case('wregion_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any world region with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+        break;
+    case('continent_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any continent with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+        break;
+
+
+    case('postal_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any postal code with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('postal codes with code like')." <b>$f_value</b>)";
+        break;
+    case('city'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any city with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('city with code like')." <b>$f_value</b>)";
+        break;
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='times_used')
+        $order='times_used';
+    elseif($order=='name')
+    $order='`Customer Main Country`';
+    else
+        $order='`Customer Main Town`';
+
+
+
+
+
+    $adata=array();
+    $sql="select   count(*) times_used,`Customer Main Country 2 Alpha Code`,`Customer Main Country`,`Customer Main Country 2 Alpha Code`,`Customer Main Town` from `Customer Dimension` $where $wheref group by `Customer Main Town` order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+        $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Country 2 Alpha Code'],$row['Customer Main Country']);
+        $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Customer Main Country 2 Alpha Code']));
+
+    
+        $adata[]=array(
+                  'times_used'=>number($row['times_used']),
+                     'name'=>$country_name,
+                     'city'=>$row['Customer Main Town'],
+                     'flag'=>$country_flag,
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
+

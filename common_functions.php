@@ -1086,7 +1086,7 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
         $store_where=' and `Product Department Store Key`='.$store_key;
     else
         $store_where='';
-    $sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s) %s ",join($department_names),$store_where);
+    $sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s) %s ",join(',',$department_names),$store_where);
     $res=mysql_query($sql);
  
     while($row=mysql_fetch_assoc($res)){
@@ -1107,7 +1107,6 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
     
     if (preg_match_all('/f\([a-z0-9\-\,]*\)/i',$str,$matches)) {
 
-
         foreach($matches[0] as $match) {
 
             $_groups=preg_replace('/\)$/i','',preg_replace('/^f\(/i','',$match));
@@ -1126,12 +1125,15 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
         }
         $str=preg_replace('/f\([a-z0-9\-\,]*\)/i','',$str);
     }
+
+
+
     if(count($family_names)>0){
     if($store_key and is_numeric($store_key))
         $store_where=' and `Product Family Store Key`='.$store_key;
     else
         $store_where='';
-    $sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Code` in (%s) %s ",join($family_names),$store_where);
+    $sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Code` in (%s) %s ",join(',',$family_names),$store_where);
     $res=mysql_query($sql);
  
     while($row=mysql_fetch_assoc($res)){

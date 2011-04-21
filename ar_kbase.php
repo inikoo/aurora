@@ -95,7 +95,7 @@ function list_country_d1($data){
   if(isset($data['country_2acode']))
     $extra_where.=sprintf(" and  `Country 2 Alpha Code`=%s",prepare_mysql($data['country_2acode']));
   $sql=sprintf("select `Geography Key`,`Country First Division Code`,`Country First Division Name` from kbase.`Country First Division Dimension`
-                where `Country First Division Name` like '%%%s%%' %s limit 10" 
+                where `Country First Division Name` like 's%%' %s limit 10" 
 	       ,addslashes($data['query'])
 	       ,$extra_where
 	       );
@@ -115,7 +115,7 @@ function list_country_d2($data){
     $extra_where.=sprintf(" and  `Country First Division Code`=%s",prepare_mysql($data['country_d1_code']));
   
   $sql=sprintf("select `Geography Key`,`Country Second Division Code`,`Country Second Division Name` from kbase.`Country Second Division Dimension`
-                where `Country Second Division Name` like '%%%s%%' %s limit 10" 
+                where `Country Second Division Name` like 's%%' %s limit 10" 
 	       ,addslashes($data['query'])
 	       ,$extra_where
 	       );
@@ -151,11 +151,11 @@ function list_town($data){
 
 
   $sql=sprintf("select `Geography Key`,`Town Name` from kbase.`Town Dimension`
-                where `Town Name` like '%%%s%%'  %s order by `Town Name` desc  limit 10" 
+                where `Town Name` like '%s%%'  %s order by `Town Name` desc  limit 10" 
 	       ,addslashes($data['query'])
 	       ,$extra_where
 	       );
-   print $sql;
+  //print $sql;
   $res=mysql_query($sql);
   $data=array();
   while($row=mysql_fetch_array($res)){
