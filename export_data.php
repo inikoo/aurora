@@ -162,6 +162,7 @@ else {
 
 
 ### EXPORT PART ===== COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB ###
+$filename = 'data_'.date("Ymd_Hmi").'.csv'; // Define the way of your exported file name here //
 
   $data='';
   header('Content-Type: application/csv; iso-8859-1');
@@ -215,7 +216,6 @@ unset($exported_data);
 //if ($data == "") {
   //$data = "no matching records found";
     //}
-$filename = 'data_'.date("Ymd_Hmi").'.csv'; // Define the way of your exported file name here //
 
 
 
