@@ -1843,7 +1843,19 @@ function list_customers() {
 
     $where='where true';
     $table='`Customer Dimension` C ';
-  if ($type=='all_contacts') {
+      $where_type='';
+    
+     if ($awhere) {
+        $tmp=preg_replace('/\\\"/','"',$awhere);
+        $tmp=preg_replace('/\\\\\"/','"',$tmp);
+        $tmp=preg_replace('/\'/',"\'",$tmp);
+
+        $raw_data=json_decode($tmp, true);
+        $raw_data['store_key']=$store;
+        list($where,$table)=customers_awhere($raw_data);
+
+
+    }elseif ($type=='all_contacts') {
         $where_type='';
         $_SESSION['state']['customers']['type']=$type;
 
@@ -1895,17 +1907,7 @@ function list_customers() {
 
 
 
-    if ($awhere) {
-        $tmp=preg_replace('/\\\"/','"',$awhere);
-        $tmp=preg_replace('/\\\\\"/','"',$tmp);
-        $tmp=preg_replace('/\'/',"\'",$tmp);
-
-        $raw_data=json_decode($tmp, true);
-        $raw_data['store_key']=$store;
-        list($where,$table)=customers_awhere($raw_data);
-
-
-    }
+   
 
 
 //print "yyyy $where_type";
@@ -2150,7 +2152,7 @@ function list_customers() {
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
+   // print $sql;
     $adata=array();
 
 
