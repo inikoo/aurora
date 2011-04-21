@@ -181,19 +181,9 @@
     </ul>
   </div>
 </div>
-<div class="search_box" style="margin-top:30px;font-size:90%;display:none" id="the_search_box" >
 
-   <table>
-     <tr><td colspan="" style="text-align:right;border-bottom:1px solid #ccc" >Search over:</td></tr>
-     <tr><td style="text-align:right">{t}All Customers{/t}</td><td><input checked="checked" name="geo_group" id="geo_group_all" value="all" type="radio"></td></tr>
-     <tr><td style="text-align:right">{$home} {t}Customers{/t}</td><td><input  name="geo_group"  id="geo_group_home" value="home" type="radio"></td></tr>
-     <tr><td style="text-align:right">{t}Foreign Customers{/t}</td><td><input  name="geo_group"  id="geo_group_nohome" value="nohome" type="radio"></td></tr>
-     <tr><td colspan="" style="text-align:right;border-bottom:1px solid #ccc;height:30px;vertical-align:bottom" >Only Customers:</td></tr>
-     <tr><td style="text-align:right">{t}with Email{/t}</td><td><input   id="with_email"  type="checkbox"></td></tr>
-     <tr><td style="text-align:right">{t}with Telephone{/t}</td><td><input    id="with_tel"  type="checkbox"></td></tr>
 
-   </table>
- </div>
+
 {include file='footer.tpl'}
 <div id="dialog_wregion_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
@@ -249,6 +239,9 @@
     </div>
  </div>
  
+
+ 
+ 
  <div id="dialog_family_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
@@ -280,4 +273,33 @@
  </div>
  
 
- 
+  <div id="filtermenu5" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu5 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',5)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+ <div id="filtermenu6" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu6 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',6)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+ <div id="filtermenu7" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu7 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',7)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>

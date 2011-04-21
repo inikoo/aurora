@@ -619,9 +619,10 @@ function init(){
 	};
 	Countries_d3_AC.itemSelectEvent.subscribe(Country_d3_selected); 		
 	}
-	
 
 	if(suggest_town){
+
+
 
 	var Town_DS = new YAHOO.util.XHRDataSource("ar_kbase.php");
 	Town_DS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON; 
@@ -630,13 +631,14 @@ function init(){
 	var Town_AC = new YAHOO.widget.AutoComplete("address_town", "address_town_container", Town_DS); 
 	Town_AC.generateRequest = function(sQuery) 
 	    {
+
 		var request= "?tipo=town&country_2acode="+Dom.get('address_country_2acode').value
-		+"&country_d1_code="+Dom.get('address_country_d1_code').value
-		+"&country_d2_code="+Dom.get('address_country_d2_code').value	      
-		+"&country_d3_code="+Dom.get('address_country_d3_code').value	 
+	//	+"&country_d1_code="+Dom.get('address_country_d1_code').value
+//		+"&country_d2_code="+Dom.get('address_country_d2_code').value	      
+//		+"&country_d3_code="+Dom.get('address_country_d3_code').value	 
 
 		+"&query=" + sQuery ;
-	        alert(request);
+	//    alert(request);
 		return request;
 	    };
  	var Country_1d_selected = function(sType, aArgs) {
@@ -645,7 +647,9 @@ function init(){
 	    myAC.getInputEl().value = oData[0] ;
 	};
 	//  Town_AC.itemSelectEvent.subscribe(Country_1d_selected); 	
-	
+
+   
+
 	}
 	
 

@@ -24,10 +24,6 @@ require_once 'class.PartLocation.php';
 //require_once 'common_functions.php';
 require_once 'ar_common.php';
 
-
-
-
-
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
@@ -41,13 +37,7 @@ case('products_list'):
     list_products_list();
     break;
 
-// -------------------------------start for product list ------------------------------------------
 case('new_list'):
-
-
-
-
-
     $data=prepare_values($_REQUEST,array(
                              'awhere'=>array('type'=>'json array'),
                              'store_id'=>array('type'=>'key'),
@@ -60,10 +50,6 @@ case('new_list'):
 
     new_products_list($data);
     break;
-
-// -------------------------------end for product list -------------------------------------------
-
-
 case('is_valid_family_code'):
 
 
@@ -1173,390 +1159,21 @@ case('uploadpic'):
     }
 
 
+break;
 
-//   $sql=sprintf("select code from product where id=%d",$id);
-//    $res = mysql_query($sql);
-//    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-//      $code=strtolower($row['code']);
-//      $target_path = "uploads/";
-//      $target_path = $target_path . $_REQUEST["PHPSESSID"].date('U');
-//      if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
-//        $im = @imagecreatefromjpeg($target_path);
-//        if ($im) {
-// 	 $w = imagesx($im);
-// 	 $h = imagesy($im);
 
-// 	 if($h > 0)
-// 	   { $r = $w/$h;
 
-// 	     $s=filesize($target_path);
-// 	     $c=md5_file($target_path);
 
-
-
-
-// 	     $sql=sprintf("select checksum  from image where  product_id=%d",$id);
-// 	     $res2 = mysql_query($sql);
-// 	     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
-// 	       if($c==$row2['checksum']){
-// 		 $response=array('state'=>400,'msg'=>_('Image already uploaded'));
-// 		 echo json_encode($response);
-// 		 break 2;
-// 	       }
-
-// 	     }
-
-
-
-// 	     $sql=sprintf("select count(*) as num from image where  product_id=%d",$id);
-// 	     $res2 = mysql_query($sql);
-// 	     if($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
-// 	       $images=$row2['num'];
-// 	     }
-
-
-// 	     $med_maxh=130;
-// 	     $med_maxw=190;
-// 	     $tb_maxh=21;
-// 	     $tb_maxw=30;
-
-
-// 	     //   print "$images $w $h $s $c";
-// 	     imagejpeg($im,'images/original/'.$code.'_'.$images.'_orig.jpg');
-
-// 	     if($r>1.4615){
-// 	       $med_w=$med_maxw;
-// 	       $med_h=$med_w/$r;
-// 	       $tb_w=$tb_maxw;
-// 	       $tb_h=$tb_w/$r;
-
-// 	     }else{
-
-// 	       $med_h=$med_maxh;
-// 	       $med_w=$med_h*$r;
-// 	       $tb_h=$tb_maxh;
-// 	       $tb_w=$tb_h*$r;
-// 	     }
-
-// 	     $im_med = imagecreatetruecolor($med_w, $med_h);
-// 	     imagecopyresampled($im_med, $im, 0, 0, 0, 0, $med_w, $med_h, $w, $h);
-// 	     imagejpeg($im_med,'images/med/'.$code.'_'.$images.'_med.jpg');
-// 	     $im_tb = imagecreatetruecolor($tb_w, $tb_h);
-// 	     imagecopyresampled($im_tb, $im, 0, 0, 0, 0, $tb_w, $tb_h, $w, $h);
-// 	     imagejpeg($im_tb,'images/tb/'.$code.'_'.$images.'_tb.jpg');
-
-
-// 	     $sql=sprintf("update image set principal=0 where product_id=%d",$id);
-// 	     mysql_query($sql);
-
-// 	     $caption=$_REQUEST['caption'];
-// 	     $sql=sprintf("insert into image (filename,product_id,width,height,size,checksum,caption,principal) values ('%s',%d,%d,%d,%d,'%s','%s',1)",$code.'_'.$images,$id,$w,$h,$s,$c,addslashes($caption));
-// 	     mysql_query($sql);
-// 	     $new_id =  mysql_insert_id();
-// 	     // make the new pric the pricipal
-
-
-
-
-
-// 	     $sql=sprintf("select filename,id,format from image where product_id=%d and principal=0 limit 5",$id);
-
-// 	     $res2 = mysql_query($sql);
-// 	     $other_img_src=array('','','','','');
-// 	     $other_img_id=array(0,0,0,0,0);
-// 	     $num_others=0;
-// 	     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
-// 	       $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
-// 	       $other_img_id[$num_others]=$row2['id'];
-// 	       $num_others++;
-// 	     }
-// 	      $num_others++;
-
-// 	     $response=array(
-// 			   'state'=>200,
-// 			   'new_src'=>'images/med/'.$code.'_'.$images.'_med.jpg',
-// 			   'new_id'=>$new_id,
-// 			   'other_img'=>$other_img_src,
-// 			   'other_img_id'=>$other_img_id,
-// 			   'others'=>$num_others,
-// 			   'caption'=>$caption
-
-// 		     );
-// 	     echo json_encode($response);
-// 	     break;
-
-
-
-
-
-
-
-
-
-// 	   }
-
-//        }
-
-
-
-//        // save the original (expeced to be  a big file)
-
-
-//        //       print "$w $h";
-
-
-//      }else{
-//        $response=array('state'=>400,'msg'=>_('Error'));
-//        echo json_encode($response);
-//        break;
-//      }
-
-//    }
-//  $response=array('state'=>400,'msg'=>_('Error'));
-//        echo json_encode($response);
-//        break;
-
-    break;
-
-case('search'):
-    $q=$_REQUEST['q'];
-    $sql=sprintf("select id from product where code='%s' ",addslashes($q));
-    $result=mysql_query($sql);
-    if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $url='product.php?id='. $found['id'];
-        echo json_encode(array('state'=>200,'url'=>$url));
-        break;
-    }
-    $sql=sprintf("select id from product_group where name='%s' ",addslashes($q));
-    $result=mysql_query($sql);
-    if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $url='family.php?id='. $found['id'];
-        echo json_encode(array('state'=>200,'url'=>$url));
-        break;
-    }
-
-    // try to get similar results
-    //   if($myconf['product_code_separator']!=''){
-    if (  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ) {
-        $sql=sprintf("select levenshtein(UPPER(%s),UPPER(code)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(code))) as dist2,code,id from product  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-        $result=mysql_query($sql);
-        if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if ($found['dist1']<3) {
-                echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="product.php?id='.$found['id'].'">'.$found['code'].'</a>'));
-                break;
-            }
-        }
-
-
-    } else {
-        // look on the family list
-        $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2, name ,id from product_group  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-        $result=mysql_query($sql);
-        if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if ($found['dist1']<3) {
-                echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="family.php?id='.$found['id'].'">'.$found['name'].'</a> '._('family') ));
-                break;
-            }
-        }
-
-    }
-    echo json_encode(array('state'=>500,'msg'=>_('Product not found')));
-    break;
-
-
-
-    break;
-case('changetableview'):
-    if (isset($_REQUEST['value'])) {
-        $value=$_REQUEST['value'];
-        if (is_numeric($value) and $value>=0 and $value<3)
-            $_SESSION['views']['assets_tables']=$value;
-
-
-    }
-    break;
-case('changeproductplot'):
-    if (isset($_REQUEST['value'])) {
-        $value=$_REQUEST['value'];
-        $_SESSION['views']['product_plot']="$value";
-
-    }
-    break;
-case('changeproductblock'):
-    if (isset($_REQUEST['value']) and isset($_REQUEST['block'])) {
-        $value=$_REQUEST['value'];
-        $block=$_REQUEST['block'];
-
-
-        if (is_numeric($value) and ($value==0 or $value==1)    and is_numeric($block) and $value>=0 and $value<6      )
-            $_SESSION['views']['product_blocks'][$block]=$value;
-    }
-    break;
-
-
-
-
-case('codefromsup'):
-    $q=addslashes($_REQUEST['query']);
-    $sql="select product.id,code,description from product left join product2supplier on (product_id=product.id) where product2supplier.supplier_id=2 and code like '$q%' ";
-    //     print $sql;
-    $res = mysql_query($sql);
-    $data=array();
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[]=array(
-                    'id'=>$row['id'],
-                    'code'=>$row['code'],
-                    'description'=>$row['description']
-                );
-    }
-    $response=array('resultset'=>
-                                array(
-                                    'state'=>200,
-                                    'data'=>$data
-                                )
-                   );
-    echo json_encode($response);
-    break;
-
-
-
-
-case('prodindex'):
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$_SESSION['tables']['pindex_list'][3];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$_SESSION['tables']['pindex_list'][2];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$_SESSION['tables']['pindex_list'][0];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$_SESSION['tables']['pindex_list'][1];
-
-
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$_SESSION['tables']['pindex_list'][4];
-
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$_SESSION['tables']['pindex_list'][5];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$_SESSION['tables']['pindex_list'][6];
-
-
-
-
-
-
-    $_SESSION['tables']['pindex_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
-
-    $wheref='';
-    if ($f_field=='p.code' or $f_field=='g.name'  or $f_field=='g.code'    and $f_value!='')
-        $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-    elseif($f_field=='p.description'    and $f_value!='')
-    $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
-
-//   if(isset($_REQUEST['f_field']) and isset($_REQUEST['f_value'])){
-//     if($_REQUEST['f_field']=='p.code' or $_REQUEST['f_field']=='g.name' or $_REQUEST['f_field']=='d.code'){
-//       if($_REQUEST['f_value']!='')
-// 	$where=" where  ".$_REQUEST['f_field']." like '".addslashes($_REQUEST['f_value'])."%'";
-//     }elseif($_REQUEST['f_field']=='p.description'){
-//       if($_REQUEST['f_value']!='')
-// 	$where=" where  ".$_REQUEST['f_field']."  like '%".addslashes($_REQUEST['f_value'])."%'";
-//     }
-//   }
-
-
-
-    $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) $where $wheref ";
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    if ($where=='') {
-        $filtered=0;
-    } else {
-
-        $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where ";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $filtered=$row['total']-$total;
-        }
-
-    }
-
-
-
-    $sql="select p.awoutq,p.awtsq,p.price,p.units,ifnull(p.stock,-10000) as stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department
-         from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-    //     print $sql;
-    $result=mysql_query($sql);
-    $data=array();
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[]=array(
-                    'id'=>$row['id'],
-                    'condicion'=>$row['condicion'],
-                    'stock'=>floor($row['stock']),
-                    'code'=>$row['code'],
-                    'description'=>number($row['units']).'x '.$row['description'].' @'.money($row['price']),
-                    'group_id'=>$row['group_id'],
-                    'department_id'=>$row['department_id'],
-                    'fam'=>$row['fam'],
-                    'department'=>$row['department'],
-                    'awtsq'=>money($row['awtsq']).' ('.number($row['awoutq'],1).')'
-
-
-                );
-    }
-
-    if ($total<$number_results)
-        $rtext=$total.' '.ngettext('record returned','records returned',$total);
-    else
-        $rtext='';
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      //			 'records_returned'=>$start_from+$res->numRows(),
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-                                     )
-                   );
-    echo json_encode($response);
-    break;
-    //==============================================================================================
 case('families'):
     list_families();
 
 
     break;
-    //========================================================================================
+
 case('stores'):
     list_stores();
     break;
-    //=====================================================================================
-//case('company_departments'):
+
 case('departments'):
     list_departments();
 
@@ -1568,246 +1185,11 @@ case('products'):
     list_products();
 
     break;
-    //========================================================================
 case('parts'):
     list_parts();
 
     break;
-    //=============================================================================
 
-
-// case('all_supplier_products'):
-//    if(!$LU->checkRight(SUP_VIEW))
-//     exit;
-
-//    $conf=$_SESSION['state']['supplier_products']['table'];
-//   if(isset( $_REQUEST['sf']))
-//     $start_from=$_REQUEST['sf'];
-//   else
-//     $start_from=$conf['sf'];
-//   if(isset( $_REQUEST['nr']))
-//     $number_results=$_REQUEST['nr'];
-//    else
-//      $number_results=$conf['nr'];
-//   if(isset( $_REQUEST['o']))
-//     $order=$_REQUEST['o'];
-//   else
-//     $order=$conf['order'];
-//   if(isset( $_REQUEST['od']))
-//     $order_dir=$_REQUEST['od'];
-//   else
-//     $order_dir=$conf['order_dir'];
-//   if(isset( $_REQUEST['f_field']))
-//     $f_field=$_REQUEST['f_field'];
-//    else
-//      $f_field=$conf['f_field'];
-
-//   if(isset( $_REQUEST['f_value']))
-//     $f_value=$_REQUEST['f_value'];
-//   else
-//     $f_value=$conf['f_value'];
-//   if(isset( $_REQUEST['where']))
-//     $where=$_REQUEST['where'];
-//    else
-//      $where=$conf['where'];
-
-
-
-
-//    if(isset( $_REQUEST['tableid']))
-//      $tableid=$_REQUEST['tableid'];
-//    else
-//     $tableid=0;
-
-//    if(isset( $_REQUEST['view'])){
-//      $view=$_REQUEST['view'];
-//      $_SESSION['state']['supplier_products']['view']=$view;
-//    }else
-//      $view=$_SESSION['state']['supplier_products']['view'];
-
-//    if(isset( $_REQUEST['period'])){
-//      $period=$_REQUEST['period'];
-//      $_SESSION['state']['supplier_products']['period']=$period;
-//    }else
-//      $period=$_SESSION['state']['supplier_products']['period'];
-
-//    if(isset( $_REQUEST['percentage'])){
-//      $percentage=$_REQUEST['percentage'];
-//      $_SESSION['state']['supplier_products']['percentage']=$percentage;
-//    }else
-//      $percentage=$_SESSION['state']['supplier_products']['percentage'];
-
-//    $filter_msg='';
-//    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-//    $_order=$order;
-//    $_dir=$order_direction;
-
-//    $product_percentage=$percentage;
-//    $product_view=$view;
-//    $product_period=$period;
-
-//    $_SESSION['state']['supplier_products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-
-// 						    );
-
-
-
-
-
-//   $wheref='';
-//   if(($f_field=='code' ) and $f_value!='')
-//     $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
-// if($f_field=='sup_code' and $f_value!='')
-//     $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
-
-
-
-
-
-
-//   $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
-
-//   $result=mysql_query($sql);
-//   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
-//    $total=$row['total'];
-//   }
-//     if($wheref==''){
-//       $filtered=0; $total_records=$total;
-//     }else{
-
-//       $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
-//       $result=mysql_query($sql);
-//       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-// 	$total_records=$row['total'];
-// 	$filtered=$row['total']-$total;
-//       }
-
-//     }
-
-
-
-//     $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
-//     if($total_records>$number_results)
-//       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-//     $filter_msg='';
-
-//  switch($f_field){
-//  case('code'):
-//        if($total==0 and $filtered>0)
-// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b>  <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Clear Filter')."</span>";
-//        elseif($filtered>0)
-// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>".$f_value."*</b>)";
-//        break;
-//  case('sup_code'):
-//        if($total==0 and $filtered>0)
-// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with supplier code")." <b>".$f_value."*</b> ";
-//        elseif($filtered>0)
-// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with supplier code')." <b>".$f_value."*</b>)";
-//        break;
-
-//  }
-//  if($order=='id')
-//    $order='`Supplier Product ID`';
-//  elseif($order=='code')
-//    $order='`Supplier Product Code`';
-//  elseif($order='usedin')
-//    $order='`Supplier Product XHTML Used In`';
-
-//    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-
-//    $data=array();
-
-//    $result=mysql_query($sql);
-//    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
-
-//      if($product_period=='all'){
-//        $profit=money($row['Supplier Product Total Parts Profit']);
-//        $profit2=money($row['Supplier Product Total Parts Profit After Storing']);
-//        $allcost=money($row['Supplier Product Total Cost']);
-//        $used=number($row['Supplier Product Total Parts Used']);
-//        $required=number($row['Supplier Product Total Parts Required']);
-//        $provided=number($row['Supplier Product Total Parts Provided']);
-//        $lost=number($row['Supplier Product Total Parts Lost']);
-//        $broken=$row['Supplier Product Total Parts Broken'];
-//      }else if($product_period=='year'){
-//        $profit=money($row['Supplier Product 1 Year Acc Parts Profit']);
-//        $profit2=money($row['Supplier Product 1 Year Acc Parts Profit After Storing']);
-//        $allcost=money($row['Supplier Product 1 Year Acc Cost']);
-//        $used=number($row['Supplier Product 1 Year Acc Parts Used']);
-//        $required=number($row['Supplier Product 1 Year Acc Parts Required']);
-//        $provided=number($row['Supplier Product 1 Year Acc Parts Provided']);
-//        $lost=number($row['Supplier Product 1 Year Acc Parts Lost']);
-//        $broken=number($row['Supplier Product 1 Year Acc Parts Broken']);
-//      }else if($product_period=='quarter'){
-//        $profit=money($row['Supplier Product 1 Quarter Acc Parts Profit']);
-//        $profit2=money($row['Supplier Product 1 Quarter Acc Parts Profit After Storing']);
-//        $allcost=money($row['Supplier Product 1 Quarter Acc Cost']);
-//        $used=number($row['Supplier Product 1 Quarter Acc Parts Used']);
-//        $required=number($row['Supplier Product 1 Quarter Acc Parts Required']);
-//        $provided=number($row['Supplier Product 1 Quarter Acc Parts Provided']);
-//        $lost=number($row['Supplier Product 1 Quarter Acc Parts Lost']);
-//        $broken=number($row['Supplier Product 1 Quarter Acc Parts Broken']);
-//      }else if($product_period=='month'){
-//        $profit=money($row['Supplier Product 1 Month Acc Parts Profit']);
-//        $profit2=money($row['Supplier Product 1 Month Acc Parts Profit After Storing']);
-//        $allcost=money($row['Supplier Product 1 Month Acc Cost']);
-//        $used=number($row['Supplier Product 1 Month Acc Parts Used']);
-//        $required=number($row['Supplier Product 1 Month Acc Parts Required']);
-//        $provided=number($row['Supplier Product 1 Month Acc Parts Provided']);
-//        $lost=number($row['Supplier Product 1 Month Acc Parts Lost']);
-//        $broken=number($row['Supplier Product 1 Month Acc Parts Broken']);
-//      }else if($product_period=='week'){
-//        $profit=money($row['Supplier Product 1 Week Acc Parts Profit']);
-//        $profit2=money($row['Supplier Product 1 Week Acc Parts Profit After Storing']);
-//        $allcost=money($row['Supplier Product 1 Week Acc Cost']);
-//        $used=number($row['Supplier Product 1 Week Acc Parts Used']);
-//        $required=number($row['Supplier Product 1 Week Acc Parts Required']);
-//        $provided=number($row['Supplier Product 1 Week Acc Parts Provided']);
-//        $lost=number($row['Supplier Product 1 Week Acc Parts Lost']);
-//        $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
-//      }
-
-//      $supplier=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['supplier key'],$row['supplier code']);
-//      $data[]=array(
-// 		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
-// 		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
-// 		   ,'name'=>$row['Supplier Product Name']
-// 		   ,'cost'=>money($row['Supplier Product Cost'])
-// 		   ,'usedin'=>$row['Supplier Product XHTML Used In']
-// 		   ,'profit'=>$profit
-// 		   ,'allcost'=>$allcost
-// 		   ,'used'=>$used
-// 		   ,'required'=>$required
-// 		   ,'provided'=>$provided
-// 		   ,'lost'=>$lost
-// 		   ,'broken'=>$broken
-// 		   ,'supplier'=>$supplier
-// 		   );
-//    }
-
-
-//    $response=array('resultset'=>
-// 		   array('state'=>200,
-// 			 'data'=>$data,
-// 			 'sort_key'=>$_order,
-// 			 'sort_dir'=>$_dir,
-// 			 'tableid'=>$tableid,
-// 			 'filter_msg'=>$filter_msg,
-// 			 'rtext'=>$rtext,
-// 			 'total_records'=>$total,
-// 			 'records_offset'=>$start_from,
-// 			 'records_returned'=>$start_from+$total,
-// 			 'records_perpage'=>$number_results,
-// 			 'records_text'=>$rtext,
-// 			 'records_order'=>$order,
-// 			 'records_order_dir'=>$order_dir,
-// 			 'filtered'=>$filtered
-// 			 )
-// 		   );
-//    echo json_encode($response);
-//    break;
 
 
 case('withsupplier_po'):
@@ -2077,82 +1459,7 @@ case('withsupplier_po'):
     echo json_encode($response);
     break;
 
-case('list_pareto_products'):
-    $first_day=addslashes($myconf['data_since']);
-    $data_name='tsy';
-    $sql=sprintf("select code,id,$data_name as value from product where $data_name>0 order by $data_name  desc ");
 
-    $result=mysql_query($sql);
-    $data=array();
-    $i=0;
-    $total_value=0;
-    $data=array();
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total_value+=$row['value'];
-        $code[]=$row['code'];
-        $data[]=$row['value'];
-        $i++;
-    }
-    $total_products=$i;
-    $_value=0;
-    printf("<table border=1>");
-    if ($total_value>0) {
-        $i=1;
-        foreach($data as $key=>$value) {
-            $_value+=$value;
-            $_cvalue=100*$_value/$total_value;
-            $_code=$code[$key];
-            $_cprod=$i/$total_products*100;
-            //       if($_value<0.8*$total_value)
-            printf("<tr><td>$i<td><td>$_code <td></td><td>$value</td><td>$_value</td><td>%.2f</td><td>%.2f</td> <tr>",$_cvalue,$_cprod);
-            $i++;
-        }
-    }
-    break;
-case('list_total_net_sales_week'):
-    $first_day=addslashes($myconf['data_since']);
-    $sql=sprintf("select yearweek  from list_week where yearweek not like '%%53' and first_day>%s and first_day < DATE_SUB(date(NOW()), INTERVAL 1 week); ",prepare_mysql($first_day));
-
-    $result=mysql_query($sql);
-    $data=array();
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[$row['yearweek']]=0;
-    }
-
-    $sql=sprintf("select sum(net) as net,yearweek(date_index,1) as year_week from orden  left join transaction on (order_id=orden.id) where product_id=11291 and date_index>%s and orden.tipo=2 group by yearweek(date_index) ",prepare_mysql($first_day));
-
-    $result=mysql_query($sql);
-    $fix_w53='';
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-        if ($fix_w53!='') {
-            $b=$fix_w53;
-            $a= $row['net'];
-
-            $data[$row['year_week']]=(2*$a+$b)/3;
-            $fix_w53='';
-        }
-        elseif(preg_match('/53$/',$row['year_week'])) {
-
-            $b=$row['net'];
-            //change previous weeks
-            $a= $data[$row['year_week']-1];
-            $data[$row['year_week']-1]=(2*$a+$b)/3;
-            $fix_w53=$b;
-        }
-        else {
-            if (array_key_exists($row['year_week'],$data))
-                $data[$row['year_week']]=$row['net'];
-        }
-
-    }
-    $i=0;
-
-    foreach($data as $key=>$value) {
-        $i++;
-        print "$value\n";
-    }
-    break;
 
 case('plot_daily_part_stock_history'):
     if (isset($_REQUEST['sku'])) {
@@ -2185,497 +1492,6 @@ case('plot_daily_part_stock_history'):
 
     break;
 
-case('plot_product_week_outers'):
-case('plot_product_week_sales'):
-
-    //$product_id=$_SESSION['state']['product']['id'];
-
-//    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
-//    $result=mysql_query($sql);
-
-//    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-//      $weeks=floor($row['weeks_since']);
-//    }
-    // $product=new Product($product_id);
-    //$first_day=$product->get('mysql_first_date');
-    $product_id=$_REQUEST['product_id'];
-    $first_day=$_REQUEST['first_day'];
-    // print $first_day;
-
-    $sql="select date_format(first_day,'%c') as month, first_day as date, yearweek,date_format(first_day,'%v %x') as week,  UNIX_TIMESTAMP(first_day)+36000 as utime  from list_week where first_day>'$first_day' and first_day < NOW(); ";
-
-    $data=array();
-    $result=mysql_query($sql);
-    $i=0;
-    $last_month='';
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $index[$row['yearweek']]=$i;
-        $date=$row['utime'].'x  '.strftime("%b%y",$row['utime']);
-        $data[]=array(
-                    'tip_asales'=>_('No sales this week'),
-                    'tip_profit'=>_('No sales this week'),
-
-                    'tip_out'=>_('No sales this week'),
-                    'tip_bonus'=>_('No bonus this week'),
-                    'date'=>$date,
-                    'week'=>$row['week'],
-                    'utime'=>$row['utime'],
-                    'asales'=>0,
-                    'profit'=>0,
-                    'out'=>0,
-                    'bonus'=>0,
-                    'outofstock'=>0,
-                );
-
-        $i++;
-    }
-
-
-    $tipo_orders=' (orden.tipo!=0 or orden.tipo!=3 or  orden.tipo!=9 or orden.tipo!=10) ';
-    $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(charge)as asales,sum(profit)as profit,sum(dispatched)as _out from transaction left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
-
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-        if (isset($index[$row['yearweek']])) {
-            $_index=$index[$row['yearweek']];
-            $data[$_index]['asales']=(float)$row['asales'];
-            $data[$_index]['profit']=(float)$row['profit'];
-
-            $data[$_index]['out']=(int)$row['_out'];
-            $fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
-            $data[$_index]['tip_out']=_('Outer Dispatched')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
-            $data[$_index]['tip_asales']=_('Sales')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['asales']);
-            $data[$_index]['tip_profit']=_('Profit')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['profit']);
-
-        }
-    }
-
-    $tipo_orders=' (orden.tipo!=0 or orden.tipo!=3 or  orden.tipo!=9 or orden.tipo!=10) ';
-    $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(qty)as bono from bonus left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
-
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-        if (isset($index[$row['yearweek']])) {
-            $_index=$index[$row['yearweek']];
-            $data[$_index]['bonus']=(float)$row['bono'];
-            $fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
-            $data[$_index]['tip_bonus']=_('Free Bonus')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['bono']).' '._('Outers');
-
-        }
-    }
-
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-
-case('plot_department_monthout'):
-case('plot_department_monthsales'):
-    $department_id=$_SESSION['state']['department']['id'];
-    $today=sprintf("%d%02d",date("Y"),date("m"));
-
-
-
-
-    $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product_department where id=%d",$department_id);
-
-    $result=mysql_query($sql);
-
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $month=floor($row['m']);
-        $year=floor($row['y']);
-        $first=sprintf("%d%02d",$year,$month);
-        $since=$row['since'];
-    }
-    //   print "$year $month ";
-
-    $data=array();
-
-    for ($i=$since; $i>=0; $i--) {
-
-        $data[]=array(
-                    'asales'=>0,
-                    'out'=>0,
-                    'bonus'=>0,
-                    //		   'month'=>$m,
-                    //'year'=>$y,
-                    'date'=>strftime("%m/%y", strtotime("today -$i month")),
-                    'tip'=>'No sales in '.strftime("%b %y", strtotime("today -$i month")),
-                    'since'=>$i
-                );
-
-    }
-
-    //   print "$since $month $year";
-    //  print_r($data);
-    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispatched)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department_id);
-    //      print "$sql";
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[$row['since']]['out']=(int)$row['_out'];
-        $data[$row['since']]['asales']=(float)$row['asales'];
-        if ($tipo=='plot_monthout')
-            $data[$row['since']]['tip_out']=_('Outers Dispatched')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
-        else
-            $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
-
-    }
-
-
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-
-
-
-
-case('plot_monthout'):
-case('plot_monthsales'):
-    $product_id=$_SESSION['state']['product']['id'];
-    $today=sprintf("%d%02d",date("Y"),date("m"));
-
-
-
-
-    $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product where id=%d",$product_id);
-
-    $result=mysql_query($sql);
-
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $month=floor($row['m']);
-        $year=floor($row['y']);
-        $first=sprintf("%d%02d",$year,$month);
-        $since=$row['since'];
-    }
-    //   print "$year $month ";
-
-    $data=array();
-
-    for ($i=$since; $i>=0; $i--) {
-
-        $data[]=array(
-                    'asales'=>0,
-                    'out'=>0,
-                    //		   'month'=>$m,
-                    //'year'=>$y,
-                    'date'=>strftime("%m/%y", strtotime("today -$i month")),
-                    'tip'=>'No sales in '.strftime("%b %y", strtotime("today -$i month")),
-                    'since'=>$i
-                );
-
-    }
-
-    //   print "$since $month $year";
-    //  print_r($data);
-    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispatched)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where %s and product_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$product_id);
-    //      print "$sql";
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[$row['since']]['out']=(int)$row['_out'];
-        $data[$row['since']]['asales']=(float)$row['asales'];
-        if ($tipo=='plot_monthout')
-            $data[$row['since']]['tip_out']=_('Outers Dispatched')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
-        else
-            $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
-
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-
-case('plot_quartersales'):
-case('plot_quarterout'):
-    $product_id=$_SESSION['tables']['order_withprod'][4];
-    $today=sprintf("%d%02d",date("Y"),date("m"));
-
-
-    $sql=sprintf("select quarter(first_date) as q ,  year(first_date) as y from product where id=%d",$product_id);
-    //print "$sql";
-    $result=mysql_query($sql);
-
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $q=floor($row['q']);
-        $y=floor($row['y']);
-    }
-
-    $i=0;
-    foreach (range($y,date('Y')) as $year) {
-        foreach (range(1,4) as $quarter) {
-            if ($year==$y and $q>$quarter)
-                continue;
-            if ($year==date('Y') and date('Q')>$quarter)
-                continue;
-            $index["$year$quarter"]=$i;
-            $_year=preg_replace('/^../','',$year);
-            $data[]=array(
-                        'date'=>"$quarter"."Q$_year",
-                        'tip'=>_('No sales this quarter'),
-                        'asales'=>0,
-                        'out'=>0
-
-                    );
-            $i++;
-        }
-    }
-
-
-    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select YEAR(date_index) as year,QUARTER(date_index) as quarter, concat(YEAR(date_index),QUARTER(date_index)) as qy,sum(charge)as asales,sum(dispatched)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by qy ",$tipo_orders,$product_id);
-    //      print "$sql";
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[$index[$row['qy']]]['asales']=$row['asales'];
-        $data[$index[$row['qy']]]['out']=$row['_out'];
-        switch ($row['quarter']) {
-        case 1:
-            $_q=_('First quarter')." ".$row['year'];
-            break;
-        case 2:
-            $_q=_('Second quarter')." ".$row['year'];
-            break;
-        case 3:
-            $_q=_('Third quarter')." ".$row['year'];
-            break;
-        case 4:
-            $_q=_('Last quarter')." ".$row['year'];
-            break;
-        default:
-            $_q=_('Error');
-        }
-        if ($tipo=='plot_quarterout')
-            $data[$index[$row['qy']]]['tip']=_('Outers Dispatched')."\n$_q\n".number($row['asales']).' '._('outers');
-        else
-            $data[$index[$row['qy']]]['tip']=_('Sales')."\n$_q\n".money($row['asales']);
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-case('plot_yearout'):
-case('plot_yearsales'):
-    $product_id=$_SESSION['tables']['order_withprod'][4];
-    $today=sprintf("%d%02d",date("Y"),date("m"));
-
-
-    $sql=sprintf("select year(first_date) as y from product where id=%d",$product_id);
-    //print "$sql";
-    $result=mysql_query($sql);
-
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $y=floor($row['y']);
-    }
-
-    $i=0;
-    foreach (range($y,date('Y')) as $year) {
-        $index[$year]=$i;
-        $data[]=array(
-                    'date'=>"$year",
-                    'tip'=>_('No sales in $year'),
-                    'asales'=>0,
-                    'out'=>0
-                );
-        $i++;
-
-    }
-
-
-    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select YEAR(date_index) as year ,sum(charge)as asales ,sum(dispatched)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by year ",$tipo_orders,$product_id);
-    //      print "$sql";
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[$index[$row['year']]]['out']=$row['_out'];
-        $data[$index[$row['year']]]['asales']=$row['asales'];
-        if ($tipo=='plot_yearout')
-            $data[$index[$row['year']]]['tip']=_('Outers Dispatched')." on ".$row['year']."\n".number($row['_out'])." "._('outers');
-        else
-            $data[$index[$row['year']]]['tip']=$row['year'].' '._('Sales')."\n".money($row['asales']);
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-
-case('plot_weekorders'):
-    $product_id=$_SESSION['tables']['order_withprod'][4];
-
-    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
-    $result=mysql_query($sql);
-
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $weeks=floor($row['weeks_since']);
-    }
-
-    $data=array();
-    for ($i=$weeks; $i>=0; $i--) {
-
-        $year=date("Y",strtotime("today - $i week"));
-        $week=date("W",strtotime("today - $i week"));
-        $data[]=array(
-                    'aorders'=>0,
-                    'acustomers'=>0,
-                    'weekyear'=>$i,
-                    'fweek'=>"\n"._('Week starting ')."\n".date("d-m-y", mktimefromcw($year, $week, 0))
-                );
-    }
-
-    $sql=sprintf("select  count(DISTINCT o.customer_id) as acustomers,count(DISTINCT o.id) as aorders,yearweek(date_index)  as weekyear, (52*(year(date_index)-year(first_date))+ (week(date_index,3)-week(first_date,3))) as week_num from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where product_id=%d and o.tipo=2 group by weekyear order by week_num  ",$product_id);
-    //     print "$sql";
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[$row['week_num']]['aorders']=$row['aorders'];
-        $data[$row['week_num']]['acustomers']=$row['acustomers'];
-
-
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-
-
-case('plot_daystock'):
-    $product_id=$_SESSION['tables']['order_withprod'][4];
-
-
-    $sql=sprintf("select TO_DAYS(op_date) as day,op_qty,op_date as date,stock from stock_history where product_id=%d   order by op_date  limit 2000",$product_id);
-    //     print "$sql";
-    $result=mysql_query($sql);
-    $_day='xxx';
-    $i=0;
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        if ($_day==$row['day']) {
-            array_pop($data);
-            $data[]=array(
-                        'stock'=>$row['stock'],
-                        'day'=>$row['day'],
-                        'tip'=>$row['date']
-                    );
-
-            if ($i>700000)
-                break;
-        } else {
-            $i++;
-            $data[]=array(
-                        'stock'=>$row['stock']-$row['op_qty'],
-                        'day'=>$row['day'],
-                        'tip'=>$row['date']
-                    );
-
-            $data[]=array(
-                        'stock'=>$row['stock'],
-                        'day'=>$row['day'],
-                        'tip'=>$row['date']
-                    );
-
-            $_day=$row['day'];
-        }
-
-
-    }
-
-    $data=array();
-    $data[]=array('stock'=>1,'day'=>1);
-    $data[]=array('stock'=>4,'day'=>2);
-    $data[]=array('stock'=>9,'day'=>3);
-    $data[]=array('stock'=>16,'day'=>4);
-    $data[]=array('stock'=>100,'day'=>10);
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
-
-
-
-
-
-
-
-
-case('plot_weeksalesperorder'):
-    $product_id=$_SESSION['tables']['order_withprod'][4];
-
-    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
-    $result=mysql_query($sql);
-
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $weeks=floor($row['weeks_since']);
-    }
-
-    $data=array();
-    for ($i=$weeks; $i>=0; $i--) {
-
-        $year=date("Y",strtotime("today - $i week"));
-        $week=date("W",strtotime("today - $i week"));
-        $data[]=array(
-                    'asalesperorder'=>0,
-                    'weekyear'=>$i,
-                    'fweek'=>"\n"._('Week starting ')."\n".date("d-m-y", mktimefromcw($year, $week, 0))
-                );
-    }
-
-    $sql=sprintf("select  sum(charge) as asales,count(DISTINCT o.id) as aorders,yearweek(date_index)  as weekyear, (52*(year(date_index)-year(first_date))+ (week(date_index,3)-week(first_date,3))) as week_num from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where product_id=%d and o.tipo=2 group by weekyear order by week_num  ",$product_id);
-    //   print "$sql";
-    $result=mysql_query($sql);
-
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-        if ($row['aorders']>0)
-            $salesperorder=number_format($row['asales']/$row['aorders'],1,".","");
-        else
-            $salesperorder=0;
-        $data[$row['week_num']]['asalesperorder']=$salesperorder;
-
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                     )
-                   );
-
-    echo json_encode($response);
-    break;
 case('part_stock_history'):
 case('stock_history'):
     part_stock_history();
@@ -4218,8 +3034,6 @@ function list_departments() {
     echo json_encode($response);
 }
 
-
-
 function list_products() {
 
     global $user;
@@ -5498,7 +4312,6 @@ function list_products() {
     echo json_encode($response);
 }
 
-
 function list_parts() {
     $conf=$_SESSION['state']['parts']['table'];
     if (isset( $_REQUEST['view']))
@@ -6541,8 +5354,6 @@ function find_part() {
 
 }
 
-
-
 function list_families() {
 
     global $user;
@@ -7499,8 +6310,6 @@ function list_families() {
     echo json_encode($response);
 
 }
-
-
 
 function list_stores() {
     global $user;
@@ -8741,7 +7550,6 @@ function list_charges() {
     echo json_encode($response);
 }
 
-
 function list_campaigns() {
 
 
@@ -8934,7 +7742,6 @@ function list_campaigns() {
                    );
     echo json_encode($response);
 }
-
 
 function list_deals() {
 
@@ -9160,7 +7967,6 @@ function list_deals() {
     echo json_encode($response);
 
 }
-
 
 function list_customers_per_store() {
 
@@ -10444,6 +9250,7 @@ function list_invoices_per_store() {
                    );
     echo json_encode($response);
 }
+
 function list_delivery_notes_per_store() {
 
     $conf=$_SESSION['state']['stores']['delivery_notes'];
@@ -10768,6 +9575,7 @@ function list_delivery_notes_per_store() {
                    );
     echo json_encode($response);
 }
+
 function product_code_timeline() {
 
 
@@ -11519,9 +10327,6 @@ function list_product_categories() {
     echo json_encode($response);
 }
 
-
-
-
 function is_store_code($data) {
 
     if (!isset($data['query'])) {
@@ -11572,6 +10377,7 @@ function is_store_code($data) {
     }
 
 }
+
 function is_store_name($data) {
     if (!isset($data['query'])) {
         $response= array(
@@ -11620,7 +10426,6 @@ function is_store_name($data) {
     }
 
 }
-
 
 function is_department_name($data) {
     if (!isset($data['query']) or !isset($data['store_key'])) {
@@ -11722,7 +10527,6 @@ function is_department_code($data) {
     }
 
 }
-
 
 function is_family_name($data) {
     if (!isset($data['query']) or !isset($data['store_key'])) {
@@ -12117,6 +10921,7 @@ function part_transactions() {
                    );
     echo json_encode($response);
 }
+
 function part_stock_history() {
     $conf=$_SESSION['state']['part']['stock_history'];
     $part_sku=$_SESSION['state']['part']['id'];
@@ -12322,9 +11127,6 @@ function part_stock_history() {
     echo json_encode($response);
 }
 
-
-// -----------------------------------------start for product list-------------------------------------------
-
 function new_products_list($data) {
 
 
@@ -12430,11 +11232,6 @@ function new_products_list($data) {
     echo json_encode($response);
 
 }
-// -------------------------------------------end for product list------------------------------------------
-
-
-
-
 
 function list_products_list() {
 
@@ -13770,4 +12567,7 @@ function list_products_list() {
 
     echo json_encode($response);
 }
+
+
+
 ?>

@@ -79,7 +79,6 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     if(oResponse.meta.rtext != undefined){
      YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
     
-    
    // alert(YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML);
     }
     
@@ -95,7 +94,12 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
         oPayload.rowsPerPage = parseInt(oResponse.meta.rowsPerPage);
 
+    if(oPayload.totalRecords<=oPayload.rowsPerPage){
+
+   // YAHOO.util.Dom.setStyle('paginator'+oResponse.meta.tableid,'color','red');
+// alert(oResponse.meta.rowsPerPage+' '+oResponse.meta.totalRecords)
     
+    }
     if(oPayload.totalRecords==0){
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='none';
@@ -126,6 +130,13 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 
+function myrenderEvent(){
+ostate=this.getState();
+paginator=ostate.pagination
+if(paginator.totalRecords<=paginator.rowsPerPage){
+Dom.setStyle('paginator'+this.table_id,'display','none')
+}
+}
 
 
 
@@ -139,7 +150,8 @@ var myRequestBuilder = function(oState, oSelf) {
 
     var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
 
-    var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+  //  var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+var dir=oState.sortedBy.dir;
 
    var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
     var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
@@ -149,7 +161,7 @@ var myRequestBuilder = function(oState, oSelf) {
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-//alert(request)
+//alert(oState.sortedBy.dir)
 
     return request;
 };
@@ -163,7 +175,8 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 
     var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
 
-    var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+//    var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+var dir=oState.sortedBy.dir;
 
    var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
     var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
@@ -173,7 +186,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-//alert(request)
+//alert(oState)
 
     return request;
 };
