@@ -1328,21 +1328,31 @@ $default_state=array(
                    'customers'=>array(
                                    'store'=>'3',
                                    'view'=>'general',
-
+				   
                                    'stats_view'=>'population',
                                    'type'=>'active_contacts',
+
+				   'correlations'=>array(
+							 'order'=>'correlation',
+							 'order_dir'=>'desc',
+							 'sf'=>0,
+							 'nr'=>25,
+							 'where'=>'',
+							 'f_field'=>'name_a',
+							 'f_value'=>''),
+				   
                                    'table'=>array(
-                                               'order'=>'id',
-                                               'order_dir'=>'desc',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               
+						  'order'=>'id',
+						  'order_dir'=>'desc',
+						  'sf'=>0,
+						  'nr'=>25,
+						  
+						  
+						  'where'=>'',
+						  'f_field'=>'customer name',
+						  'f_value'=>'',
 
-                                               'where'=>'',
-                                               'f_field'=>'customer name',
-                                               'f_value'=>'',
-
-                                               'csv_export'=>array(
+						  'csv_export'=>array(
                                                                 'id'=>true,
                                                                 'name'=>true,
                                                                 'location'=>true,

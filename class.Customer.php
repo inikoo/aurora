@@ -423,7 +423,7 @@ class Customer extends DB_Table {
 
     function update_correlations() {
 
-$sql=sprintf("delete from  `Customer Correlation` where `Customer A`=%d or `Customer B`=%d  ",$this->id,$this->id);
+$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ",$this->id,$this->id);
 mysql_query($sql);
  
 $correlated_customers=array();
@@ -436,7 +436,7 @@ $data=$this->data;
 
 
  foreach($subject->candidate as $contact_key=>$score) {
- if($score<30)
+ if($score<100)
  continue;
   $contact=new Contact($contact_key);
   $customer_keys=$contact->get_customer_keys('Customer');
@@ -444,7 +444,7 @@ $data=$this->data;
  foreach($customer_keys as $customer_key){
  $customer_correlated=new Customer($customer_key);
  if($customer_correlated->data['Customer Store Key']=$this->data['Customer Store Key'])
- $correlated_customers[$customer_key]=$score;
+   $correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'],'score'=>$score);
  }
  
  }
@@ -456,13 +456,27 @@ if($key==$this->id){
 continue;
 }elseif($key<$this->id){
 $customer_a=$key;
+$customer_a_name=$value['name'];
+
 $customer_b=$this->id;
+$customer_b_name=$this->data['Customer Name'];
+
 }else{
 $customer_a=$this->id;
+$customer_a_name=$this->data['Customer Name'];
+
 $customer_b=$key;
+$customer_b_name=$value['name'];
 }
 
-$sql=sprintf("insert into  `Customer Correlation` values (%d,%d,%f,%d)  ",$customer_a,$customer_b,$value,$this->data['Customer Store Key']);
+$sql=sprintf("insert into  `Customer Correlation` values (%d,%s,%d,%s,%f,%d)  ",
+	     $customer_a,
+	     prepare_mysql($customer_a_name),
+	     $customer_b,
+	     prepare_mysql($customer_b_name),
+	     $value['score'],
+	     $this->data['Customer Store Key']
+	     );
 mysql_query($sql);
 }
 

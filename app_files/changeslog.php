@@ -2643,6 +2643,20 @@ ALTER TABLE `Category Dimension` ADD `Category Children Subjects Assigned` INT U
 ALTER TABLE `Customer Correlation` ADD INDEX ( `Customer A` ) ;
 ALTER TABLE `Customer Correlation` ADD INDEX ( `Customer B` ) ;
 
+ALTER TABLE `Customer Correlation` CHANGE `Customer A` `Customer Key A` MEDIUMINT( 8 ) UNSIGNED NOT NULL ,CHANGE `Customer B` `Customer Key B` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
+
+ALTER TABLE `Customer Correlation` ADD `Customer Name A` VARCHAR( 256 ) NOT NULL AFTER `Customer Key A` ;
+ALTER TABLE `Customer Correlation` ADD `Customer Name B` VARCHAR( 256 ) NOT NULL AFTER `Customer Key B` ;
+ALTER TABLE `Customer Correlation` CHANGE `Customer Name A` `Customer Name A` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Customer Correlation` CHANGE `Customer Name B` `Customer Name B` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL 
+
+ALTER TABLE `Customer Correlation` ADD INDEX ( `Customer Name A` ( 8 ) ) ;
+ALTER TABLE `Customer Correlation` ADD INDEX ( `Customer Name B` ( 8 ) ) ;
+
+ALTER TABLE `Customer Correlation` CHANGE `Customer Key A` `Customer A Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ,
+CHANGE `Customer Name A` `Customer A Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Customer Key B` `Customer B Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ,
+CHANGE `Customer Name B` `Customer B Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 */
 
