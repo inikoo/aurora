@@ -36,7 +36,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  $store=new Store($row['Store Key']);
   $store->update_up_today_sales();
 
-$store->update_customers_data();
+
  }
 mysql_free_result($result);
 

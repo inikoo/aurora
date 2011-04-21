@@ -16,11 +16,21 @@
 <table class="report_sales1" id="report_sales_invoices" style="width:900px;{if $view!='invoices'}display:none{/if}">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
 <div  style="margin-bottom:5px;color:#999;">
-<span id="invoices_profits_button"  view="profit" class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
-<span class="state_details selected"  style="cursor:default;margin-right:20px">{t}Invoices{/t}</span>
-<span id="invoices_corporate_currency_button" currency="corporate" class="state_details currency_corporate {if $currencies=='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}margin-right:5px">{$corporate_symbol}</span>
-<span id="invoices_stores_currency_button" currency="stores" class="state_details currency_stores {if $currencies!='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}">({$store_currencies})</span>
 
+<span style=";margin-right:20px">
+(
+<span id="invoices_profits_button"  view="profit" class="state_details" >{t}Profit{/t}</span>
+|
+<span class="state_details selected"  style="cursor:default">{t}Invoices{/t}</span>
+)
+</span>
+<span style="{if !$mixed_currencies}display:none;{/if}">
+(
+<span id="invoices_corporate_currency_button" currency="corporate" class="state_details currency_corporate {if $currencies=='corporation'}selected{/if}" >{t}HQ Currency{/t}</span>
+|
+<span id="invoices_stores_currency_button" currency="stores" class="state_details currency_stores {if $currencies!='corporation'}selected{/if}" >{t}Store Currencies{/t}</span>
+)
+</span>
 </div>
 </td></tr>
 <tr>
@@ -65,8 +75,8 @@
 <div  style="margin-bottom:5px;;color:#999;">
 <span class="state_details selected" style="cursor:default;margin-right:20px">{t}Profit{/t}</span>
 <span  id="profits_invoices_button" view="invoices" class="state_details"  style="margin-right:20px">{t}Invoices{/t}</span>
-<span id="profits_corporate_currency_button"  currency="corporate" class="state_details {if $currencies=='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}margin-right:5px" >{$corporate_symbol}</span>
-<span id="profits_stores_currency_button"  currency="stores" class="state_details {if $currencies!='corporation'}selected{/if}"  style="{if !$mixed_currencies}display:none;{/if}">({$store_currencies})</span>
+<span id="profits_corporate_currency_button"  currency="corporate" class="state_details {if $currencies=='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}margin-right:5px" >{t}HQ Currency{/t}</span>
+<span id="profits_stores_currency_button"  currency="stores" class="state_details {if $currencies!='corporation'}selected{/if}"  style="{if !$mixed_currencies}display:none;{/if}">{t}Store Currencies{/t}</span>
 </div>
 </td></tr>
 <tr><td style="width:150px">{t}Store{/t}</td>

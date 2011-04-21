@@ -8523,23 +8523,12 @@ function list_marketing_per_store() {
         $order='`Store Code`';
 
     $total_customers=0;
-    $sql="select  sum(`Store Total Customer Contacts`) as total_contacts,sum(`Store New Customer Contacts`) new_contacts,sum(`Store Total Customers`) as customers,sum(`Store Active Customers`) as active,sum(`Store New Customers`) as new, sum(`Store Lost Customers`) as lost from `Store Dimension` $where     ";
-    // print $sql;
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $total_customers=$row['customers'];
-        $total_new=$row['new'];
-        $total_active=$row['active'];
-        $total_lost=$row['lost'];
-        $total_contacts=$row['total_contacts'];
-        $total_new_contacts=$row['new_contacts'];
-    }
+   
 
 
 
 
-
-    $sql="select `Store Name`,`Store Code`,`Store Key`, `Store Total Customer Contacts` as contacts,`Store New Customer Contacts` as new_contacts,`Store Total Customers` as customers ,`Store Active Customers` as active ,`Store New Customers` as new ,`Store Lost Customers` as lost from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Name`,`Store Code`,`Store Key` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -8550,39 +8539,16 @@ function list_marketing_per_store() {
         $name=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
         $code=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-        if ($percentages) {
-            $customers=percentage($row['customers'],$total_customers);
-            $active=percentage($row['active'],$total_active);
-            $new=percentage($row['new'],$total_new);
-            $lost=percentage($row['lost'],$total_lost);
-            $contacts=percentage($row['contacts'],$total_contacts);
-            $new_contacts=percentage($row['new_contacts'],$total_new_contacts);
-
-        } else {
-            $customers=number($row['customers']);
-            $active=number($row['active']);
-            $new=number($row['new']);
-            $lost=number($row['lost']);
-            $contacts=number($row['contacts']);
-            $new_contacts=number($row['new_contacts']);
-
-        }
-
         $adata[]=array(
                      'code'=>$code,
                      'name'=>$name,
-                     'customers'=>$customers,
-                     'active'=>$active,
-                     'new'=>$new,
-                     'lost'=>$lost,
-                     'contacts'=>$contacts,
-                     'new_contacts'=>$new_contacts
+                  
 
 
                  );
     }
     mysql_free_result($res);
-
+/*
     if ($percentages) {
         $sum_total='100.00%';
         $sum_active='100.00%';
@@ -8599,16 +8565,12 @@ function list_marketing_per_store() {
         $sum_new_contacts=number($total_new_contacts);
     }
 
-
+*/
     $adata[]=array(
                  'name'=>'',
                  'code'=>_('Total'),
-                 'customers'=>$sum_total,
-                 'active'=>$sum_active,
-                 'new'=>$sum_new,
-                 'lost'=>$sum_lost,
-                 'contacts'=>$sum_contacts,
-                 'new_contacts'=>$sum_new_contacts
+              
+                
              );
 
 
