@@ -164,7 +164,10 @@ else {
 ### EXPORT PART ===== COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB ###
 
   $data='';
-  
+  header('Content-Type: application/csv; iso-8859-1');
+    header("Content-Disposition: attachment; filename=$filename");
+    header("Pragma: no-cache");
+    header("Expires: 0");
   $output = fopen('php://output', 'w');
   
 foreach ($exported_data as $fields) {
@@ -215,11 +218,8 @@ unset($exported_data);
 $filename = 'data_'.date("Ymd_Hmi").'.csv'; // Define the way of your exported file name here //
 
 
-header('Content-Type: application/csv; iso-8859-1');
-    header("Content-Disposition: attachment; filename=$filename");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-echo utf8_decode($data);
+
+//echo utf8_decode($data);
 
 
 
