@@ -58,13 +58,6 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
-$show_details=$_SESSION['state']['family']['details'];
-$smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
-
-
-$smarty->assign('restrictions',$_SESSION['state']['department']['restrictions']);
-
-
 
 
 $general_options_list=array();

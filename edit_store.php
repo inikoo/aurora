@@ -53,15 +53,7 @@ $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 
 
-$stores_order=$_SESSION['state']['stores']['table']['order'];
-$stores_period=$_SESSION['state']['stores']['period'];
-$stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
-$smarty->assign('stores_period',$stores_period);
-$smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
-
-$show_details=$_SESSION['state'][$page]['details'];
-$smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
 $general_options_list=array();
@@ -118,15 +110,6 @@ $smarty->assign('js_files',$js_files);
 
 
 
-
-$_SESSION['state']['assets']['page']=$page;
-if(isset($_REQUEST['view'])){
-  $valid_views=array('sales','general','stoke');
-  if (in_array($_REQUEST['view'], $valid_views)) 
-    $_SESSION['state'][$page]['view']=$_REQUEST['view'];
-
- }
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 

@@ -453,7 +453,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo $_SESSION['state']['department']['table']['nr']?>,containers : 'paginator0', 
+									       rowsPerPage:<?php echo $_SESSION['state']['department']['families']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -463,8 +463,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 Key: "<?php echo$_SESSION['state']['department']['table']['order']?>",
-									  dir: "<?php echo$_SESSION['state']['department']['table']['order_dir']?>"
+									 Key: "<?php echo$_SESSION['state']['department']['families']['order']?>",
+									  dir: "<?php echo$_SESSION['state']['department']['families']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 

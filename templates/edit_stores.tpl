@@ -16,7 +16,7 @@
 </div>
 
     <ul class="tabs" id="chooser_ul">
-      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Corporation{/t}</span></span></li>
+      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Headquarters{/t}</span></span></li>
       <li> <span class="item {if $edit=='stores'}selected{/if}" id="stores"  ><span> {t}Stores{/t}</span></span></li>
     </ul>
     <div  class="tabbed_container"> 
@@ -100,9 +100,10 @@
 </div>
 
   </div>
-</div>
-
-<div id="the_table1" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
+  
+  
+  
+  <div id="the_table1" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
   <span class="clean_table_title">{t}History{/t}</span>
   <div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
@@ -112,6 +113,9 @@
   </div>
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
+
+</div>
+
 
 
 </div> 

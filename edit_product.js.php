@@ -125,6 +125,10 @@ function validate_product_rrp(query){
 
 function change_block(e){
  
+ 	var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
+ 	var block_ids = ["d_description","d_pictures","d_prices","d_parts","d_dimat","d_config","d_web"]; 
+
+ 
 	if(this.id=='pictures'){
 	    Dom.get('info_name').style.display='';
 	}else
@@ -134,18 +138,14 @@ function change_block(e){
 	    Dom.get('info_price').style.display='';
 	}else
 	    Dom.get('info_price').style.display='none';
-	Dom.get('d_parts').style.display='none';
-	Dom.get('d_pictures').style.display='none';
-	Dom.get('d_parts').style.display='none';
-	Dom.get('d_prices').style.display='none';
-	Dom.get('d_dimat').style.display='none';
-	Dom.get('d_config').style.display='none';
-	Dom.get('d_description').style.display='none';
-	Dom.get('d_web').style.display='none';
-
-	Dom.get('d_'+this.id).style.display='';
 	
-	var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
+	Dom.setStyle(block_ids,'display','none');
+		Dom.setStyle('d_'+this.id,'display','');
+
+	
+
+	
+	
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
 	

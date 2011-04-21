@@ -995,7 +995,7 @@ $adata[]=array(
 
 	       'delete'=>$delete,
 	       'delete_type'=>$delete_type,
-	       'go'=>sprintf("<a href='product.php?pid=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product ID'])
+	       'go'=>sprintf("<a href='edit_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product ID'])
 	       
 	       );
   }
@@ -1185,12 +1185,12 @@ mysql_free_result($result);
     
 $adata[]=array(
 	       'id'=>$row['Product Family Key'],
-	       'edit'=>sprintf('<a href="family.php?id=%d&edit=1">%03d<a>',$row['Product Family Key'],$row['Product Family Key']),
+	       'edit'=>sprintf('<a href="edit_family.php?id=%d">%03d<a>',$row['Product Family Key'],$row['Product Family Key']),
 	       'code'=>$row['Product Family Code'],
 	       'name'=>$row['Product Family Name'],
 	       'sales_type'=>$sales_type,
 	      
-	       'go'=>sprintf("<a href='family.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Family Key'])
+	       'go'=>sprintf("<a href='edit_family.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Family Key'])
 
 		   );
   }
@@ -1218,7 +1218,7 @@ mysql_free_result($res);
   echo json_encode($response);
   }
 function list_stores_for_edition(){
-$conf=$_SESSION['state']['stores']['table'];
+$conf=$_SESSION['state']['stores']['stores'];
 
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1260,25 +1260,10 @@ $conf=$_SESSION['state']['stores']['table'];
     $tableid=0;
    
 
-  if(isset( $_REQUEST['percentages'])){
-    $percentages=$_REQUEST['percentages'];
-    $_SESSION['state']['stores']['percentages']=$percentages;
-  }else
-    $percentages=$_SESSION['state']['stores']['percentages'];
-  
+ 
   
 
-   if(isset( $_REQUEST['period'])){
-    $period=$_REQUEST['period'];
-    $_SESSION['state']['stores']['period']=$period;
-  }else
-    $period=$_SESSION['state']['stores']['period'];
-
- if(isset( $_REQUEST['avg'])){
-    $avg=$_REQUEST['avg'];
-    $_SESSION['state']['stores']['avg']=$avg;
-  }else
-    $avg=$_SESSION['state']['stores']['avg'];
+ 
 
     $_SESSION['state']['stores']['table']['order']=$order;
      $_SESSION['state']['stores']['table']['order_dir']=$order_direction;

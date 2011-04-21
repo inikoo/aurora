@@ -2421,7 +2421,7 @@ $default_state=array(
                    'family'=>array(
                                 'block_view'=>'products',
 
-                                'editing'=>'description',
+                                'editing'=>'details',
 
 
 
