@@ -20,6 +20,12 @@ if (!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('customers_correlation'):
+
+  list_customers_correlations();
+
+  break;
 case('show_posible_customer_matches'):
     $data=prepare_values($_REQUEST,array(
                              'scope'=>array('type'=>'json array')
@@ -1890,9 +1896,9 @@ function list_customers() {
                 $raw_data=json_decode($tmp, true);
 
                 $raw_data['store_key']=$store;
-                list($where_type,$table)=customers_awhere($raw_data);
+                list($where,$table)=customers_awhere($raw_data);
 
-                $where='';
+               
 
 
             }
@@ -1920,7 +1926,7 @@ function list_customers() {
 
     $currency='';
     if (is_numeric($store) and in_array($store,$user->stores)) {
-        $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+      $where.=sprintf(' and  `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     } else {
@@ -1975,7 +1981,7 @@ function list_customers() {
 
 
     $sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
-  //  print $sql;
+    //     print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5601,5 +5607,327 @@ function list_customers_lists() {
                    );
     echo json_encode($response);
 }
+
+
+
+function list_customers_correlations() {
+
+
+    global $myconf,$user;
+
+    $conf=$_SESSION['state']['customers']['correlations'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+
+
+
+        $awhere=$_REQUEST['where'];
+    else
+        $awhere=$conf['where'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['customers']['store']=$store;
+    } else
+        $store=$_SESSION['state']['customers']['store'];
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+    $_SESSION['state']['customers']['correlations']['order']=$order;
+    $_SESSION['state']['customers']['correlations']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['correlations']['nr']=$number_results;
+    $_SESSION['state']['customers']['correlations']['sf']=$start_from;
+    $_SESSION['state']['customers']['correlations']['where']=$awhere;
+    $_SESSION['state']['customers']['correlations']['f_field']=$f_field;
+    $_SESSION['state']['customers']['correlations']['f_value']=$f_value;
+
+   
+    
+      $where_type='';
+    
+  
+
+    $filter_msg='';
+    $wheref='';
+
+    $currency='';
+    if (is_numeric($store) and in_array($store,$user->stores)) {
+        $where=sprintf(' where `Store Key`=%d ',$store);
+        $store=new Store($store);
+        $currency=$store->data['Store Currency Code'];
+    } else {
+      $where=' where false ';
+
+    }
+
+
+
+
+
+
+    //  print $f_field;
+
+
+    if (($f_field=='customer name'     )  and $f_value!='') {
+        $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+    }
+    elseif(($f_field=='postcode'     )  and $f_value!='') {
+        $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+    }
+    else if ($f_field=='id'  )
+        $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+    else if ($f_field=='last_more' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+    else if ($f_field=='last_less' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+    else if ($f_field=='max' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Orders`<=".$f_value."    ";
+    else if ($f_field=='min' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Orders`>=".$f_value."    ";
+    else if ($f_field=='maxvalue' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+    else if ($f_field=='minvalue' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+    else if ($f_field=='country' and  $f_value!='') {
+        if ($f_value=='UNK') {
+            $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+            $find_data=' '._('a unknown country');
+        } else {
+
+            $f_value=Address::parse_country($f_value);
+            if ($f_value!='UNK') {
+                $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+                $country=new Country('code',$f_value);
+                $find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+            }
+
+        }
+    }
+
+
+
+    $sql="select count(*) as total from `Customer Correlation`   $where $wheref $where_type";
+  //  print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `Customer Correlation`  $where  $where_type";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('correlation','correlations',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=sprintf("Showing all correlations");
+
+
+
+    //if($total_records>$number_results)
+    // $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('customer name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+            break;
+        case('postcode'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+            break;
+        case('country'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+            break;
+
+        case('id'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+            break;
+
+        case('last_more'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+            break;
+        case('last_more'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+            break;
+        case('maxvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+            break;
+        case('minvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+            break;
+
+
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('customer name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+            break;
+        case('id'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
+            break;
+        case('postcode'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
+            break;
+        case('country'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+            break;
+        case('last_more'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
+            break;
+        case('last_less'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+            break;
+        case('maxvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+            break;
+        case('minvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+    // if($order=='location'){
+//      if($order_direction=='desc')
+//        $order='country_code desc ,town desc';
+//      else
+//        $order='country_code,town';
+//      $order_direction='';
+//    }
+
+//     if($order=='total'){
+//       $order='supertotal';
+//    }
+
+
+    if ($order=='name_a')
+        $order='`Customer A Name`';
+      if ($order=='name_b')
+        $order='`Customer B Name`';
+   if ($order=='id_a')
+        $order='`Customer A Key`';
+    if ($order=='id_b')
+        $order='`Customer B Key`';
+
+    else
+    $order='`Correlation`';
+ 
+
+
+
+    $sql="select * from `Customer Correlation`   $where $wheref  $where_type order by $order $order_direction limit $start_from,$number_results";
+   // print $sql;
+    $adata=array();
+
+
+
+    $result=mysql_query($sql);
+    // print $sql;
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+        $id_a="<a href='customer.php?id=".$data['Customer A Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer A Key']).'</a>';
+        $id_b="<a href='customer.php?id=".$data['Customer B Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer B Key']).'</a>';
+
+      
+      $name_a=" <a href='customer.php?id=".$data['Customer A Key']."'>".($data['Customer A Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer A Name']).'</a>';
+      $name_b=" <a href='customer.php?id=".$data['Customer B Key']."'>".($data['Customer B Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer B Name']).'</a>';
+
+
+
+
+        $adata[]=array(
+                     'id_a'=>$id_a,
+		     'id_b'=>$id_b,
+                     'name_a'=>$name_a,
+		     'name_b'=>$name_b,
+                     'correlation'=>$data['Correlation']
+                   
+
+                 );
+
+    }
+    mysql_free_result($result);
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                     
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+
+
 
 ?>

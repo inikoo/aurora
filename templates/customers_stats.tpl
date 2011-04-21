@@ -16,9 +16,26 @@
     <li> <span class="item {if $view=='referral'}selected{/if}" id="referral"  ><span>  {t}Referral{/t}</span></span></li>
     <li> <span class="item {if $view=='type_business'}selected{/if}" id="type_business"  ><span>  {t}Type Business{/t}</span></span></li>
     <li> <span class="item {if $view=='geo'}selected{/if}"  id="geo">  <span> {t}Geographic Distribution{/t}</span></span></li>
+    <li> <span class="item {if $view=='correlations'}selected{/if}"  id="correlations">  <span> {t}Correlations{/t}</span></span></li>
 
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div id="block_correlations" style="{if $view!='correlations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="the_table" class="data_table" style="clear:both;padding:0 10px">
+      <span class="clean_table_title">{t}Customers Correlation (Possible Duplicates){/t}</span>
+      
+   <div  style="font-size:90%">
+   
+
+     </div>
+  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+ 
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+ <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
+ </div>
+</div>
+
 
 <div id="block_referral" style="{if $view!='referral'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	<div style="float:left" id="plot_referral_1">
@@ -195,35 +212,7 @@
 		// ]]>
 	</script>
 
-<div id="the_table" class="data_table" style="clear:both;padding:0 10px">
-      <span class="clean_table_title">{t}Customers Correlation (Possible Duplicates){/t}</span>
-      
-   <div  style="font-size:90%">
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='all_contacts'}selected{/if}"  id="all_contacts"   >{t}All Contacts{/t} ({$store->get('Contacts')})</span>
-             <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='active_contacts'}selected{/if}"  id="active_contacts"   >{t}Active Contacts{/t} ({$store->get('Active Contacts')})</span>
-                  <span style="float:right;margin-left:20px;display:none" class="table_type  state_details {if $type=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders"   >{t}Contacts with Orders{/t} ({$store->get('Contacts With Orders')})</span>
 
-   {*
-
-        <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='lost_contacts'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Lost Contacts')})</span>
-
-*}
-	
-
-     </div>
-  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr>
-	  <td {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
-	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
-	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
-	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
-	</tr>
-      </table>
-{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
- <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
- </div>
 
 
 </div>
