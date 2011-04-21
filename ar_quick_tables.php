@@ -94,6 +94,9 @@ function world_region_list() {
         $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
     elseif($f_field=='wregion_code' and $f_value!='')
     $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+ elseif($f_field=='wregion_name' and $f_value!='')
+    $wheref.=" and  `World Region` like '".addslashes($f_value)."%'";
+
 
     $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension` $where $wheref  ";
 
@@ -709,7 +712,7 @@ function country_list() {
     if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
     else $number_results=20;
     if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
-    else$order='wregion_code';
+    else$order='code';
     if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
     else$order_dir='';
     if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
@@ -732,12 +735,14 @@ function country_list() {
     $wheref='';
 
 
-    if ($f_field=='country_code' and $f_value!='')
+    if ($f_field=='code' and $f_value!='')
         $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+     elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Country Name` like '".addslashes($f_value)."%'";
+  elseif($f_field=='wregion' and $f_value!='')
+    $wheref.=" and  `World Region` like '".addslashes($f_value)."%'";
     elseif($f_field=='wregion_code' and $f_value!='')
     $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='wregion_code' and $f_value!='')
-    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from kbase.`Country Dimension` $where $wheref  ";
 
@@ -799,10 +804,10 @@ function country_list() {
 
 
 
-    if ($order=='population')
-        $order='`Country Population`';
-    elseif($order=='gnp')
-    $order='`Country GNP`';
+    if ($order=='code')
+        $order='`Country Code`';
+    elseif($order=='wregion')
+    $order='`World Region`';
     else
         $order='`Country Name`';
 
@@ -817,37 +822,19 @@ function country_list() {
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_array($res)) {
-        $wregion=sprintf('<a href="wregion.php?country=%s">%s</a>',$row['World Region Code'],$row['World Region']);
-        $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Name']);
-        $country_code=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Code']);
+      
         $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Country 2 Alpha Code']));
 
-        if ($row['Country Population']<100000) {
-            $population='>0.1M';
-        } else {
-            $population=number($row['Country Population']/1000000,1).'M';
-        }
-        if ($row['Country GNP']=='')
-            $gnp='ND';
-        elseif($row['Country GNP']<1000)
-        $gnp='$'.number($row['Country GNP'],0);
-        else
-            $gnp='$'.number($row['Country GNP']/1000,0).'k';
+      
 
         $adata[]=array(
-                     //    'plain_name'=>$row['Country Name'],
-                     //	  'plain_code'=>$row['Country Code'],
-                     'name'=>$country_name,
-                     'code'=>$country_code,
+                 
+                     'name'=>$row['Country Name'],
+                     'code'=>$row['Country Code'],
                      'flag'=>$country_flag,
-                     'population'=>$population,
-                     'gnp'=>$gnp,
-                     'wregion'=>$wregion,
-                     'code3a'=>$row['Country Code'],
-                     'code2a'=>$row['Country 2 Alpha Code'],
-                     'plain_name'=>$row['Country Name'],
-                     'postal_regex'=>$row['Country Postal Code Regex'],
-                     'postcode_help'=>$row['Country Postal Code Format'],
+                     
+                     'wregion'=>$row['World Region'],
+                     
 
 
                  );
@@ -885,7 +872,7 @@ function postal_code_list() {
     if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
     else $number_results=20;
     if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
-    else$order='wregion_code';
+    else$order='code';
     if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
     else$order_dir='';
     if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
@@ -915,16 +902,17 @@ function postal_code_list() {
     $filter_msg='';
     $wheref='';
 
-
-    if ($f_field=='country_code' and $f_value!='')
-        $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='wregion_code' and $f_value!='')
-    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='wregion_code' and $f_value!='')
-    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='postal_code' and $f_value!='')
+    if($f_field=='code' and $f_value!='')
     $wheref.=" and  `Customer Main Postal Code` like '".addslashes($f_value)."%'";
+    elseif ($f_field=='country_code' and $f_value!='')
+        $wheref.=" and  `Customer Main Country Code` like '".addslashes($f_value)."%'";
+    elseif ($f_field=='country_name' and $f_value!='')
+        $wheref.=" and  `Customer Main Country` like '".addslashes($f_value)."%'";    
+  
 
+ // elseif($f_field=='used' and $f_value!='')
+ //   $wheref.=sprintf(" and times_used>=%d ",$f_value);
+    
     $sql="select count(DISTINCT `Customer Main Postal Code`) as total from `Customer Dimension` $where $wheref  ";
 
     $res=mysql_query($sql);
@@ -1011,13 +999,12 @@ function postal_code_list() {
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_array($res)) {
-        $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Country 2 Alpha Code'],$row['Customer Main Country']);
         $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Customer Main Country 2 Alpha Code']));
 
 
         $adata[]=array(
 
-                     'name'=>$country_name,
+                     'name'=>$row['Customer Main Country'],
                      'code'=>$row['Customer Main Postal Code'],
                      'flag'=>$country_flag,
                      'times_used'=>number($row['times_used']),
@@ -1058,7 +1045,7 @@ function town_list() {
     if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
     else $number_results=20;
     if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
-    else$order='wregion_code';
+    else$order='city';
     if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
     else$order_dir='';
     if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
@@ -1090,14 +1077,16 @@ function town_list() {
     $wheref='';
 
 
-    if ($f_field=='country_code' and $f_value!='')
-        $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='wregion_code' and $f_value!='')
-    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='wregion_code' and $f_value!='')
-    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='postal_code' and $f_value!='')
-    $wheref.=" and  `Customer Main Town` like '".addslashes($f_value)."%'";
+    if ($f_field=='city' and $f_value!='')
+        $wheref.=" and  `Customer Main Town` like '".addslashes($f_value)."%'";
+ 
+    elseif ($f_field=='country_code' and $f_value!='')
+        $wheref.=" and  `Customer Main Country Code` like '".addslashes($f_value)."%'";
+    elseif ($f_field=='country_name' and $f_value!='')
+        $wheref.=" and  `Customer Main Country` like '".addslashes($f_value)."%'";    
+  //  elseif($f_field=='used' and $f_value!='')
+ //   $wheref.=sprintf(" and times_used>=%d ",$f_value);
+
 
     $sql="select count(DISTINCT `Customer Main Town`) as total from `Customer Dimension` $where $wheref  ";
 
@@ -1191,13 +1180,12 @@ function town_list() {
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_array($res)) {
-        $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Customer Main Country 2 Alpha Code'],$row['Customer Main Country']);
         $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Customer Main Country 2 Alpha Code']));
 
     
         $adata[]=array(
                   'times_used'=>number($row['times_used']),
-                     'name'=>$country_name,
+                     'name'=>$row['Customer Main Country'],
                      'city'=>$row['Customer Main Town'],
                      'flag'=>$country_flag,
                  );

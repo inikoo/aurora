@@ -106,17 +106,42 @@ $smarty->assign('filter_value1','');
 
 
 
-$tipo_filter2='country_code';
+$tipo_filter2='code';
 $filter_menu2=array(
-                  'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
-                  'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-                  'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+                   'name'=>array('db_key'=>_('name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+
+                 'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
               );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
+
+$tipo_filter3='code';
+$filter_menu3=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Postal Code'),'label'=>_('Postal Code')),
+                   'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Country Code')),
+                   'country_name'=>array('db_key'=>_('country_name'),'menu_label'=>_('Country Name'),'label'=>_('Country Name')),
+                //   'used'=>array('db_key'=>_('used'),'menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
+              );
+$smarty->assign('filter_name3',$filter_menu3[$tipo_filter3]['label']);
+$smarty->assign('filter_menu3',$filter_menu3);
+$smarty->assign('filter3',$tipo_filter3);
+$smarty->assign('filter_value3','');
+
+$tipo_filter4='city';
+$filter_menu4=array(
+                  'city'=>array('db_key'=>_('city'),'menu_label'=>_('Postal Code'),'label'=>_('City')),
+                   'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Country Code')),
+                   'country_name'=>array('db_key'=>_('country_name'),'menu_label'=>_('Country Name'),'label'=>_('Country Name')),
+                //   'used'=>array('db_key'=>_('used'),'menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
+              );
+$smarty->assign('filter_name4',$filter_menu4[$tipo_filter4]['label']);
+$smarty->assign('filter_menu4',$filter_menu4);
+$smarty->assign('filter4',$tipo_filter4);
+$smarty->assign('filter_value4','');
 
 
 $tipo_filter5='code';
