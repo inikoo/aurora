@@ -13,11 +13,11 @@
 
 
 
-<div class="splinter_cell" style="width:910px">
+<div class="splinter_cell" style="width:910px;font-size:100%">
     <div id="the_table" class="data_table" >
     <div style="float:left;margin-right:10px">
        
-        <div class="home_splinter_options">
+        <div class="home_splinter_options" style="font-size:90%">
          
           <span id="currency_corporate"  {if $conf_data.sales.currency=='corporate'}class="selected"{/if} style="float:right;margin-left:10px">{t}Corporate Currency{/t}</span>
             <span id="currency_stores"  {if $conf_data.sales.currency=='store'}class="selected"{/if} style="float:right;margin-left:35px">{t}Store Currencies{/t}</span>

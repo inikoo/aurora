@@ -120,7 +120,7 @@ function invoice_categories_sales_overview() {
         " );
         break;
     case('3y'):
- $fields=sprintf(" `3 Year Acc Invoices` as invoices,`3 Year Acc Invoiced Amount` as sales, `3 Year Acc 1YB Invoices` as invoices_1yb,`3 Year Acc 1YB Invoiced Amount` as sales_1yb,
+ $fields=sprintf(" `3 Year Acc Invoices` as invoices,`3 Year Acc Invoiced Amount` as sales, `3 Year Acc Invoices` as invoices_1yb,`3 Year Acc 1YB Invoiced Amount` as sales_1yb,
        `DC 3 Year Acc Invoiced Amount` as dc_sales,`DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
         " );
         break;   
@@ -167,7 +167,7 @@ function invoice_categories_sales_overview() {
 
     $sql=sprintf("select  IC.`Category Key`,`Category Label`, `Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",$fields);
     $adata=array();
-   // print $sql;
+//    print $sql;
     $position=1;
     $result=mysql_query($sql);
     $sum_invoices=0;

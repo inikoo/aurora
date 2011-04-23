@@ -5,17 +5,18 @@ function sales_init(){
         var tableid=Dom.get('sales_index').value;
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
-				       {key:"store", label:Dom.get('label_Store').value, width:100,sortable:false,className:"aleft"}
-				       ,{key:"invoices", label:Dom.get('label_Invoices').value, width:65,sortable:false,className:"aright"}
-				       ,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:65,sortable:false,className:"aright"}
-				        ,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:100,sortable:false,className:"aright"}
-				         ,{key:"dc_sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?true:false),width:100,sortable:false,className:"aright"}
-				        ,{key:"sales_share", label:Dom.get('label_Sales_Share').value, width:65,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?false:true)}
-				      	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:65,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
+				       {key:"store", label:Dom.get('label_Store').value, width:150,sortable:false,className:"aleft"}
+				       ,{key:"invoices", label:Dom.get('label_Invoices').value, width:90,sortable:false,className:"aright"}
+				       ,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:90,sortable:false,className:"aright"}
+				       
+				       ,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:110,sortable:false,className:"aright"}
+				         ,{key:"dc_sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?true:false),width:110,sortable:false,className:"aright"}
+				        ,{key:"sales_share", label:Dom.get('label_Sales_Share').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?false:true)}
+				      	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 
-				      ,{key:"invoices_delta", label:Dom.get('label_Invoices_Delta').value, width:100,sortable:false,className:"aright"}
-				     ,{key:"sales_delta", label:Dom.get('label_Sales_Delta').value, width:100,sortable:false,className:"aright" ,hidden:(Dom.get('sales_currency').value=='store'?false:true)}
-				       ,{key:"dc_sales_delta", label:Dom.get('label_Sales_Delta').value, width:100,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
+				      ,{key:"invoices_delta", label:Dom.get('label_Invoices_Delta').value, width:110,sortable:false,className:"aright"}
+				     ,{key:"sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright" ,hidden:(Dom.get('sales_currency').value=='store'?false:true)}
+				       ,{key:"dc_sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 
 				        
 
