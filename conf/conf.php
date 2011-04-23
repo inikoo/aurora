@@ -102,7 +102,7 @@ $default_state=array(
                               'splinters'=>array(
                                               'top_products'=>array('nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc'),
                                               'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
-                                               'sales'=>array('type'=>'stores','period'=>'ytd','currency'=>'corporate'),
+                                               'sales'=>array('type'=>'invoice_categories','period'=>'ytd','currency'=>'corporate'),
                                               'orders_in_process'=>array(
                                                                       'store_keys'=>'all',
                                                                       'sf'=>0,

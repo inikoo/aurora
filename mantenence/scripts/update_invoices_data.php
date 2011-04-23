@@ -46,14 +46,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    print "$total_costs\n";  
  mysql_query($sql);
 */
-// print $invoice->id."\n";
+ 
 
 
 
   $invoice=new Invoice($row['Invoice Key']);
  // print $invoice->id."\n";
    $invoice->categorize('save');
-
+print $invoice->id."\r";
   //$force_values=array(
    // 'Invoice Items Net Amount'=>$invoice->data['Invoice Items Net Amount']
    //	      ,'Invoice Total Net Amount'=>$invoice->data['Invoice Total Net Amount']

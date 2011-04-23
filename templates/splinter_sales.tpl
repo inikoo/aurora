@@ -22,7 +22,7 @@
           <span id="currency_corporate"  {if $conf_data.sales.currency=='corporate'}class="selected"{/if} style="float:right;margin-left:10px">{t}Corporate Currency{/t}</span>
             <span id="currency_stores"  {if $conf_data.sales.currency=='store'}class="selected"{/if} style="float:right;margin-left:35px">{t}Store Currencies{/t}</span>
              <span id="type_stores"  {if $conf_data.sales.type=='stores'}class="selected"{/if} style="float:right;margin-left:10px">{t}Stores{/t}</span>
-            <span id="type_categories"  {if $conf_data.sales.type=='categories'}class="selected"{/if} style="float:right;margin-left:35px">{t}Categories{/t}</span>
+            <span id="type_invoice_categories"  {if $conf_data.sales.type=='invoice_categories'}class="selected"{/if} style="float:right;margin-left:35px">{t}Categories{/t}</span>
             <span id="ytd"  {if $conf_data.sales.period=='ytd'}class="selected"{/if} style="float:right;margin-left:10px">{t}YTD{/t}</span>
             <span id="mtd" {if $conf_data.sales.period=='mtd'}class="selected"{/if} style="float:right;margin-left:10px">{t}MTD{/t}</span>
             <span id="wtd" {if $conf_data.sales.period=='wtd'}class="selected"{/if} style="float:right;margin-left:10px">{t}WTD{/t}</span>

@@ -1163,6 +1163,9 @@ class Store extends DB_Table {
 
         switch ($interval) {
 
+  
+
+
         case 'Last Month':
             $db_interval='Last Month';
             $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
@@ -1170,7 +1173,7 @@ class Store extends DB_Table {
 
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-            print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
             break;
 
         case 'Last Week':

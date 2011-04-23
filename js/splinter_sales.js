@@ -75,6 +75,10 @@ function sales_init(){
  YAHOO.util.Event.addListener(ids, "click",change_currency);
  YAHOO.util.Event.addListener(period_ids, "click",change_period);
 
+
+ ids=['type_stores','type_invoice_categories'];
+ YAHOO.util.Event.addListener(ids, "click",change_type);
+
   
 }
 
@@ -118,18 +122,28 @@ Dom.removeClass(period_ids,'selected');
 Dom.addClass(this,'selected');
 
 period=this.id;
+var table=sales_tables.table1;
+    var datasource=sales_tables.dataSourcetopprod;
+    var request='&period=' + period;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+}
 
+function change_type(){
 
+Dom.removeClass(['type_stores','type_invoice_categories'],'selected');
+Dom.addClass(this,'selected');
+
+if(this.id=='type_stores')
+type='stores'
+else
+type='invoice_categories';
 
 var table=sales_tables.table1;
     var datasource=sales_tables.dataSourcetopprod;
-       
-    var request='&period=' + period;
-  
+    var request='&type=' + type;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
-
-
 }
+
 function change_product_number(){
 
 var nr=this.getAttribute('nr');
@@ -141,11 +155,4 @@ Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
 }
-function init(){
- ids=['sales_50','sales_10','sales_20'];
- YAHOO.util.Event.addListener(ids, "click",change_product_number);
- 
-ids=['sales_all','sales_1y','sales_1m','sales_1q'];
- YAHOO.util.Event.addListener(ids, "click",change_product_period);
-}
-//YAHOO.util.Event.onDOMReady(init);
+

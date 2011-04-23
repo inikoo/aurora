@@ -440,13 +440,11 @@ if ($mixed_currencies) {
                   );
     $store_data_profit[]=array(
                              'class'=>'total',
-                             'store'=>_('Total')
-
-                                     ,'net'=>'<b><span class="mix_currency">'.money($sum_net_eq).'</span></b>'
-                                            ,'profit'=>'<span class="mix_currency">'.money($sum_profit_eq).'</span>'
-                                                      ,'eq_profit'=>'<span ><b>'.money($sum_profit_eq).'</b></span>'
-
-                                                                   ,'eq_net'=>'<span ><b>'.money($sum_net_eq).'</b></span>'
+                             'store'=>_('Total'),
+                                     'net'=>'<b><span class="mix_currency">'.money($sum_net_eq).'</span></b>',
+                                            'profit'=>'<span class="mix_currency">'.money($sum_profit_eq).'</span>',
+                                                      'eq_profit'=>'<span ><b>'.money($sum_profit_eq).'</b></span>',
+                                                                   'eq_net'=>'<span ><b>'.money($sum_net_eq).'</b></span>'
 
                          );
 }
