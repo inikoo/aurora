@@ -32,10 +32,11 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
  $customer = new Customer ($row['Customer Key']);
- 
+ if( $customer->id){
  $customer->update_correlations();
+ print "XXXXXXXXXXXXXXXX ".$row['Customer Key']." \r";
 
-print "XXXXXXXXXXXXXXXX ".$row['Customer Key']." \r";
+}
 
 
 

@@ -45,7 +45,7 @@ $to_update=array(
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
     print "Error can not connect with database server\n";
-     print "->End.(GO UK) ".date("r")."\n";
+    print "->End.(GO UK) ".date("r")."\n";
     exit;
 }
 
@@ -55,7 +55,7 @@ if (!$con) {
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
-     print "->End.(GO UK) ".date("r")."\n";
+    print "->End.(GO UK) ".date("r")."\n";
     exit;
 }
 date_default_timezone_set('UTC');
@@ -76,7 +76,7 @@ $_SESSION['lang']=1;
 
 include_once('local_map.php');
 include_once('map_order_functions.php');
- print "->Start.(GO UK) ".date("r")."\n";
+print "->Start.(GO UK) ".date("r")."\n";
 
 $software='Get_Orders_DB.php';
 $version='V 1.0';
@@ -122,7 +122,7 @@ $contador=0;
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-$customer_key_from_order_data=$row2['customer_id'];
+    $customer_key_from_order_data=$row2['customer_id'];
     $customer_key_from_excel_order=0 ;
 
     $sql="select * from orders_data.data where id=".$row2['id'];
@@ -373,10 +373,10 @@ $customer_key_from_order_data=$row2['customer_id'];
             $customer_data[$key]=$value;
 
         }
-        
-      
-        
-        
+
+
+
+
         if ($customer_data['Customer Type']=='Company')
             $customer_data['Customer Name']=$customer_data['Customer Company Name'];
         else
@@ -987,8 +987,8 @@ $customer_key_from_order_data=$row2['customer_id'];
             if (!$product->id) {
                 print_r($product_data);
                 print "Error inserting a product\n";
-                 print "->End.(GO UK) ".date("r")."\n";
-        
+                print "->End.(GO UK) ".date("r")."\n";
+
                 exit;
             }
 
@@ -1008,15 +1008,15 @@ $customer_key_from_order_data=$row2['customer_id'];
             if (!$supplier->id) {
                 $the_supplier_data=array(
                                        'Supplier Name'=>$supplier_code,
-                                        'Supplier Code'=>$supplier_code,
-                                         'editor'=>$editor
+                                       'Supplier Code'=>$supplier_code,
+                                       'editor'=>$editor
                                    );
 
                 if ( $supplier_code=='Unknown'  ) {
                     $the_supplier_data=array(
                                            'Supplier Name'=>'Unknown Supplier',
-                                                           'Supplier Code'=>$supplier_code,
-                                                            'editor'=>$editor
+                                           'Supplier Code'=>$supplier_code,
+                                           'editor'=>$editor
                                        );
                 }
 
@@ -1075,9 +1075,9 @@ $customer_key_from_order_data=$row2['customer_id'];
                     $part_sku=$row_x['Part SKU'];
                 } else {
                     print_r($product);
-                      print "->End.(GO UK) ".date("r")."\n";
+                    print "->End.(GO UK) ".date("r")."\n";
                     exit("error: $sql");
-                    
+
                 }
                 mysql_free_result($res_x);
 
@@ -1097,9 +1097,9 @@ $customer_key_from_order_data=$row2['customer_id'];
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
                 if (!$product_part_key) {
-                  print "->End.(GO UK) ".date("r")."\n";
+                    print "->End.(GO UK) ".date("r")."\n";
                     exit("Error can not find product part list (get_orders_db)\n");
-                   
+
                 }
 
                 $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
@@ -1277,9 +1277,9 @@ $customer_key_from_order_data=$row2['customer_id'];
             chdir('mantenence/scripts/');
 
             if ($exchange==0) {
-  print "->End.(GO UK) ".date("r")."\n";
+                print "->End.(GO UK) ".date("r")."\n";
                 exit("error exhange is zero for $exchange_date\n");
-               
+
             }
         }
         // print_r($products_data);
@@ -1340,79 +1340,78 @@ $customer_key_from_order_data=$row2['customer_id'];
             if ($data['staff sale']=='Yes' ) {
                 print "Warning staff not identified ";
             }
-//print_r($data['Customer Data'] );
+
+            $customer_posible_key=0;
+            if ($customer_key_from_order_data) {
+                $customer_posible_key=$customer_key_from_order_data;
+                $customer = new Customer($customer_key_from_order_data);
+            }
+            if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+                $customer_posible_key=$act_data['act'];
+                $customer = new Customer($act_data['act']);
+            } else {
+                $customer = new Customer ( 'find create', $data['Customer Data'] );
+            }
+            if (!$customer->id and $customer_posible_key) {
+                $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+                    $customer=new Customer($row2['Customer Key']);
+                }
+            }
 
 
-
-         if($customer_key_from_order_data) {
-  //     exit('pipi');
-       
-            //print "using customer key from order data   $customer_key_from_order_data ";
-            $customer = new Customer($customer_key_from_order_data);
-
-        } if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-// print_r($act_data['act']);
-  //        exit("caca");
-
-            $customer = new Customer($act_data['act']);
-        }
-        else {
-        //        exit("popop");
-            //print_r( $data['Customer Data']);
-            //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
-            $customer = new Customer ( 'find create', $data['Customer Data'] );
-        }
-        
-        
-        
-        if (!$customer->id) {
-            print "Error !!!! customer not found\n";
-            print_r($customer);
-         print "->End.(GO UK) ".date("r")."\n";
-        exit;
-        
-        }
-
-         $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
-        mysql_query($sql);
+            if (!$customer->id) {
 
 
-        if ($customer_data['Customer Delivery Address Link']=='None') {
-            $shipping_addresses['Address Input Format']='3 Line';
-            //print_r($shipping_addresses);
-            $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
-            $customer->create_delivery_address_bridge($address->id);
-        }
+                print "Error !!!! customer not found\n";
+               // print_r($customer);
+                //print "->End.(GO UK) ".date("r")."\n";
+               
+               continue;
+
+            }
+
+            $sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+            mysql_query($sql);
 
 
-        $country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
+            if ($customer_data['Customer Delivery Address Link']=='None') {
+                $shipping_addresses['Address Input Format']='3 Line';
+                //print_r($shipping_addresses);
+                $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
+                $customer->create_delivery_address_bridge($address->id);
+            }
 
-        $shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
-        $shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
-        $shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
-        $shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
-        $shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
-        $shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
-        $shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
-        $shipping_addresses['Ship To Country Key']=$country->id;
-        $shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
-        $shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
-        $shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
 
-        $ship_to= new Ship_To('find create',$shipping_addresses);
+            $country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
 
-        if ($ship_to->id) {
+            $shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
+            $shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
+            $shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
+            $shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
+            $shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
+            $shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
+            $shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
+            $shipping_addresses['Ship To Country Key']=$country->id;
+            $shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
+            $shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
+            $shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
 
-            $customer->associate_ship_to_key($ship_to->id,$date_order,false);
-            $data['Order Ship To Key']=$ship_to->id;
+            $ship_to= new Ship_To('find create',$shipping_addresses);
 
-        } else {
-  print "->End.(GO UK) ".date("r")."\n";
-            exit("no ship tp in de_get_otders shit\n");
-        }
+            if ($ship_to->id) {
 
-        $data['Order Customer Key']=$customer->id;
-        $customer_key=$customer->id;
+                $customer->associate_ship_to_key($ship_to->id,$date_order,false);
+                $data['Order Ship To Key']=$ship_to->id;
+
+            } else {
+                print "->End.(GO UK) ".date("r")."\n";
+                exit("no ship tp in de_get_otders shit\n");
+            }
+
+            $data['Order Customer Key']=$customer->id;
+            $customer_key=$customer->id;
 
 
 
@@ -1490,15 +1489,15 @@ $customer_key_from_order_data=$row2['customer_id'];
         //$store=new Store($store_key);
         //$store->update_orders();
         //$store->update_customers_data();
-  $customer->update_orders();
+        $customer->update_orders();
         $store->update_customer_activity_interval();
         $customer->update_activity();
-         $customer->update_is_new();
+        $customer->update_is_new();
         $store->update_orders();
         $store->update_customers_data();
-        
-         $store->update_up_today_sales();
-         $store->update_last_period_sales();
+
+        $store->update_up_today_sales();
+        $store->update_last_period_sales();
         $store->update_interval_sales();
 
         print "\n";
@@ -1538,12 +1537,12 @@ $customer_key_from_order_data=$row2['customer_id'];
 }
 mysql_free_result($res);
 update_data($to_update);
- print "->End.(GO UK) ".date("r")."\n";
+print "->End.(GO UK) ".date("r")."\n";
 //  print_r($data);
 //print "\n$tipo_order\n";
 
 function update_data($to_update) {
-  return;
+    return;
     if (false) {
         $tm=new TimeSeries(array('q','invoices'));
         $tm->to_present=true;

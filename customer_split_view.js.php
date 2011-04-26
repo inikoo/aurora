@@ -27,26 +27,26 @@ function merge(){
  customer_to_delete_key=Dom.get('customer_b').value;
  }
 
- 
-   
+  Dom.setStyle('merging_buttons','display','none');
+  Dom.setStyle('merging','display','');
+
 	var request="ar_edit_contacts.php?tipo=customer_merge&customer_key="+customer_key+"&merge_key="+customer_to_delete_key;
-alert(request)
-return;
+
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//	alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
-			close_dialog(tipo)
-			var table=tables['table0'];
-			var datasource=tables['dataSource0'];
-			var request='';
-			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+			
+			location.reload()
 
-		    }else
-			Dom.get(tipo+'_msg').innerHTML=r.msg;
-		}
+		    }else{
+	 Dom.setStyle('merging','display','none');
+	Dom.get('merge_msg').innerHTML=r.msg;
+	}
+	
+	}
 	    });        
 	
 

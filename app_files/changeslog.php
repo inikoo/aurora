@@ -2677,7 +2677,11 @@ ALTER TABLE `Customer Deleted Dimension` ADD `Customer Deleted Date` DATETIME NO
 ALTER TABLE `History Dimension` CHANGE `Preposition` `Preposition` ENUM( 'about', '', 'to', 'on' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
 update  `History Dimension` set `Preposition`='on' , `Direct Object`='Note',`Direct Object Key`=0    where `Subject`='Staff' and `Action`='created' and `Indirect Object`='Customer' and `Direct Object`='Customer' ;
-
+CREATE TABLE `Customer Merge Bridge` (
+`Merged Customer Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Customer Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Merged Customer Key` , `Customer Key` )
+) ENGINE = MYISAM ;
 
 */
 

@@ -5192,7 +5192,7 @@ function has_parents(){
 
 
 
-        $parents=array('Customer','Contact','Staff','Company','Supplier');
+        $parents=array('Customer','Contact','Company','Supplier');
         foreach($parents as $parent) {
           $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
 
