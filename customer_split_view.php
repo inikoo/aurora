@@ -32,6 +32,9 @@ if (isset($_REQUEST['id_a']) and is_numeric($_REQUEST['id_a']) ) {
 $customer_a['id']=false;
 $customer=new customer($customer_id_a);
 if ($customer->id) {
+
+//print_r($customer->data);
+
     $customer_a['formated_id']=$customer->get_formated_id($myconf['customer_id_prefix']);
     $customer_a['card']=$customer->display('card',$myconf['customer_id_prefix']);
     $customer_a['sticky_note=']=$customer->get('Sticky Note');

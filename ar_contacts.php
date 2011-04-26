@@ -5899,11 +5899,11 @@ function list_customers_correlations() {
 
     if ($order=='name_a')
         $order='`Customer A Name`';
-    if ($order=='name_b')
+    elseif ($order=='name_b')
         $order='`Customer B Name`';
-    if ($order=='id_a')
+    elseif ($order=='id_a')
         $order='`Customer A Key`';
-    if ($order=='id_b')
+    elseif ($order=='id_b')
         $order='`Customer B Key`';
 
     else
