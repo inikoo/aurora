@@ -2828,10 +2828,49 @@ $this->parent=$parent;
 
             } else {
 
+/*
+ if ($email->found) {
+
+                    $email_contacts_keys=$email->get_parent_keys('Contact');
+                    $number_contact_keys=count($email_contacts_keys);
+                    if ($number_contact_keys==1) {
+
+                        $email_contact_key=array_pop($email_contacts_keys);
+
+                        if ($email_contact_key!=$this->id) {
+                            $this->error=true;
+                            $this->msg=_('Email bellows to other contact');
+                            $contact=new Contact($email_contact_key);
+                            $this->msg_extended=_('Email belongs to contact').' <a href="contact.php?id='.$contact->id.'">'.$contact->display('name').'</a>';
+                            return;
+                        } else {
+                            // print "updating principal email\n";
+                            $this->update_principal_email($email->id);
+                            return;
+                        }
+
+
+                    }
+                    elseif($number_contact_keys>1) {
+                        exit("Error an email has more tan one contacts as parent\n");
+
+                    }
+                }
+
+
+*/
+
+
+
 
                 if ($address->get_number_of_associated_telecoms($type)>0) {
-                    $address->update_principal_telecom_number($value,$type);
-
+              
+              			
+                    $telecom_key=$address->update_principal_telecom_number($value,$type);
+                  	//print "======================";
+                    $address->update_parents_principal_telecom_keys($type);
+                   // print "-----------------";
+                    
                 } else {
                     $telephone_data=array();
                     $telephone_data['editor']=$this->editor;
@@ -4839,7 +4878,8 @@ mysql_query($sql);
             mysql_query($sql);
               $sql=sprintf("delete from `Company Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
             mysql_query($sql);
-           
+              $sql=sprintf("delete from `Contact Old ID Bridge` where  `Contact Key`=%d",$this->id);
+            mysql_query($sql);
               $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
             mysql_query($sql);
              $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);

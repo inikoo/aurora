@@ -158,7 +158,7 @@
 <span id="save_delete_customer" class="state_details" style="display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
 
 </div>
-<span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes'}display:none{/if}">{t}Delete Customer{/t}</span>
+<span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes'}display:none{/if}">{t}Delete Customer{/t} (dont use yet)</span>
 
 </td>
 <td></td>

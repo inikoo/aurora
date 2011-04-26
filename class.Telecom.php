@@ -1166,9 +1166,9 @@ return $data;
         else {
             //	  print_r($this->data);
 
-            $new_plain=$this->display('plain');
+            $new_plain=$this->display('xhtml');
             $new_xhtml=$this->display('xhtml');
-            //	print "old:  $old_plain -> $new_plain\n";
+            	//print "old:  $old_xhtml -> $new_xhtml\n";
 
 
             if ($old_xhtml!=$new_xhtml) {
@@ -1232,7 +1232,7 @@ return $data;
 
 
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-            //  print "$sql\n";
+      //       print "$sql\n";
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_telecom_changed=false;
@@ -1268,7 +1268,7 @@ return $data;
                             );
                  
                 mysql_query($sql);
-
+//print $sql;
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
 
                 if ($old_princial_telecom!=$parent_object->data[$parent." Main XHTML $type"])

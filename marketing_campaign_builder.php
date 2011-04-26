@@ -60,13 +60,13 @@ $js_files=array(
 		'marketing_create_campaign.js.php'
 		);
 
-$sql = "select `Campaign Mailling List Id`,`Campaign Mailling List Name` from `Campaign Mailling List`";
+$sql = "select `Campaign Mailing List Id`,`Campaign Mailing List Name` from `Campaign Mailing List`";
 		$res = mysql_query($sql);
 	
 	
 
-	$smarty->assign('list_id','Campaign Mailling List Id');
-	$smarty->assign('list_name','Campaign Mailling List Name');
+	$smarty->assign('list_id','Campaign Mailing List Id');
+	$smarty->assign('list_name','Campaign Mailing List Name');
 	while($fetchArray = mysql_fetch_assoc($res))
 	{
 		$value[] = $fetchArray;
