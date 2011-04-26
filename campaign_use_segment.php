@@ -71,7 +71,7 @@ $trackID = isset($_GET['trackID'])?$_GET['trackID']:'0';
 	if($trackID!=0)
 	{
 	
-	$sqlTrack = "select `Campaign Mailling List Id`,`Campaign Mailling Track Open`,`Campaign Mailling Track Click`,`Campaign Mailling Plain Text Click` from `Email Campaign Mailling List` where `Email Campaign Mailling List Key` = '".$trackID."'";
+	$sqlTrack = "select `Campaign Mailing List Id`,`Campaign Mailling Track Open`,`Campaign Mailling Track Click`,`Campaign Mailling Plain Text Click` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key` = '".$trackID."'";
 		$ressqlTrack = mysql_query($sqlTrack);
 		$rowsqlTrack = mysql_fetch_assoc($ressqlTrack);
 
@@ -90,12 +90,12 @@ $sql = "select `Email Campaign Mailing List Key`,`List Name`,`Default Reply To E
 	
 	//echo $sql; die();
 
-	$smarty->assign('list_id',$row['Email Campaign Mailling List Key']);
+	$smarty->assign('list_id',$row['Email Campaign Mailing List Key']);
 	$smarty->assign('subject',$row['List Name']);
 	$smarty->assign('default_name',$row['Default From Name']);
 	$smarty->assign('email',$row['Default Reply To Email']);
 	
-	//$smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
+	//$smarty->assign('default_name',$row['Campaign Mailing List Default Name']);
 
 
 

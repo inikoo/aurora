@@ -1176,9 +1176,9 @@ class Customer extends DB_Table {
 
 
     function update_field_switcher($field,$value,$options='') {
-    
-    //print "$field,$value,$options\n";
-    
+
+        //print "$field,$value,$options\n";
+
         if (is_string($value))
             $value=_trim($value);
 
@@ -1333,21 +1333,21 @@ class Customer extends DB_Table {
 
                 if ($email->id and  in_array($email->id,$contact_email_keys)) {
 
-                     $this->msg=_('No Change');
+                    $this->msg=_('No Change');
                     $this->new_value=$value;
                     $email->update_Email($value);
                     $this->updated=$email->updated;
-                    if($this->updated){
-                    $this->msg=_('Email updated');
-                    $this->new_value=$value;
+                    if ($this->updated) {
+                        $this->msg=_('Email updated');
+                        $this->new_value=$value;
                     }
 
-                    if($this->data['Customer Main Email Key']!=$email->id){
-                    $contact->associate_email_to_parents('Customer',$this->id,$email->id);
-                    $email->update_parents();
-                    $this->updated=true;
-                    $this->msg=_('Email updated');
-                    $this->new_value=$value;
+                    if ($this->data['Customer Main Email Key']!=$email->id) {
+                        $contact->associate_email_to_parents('Customer',$this->id,$email->id);
+                        $email->update_parents();
+                        $this->updated=true;
+                        $this->msg=_('Email updated');
+                        $this->new_value=$value;
                     }
                     return;
 
@@ -4490,7 +4490,7 @@ class Customer extends DB_Table {
 
 
 
-   
+
 
     function get_mobiles() {
 
@@ -4523,15 +4523,15 @@ class Customer extends DB_Table {
     }
 
     function delete($note='') {
-    
-    $deleted_company_keys=array();
-    
-     $address_to_delete=array();
-     $emails_to_delete=array();
-     $telecom_to_delete=array();
+
+        $deleted_company_keys=array();
+
+        $address_to_delete=array();
+        $emails_to_delete=array();
+        $telecom_to_delete=array();
 
 
-    
+
         $has_orders=false;
         $sql="select count(*) as total  from `Order Dimension` where `Order Customer Key`=".$this->id;
         $result=mysql_query($sql);
@@ -4544,76 +4544,85 @@ class Customer extends DB_Table {
             $this->msg=_("Customer can't be deleted");
             return;
         }
-        
-        
-        
-        
-        
-         $address_to_delete=$this->get_address_keys();
-     $emails_to_delete=$this->get_email_keys();
-     $telecom_to_delete=$this->get_telecom_keys();
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+        $address_to_delete=$this->get_address_keys();
+        $emails_to_delete=$this->get_email_keys();
+        $telecom_to_delete=$this->get_telecom_keys();
+
+
+
+
+
+
         $company_keys=array();
+
+        $contact_keys=$this->get_contact_keys();
+
+
+        $sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%s",$this->id,$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Customer List Customer Bridge` where `Customer Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Customers Send Post` where `Customer Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Category Bridge` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
         
-          $contact_keys=$this->get_contact_keys();
+         $sql=sprintf("delete from `Customer Ship To Bridge` where  `Customer Key`=%d",$this->id);
+        mysql_query($sql);
+        
+        $sql=sprintf("delete from `Customers Send Post` where  `Customer Key`=%d",$this->id);
+        mysql_query($sql);
 
+// Delete if the email has not been send yet
+//Email Campaign Mailing List 
 
-            $sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d",$this->id);
-            mysql_query($sql);
-            $sql=sprintf("delete from `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%s",$this->id,$this->id);
-            mysql_query($sql);
-             $sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d",$this->id);
-            mysql_query($sql);
-            $sql=sprintf("delete from `Customer List Customer Bridge` where `Customer Key`=%d",$this->id);
-            mysql_query($sql);
-            $sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
-            mysql_query($sql);
-            $sql=sprintf("delete from `Customers Send Post` where `Customer Key`=%d",$this->id);
-            mysql_query($sql);
-            $sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-             $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Category Bridge` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-             $sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-             $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-
-$sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s) ",
-$this->id,
-$this->data['Customer Store Key'],
-prepare_mysql($this->display('card')),
-prepare_mysql($this->editor['Date']),
-prepare_mysql($note,false)
-);
+        $sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s) ",
+                     $this->id,
+                     $this->data['Customer Store Key'],
+                     prepare_mysql($this->display('card')),
+                     prepare_mysql($this->editor['Date']),
+                     prepare_mysql($note,false)
+                    );
 
 //print "$sql\n";
-mysql_query($sql);
+        mysql_query($sql);
 
-        
-        
+
+
         if ($this->data['Customer Type']=='Company') {
             $company_keys=$this->get_company_keys();
 //unset($company_keys[$this->data['Customer Company Key']]);
 
-          
+
             foreach($company_keys as  $company_key) {
                 $company=new Company($company_key);
                 $company_customer_keys=$company->get_parent_keys('Customer');
                 $company_supplier_keys=$company->get_parent_keys('Supplier');
                 $company_hq_keys=$company->get_parent_keys('HQ');
-                                $company_telecom_keys=$company->get_telecom_keys();
+                $company_telecom_keys=$company->get_telecom_keys();
 
                 $company_address_keys=$company->get_address_keys();
                 $company_contact_keys=$company->get_contact_keys();
@@ -4628,129 +4637,168 @@ mysql_query($sql);
 
 
                     $company->delete();
-                     $deleted_company_keys[$company->id]=$company->id;
-                     
-                     
-                    
-                     foreach($company_address_keys as $company_address_key){
+                    $deleted_company_keys[$company->id]=$company->id;
+
+
+
+                    foreach($company_address_keys as $company_address_key) {
                         $address_to_delete[$company_address_key]=$company_address_key;
                     }
-                     foreach($company_telecom_keys as $company_telecom_key){
+                    foreach($company_telecom_keys as $company_telecom_key) {
                         $telecom_to_delete[$company_telecom_key]=$company_telecom_key;
                     }
-                     
-                     
+
+
                 } else {
 
                 }
             }
-           
+
         }
-        
+
         foreach($contact_keys as $contact_key) {
-                $contact=new Contact($contact_key);
-            
-            	$contact_email_keys=$contact->get_email_keys();
-            	$contact_telecom_keys=$contact->get_telecom_keys();
-                $contact_address_keys=$contact->get_address_keys();
-            
-                $contact_customer_keys=$contact->get_parent_keys('Customer');
-                $contact_supplier_keys=$contact->get_parent_keys('Supplier');
-                $contact_company_keys=$contact->get_parent_keys('Company');
-                
-                
-                
-                $contact_staff_keys=$contact->get_parent_keys('Staff');
-                
-                foreach($deleted_company_keys as $deleted_company_key){
+            $contact=new Contact($contact_key);
+
+            $contact_email_keys=$contact->get_email_keys();
+            $contact_telecom_keys=$contact->get_telecom_keys();
+            $contact_address_keys=$contact->get_address_keys();
+
+            $contact_customer_keys=$contact->get_parent_keys('Customer');
+            $contact_supplier_keys=$contact->get_parent_keys('Supplier');
+            $contact_company_keys=$contact->get_parent_keys('Company');
+
+
+
+            $contact_staff_keys=$contact->get_parent_keys('Staff');
+
+            foreach($deleted_company_keys as $deleted_company_key) {
                 unset($contact_company_keys[$deleted_company_key]);
-                }
-                               unset($contact_customer_keys[$this->id]);
-
-
-               if (count($contact_customer_keys)==0 and count($contact_supplier_keys)==0 and count($contact_company_keys)==0 and count($contact_staff_keys)==0) {
-
-
-
-                    $contact->delete();
-                    
-                    foreach($contact_email_keys as $contact_email_key){
-                        $emails_to_delete[$contact_email_key]=$contact_email_key;
-                    }
-                     foreach($contact_address_keys as $contact_address_key){
-                        $address_to_delete[$contact_address_key]=$contact_address_key;
-                    }
-                     foreach($contact_telecom_keys as $contact_telecom_key){
-                        $telecom_to_delete[$contact_telecom_key]=$contact_telecom_key;
-                    }
-                    
-                    
-                } else {
-
-                }
-            
-            
             }
-            
-       
-  //       print "Emails to delete";
+            unset($contact_customer_keys[$this->id]);
+
+
+            if (count($contact_customer_keys)==0 and count($contact_supplier_keys)==0 and count($contact_company_keys)==0 and count($contact_staff_keys)==0) {
+
+
+
+                $contact->delete();
+
+                foreach($contact_email_keys as $contact_email_key) {
+                    $emails_to_delete[$contact_email_key]=$contact_email_key;
+                }
+                foreach($contact_address_keys as $contact_address_key) {
+                    $address_to_delete[$contact_address_key]=$contact_address_key;
+                }
+                foreach($contact_telecom_keys as $contact_telecom_key) {
+                    $telecom_to_delete[$contact_telecom_key]=$contact_telecom_key;
+                }
+
+
+            } else {
+
+            }
+
+
+        }
+
+
+        //       print "Emails to delete";
 //print_r($emails_to_delete);
 
-foreach($emails_to_delete as $email_key){
-$email=new Email($email_key);
-if($email->id and !$email->has_parents()){
-$email->delete();
-}
-}
+        foreach($emails_to_delete as $email_key) {
+            $email=new Email($email_key);
+            if ($email->id and !$email->has_parents()) {
+                $email->delete();
+            }
+        }
 
-  //       print "Address to delete";
-         
-  foreach($address_to_delete as $address_key){
-$address=new Address($address_key);
-if($address->id and !$address->has_parents()){
-$address->delete();
-}
-}
-       
-         
+        //       print "Address to delete";
+
+        foreach($address_to_delete as $address_key) {
+            $address=new Address($address_key);
+            if ($address->id and !$address->has_parents()) {
+                $address->delete();
+            }
+        }
+
+
 //print_r($address_to_delete);
-  //        print "Tel to delete";
+        //        print "Tel to delete";
 //print_r($telecom_to_delete);
- foreach($telecom_to_delete as $telecom_key){
-$telecom=new Telecom($telecom_key);
-if($telecom->id and !$telecom->has_parents()){
-$telecom->delete();
-}
-}
+        foreach($telecom_to_delete as $telecom_key) {
+            $telecom=new Telecom($telecom_key);
+            if ($telecom->id and !$telecom->has_parents()) {
+                $telecom->delete();
+            }
+        }
 
 
-         $this->deleted=true;
+        $this->deleted=true;
     }
 
-function merge($customer_key){
-$customer_to_merge=new Customer($customer_key);
+    function merge($customer_key) {
+        $customer_to_merge=new Customer($customer_key);
 
-if(!$customer_to_merge->id){
-$this->error=true;
-$this->msg='Customer not found';
-return;
-}
+        if (!$customer_to_merge->id) {
+            $this->error=true;
+            $this->msg='Customer not found';
+            return;
+        }
 
-if($this->id==$customer_to_merge->id){
-$this->error=true;
-$this->msg=_('Same Customer');
-return;
-}
-if($this->data['Customer Store Key']!=$customer_to_merge->data['Customer Store Key']){
-$this->error=true;
-$this->msg=_('Customers fron different stores');
-return;
-}
+        if ($this->id==$customer_to_merge->id) {
+            $this->error=true;
+            $this->msg=_('Same Customer');
+            return;
+        }
+        if ($this->data['Customer Store Key']!=$customer_to_merge->data['Customer Store Key']) {
+            $this->error=true;
+            $this->msg=_('Customers fron different stores');
+            return;
+        }
 
-$sql=sprintf("select `History Key` from `Customer History Bridge` where `Type` in ('Orders','Notes') ");
+        $sql=sprintf("select `History Key` from `Customer History Bridge` where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$customer_to_merge->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $history_key=$row['History Key'];
+            $sql=sprintf("select * from `History Dimension` where `History Key`=%d ",$history_key);
+            $res2=mysql_query($sql);
+            if ($row2=mysql_fetch_assoc($res2)) {
+                $sql=sprintf("update `Subject Key`=%d from `History Dimension` where `History Key`=%d and `Subject`='Customer' ",$this->id,$history_key);
+                mysql_query($sql);
+                $sql=sprintf("update `Direct Object Key`=%d from `History Dimension` where `History Key`=%d and `Direct Object`='Customer' ",$this->id,$history_key);
+                mysql_query($sql);
+                $sql=sprintf("update `Indirect Object Key`=%d from `History Dimension` where `History Key`=%d and `Indirect Object`='Customer' ",$this->id,$history_key);
+                mysql_query($sql);
+            }
+        }
+        $sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+        $sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+         $sql=sprintf("update `Customer Ship To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+        $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Customer Key`=%d where `Delivery Note Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+         $sql=sprintf("update `Invoice Dimension` set `Invoice Customer Key`=%d where `Invoice Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+          $sql=sprintf("update `Order Dimension` set `Order Customer Key`=%d where `Order Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+     
+        $sql=sprintf("update `Order Transaction Fact` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+        //Customer Key
+        
+        
+//Email Campaign Mailing List 
 
+        }
+        
 
-}
-
-}
-?>
+    }
+    ?>

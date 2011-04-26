@@ -4974,7 +4974,7 @@ function find_fast($data=false,$subject_data=false){
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
-            //  print $sql;
+              //print "$sql\n";
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
 
@@ -5008,32 +5008,35 @@ function find_fast($data=false,$subject_data=false){
 
                 $old_principal_telecom_key=$parent_object->data[$parent." Main $type Key"];
                 //print " $old_principal_telecom_key -> $telecom_key \n";
-                if ($old_principal_telecom_key!=$telecom_key) {
+               // if ($old_principal_telecom_key!=$telecom_key) {
 
                     $sql=sprintf("update `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) set `Is Main`='No'   where   `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='$type' "
                                  ,$parent_object->id
 
                                 );
                     mysql_query($sql);
-                    //print "$sql\n";
+                  //  print "$sql\n";
                     $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where  `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d"
                                  ,$parent_object->id
                                  ,$telecom_key
                                 );
                     mysql_query($sql);
-                    // print "$sql\n";
+                //    print "$sql\n";
 
+                
+
+
+
+
+                //}
+                
                     $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=%d where `$parent Key`=%d"
                                  ,$telecom_key
                                  ,$parent_object->id
                                 );
-                    // print "$sql\n";
+                 //   print "$sql\n";
                     mysql_query($sql);
-
-
-
-
-                }
+                
             }
         }
     }
@@ -5056,6 +5059,7 @@ function find_fast($data=false,$subject_data=false){
         if (!$telephone_key) {
             $this->error=true;
             $this->msg="No principal telephone\n";
+            return 0;
         } else {
 
             $telephone=new Telecom($telephone_key);
@@ -5064,6 +5068,7 @@ function find_fast($data=false,$subject_data=false){
             //print_r($telephone);
             $this->updated=$telephone->updated;
             $this->new_value=$telephone->display('xhtml');
+            return $telephone->id;
         }
     }
 

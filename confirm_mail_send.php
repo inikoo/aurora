@@ -74,14 +74,14 @@ $smarty->assign('view',$_SESSION['state'][$page]['view']);
 //get the list
 $id = isset($_REQUEST['id'])?$_REQUEST['id']:'';
 
-	$query = "select `Campaign Mailling List Name`,`Campaign Mailling List Id`,`Campaign Mailling List Default Name`,`Campaign Mailling List Email`,`Campaign Mailling List Recipients`,`Campaign Mailling Track Click`,`Campaign Mailling Track Open` from `Campaign Mailling List` where `Campaign Mailling List Id` = '".$id."'";
+	$query = "select `Campaign Mailing List Name`,`Campaign Mailing List Id`,`Campaign Mailing List Default Name`,`Campaign Mailing List Email`,`Campaign Mailing List Recipients`,`Campaign Mailling Track Click`,`Campaign Mailling Track Open` from `Campaign Mailing List` where `Campaign Mailing List Id` = '".$id."'";
 	$res = mysql_query($query);
 	if(mysql_num_rows($res) > 0)
 	{		
 		$row = mysql_fetch_array($res);
 	}
 
-$list_id = $row['Campaign Mailling List Id'];
+$list_id = $row['Campaign Mailing List Id'];
 $plain = $row['Campaign Mailling Plain Text Click'];
 $click = $row['Campaign Mailling Track Click'];
 $open = $row['Campaign Mailling Track Open'];
@@ -123,13 +123,13 @@ $smarty->assign('js_files',$js_files);
 
 $smarty->assign('list_id',$list_id);
 
-$smarty->assign('list_name',$row['Campaign Mailling List Name']);
+$smarty->assign('list_name',$row['Campaign Mailing List Name']);
 
-$smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
+$smarty->assign('default_name',$row['Campaign Mailing List Default Name']);
 
-$smarty->assign('email',$row['Campaign Mailling List Email']);
+$smarty->assign('email',$row['Campaign Mailing List Email']);
 
-$smarty->assign('recipients',$row['Campaign Mailling List Recipients']);
+$smarty->assign('recipients',$row['Campaign Mailing List Recipients']);
 
 $smarty->assign('track',$track);
 
