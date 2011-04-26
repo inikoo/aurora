@@ -2384,6 +2384,8 @@ class Customer extends DB_Table {
           case('First Order Date'):
         case('First Contacted Date'):
         case('Last Order Date'):
+        if($this->data['Customer '.$key]=='')
+        return '';
             return strftime("%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00"));
             break;
         case('Orders'):
@@ -4830,7 +4832,7 @@ $customer_to_merge->editor=$this->editor;
         
         
     
-         $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d where `Merged Customer Key`=%d ",$this->id,$customer_to_merge->id);
+         $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
         
         $sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d) ",$customer_to_merge->id,$this->id);

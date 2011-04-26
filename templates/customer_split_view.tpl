@@ -29,7 +29,6 @@
 <table>
 <tr><td>{t}Contact Since{/t}:</td><td>{$customer_a.since}</td><tr>
 <tr style="{if !$customer_a.last_order_date}visibility:hidden{/if}"><td>{t}Last Order{/t}:</td><td>{$customer_a.last_order_date}</td><tr>
-
 <tr><td>{t}Orders{/t}:</td><td>{$customer_a.orders}</td><tr>
 <tr><td>{t}Notes{/t}:</td><td>{$customer_a.notes}</td><tr>
 </table>
@@ -43,7 +42,6 @@
 <table  style="{if $customer_b.deleted}visibility:hidden{/if}">
 <tr><td>{t}Contact Since{/t}:</td><td>{$customer_b.since}</td><tr>
 <tr style="{if !$customer_b.last_order_date}visibility:hidden{/if}"><td>{t}Last Order{/t}:</td><td>{$customer_b.last_order_date}</td><tr>
-
 <tr><td>{t}Orders{/t}:</td><td>{$customer_b.orders}</td><tr>
 <tr><td>{t}Notes{/t}:</td><td>{$customer_b.notes}</td><tr>
 </table>
