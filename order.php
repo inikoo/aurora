@@ -60,7 +60,7 @@ if(isset($_REQUEST['new']) ){
   
   $order_data=array('type'=>'system'
 		    ,'Customer Key'=>$customer->id
-		    ,'Order Original Data MIME Type'=>'application/kaktus'
+		    ,'Order Original Data MIME Type'=>'application/inikoo'
 		    ,'Order Type'=>'Order'
 		    ,'editor'=>$editor
 		    

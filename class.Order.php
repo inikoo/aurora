@@ -7,7 +7,7 @@
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) 2009, Kaktus
+  Copyright (c) 2009, Inikoo
 
   Version 2.0
 */
@@ -522,10 +522,10 @@ class Order extends DB_Table {
 
 
             $this->data ['Order Currency Exchange']=1;
-            $sql=sprintf("select `Corporation Currency` from `Corporation Dimension`");
+            $sql=sprintf("select `HQ Currency` from `HQ Dimension`");
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
-                $corporation_currency_code=$row['Corporation Currency'];
+                $corporation_currency_code=$row['HQ Currency'];
             } else
                 $corporation_currency_code='GBP';
             if ($this->data ['Order Currency']!=$corporation_currency_code) {

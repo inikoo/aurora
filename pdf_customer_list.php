@@ -14,7 +14,7 @@ $pdf->setPrintFooter(false);
 
 
 
-//////$pdf->SetAuthor('Kaktus');
+//////$pdf->SetAuthor('Inikoo');
 $pdf->SetTitle('Generate Customer Postal Address');
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));

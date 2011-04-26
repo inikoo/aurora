@@ -2,7 +2,7 @@
 /*
   About: 
   Autor: Raul Perusquia <rulovico@gmail.com>
-  Copyright (c) 2010, Kaktus 
+  Copyright (c) 2010, Inikoo 
   Version 2.0
 */
 

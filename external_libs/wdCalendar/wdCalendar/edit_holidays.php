@@ -7,7 +7,7 @@ function getCalendarByRange($id){
   try{
    // $db = new DBConnection();
    // $db->getConnection();
-    $sql = "select * from `Corporation Event Dimension` where `Corporation Event Key` = " . $id;
+    $sql = "select * from `HQ Event Dimension` where `HQ Event Key` = " . $id;
     $handle = mysql_query($sql);
     //echo $sql;
     $row = mysql_fetch_object($handle);
@@ -211,7 +211,7 @@ if(isset($_GET["id"])){
       </div>                  
       <div style="clear: both">         
       </div>        
-      <div class="infocontainer"><?php  $corporation_event_key="Corporation Event Key";?>           
+      <div class="infocontainer"><?php  $corporation_event_key="HQ Event Key";?>           
         <form action="php/datafeed_holidays.php?method=adddetails<?php echo isset($event)?"&id=".$event->$corporation_event_key:""; ?>" class="fform" id="fmEdit" method="post">                 
           <label>                    
             <span>                        *Subject:              

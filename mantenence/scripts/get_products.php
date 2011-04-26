@@ -997,7 +997,7 @@ if(preg_match('/^giftw$/i',$supplier_code)){
 if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='Gopal';
 	  $the_supplier_data=array(
-				   'Supplier Name'=>'Gopal Corporation Limited',
+				   'Supplier Name'=>'Gopal HQ Limited',
 				   'Supplier Code'=>$supplier_code
 				  
 				   ,'Supplier Address Line 1'=>"240 Okhla Industrial Estate"

@@ -4,7 +4,7 @@
 <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{$title}</title>
-    <link href="art/kaktus-icon.png" rel="shortcut icon" type="image/x-icon" />
+    <link href="art/inikoo-icon.png" rel="shortcut icon" type="image/x-icon" />
     {foreach from=$css_files item=i }
     <link rel="stylesheet" href="{$i}" type="text/css" />
     {/foreach}	
@@ -15,7 +15,7 @@
         
   </head>
 
-  <body  class=" yui-skin-sam kaktus">
+  <body  class=" yui-skin-sam inikoo">
     <div id="{$page_layout}" class="{$box_layout}">
     
       <div id="hd" >
@@ -28,7 +28,7 @@
 	            <span><a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a></span>
 	        </div>
 	        
-	        <h1 style="clear:both;padding-top:0;position:relative;top:-2px">{$my_name}<span style="font-size:70%;color:#f7fd98">@</span><span style="position:relative;bottom:3px;font-size:60%;color:#d7e12a">kaktus</span></h1>
+	        <h1 style="clear:both;padding-top:0;position:relative;top:-2px">{$my_name}<span style="font-size:70%;color:#f7fd98">@</span><span style="position:relative;bottom:3px;font-size:60%;color:#d7e12a">inikoo</span></h1>
 	        
 	        <div id="navsite" style="clear:right">
         	  <ul>

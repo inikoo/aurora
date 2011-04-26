@@ -34,14 +34,14 @@ exit;
 
     require("external_libs/mail/email_message.php");
 
-    $from_name='Kaktus User';
-    $from_address='anon.user@aw-kaktus.com';
+    $from_name='Inikoo User';
+    $from_address='anon.user@aw-inikoo.com';
     $reply_name=$from_name;
     $reply_address=$from_address;
     $reply_address=$from_address;
     $error_delivery_name=$from_name;
     $error_delivery_address=$from_address;
-    $to_name="Kaktus Jira";
+    $to_name="Inikoo Jira";
     $to_address=$data['values']['email'];
     $subject=$data['values']['summary'];
     $message=$data['values']['description']."\n\n".$data['values']['metadata'];

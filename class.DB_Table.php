@@ -314,13 +314,15 @@ $null_if_empty=false;
         $data['User Key']=$editor_data['User Key'];
 
 
-
+        if(!isset($data['Direct Object']))    
         $data['Direct Object']=$table;
+        
+         if(!isset($data['Direct Object Key'])){    
         if ($this->table_name=='Product')
             $data['Direct Object Key']=$this->pid;
         else
             $data['Direct Object Key']=$this->id;
-
+}
 
 
         if(!isset($data['Date']) or $data['Date']=='')

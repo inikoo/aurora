@@ -2948,13 +2948,13 @@ gettext("Other");
 gettext("Editing Stores");
 
 /* ../templates/edit_stores.tpl */
-gettext("Corporation");
+gettext("HQ");
 
 /* ../templates/edit_stores.tpl */
 gettext("Stores");
 
 /* ../templates/edit_stores.tpl */
-gettext("Corporation Name");
+gettext("HQ Name");
 
 /* ../templates/edit_stores.tpl */
 gettext("Save");
@@ -3581,7 +3581,7 @@ gettext("Site Map");
 gettext("Terms of use");
 
 /* ../templates/footer.tpl */
-gettext("Powered by Kaktus");
+gettext("Powered by Inikoo");
 
 /* ../templates/forbidden.tpl */
 gettext("Forbidden");

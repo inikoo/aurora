@@ -8,8 +8,8 @@
 }
 
 $customer=new Customer($_REQUEST['id']);
-    
-print "var customer_id='".$_REQUEST['id']."';";
+print "var customer_id='".$customer->id."';";
+print "var store_id='".$customer->data['Customer Store Key']."';";
 
 
 $tax_number_regex="^((AT)?U[0-9]{8}|(BE)?0?[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}L|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}L|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$";
@@ -39,7 +39,9 @@ var validate_scope_data=
     'customer':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
-	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query='
+	
+	,'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
 
@@ -411,6 +413,8 @@ Dom.get('New_Company_Name').focus();
 }
 
 
+
+
 function validate_new_company_name(query){
 
   var validator=new RegExp('/[a-z0-9]/',"i");
@@ -423,6 +427,36 @@ function validate_new_company_name(query){
     }
     
 }
+
+function delete_customer(){
+Dom.setStyle(['save_delete_customer','cancel_delete_customer','delete_customer_warning'],'display','');
+Dom.setStyle('delete_customer','display','none');
+}
+function cancel_delete_customer(){
+Dom.setStyle(['save_delete_customer','cancel_delete_customer','delete_customer_warning'],'display','none');
+Dom.setStyle('delete_customer','display','');
+}
+
+function save_delete_customer(){
+
+
+var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer_id
+	           
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           // alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+        location.href='customer.php?id='+customer_id;
+                                  }else{
+                                  Dom.get('delete_customer_msg').innerHTML=r.msg
+                                  }
+   			}
+    });
+
+
+}
+
 
 function post_change_main_delivery_address(){}
 
@@ -450,6 +484,11 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     YAHOO.util.Event.addListener('reset_edit_billing_data', "click", reset_edit_billing_data);
     
     YAHOO.util.Event.addListener('convert_to_company', "click", convert_to_company);
+    
+        YAHOO.util.Event.addListener('delete_customer', "click", delete_customer);
+        YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
+        YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
+
     YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
     YAHOO.util.Event.addListener('save_convert_to_company', "click", save_convert_to_company);
 

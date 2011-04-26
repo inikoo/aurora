@@ -1052,7 +1052,7 @@ ADD `Store DC 3 Month Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 3 Mo
 ALTER TABLE `Store Default Currency` ADD `Store DC 10 Day Acc Invoiced Amount` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 1 Month Acc Profit` ,
 ADD `Store DC 10 Day Acc Profit` DECIMAL( 12, 2 ) NOT NULL AFTER `Store DC 10 Day Acc Invoiced Amount` ;
 
-kaktus 29 from here
+inikoo 29 from here
 
 DROP TABLE IF EXISTS `Product Family Dimension`;
 CREATE TABLE IF NOT EXISTS `Product Family Dimension` (
@@ -2038,7 +2038,7 @@ CREATE TABLE IF NOT EXISTS `Store Default Currency` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 
-aqui empieza kaktus 30
+aqui empieza inikoo 30
 
 
 CREATE TABLE `Customer Correlation` (
@@ -2635,7 +2635,7 @@ ADD `Store Active Contacts With Orders` INT UNSIGNED NOT NULL DEFAULT '0',
 ADD `Store Losing Contacts With Orders` INT UNSIGNED NOT NULL DEFAULT '0',
 ADD `Store Lost Contacts With Orders` INT UNSIGNED NOT NULL DEFAULT '0';
 
-Kaktus-31
+Inikoo-31
 ALTER TABLE `Category Dimension` ADD `Category Number Subjects Not Assigned` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Category Dimension` CHANGE `Category Number Subjects Not Assigned` `Category Children Subjects Not Assigned` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Category Dimension` ADD `Category Children Subjects Assigned` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Subjects` ;
@@ -2657,6 +2657,26 @@ ALTER TABLE `Customer Correlation` CHANGE `Customer Key A` `Customer A Key` MEDI
 CHANGE `Customer Name A` `Customer A Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 CHANGE `Customer Key B` `Customer B Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ,
 CHANGE `Customer Name B` `Customer B Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+ALTER TABLE `Contact Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Company', 'Supplier', 'Customer', 'Staff' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Company';
+ALTER TABLE `Company Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Supplier', 'Customer', 'Contact', 'HQ' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Customer';
+ALTER TABLE `Corporation Dimension` CHANGE `Corporation Name` `HQ Name` VARCHAR( 245 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Corporation Currency` `HQ Currency` VARCHAR( 3 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'GBP',
+CHANGE `Corporation Company Key` `HQ Company Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
+RENAME TABLE `Corporation Dimension` TO `HQ Dimension` ;
+ALTER TABLE `Corporation Event Dimension` CHANGE `Corporation Event Key` `HQ Event Key` INT( 11 ) NOT NULL AUTO_INCREMENT ;
+RENAME TABLE `Corporation Event Dimension` TO `HQ Event Dimension` ;
+
+CREATE TABLE `Customer Deleted Dimension` (
+`Customer Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Customer Store Key` SMALLINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Customer Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Customer Deleted Dimension` ADD `Customer Card` TEXT NOT NULL ;
+ALTER TABLE `Customer Deleted Dimension` ADD `Customer Deleted Date` DATETIME NOT NULL ,ADD `Customer Deleted Note` TEXT NOT NULL ;
+ALTER TABLE `History Dimension` CHANGE `Preposition` `Preposition` ENUM( 'about', '', 'to', 'on' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+update  `History Dimension` set `Preposition`='on' , `Direct Object`='Note',`Direct Object Key`=0    where `Subject`='Staff' and `Action`='created' and `Indirect Object`='Customer' and `Direct Object`='Customer' ;
 
 */
 

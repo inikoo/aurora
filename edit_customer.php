@@ -7,7 +7,7 @@
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2010, Kaktus
+ Copyright (c) 2010, Inikoo
 
  Version 2.0
 */
@@ -240,6 +240,29 @@ mysql_free_result($res);
 $smarty->assign('categories',$comb);
 $smarty->assign('number_categories',count($comb));
 */
+
+
+
+$main_email_warning=false;
+$main_email_warnings='';
+if ($customer->data['Customer Main Email Key']) {
+    $main_email= new Email($customer->data['Customer Main Email Key']);
+    $main_email_parents=$main_email->get_parent_keys();
+    foreach($main_email_parents as $_key=>$_value) {
+
+        if (($_value['Subject Type']=='Customer' and $_value['Subject Key']!=$customer->id)or $_value['Subject Type']=='Supplier') {
+        $main_email_warning=true;
+        
+        }
+    }
+}
+if($main_email_warning){
+$main_email_warning='<img style="cursor:pointer" title="Other Customers/Supplier has this email" src="art/icons/error.png" alt="warning"/>';
+}
+$smarty->assign('main_email_warnings',$main_email_warnings);
+$smarty->assign('main_email_warning',$main_email_warning);
+
+
 
 $main_telephone_warning=false;
 $main_telephone_warnings='';

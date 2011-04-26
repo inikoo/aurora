@@ -3589,7 +3589,7 @@ function is_company($name,$locale='en_GB') {
         $common_company_suffixes=array("L\.?t\.?d\.?");
         $common_company_prefixes=array("the");
 
-        $common_company_compoments=array("Corporation","Limited");
+        $common_company_compoments=array("HQ","Limited");
     } else {
         $person_prefixes=array();
         $common_company_suffixes=array();

@@ -233,13 +233,13 @@
 <h2>List/thumbnails of store websites</h2>
 <h3>Objective</h3>
 <p>
-show code (link to:site.php?id=) ,url, type (created with kaktus,created by others),status (live/offline),
+show code (link to:site.php?id=) ,url, type (created with inikoo,created by others),status (live/offline),
 some stats like (# visitors,# unique visitors etc)</br>
 </p>
 <h3>Files</h3>
 <p>
 ar fie: ar_sites.php?tipo=list_store_sites<br>
-DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Type`(enum[kaktus,other]),`Site Status`... etc )
+DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Type`(enum[inikoo,other]),`Site Status`... etc )
 </p>
 </div>
     <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>

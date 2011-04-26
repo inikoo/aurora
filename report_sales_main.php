@@ -9,12 +9,12 @@ $css_files=array(
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
                //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-            
+
                'button.css',
                'container.css',
-               
+
                'css/calendar.css',
-              
+
 
            );
 
@@ -146,11 +146,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                                        '_eq_tax'=>0,
                                        '_eq_net'=>0,
                                        'invoices'=>0,
-                                                                              '_invoices'=>0,
+                                       '_invoices'=>0,
 
                                        'per_invoices'=>'00.0%',
                                        'last_yr_invoices'=>'&#8734;%',
-                                        'last_yr_net'=>'&#8734;%'
+                                       'last_yr_net'=>'&#8734;%'
                                    );
 
     $store_data_profit[$row['Store Key']]=array(
@@ -165,78 +165,78 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-      $sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$int[0]);
-     $result2=mysql_query($sql);
-      if(mysql_num_rows($result2) >1 ){
-        while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-          $store_data[$row['Store Key'].'.'.$row2['Category Name']]=array(
-    									 'store'=>''
-    									 ,'substore'=>sprintf("%s",$row2['Category Name'])
-    									 ,'invoices'=>number($row2['invoices'])
-    									  ,'_invoices'=>$row2['invoices']
-    									 ,'net'=>money($row2['net'],$row['Store Currency Code'])
-    									 ,'tax'=>money($row2['tax'],$row['Store Currency Code'])
-    									 ,'eq_net'=>money($row2['eq_net'])
-    									 ,'eq_tax'=>money($row2['eq_tax'])
-    									 ,'_eq_net'=>$row2['eq_net']
-    									 ,'_eq_tax'=>$row2['eq_tax']
-    									 ,'currency_code'=>$row['Store Currency Code']
-    									 );
+    $sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$int[0]);
+    $result2=mysql_query($sql);
+    if (mysql_num_rows($result2) >1 ) {
+        while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+            $store_data[$row['Store Key'].'.'.$row2['Category Name']]=array(
+                        'store'=>''
+                                ,'substore'=>sprintf("%s",$row2['Category Name'])
+                                            ,'invoices'=>number($row2['invoices'])
+                                                        ,'_invoices'=>$row2['invoices']
+                                                                     ,'net'=>money($row2['net'],$row['Store Currency Code'])
+                                                                            ,'tax'=>money($row2['tax'],$row['Store Currency Code'])
+                                                                                   ,'eq_net'=>money($row2['eq_net'])
+                                                                                             ,'eq_tax'=>money($row2['eq_tax'])
+                                                                                                       ,'_eq_net'=>$row2['eq_net']
+                                                                                                                  ,'_eq_tax'=>$row2['eq_tax']
+                                                                                                                             ,'currency_code'=>$row['Store Currency Code']
+                    );
 
             $store_data_profit[$row['Store Key'].'.'.$row2['Category Name']]=array(
-    									 'store'=>''
-    									 ,'substore'=>sprintf("%s",$row2['Category Name'])
+                        'store'=>''
+                                ,'substore'=>sprintf("%s",$row2['Category Name'])
 
-    									 ,'net'=>money($row2['net'],$row['Store Currency Code'])
-    									 ,'profit'=>money($row2['profit'],$row['Store Currency Code'])
-    									 ,'margin'=>percentage($row2['profit'],$row2['net'])
+                                            ,'net'=>money($row2['net'],$row['Store Currency Code'])
+                                                   ,'profit'=>money($row2['profit'],$row['Store Currency Code'])
+                                                             ,'margin'=>percentage($row2['profit'],$row2['net'])
 
-    									 );
+                    );
 
 
 
         }
 
-      }
-      
-      
-      $last_yr_int=prepare_mysql_dates(date("Y-m-d H:i:s",strtotime($from.' -1 year')),date("Y-m-d H:i:s",strtotime($to.' -1 year')),'`Invoice Date`','date start end');
+    }
 
-  $sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$last_yr_int[0]);
-     $result2=mysql_query($sql);
-      if(mysql_num_rows($result2) >1 ){
-        while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-          $last_yr_store_data[$row['Store Key'].'.'.$row2['Category Name']]=array(
-    									 'store'=>''
-    									 ,'substore'=>sprintf("%s",$row2['Category Name'])
-    									 ,'invoices'=>number($row2['invoices'])
-    									  ,'_invoices'=>$row2['invoices']
-    									 ,'net'=>money($row2['net'],$row['Store Currency Code'])
-    									 ,'tax'=>money($row2['tax'],$row['Store Currency Code'])
-    									 ,'eq_net'=>money($row2['eq_net'])
-    									 ,'eq_tax'=>money($row2['eq_tax'])
-    									 ,'_eq_net'=>$row2['eq_net']
-    									 ,'_eq_tax'=>$row2['eq_tax']
-    									 ,'currency_code'=>$row['Store Currency Code']
-    									 );
+
+    $last_yr_int=prepare_mysql_dates(date("Y-m-d H:i:s",strtotime($from.' -1 year')),date("Y-m-d H:i:s",strtotime($to.' -1 year')),'`Invoice Date`','date start end');
+
+    $sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$last_yr_int[0]);
+    $result2=mysql_query($sql);
+    if (mysql_num_rows($result2) >1 ) {
+        while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+            $last_yr_store_data[$row['Store Key'].'.'.$row2['Category Name']]=array(
+                        'store'=>''
+                                ,'substore'=>sprintf("%s",$row2['Category Name'])
+                                            ,'invoices'=>number($row2['invoices'])
+                                                        ,'_invoices'=>$row2['invoices']
+                                                                     ,'net'=>money($row2['net'],$row['Store Currency Code'])
+                                                                            ,'tax'=>money($row2['tax'],$row['Store Currency Code'])
+                                                                                   ,'eq_net'=>money($row2['eq_net'])
+                                                                                             ,'eq_tax'=>money($row2['eq_tax'])
+                                                                                                       ,'_eq_net'=>$row2['eq_net']
+                                                                                                                  ,'_eq_tax'=>$row2['eq_tax']
+                                                                                                                             ,'currency_code'=>$row['Store Currency Code']
+                    );
 
             $last_yr_store_data_profit[$row['Store Key'].'.'.$row2['Category Name']]=array(
-    									 'store'=>''
-    									 ,'substore'=>sprintf("%s",$row2['Category Name'])
+                        'store'=>''
+                                ,'substore'=>sprintf("%s",$row2['Category Name'])
 
-    									 ,'net'=>money($row2['net'],$row['Store Currency Code'])
-    									 ,'profit'=>money($row2['profit'],$row['Store Currency Code'])
-    									 ,'margin'=>percentage($row2['profit'],$row2['net'])
+                                            ,'net'=>money($row2['net'],$row['Store Currency Code'])
+                                                   ,'profit'=>money($row2['profit'],$row['Store Currency Code'])
+                                                             ,'margin'=>percentage($row2['profit'],$row2['net'])
 
-    									 );
+                    );
 
 
 
         }
 
-      }
+    }
 
-   
+
 
 
 
@@ -260,7 +260,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $sum_inv+=$row['invoices'];
     $store_data[$row['Invoice Store Key']]['class']='geo';
     $store_data[$row['Invoice Store Key']]['invoices']=number($row['invoices']);
-        $store_data[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
+    $store_data[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
 
     $store_data[$row['Invoice Store Key']]['net']=money($row['net'],$store_data[$row['Invoice Store Key']]['currency_code']);
     $store_data[$row['Invoice Store Key']]['tax']=money($row['tax'],$store_data[$row['Invoice Store Key']]['currency_code']);
@@ -294,7 +294,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $last_yr_sum_inv+=$row['invoices'];
     $last_yr_store_data[$row['Invoice Store Key']]['class']='geo';
     $last_yr_store_data[$row['Invoice Store Key']]['invoices']=number($row['invoices']);
-        $last_yr_store_data[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
+    $last_yr_store_data[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
 
     $last_yr_store_data[$row['Invoice Store Key']]['net']=money($row['net'],$store_data[$row['Invoice Store Key']]['currency_code']);
     $last_yr_store_data[$row['Invoice Store Key']]['tax']=money($row['tax'],$store_data[$row['Invoice Store Key']]['currency_code']);
@@ -331,7 +331,7 @@ if (strtotime($to)>strtotime('now')) {
         $last_yr_interval_in_future_sum_inv+=$row['invoices'];
         $last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['class']='geo';
         $last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['invoices']=number($row['invoices']);
-                $last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
+        $last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
 
         $last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['net']=money($row['net'],$store_data[$row['Invoice Store Key']]['currency_code']);
         $last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['tax']=money($row['tax'],$store_data[$row['Invoice Store Key']]['currency_code']);
@@ -368,26 +368,26 @@ foreach($store_data as $key=>$val) {
             $store_data[$key]['last_yr_net']=delta($store_data[$key]['_eq_net'],$last_yr_interval_in_future_store_data[$key]['_eq_net']);
 
     } else {
-        if (isset($last_yr_store_data[$key]['_invoices'])){
+        if (isset($last_yr_store_data[$key]['_invoices'])) {
             $store_data[$key]['last_yr_invoices']=delta($store_data[$key]['_invoices'],$last_yr_store_data[$key]['_invoices']);
-        
+
         }
         if (isset($last_yr_store_data[$key]['_eq_net']))
             $store_data[$key]['last_yr_net']=delta($store_data[$key]['_eq_net'],$last_yr_store_data[$key]['_eq_net']);
 
     }
-    
-    
-    
-    
+
+
+
+
     if ($val['store']!='') {
         if ($val['currency_code']!=$corporate_currency)
             $store_data[$key]['per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$sum_net_eq,2).'</span>';
         else
             $store_data[$key]['per_eq_net']=percentage($val['_eq_net'],$sum_net_eq,2);
     } else {
-    
-    
+
+
         if ($val['currency_code']!=$corporate_currency)
             $store_data[$key]['per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$sum_net_eq,2).'</span>';
         else
@@ -409,7 +409,7 @@ if ($mixed_currencies) {
                       'store'=>_('Total'),
                       'invoices'=>number($sum_inv),
                       'last_yr_invoices'=>$last_year_invoices,
-                       'last_yr_net'=>$last_year_net,
+                      'last_yr_net'=>$last_year_net,
                       'net'=>'',
                       'tax'=>'<span class="mix_currency">'.money($sum_tax_eq).'</span>',
                       'eq_net'=>'<span class="mix_currency">'.money($sum_net_eq).'</span>',
@@ -432,7 +432,7 @@ if ($mixed_currencies) {
                       'store'=>_('Total'),
                       'invoices'=>number($sum_inv),
                       'last_yr_invoices'=>$last_year_invoices,
-                          'last_yr_net'=>$last_year_net,
+                      'last_yr_net'=>$last_year_net,
                       'net'=>money($sum_net_eq),
                       'tax'=>money($sum_tax_eq),
                       'eq_net'=>money($sum_net_eq),
@@ -441,10 +441,10 @@ if ($mixed_currencies) {
     $store_data_profit[]=array(
                              'class'=>'total',
                              'store'=>_('Total'),
-                                     'net'=>'<b><span class="mix_currency">'.money($sum_net_eq).'</span></b>',
-                                            'profit'=>'<span class="mix_currency">'.money($sum_profit_eq).'</span>',
-                                                      'eq_profit'=>'<span ><b>'.money($sum_profit_eq).'</b></span>',
-                                                                   'eq_net'=>'<span ><b>'.money($sum_net_eq).'</b></span>'
+                             'net'=>'<b><span class="mix_currency">'.money($sum_net_eq).'</span></b>',
+                             'profit'=>'<span class="mix_currency">'.money($sum_profit_eq).'</span>',
+                             'eq_profit'=>'<span ><b>'.money($sum_profit_eq).'</b></span>',
+                             'eq_net'=>'<span ><b>'.money($sum_net_eq).'</b></span>'
 
                          );
 }

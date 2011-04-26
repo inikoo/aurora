@@ -68,7 +68,7 @@
       </div>
 
 
-      <iframe id="mapframe"  style="display:none" src="http://localhost/kaktus/map.php"></iframe>
+      <iframe id="mapframe"  style="display:none" src="http://localhost/inikoo/map.php"></iframe>
     </div>
 
 

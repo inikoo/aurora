@@ -19,7 +19,7 @@
 	/*	foreach($mailList as $k=>$v)
 		{
 
-		$insert = "INSERT INTO `kaktus`.`Customers Send Post` (`Customer Send Post Key`, `Customer Key`, `Send Post Status`, `Date Creation`, `Date Send`, `Post Type`) VALUES ('1', '".$v."', 'To Send', NOW(), NOW(), '".$post_type."');";
+		$insert = "INSERT INTO `inikoo`.`Customers Send Post` (`Customer Send Post Key`, `Customer Key`, `Send Post Status`, `Date Creation`, `Date Send`, `Post Type`) VALUES ('1', '".$v."', 'To Send', NOW(), NOW(), '".$post_type."');";
 		mysql_query($insert);
 		
 		$_SESSION['queue_list'] = 'Mail is inserted in the queue';

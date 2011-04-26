@@ -120,7 +120,7 @@ class PHPExcel_DocumentProperties
     	$this->_description		= '';
     	$this->_keywords		= '';
     	$this->_category		= '';
-    	$this->_company 		= 'Microsoft Corporation';
+    	$this->_company 		= 'Microsoft HQ';
     }
     
     /**

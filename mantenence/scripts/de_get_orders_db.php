@@ -1319,7 +1319,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             //print "using customer key from order data   $customer_key_from_order_data ";
             $customer = new Customer($customer_key_from_order_data);
 
-        } if (  isset($act_data['customer_id_from_kaktus'])  and $act_data['customer_id_from_kaktus'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+        } if (  isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
 // print_r($act_data['act']);
   //        exit("caca");
 

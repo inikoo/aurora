@@ -111,12 +111,12 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * document creator
 	 */
-	define ('PDF_CREATOR', 'Kaktus');
+	define ('PDF_CREATOR', 'Inikoo');
 
 	/**
 	 * document author
 	 */
-	define ('PDF_AUTHOR', 'Kaktus');
+	define ('PDF_AUTHOR', 'Inikoo');
 
 	/**
 	 * header title
@@ -126,12 +126,12 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * header description string
 	 */
-	define ('PDF_HEADER_STRING', "www.kaktus.com");
+	define ('PDF_HEADER_STRING', "www.inikoo.com");
 
 	/**
 	 * image logo
 	 */
-	define ('PDF_HEADER_LOGO', 'kaktus-logo.png');
+	define ('PDF_HEADER_LOGO', 'inikoo-logo.png');
 
 	/**
 	 * header logo image width [mm]

@@ -23,7 +23,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"name_a", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"id_b", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name_b", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"correlation", label:"<?php echo _('Correlation')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"correlation", label:"<?php echo _('Correlation')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"action", label:"", width:20,sortable:false}
 
 				       
 					 ];
@@ -49,7 +50,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'name_a',
 			 'id_b',
 			 'name_b',
-			 'correlation'
+			 'correlation','action'
 
 			 ]};
 	    //__You shouls not change anything from here

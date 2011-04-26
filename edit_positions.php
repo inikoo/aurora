@@ -10,10 +10,10 @@ if( !$user->can_edit('staff')){
    exit;
 }
 
-$sql="select `Corporation Company Key` from `Corporation Dimension` ";
+$sql="select `HQ Company Key` from `HQ Dimension` ";
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
-   $company_key=$row['Corporation Company Key'];
+   $company_key=$row['HQ Company Key'];
 }else{
        header('Location: new_corporation.php');
        exit;

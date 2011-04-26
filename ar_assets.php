@@ -7,7 +7,7 @@
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2009, Kaktus
+ Copyright (c) 2009, Inikoo
 
  Version 2.0
 */
@@ -8167,7 +8167,11 @@ function list_customers_per_store() {
 
     $sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,(`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
          `Store Contacts With Orders`,(`Store Active Contacts With Orders`+`Store Losing Contacts With Orders`)as active_with_orders,`Store New Contacts With Orders`,`Store Lost Contacts With Orders`,`Store Losing Contacts With Orders` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-    $res = mysql_query($sql);
+ 
+
+
+ 
+ $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
 
@@ -8183,6 +8187,8 @@ function list_customers_per_store() {
     $total_lost_contacts_with_orders=0;
     $total_losing_contacts_with_orders=0;
 
+
+
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $name=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
         $code=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
@@ -8193,7 +8199,6 @@ function list_customers_per_store() {
         $total_new_contacts+=$row['Store New Contacts'];
         $total_lost_contacts+=$row['Store Lost Contacts'];
         $total_losing_contacts+=$row['Store Losing Contacts'];
-
         $total_contacts_with_orders+=$row['Store Contacts With Orders'];
         $total_active_contacts_with_orders+=$row['active_with_orders'];
         $total_new_contacts_with_orders+=$row['Store New Contacts With Orders'];
@@ -8208,7 +8213,6 @@ function list_customers_per_store() {
         $active_contacts=number($row['active']);
         $losing_contacts=number($row['Store Losing Contacts']);
         $lost_contacts=number($row['Store Lost Contacts']);
-
         $contacts_with_orders=number($row['Store Contacts With Orders']);
         $new_contacts_with_orders=number($row['Store New Contacts With Orders']);
         $active_contacts_with_orders=number($row['active_with_orders']);

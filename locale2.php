@@ -922,7 +922,7 @@ gettext("CVS File");
 gettext("Code Search");
 
 /* ../templates//footer.tpl */
-gettext("Powered by Kaktus");
+gettext("Powered by Inikoo");
 
 /* ../templates//contacts.tpl */
 gettext("List of customers");

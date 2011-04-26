@@ -1,8 +1,8 @@
 <?php
 /*
- File: Corporation.php 
+ File: HQ.php 
 
- This file contains the Corporation Class
+ This file contains the HQ Class
 
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -14,11 +14,11 @@
 include_once('class.DB_Table.php');
 include_once('class.Company.php');
 
-class Corporation extends DB_Table{
+class HQ extends DB_Table{
   
- function Corporation($a1=false,$a2=false) {
+ function HQ($a1=false,$a2=false) {
 
-    $this->table_name='Corporation';
+    $this->table_name='HQ';
 
     if($a1=='create'){
       $this->create($a2);
@@ -29,7 +29,7 @@ class Corporation extends DB_Table{
  function get_data(){
     
   
-      $sql=sprintf("select * from `Corporation Dimension` ");
+      $sql=sprintf("select * from `HQ Dimension` ");
     
  
     $result=mysql_query($sql);
@@ -37,7 +37,7 @@ class Corporation extends DB_Table{
       $this->id=1;
       
      
-      $this->company=new Company($this->data['Corporation Company Key']);
+      $this->company=new Company($this->data['HQ Company Key']);
     }
       
 
@@ -49,9 +49,9 @@ class Corporation extends DB_Table{
    
    $company=new Company('find create auto',$data);
 
-$data['Corporation Company Key']=$company->id;
+$data['HQ Company Key']=$company->id;
 
-   $data['Corporation Company Name']=$company->data['Company Name'];
+   $data['HQ Company Name']=$company->data['Company Name'];
 
    
    $base_data=$this->base_data();
@@ -68,13 +68,13 @@ $data['Corporation Company Key']=$company->id;
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
-    $sql=sprintf("delete * from  `Corporation Dimension` " );
+    $sql=sprintf("delete * from  `HQ Dimension` " );
 mysql_query($sql);
-    $sql=sprintf("insert into `Corporation Dimension` %s %s",$keys,$values);
+    $sql=sprintf("insert into `HQ Dimension` %s %s",$keys,$values);
     
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
-      $this->msg=_("Corporation Added");
+      $this->msg=_("HQ Added");
       $this->get_data();
    $this->new=true;
    
@@ -104,10 +104,10 @@ mysql_query($sql);
 switch ($field) {
     case 'Company Name':
 
-    case 'Corporation Name':
+    case 'HQ Name':
         $this->update_company_name($value);
         break;
-    case('Corporation Currency'):
+    case('HQ Currency'):
        $this->update_currency($value);
         break;
     default:
@@ -120,7 +120,7 @@ switch ($field) {
       function update_name($value){
  
   
-    $sql=sprintf("update `Corporation Dimension` set `Corporation Name`=%s",prepare_mysql($value));
+    $sql=sprintf("update `HQ Dimension` set `HQ Name`=%s",prepare_mysql($value));
     mysql_query($sql);
   
       $this->updated=true;
@@ -147,7 +147,7 @@ switch ($field) {
   $res=mysql_query($sql);
   if($row=mysql_fetch_assoc($res)){
         
-       $sql=sprintf ("update `Corporation Dimension` set `Corporation Currency`=%s",prepare_mysql($value));
+       $sql=sprintf ("update `HQ Dimension` set `HQ Currency`=%s",prepare_mysql($value));
     mysql_query($sql);
   
       $this->updated=true;

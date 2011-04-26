@@ -3,7 +3,7 @@
  File: ftp_transfer.php 
  About: Upload & Download the file via ftp using class.FTP.php
  Autor: Raul Perusquia <rulovico@gmail.com>
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2009, Inikoo 
  Version 2.0
 */
 

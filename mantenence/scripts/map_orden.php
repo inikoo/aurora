@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
-//require_once '/home/raul/www/kaktus/dns/dns.php';         // DB connecton configuration file
+//require_once '/home/raul/www/inikoo/dns/dns.php';         // DB connecton configuration file
 $dns_pwd='ajolote1';
 $dns_db='ci_1';
 $dns_user='root';

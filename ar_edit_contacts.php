@@ -16,6 +16,23 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('customer_merge'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                           'merge_key'=>array('type'=>'key')
+
+                         ));
+    customer_merge($data);
+    break;
+case('delete_customer'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                           
+
+                         ));
+    delete_customer($data);
+    break;
+
 case('delete_customer_list'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -2346,7 +2363,7 @@ function new_corporation($data) {
     }
 
 
-    $sql=sprintf("insert into `Corporation Dimension` (`Corporation Name`,`Corporation Company Key`) values (%s,%d)"
+    $sql=sprintf("insert into `HQ Dimension` (`HQ Name`,`HQ Company Key`) values (%s,%d)"
                  ,prepare_mysql($company->data['Company Name'])
                  ,$company->id
                 );
@@ -3240,6 +3257,32 @@ function edit_company_area($data) {
 
 }
 
+
+function delete_customer($data) {
+global $editor;
+
+    $customer=new Customer($data['customer_key']);
+   $customer->editor=$editor;
+  // print_r($customer->editor);
+  // exit;
+   if ($customer->id) {
+        $customer->delete();
+        if ($customer->deleted) {
+            $response=array('state'=>200,'action'=>'deleted','msg'=>$customer->msg);
+            echo json_encode($response);
+            exit;
+        } else {
+            $response=array('state'=>400,'action'=>'nochange','msg'=>$customer->msg);
+            echo json_encode($response);
+            exit;
+        }
+    }
+    $response=array('state'=>400,'action'=>'error','msg'=>'Error');
+    echo json_encode($response);
+    exit;
+
+}
+
 function delete_contact($data) {
     $contact=new Contact($data['contact_key']);
     if ($contact->id) {
@@ -3372,8 +3415,8 @@ function new_delivery_address() {
 
 
 function edit_corporation($data) {
-    include_once('class.Corporation.php');
-    $corporation=new Corporation();
+    include_once('class.HQ.php');
+    $corporation=new HQ();
     $corporation->update(array($data['key']=>$data['newvalue']));
     if ($corporation->updated) {
         $response= array('state'=>200,'newvalue'=>$corporation->new_value,'key'=>$_REQUEST['okey']);
@@ -3470,8 +3513,32 @@ $response=array('state'=>200,'action'=>'deleted');
 
 
 
-
 }
 
+function customer_merge($data){
+global $user;
+$customer=new Customer($data['customer_key']);
+
+$customer_to_be_deleted=new Customer($data['merge_key']);
+
+if(!$customer->id or !$customer_to_be_deleted->id){
+$response=array('state'=>400,'msg'=>'Customer(s) not found');
+        echo json_encode($response);
+        return;
+}
+
+if(!in_array($customer->data['Customer Store Key'],$user->stores) or !in_array($customer_to_be_deleted->data['Customer Store Key'],$user->stores)){
+$response=array('state'=>400,'msg'=>_('Forbidden operation'));
+        echo json_encode($response);
+        return;
+}
+
+$customer->merge($customer_to_be_deleted->id);
+
+
+
+
+
+}
 
 ?>
