@@ -40,6 +40,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  
    $tel=new Telecom($row['Telecom Key']);
 $tel->update_parents(false);
+print $tel->id."\t\t\r";
 continue;
 
 $address_keys=$tel->get_parent_keys('Address');
