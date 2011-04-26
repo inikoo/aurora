@@ -7,7 +7,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2009, Inikoo 
  
  Version 2.0
 */
@@ -59,9 +59,9 @@ if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
  }
 
 if (function_exists('bindtextdomain')){
-	bindtextdomain('kaktus', './locale');	
-	bind_textdomain_codeset('kaktus', $myconf['encoding']);
-	textdomain('kaktus');
+	bindtextdomain('inikoo', './locale');	
+	bind_textdomain_codeset('inikoo', $myconf['encoding']);
+	textdomain('inikoo');
 }
 $smarty->assign('theme', $myconf['theme']);
 $smarty->assign('title', _('Authentication'));

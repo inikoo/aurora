@@ -60,9 +60,9 @@ $_SESSION['text_locale_encoding']=substr($_SESSION['text_locale'],6);
 
 $other_langs=array();
 
-bindtextdomain('kaktus', './locale');
-bind_textdomain_codeset('kaktus',$_SESSION['text_locale_encoding']);
-textdomain('kaktus');
+bindtextdomain('inikoo', './locale');
+bind_textdomain_codeset('inikoo',$_SESSION['text_locale_encoding']);
+textdomain('inikoo');
 
 
 $regex['thousand_sep']=str_replace('.','\.','/'.$default_locale_data['thosusand_sep'].'/g');

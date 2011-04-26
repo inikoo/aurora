@@ -7,7 +7,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2009, Inikoo 
  
  Version 2.0
 */
@@ -174,10 +174,10 @@ class Staff extends DB_Table{
 
      if($create and !$this->found){
        
-        $sql="select `Corporation Company Key` from `Corporation Dimension`";
+        $sql="select `HQ Company Key` from `HQ Dimension`";
       $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
-    $company_key=$row['Corporation Company Key'];
+    $company_key=$row['HQ Company Key'];
 $company=new Company($company_key);
     }else{
     exit("Error no corporation\n");
@@ -210,10 +210,10 @@ $company=new Company($company_key);
 
 
    function create($data){
-     $sql="select `Corporation Company Key` from `Corporation Dimension`";
+     $sql="select `HQ Company Key` from `HQ Dimension`";
       $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
-    $company_key=$row['Corporation Company Key'];
+    $company_key=$row['HQ Company Key'];
 $company=new Company($company_key);
     }else{
     exit("Error no corporation\n");

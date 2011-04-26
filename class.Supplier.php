@@ -7,7 +7,7 @@
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) 2009, Kaktus
+  Copyright (c) 2009, Inikoo
 
   Version 2.0
 */
@@ -1310,7 +1310,7 @@ case('Supplier Main Contact Name'):
 
     }
 
-    function get_emails_keys() {
+    function get_email_keys() {
         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Supplier' and `Subject Key`=%d "
                      ,$this->id );
 

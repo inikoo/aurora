@@ -20,12 +20,19 @@ if (!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('email_in_other_customer'):
+ $data=prepare_values($_REQUEST,array(
+                             'query'=>array('type'=>'string'),
+                            'store_key'=>array('type'=>'key'),
+                                     'customer_key'=>array('type'=>'key')
+                         ));
+  email_in_other_customer($data) ;                      
+break;
 case('customers_correlation'):
 
-  list_customers_correlations();
+    list_customers_correlations();
 
-  break;
+    break;
 case('show_posible_customer_matches'):
     $data=prepare_values($_REQUEST,array(
                              'scope'=>array('type'=>'json array')
@@ -1849,9 +1856,9 @@ function list_customers() {
 
     $where='where true';
     $table='`Customer Dimension` C ';
-      $where_type='';
-    
-     if ($awhere) {
+    $where_type='';
+
+    if ($awhere) {
         $tmp=preg_replace('/\\\"/','"',$awhere);
         $tmp=preg_replace('/\\\\\"/','"',$tmp);
         $tmp=preg_replace('/\'/',"\'",$tmp);
@@ -1861,7 +1868,8 @@ function list_customers() {
         list($where,$table)=customers_awhere($raw_data);
 
 
-    }elseif ($type=='all_contacts') {
+    }
+    elseif ($type=='all_contacts') {
         $where_type='';
         $_SESSION['state']['customers']['type']=$type;
 
@@ -1873,7 +1881,7 @@ function list_customers() {
     }
     elseif($type=='active_contacts') {
         $where_type=sprintf(' and `Customer Active`="Yes" ');
-      $_SESSION['state']['customers']['type']=$type;
+        $_SESSION['state']['customers']['type']=$type;
     }
     elseif($type=='list') {
         $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$_REQUEST['list_key']);
@@ -1898,7 +1906,7 @@ function list_customers() {
                 $raw_data['store_key']=$store;
                 list($where,$table)=customers_awhere($raw_data);
 
-               
+
 
 
             }
@@ -1913,7 +1921,7 @@ function list_customers() {
 
 
 
-   
+
 
 
 //print "yyyy $where_type";
@@ -1926,7 +1934,7 @@ function list_customers() {
 
     $currency='';
     if (is_numeric($store) and in_array($store,$user->stores)) {
-      $where.=sprintf(' and  `Customer Store Key`=%d ',$store);
+        $where.=sprintf(' and  `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     } else {
@@ -2158,7 +2166,7 @@ function list_customers() {
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
-   // print $sql;
+    // print $sql;
     $adata=array();
 
 
@@ -3654,12 +3662,42 @@ function find_contact($the_data) {
     echo json_encode($response);
 }
 
+
+function email_in_other_customer($data){
+$email=$data['query'];
+ $sql=sprintf('select `Customer Name`,`Customer Key` from `Email Dimension` E left join  `Email Bridge` B on (E.`Email Key`=B.`Email Key`) left join  `Customer Dimension` on (`Subject Key`=`Customer Key`)  where `Email`=%s  and `Subject Type`="Customer" and `Subject Key`!=%d and `Customer Store Key`=%d ',
+                 prepare_mysql($email),
+                 $data['customer_key'],
+                 $data['store_key']
+                );
+    $result=mysql_query($sql);
+    //print $sql;
+    $num_rows = mysql_num_rows($result);
+    if ($num_rows==0) {
+        $response=array('state'=>200,'found'=>0,'msg'=>'');
+        echo json_encode($response);
+    }
+    else {
+    $customers='';
+    
+    while($row=mysql_fetch_assoc($result)){ $customers.=sprintf(', <a href="customer.php?id=%d">%s (%d)</a>',$row['Customer Key'],$row['Customer Name'],$row['Customer Key']);
+    }
+    $customers=preg_replace('/^, /','',$customers);
+    
+    
+    
+    $response=array('state'=>200,'found'=>1,'msg'=>_('Email found in another').' '.ngettext('customer','customers',$num_rows).'. '.$customers);
+  echo json_encode($response);
+    }
+}
+
 function used_email() {
 
     $email=$_REQUEST('query');
     $sql=sprintf('select `Subject`,`Subject Key` from `Email Dimension` E left join `Email Bridge` EB on (E.`Email Key`=EB.`Email Key`) where `Email`=%s  '
                  ,prepare_mysql($email)
                 );
+            
     $result=mysql_query($sql);
     $num_rows = mysql_num_rows($result);
     if ($num_rows==0) {
@@ -5677,11 +5715,11 @@ function list_customers_correlations() {
     $_SESSION['state']['customers']['correlations']['f_field']=$f_field;
     $_SESSION['state']['customers']['correlations']['f_value']=$f_value;
 
-   
-    
-      $where_type='';
-    
-  
+
+
+    $where_type='';
+
+
 
     $filter_msg='';
     $wheref='';
@@ -5692,7 +5730,7 @@ function list_customers_correlations() {
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     } else {
-      $where=' where false ';
+        $where=' where false ';
 
     }
 
@@ -5743,7 +5781,7 @@ function list_customers_correlations() {
 
 
     $sql="select count(*) as total from `Customer Correlation`   $where $wheref $where_type";
-  //  print $sql;
+    //  print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5861,21 +5899,21 @@ function list_customers_correlations() {
 
     if ($order=='name_a')
         $order='`Customer A Name`';
-      if ($order=='name_b')
+    if ($order=='name_b')
         $order='`Customer B Name`';
-   if ($order=='id_a')
+    if ($order=='id_a')
         $order='`Customer A Key`';
     if ($order=='id_b')
         $order='`Customer B Key`';
 
     else
-    $order='`Correlation`';
- 
+        $order='`Correlation`';
+
 
 
 
     $sql="select * from `Customer Correlation`   $where $wheref  $where_type order by $order $order_direction limit $start_from,$number_results";
-   // print $sql;
+    // print $sql;
     $adata=array();
 
 
@@ -5888,20 +5926,23 @@ function list_customers_correlations() {
         $id_a="<a href='customer.php?id=".$data['Customer A Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer A Key']).'</a>';
         $id_b="<a href='customer.php?id=".$data['Customer B Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer B Key']).'</a>';
 
-      
-      $name_a=" <a href='customer.php?id=".$data['Customer A Key']."'>".($data['Customer A Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer A Name']).'</a>';
-      $name_b=" <a href='customer.php?id=".$data['Customer B Key']."'>".($data['Customer B Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer B Name']).'</a>';
+
+        $name_a=" <a href='customer.php?id=".$data['Customer A Key']."'>".($data['Customer A Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer A Name']).'</a>';
+        $name_b=" <a href='customer.php?id=".$data['Customer B Key']."'>".($data['Customer B Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer B Name']).'</a>';
 
 
 
 
         $adata[]=array(
                      'id_a'=>$id_a,
-		     'id_b'=>$id_b,
+                     'id_b'=>$id_b,
                      'name_a'=>$name_a,
-		     'name_b'=>$name_b,
-                     'correlation'=>$data['Correlation']
-                   
+                     'name_b'=>$name_b,
+                     'correlation'=>$data['Correlation'],
+                     'action'=>sprintf('<a href="customer_split_view.php?id_a=%d&id_b=%d"><img src="art/icons/application_tile_horizontal.png" alt="split_view"></a>',
+                     $data['Customer A Key'],
+                     $data['Customer B Key']
+                     )   
 
                  );
 
@@ -5920,7 +5961,7 @@ function list_customers_correlations() {
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
-                                     
+
                                       'filtered'=>$filtered
                                      )
                    );

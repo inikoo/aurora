@@ -7,7 +7,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2010, Kaktus 
+ Copyright (c) 2010, Inikoo 
  
  Version 2.0
 */
@@ -133,7 +133,7 @@ $export_data=array(
 		   ,""
 		   
 		   
-		   ,"kaktus_del_address"
+		   ,"inikoo_del_address"
 		   ,$delivery_tel
 		   ,$delivery_address_lines[1]
 		   ,$delivery_address_lines[3]
@@ -152,7 +152,7 @@ $export_data=array(
 		   
 		   ,""
 		   
-		   ,"","","","","","","","","","","","","kaktus","kaktus","c","d","e"
+		   ,"","","","","","","","","","","","","inikoo","inikoo","c","d","e"
 		   ,$number_orders+1
 		   ,"","","","","","","","","","","","",""
 		   ,$data['courier']

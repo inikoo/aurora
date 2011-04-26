@@ -3,7 +3,7 @@
 <a style="margin-left:10px" href="report_issue.php?t=bug">{t}Report a problem{/t}</a>
 <a style="margin-left:10px" href="report_issue.php?t=feature">{t}Request a feature{/t}</a>
 
-<div style="margin-top:2px">{t}Powered by Kaktus{/t}</div>
+<div style="margin-top:2px">{t}Powered by Inikoo{/t}</div>
 </div> 
 
 </div>

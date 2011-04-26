@@ -191,11 +191,11 @@ if ($user->data['User Type']=='Supplier') {
 }
  
  
-$sql=sprintf("select `Corporation Currency`,`Currency Symbol` from  `Corporation Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Corporation Currency`) ");
+$sql=sprintf("select `HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
 $res=mysql_query($sql);
  
 if ($row=mysql_fetch_array($res)) {
-    $corporate_currency=$row['Corporation Currency'];
+    $corporate_currency=$row['HQ Currency'];
     $corporate_symbol=$row['Currency Symbol'];
 }
  

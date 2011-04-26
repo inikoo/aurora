@@ -20,7 +20,7 @@ $home_country_id=30;
 
 $number_of_digits=5;
 
-//require_once '/home/raul/www/kaktus/dns/dns.php';         // DB connecton configuration file
+//require_once '/home/raul/www/inikoo/dns/dns.php';         // DB connecton configuration file
 
 
 

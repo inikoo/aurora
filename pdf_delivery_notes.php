@@ -8,7 +8,7 @@ $invoice_public_id=$row[0];
 require_once('external_libs/PDF/config/lang/eng.php');
 require_once('pdf_main.php');
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf->SetAuthor('Kaktus');
+$pdf->SetAuthor('Inikoo');
 $pdf->SetTitle('Generate Delivery Note');
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));

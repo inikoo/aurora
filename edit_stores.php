@@ -7,13 +7,13 @@
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2009, Kaktus
+ Copyright (c) 2009, Inikoo
 
  Version 2.0
 */
 include_once('common.php');
 include_once('assets_header_functions.php');
-include_once('class.Corporation.php');
+include_once('class.HQ.php');
 
 //include_once('stock_functions.php');
 if (!$user->can_view('stores'))
@@ -45,7 +45,7 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 
-$corporation=new Corporation();
+$corporation=new HQ();
 $smarty->assign('corporation',$corporation);
 
 $number_of_stores=count($user->stores);

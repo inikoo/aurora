@@ -7,7 +7,7 @@
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) 2009, Kaktus
+  Copyright (c) 2009, Inikoo
 
   Version 2.0*/
 include_once('class.DB_Table.php');
@@ -15,7 +15,7 @@ include_once('class.Contact.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
-include_once('class.Corporation.php');
+include_once('class.HQ.php');
 
 //include_once('Name.php');
 /* class: Company
@@ -253,26 +253,26 @@ class Company extends DB_Table {
 
 
 
-$companies_with_same_name=array();
+            $companies_with_same_name=array();
 
             $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 50"
                          ,prepare_mysql($raw_data['Company Name'])
                         );
-// print "$sql\n";         
+// print "$sql\n";
             $result=mysql_query($sql);
             while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
                 $score=$max_score;
                 $extra_score=0;
                 $company_key=$row['Company Key'];
-$companies_with_same_name[$company_key]=$company_key;
+                $companies_with_same_name[$company_key]=$company_key;
                 foreach($this->candidate as $candidate_key=>$candidate_score) {
                     $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
                                  ,$candidate_key
                                  ,$company_key
                                 );
-                                
-                 //   print "$sql\n";            
+
+                    //   print "$sql\n";
                     $res=mysql_query($sql);
                     $match_data=mysql_fetch_array($res);
                     if ($match_data['matched']>0) {
@@ -288,21 +288,21 @@ $companies_with_same_name[$company_key]=$company_key;
                 else
                     $this->candidate_companies[$company_key]=$score+$extra_score;
             }
-            if(count($companies_with_same_name)>0){
-            $sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Company' and `Subject Key` in (%s)  ",
-            join(',',$companies_with_same_name));
-            $res=mysql_query($sql);
-            while($row=mysql_fetch_assoc($res)){
-            if (isset($this->candidate[$row['Contact Key']]))
-                    $this->candidate[$row['Contact Key']]+=30;
-                else
-                    $this->candidate[$row['Contact Key']]=30;
-            
+            if (count($companies_with_same_name)>0) {
+                $sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Company' and `Subject Key` in (%s)  ",
+                             join(',',$companies_with_same_name));
+                $res=mysql_query($sql);
+                while ($row=mysql_fetch_assoc($res)) {
+                    if (isset($this->candidate[$row['Contact Key']]))
+                        $this->candidate[$row['Contact Key']]+=30;
+                    else
+                        $this->candidate[$row['Contact Key']]=30;
+
+                }
+
+
             }
-            
-            
-            }
-         
+
 
 
 
@@ -374,7 +374,7 @@ $companies_with_same_name[$company_key]=$company_key;
     */
     function find($raw_data,$options) {
         $find_fuzzy=false;
-       
+
 
         //print "XXX------------------> $options <-----------\n";
         $find_type='complete';
@@ -466,7 +466,7 @@ $companies_with_same_name[$company_key]=$company_key;
             $this->find_complete($raw_data);
             break;
         case 'fuzzy':
-           
+
             $this->find_fuzzy($raw_data);
             break;
         }
@@ -484,13 +484,13 @@ $companies_with_same_name[$company_key]=$company_key;
 
 
         if ($create or $update) {
-         
-           // print "Company founded ".$this->found_key." ".$this->found." \n";
+
+            // print "Company founded ".$this->found_key." ".$this->found." \n";
 
             //print "Contact founded ".$this->find_contact->found."  \n";
 
 
-           
+
 
             if ($create and !$this->found) {
 
@@ -518,22 +518,22 @@ $companies_with_same_name[$company_key]=$company_key;
 
 
             if ($update and $this->found) {
-            $new_principal_contact=0;
-            
-            if (!$this->find_contact->found) {
-            $this->find_contact=new Contact("find in company ".$this->found_key." $find_type ",$raw_data);
+                $new_principal_contact=0;
 
-            }
-            
-            
                 if (!$this->find_contact->found) {
-                
-                
-                
+                    $this->find_contact=new Contact("find in company ".$this->found_key." $find_type ",$raw_data);
+
+                }
+
+
+                if (!$this->find_contact->found) {
+
+
+
                     $contact_new=new Contact("find in company create",$raw_data);
                     $this->create_contact_bridge($contact_new->id);
                     $contact_created=true;
-                     $new_principal_contact=$contact_new->id;
+                    $new_principal_contact=$contact_new->id;
                 } else {//START updating customer
 
                     $contact_keys=$this->get_contact_keys();
@@ -573,9 +573,9 @@ $companies_with_same_name[$company_key]=$company_key;
 
                 unset($raw_data['Company Main Plain Email']);
 
-                
-                if($new_principal_contact)
-                $this->update_principal_contact($new_principal_contact);
+
+                if ($new_principal_contact)
+                    $this->update_principal_contact($new_principal_contact);
 
                 $this->get_data('id',$this->found_key);
 
@@ -599,8 +599,8 @@ $companies_with_same_name[$company_key]=$company_key;
                     if (preg_match('/Address|Customer|Supplier|Location|Country|XHTML|Email/',$key))
                         unset($raw_data[$key]);
                 }
-               // print "*************************\n";
-               // print_r($raw_data);
+                // print "*************************\n";
+                // print_r($raw_data);
 
 
 
@@ -717,7 +717,7 @@ $companies_with_same_name[$company_key]=$company_key;
         $telephone=$this->data['Company Main Plain Telephone'];
         $fax=$this->data['Company Main Plain FAX'];
 
-        if($telephone==$fax)
+        if ($telephone==$fax)
             $fax='';
 
         $this->data['Company Main XHTML FAX']='';
@@ -763,29 +763,29 @@ $companies_with_same_name[$company_key]=$company_key;
                 $sql=sprintf("insert into `Company Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Company Old ID'])));
                 mysql_query($sql);
             }
-            
-            
-             if (preg_match('/use address \d+/',$options,$match)) {
-            
-            $address=new Address(preg_replace('/[^\d]/','',$match[0]));
-            }else{
-            
-            $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
-            foreach($raw_address_data as $key=>$value) {
-                if (array_key_exists($key,$address_data))
-                    $address_data[$key]=$value;
-            }
+
+
+            if (preg_match('/use address \d+/',$options,$match)) {
+
+                $address=new Address(preg_replace('/[^\d]/','',$match[0]));
+            } else {
+
+                $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
+                foreach($raw_address_data as $key=>$value) {
+                    if (array_key_exists($key,$address_data))
+                        $address_data[$key]=$value;
+                }
 
 
 
-            $address_data['editor']=$this->editor;
+                $address_data['editor']=$this->editor;
 
-            // print "xxx crete company address $options";
-            //print_r($address_data);
+                // print "xxx crete company address $options";
+                //print_r($address_data);
 
-            $address=new Address("find in company ".$this->id." $options create",$address_data);
-            $address->editor=$this->editor;
-            //print_r($address);
+                $address=new Address("find in company ".$this->id." $options create",$address_data);
+                $address->editor=$this->editor;
+                //print_r($address);
             }
             $this->associate_address($address->id);
 
@@ -859,10 +859,10 @@ $companies_with_same_name[$company_key]=$company_key;
 
                 $telephone=new Telecom("find in company fast create country code ".$address->data['Address Country Code'],$telephone_data);
                 if (!$telephone->error) {
-                  //  if ($telephone->is_mobile())
-                  //      $mobile_keys[]=$telephone->id;
-                   // else
-                        $telephone_keys[]=$telephone->id;
+                    //  if ($telephone->is_mobile())
+                    //      $mobile_keys[]=$telephone->id;
+                    // else
+                    $telephone_keys[]=$telephone->id;
 
                 }
             }
@@ -878,12 +878,12 @@ $companies_with_same_name[$company_key]=$company_key;
 
                 if (!$telephone->error) {
 
-                   // if ($telephone->is_mobile()) {
+                    // if ($telephone->is_mobile()) {
                     //    $mobile_keys[]=$telephone->id;
 
 
                     //} else {
-                        $fax_keys[]=$telephone->id;
+                    $fax_keys[]=$telephone->id;
 
                     //}
 
@@ -963,16 +963,16 @@ $companies_with_same_name[$company_key]=$company_key;
 
     protected function update_field_switcher($field,$value,$options='') {
 
-    
+
 
 
         switch ($field) {
         case('Company Tax Number'):
             $this->update_field($field,$value,$options);
-            if($this->updated){
+            if ($this->updated) {
                 $this->update_parents_tax_number();
             }
-        break;
+            break;
         case('Company Main Contact Key'):
             $this->update_main_contact_name($value);
             break;
@@ -1001,17 +1001,17 @@ $companies_with_same_name[$company_key]=$company_key;
             else
                 $type='FAX';
             $address=new Address($this->data['Company Main Address Key']);
-	   
-	    
+
+
 
             $address->editor=$this->editor;
             if ($value=='') {
                 if ($telecom_key=$address->get_principal_telecom_key($type)) {
                     $telecom=new Telecom($telecom_key);
                     $telecom->delete();
-                    if($telecom->deleted){
+                    if ($telecom->deleted) {
                         $this->updated=true;
-                         $this->new_value='';
+                        $this->new_value='';
                     }
                 }
 
@@ -1020,8 +1020,8 @@ $companies_with_same_name[$company_key]=$company_key;
 
                 if ($address->get_number_of_associated_telecoms($type)>0) {
                     $address->update_principal_telecom_number($value,$type);
-		     
-		  
+
+
 
 
                 } else {
@@ -1183,10 +1183,10 @@ $companies_with_same_name[$company_key]=$company_key;
             mysql_free_result($res);
 
 
-            $sql=sprintf("select * from `Corporation Dimension` where `Corporation Company Key`=%d  ",$this->id);
+            $sql=sprintf("select * from `HQ Dimension` where `HQ Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $corporation=new Corporation ();
+                $corporation=new HQ ();
                 $corporation->editor=$this->editor;
                 $corporation->update_name($this->data['Company Name']);
 
@@ -1702,6 +1702,14 @@ $companies_with_same_name[$company_key]=$company_key;
             $this->update_parents_principal_contact_keys($contact_key);
             $contact->new=$contact->new;
             $contact->update_parents();
+            $contact->update_parents_principal_email_keys();
+            $email=new Email($contact->get_principal_email_key());
+            $email->editor=$this->editor;
+            $email->new=$this->new;
+            if ($email->id)
+                $email->update_parents();
+
+
             $this->last_associated_contact_key=$contact_key;
 
         }
@@ -1993,9 +2001,9 @@ $companies_with_same_name[$company_key]=$company_key;
         return $card;
     }
 
-   
+
     function get_customer_keys($args='') {
-                $sql=sprintf("select `Subject Key` as `Customer Key` from `Company Bridge` where `Subject Type`='Customer' and `Company Key`=%d  ",$this->id);
+        $sql=sprintf("select `Subject Key` as `Customer Key` from `Company Bridge` where `Subject Type`='Customer' and `Company Key`=%d  ",$this->id);
 
         $customer_keys=array();
         $result=mysql_query($sql);
@@ -2008,7 +2016,7 @@ $companies_with_same_name[$company_key]=$company_key;
 
 
 
-    function get_emails_keys() {
+    function get_email_keys() {
         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Company' and `Subject Key`=%d "
                      ,$this->id );
 
@@ -2097,11 +2105,21 @@ $companies_with_same_name[$company_key]=$company_key;
 
     }
 
-    function get_telecom_keys($type='Telephone') {
 
 
-        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and     `Subject Type`='Company' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  "
-                     ,prepare_mysql($type)
+
+    function get_telecom_keys($type=false) {
+
+$where_type='';
+		
+		
+		if($type){
+		$where_type=sprintf('and `Telecom Type`=%s',prepare_mysql($type));
+		
+		}
+
+        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where     `Subject Type`='Company' and `Subject Key`=%d  $where_type group by `Telecom Key` order by `Is Main` desc  "
+                   
                      ,$this->id);
         $address_keys=array();
         $result=mysql_query($sql);
@@ -2524,7 +2542,7 @@ $companies_with_same_name[$company_key]=$company_key;
                         $history_data['Direct Object Key']=$this->id;
                         $history_data['Indirect Object']=$parent;
                         $history_data['Indirect Object Key']=$parent_object->id;
-                       
+
                     } else {
                         $history_data['History Abstract']='Company name changed to '.$this->data['Company Name'];
                         $history_data['History Details']=_('Name changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Company Name']." "._('in')." ".$parent_object->get_name()." ".$parent_label;
@@ -2534,10 +2552,10 @@ $companies_with_same_name[$company_key]=$company_key;
                         $history_data['Indirect Object']=$parent.' Name';
                         $history_data['Indirect Object Key']='';
 
-                       
+
 
                     }
-                       if ($parent=='Customer') {
+                    if ($parent=='Customer') {
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
@@ -2551,7 +2569,7 @@ $companies_with_same_name[$company_key]=$company_key;
             }
         }
     }
-   function update_parents_tax_number() {
+    function update_parents_tax_number() {
 
         $parents=array('Customer');
         foreach($parents as $parent) {
@@ -2581,7 +2599,7 @@ $companies_with_same_name[$company_key]=$company_key;
                 if ($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Company')) {
                     $sql=sprintf("update `$parent Dimension` set `$parent Tax Number`=%s where `$parent Key`=%d"
                                  ,prepare_mysql($parent_object->data[$parent.' Tax Number'])
-                              
+
 
                                  ,$parent_object->id
                                 );
@@ -2602,11 +2620,11 @@ $companies_with_same_name[$company_key]=$company_key;
                         $history_data['History Abstract']='Tax Number Associated '.$this->data['Company Tax Number'];
                         $history_data['History Details']=$this->data['Company Tax Number']." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
-                         $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']=$parent.' Tax Name';
                         $history_data['Indirect Object Key']='';
-                       
+
                     } else {
                         $history_data['History Abstract']='Tax Number changed to '.$this->data['Company Tax Number'];
                         $history_data['History Details']=_('Tax Number changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Company Tax Number'].", ".$parent_label.": ".$parent_object->get_name();
@@ -2616,10 +2634,10 @@ $companies_with_same_name[$company_key]=$company_key;
                         $history_data['Indirect Object']=$parent.' Tax Name';
                         $history_data['Indirect Object Key']='';
 
-                       
+
 
                     }
-                       if ($parent=='Customer') {
+                    if ($parent=='Customer') {
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
@@ -2634,15 +2652,22 @@ $companies_with_same_name[$company_key]=$company_key;
         }
     }
 
-    function get_parent_keys($type) {
+
+
+
+    function get_parent_keys($type=false) {
+        $where_type='';
         $keys=array();
-        if (!preg_match('/^(Supplier|User|Customer)$/',$type)) {
-            return $keys;
+
+        if ($type)  {
+            if (!preg_match('/^(Supplier|User|Customer)$/',$type)) {
+                return $keys;
+            }
+            $where_type=' and `Subject Type`='.prepare_mysql($type);
+
         }
-        $sql=sprintf("select `Subject Key` from `Company Bridge` where `Subject Type`=%s and `Company Key`=%d  "
-                     ,prepare_mysql($type)
-                     ,$this->id);
-// print "$sql\n";
+        $sql=sprintf("select `Subject Key` from `Company Bridge` where  `Company Key`=%d  $where_type ",
+                     $this->id);
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $keys[$row['Subject Key']]= $row['Subject Key'];
@@ -2651,6 +2676,47 @@ $companies_with_same_name[$company_key]=$company_key;
         return $keys;
     }
 
+
+function delete(){
+
+
+$sql=sprintf("delete from `Company Dimension` where `Company Key`=%d",$this->id);
+//print "$sql\n";
+mysql_query($sql);
+//mysql_query($sql);
+
+     $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+              $sql=sprintf("delete from `Category Bridge` where `Subject`='Company' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+             
+             $sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+              $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+             $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+
+
+
+
+
+/*
+if(!$ignore_contacts_keys){
+$ignore_contacts_keys=array();
+}
+
+$company_address_keys=$this->get_address_keys();
+$company_contacts_keys=$this->get_contact_keys();
+foreach($ignore_contacts_keys as $ignore_contacts_key){
+unset($company_contacts_keys[$ignore_contacts_key]);
+}
+
+print "address:\n";
+print_r($company_address_keys);
+print_r($company_contacts_keys);
+*/
+}
 
 
 }

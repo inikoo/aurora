@@ -8,7 +8,7 @@
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2009, Kaktus
+ Copyright (c) 2009, Inikoo
 
  Version 2.0
 */
@@ -453,7 +453,7 @@ function edit_staff_user() {
                            'User Handle'=>$staff->data['Staff Alias'],
                                                       'User Alias'=>$staff->data['Staff Name'],
 
-                           'User Password'=>hash('sha256','kaktus1'),
+                           'User Password'=>hash('sha256','inikoo1'),
                            'User Active'=>'Yes',
                            'User Type'=>'Staff',
 

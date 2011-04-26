@@ -7,7 +7,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyrigh (c) 2009, Kaktus 
+ Copyrigh (c) 2009, Inikoo 
  
  Version 2.0
 */

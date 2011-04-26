@@ -11,7 +11,7 @@ if (!isset($_REQUEST['output'])   ) {
   $output_type=strtolower($_REQUEST['output']);
 
 
-$creator='Kaktus';
+$creator='Inikoo';
 $title=_('Report');
 $subject=_('Report');
 $description='';

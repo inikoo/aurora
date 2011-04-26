@@ -7,7 +7,7 @@
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) 2009, Kaktus
+  Copyright (c) 2009, Inikoo
 
   Version 2.0
 
@@ -423,62 +423,64 @@ class Customer extends DB_Table {
 
     function update_correlations() {
 
-$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ",$this->id,$this->id);
-mysql_query($sql);
- 
-$correlated_customers=array();
-$data=$this->data;
- if ($data['Customer Type']=='Person')
-        $subject=new contact('find from customer complete',$data);
-    else
-        $subject=new company('find from customer complete',$data);
+        $sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ",$this->id,$this->id);
+        mysql_query($sql);
+
+        $correlated_customers=array();
+        $data=$this->data;
+        if ($data['Customer Type']=='Person')
+            $subject=new contact('find from customer complete',$data);
+        else
+            $subject=new company('find from customer complete',$data);
 
 
 
- foreach($subject->candidate as $contact_key=>$score) {
- if($score<100)
- continue;
-  $contact=new Contact($contact_key);
-  $customer_keys=$contact->get_customer_keys('Customer');
- 
- foreach($customer_keys as $customer_key){
- $customer_correlated=new Customer($customer_key);
- if($customer_correlated->data['Customer Store Key']=$this->data['Customer Store Key'])
-   $correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'],'score'=>$score);
- }
- 
- }
-   
+        foreach($subject->candidate as $contact_key=>$score) {
+            if ($score<100)
+                continue;
+            $contact=new Contact($contact_key);
+            $customer_keys=$contact->get_customer_keys('Customer');
 
-foreach ($correlated_customers as $key=>$value) {
+            foreach($customer_keys as $customer_key) {
+                $customer_correlated=new Customer($customer_key);
+                if ($customer_correlated->data['Customer Store Key']=$this->data['Customer Store Key'])
+                    $correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'],'score'=>$score);
+            }
 
-if($key==$this->id){
-continue;
-}elseif($key<$this->id){
-$customer_a=$key;
-$customer_a_name=$value['name'];
+        }
 
-$customer_b=$this->id;
-$customer_b_name=$this->data['Customer Name'];
 
-}else{
-$customer_a=$this->id;
-$customer_a_name=$this->data['Customer Name'];
+        foreach ($correlated_customers as $key=>$value) {
 
-$customer_b=$key;
-$customer_b_name=$value['name'];
-}
+            if ($key==$this->id) {
+                continue;
+            }
+            elseif($key<$this->id) {
+                $customer_a=$key;
+                $customer_a_name=$value['name'];
 
-$sql=sprintf("insert into  `Customer Correlation` values (%d,%s,%d,%s,%f,%d)  ",
-	     $customer_a,
-	     prepare_mysql($customer_a_name),
-	     $customer_b,
-	     prepare_mysql($customer_b_name),
-	     $value['score'],
-	     $this->data['Customer Store Key']
-	     );
-mysql_query($sql);
-}
+                $customer_b=$this->id;
+                $customer_b_name=$this->data['Customer Name'];
+
+            }
+            else {
+                $customer_a=$this->id;
+                $customer_a_name=$this->data['Customer Name'];
+
+                $customer_b=$key;
+                $customer_b_name=$value['name'];
+            }
+
+            $sql=sprintf("insert into  `Customer Correlation` values (%d,%s,%d,%s,%f,%d)  ",
+                         $customer_a,
+                         prepare_mysql($customer_a_name),
+                         $customer_b,
+                         prepare_mysql($customer_b_name),
+                         $value['score'],
+                         $this->data['Customer Store Key']
+                        );
+            mysql_query($sql);
+        }
 
 
 
@@ -1174,6 +1176,9 @@ mysql_query($sql);
 
 
     function update_field_switcher($field,$value,$options='') {
+    
+    //print "$field,$value,$options\n";
+    
         if (is_string($value))
             $value=_trim($value);
 
@@ -1238,12 +1243,130 @@ mysql_query($sql);
             break;
 
         case('Customer Main Plain Email'):
-            $contact=new Contact($this->data['Customer Main Contact Key']);
-            $contact->editor=$this->editor;
-            $contact->update(array('Contact Main Plain Email'=>$value));
-            $this->updated=$contact->updated;
-            $this->msg=$contact->msg;
-            $this->new_value=$contact->new_value;
+
+
+            if ($value=='') {
+                $email=new Email($this->data['Customer Main Email Key']);
+                if (!$email->id) {
+                    return;
+                    $this->msg='Error, main email not found';
+                }
+                $email_customer_keys=$email->get_parent_keys('Customer');
+                unset($email_customer_keys[$this->id]);
+                $email_contacts_keys=$email->get_parent_keys('Contact');
+                unset($email_contacts_keys[$this->data['Customer Main Contact Key']]);
+
+                $email_companies_keys=$email->get_parent_keys('Company');
+                unset($email_companies_keys[$this->data['Customer Company Key']]);
+
+
+                $email_suppliers_keys=$email->get_parent_keys('Supplier');
+
+                $email_customer_number_keys=count($email_customer_keys);
+                $email_contacts_number_keys=count($email_contacts_keys);
+                $email_suppliers_number_keys=count($email_suppliers_keys);
+                $email_companies_number_keys=count($email_companies_keys);
+
+
+                if ($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys>0) {
+
+
+
+                    $email->remove_from_parent('Customer',$this->id);
+
+                    if ($this->data['Customer Type']=='Company') {
+                        $company=new Company($this->data['Customer Company Key']);
+                        $company_customers_keys=$company->get_parent_keys('Customer');
+                        unset($company_customers_keys[$this->id]);
+                        $company_suppliers_keys=$company->get_parent_keys('Supplier');
+                        $company_customers_number_keys=count($company_customers_keys);
+                        $company_suppliers_number_keys=count($company_suppliers_keys);
+
+
+
+                        if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
+                            $email->remove_from_parent('Company',$company->id);
+                        }
+                    }
+                    $contact=new Contact($this->data['Customer Company Key']);
+                    $contact_customers_keys=$contact->get_parent_keys('Customer');
+                    unset($contact_customers_keys[$this->id]);
+                    $contact_suppliers_keys=$contact->get_parent_keys('Supplier');
+                    $contact_customers_number_keys=count($contact_customers_keys);
+                    $contact_suppliers_number_keys=count($contact_suppliers_keys);
+
+                    //print_r($contact_customers_keys);
+                    //print_r($contact_suppliers_keys);
+
+                    if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
+                        $email->remove_from_parent('Company',$contact->id);
+                    }
+
+
+
+
+
+                    $this->updated=true;
+                    $this->msg=_('Email Removed from Customer');;
+                    $this->new_value='';
+                    return;
+                } else {
+                    $contact=new Contact($this->data['Customer Main Contact Key']);
+                    $contact->editor=$this->editor;
+                    $contact->update(array('Contact Main Plain Email'=>$value));
+                    $this->updated=$contact->updated;
+                    $this->msg=$contact->msg;
+                    $this->new_value=$contact->new_value;
+                    return;
+
+
+                }
+
+
+
+
+            } else {
+                $contact=new Contact($this->data['Customer Main Contact Key']);
+                $email=new Email('email',$value);
+
+                $contact_email_keys=$contact->get_email_keys();
+
+                if ($email->id and  in_array($email->id,$contact_email_keys)) {
+
+                     $this->msg=_('No Change');
+                    $this->new_value=$value;
+                    $email->update_Email($value);
+                    $this->updated=$email->updated;
+                    if($this->updated){
+                    $this->msg=_('Email updated');
+                    $this->new_value=$value;
+                    }
+
+                    if($this->data['Customer Main Email Key']!=$email->id){
+                    $contact->associate_email_to_parents('Customer',$this->id,$email->id);
+                    $email->update_parents();
+                    $this->updated=true;
+                    $this->msg=_('Email updated');
+                    $this->new_value=$value;
+                    }
+                    return;
+
+                }
+
+
+
+                $contact->editor=$this->editor;
+
+
+
+
+                $contact->update(array('Contact Main Plain Email'=>$value));
+                $this->updated=$contact->updated;
+                $this->msg=$contact->msg;
+                $this->new_value=$contact->new_value;
+
+            }
+
 
 
             break;
@@ -1810,8 +1933,8 @@ mysql_query($sql);
                      ,$this->id
                     );
 
-     //     print "\n $orders\n$sql\n";
-      //  exit;
+        //     print "\n $orders\n$sql\n";
+        //  exit;
         if (!mysql_query($sql))
             exit("\n$sql\n error");
 
@@ -1926,26 +2049,26 @@ mysql_query($sql);
 
     function update_is_new($new_interval=604800) {
 
-      $interval=date('U')-strtotime($this->data['Customer First Contacted Date']);
+        $interval=date('U')-strtotime($this->data['Customer First Contacted Date']);
 
         if ( $interval<$new_interval
-	     //        or $this->data['Customer Type by Activity']=='Lost'
+                //        or $this->data['Customer Type by Activity']=='Lost'
            ) {
             $this->data['Customer New']='Yes';
         } else {
             $this->data['Customer New']='No';
         }
-        
-         $sql=sprintf("update `Customer Dimension` set `Customer New`=%s where `Customer Key`=%d",
-                         prepare_mysql($this->data['Customer New']),
-                         $this->id
-                        );
-	 // if($this->data['Customer New']=='Yes')
-	 //	   print (date('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
-		   //	   print $sql;           
- if (!mysql_query($sql))
-                exit("$sql error");
-        
+
+        $sql=sprintf("update `Customer Dimension` set `Customer New`=%s where `Customer Key`=%d",
+                     prepare_mysql($this->data['Customer New']),
+                     $this->id
+                    );
+        // if($this->data['Customer New']=='Yes')
+        //	   print (date('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
+        //	   print $sql;
+        if (!mysql_query($sql))
+            exit("$sql error");
+
 
     }
     public function update_orders_old() {
@@ -2187,7 +2310,7 @@ mysql_query($sql);
 
                          ,$this->id
                         );
-	    //print "$sql\n";
+            //print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql error");
         }
@@ -2281,6 +2404,24 @@ mysql_query($sql);
 
 
         switch ($key) {
+        case('First Contacted Date'):
+        case('Last Order Date'):
+            return strftime("%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00"));
+            break;
+        case('Orders'):
+            return number($this->data['Customer Orders']);
+            break;
+        case('Notes'):
+            $sql=sprintf("select count(*) as total from  `Customer History Bridge`     where `Customer Key`=%d and `Type`='Notes'  ",$this->id);
+            $res=mysql_query($sql);
+            $notes=0;
+            if ($row=mysql_fetch_assoc($res)) {
+                $notes=$row['total'];
+            }
+
+
+            return number($notes);
+            break;
         case('Send Newsletter'):
         case('Send Email Marketing'):
         case('Send Postal Marketing'):
@@ -2542,9 +2683,9 @@ mysql_query($sql);
     /*function:get_formated_id
       Returns formated id
     */
-    function get_formated_id() {
+    function get_formated_id($customer_id_prefix='') {
 
-        $customer_id_prefix='';
+        ;
         $sql="select count(*) as num from `Customer Dimension`";
         $res=mysql_query($sql);
         $min_number_zeros=4;
@@ -2864,7 +3005,7 @@ mysql_query($sql);
                           'History Details'=>$details,
                           'Action'=>'created',
                           'Direct Object'=>'Note',
-                          'Prepostion'=>'about',
+                          'Prepostion'=>'on',
                           'Indirect Object'=>'Customer',
                           'Indirect Object Key'=>$this->id
 
@@ -3160,7 +3301,7 @@ mysql_query($sql);
 
 
 
-    function get_emails_keys() {
+    function get_email_keys() {
         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
                      ,$this->id );
 
@@ -3288,6 +3429,15 @@ mysql_query($sql);
 
             $this->data['Customer Main Contact Key']=$contact->id;
             $contact->update_parents(($this->new?false:true));
+            $contact->update_parents_principal_email_keys();
+            $email=new Email($contact->get_principal_email_key());
+            $email->editor=$this->editor;
+            $email->new=$this->new;
+            if ($email->id)
+                $email->update_parents($this->new?false:true);
+
+
+
         }
 
     }
@@ -3773,17 +3923,55 @@ mysql_query($sql);
             return array();
     }
 
-    function display($tipo='card') {
+    function display($tipo='card',$option='') {
         switch ($tipo) {
         case 'card':
-            if ($this->data['Customer Type']=='Company') {
-                $company=new Company($this->data['Customer Company Key']);
-                $card=$company->display('card');
-            } else {
-                $contact=new Contact($this->data['Customer Main Contact Key']);
-                $card=$contact->display('card');
-            }
-            $card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><span style="float:left">'.$this->get_formated_id().'</span>',$card);
+
+
+
+            $email_label="E:";
+            $tel_label="T:";
+            $fax_label="F:";
+            $mobile_label="M:";
+            $contact_label="C:";
+
+            $email='';
+            $tel='';
+            $fax='';
+            $mobile='';
+            $contact='';
+            $name=sprintf('<span class="name">%s</span>',$this->data['Customer Name']);
+            if ($this->data['Customer Main Contact Name'] and $this->data['Customer Type']=='Company')
+                $contact=sprintf('<span class="name">%s %s</span><br/>',$contact_label,$this->data['Customer Main Contact Name']);
+
+
+            if ($this->data['Customer Main XHTML Email'])
+                $email=sprintf('<span class="email">%s</span><br/>',$this->data['Customer Main XHTML Email']);
+            if ($this->data['Customer Main XHTML Telephone'])
+                $tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Customer Main XHTML Telephone']);
+            if ($this->data['Customer Main XHTML Mobile'])
+                $mobile=sprintf('<span class="tel">%s %s</span><br/>',$mobile_label,$this->data['Customer Main XHTML Mobile']);
+            if ($this->data['Customer Main XHTML FAX'])
+                $fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Customer Main XHTML FAX']);
+
+
+            $address=sprintf('<span class="mobile">%s</span>',$this->data['Customer Main XHTML Address']);
+
+            $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
+                          ,$name
+                          ,$contact
+                          ,$email
+                          ,$tel
+                          ,$mobile
+                          ,$fax
+
+                          ,$address
+                         );
+
+
+
+
+            $card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$option.$this->get_formated_id().'</a>',$card);
             return $card;
 
             break;
@@ -3898,7 +4086,7 @@ mysql_query($sql);
         switch ($_SESSION ['lang']) {
         default :
             $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
-            if ($order->data['Order Original Data MIME Type']='application/kaktus') {
+            if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
                 if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
                     $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
@@ -4210,7 +4398,7 @@ mysql_query($sql);
         switch ($_SESSION ['lang']) {
         default :
             $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
-            if ($order->data['Order Original Data MIME Type']='application/kaktus') {
+            if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
                 if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
                     $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
@@ -4301,6 +4489,9 @@ mysql_query($sql);
     }
 
 
+
+   
+
     function get_mobiles() {
 
 
@@ -4320,26 +4511,246 @@ mysql_query($sql);
 
     }
 
-function remove_principal_email(){
-$this->remove_email($this->data['Customer Main Email Key']);
+    function remove_principal_email() {
+        $this->remove_email($this->data['Customer Main Email Key']);
+    }
+
+    function remove_email($email_key) {
+
+
+
+
+    }
+
+    function delete($note='') {
+    
+    $deleted_company_keys=array();
+    
+     $address_to_delete=array();
+     $emails_to_delete=array();
+     $telecom_to_delete=array();
+
+
+    
+        $has_orders=false;
+        $sql="select count(*) as total  from `Order Dimension` where `Order Customer Key`=".$this->id;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['total']>0)
+                $has_orders=true;
+        }
+
+        if ($has_orders) {
+            $this->msg=_("Customer can't be deleted");
+            return;
+        }
+        
+        
+        
+        
+        
+         $address_to_delete=$this->get_address_keys();
+     $emails_to_delete=$this->get_email_keys();
+     $telecom_to_delete=$this->get_telecom_keys();
+        
+        
+        
+        
+        
+        
+        $company_keys=array();
+        
+          $contact_keys=$this->get_contact_keys();
+
+
+            $sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d",$this->id);
+            mysql_query($sql);
+            $sql=sprintf("delete from `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%s",$this->id,$this->id);
+            mysql_query($sql);
+             $sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d",$this->id);
+            mysql_query($sql);
+            $sql=sprintf("delete from `Customer List Customer Bridge` where `Customer Key`=%d",$this->id);
+            mysql_query($sql);
+            $sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
+            mysql_query($sql);
+            $sql=sprintf("delete from `Customers Send Post` where `Customer Key`=%d",$this->id);
+            mysql_query($sql);
+            $sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+             $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+              $sql=sprintf("delete from `Category Bridge` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+              $sql=sprintf("delete from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+             $sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+              $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+             $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+            mysql_query($sql);
+
+$sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s) ",
+$this->id,
+$this->data['Customer Store Key'],
+prepare_mysql($this->display('card')),
+prepare_mysql($this->editor['Date']),
+prepare_mysql($note,false)
+);
+
+//print "$sql\n";
+mysql_query($sql);
+
+        
+        
+        if ($this->data['Customer Type']=='Company') {
+            $company_keys=$this->get_company_keys();
+//unset($company_keys[$this->data['Customer Company Key']]);
+
+          
+            foreach($company_keys as  $company_key) {
+                $company=new Company($company_key);
+                $company_customer_keys=$company->get_parent_keys('Customer');
+                $company_supplier_keys=$company->get_parent_keys('Supplier');
+                $company_hq_keys=$company->get_parent_keys('HQ');
+                                $company_telecom_keys=$company->get_telecom_keys();
+
+                $company_address_keys=$company->get_address_keys();
+                $company_contact_keys=$company->get_contact_keys();
+
+                unset($company_customer_keys[$this->id]);
+                foreach($contact_keys as $contact_key) {
+                    unset($company_contact_keys[$contact_key]);
+                }
+
+                if (count($company_customer_keys)==0 and count($company_supplier_keys)==0 and count($company_contact_keys)==0 and count($company_hq_keys)==0) {
+
+
+
+                    $company->delete();
+                     $deleted_company_keys[$company->id]=$company->id;
+                     
+                     
+                    
+                     foreach($company_address_keys as $company_address_key){
+                        $address_to_delete[$company_address_key]=$company_address_key;
+                    }
+                     foreach($company_telecom_keys as $company_telecom_key){
+                        $telecom_to_delete[$company_telecom_key]=$company_telecom_key;
+                    }
+                     
+                     
+                } else {
+
+                }
+            }
+           
+        }
+        
+        foreach($contact_keys as $contact_key) {
+                $contact=new Contact($contact_key);
+            
+            	$contact_email_keys=$contact->get_email_keys();
+            	$contact_telecom_keys=$contact->get_telecom_keys();
+                $contact_address_keys=$contact->get_address_keys();
+            
+                $contact_customer_keys=$contact->get_parent_keys('Customer');
+                $contact_supplier_keys=$contact->get_parent_keys('Supplier');
+                $contact_company_keys=$contact->get_parent_keys('Company');
+                
+                
+                
+                $contact_staff_keys=$contact->get_parent_keys('Staff');
+                
+                foreach($deleted_company_keys as $deleted_company_key){
+                unset($contact_company_keys[$deleted_company_key]);
+                }
+                               unset($contact_customer_keys[$this->id]);
+
+
+               if (count($contact_customer_keys)==0 and count($contact_supplier_keys)==0 and count($contact_company_keys)==0 and count($contact_staff_keys)==0) {
+
+
+
+                    $contact->delete();
+                    
+                    foreach($contact_email_keys as $contact_email_key){
+                        $emails_to_delete[$contact_email_key]=$contact_email_key;
+                    }
+                     foreach($contact_address_keys as $contact_address_key){
+                        $address_to_delete[$contact_address_key]=$contact_address_key;
+                    }
+                     foreach($contact_telecom_keys as $contact_telecom_key){
+                        $telecom_to_delete[$contact_telecom_key]=$contact_telecom_key;
+                    }
+                    
+                    
+                } else {
+
+                }
+            
+            
+            }
+            
+       
+  //       print "Emails to delete";
+//print_r($emails_to_delete);
+
+foreach($emails_to_delete as $email_key){
+$email=new Email($email_key);
+if($email->id and !$email->has_parents()){
+$email->delete();
+}
 }
 
-function remove_email($email_key){
+  //       print "Address to delete";
+         
+  foreach($address_to_delete as $address_key){
+$address=new Address($address_key);
+if($address->id and !$address->has_parents()){
+$address->delete();
+}
+}
+       
+         
+//print_r($address_to_delete);
+  //        print "Tel to delete";
+//print_r($telecom_to_delete);
+ foreach($telecom_to_delete as $telecom_key){
+$telecom=new Telecom($telecom_key);
+if($telecom->id and !$telecom->has_parents()){
+$telecom->delete();
+}
+}
 
 
+         $this->deleted=true;
+    }
+
+function merge($customer_key){
+$customer_to_merge=new Customer($customer_key);
+
+if(!$customer_to_merge->id){
+$this->error=true;
+$this->msg='Customer not found';
+return;
+}
+
+if($this->id==$customer_to_merge->id){
+$this->error=true;
+$this->msg=_('Same Customer');
+return;
+}
+if($this->data['Customer Store Key']!=$customer_to_merge->data['Customer Store Key']){
+$this->error=true;
+$this->msg=_('Customers fron different stores');
+return;
+}
+
+$sql=sprintf("select `History Key` from `Customer History Bridge` where `Type` in ('Orders','Notes') ");
 
 
 }
-
-function delete(){
-$company_keys=$this->get_company_keys();
-$contacts_keys=$this->get_contacts_keys();
-
-
-
-
-}
-
 
 }
 ?>

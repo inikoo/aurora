@@ -7,7 +7,7 @@
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) 2009, Kaktus
+  Copyright (c) 2009, Inikoo
 
   Version 2.0
 */
@@ -56,8 +56,10 @@ class Address extends DB_Table {
 
         $this->table_name='Address';
         $this->ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
-
-        if (!$arg1 and !$arg2) {
+        
+        
+            
+        if (!$arg1 and !$arg2 or is_array($arg1)) {
             $this->error=true;
             $this->msg='No data provided';
             return;
@@ -122,8 +124,9 @@ class Address extends DB_Table {
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
             $this->id=$this->data['Address Key'];
         else {
-            print "$sql\n  xaddress do not exists \n";
-            dfsdfsdfdsf();
+            $this->msg="address do not exists";
+            $this->error=true;
+            
 
             // exit(" $sql\n can not open address");
 
@@ -5163,6 +5166,19 @@ function find_fast($data=false,$subject_data=false){
     }
 
 
+function has_parents(){
+     $has_parents=false;
+     $sql=sprintf("select count(*) as total from `Address Bridge`  where  `Address Key`=%d  ",$this->id);
+     $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res)) {
+       if($row['total']>0)
+        $has_parents=true;
+     }
+     return $has_parents;
+}
+
+
+
     function delete() {
 
 
@@ -5171,60 +5187,21 @@ function find_fast($data=false,$subject_data=false){
 
 
 
-        $parents=array('Contact','Company');
+        $parents=array('Customer','Contact','Staff','Company','Supplier');
         foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+          $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
 
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $principal_Address_changed=false;
-
-                if ($parent=='Contact') {
-                    $parent_object=new Contact($row['Parent Key']);
-                    $parent_label=_('Contact');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-
-                //Assign automatically other address
-
-                $history_data['History Abstract']='Address Removed';
-                $history_data['History Details']=_('Address').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-                $history_data['Action']='disassociate';
-                $history_data['Direct Object']=$parent;
-                $history_data['Direct Object Key']=$parent_object->id;
-                $history_data['Indirect Object']='Address';
-                $history_data['Indirect Object Key']=$this->id;
-                $this->add_history($history_data);
-
-
-
-
-
-                $addresses=$parent_object->get_address_keys();
-
-                if (count($addresses)==0) {
-                    $address=new Address('find create',array('Address Country Code'=>$country_code));
-                    $address_key=$address->id;
-
-                } else {
-                    $address_key=array_pop($addresses);
-
-
-                }
-
-                //  $parent_object-> update_principal_address($address_key);
-
-
-
-
-
-
+            $this->remove_from_parent($parent,$row['Parent Key']);
             }
+        
+        
         }
-        $sql=sprintf("select `Customer Key`  ,`Customer Main Address Key` from  `Customer Dimension` where `Customer Billing Address Key`=%d ",$this->id);
+        
+       
+         
+                 $sql=sprintf("select `Customer Key`  ,`Customer Main Address Key` from  `Customer Dimension` where `Customer Billing Address Key`=%d ",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $customer=new Customer($row['Customer Key']);
@@ -5253,13 +5230,32 @@ function find_fast($data=false,$subject_data=false){
 
             $customer->update_principal_delivery_address($address_key);
         }
-//exit;
+              
+       
+       
+       
 
+
+        $address_telecom_keys=$this->get_telecom_keys();
+        
         $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
         mysql_query($sql);
-        $sql=sprintf("delete from `Address Bridge`  where  `Address Key`=%d", $this->id);
-        mysql_query($sql);
+      
         $this->deleted=true;
+        
+        
+        foreach($address_telecom_keys as $address_telecom_key){
+            $telecom=new Telecom($address_telecom_key);
+            if(!$telecom->has_parents()){
+                $telecom->delete();
+            }
+        
+        }
+        
+          $sql=sprintf("delete from `Address Bridge`  where  `Address Key`=%d", $this->id);
+        mysql_query($sql);
+        
+        /*
         $history_data['History Abstract']='Address Deleted';
         $history_data['History Details']=_('Address').' '.$this->display('plain')." "._('has been deleted');
         $history_data['Action']='deleted';
@@ -5268,8 +5264,74 @@ function find_fast($data=false,$subject_data=false){
         $history_data['Indirect Object']='';
         $history_data['Indirect Object Key']='';
         $this->add_history($history_data);
-
+        */
     }
+
+function remove_from_parent($parent,$parent_key){
+
+
+          
+                $principal_Address_changed=false;
+
+                if ($parent=='Contact') {
+                    $parent_object=new Contact($row['Parent Key']);
+                    $parent_label=_('Contact');
+                }elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                } elseif($parent=='Customer') {
+                    $parent_object=new Customer($parent_key);
+                    $parent_label=_('Customer');
+                }elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($parent_key);
+                    $parent_label=_('Supplier');
+                }elseif($parent=='Staff') {
+                    $parent_object=new Staff($parent_key);
+                    $parent_label=_('Staff');
+                }
+
+                //Assign automatically other address
+
+                $history_data['History Abstract']='Address Removed';
+                $history_data['History Details']=_('Address').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['Action']='disassociate';
+                $history_data['Direct Object']=$parent;
+                $history_data['Direct Object Key']=$parent_object->id;
+                $history_data['Indirect Object']='Address';
+                $history_data['Indirect Object Key']=$this->id;
+                $this->add_history($history_data);
+
+
+
+
+
+                $addresses=$parent_object->get_address_keys();
+
+                if (count($addresses)==0) {
+                    $address=new Address('find create',array('Address Country Code'=>$country_code));
+                    $address_key=$address->id;
+
+                } else {
+                    $address_key=array_pop($addresses);
+
+
+                }
+                
+                
+                
+                
+
+                //  $parent_object-> update_principal_address($address_key);
+
+
+
+
+
+
+            
+        
+
+}
 
 
     function get_parent_keys($type) {

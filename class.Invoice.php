@@ -10,7 +10,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2009, Inikoo 
  
  Version 2.0
 */
@@ -178,10 +178,10 @@ protected function create($invoice_data) {
     $this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
     
             $this->data ['Invoice Currency Exchange']=1;
-        $sql=sprintf("select `Corporation Currency` from `Corporation Dimension`");
+        $sql=sprintf("select `HQ Currency` from `HQ Dimension`");
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
-            $corporation_currency_code=$row['Corporation Currency'];
+            $corporation_currency_code=$row['HQ Currency'];
         } else
             $corporation_currency_code='GBP';
         if ($this->data ['Invoice Currency']!=$corporation_currency_code) {

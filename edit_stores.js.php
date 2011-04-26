@@ -13,8 +13,8 @@ var editing='<?php echo $_SESSION['state']['stores']['edit']?>';
 var validate_scope_data=
 {
     'corporation':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Corporation Name')?>'}],dbname:'Corporation Name'},
-	'currency':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'currency','validation':[{'regexp':"[a-z]{3}",'invalid_msg':'<?php echo _('Invalid Currency Code')?>'}],dbname:'Corporation Currency'}
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid HQ Name')?>'}],dbname:'HQ Name'},
+	'currency':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'currency','validation':[{'regexp':"[a-z]{3}",'invalid_msg':'<?php echo _('Invalid Currency Code')?>'}],dbname:'HQ Currency'}
 
   }
   

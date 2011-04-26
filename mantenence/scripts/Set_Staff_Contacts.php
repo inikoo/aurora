@@ -6,7 +6,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2009, Inikoo 
  
  Version 2.0
 */
@@ -69,7 +69,7 @@ $data=array(
 
 $company=new Company('find create auto',$data);
 exit;
-$sql=sprintf("insert into `Corporation Dimension` values (%s,%d,'GBP') ",$company->data['Company Name'],$company->id );
+$sql=sprintf("insert into `HQ Dimension` values (%s,%d,'GBP') ",$company->data['Company Name'],$company->id );
 mysql_query($sql);
 
 

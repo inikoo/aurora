@@ -15,7 +15,7 @@ if(isset($_REQUEST['check']) != '')
 
 		
 		// subject
-		$subject = 'Welcome Notes from Kaktus';
+		$subject = 'Welcome Notes from Inikoo';
 
 		// message
 		$message = '
@@ -24,7 +24,7 @@ if(isset($_REQUEST['check']) != '')
 		  <title>KAKTUS</title>
 		</head>
 		<body>
-		  <p>Here are the upcoming news from kaktus !</p>
+		  <p>Here are the upcoming news from inikoo !</p>
 		  <table>
 		    <tr>
 		      <td>hello '.$to.'</td>

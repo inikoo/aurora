@@ -7,7 +7,7 @@
  About:
  Autor: Alberto Jacome Flores <alberto@logos-wissen.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2009, Inikoo 
  
  Version 2.0
 */

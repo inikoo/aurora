@@ -34,7 +34,7 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql="select * from `Customer Dimension` order by `Customer Key`";
+$sql="select * from `Customer Dimension` order by `Customer Key` desc ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  
@@ -42,7 +42,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    $customer=new Customer($row['Customer Key']);
    //$store=new Store($customer->data['Customer Store Key']);
    // $customer->update_orders();
-   //  $customer->update_orders();
+     $customer->update_orders();
    //     $store->update_customer_activity_interval();
 
    $customer->update_activity();

@@ -7,7 +7,7 @@
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2009, Kaktus
+ Copyright (c) 2009, Inikoo
 
  Version 2.0
 */
@@ -24,7 +24,7 @@ $modify=$user->can_edit('contacts');
 
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
-    $_SESSION['state']['customer']['id']=$_REQUEST['id'];
+  
     $customer_id=$_REQUEST['id'];
 } else {
     $customer_id=$_SESSION['state']['customer']['id'];
@@ -34,8 +34,15 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 $customer=new customer($customer_id);
 
 if (!$customer->id) {
-    header('Location: customers.php?error='._('Customer not exists'));
-    exit();
+
+
+header('Location: customer_deleted.php?id='.$customer_id);
+exit;
+//$sql=sprintf("select * from `Customer Deleted Dimension` where `Customer Key`=%d",$customer_id);
+//if()
+
+   // header('Location: customers.php?error='._('Customer not exists'));
+    //exit();
 
 }
 

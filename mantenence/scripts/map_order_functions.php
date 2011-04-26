@@ -3843,7 +3843,7 @@ if (preg_match('/sale - Philip|staff|staff order|cash sale|staff sale|cash - sal
 	break;
 
       case(22501):
-	$act_data['name']='Taurus Corporation';
+	$act_data['name']='Taurus HQ';
 	$act_data['contact']='Arun Jhunjhunwala';
 	$act_data['a1']='210 Tirupati Udyog';
 	$act_data['a2']='IB Patel Road';
@@ -7010,9 +7010,9 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 	$cols[$key]=$col;
     }
  
-   $act_data['customer_id_from_kaktus']=0;
-    if($cols[65]=='kaktus')
-    $act_data['customer_id_from_kaktus']=1;
+   $act_data['customer_id_from_inikoo']=0;
+    if($cols[65]=='inikoo')
+    $act_data['customer_id_from_inikoo']=1;
  
     //     print_r($cols);
     //exit;
