@@ -1312,26 +1312,26 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-     
-       if($customer_key_from_order_data) {
-  //     exit('pipi');
-       
-            //print "using customer key from order data   $customer_key_from_order_data ";
-            $customer = new Customer($customer_key_from_order_data);
+  
+            $customer_posible_key=0;
+            if ($customer_key_from_order_data) {
+                $customer_posible_key=$customer_key_from_order_data;
+                $customer = new Customer($customer_key_from_order_data);
+            }
+            if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+                $customer_posible_key=$act_data['act'];
+                $customer = new Customer($act_data['act']);
+            } else {
+                $customer = new Customer ( 'find create', $data['Customer Data'] );
+            }
+            if (!$customer->id and $customer_posible_key) {
+                $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+                    $customer=new Customer($row2['Customer Key']);
+                }
+            }
 
-        } if (  isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-// print_r($act_data['act']);
-  //        exit("caca");
-
-            $customer = new Customer($act_data['act']);
-        }
-        else {
-        //        exit("popop");
-            //print_r( $data['Customer Data']);
-            //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
-            $customer = new Customer ( 'find create', $data['Customer Data'] );
-        }
-        
         
         if (!$customer->id) {
             print "Error !!!! customer not found\n";

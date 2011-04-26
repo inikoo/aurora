@@ -443,7 +443,7 @@ class Customer extends DB_Table {
 
             foreach($customer_keys as $customer_key) {
                 $customer_correlated=new Customer($customer_key);
-                if ($customer_correlated->data['Customer Store Key']=$this->data['Customer Store Key'])
+                if ($customer_correlated->data['Customer Store Key']==$this->data['Customer Store Key'])
                     $correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'],'score'=>$score);
             }
 
@@ -1794,32 +1794,7 @@ class Customer extends DB_Table {
 
     }
 
-    function update_temporal_data() {
-        $umbral=3600*24*7;
-
-
-        if (date('U')-strtotime($this->data['Customer First Contacted Date'])<$umbral) {
-            $this->data['New Customer']='Yes';
-        } else {
-            $this->data['New Customer']='No';
-        }
-        $this->data['New Served Customer']='No';
-        if ( $this->data['Customer First Order Date']!='') {
-
-            if (  (date('U')-strtotime($this->data['Customer First Order Date'])<$umbral)) {
-                $this->data['New Served Customer']='Yes';
-            }
-        }
-
-        $sql=sprintf("update `Customer Dimension` set `New Customer`=%s ,`New Served Customer`=%s where `Customer Key`=%d",
-                     prepare_mysql($this->data['New Customer']),
-                     prepare_mysql($this->data['New Served Customer']),
-
-                     $this->id
-                    );
-        mysql_query($sql);
-
-    }
+  
 
     public function update_no_normal_data() {
 
@@ -2404,6 +2379,9 @@ class Customer extends DB_Table {
 
 
         switch ($key) {
+        case('Lost Date'):
+         case('Last Order Date'):
+          case('First Order Date'):
         case('First Contacted Date'):
         case('Last Order Date'):
             return strftime("%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00"));
@@ -2445,7 +2423,7 @@ class Customer extends DB_Table {
                 return _('ND');
             break;
         case('Order Interval'):
-            $order_interval=$this->get('Customer Order Interval');
+            $order_interval=$this->get('Customer Order Interval')/24/3600;
 
             if ($order_interval>10) {
                 $order_interval=round($order_interval/7);
@@ -4595,6 +4573,23 @@ class Customer extends DB_Table {
         
         $sql=sprintf("delete from `Customers Send Post` where  `Customer Key`=%d",$this->id);
         mysql_query($sql);
+        
+        
+          $sql=sprintf("select `User Key` from `User Dimension`  where `User Type`='Customer' and `User Parent Key`=%d ",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+          $sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d",$row['User Key']);
+        mysql_query($sql);
+ $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d",$row['User Key']);
+        mysql_query($sql);
+         $sql=sprintf("delete from `User Rights Bridge` where `User Key`=%d",$row['User Key']);
+        mysql_query($sql);
+        }        
+         $sql=sprintf("delete from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",$this->id);
+        mysql_query($sql);
+
+
+
 
 // Delete if the email has not been send yet
 //Email Campaign Mailing List 
@@ -4607,7 +4602,7 @@ class Customer extends DB_Table {
                      prepare_mysql($note,false)
                     );
 
-//print "$sql\n";
+
         mysql_query($sql);
 
 
@@ -4731,13 +4726,17 @@ class Customer extends DB_Table {
                 $telecom->delete();
             }
         }
-
+        $store=new Store($this->data['Customer Store Key']);
+  $store->update_customers_data();
 
         $this->deleted=true;
     }
 
     function merge($customer_key) {
+    $this->merged=false;
+    
         $customer_to_merge=new Customer($customer_key);
+$customer_to_merge->editor=$this->editor;
 
         if (!$customer_to_merge->id) {
             $this->error=true;
@@ -4750,9 +4749,11 @@ class Customer extends DB_Table {
             $this->msg=_('Same Customer');
             return;
         }
+        
+     
         if ($this->data['Customer Store Key']!=$customer_to_merge->data['Customer Store Key']) {
             $this->error=true;
-            $this->msg=_('Customers fron different stores');
+            $this->msg=_('Customers from different stores');
             return;
         }
 
@@ -4791,6 +4792,55 @@ class Customer extends DB_Table {
      
         $sql=sprintf("update `Order Transaction Fact` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
+        
+        
+   
+   if(strtotime($customer_to_merge->data['Customer First Contacted Date'])<strtotime($this->data['Customer First Contacted Date'])){
+      $customer->data['Customer First Contacted Date']=$customer_to_merge->data['Customer First Contacted Date'];
+      $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s where `Customer Key`=%d ",
+      prepare_mysql($customer->data['Customer First Contacted Date']),
+      $this->id);
+        $res=mysql_query($sql);
+         $sql=sprintf("update `History Dimension` set `History Date`=%s   where `Action`='created' and `Direct Object`='Customer' and `Direct Object Key`=%d  and `Indirect Object`='' ",
+         prepare_mysql($customer->data['Customer First Contacted Date']),
+         $this->id);
+        $res=mysql_query($sql);   
+        
+   }
+   
+      $customer_to_merge->update_orders();
+        
+        $this->update_orders();
+        
+    $store=new Store($this->data['Customer Store Key']);
+        $store->update_customer_activity_interval();
+
+   $this->update_activity();
+         $this->update_is_new();
+  
+
+
+
+        
+     
+        
+        $customer_to_merge->delete();
+        
+      
+        
+        
+    
+         $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d where `Merged Customer Key`=%d ",$this->id,$customer_to_merge->id);
+        $res=mysql_query($sql);
+        
+        $sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d) ",$customer_to_merge->id,$this->id);
+        $res=mysql_query($sql);
+        
+        $store=new Store($this->data['Customer Store Key']);
+        $store->update_customer_activity_interval();
+        
+        
+         $this->merged=true;;
         
         //Customer Key
         

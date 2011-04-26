@@ -156,6 +156,8 @@ if(!isset($invoice_data['Invoice Date'])   ){
       }
       
       $this->update_xhtml_orders();
+      
+       $this->categorize();
 }
 
 
@@ -293,7 +295,7 @@ foreach($this->get_orders_objects() as $key=>$order) {
 
   $this->update_totals();
 
-
+ $this->categorize();
 
 }
   
@@ -1361,40 +1363,37 @@ $data['Invoice Paid Date']=date('Y-m-d H:i:s');
 
 
 
- /*
-function: categorize
-Assig a category inside rhe store to the invoice 
- */
 
- function categorize($args=''){
+
+function categorize($args='') {
     $sql=sprintf("delete from `Category Bridge` where `Subject`='Invoice'  and `Subject Key`=%d",$this->id);
     mysql_query($sql);
- 
- $sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",$this->data['Invoice Store Key']);
- $res=mysql_query($sql);
- $function_code='';
- while($row=mysql_fetch_assoc($res)){
- if($row['Category Function']!=''){
-    $function_code.=sprintf("%s return %d;",$row['Category Function'],$row['Category Key']);
- }
 
- 
- }
-   $function_code.="return 0;";
+    $sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",$this->data['Invoice Store Key']);
+    $res=mysql_query($sql);
+    $function_code='';
+    while ($row=mysql_fetch_assoc($res)) {
+        if ($row['Category Function']!='') {
+            $function_code.=sprintf("%s return %d;",$row['Category Function'],$row['Category Key']);
+        }
+
+
+    }
+    $function_code.="return 0;";
 // print $function_code."\n";exit;
- $newfunc = create_function('$data',$function_code);
- 
- $category_key=$newfunc($this->data);
- 
- if($category_key){
-    $sql=sprintf("insert into `Category Bridge` values (%d,'Invoice',%d)",$category_key,$this->id);
-    mysql_query($sql);
- }
- 
- 
- 
- }
- 
+    $newfunc = create_function('$data',$function_code);
+
+    $category_key=$newfunc($this->data);
+
+    if ($category_key) {
+        $sql=sprintf("insert into `Category Bridge` values (%d,'Invoice',%d)",$category_key,$this->id);
+        mysql_query($sql);
+    }
+
+
+
+}
+
  
 
 function add_credit_no_product_transaction($credit_transaction_data) {

@@ -2307,12 +2307,12 @@ function new_customer($data) {
     // $customer=new Customer('find create',$data['values']);
     if ($customer->new) {
         $store=new Store($customer->data['Customer Store Key']);
-        $store->update_customers_data();
+       
 
         $customer->update_orders();
-        $customer->update_temporal_data();
+     
         $customer->update_activity();
-
+ $store->update_customers_data();
 
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
 
@@ -3516,11 +3516,11 @@ $response=array('state'=>200,'action'=>'deleted');
 }
 
 function customer_merge($data){
-global $user;
+global $user,$editor;
 $customer=new Customer($data['customer_key']);
-
+$customer->editor=$editor;
 $customer_to_be_deleted=new Customer($data['merge_key']);
-
+$customer_to_be_deleted->editor=$editor;
 if(!$customer->id or !$customer_to_be_deleted->id){
 $response=array('state'=>400,'msg'=>'Customer(s) not found');
         echo json_encode($response);
@@ -3535,6 +3535,16 @@ $response=array('state'=>400,'msg'=>_('Forbidden operation'));
 
 $customer->merge($customer_to_be_deleted->id);
 
+if($customer->merged){
+$response=array('state'=>200,'action'=>'merged');
+        echo json_encode($response);
+        return;
+}else{
+$response=array('state'=>400,'msg'=>$customer->msg);
+        echo json_encode($response);
+        return;
+
+}
 
 
 
