@@ -39,6 +39,8 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  
    $tel=new Telecom($row['Telecom Key']);
+$tel->update_parents(false);
+continue;
 
 $address_keys=$tel->get_parent_keys('Address');
 
