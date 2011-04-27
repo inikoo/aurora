@@ -1515,8 +1515,17 @@ function edit_address($data) {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
                 if ($address->id==$proposed_address->id) {
-                    $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
+                  //  print_r($update_data);
+                  $address->update($update_data,'cascade');
+                 if($address->updated){
+                            $response=address_response($address,$subject,$subject_object,$warning);
+    echo json_encode($response);
+                 }else{
+                  $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
                     echo json_encode($response);
+                 }
+                    
+                   
                     exit;
                 } else {
                     $subject_object->update_principal_address($proposed_address->id);

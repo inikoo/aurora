@@ -232,7 +232,7 @@ var save_address=function(e,options) {
 
 var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
          
-   // alert(request);
+   //alert(request);
                     cancel_edit_address(address_prefix);
 if(address_prefix=='delivery_'){
 hide_new_delivery_address();

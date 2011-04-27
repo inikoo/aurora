@@ -1132,7 +1132,7 @@ function find_fast($data=false,$subject_data=false){
             }
             elseif (array_key_exists($key,$base_data)) {
              //   print "xx--> $value $key\n";
-                if ($value!=$this->data[$key]) {
+                if (strcmp($value,$this->data[$key])!=0) {
                     $this->update_field_switcher($key,$value,$options);
                 }
 
@@ -1211,7 +1211,7 @@ function find_fast($data=false,$subject_data=false){
         case('Street Data'):
             //      print $value;
             $data=$this->parse_street($value,$this->data['Address Country Code']);
-            //print_r($data);
+            print_r($data);
             //exit;
             foreach($data as $street_field=>$street_value) {
                 $this->update_field($street_field,$street_value,$options);
