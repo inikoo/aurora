@@ -27,7 +27,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-$sql="select * from `Customer Dimension`";
+$sql="select * from `Customer Dimension`  order by `Customer Key` desc ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
