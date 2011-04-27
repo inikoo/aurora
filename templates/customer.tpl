@@ -122,6 +122,8 @@
   
   </td></tr>
   
+  <tr><td>{$correlation_msg}</td></tr>
+  
 {if  $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
 
    <tr><td>

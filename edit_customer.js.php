@@ -442,6 +442,9 @@ function save_delete_customer(){
 
 var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer_id
 	           
+	           Dom.setStyle('deleting','display','');
+	           	           Dom.setStyle(['save_delete_customer','cancel_delete_customer'],'display','none');
+
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 	            success:function(o){
 	           // alert(o.responseText);	
@@ -449,6 +452,7 @@ var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer
 			if(r.state==200){
         location.href='customer.php?id='+customer_id;
                                   }else{
+                                   Dom.setStyle('deleting','display','none');
                                   Dom.get('delete_customer_msg').innerHTML=r.msg
                                   }
    			}

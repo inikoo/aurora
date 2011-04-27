@@ -319,6 +319,26 @@ if($customer->data['Customer Last Order Date']    ){
     $gold_reward='Gold Reward Member';
 
 }
+$correlation_msg='';
+ $msg='';
+        $sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200",$customer->id);
+        $res2=mysql_query($sql);
+        if ($row2=mysql_fetch_assoc($res2)) {
+            $msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer B Key'],$myconf['customer_id_prefix'].sprintf("%05d",$row2['Customer B Key']));
+        }
+         $sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200",$customer->id);
+        $res2=mysql_query($sql);
+        if ($row2=mysql_fetch_assoc($res2)) {
+            $msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer A Key'],$myconf['customer_id_prefix'].sprintf("%05d",$row2['Customer A Key']));
+        }
+        
+        $msg=preg_replace('/^,/','',$msg);
+        if ($msg!='') {
+            $correlation_msg='<p>'._('Potential duplicated').': '.$msg.'</p>';
+
+        }
+$smarty->assign('correlation_msg',$correlation_msg);
+
 
 $smarty->assign('gold_reward',$gold_reward);
 

@@ -154,9 +154,9 @@
 {t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
 </p>
 <p id="delete_customer_msg"></p>
-<span id="cancel_delete_customer" class="state_details" style="display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
-<span id="save_delete_customer" class="state_details" style="display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
-
+<span id="cancel_delete_customer"  style="cursor:pointer;display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
+<span id="save_delete_customer"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
+<p id="deleting" style="display:none;">{t}Deleting customer, wait please{/t}</p>
 </div>
 <span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes'}display:none{/if}">{t}Delete Customer{/t}</span>
 

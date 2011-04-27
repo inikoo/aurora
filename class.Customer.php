@@ -1003,9 +1003,9 @@ class Customer extends DB_Table {
             $this->get_data('id',$this->id);
             $this->fuzzy=true;
             $history_data=array(
-                              'History Abstract'=>_('Anonymous Customer Created')
-                                                 ,'History Details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' )
-                                                                    ,'Action'=>'created'
+                              'History Abstract'=>_('Anonymous Customer Created'),
+                                                'History Details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' ),
+                                                                    'Action'=>'created'
 
                           );
             $this->add_customer_history($history_data);
@@ -2650,19 +2650,13 @@ class Customer extends DB_Table {
     /*function:get_formated_id_link
       Returns formated id_link
     */
-    function get_formated_id_link() {
-
-
-
-
-        return sprintf('<a href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
+    function get_formated_id_link($customer_id_prefix='') {
+       return sprintf('<a style="color:SteelBlue" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
 
     }
 
 
-    /*function:get_formated_id
-      Returns formated id
-    */
+ 
     function get_formated_id($customer_id_prefix='') {
 
         ;
@@ -3951,7 +3945,7 @@ class Customer extends DB_Table {
 
 
 
-            $card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$option.$this->get_formated_id().'</a>',$card);
+            $card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$this->get_formated_id($option).'</a>',$card);
             return $card;
 
             break;
@@ -4502,7 +4496,7 @@ class Customer extends DB_Table {
 
     }
 
-    function delete($note='') {
+    function delete($note='',$customer_id_prefix='') {
 
         $deleted_company_keys=array();
 
@@ -4534,7 +4528,13 @@ class Customer extends DB_Table {
         $telecom_to_delete=$this->get_telecom_keys();
 
 
-
+            $history_data=array(
+                              'History Abstract'=>_('Customer Deleted'),
+                              'History Details'=>'',
+                              'Action'=>'deleted'
+                          );
+         
+$this->add_history($history_data,$force_save=true);
 
 
 
@@ -4593,13 +4593,16 @@ class Customer extends DB_Table {
 
 
 
+ 
+
+
 // Delete if the email has not been send yet
 //Email Campaign Mailing List 
 
         $sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s) ",
                      $this->id,
                      $this->data['Customer Store Key'],
-                     prepare_mysql($this->display('card')),
+                     prepare_mysql($this->display('card',$customer_id_prefix)),
                      prepare_mysql($this->editor['Date']),
                      prepare_mysql($note,false)
                     );
@@ -4734,7 +4737,7 @@ class Customer extends DB_Table {
         $this->deleted=true;
     }
 
-    function merge($customer_key) {
+    function merge($customer_key,$customer_id_prefix='') {
     $this->merged=false;
     
         $customer_to_merge=new Customer($customer_key);
@@ -4810,6 +4813,19 @@ $customer_to_merge->editor=$this->editor;
         
    }
    
+    $history_data=array(
+                              'History Abstract'=>_('Customer').' '.$customer_to_merge->get_formated_id_link($customer_id_prefix).' '._('merged'),
+                              'History Details'=>_('Orders Transfered').':'.$customer_to_merge->get('Orders').'<br/>'._('Notes Transfered').':'.$customer_to_merge->get('Notes').'<br/>',
+                            'Direct Object'=>'Customer',
+                               'Direct Object Key'=>$customer_to_merge->id,
+                                'Indirect Object'=>'Customer',
+                                 'Indirect Object Key'=>$this->id,
+                              'Action'=>'merged',
+                               'Preposition'=>'to'
+                              );
+            $this->add_customer_history($history_data);
+   
+   
       $customer_to_merge->update_orders();
         
         $this->update_orders();
@@ -4826,7 +4842,7 @@ $customer_to_merge->editor=$this->editor;
         
      
         
-        $customer_to_merge->delete();
+        $customer_to_merge->delete('',$customer_id_prefix);
         
       
         

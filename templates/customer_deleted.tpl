@@ -8,7 +8,9 @@
 <div style="margin-top:20px">{$customer_data.CustomerCard}</div>
 
 
-
+<div style="margin-top:20px">
+{$message}
+</div>
 
 </div>
 </div>
