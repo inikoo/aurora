@@ -3259,14 +3259,14 @@ function edit_company_area($data) {
 
 
 function delete_customer($data) {
-global $editor;
+global $editor,$myconf;
 
     $customer=new Customer($data['customer_key']);
    $customer->editor=$editor;
   // print_r($customer->editor);
   // exit;
    if ($customer->id) {
-        $customer->delete();
+        $customer->delete('',$myconf['customer_id_prefix']);
         if ($customer->deleted) {
             $response=array('state'=>200,'action'=>'deleted','msg'=>$customer->msg);
             echo json_encode($response);
@@ -3516,7 +3516,7 @@ $response=array('state'=>200,'action'=>'deleted');
 }
 
 function customer_merge($data){
-global $user,$editor;
+global $user,$editor,$myconf;
 $customer=new Customer($data['customer_key']);
 $customer->editor=$editor;
 $customer_to_be_deleted=new Customer($data['merge_key']);
@@ -3533,7 +3533,7 @@ $response=array('state'=>400,'msg'=>_('Forbidden operation'));
         return;
 }
 
-$customer->merge($customer_to_be_deleted->id);
+$customer->merge($customer_to_be_deleted->id,$myconf['customer_id_prefix']);
 
 if($customer->merged){
 $response=array('state'=>200,'action'=>'merged');

@@ -11,6 +11,8 @@
 
 include_once('common.php');
 include_once('class.Store.php');
+include_once('class.Customer.php');
+
 if (!$user->can_view('customers')) {
     header('Location: index.php');
     exit;
@@ -90,6 +92,23 @@ $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
 
+$message='';
+      $msg='';
+        $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_data['CustomerKey']);
+        $res2=mysql_query($sql);
+        if ($row2=mysql_fetch_assoc($res2)) {
+
+
+            $_customer=new Customer($row2['Customer Key']);
+            $msg.=','.sprintf("<a style='color:SteelBlue' href='customer.php?id=%d'>%s</a>",$_customer->id,$_customer->get_formated_id($myconf['customer_id_prefix']));
+        }
+        $msg=preg_replace('/^,/','',$msg);
+        if ($msg!='') {
+            $message=_('Customer merged with').': '.$msg;
+
+        }
+
+$smarty->assign('message',$message);
 
 
 $general_options_list=array();
