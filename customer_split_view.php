@@ -45,6 +45,9 @@ if ($customer->id) {
     $customer_a['id']=$customer->id;
     $customer_a['store_key']=$customer->data['Customer Store Key'];
     $customer_a['deleted']=false;
+    
+       $smarty->assign('customer_a_object',$customer);
+    
 } else {
     $sql=sprintf("select * from `Customer Deleted Dimension` where `Customer Key`=%d",$customer_id_a);
     $res=mysql_query($sql);
@@ -101,6 +104,11 @@ if ($customer->id) {
     $customer_b['id']=$customer->id;
     $customer_b['store_key']=$customer->data['Customer Store Key'];
     $customer_b['deleted']=false;
+    
+    $smarty->assign('customer_b_object',$customer);
+
+
+    
 } else {
     $sql=sprintf("select * from `Customer Deleted Dimension` where `Customer Key`=%d",$customer_id_b);
     $res=mysql_query($sql);
@@ -115,7 +123,6 @@ if ($customer->id) {
         $customer_b['id']=$row['Customer Key'];
         $customer_b['store_key']=$row['Customer Store Key'];
         $customer_b['deleted']=true;
-
         $customer_b['msg']=_('Customer deleted');
 
         $msg='';
