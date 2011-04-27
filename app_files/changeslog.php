@@ -2683,6 +2683,8 @@ CREATE TABLE `Customer Merge Bridge` (
 PRIMARY KEY ( `Merged Customer Key` , `Customer Key` )
 ) ENGINE = MYISAM ;
 
+ALTER TABLE `Customer Merge Bridge` ADD `Date Merged` DATETIME NULL DEFAULT NULL ,ADD INDEX ( `Date Merged` ); 
+
 */
 
 

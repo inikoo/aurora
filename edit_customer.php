@@ -285,6 +285,25 @@ $smarty->assign('main_telephone_warning',$main_telephone_warning);
 
 //$smarty->assign('delivery_addresses',$delivery_addresses);
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
+
+$correlation_msg='';
+ $msg='';
+        $sql=sprintf("select * from `Customer Merge Bridge` M left join `Customer Deleted Dimension` D  on (D.`Customer Key`=`Merged Customer Key`)   where M.`Customer Key`=%d and `Date Merged`>= DATE_SUB(NOW(),INTERVAL 1 DAY);   ",$customer->id);
+   // print $sql;
+    $res2=mysql_query($sql);
+        if ($row2=mysql_fetch_assoc($res2)) {
+            $msg.=$row2['Customer Card'];
+        }
+       
+        $msg=preg_replace('/^,/','',$msg);
+        if ($msg!='') {
+            $correlation_msg='<p>'._('Customer recently merged with').': '.$msg.'</p>';
+
+        }
+$smarty->assign('recent_merges',$correlation_msg);
+
+
+
 $smarty->display('edit_customer.tpl');
 exit();
 
