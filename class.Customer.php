@@ -1877,7 +1877,8 @@ class Customer extends DB_Table {
                 $lost_interval=$losing_interval*4.0/3.0;
             }
 
-
+$lost_interval=ceil($lost_interval);
+$losing_interval=ceil($losing_interval);
 
             $this->data['Customer Type by Activity']='Active';
             $this->data['Customer Active']='Yes';
@@ -1888,8 +1889,7 @@ class Customer extends DB_Table {
                 $this->data['Customer Type by Activity']='Lost';
                 $this->data['Customer Active']='No';
             }
-
-//print "\n  ".$this->data['Customer Last Order Date']." +$losing_interval seconds"."    \n";
+//print "\n xxx ".$this->data['Customer Last Order Date']." +$losing_interval seconds"."    \n";
             $this->data['Customer Lost Date']=date('Y-m-d H:i:s',
                                                    strtotime($this->data['Customer Last Order Date']." +$lost_interval seconds")
                                                   );
@@ -1908,7 +1908,7 @@ class Customer extends DB_Table {
                      ,$this->id
                     );
 
-        //     print "\n $orders\n$sql\n";
+         //   print "\n $orders\n$sql\n";
         //  exit;
         if (!mysql_query($sql))
             exit("\n$sql\n error");
