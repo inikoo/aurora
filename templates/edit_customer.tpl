@@ -7,6 +7,8 @@
     <h1>{t}Edit Customer{/t}: <span style="color:SteelBlue">{$id}</span>, <span id="title_name">{$customer->get('Customer Name')}</span></h1>
   </div>
 
+<div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">{$recent_merges}</div>
+
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Customer Details{/t}</span></span></li>
  {if $customer_type=='Company'}

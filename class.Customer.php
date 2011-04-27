@@ -4848,10 +4848,10 @@ $customer_to_merge->editor=$this->editor;
         
         
     
-         $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+         $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d,`Date Merged`=%s where `Customer Key`=%d ",$this->id,prepare_mysql($this->editor['Date']),$customer_to_merge->id);
         $res=mysql_query($sql);
         
-        $sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d) ",$customer_to_merge->id,$this->id);
+        $sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d,%s) ",$customer_to_merge->id,$this->id,prepare_mysql($this->editor['Date']));
         $res=mysql_query($sql);
         
         $store=new Store($this->data['Customer Store Key']);
