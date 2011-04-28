@@ -2,7 +2,10 @@
 
 <div id="bd" style="padding:0 20px">
 
- 
+ <span class="nav2 onright" style="padding:0px">{if $next.id_a>0}<a class="next" href="customer_split_view.php?{$my_parent_info}id_a={$next.id_a}&id_b={$next.id_b}&score={$next.score}&name_a={$next.name_a|escape:'url'}&name_b={$next.name_b|escape:'url'}" ><img src="art/icons/next_white.png" style="padding:0px 10px" alt=">" title="{t}Next{/t}"  /></a>{/if}</span>
+{if $my_parent_url}<span class="nav2 onright"><a   href="{$my_parent_url}">{$my_parent_title}</a></span>{/if}
+<span class="nav2 onright" style="margin-left:20px; padding:0px"> {if $prev.id_a>0}<a class="prev" href="customer_split_view.php?{$my_parent_info}id_a={$prev.id_a}&id_b={$prev.id_b}&score={$prev.score}&name_a={$next.name_a|escape:'url'}&name_b={$next.name_b|escape:'url'}" ><img src="art/icons/previous_white.png" style="padding:0px 10px" alt="<" title="{t}Previous{/t}"  /></a>{/if}</span>
+
  
 
 
@@ -32,7 +35,7 @@
 <tr><td>{t}Orders{/t}:</td><td>{$customer_a.orders}</td><tr>
 <tr><td>{t}Notes{/t}:</td><td>{$customer_a.notes}</td><tr>
 <tr>
-<td>
+<td colspan=2>
    {if $customer_a_object->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}<span><br/>{/if}
    {if $customer_a_object->get('Customer Send Email Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by email{/t}<span><br/>{/if}
    {if $customer_a_object->get('Customer Send Postal Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by post{/t}<span><br/>{/if}
@@ -54,7 +57,7 @@
 <tr><td>{t}Orders{/t}:</td><td>{$customer_b.orders}</td><tr>
 <tr><td>{t}Notes{/t}:</td><td>{$customer_b.notes}</td><tr>
 <tr>
-<td>
+<td colspan=2>
     {if $customer_b_object->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}<span><br/>{/if}
    {if $customer_b_object->get('Customer Send Email Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by email{/t}<span><br/>{/if}
    {if $customer_b_object->get('Customer Send Postal Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by post{/t}<span><br/>{/if}
