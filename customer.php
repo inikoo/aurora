@@ -323,12 +323,12 @@ $correlation_msg='';
  $msg='';
         $sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200",$customer->id);
         $res2=mysql_query($sql);
-        if ($row2=mysql_fetch_assoc($res2)) {
+        while ($row2=mysql_fetch_assoc($res2)) {
             $msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer B Key'],$myconf['customer_id_prefix'].sprintf("%05d",$row2['Customer B Key']));
         }
          $sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200",$customer->id);
         $res2=mysql_query($sql);
-        if ($row2=mysql_fetch_assoc($res2)) {
+        while ($row2=mysql_fetch_assoc($res2)) {
             $msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer A Key'],$myconf['customer_id_prefix'].sprintf("%05d",$row2['Customer A Key']));
         }
         

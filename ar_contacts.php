@@ -1938,8 +1938,8 @@ function list_customers() {
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     } else {
-        exit("no store");
-
+       $where.=sprintf(' and  false');
+        $currency='';
     }
 
 
@@ -5939,9 +5939,12 @@ function list_customers_correlations() {
                      'name_a'=>$name_a,
                      'name_b'=>$name_b,
                      'correlation'=>$data['Correlation'],
-                     'action'=>sprintf('<a href="customer_split_view.php?id_a=%d&id_b=%d"><img src="art/icons/application_tile_horizontal.png" alt="split_view"></a>',
+                     'action'=>sprintf('<a href="customer_split_view.php?id_a=%d&id_b=%d&p=cs&score=%f&name_a=%s&name_b=%s"><img src="art/icons/application_tile_horizontal.png" alt="split_view"></a>',
                      $data['Customer A Key'],
-                     $data['Customer B Key']
+                     $data['Customer B Key'],
+                     $data['Correlation'],
+                     urlencode($data['Customer A Name']),
+                     urlencode($data['Customer B Name'])
                      )   
 
                  );
