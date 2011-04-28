@@ -48,7 +48,7 @@ global $myconf;
 
 
 $store_data=array('Store Code'=>'IT',
-		  'Store Name'=>'AW-Reagali',
+		  'Store Name'=>'AW-Regali',
 		  'Store Locale'=>'it_IT',
 		  'Store Home Country Code 2 Alpha'=>'IT',
 		  'Store Currency Code'=>'EUR',
@@ -219,7 +219,7 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
 $campaign=array(
 		'Campaign Name'=>'BOGOF'
-	 ,'Campaign Code'=>'IT.BOGOF'
+		,'Campaign Code'=>'IT.BOGOF'
 		,'Campaign Description'=>'Buy one Get one Free'
 		,'Campaign Begin Date'=>''
 		,'Campaign Expiration Date'=>''
@@ -254,7 +254,7 @@ $bogof_camp->add_deal_schema($data);
 $bogof_cam_id=$bogof_camp->id;
 $campaign=array(
 		'Campaign Name'=>'First Order Bonus'
-	 ,'Campaign Code'=>'IT.FOB'
+		,'Campaign Code'=>'IT.FOB'
 		,'Campaign Trigger'=>'Order'
 		,'Campaign Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
 		,'Campaign Begin Date'=>''
