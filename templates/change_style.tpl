@@ -37,7 +37,7 @@ if (x==null || x=="")
 			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(0);"  title="Default theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/ScreenshotDefault.png"></div></a></td>
 			 <td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(1);"  title="Brown theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/BrownScreenshot.png"></div></a></td>
 			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(2);" title="Green theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160"  src="art/Screenshotlitegreen.png"></div></a></td>
-			<!--<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(3);" title="Magento theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/ScreenshotMagento.png"></div></a></td> !-->
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(3);" title="Magento theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/Screenshot-magento.png"></div></a></td> 
 			
 		</tr>
 		
