@@ -49,6 +49,9 @@ if (x==null || x=="")
                <tr>             
 			
 			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(4);" title="Gradient Black theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/Screenshot-black.png"></div></a></td> 
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(5);" title="Chrismas theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/Screenshot-chrismas.png"></div></a></td> 
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(6);" title="Purple theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/Screenshot-purple.png"></div></a></td> 
+			<td style=" padding:10px 20px 10px 0px;"><a href="#" onclick="change_style(7);" title="Radish theme"><div style="padding:10px;border:2px #000000 solid;" id="dialog_link"><img height="120" width="160" src="art/Screenshot-redish.png"></div></a></td> 
 			
 		</tr>
 		

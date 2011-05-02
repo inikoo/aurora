@@ -33,11 +33,7 @@ array_push($css_files, 'table.css');
 //array_push($css_files, 'themes_css/'.$ThemeTable);
 array_push($css_files, 'css/index.css');
 array_push($css_files, 'css/dropdown.css'); 
-//array_push($css_files, 'themes_css/'.$ThemeIndex); 
-//array_push($css_files, 'themes_css/'.$ThemeDropdown);
-//array_push($css_files, 'css/black_theme.css.php');
 array_push($css_files, 'css/'.$Theme_css);
-
 }
 }    
    
