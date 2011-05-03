@@ -30,6 +30,8 @@ $store=new Store($store_id);
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
+
 $_SESSION['state']['customers']['store']=$store_id;
 $modify=$user->can_edit('customers');
 $general_options_list=array();

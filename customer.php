@@ -216,8 +216,9 @@ if (isset($_REQUEST['p'])) {
 }
 
 
-$show_details=$_SESSION['state']['customer']['details'];
-$smarty->assign('show_details',$show_details);
+$smarty->assign('store_id',$customer->data['Customer Store Key']);
+
+
 $general_options_list=array();
 
 

@@ -2,6 +2,7 @@ var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
 
 
+
 var submit_search_on_enter=function(e,tipo){
      var key;     
      if(window.YAHOO.util.Event)
@@ -16,19 +17,27 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init_search(type){
+ subject=type;
 switch(type)
 {
+case 'staff':
+search_scope='staff';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_staff);
+  break;
 case 'users':
 search_scope='users';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_users);
   break;
 case 'orders':
-search_scope='orders';
+search_scope='store';
+    subject='orders';
+
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders);
   break;
   case 'orders_store':
- 
-search_scope='orders_store';
+    subject='orders';
+
+search_scope='';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_store);
   break;
 case 'products':
@@ -40,12 +49,15 @@ search_scope='locations';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_locations);
   break;
   case'customers':
-search_scope='customers';
+   subject='customers';
+
+search_scope='';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers);
   break;  
   case 'customers_store':
- var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers);
-  var search_scope='customers';
+ var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
+ subject='customers';
+   search_scope='store';
   break;
 case 'products_store':
  var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
@@ -69,37 +81,34 @@ default:
 
 
 
-
      store_name_oACDS.queryMatchContains = true;
-     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(subject+"_search",subject+"_search_Container", store_name_oACDS);
 
  store_name_oAutoComp.minQueryLength = 0; 
      store_name_oAutoComp.queryDelay = 0.25;
     
     
     
-   
-   
 
+   
     
     
-     YAHOO.util.Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
+     YAHOO.util.Event.addListener(subject+"_clean_search", "click",clear_search,subject);
 
   
-    YAHOO.util.Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+    YAHOO.util.Event.addListener(subject+"_search", "keyup",search_events,subject)
     
    
-     x= Dom.getX(search_scope+'_clean_search');
-     y= Dom.getY(search_scope+'_clean_search');
-     Dom.setX(search_scope+"_search_results", x-500);
+     x= Dom.getX(subject+'_clean_search');
+     y= Dom.getY(subject+'_clean_search');
+     Dom.setX(subject+"_search_results", x-500);
 
 
 
 
-    Dom.setY(search_scope+"_search_results", y+17);
+    Dom.setY(subject+"_search_results", y+17);
 
- Dom.get(search_scope+"_search_results").style.display='none';  
-
+ Dom.get(subject+"_search_results").style.display='none';  
 
 
 
@@ -145,13 +154,13 @@ function search_suppliers(query){
 }
 
 function search_customers(query){
-    search(query,'customers','customers');
+    search(query,'customers','');
 }
 function search_customers_in_store(query){
     search(query,'customers','store');
 }
 function search_products_in_store(query){
-    search(query,'all','products');
+    search(query,'products','store');
 }
 
 function search_all(query){
@@ -160,15 +169,15 @@ function search_all(query){
 }
 
 function search_products(query){
-    search(query,'all','products');
+    search(query,'products','');
 }
 
 function search_orders(query){
-    search(query,'all','orders');
+    search(query,'orders','');
 }
 
 function search_orders_in_store(query){
-    search(query,'orders_store','store');
+    search(query,'orders','store');
 }
 
 function search_users(query){
@@ -176,6 +185,10 @@ function search_users(query){
 }
 function search_locations(query){
     search(query,'all','locations');
+}
+
+function search_staff(query){
+    search(query,'staff','staff');
 }
 
 function search_locations_in_warehouse(query){
@@ -194,12 +207,13 @@ function search(query,subject,search_scope){
 
 
 
-
-
     var ar_file='ar_search.php';
 
     var request='tipo='+subject+'&q='+query+'&scope='+search_scope;
-
+    if(search_scope!='' && Dom.get(search_scope+'_id')!=undefined){
+      request=request+'&'+search_scope+'_id='+Dom.get(search_scope+'_id').value;
+    }
+    
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
@@ -207,19 +221,20 @@ function search(query,subject,search_scope){
 					    //	alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
-					
-						    Dom.get(search_scope+'_search_results').removeChild(Dom.get(search_scope+'_search_results_table'));
+					                          //  alert(subject+'_search_results')
+
+						    Dom.get(subject+'_search_results').removeChild(Dom.get(subject+'_search_results_table'));
                             oTbl=document.createElement("Table");
-                            Dom.get(search_scope+'_clean_search').src='art/icons/cross_bw.png';
-			 			    Dom.get(search_scope+'_search_results').style.display='';
-					    
+                            Dom.get(subject+'_clean_search').src='art/icons/cross_bw.png';
+			 			    Dom.get(subject+'_search_results').style.display='';
+					    var result_number=0;
+						
 						    
-						    var result_number=1;
 						  
 						    Dom.addClass(oTbl,'search_result');
-						    
+						   
+						   /*
 						    oTR= oTbl.insertRow(-1);
-						    
 						    oTR.setAttribute('key',r.q);
 							oTR.setAttribute('link','search.php?subject='+subject+'&q=');
 							Dom.addClass(oTR,'result');
@@ -230,7 +245,7 @@ function search(query,subject,search_scope){
 						    	oTD.innerHTML="No results found, try the a more comprensive search click here.";
 
 							}else{
-								oTD.innerHTML="Posible search results below. for a page with all results click here.";
+								oTD.innerHTML="Possible search results below. For a page with all results click here.";
 
 							}
 							
@@ -246,39 +261,59 @@ function search(query,subject,search_scope){
 							    oTR.setAttribute('prev',1);
 							    
 						    oTR.onclick = go_to_result;
-						    
-						  
+						    */
+						
 						    var link=r.link;
 						  
 						    
 						   if(r.results>0){
 						    
 						    for(result_key in r.data){
+						    
+						
+						    
 							    oTR= oTbl.insertRow(-1);
-	Dom.addClass(oTR,'result');
+							        if(result_number==0)
+						         Dom.addClass(oTR,'selected');
+	                            Dom.addClass(oTR,'result');
 							    var oTD= oTR.insertCell(0);
 							    Dom.addClass(oTD,'naked');
 					
 
 							    if(subject=='customers'){
-							        oTR.setAttribute('key',result_key);
+							         oTR.setAttribute('key',result_key);
 							        oTR.setAttribute('link',link);
-							        var oTD= oTR.insertCell(1);
+							      
+							        if(search_scope!='store'){
+							             var oTD= oTR.insertCell(-1);
+							        oTD.innerHTML=r.data[result_key ].store;
+                                            }
+							      
+							          var oTD= oTR.insertCell(-1);
 							        oTD.innerHTML=r.data[result_key ].key;
-							        var oTD= oTR.insertCell(2);
+							        var oTD= oTR.insertCell(-1);
 							        oTD.innerHTML=r.data[result_key ].name;
-							        var oTD= oTR.insertCell(3);
+							        var oTD= oTR.insertCell(-1);
 							        oTD.innerHTML=r.data[result_key ].address;
-							    }else if(subject=='orders' || subject=='orders_store'){
+							      
+							      
+							        
+							        
+							    }else if(subject=='orders' ){
 							        oTR.setAttribute('key',result_key);
 							        oTR.setAttribute('link',link);
-							        var oTD= oTR.insertCell(1);
+							          if(search_scope!='store'){
+							             var oTD= oTR.insertCell(-1);
+							        oTD.innerHTML=r.data[result_key ].store;
+                                            }
+							        
+							        var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].public_id;
-							    var oTD= oTR.insertCell(2);
+							    var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].customer;
-							    var oTD= oTR.insertCell(3);
+							    var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].state;
-							    var oTD= oTR.insertCell(4);
+							    var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].balance;
 							}else if(subject=='part'){
 							    oTR.setAttribute('key',r.data[result_key].sku);
@@ -312,12 +347,15 @@ function search(query,subject,search_scope){
 							    oTR.setAttribute('key',r.data[result_key ].key);
 							    oTR.setAttribute('link',r.data[result_key ].link);
 							   
-
-							    var oTD= oTR.insertCell(1);
+   if(search_scope!='store'){
+							             var oTD= oTR.insertCell(-1);
+							        oTD.innerHTML=r.data[result_key ].store;
+                                            }
+							    var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].image;
-							    var oTD= oTR.insertCell(2);
+							    var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].code;
-							    var oTD= oTR.insertCell(3);
+							    var oTD= oTR.insertCell(-1);
 							    oTD.innerHTML=r.data[result_key ].description;
 
 							}else if(subject=='locations'){
@@ -342,12 +380,20 @@ function search(query,subject,search_scope){
 							  }
 
 							}
+							if(result_number==0)
+														oTR.setAttribute('prev',r.results-1);
+							else
 							oTR.setAttribute('prev',result_number-1);
+							if(result_number==r.results-1)
+						oTR.setAttribute('next',0);
+
+else
+
 						oTR.setAttribute('next',result_number+1);
 					   
-						if(r.results==result_number){
-						        oTR.setAttribute('next',1);
-                                }							
+					//	if(r.results==result_number){
+					//	        oTR.setAttribute('next',1);
+                      //          }							
 						oTR.setAttribute('id','tr_result'+result_number);
 						oTR.onclick = go_to_result;
 						result_number++;
@@ -355,9 +401,28 @@ function search(query,subject,search_scope){
 						
 						}
 						}
+						   else{
+						   oTR= oTbl.insertRow(-1);
+						    oTR.setAttribute('key',r.q);
+							oTR.setAttribute('link','');
+							Dom.addClass(oTR,'result');
+						    var oTD= oTR.insertCell(0);
+							Dom.addClass(oTD,'naked');
+						    var oTD= oTR.insertCell(1);
+						    	oTD.innerHTML=Dom.get('search_no_results').innerHTML;
+
+												oTR.setAttribute('next',0);
+
+						oTR.setAttribute('prev',0);
+
+								//oTD.innerHTML="Possible search results below. For a page with all results click here.";
+
 						
-						oTbl.id=search_scope+'_search_results_table';
-						Dom.get(search_scope+'_search_results').appendChild(oTbl);
+						   
+						   }
+						
+						oTbl.id=subject+'_search_results_table';
+						Dom.get(subject+'_search_results').appendChild(oTbl);
 						 
 // 						    
 						    
@@ -425,10 +490,12 @@ Dom.addClass('tr_result'+tr.getAttribute('next'),'selected');
 }
 
 function goto_search_result(subject){
+
+
 elements_array=Dom.getElementsByClassName('selected', 'tr', subject+'_search_results_table');
 
 tr=elements_array[0];
-if(tr!= undefined)
+if(tr!= undefined && tr.getAttribute('link'))
 location.href=tr.getAttribute('link')+tr.getAttribute('key');
 
 }

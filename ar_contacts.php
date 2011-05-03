@@ -20,6 +20,15 @@ if (!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('can_merge_customer'):
+
+
+$data=prepare_values($_REQUEST,array(
+                            'customer_to_merge_id'=>array('type'=>'string'),
+                                     'customer_key'=>array('type'=>'key')));
+can_merge_customer($data);
+break;
+
 case('email_in_other_customer'):
  $data=prepare_values($_REQUEST,array(
                              'query'=>array('type'=>'string'),
@@ -2601,189 +2610,7 @@ function list_customers_send_post() {
 
 
 
-function list_staff() {
-    global $myconf;
 
-    $conf=$_SESSION['state']['hr']['staff'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
-    else
-        $where=$conf['where'];
-
-    if (isset( $_REQUEST['view']))
-        $view=$_REQUEST['view'];
-    else
-        $view=$_SESSION['state']['hr']['view'];
-
-
-
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_order=$order;
-    $_dir=$order_direction;
-
-
-
-    $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-    $_SESSION['state']['hr']['view']=$view;
-
-
-    $wheref='';
-    if ($f_field=='name' and $f_value!=''  )
-        $wheref.=" and  name like '%".addslashes($f_value)."%'    ";
-    else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
-        $wheref.=sprintf(" and  $f_field=%d ",$f_value);
-
-
-    switch ($view) {
-    case('all'):
-        break;
-    case('staff'):
-        $where.=" and `Staff Currently Working`='Yes'  ";
-        break;
-    case('exstaff'):
-        $where.=" and `Staff Currently Working`='No' ";
-        break;
-    }
-
-    $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
-
-
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    if ($wheref!='') {
-        $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)   $where ";
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$row['total']-$total;
-        }
-
-    } else {
-        $filtered=0;
-        $total_records=$total;
-    }
-
-    mysql_free_result($res);
-
-    $filter_msg='';
-
-
-    $rtext=$total_records." ".ngettext('record','records',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=sprintf("Showing all records");
-
-    switch ($f_field) {
-    case('name'):
-        if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with name")." <b>*".$f_value."*</b> ";
-        elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>*".$f_value."*</b>)";
-        break;
-    case('area_id'):
-        if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff on area")." <b>".$f_value."</b> ";
-        elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff on area')." <b>".$f_value."</b>)";
-        break;
-    case('position_id'):
-        if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with position")." <b>".$f_value."</b> ";
-        elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with position')." <b>".$f_value."</b>)";
-        break;
-
-    }
-
-
-    if ($order=='name')
-        $order='`Staff Name`';
-    elseif($order=='position')
-    $order='position';
-    else
-        $order='`Staff Name`';
-
-    $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD   $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    //print $sql;
-    $adata=array();
-    $res=mysql_query($sql);
-    while ($data=mysql_fetch_array($res)) {
-
-
-        $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
-        $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
-
-        $department='';
-        $area='';
-        $position=$data['position'];
-        $adata[]=array(
-                     'id'=>$id,
-                     'alias'=>$data['Staff Alias'],
-                     'name'=>$data['Staff Name'],
-                     'department'=>$department,
-                     'area'=>$area,
-                     'position'=>$position
-
-                 );
-    }
-    mysql_free_result($res);
-
-
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-
-                                      'records_perpage'=>$number_results,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-                                     )
-                   );
-
-    echo json_encode($response);
-}
 
 
 
@@ -5973,5 +5800,69 @@ function list_customers_correlations() {
 
 
 
+function can_merge_customer($data){
+global $user;
+$customer_to_merge_id=_trim($data['customer_to_merge_id']);
+
+if($customer_to_merge_id==''){
+ $response=array('state'=>200,
+                    'action'=>'empty',
+                    'msg'=>''
+                    );
+                    echo json_encode($response);
+                    exit;
+}
+
+if(!is_numeric($customer_to_merge_id)){
+ $response=array('state'=>200,
+                    'action'=>'error',
+                    'msg'=>_('Invalid Customer ID')
+                    
+                    );
+                    echo json_encode($response);
+                    exit;
+}
+
+$customer_a=new Customer($data['customer_key']);
+if(!$customer_a->id){
+ $response=array('state'=>400,'action'=>'error','msg'=>"Customer don't exists");
+                    echo json_encode($response);
+                    exit;
+}
+
+if(!in_array($customer_a->data['Customer Store Key'],$user->stores)){
+ $response=array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
+                    echo json_encode($response);
+                    exit;
+}
+
+
+
+$customer_b=new Customer($customer_to_merge_id);
+if(!$customer_b->id){
+ $response=array('state'=>200,'action'=>'error','msg'=>"Customer don't exists");
+                    echo json_encode($response);
+                    exit;
+}
+
+if($customer_a->id==$customer_b->id){
+$response=array('state'=>200,'action'=>'error','msg'=>"Same customer ID");
+                    echo json_encode($response);
+                    exit;
+}
+
+if($customer_a->data['Customer Store Key']!=$customer_b->data['Customer Store Key']){
+$response=array('state'=>200,'action'=>'error','msg'=>"Customer bellows to another store");
+                    echo json_encode($response);
+                    exit;
+}
+
+
+$response=array('state'=>200,'action'=>'ok','msg'=>'','id'=>$customer_b->id);
+                    echo json_encode($response);
+                    exit;
+
+
+}
 
 ?>

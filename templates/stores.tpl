@@ -32,10 +32,8 @@
 <div id="block_stores" style="{if $block_view!='stores'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 <div class="data_table" style="clear:both">
-    <span class="clean_table_title">{t}Stores{/t}</span>
-      <div  style="font-size:90%">
-         <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="stores" >{t}Export (CSV){/t}</span>
-         </div>
+    <span class="clean_table_title">{t}Stores{/t} <img id="export_csv0"   tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+     
     
     
  <div class="table_top_bar" ></div>

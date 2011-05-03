@@ -17,10 +17,30 @@
  <li> <span class="item {if $edit=='delivery'}selected{/if}"  id="delivery">  <span> {t}Delivery Options{/t}</span></span></li>
     <li> <span class="item {if $edit=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
+    <li> <span class="item {if $edit=='merge'}selected{/if}"  id="merge">  <span> {t}Merge{/t}</span></span></li>
 
   </ul>
   
  <div class="tabbed_container" > 
+   <div  class="edit_block" style="{if $edit!="merge"}display:none{/if};min-height:260px"  id="d_merge">
+   
+   <table class="edit" border=0  style="width:700px">
+   <tr>
+   <td style="width:200px">{t}Merge with: (Customer ID){/t}</td>
+   <td style="width:200px">
+   
+   
+   <div  >
+       <input style="text-align:left;width:100%" id="customer_b_id" value="" ovalue="" >
+       <div id="customer_b_id_Container" style="" ></div>
+     </div>
+   
+   </td>
+   <td style="width:300px"><a id="go_merge" href="" class="state_details" style="display:none">{t}Go{/t}</a><span id="merge_msg" class="error" style="display:none"></span></td>
+   </tr>
+   </table>
+   
+   </div>
    
 <div  class="edit_block" style="{if $edit!="communications"}display:none{/if};min-height:260px"  id="d_communications">
     
