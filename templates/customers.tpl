@@ -27,7 +27,7 @@
 	<!-- up to this -->
 
     <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Customers List{/t}</span>
+      <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
       
    <div  style="font-size:90%">
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='all_contacts'}selected{/if}"  id="all_contacts"   >{t}All Contacts{/t} ({$store->get('Contacts')})</span>

@@ -84,8 +84,8 @@ abstract class DB_Table {
 
 
         foreach($data as $key=>$value) {
-        if(is_string($value))
-        $value=_trim($value);
+            if (is_string($value))
+                $value=_trim($value);
             $this->update_field_switcher($key,$value,$options);
 
 
@@ -146,16 +146,16 @@ abstract class DB_Table {
     }
 
     protected function update_field($field,$value,$options='') {
-    
-   // print "$field,$value,$options\n";
-    
 
-$null_if_empty=true;
+        // print "$field,$value,$options\n";
 
-if($options=='no_null'){
-$null_if_empty=false;
 
-}
+        $null_if_empty=true;
+
+        if ($options=='no_null') {
+            $null_if_empty=false;
+
+        }
 
         if (is_array($value))
             return;
@@ -182,7 +182,7 @@ $null_if_empty=false;
         $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
 //print "$sql\n";
-    mysql_query($sql);
+        mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {
             $this->msg.=' '._('Record can not be updated')."\n";
@@ -195,9 +195,9 @@ $null_if_empty=false;
             $this->data[$field]=$value;
         }
         else {
-        
-	  // print "updateeddd!!!!  $field $value\n";   
-        
+
+            // print "updateeddd!!!!  $field $value\n";
+
             $this->data[$field]=$value;
             $this->msg.=" $field "._('Record updated').", \n";
             $this->msg_updated.=" $field "._('Record updated').", \n";
@@ -207,17 +207,17 @@ $null_if_empty=false;
             $save_history=true;
             if (preg_match('/no( |\_)history|nohistory/i',$options))
                 $save_history=false;
-                
+
             if (
                 preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
                 and !$this->new
                 and $save_history
             ) {
-              // print "xxxxxxxx2";
+                // print "xxxxxxxx2";
                 $history_data=array(
                                   'Indirect Object'=>$field,
-                                                    'old_value'=>$old_value,
-                                                                 'new_value'=>$value
+                                  'old_value'=>$old_value,
+                                  'new_value'=>$value
 
                               );
                 if ($this->table_name=='Product Family')
@@ -226,10 +226,10 @@ $null_if_empty=false;
                     $history_data['direct_object']='Department';
 
                 $history_key=$this->add_history($history_data);
-                if($this->table_name=='Customer'){
-                 $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Changes')",$this->id,$history_key);
-                mysql_query($sql);
-              
+                if ($this->table_name=='Customer') {
+                    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Changes')",$this->id,$history_key);
+                    mysql_query($sql);
+
                 }
 
             }
@@ -276,9 +276,6 @@ $null_if_empty=false;
 
         if ($this->new and !$force)
             return;
-
-
-
         if ($this->table_name=='Product Department')
             $table='Department';
         elseif($this->table_name=='Product Family')
@@ -286,12 +283,27 @@ $null_if_empty=false;
         else
             $table=$this->table_name;
 
+
+        if (!isset($raw_data['Direct Object']))
+            $raw_data['Direct Object']=$table;
+
+        if (!isset($raw_data['Direct Object Key'])) {
+            if ($this->table_name=='Product')
+                $raw_data['Direct Object Key']=$this->pid;
+            else
+                $raw_data['Direct Object Key']=$this->id;
+        }
+
+
+
+
+
         $data=$this->base_history_data();
         foreach($raw_data as $key=>$value) {
             $data[$key]=$value;
         }
 
-        //print_r($data);
+
 
         if ($data['Subject']=='' or  !$data['Subject Key']) {
             include_once('class.User.php');
@@ -314,19 +326,11 @@ $null_if_empty=false;
         $data['User Key']=$editor_data['User Key'];
 
 
-        if(!isset($data['Direct Object']))    
-        $data['Direct Object']=$table;
-        
-         if(!isset($data['Direct Object Key'])){    
-        if ($this->table_name=='Product')
-            $data['Direct Object Key']=$this->pid;
-        else
-            $data['Direct Object Key']=$this->id;
-}
 
 
-        if(!isset($data['Date']) or $data['Date']=='')
-        $data['Date']=$editor_data['Date'];
+
+        if (!isset($data['Date']) or $data['Date']=='')
+            $data['Date']=$editor_data['Date'];
 
         if ($data['History Abstract']=='') {
             if ($data['Indirect Object'])
@@ -352,12 +356,12 @@ $null_if_empty=false;
                 $data['Author Name']=$customer->data['Customer Name'];
             }
             elseif($data['Subject']=='Staff' ) {
-            include_once('class.Staff.php');
+                include_once('class.Staff.php');
                 $staff=new Staff($data['Subject Key']);
                 $data['Author Name']=$staff->data['Staff Alias'];
             }
             elseif($data['Subject']=='Supplier' ) {
-                        include_once('class.Supplier.php');
+                include_once('class.Supplier.php');
 
                 $supplier=new Supplier($data['Subject Key']);
                 $data['Author Name']=$staff->data['Supplier Name'];
@@ -384,6 +388,8 @@ $null_if_empty=false;
             }
         }
 
+
+
         $sql=sprintf("insert into `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) values (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)"
                      ,prepare_mysql($data['Author Name'])
                      ,prepare_mysql($data['Date'])
@@ -401,15 +407,15 @@ $null_if_empty=false;
                      ,prepare_mysql($data['Deep'])
                      ,prepare_mysql($data['Metadata'])
                     );
-                    
-     //   print $sql;
-       // print_r($raw_data);
+
+        //   print $sql;
+        // print_r($raw_data);
         //dsdfdffd();
         mysql_query($sql);
-   
+
         return mysql_insert_id();
 
-        
+
 
     }
 

@@ -1867,7 +1867,8 @@ $default_state=array(
                                            'nr'=>50,
                                            'where'=>'where true',
                                            'f_field'=>'name',
-                                           'f_value'=>''
+                                           'f_value'=>'',
+                                           'view'=>'staff'
 
                                           ),
                             'areas'=>array(

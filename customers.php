@@ -71,7 +71,7 @@ if ($modify) {
     $general_options_list[]=array('tipo'=>'js','id'=>'new_customer','label'=>_('Add'));
 }
 
-$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export (CSV)'));
+//$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export (CSV)'));
 //$general_options_list[]=array('tipo'=>'js','id'=>'export_csv0','label'=>_('Export (CSV)'));
 
 //$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Advanced Search'));

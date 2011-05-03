@@ -777,9 +777,6 @@ Event.addListener('clean_table_filter_show0', "click",show_filter,0);
     kpl1 = new YAHOO.util.KeyListener(document, { alt:true ,keys:[78,80] }, { fn:alt_shortcuts } );
     kpl1.enable();
 
-   var search_data={tipo:'customer_name',container:'customer'};
-Event.addListener('customer_submit_search', "click",submit_search,search_data);
-Event.addListener('customer_search', "keydown", submit_search_on_enter,search_data); 
 
 
 	//Details textarea editor ---------------------------------------------------------------------

@@ -97,8 +97,8 @@ function validate_scope_old(){
 
 
 function change_block(e){
-   var ids = ["details","company","delivery","categories","communications"]; 
-    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications"]; 
+   var ids = ["details","company","delivery","categories","communications","merge"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications","d_merge"]; 
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
@@ -462,16 +462,51 @@ var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer
 }
 
 
+function merge(query){
+var request='ar_contacts.php?tipo=can_merge_customer&customer_key='+Dom.get('customer_key').value+'&customer_to_merge_id='+query
+	         
+	       Dom.get('go_merge').href='';
+	          Dom.setStyle(['go_merge','merge_msg'],'display','none');
+	       //    	           Dom.setStyle(['save_delete_customer','cancel_delete_customer'],'display','none');
+
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	         //  alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			Dom.get('merge_msg').innerHTML=r.msg;
+				          Dom.setStyle(['merge_msg'],'display','');
+
+			if(r.state==200){
+                    if(r.action=='ok'){
+                    Dom.setStyle(['merge_msg'],'display','none');
+                    Dom.get('go_merge').href='customer_split_view.php?p=a_edit&id_a='+Dom.get('customer_key').value+'&id_b='+r.id;
+                    Dom.setStyle(['go_merge'],'display','');
+            
+                    }
+                                  }
+   			}
+    });
+
+}
+
 function post_change_main_delivery_address(){}
 
 function init(){
+
+
+ var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);
+    customer_merge_oACDS.queryMatchContains = true;
+    var customer_merge_oAutoComp = new YAHOO.widget.AutoComplete("customer_b_id","customer_b_id_Container", customer_merge_oACDS);
+    customer_merge_oAutoComp.minQueryLength = 0; 
+    customer_merge_oAutoComp.queryDelay = 0.2;
+
 Dom.addClass('Send Post Status'+'_'+send_post_status,'selected');
 Dom.addClass('Post Type'+'_'+send_post_type,'selected');
   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
-    var ids = ["details","company","delivery","categories","communications"]; 
+    var ids = ["details","company","delivery","categories","communications","merge"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener( "delivery2",  "click",change_to_delivery_block);
     
@@ -596,11 +631,17 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'billing_');
 	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'billing_');
 
-
  YAHOO.util.Event.addListener('billing_save_address_button', "click",save_billing_address,{prefix:'billing_',subject:'Customer',subject_key:customer_id,type:'Billing'});
 	
 
 	 YAHOO.util.Event.addListener('billing_reset_address_button', "click",reset_billing_address);
+
+
+ var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);
+    customer_merge_oACDS.queryMatchContains = true;
+    var customer_merge_oAutoComp = new YAHOO.widget.AutoComplete("customer_b_id","customer_b_id_Container", customer_merge_oACDS);
+    customer_merge_oAutoComp.minQueryLength = 0; 
+    customer_merge_oAutoComp.queryDelay = 0.1;
 
 
 }

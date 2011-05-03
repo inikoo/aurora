@@ -31,7 +31,7 @@ $general_options_list=array();
 
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Orders'));
-$smarty->assign('search_scope','orders_store');
+$smarty->assign('search_scope','orders');
 
 
 $sql="select count(*) as numberof from `Order Dimension`";

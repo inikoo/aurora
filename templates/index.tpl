@@ -15,9 +15,11 @@
     {/foreach}
 </div>
 
+ <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px;margin-top:0;margin-bottom:0;padding-bottom:0">
+Please use the Search in customers/orders pages.
+</div>
 
-
- <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
+ <div id="search" style="visibility:hidden;border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
     <span  >{t}Search{/t}:</span>
     <input size="45" class="text" id="all_search" value="" state="" name="search"/><img style="position:relative;left:-18px;display:none"  id="all_clean_search"  class="submitsearch" src="art/icons/cross_bw.png" alt="{t}cross{/t}" />
    

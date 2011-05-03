@@ -1381,9 +1381,9 @@ function list_departments_for_edition(){
 
 
   if($parent=='store')  
-    $conf=$_SESSION['state']['store']['table'];
+    $conf=$_SESSION['state']['store']['departments'];
   else
-    $conf=$_SESSION['state']['departments']['table'];
+    $conf=$_SESSION['state']['departments']['departments'];
   
   if(isset( $_REQUEST['sf']))
     $start_from=$_REQUEST['sf'];
@@ -1424,26 +1424,10 @@ function list_departments_for_edition(){
    else
      $tableid=0;
    
-
-   if(isset( $_REQUEST['percentages'])){
-     $percentages=$_REQUEST['percentages'];
-     $_SESSION['state']['store']['percentages']=$percentages;
-   }else
-     $percentages=$_SESSION['state']['store']['percentages'];
-   
+ 
   
 
-   if(isset( $_REQUEST['period'])){
-     $period=$_REQUEST['period'];
-     $_SESSION['state']['store']['period']=$period;
-   }else
-     $period=$_SESSION['state']['store']['period'];
 
-   if(isset( $_REQUEST['avg'])){
-     $avg=$_REQUEST['avg'];
-     $_SESSION['state']['store']['avg']=$avg;
-   }else
-     $avg=$_SESSION['state']['store']['avg'];
    
    
    $store_id=$_SESSION['state']['store']['id'];
@@ -1521,7 +1505,7 @@ $order='`Product Department Name`';
     
     $res = mysql_query($sql);
     $adata=array();
-   // print "$sql";
+    //print "$sql";
     while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 //      if($row['Products']>0){
 //	$delete='<img src="art/icons/discontinue.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';//

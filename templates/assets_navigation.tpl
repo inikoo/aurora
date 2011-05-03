@@ -1,3 +1,7 @@
+<input type='hidden' id="store_id" value="{$store_key}">
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_products.php{if $store_key}?store={$store_key}{/if}">{t}here{/t}</a>.</span>
+
+
 {*
 {if $store_list_length>1}
 <dl class="dropdown">

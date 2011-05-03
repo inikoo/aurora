@@ -2685,6 +2685,29 @@ PRIMARY KEY ( `Merged Customer Key` , `Customer Key` )
 
 ALTER TABLE `Customer Merge Bridge` ADD `Date Merged` DATETIME NULL DEFAULT NULL ,ADD INDEX ( `Date Merged` ); 
 
+truncate `Theme Dimension`;
+CREATE TABLE IF NOT EXISTS `Theme Dimension` (
+  `Theme Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Theme Name` varchar(255) NOT NULL,
+  `Theme Css` varchar(255) NOT NULL,
+  PRIMARY KEY (`Theme Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `Theme Dimension`
+--
+
+INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Css`) VALUES
+(1, 'brown', 'brown_theme.css.php'),
+(2, 'green', 'green_theme.css.php'),
+(3, 'magento', 'magento_theme.css.php'),
+(4, 'Black', 'black_theme.css.php'),
+(5, 'chrismas', 'chrismas_theme.css.php'),
+(6, 'puple', 'puple_theme.css.php'),
+(7, 'radish', 'radish_theme.css.php');
+
+
+
 */
 
 

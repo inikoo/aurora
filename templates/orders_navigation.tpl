@@ -16,8 +16,6 @@
   <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Invoices{/t}</span></span>
   <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Delivery Notes{/t}</span></span>
 
-
-
 <table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
 <td class="label" style="" >{t}Search{/t}:</td>

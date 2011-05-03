@@ -1391,6 +1391,11 @@ function categorize($args='') {
     }
 
 
+ $category=new Category($category_key);
+  $category->update_invoice_category_up_today_sales();
+  $category->update_invoice_category_interval_sales();
+  $category->update_invoice_category_last_period_sales();
+
 
 }
 

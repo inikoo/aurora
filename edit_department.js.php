@@ -598,12 +598,12 @@ var table_id=0
 
 function post_item_updated_actions(branch,key,newvalue){
 
- if(key=='name')
+ if(key=='name'){
      Dom.get('title_name').innerHTML=newvalue;
- 
- else if(key=='code'){
+     Dom.get('title_name_bis').innerHTML=newvalue;
+
+ }else if(key=='code'){
      Dom.get('title_code').innerHTML=newvalue;
- Dom.get('title_code_bis').innerHTML=newvalue;
  }
  var table=tables.table1;
  var datasource=tables.dataSource1;

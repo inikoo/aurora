@@ -39,8 +39,8 @@
 
 
 
-    <table styel="clear:both" class="edit">
-      <tr><td class="label" >{t}Family Code{/t}:</td><td>
+    <table styel="clear:both" class="edit" border=1>
+      <tr><td class="label" style="width:200px">{t}Family Code{/t}:</td><td>
 	 <div  style="width:15em" >
 
 	      <input  

@@ -93,7 +93,8 @@ function post_item_updated_actions(branch,key,newvalue){
 
 
 function change_block(e){
-     if(editing!=this.id){
+        var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website"]; 
+
 	
 	if(this.id=='pictures'  ){
 	    Dom.get('info_name').style.display='';
@@ -112,14 +113,14 @@ function change_block(e){
 
 	Dom.get('d_shipping').style.display='none';
 	Dom.get('d_'+this.id).style.display='';
-	Dom.removeClass(editing,'selected');
+	Dom.removeClass(ids,'selected');
 	
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-edit&value='+this.id ,{});
 	
 	editing=this.id;
-    }
+   
 
 
 
