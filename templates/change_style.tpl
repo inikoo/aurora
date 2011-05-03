@@ -67,8 +67,7 @@ if (x==null || x=="")
 			<p id="dialog_text" style="display:none;">Press Yes to change theme for all user<p>
 		</div>
 
-           <p id="change" style="cursor:pointer;color:steelBlue;">Change background image</p>
-
+        <p id="change" style="cursor:pointer;color:steelBlue;">Change background image</p>
         <div class="show" style="display:none">
 	<form action="change_style.php" name="background" method="post" enctype="multipart/form-data" onsubmit="return validateForm()" >
 	<table>
