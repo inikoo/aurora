@@ -89,6 +89,15 @@ inikoo .yui-dt th {
 }
 .inikoo .yui-dt th{border-bottom:1px solid #A3B972}
 .inikoo tr.yui-dt-last{border-bottom:1px solid #A3B972}
+.inikoo .xwith_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #A3B972;border-bottom:none;background:#fff}
+
+.inikoo .xwith_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid #A3B972;border-bottom:none;background:#fff}
+.xinikoo .with_total tbody.yui-td-data tr.yui-dt-last  {border-top:4px solid #A3B972;border-bottom:none;background:#fff}
+.inikoo .with_total  .yui-dt-data  tr.yui-dt-last  {border-top:1px solid #A3B972;border-bottom:none;background:#fff}
+.inikoo tr.yui-dt-even{background-color:#dde6c9;}
+.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#dde6c9;}
+.inikoo .yui-dt-data tr {
+    border-top: 1px solid #bacc93;}
 /*---------------------------------theme index---------------------------------------------------------------*/
 
 

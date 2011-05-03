@@ -59,9 +59,9 @@ span.nav2 {float:left;background:#CF9199;padding:0 10px;position:relative;bottom
 
 .inikoo .yui-dt th{border-bottom:1px solid #CF9199}
 .inikoo .yui-dt-data tr{border-top:1px solid #CF9199}
-.inikoo tr.yui-dt-even{background-color:#ededed;}
+.inikoo tr.yui-dt-even{background-color:#f2e3e5;}
 
-.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#ededed;}
+.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#f2e3e5;}
 .btable caption,.tablecaption  {background:orange;color:black;height:13.85em;padding:2px 0px 0px 3px;width:100%;font-size:93%;margin-top:10px;;border-bottom:1px solid #CF9199}
 .inikoo .with_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #CF9199;border-bottom:none;background:#fff}
 .inikoo tr.yui-dt-last{border-bottom:1px solid #CF9199}
