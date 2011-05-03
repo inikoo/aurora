@@ -54,6 +54,13 @@ div.cHead div.loaderror {
     background: none repeat scroll 0 0 #A3B972;
     padding: 1px 4px;
 }
+.options_mini td.selected {
+ background: none repeat scroll 0 0 #A3B972;
+    border: 1px solid #A3B972;
+    color: #F6F6F6;
+}
+.timezone{ color:#ffffff;}
+.adv{color:#ffffff;}
       /*---------------------------------themetable---------------------------------------------------------------*/
 
 

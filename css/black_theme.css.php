@@ -43,6 +43,14 @@ table.show_info_product {border-top:1px solid #A4A4A4;border-bottom:1px solid #A
 
 span.nav2 {float:left;background:#8C8B86;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 
+.options_mini td.selected {
+   background: none repeat scroll 0 0 #8C8B86;
+    border: 1px solid #A4A4A4;
+    color: #F6F6F6;
+}
+.timezone{ color:#ffffff;}
+.adv{color:#ffffff;}
+
       /*---------------------------------themetable---------------------------------------------------------------*/
 
 

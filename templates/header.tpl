@@ -19,7 +19,7 @@
     <div id="{$page_layout}" class="{$box_layout}">
     
       <div id="hd" >
-  	<div style="float:left;font-size:65%;margin-left:16px;color:#728ec1">{$timezone}</div>
+  	<div style="float:left;font-size:65%;margin-left:16px;" class='timezone'>{$timezone}</div>
   	<div style="float:right;font-size:77%;margin:0px 20px 0.15em 0">
 	            <span id="top_message" style=";margin-right:30px"></span>
 	            <a style=";margin-right:15px">{t}Help{/t}</a>
