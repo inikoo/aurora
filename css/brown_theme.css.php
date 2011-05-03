@@ -43,8 +43,13 @@ table.show_info_product {border-top:1px solid #F2B037;border-bottom:1px solid #F
 .options td.selected,.options span.selected{background:#F2AF32;border:1px solid #BD6A14;color:#f6f6f6;text-decoration:none}
 
 span.nav2 {float:left;background:#F2Af32;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
-
-
+.options_mini td.selected {
+  background: none repeat scroll 0 0 #F2AF32;
+    border: 1px solid #BD6A14;
+    color: #F6F6F6;
+}
+.timezone{ color:#ffffff;}
+.adv{color:#ffffff;}
       /*---------------------------------themetable---------------------------------------------------------------*/
 
 
