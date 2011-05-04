@@ -224,7 +224,7 @@ $smarty->assign('customer_b',$customer_b);
 
 
 $smarty->assign('search_label',_('Customers'));
-$smarty->assign('search_scope','customers_store');
+$smarty->assign('search_scope','customers');
 
 
 
