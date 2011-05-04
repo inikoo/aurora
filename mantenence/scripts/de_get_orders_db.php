@@ -1322,6 +1322,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $customer_posible_key=$act_data['act'];
                 $customer = new Customer($act_data['act']);
             } else {
+                print "creating customer old way\n";
                 $customer = new Customer ( 'find create', $data['Customer Data'] );
             }
             if (!$customer->id and $customer_posible_key) {
