@@ -25,6 +25,7 @@ if (!$customer_list_data=mysql_fetch_assoc($res)) {
 }
 $store=new Store($customer_list_data['Customer List Store Key']);
 $smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
 
 
 $customer_list_name=$customer_list_data['Customer List Name'];

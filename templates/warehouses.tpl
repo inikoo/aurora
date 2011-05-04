@@ -1,13 +1,22 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="padding:0px">
+<div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
+ <h1 style="clear:left">{t}Warehouses{/t}</h1>
+ </div>
 
- <div style="clear:left;margin:0 0px">
-    <h1>{t}Warehouses{/t}</h1>
-  </div>
+<div style="padding:0px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li style="display:none"> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Warehouses{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='stores'}selected{/if}"  id="stores">  <span> {t}Areas{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='departments'}selected{/if}"  id="departments">  <span> {t}Shelfs{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='families'}selected{/if}"  id="families">  <span> {t}Locations{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Parts{/t}</span></span></li>
 
-
-
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+</div>
+<div style="padding:0 20px">
   <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
     <span class="clean_table_title">{t}Warehouses{/t}</span>
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="warehouses" >{t}Export (CSV){/t}</span>
@@ -15,7 +24,7 @@
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
 
-
+  </div>
     </div>
   </div>
 

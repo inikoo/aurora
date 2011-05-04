@@ -419,8 +419,10 @@ color: #316D89;
 div.general_options{padding:0 0 5px 0;color:#777}
 div.general_options span{float:right;margin-left:15px;font-size:85%; font-weight:200;cursor:pointer;}
 div.general_options span:hover{text-decoration:underline;color:#333}
-
-
+div.general_options  .edit{color:#F05F26}
+div.general_options  .edit:hover{color:#DB511A}
+div.general_options  .return{color:#4986D6}
+div.general_options  .return:hover{color:#3A78C9}
 .no_top_nav{position:relative;bottom:10px}
 
 
@@ -658,8 +660,10 @@ position:relative;top:1px;
 
 .diff_ins{color:green}
 
+.quick_button{font-size:90%}
+.quick_button td{text-align:center;color:#fff;padding:1px 10px;background:#334556;font-weight:100;border:2px solid #fff;cursor:pointer}
+.quick_button td a{color:#fff;text-decoration: none;}
 
-.quick_button td{color:#fff;background:#334556;font-weight:800;border:2px solid #fff;cursor:pointer}
 .quick_button td:hover{background:#131536;}
 
 .table_type {margin-top:.6em}

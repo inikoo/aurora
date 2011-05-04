@@ -79,13 +79,23 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
     $store_id=$_SESSION['state']['store']['id'];
 }
 
+$store=new Store($store_id);
+
+
+//  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
 
 if($modify){
 
-     $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
+     $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
+  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
 
 }
+
 $js_files[]='customer_categories_base.js.php';
 $tpl_file='customer_categories_base.tpl';
 
@@ -100,15 +110,31 @@ header('Location: customer_categories.php?id=0&error=cat_not_found');
 
 }
 
+$store_id=$category->data['Category Store Key'];
+if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
+    $store_id=$_REQUEST['store_id'];
+
+} else {
+    $store_id=$_SESSION['state']['store']['id'];
+}
+
+$store=new Store($store_id);
+
  $category_key=  $category->id;         
 
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
 if($modify){
-   $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer_category.php?&id='.$category->id,'label'=>_('Edit Category'));
+   $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
+  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer_category.php?&id='.$category->id,'label'=>_('Edit Category'));
 
 }
 
-$store_id=$category->data['Category Store Key'];
+
+
 
 $smarty->assign('category',$category);
 
@@ -132,12 +158,14 @@ exit("Error wrong store");
 
 $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
 
 
 $smarty->assign('subject','Customer');
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
 $smarty->assign('store_id',$store_id);
+$smarty->assign('options_box_width','600px');
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

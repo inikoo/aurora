@@ -2,10 +2,7 @@
 <div id="bd" >
 
 {include file='contacts_navigation.tpl'}
-
-
-   
-      <h2 style="clear:both">{t}Customers Lists{/t}</h2>
+<h2 style="clear:left">{t}Customers Lists{/t} ({$store->get('Store Code')})</h2>
 
 <input type="hidden" id="store_id" value="{$store->id}">
 

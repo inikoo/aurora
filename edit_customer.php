@@ -45,6 +45,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 $customer=new customer($customer_id);
 $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
+
 if (!$customer->id) {
     header('Location: customers.php?error='._('Customer not exists'));
     exit();
@@ -59,6 +60,11 @@ if (!$modify) {
 
 }
 
+ $store=new Store($customer->data['Customer Store Key']);
+$smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
 
 $css_files=array(
@@ -111,8 +117,13 @@ $smarty->assign('customer',$customer);
 
 $general_options_list=array();
 
+ $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-$general_options_list[]=array('tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Exit Edit'));
+$general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
 $smarty->assign('general_options_list',$general_options_list);
 
 
@@ -303,6 +314,7 @@ $correlation_msg='';
 $smarty->assign('recent_merges',$correlation_msg);
 
 
+$smarty->assign('options_box_width','550px');
 
 $smarty->display('edit_customer.tpl');
 exit();

@@ -17,6 +17,7 @@
 include_once('class.DB_Table.php');
 
 include_once('class.Order.php');
+include_once('class.Category.php');
 
 include_once('class.DeliveryNote.php');
 

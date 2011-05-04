@@ -907,7 +907,7 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init(){
-
+  init_search('customers_store');
 var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS1.queryMatchContains = true;
  oACDS1.table_id=1;
