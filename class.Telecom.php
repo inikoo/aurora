@@ -1363,7 +1363,7 @@ function has_parents(){
             // print "$sql";
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-            $this->remove_from_parent($parent,$row['Parent Key']);
+            $this->remove_from_parent($parent,$row['Parent Key'],$type);
             }
         
         
@@ -1374,7 +1374,7 @@ function has_parents(){
 
     }
 
-function remove_from_parent($parent,$parent_key){
+function remove_from_parent($parent,$parent_key,$type){
 
  $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d and `Subject Type`=%s and `Subject Key`=%d  ",
  $this->id,
