@@ -110,20 +110,24 @@ $message='';
 
 $smarty->assign('message',$message);
 
+$store=new Store($customer_data['CustomerStoreKey']);
+$smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
+
+
 
 $general_options_list=array();
 
 
 
 
-if ($modify) {
 
-    if (isset($_REQUEST['r']) and $_REQUEST['r']=='nc')
-        $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php','label'=>_('Add Other Customer'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-}
-
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$customer_data['CustomerStoreKey'],'label'=>_('Customers'));
 
 
 $smarty->assign('general_options_list',$general_options_list);
