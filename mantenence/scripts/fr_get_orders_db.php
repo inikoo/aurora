@@ -1339,7 +1339,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $customer_posible_key=$customer_key_from_order_data;
                 $customer = new Customer($customer_key_from_order_data);
             }
-            if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+            else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
                 $customer_posible_key=$act_data['act'];
                 $customer = new Customer($act_data['act']);
             } else {
