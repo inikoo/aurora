@@ -4,10 +4,10 @@
 
 
    
-      <h2 style="clear:both">{t}New Customers List{/t} ({$store->get('Store Name')})</h2>
+      <h2 style="clear:left">{t}New Customers List{/t} ({$store->get('Store Code')})</h2>
       
       
-<div style="border:1px solid #ccc;padding:20px;width:870px">
+<div style="clear:both;border:1px solid #ccc;padding:20px;width:870px">
 <input type="hidden" id="store_id" value="{$store->id}">
 
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>

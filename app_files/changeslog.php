@@ -2691,7 +2691,7 @@ CREATE TABLE IF NOT EXISTS `Theme Dimension` (
   `Theme Name` varchar(255) NOT NULL,
   `Theme Css` varchar(255) NOT NULL,
   PRIMARY KEY (`Theme Key`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `Theme Dimension`

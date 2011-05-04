@@ -22,11 +22,14 @@ if (! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 
 $store=new Store($store_id);
 $smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
+                              $yui_path.'assets/skins/sam/autocomplete.css',
+
                'common.css',
                'container.css',
                'table.css'
@@ -44,11 +47,14 @@ $js_files=array(
               $yui_path.'calendar/calendar-min.js',
               'js/common.js',
               'js/table_common.js',
+              'js/search.js',
               'common_customers.js.php',
               'new_customers_list.js.php',
               'js/edit_common.js',
           );
 
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
 
 
@@ -177,8 +183,19 @@ $smarty->assign('filter_value7','');
 
 
 $general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php','label'=>_('Exit'));
+
+
+ $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
+$general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Go back').' &#8617;');
+
+
 $smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('options_box_width','550px');
 
 
 $smarty->display('new_customers_lists.tpl');

@@ -254,11 +254,13 @@ function save(tipo){
 			close_dialog(r.key);
 
             if(r.newvalue==''){
-                Dom.setStyle('sticky_note_div','display','none');
+                Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
                 Dom.setStyle('new_sticky_note_tr','display','');
 
             }else{
-             Dom.setStyle('sticky_note_div','display','');
+                           
+
+             Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','');
                 Dom.setStyle('new_sticky_note_tr','display','none');
             }
 
@@ -820,7 +822,7 @@ dialog_make_order.render();
 
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 Event.addListener("new_sticky_note", "click", dialog_new_sticky_note.show,dialog_new_sticky_note , true);
-Event.addListener("sticky_note", "click", dialog_sticky_note.show,dialog_sticky_note , true);
+Event.addListener(["sticky_note",'sticky_note_bis'], "click", dialog_sticky_note.show,dialog_sticky_note , true);
 
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
@@ -837,7 +839,7 @@ dialog_export.render();
  if(Dom.get('sticky_note_content').innerHTML==''){
  
 
-                Dom.setStyle('sticky_note_div','display','none');
+                Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
                 Dom.setStyle('new_sticky_note_tr','display','');
 
             }else{

@@ -492,6 +492,7 @@ var request='ar_contacts.php?tipo=can_merge_customer&customer_key='+Dom.get('cus
 function post_change_main_delivery_address(){}
 
 function init(){
+  init_search('customers_store');
 
 
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);

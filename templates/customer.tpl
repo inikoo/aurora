@@ -21,8 +21,12 @@
  
      
 <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
+    <tr><td  ><a href="pdf_customer.php?id={$customer->id}">{t}Print Address{/t}</a></td></tr>
+
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
     <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
+    <tr id="sticky_note_bis_tr" ><td id="sticky_note_bis">{t}Sticky Note{/t}</td></tr>
+
     <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr style="display:none"><td id="take_order">{t}Take Order{/t}</td></tr>
@@ -30,7 +34,7 @@
     <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
     <tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
     <tr style="display:none"><td id="others" >{t}Other{/t}</td></tr>
-    <tr><td id="make_order" style="text-align:center">QO Data</td></tr>
+    <tr><td id="make_order">QO Data</td></tr>
 </table>
        
 
