@@ -14,7 +14,7 @@
 
 
 <div style="clear:both">
-<table id="customers_table" style="width:650px" border=0 >
+<table id="customers_table" style="width:620px" border=0 >
 
 <tr>
 <td class="customer_a"  style="{if $customer_a.deleted}opacity:0.5{/if}">{$customer_a.card}</td>
