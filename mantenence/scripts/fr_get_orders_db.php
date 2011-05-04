@@ -91,7 +91,7 @@ $fam_no_fam=new Family('code','PND_FR',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo=new Family('code','Promo_FR',$store_key);
 $fam_promo_key=$fam_promo->id;
-
+/*
 $sql="select * from  fr_orders_data.orders  where deleted='Yes'  order by filename  ";
 $res=mysql_query($sql);
 
@@ -99,6 +99,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $order_data_id=$row2['id'];
     //print "deleting\n ";
     $customer_key_from_order_data=$row2['customer_id'];
+    
+  
+    
     $customer_key_from_excel_order=0 ;
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 
@@ -144,12 +147,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         print "$sql Warning can no delete oldhidt nio prod";
 
 }
-
+*/
 
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR3065.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0106.xls'  order by filename";
 
 
 $contador=0;
@@ -170,7 +173,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         //           echo "                                                          Memory: ".memory_get_usage(true) . "\n";
-
+  $customer_key_from_order_data=$row2['customer_id'];
         $order_data_id=$row2['id'];
         $filename=$row2['filename'];
         $contador++;
@@ -1340,6 +1343,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $customer_posible_key=$act_data['act'];
                 $customer = new Customer($act_data['act']);
             } else {
+                print("Creating customer like old times\n");
                 $customer = new Customer ( 'find create', $data['Customer Data'] );
             }
             if (!$customer->id and $customer_posible_key) {
