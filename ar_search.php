@@ -37,6 +37,10 @@ case('products'):
                              'q'=>array('type'=>'string')
                                  ,'scope'=>array('type'=>'string')
                          ));
+                         
+    if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
+        $data['store_id']=$_REQUEST['store_id'];
+    }                     
     $data['user']=$user;
     search_products($data);
     break;
@@ -71,11 +75,11 @@ case('orders_store'):
                                  ,'scope'=>array('type'=>'string')
                          ));
     $data['user']=$user;
-     $data['store_id']=0;
-    if($data['scope']=='store' and isset($_REQUEST['store_id'])){
+    $data['store_id']=0;
+    if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
         $data['store_id']=$_REQUEST['store_id'];
     }
-    
+
     search_orders($data);
     break;
 case('customer_name'):
@@ -91,10 +95,10 @@ case('customers'):
                          ));
     $data['user']=$user;
     $data['store_id']=0;
-    if($data['scope']=='store' and isset($_REQUEST['store_id'])){
+    if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
         $data['store_id']=$_REQUEST['store_id'];
     }
-    
+
     search_customer($data);
     break;
 case('departments'):
@@ -561,8 +565,8 @@ function search_orders($data) {
         $stores=join(',',$user->stores);
 
     $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 10",$stores,addslashes($q));
-  // print $sql;
-   $res=mysql_query($sql);
+    // print $sql;
+    $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if ($row['Order Public ID']==$q) {
             $candidates[$row['Order Key']]=110;
@@ -576,12 +580,12 @@ function search_orders($data) {
         } else {
             $candidates[$row['Order Key']]=100;
             $candidates_data[$row['Order Key']]=array(
-            'store'=>$row['Store Code'],
-            'public_id'=>$row['Order Public ID'],
-            'state'=>$row['Order Current XHTML State'],
-                                                'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-                                                'customer'=>$row['Order Customer Name']
-                                                     );
+                                                    'store'=>$row['Store Code'],
+                                                    'public_id'=>$row['Order Public ID'],
+                                                    'state'=>$row['Order Current XHTML State'],
+                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                    'customer'=>$row['Order Customer Name']
+                                                );
 
         }
 
@@ -628,16 +632,16 @@ function search_customer($data) {
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
         echo json_encode($response);
-return;
+        return;
     }
 
 
-//print "->$q <-";
+
     if ($data['scope']=='store') {
-        if(in_array($data['store_id'],$user->stores))
-        $stores=$data['store_id'];
+        if (in_array($data['store_id'],$user->stores))
+            $stores=$data['store_id'];
         else
-        $stores=0;
+            $stores=0;
 
     } else
         $stores=join(',',$user->stores);
@@ -658,38 +662,39 @@ return;
     }
     //  print "->$q <-";
     $q_just_numbers=preg_replace('/[^\d]/','',$q);
-    if(strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6){
-    
-     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%s%%"  ',
+    if (strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6) {
+
+        $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%s%%"  ',
                      $stores,
                      $q_just_numbers
-                     );
+                    );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $candidates[$row['Customer Key']]=100;
         }
-            $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%s%%"  ',
+        $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%s%%"  ',
                      $stores,
                      $q_just_numbers
-                     );
+                    );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $candidates[$row['Customer Key']]=100;
         }
-    }if(strlen($q_just_numbers)>6){
-    
-     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%%%s%%"  ',
+    }
+    if (strlen($q_just_numbers)>6) {
+
+        $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%%%s%%"  ',
                      $stores,
                      $q_just_numbers
-                     );
+                    );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $candidates[$row['Customer Key']]=100;
         }
-            $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%%%s%%"  ',
+        $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%%%s%%"  ',
                      $stores,
                      $q_just_numbers
-                     );
+                    );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $candidates[$row['Customer Key']]=100;
@@ -730,33 +735,33 @@ return;
 
 
 //print "->$q <-";
-$q_postal_code=preg_replace('/[^a-z^A-Z^\d]/','',$q);
-if($q_postal_code!=''){
-    $sql=sprintf('select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Plain Postal Code`!="" and   `Customer Main Plain Postal Code` like "%s%%"  limit 150'
-                 ,$stores
-                 ,addslashes($q_postal_code)
-                );
-    //  print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
+    $q_postal_code=preg_replace('/[^a-z^A-Z^\d]/','',$q);
+    if ($q_postal_code!='') {
+        $sql=sprintf('select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Plain Postal Code`!="" and   `Customer Main Plain Postal Code` like "%s%%"  limit 150'
+                     ,$stores
+                     ,addslashes($q_postal_code)
+                    );
+        //  print $sql;
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
 
-        if ($row['Customer Main Plain Postal Code']==$q_postal_code) {
+            if ($row['Customer Main Plain Postal Code']==$q_postal_code) {
 
-            $candidates[$row['Customer Key']]=50;
-        } else {
+                $candidates[$row['Customer Key']]=50;
+            } else {
 
-            $len_name=strlen($row['Customer Main Plain Postal Code']);
-          
-            $len_q=strlen($q_postal_code);
-            $factor=$len_q/$len_name;
+                $len_name=strlen($row['Customer Main Plain Postal Code']);
+
+                $len_q=strlen($q_postal_code);
+                $factor=$len_q/$len_name;
 
 
-            $candidates[$row['Customer Key']]=20*$factor;
+                $candidates[$row['Customer Key']]=20*$factor;
+            }
+
         }
 
     }
-
-}
 
 
     $sql=sprintf('select `Subject Key`,`Contact Name` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  REGEXP "[[:<:]]%s"  limit 100 ',$stores,$q);
@@ -987,11 +992,16 @@ function search_products($data) {
     }
 
 
-    if ($data['scope']=='store') {
-        $stores=$_SESSION['state']['store']['id'];
+   if ($data['scope']=='store') {
+        if (in_array($data['store_id'],$user->stores))
+            $stores=$data['store_id'];
+        else
+            $stores=0;
 
     } else
         $stores=join(',',$user->stores);
+        
+
 
 
     if (!$stores) {
@@ -1116,15 +1126,16 @@ function search_products($data) {
     }
 
     if ($products_keys) {
-        $sql=sprintf("select `Product Store Code`,`Product ID`,`Product XHTML Short Description`,`Product Code`,`Product Main Image`  from `Product Dimension`   where `Product ID` in (%s)",$products_keys);
-        $res=mysql_query($sql);
+        $sql=sprintf("select `Store Code`,`Product ID`,`Product XHTML Short Description`,`Product Code`,`Product Main Image`  from `Product Dimension` left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where `Product ID` in (%s) ",$products_keys);
+   //    print $sql;
+       $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $image='';
             if ($row['Product Main Image']!='art/nopic.png')
                 $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnails',$row['Product Main Image']));
             $the_results[]=array('Title'=>'<span>'.$row['Product Code'].'</span><span style="margin-left:10px">'.$row['Product XHTML Short Description'].'</span>');
 
-            $results['P '.$row['Product ID']]=array('store'=>$row['Product Store Code'],'image'=>$image,'code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);
+            $results['P '.$row['Product ID']]=array('store'=>$row['Store Code'],'image'=>$image,'code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);
         }
     }
 
@@ -1285,7 +1296,7 @@ function search_parts($data) {
 
 function search_full_text($data) {
 
-  $user=$data['user'];
+    $user=$data['user'];
 
 
     $the_results=array();
@@ -1300,21 +1311,21 @@ function search_full_text($data) {
         echo json_encode($response);
         return;
     }
-$store_keys=join(',',$user->stores);
+    $store_keys=join(',',$user->stores);
 
-if($store_keys=='')
-return;
+    if ($store_keys=='')
+        return;
 
     $candidates=array();
 
     $q_parts=preg_split('/\s+/',$q);
     foreach($q_parts as $q_part) {
         $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)      where S.`Store Key` in (%s) and `Search Result Name`='%s' limit 20",
-        $store_keys,
-        addslashes($q_part))
-        
-        ;;
-        
+                     $store_keys,
+                     addslashes($q_part))
+
+             ;;
+
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $store_code=$row['Store Code'];
@@ -1351,10 +1362,10 @@ return;
     }
 
     $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where  S.`Store Key` in (%s) and match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",
-   
-    addslashes($q),
-     $store_keys,
-    addslashes($q));;
+
+                 addslashes($q),
+                 $store_keys,
+                 addslashes($q));;
 
 
     $res=mysql_query($sql);

@@ -220,32 +220,17 @@ $smarty->assign('store_id',$customer->data['Customer Store Key']);
 
 
 $general_options_list=array();
-
-
-
-
-
-//$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Customer (CSV)'));
-
-//  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
-
-//$general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer.php?id='.$customer->id,'label'=>_('Print Address Label'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Customers'));
-
-  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
 $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
 if ($modify) {
-
     if (isset($_REQUEST['r']) and $_REQUEST['r']=='nc')
         $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_customer.php','label'=>_('Add Other Customer'));
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
 
 }
-
 $smarty->assign('general_options_list',$general_options_list);
 
 

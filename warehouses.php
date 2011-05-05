@@ -16,10 +16,14 @@ $smarty->assign('view_parts',$user->can_view('parts'));
 get_header_info($user,$smarty);
 
 $general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouses'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Add Warehouse'));
 
+//$general_options_list[]=array('tipo'=>'url','url'=>'locations.php','label'=>_('Locations'));
+//$general_options_list[]=array('tipo'=>'url','url'=>'parts.php','label'=>_('Parts'));
+
+if($modify){
+  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouses'));
+  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Add Warehouse'));
+}
 
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -121,7 +125,8 @@ $csv_export_options=array(
                         );
 $smarty->assign('export_csv_table_cols',2);
 
-                     
+  $smarty->assign('options_box_width','550px');
+                   
 $smarty->assign('csv_export_options',$csv_export_options);
 $smarty->display('warehouses.tpl');
 
