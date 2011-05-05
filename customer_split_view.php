@@ -238,13 +238,8 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 
-if ($modify) {
-    if (!$customer_a['deleted'] and !$customer_b['deleted'])
-        $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'open_merge_dialog','label'=>_('Merge'));
 
-}
 
-//  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('Export Data (CSV)'));
 
 
 
@@ -252,8 +247,9 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 
-
-
+if ($modify and !$customer_a['deleted'] and !$customer_b['deleted']){
+$smarty->assign('can_merge',true);
+}
 
 $smarty->assign('options_box_width','550px');
 

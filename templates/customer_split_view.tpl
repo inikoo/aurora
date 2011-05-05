@@ -14,6 +14,14 @@
 
 
 <div style="clear:both">
+
+
+<table class="quick_button" style="clear:both;float:right;margin-top:0px;">
+
+    <tr style="{if !$can_merge}display:none{/if}"><td  id="open_merge_dialog">{t}Merge{/t}</td></tr>
+  
+</table>
+
 <table id="customers_table" style="width:620px" border=0 >
 
 <tr>
