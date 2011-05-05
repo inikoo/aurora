@@ -79,6 +79,11 @@ $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','part');
 
 
+
+
+
+
+
 $smarty->assign('view',$_SESSION['state']['part']['view']);
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
@@ -99,9 +104,34 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
 }
 
 $subject_id=$part->id;
+$warehouse_key=0;
+
+
+
+
+$general_options_list=array();
+if($warehouse_key){
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php?id='.$warehouse->id,'label'=>_('Warehouse'));
+$general_options_list[]=array('tipo'=>'url','url'=>'locations.php?warehouse_id='.$warehouse->id,'label'=>_('Locations'));
+$general_options_list[]=array('tipo'=>'url','url'=>'parts.php?warehouse_id='.$warehouse->id,'label'=>_('Parts'));
+}else{
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Warehouse'));
+$general_options_list[]=array('tipo'=>'url','url'=>'locations.php','label'=>_('Locations'));
+$general_options_list[]=array('tipo'=>'url','url'=>'parts.php','label'=>_('Parts'));
+
+}
+
+
+
+if ($modify) {
+    $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_part.php?id='.$part->id,'label'=>_('Edit Part'));
+
+}
+$smarty->assign('general_options_list',$general_options_list);
+
 
 $smarty->assign('part',$part);
-$smarty->assign('parent','products');
+$smarty->assign('parent','warehouses');
 $smarty->assign('title',$part->get('SKU'));
 
 $smarty->assign('key_filter_number',$regex['key_filter_number']);

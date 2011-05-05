@@ -95,8 +95,10 @@ if($mode=='pid'){
     $smarty->assign('css_files',$css_files);
     $smarty->assign('js_files',$js_files);
     $smarty->assign('code',$tag);
+    
+    
     $smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+    $smarty->assign('search_scope','products');
     $smarty->display('product_server.tpl');
      mysql_free_result($result);
     exit;
@@ -203,6 +205,8 @@ $smarty->assign('family_period_title',$family_period_title[$family_period]);
 
 
 $smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
+$smarty->assign('store_id',$store->id);
 
 $display=$_SESSION['state']['product']['display'];
 

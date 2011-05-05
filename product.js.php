@@ -330,11 +330,11 @@ var  change_web_status =function(tipo){
       }
 
 function init(){
-
+ init_search('products_store');
+exit;
     Event.addListener(['details','customers','orders','timeline','sales'], "click",change_block);
 
 
- init_search('products_store');
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
   YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);

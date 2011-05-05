@@ -99,6 +99,14 @@ class part extends DB_Table {
             $this->sku =$this->id ;
             $this->new=true;
             
+            $warehouse_key=1;
+            if(array_key_exists('warehouse key', $data) and is_numeric($data['warehouse key'])  and  $data['warehouse key']>0){
+            $warehouse_key=$data['warehouse key'];
+            }
+            
+            $sql=sprintf("insert into `Part Warehouse Bridge` values (%d,%d)",$this->sku,$warehouse_key);
+            print "$sql\n";
+            mysql_query($sql);
 	    $this->get_data('id',$this->id);
             $data_for_history=array(
 				    'Action'=>'created',
@@ -331,7 +339,7 @@ break;
                          ,$this->id);
             // print "$sql\n";
             if (!mysql_query($sql))
-                exit("$sql  errot con not update part stock history all");
+                exit("$sql  ** errot con not update part stock history all");
 
             $astock=0;
             $avalue=0;
@@ -381,7 +389,7 @@ break;
                          ,$this->id);
             // print "$sql\n";
             if (!mysql_query($sql))
-                exit("$sql errot con not update part stock history yr aa");
+                exit("$sql **  errot con not update part stock history yr aa");
 
 
             $astock=0;
@@ -432,7 +440,7 @@ break;
                          ,$this->id);
             //   print "$sql\n";
             if (!mysql_query($sql))
-                exit("$sql errot con not update part stock history yr bb");
+                exit("$sql z errot con not update part stock history yr bb");
 
             $astock=0;
             $avalue=0;
@@ -482,7 +490,7 @@ break;
                          ,$this->id);
             //   print "$sql\n";
             if (!mysql_query($sql))
-                exit(" $sql errot con not update part stock history yr cc");
+                exit(" $sql x errot con not update part stock history yr cc");
 
 
             $astock=0;
@@ -534,7 +542,7 @@ break;
                          ,$this->id);
             //   print "$sql\n";
             if (!mysql_query($sql))
-                exit("$sql errot con not update part stock history wk");
+                exit("$sql q errot con not update part stock history wk");
 
             break;
         case('used in list'):
@@ -1198,7 +1206,7 @@ return $part_locations;
                      ,$this->id);
         //    print "$sql\n";
         if (!mysql_query($sql))
-            exit("  error a $margin b $value c $value_free d $amount_in  con not uopdate product part when loading sales");
+            exit(" $sql\n error xxx $margin b $value c $value_free d $amount_in  con not uopdate product part when loading sales");
 
 // --------------------------------------- Start of 3 year -----------------------------------------------------------------------------
         $sold=0;
@@ -1315,7 +1323,7 @@ $yeartoday=YTD();
             $margin=0;
         else
             $margin=$profit_sold/$amount_in;
-        $sql=sprintf("update `Part Dimension` set `Part YearToDay Acc Required`=%f ,`Part YearToDay Acc Provided`=%f,`Part YearToDay Acc Given`=%f ,`Part YearToDay Acc Sold Amount`=%f ,`Part YearToDay Acc Absolute Profit`=%f ,`Part YearToDay Acc Profit When Sold`=%f , `Part YearToDay Acc Sold`=%f , `Part YearToDay Acc Margin`=%s where `Part SKU`=%d "
+        $sql=sprintf("update `Part Dimension` set `Part Year To Day Acc Required`=%f ,`Part Year To Day Acc Provided`=%f,`Part Year To Day Acc Given`=%f ,`Part Year To Day Acc Sold Amount`=%f ,`Part Year To Day Acc Absolute Profit`=%f ,`Part Year To Day Acc Profit When Sold`=%f , `Part Year To Day Acc Sold`=%f , `Part Year To Day Acc Margin`=%s where `Part SKU`=%d "
                      ,$required
                      ,$provided
                      ,$given
