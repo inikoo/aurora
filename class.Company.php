@@ -2658,9 +2658,8 @@ $where_type='';
     function get_parent_keys($type=false) {
         $where_type='';
         $keys=array();
-
         if ($type)  {
-            if (!preg_match('/^(Supplier|User|Customer)$/',$type)) {
+            if (!preg_match('/^(Supplier|Contact|Customer|HQ)$/',$type)) {
                 return $keys;
             }
             $where_type=' and `Subject Type`='.prepare_mysql($type);
