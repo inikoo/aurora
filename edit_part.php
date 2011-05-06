@@ -37,7 +37,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
     $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
 }
 
-if(!$part= new Part('pid',$part_id))
+if(!$part= new Part($part_id))
   exit('Error product not found');
 
 
@@ -128,7 +128,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/upload_image.js',
 		'js/edit_common.js',
-		'edit_part.js.php'
+		'edit_part.js.php?sku='.$part->sku
 		);
 
 

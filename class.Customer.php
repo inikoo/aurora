@@ -2651,7 +2651,7 @@ class Customer extends DB_Table {
       Returns formated id_link
     */
     function get_formated_id_link($customer_id_prefix='') {
-        return sprintf('<a style="color:SteelBlue" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
+        return sprintf('<a class="id" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
 
     }
 

@@ -4,83 +4,29 @@
 {include file='assets_navigation.tpl'}
 
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Product{/t}: <span id="title_name">{$part->get('Product Name')}</span> (<span id="title_code">{$part->get('Product Code')}</span>)</h1>
+    <h1>{t}Editing part{/t}: <span class="id">{$part->get_sku()}<span> </h1>
+    <h2 id="title_description">{$part->get('Part XHTML Description')}</h2>
 </div>
 
 
 
   
   <ul class="tabs" id="chooser_ul">
-    <li><span  class="item {if $edit=='config'}selected{/if}" id="config" > <span>{t}Parts{/t}</span></span></li>
-    <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+
+    <li><span  class="item {if $edit=='products'}selected{/if}" id="products" > <span>{t}Products{/t}</span></span></li>
+        <li><span  class="item {if $edit=='suppliers'}selected{/if}" id="suppliers" > <span>{t}Suppliers{/t}</span></span></li>
     <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
-    <li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"  ><span> {t}Price, Discounts{/t}</span></span></li>
-    <li> <span class="item  {if $edit=='dimat'}selected{/if}" id="dimat" ><span> {t}Dimensions{/t}</span></span></li>
-    <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
 	</ul>
-  
+
  
      <div class="tabbed_container" > 
  
  
-      <div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;width:770px;" id="description_messages">
-	
-	<div id="info_name" style="float:left;width:260px;{if !( $edit=='pictures') }display:none{/if}">
-	  
-	  <table    class="show_info_product">
-	    <tr>
-	      <td colspan="2" class="aright product_name" id="l_product_name" >{$part->get('Product Name')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Code{/t}:</td><td  class="aright">{$part->get('Product Code')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Store{/t}:</td><td  class="aright">{$store->get('Store Name')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Family{/t}:</td><td  class="aright">{$part->get('Product Family Code')}</td>
-	    </tr>
- 
-	    
-	  </table>
-	</div>
-	<div  id="info_price"  style="float:left;width:260px;margin-left:20px;display:none">
-  
-	  <table    class="show_info_product">
-	    <tr style="{if $part->get('Product Units Per Case')==1}display:none{/if}">
-	      <td>{t}Unit per Case{/t}:</td><td  class="aright">{$part->get('Units')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Cost{/t}:</td><td  id="l_formated_cost" class="aright">
-		{$part->get('Formated Cost')}
-	      </td>
-	    </tr>
-	    <td>{t}Price{/t}:</td><td  id="l_formated_price" class="price aright">
-	      {$part->get('Formated Price')}
-	    </td>
-</tr>
-<tr id="tr_rrp_per_unit" {if $part->get('Product RRP')==''}style="display:none"{/if} >
-	    <td>{t}RRP{/t}:</td><td id="l_formated_rrp_per_unit" class="aright">{$part->get('RRP Per Unit')}</td>
-	  </tr>
-	</table>
-</div>
+     
 
 
-	<div style="float:right">
-	  <span class="save" style="display:none" id="description_save" onclick="save_description()">{t}Save{/t}</span>
-	  <span id="description_undo"  style="display:none"   class="undo" onclick="undo('description')">{t}Cancel{/t}</span>
-	</div>
-	<span style="display:none">Number of changes:<span id="description_num_changes">0</span></span>
-	
-	<div id="description_errors">
-	</div>
-	<div id="description_warnings">
-	</div>
-	<div style="clear:both"></div>
-      </div>
-
-
-<div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
+<div class="edit_block" {if $edit!="descripton2"}style="display:none"{/if}   id="d_description2">
 	
 	<table style="margin:5px 0px ;xwidth:500px"  border=0 class="edit">
 	 <tr class="title"><td >{t}Type of Product{/t}</td></tr>
@@ -162,64 +108,11 @@
 
 </div>
 
-<div class="edit_block" {if $edit!="web"}style="display:none"{/if}  id="d_web">
-  <table class="edit" >
-
-    {foreach from=$web_pages item=page }
-    <tr><td><input id="pagetitle{$page.id}" value="{$page.title}" ovalue="{$page.title}"/></td><td><input id="pageurl{$page.id}" value="{$page.url}" ovalue="{$page.url}"/></td><td><img src="art/icons/cross.png"/></td><td><img src="art/icons/disk.png"/></td></tr>
-    {/foreach}
-      
-    
-  </table>
-</div>
-
-<div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
-<input id="v_cost" value="{$part->get('Product Cost Supplier')}" type="hidden"/>
-
-<div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_price" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
 
 
-<table class="edit" border=0>
- <tr class="title"><td colspan=5>{t}Price{/t}</td></tr>
-
-<tr class="first"><td style="" class="label">{t}Price per Outer{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:7em;position:relative;top:00px" >
-       <input style="text-align:left;width:8em" id="Product_Price" value="{$part->get('Price')}" ovalue="{$part->get('Price')}" valid="0">
-       <div id="Product_Price_Container" style="" ></div>
-     </div>
-   </td>
-<td id="price_per_unit" cost="{$part->get('Product Cost Supplier')}"  old_price="{$part->get('Product Price')}"  units="{$part->get('Product Units Per Case')}">{$part->get_formated_price_per_unit()}</td>
-<td id="price_margin">{t}Margin{/t}: {$part->get('Margin')}</td>
-
-   <td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
- </tr>
-
-<tr class="first"><td style="" class="label">{t}RRP per Unit{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:7em;position:relative;top:00px" >
-       <input style="text-align:left;width:8em" id="Product_RRP" value="{$part->get('RRP')}" ovalue="{$part->get('RRP')}" valid="0">
-       <div id="Product_RRP_Container" style="" ></div>
-     </div>
-   </td>
-<td ></td>
-<td id="rrp_margin">{t}Margin{/t}: {$part->get('RRP Margin')}</td>
-   <td style="width:200px" id="Product_RRP_msg" class="edit_td_alert"></td>
- </tr>
 
 
-</table>
-
-
-  
-</div>
-
-<div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
+<div class="edit_block" {if $edit!="dimensions"}style="display:none"{/if}  id="d_dimensions">
 
 
 <div class="general_options" style="float:right">
@@ -263,8 +156,62 @@
 
 </div>
 
+<div class="edit_block" {if $edit!="products"}style="display:none"{/if}  id="d_products">
+ 
+ {t}Add new part{/t} 
+  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 
-<div class="edit_block" {if $edit!="parts"}style="display:none"{/if}  id="d_parts">
+  
+  <table  class="edit" style="width:33em"  >
+    <tbody id="new_part_form" style="display:none;background:#f1fdf2"  part_id="" >
+      <tr class="top title">
+	<td style="width:18em" class="label" colspan=2>
+	  <img id="cancel_new"         class="icon" onClick="cancel_new_part()" src="art/icons/cross.png">
+	  <img id="save_part_new"  class="icon" onClick="save_new_part()" src="art/icons/disk.png">
+	  <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png">
+	</td>
+      </tr>
+      <tr>
+	<td class="label">{t}Parts product code{/t}:</td>
+	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="" id="new_part_code" value="" ></td>
+      </tr>
+      <tr class="last">
+	<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
+	<td style="text-align:left">{$currency}<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
+      </tr>
+      <tr>
+	<td style="background:white" colspan="4"></td>
+      </tr>
+    </tbody>
+    <tbody id="current_parts_form">
+
+      {foreach from=$parts item=part key=part_id }
+      <tr  id="sup_tr1_{$part_id}" class="top title">
+	<td  class="label" colspan=2>
+	  <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')"  src="art/icons/arrow_refresh_bw.png">
+	  <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')"  src="art/icons/cross.png">
+	  <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onClick="save_part({$part_id})" src="art/icons/disk.png">
+	  <a href="part.php?id={$part_id}">{$part.code}</a>
+	</td>
+      </tr>
+      <tr id="sup_tr2_{$part_id}">
+	<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
+	<td style="text-align:left;">
+	  <input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code"   onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
+      </tr>
+      <tr id="sup_tr3_{$part_id}" class="last">
+	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
+	<td style="text-align:left">{$currency}<input id="v_part_cost{$part_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})"  value="{$part.price}" ovalue="{$part.price}" ></td>
+      </tr>
+      <tr id="sup_tr4_{$part_id}">
+	<td colspan="2"></td>
+      </tr>
+      {/foreach}
+    </tbody>
+    
+  </table>	  
+</div>
+<div class="edit_block" {if $edit!="suppliers"}style="display:none"{/if}  id="d_suppliers">
  
  {t}Add new part{/t} 
   <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
@@ -322,6 +269,7 @@
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
     {include file='edit_images_splinter.tpl'}
 </div>
+
 <div class="edit_block" {if $edit!="description"}style="display:none"{/if}"  id="d_description">
 
 <div class="general_options" style="float:right">
