@@ -1,12 +1,14 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0">
 <div style="padding: 0 20px">
-{include file='assets_navigation.tpl'}
+{include file='locations_navigation.tpl'}
 
 
 <div style="clear:left">
-  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span> {$part->get('Part XHTML Description')}</h1>
-  <h2 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
+  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span></h1>
+    <h2 style="padding:0">{$part->get('Part XHTML Description')}</h2>
+
+  <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 
 <div class="" id="block_info"  style="margin-top:20px;width:900px">
@@ -54,8 +56,8 @@
 
       </tbody>
         <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
-       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+       <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -63,8 +65,8 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
       </tbody>
         <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -73,8 +75,8 @@
 	  
       </tbody>
        <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -117,7 +119,7 @@
 			
 		  </table>
 		  
-		   <table  {if !$details}style="display:none"{/if}   class="show_info_product">
+		   <table  {if !$details}style="display:none"{/if}  class="show_info_product">
       <tr >
       <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
       <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
@@ -132,8 +134,8 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Total Lost')}</td></tr>
      </tbody>
       <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
-      <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -143,8 +145,8 @@
 
       </tbody>
         <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
-       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+       <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -152,8 +154,8 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
       </tbody>
         <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -162,8 +164,8 @@
 	  
       </tbody>
        <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -292,8 +294,8 @@
 
       </tbody>
         <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
-       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+       <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -301,8 +303,8 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
       </tbody>
         <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -311,8 +313,8 @@
 	  
       </tbody>
        <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -341,8 +343,8 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Total Lost')}</td></tr>
      </tbody>
       <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
-      <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -352,8 +354,8 @@
 
       </tbody>
         <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
-       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+       <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -361,8 +363,8 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
       </tbody>
         <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
@@ -371,8 +373,8 @@
 	  
       </tbody>
        <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
       <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
       <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
       <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>

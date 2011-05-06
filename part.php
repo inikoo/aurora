@@ -20,7 +20,8 @@ $view_sales=false;
 $view_stock=false;
 $view_orders=false;
 $create=false;
-$modify=false;
+$modify=$user->can_edit('parts');
+
 $modify_stock=false;
 $smarty->assign('modify_stock',$modify_stock);
 $view_suppliers=false;

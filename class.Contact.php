@@ -2952,16 +2952,17 @@ $this->parent=$parent;
                 if ($email->found) {
 
                     $email_contacts_keys=$email->get_parent_keys('Contact');
+                    
                     $number_contact_keys=count($email_contacts_keys);
                     if ($number_contact_keys==1) {
-
-                        $email_contact_key=array_pop($email_contacts_keys);
-
-                        if ($email_contact_key!=$this->id) {
+						
+                        $contact_data=array_pop($email_contacts_keys);
+							
+                        if ($contact_data['Subject Key']!=$this->id) {
                             $this->error=true;
-                            $this->msg=_('Email bellows to other contact');
-                            $contact=new Contact($email_contact_key);
-                            $this->msg_extended=_('Email belongs to contact').' <a href="contact.php?id='.$contact->id.'">'.$contact->display('name').'</a>';
+                            $this->msg=_('Email belongs to other contact');
+                            $contact=new Contact($contact_data['Subject Key']);
+                            $this->msg=_('Email belongs to contact').' <a href="contact.php?id='.$contact->id.'">'.$contact->display('name').'</a>';
                             return;
                         } else {
                             // print "updating principal email\n";
@@ -2972,15 +2973,20 @@ $this->parent=$parent;
 
                     }
                     elseif($number_contact_keys>1) {
-                        exit("Error an email has more tan one contacts as parent\n");
+                      $this->error=true;
+                            $this->msg=_('Error an email bellows to more than one contacts');
+                            return;
 
                     }
                 }
+                
+               
 
 
                 if ($main_email_key) {
                     $email=new email($main_email_key);
                     $email->editor=$this->editor;
+                 
                     $email->update_Email($value);
                     $this->updated=$email->updated;
                     $this->new_value=$email->new_value;
@@ -4671,7 +4677,7 @@ $this->parent=$parent;
         $keys=array();
         
               if ($type)  {
-            if (!preg_match('/^(Supplier|User|Customer|Company)$/',$type)) {
+            if (!preg_match('/^(Supplier|Customer|Company|Staff)$/',$type)) {
                 return $keys;
             }
             $where_type=' and `Subject Type`='.prepare_mysql($type);
@@ -4871,7 +4877,9 @@ function delete(){
 $sql=sprintf("delete from `Contact Dimension` where `Contact Key`=%d",$this->id);
 //print "$sql\n";
 mysql_query($sql);
-
+ $address_to_delete=$this->get_address_keys();
+        $emails_to_delete=$this->get_email_keys();
+        $telecom_to_delete=$this->get_telecom_keys();
      $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
             mysql_query($sql);
               $sql=sprintf("delete from `Category Bridge` where `Subject`='Contact' and `Subject Key`=%d",$this->id);
@@ -4885,6 +4893,32 @@ mysql_query($sql);
              $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
             mysql_query($sql);
 
+  
+
+   foreach($emails_to_delete as $email_key) {
+            $email=new Email($email_key);
+            if ($email->id and !$email->has_parents()) {
+                $email->delete();
+            }
+        }
+
+       
+
+        foreach($address_to_delete as $address_key) {
+            $address=new Address($address_key);
+            if ($address->id and !$address->has_parents()) {
+                $address->delete();
+            }
+        }
+
+
+
+        foreach($telecom_to_delete as $telecom_key) {
+            $telecom=new Telecom($telecom_key);
+            if ($telecom->id and !$telecom->has_parents()) {
+                $telecom->delete();
+            }
+        }
 
 
 //	$email_keys=$this->get_email_keys();

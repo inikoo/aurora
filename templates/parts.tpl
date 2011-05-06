@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" > 
 <span class="nav2 onleft"><a href="part_categories.php?id=0">{t}Parts Categories{/t}</a></span>
-{include file='assets_navigation.tpl'}
+{include file='locations_navigation.tpl'}
 
   
 

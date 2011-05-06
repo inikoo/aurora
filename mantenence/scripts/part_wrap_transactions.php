@@ -42,7 +42,7 @@ mysql_query($sql);
 
 
 print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`    ');
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  order by `Part SKU` desc  ');
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){

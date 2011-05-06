@@ -447,8 +447,9 @@ class Email extends DB_Table {
             }
             $this->warning=true;
         }
-
         $old_value=$this->data['Email'];
+      //  print "$old_value -> $data";
+
         if ($old_value==$data) {
             $this->msg=_('Nothing to change');
             return;
