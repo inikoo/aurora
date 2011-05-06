@@ -4625,7 +4625,7 @@ class Customer extends DB_Table {
                 $company_telecom_keys=$company->get_telecom_keys();
 
                 $company_address_keys=$company->get_address_keys();
-                $company_contact_keys=$company->get_contact_keys();
+                $company_contact_keys=$company->get_parent_keys('Contact');
 
                 unset($company_customer_keys[$this->id]);
                 foreach($contact_keys as $contact_key) {
