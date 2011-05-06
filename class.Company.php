@@ -2685,6 +2685,10 @@ $sql=sprintf("delete from `Company Dimension` where `Company Key`=%d",$this->id)
 mysql_query($sql);
 //mysql_query($sql);
 
+ $address_to_delete=$this->get_address_keys();
+        $emails_to_delete=$this->get_email_keys();
+        $telecom_to_delete=$this->get_telecom_keys();
+
      $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
             mysql_query($sql);
               $sql=sprintf("delete from `Category Bridge` where `Subject`='Company' and `Subject Key`=%d",$this->id);
@@ -2698,6 +2702,31 @@ mysql_query($sql);
             mysql_query($sql);
 
 
+
+   foreach($emails_to_delete as $email_key) {
+            $email=new Email($email_key);
+            if ($email->id and !$email->has_parents()) {
+                $email->delete();
+            }
+        }
+
+       
+
+        foreach($address_to_delete as $address_key) {
+            $address=new Address($address_key);
+            if ($address->id and !$address->has_parents()) {
+                $address->delete();
+            }
+        }
+
+
+
+        foreach($telecom_to_delete as $telecom_key) {
+            $telecom=new Telecom($telecom_key);
+            if ($telecom->id and !$telecom->has_parents()) {
+                $telecom->delete();
+            }
+        }
 
 
 

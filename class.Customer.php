@@ -1004,8 +1004,8 @@ class Customer extends DB_Table {
             $this->fuzzy=true;
             $history_data=array(
                               'History Abstract'=>_('Anonymous Customer Created'),
-                                                'History Details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' ),
-                                                                    'Action'=>'created'
+                              'History Details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' ),
+                              'Action'=>'created'
 
                           );
             $this->add_customer_history($history_data);
@@ -1794,7 +1794,7 @@ class Customer extends DB_Table {
 
     }
 
-  
+
 
     public function update_no_normal_data() {
 
@@ -1877,8 +1877,8 @@ class Customer extends DB_Table {
                 $lost_interval=$losing_interval*4.0/3.0;
             }
 
-$lost_interval=ceil($lost_interval);
-$losing_interval=ceil($losing_interval);
+            $lost_interval=ceil($lost_interval);
+            $losing_interval=ceil($losing_interval);
 
             $this->data['Customer Type by Activity']='Active';
             $this->data['Customer Active']='Yes';
@@ -1908,7 +1908,7 @@ $losing_interval=ceil($losing_interval);
                      ,$this->id
                     );
 
-         //   print "\n $orders\n$sql\n";
+        //   print "\n $orders\n$sql\n";
         //  exit;
         if (!mysql_query($sql))
             exit("\n$sql\n error");
@@ -2380,12 +2380,12 @@ $losing_interval=ceil($losing_interval);
 
         switch ($key) {
         case('Lost Date'):
-         case('Last Order Date'):
-          case('First Order Date'):
+        case('Last Order Date'):
+        case('First Order Date'):
         case('First Contacted Date'):
         case('Last Order Date'):
-        if($this->data['Customer '.$key]=='')
-        return '';
+            if ($this->data['Customer '.$key]=='')
+                return '';
             return strftime("%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00"));
             break;
         case('Orders'):
@@ -2651,12 +2651,12 @@ $losing_interval=ceil($losing_interval);
       Returns formated id_link
     */
     function get_formated_id_link($customer_id_prefix='') {
-       return sprintf('<a style="color:SteelBlue" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
+        return sprintf('<a style="color:SteelBlue" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
 
     }
 
 
- 
+
     function get_formated_id($customer_id_prefix='') {
 
         ;
@@ -4528,13 +4528,13 @@ $losing_interval=ceil($losing_interval);
         $telecom_to_delete=$this->get_telecom_keys();
 
 
-            $history_data=array(
-                              'History Abstract'=>_('Customer Deleted'),
-                              'History Details'=>'',
-                              'Action'=>'deleted'
-                          );
-         
-$this->add_history($history_data,$force_save=true);
+        $history_data=array(
+                          'History Abstract'=>_('Customer Deleted'),
+                          'History Details'=>'',
+                          'Action'=>'deleted'
+                      );
+
+        $this->add_history($history_data,$force_save=true);
 
 
 
@@ -4569,35 +4569,35 @@ $this->add_history($history_data,$force_save=true);
         mysql_query($sql);
         $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
         mysql_query($sql);
-        
-         $sql=sprintf("delete from `Customer Ship To Bridge` where  `Customer Key`=%d",$this->id);
+
+        $sql=sprintf("delete from `Customer Ship To Bridge` where  `Customer Key`=%d",$this->id);
         mysql_query($sql);
-        
+
         $sql=sprintf("delete from `Customers Send Post` where  `Customer Key`=%d",$this->id);
         mysql_query($sql);
-        
-        
-          $sql=sprintf("select `User Key` from `User Dimension`  where `User Type`='Customer' and `User Parent Key`=%d ",$this->id);
+
+
+        $sql=sprintf("select `User Key` from `User Dimension`  where `User Type`='Customer' and `User Parent Key`=%d ",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
-          $sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d",$row['User Key']);
-        mysql_query($sql);
- $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d",$row['User Key']);
-        mysql_query($sql);
-         $sql=sprintf("delete from `User Rights Bridge` where `User Key`=%d",$row['User Key']);
-        mysql_query($sql);
-        }        
-         $sql=sprintf("delete from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",$this->id);
+            $sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d",$row['User Key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d",$row['User Key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from `User Rights Bridge` where `User Key`=%d",$row['User Key']);
+            mysql_query($sql);
+        }
+        $sql=sprintf("delete from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",$this->id);
         mysql_query($sql);
 
 
 
 
- 
+
 
 
 // Delete if the email has not been send yet
-//Email Campaign Mailing List 
+//Email Campaign Mailing List
 
         $sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s) ",
                      $this->id,
@@ -4702,8 +4702,6 @@ $this->add_history($history_data,$force_save=true);
         }
 
 
-        //       print "Emails to delete";
-//print_r($emails_to_delete);
 
         foreach($emails_to_delete as $email_key) {
             $email=new Email($email_key);
@@ -4712,7 +4710,7 @@ $this->add_history($history_data,$force_save=true);
             }
         }
 
-        //       print "Address to delete";
+       
 
         foreach($address_to_delete as $address_key) {
             $address=new Address($address_key);
@@ -4722,9 +4720,7 @@ $this->add_history($history_data,$force_save=true);
         }
 
 
-//print_r($address_to_delete);
-        //        print "Tel to delete";
-//print_r($telecom_to_delete);
+
         foreach($telecom_to_delete as $telecom_key) {
             $telecom=new Telecom($telecom_key);
             if ($telecom->id and !$telecom->has_parents()) {
@@ -4732,16 +4728,16 @@ $this->add_history($history_data,$force_save=true);
             }
         }
         $store=new Store($this->data['Customer Store Key']);
-  $store->update_customers_data();
+        $store->update_customers_data();
 
         $this->deleted=true;
     }
 
     function merge($customer_key,$customer_id_prefix='') {
-    $this->merged=false;
-    
+        $this->merged=false;
+
         $customer_to_merge=new Customer($customer_key);
-$customer_to_merge->editor=$this->editor;
+        $customer_to_merge->editor=$this->editor;
 
         if (!$customer_to_merge->id) {
             $this->error=true;
@@ -4754,8 +4750,8 @@ $customer_to_merge->editor=$this->editor;
             $this->msg=_('Same Customer');
             return;
         }
-        
-     
+
+
         if ($this->data['Customer Store Key']!=$customer_to_merge->data['Customer Store Key']) {
             $this->error=true;
             $this->msg=_('Customers from different stores');
@@ -4779,94 +4775,94 @@ $customer_to_merge->editor=$this->editor;
         }
         $sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-        
+
         $sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-        
-         $sql=sprintf("update `Customer Ship To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+
+        $sql=sprintf("update `Customer Ship To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-        
+
         $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Customer Key`=%d where `Delivery Note Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-        
-         $sql=sprintf("update `Invoice Dimension` set `Invoice Customer Key`=%d where `Invoice Customer Key`=%d ",$this->id,$customer_to_merge->id);
+
+        $sql=sprintf("update `Invoice Dimension` set `Invoice Customer Key`=%d where `Invoice Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-        
-          $sql=sprintf("update `Order Dimension` set `Order Customer Key`=%d where `Order Customer Key`=%d ",$this->id,$customer_to_merge->id);
+
+        $sql=sprintf("update `Order Dimension` set `Order Customer Key`=%d where `Order Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-     
+
         $sql=sprintf("update `Order Transaction Fact` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
         $res=mysql_query($sql);
-        
-        
-   
-   if(strtotime($customer_to_merge->data['Customer First Contacted Date'])<strtotime($this->data['Customer First Contacted Date'])){
-      $customer->data['Customer First Contacted Date']=$customer_to_merge->data['Customer First Contacted Date'];
-      $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s where `Customer Key`=%d ",
-      prepare_mysql($customer->data['Customer First Contacted Date']),
-      $this->id);
-        $res=mysql_query($sql);
-         $sql=sprintf("update `History Dimension` set `History Date`=%s   where `Action`='created' and `Direct Object`='Customer' and `Direct Object Key`=%d  and `Indirect Object`='' ",
-         prepare_mysql($customer->data['Customer First Contacted Date']),
-         $this->id);
-        $res=mysql_query($sql);   
-        
-   }
-   
-    $history_data=array(
-                              'History Abstract'=>_('Customer').' '.$customer_to_merge->get_formated_id_link($customer_id_prefix).' '._('merged'),
-                              'History Details'=>_('Orders Transfered').':'.$customer_to_merge->get('Orders').'<br/>'._('Notes Transfered').':'.$customer_to_merge->get('Notes').'<br/>',
-                            'Direct Object'=>'Customer',
-                               'Direct Object Key'=>$customer_to_merge->id,
-                                'Indirect Object'=>'Customer',
-                                 'Indirect Object Key'=>$this->id,
-                              'Action'=>'merged',
-                               'Preposition'=>'to'
-                              );
-            $this->add_customer_history($history_data);
-   
-   
-      $customer_to_merge->update_orders();
-        
-        $this->update_orders();
-        
-    $store=new Store($this->data['Customer Store Key']);
-        $store->update_customer_activity_interval();
-
-   $this->update_activity();
-         $this->update_is_new();
-  
 
 
 
-        
-     
-        
-        $customer_to_merge->delete('',$customer_id_prefix);
-        
-      
-        
-        
-    
-         $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d,`Date Merged`=%s where `Customer Key`=%d ",$this->id,prepare_mysql($this->editor['Date']),$customer_to_merge->id);
-        $res=mysql_query($sql);
-        
-        $sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d,%s) ",$customer_to_merge->id,$this->id,prepare_mysql($this->editor['Date']));
-        $res=mysql_query($sql);
-        
-        $store=new Store($this->data['Customer Store Key']);
-        $store->update_customer_activity_interval();
-        
-        
-         $this->merged=true;;
-        
-        //Customer Key
-        
-        
-//Email Campaign Mailing List 
+        if (strtotime($customer_to_merge->data['Customer First Contacted Date'])<strtotime($this->data['Customer First Contacted Date'])) {
+            $customer->data['Customer First Contacted Date']=$customer_to_merge->data['Customer First Contacted Date'];
+            $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s where `Customer Key`=%d ",
+                         prepare_mysql($customer->data['Customer First Contacted Date']),
+                         $this->id);
+            $res=mysql_query($sql);
+            $sql=sprintf("update `History Dimension` set `History Date`=%s   where `Action`='created' and `Direct Object`='Customer' and `Direct Object Key`=%d  and `Indirect Object`='' ",
+                         prepare_mysql($customer->data['Customer First Contacted Date']),
+                         $this->id);
+            $res=mysql_query($sql);
 
         }
-        
+
+        $history_data=array(
+                          'History Abstract'=>_('Customer').' '.$customer_to_merge->get_formated_id_link($customer_id_prefix).' '._('merged'),
+                          'History Details'=>_('Orders Transfered').':'.$customer_to_merge->get('Orders').'<br/>'._('Notes Transfered').':'.$customer_to_merge->get('Notes').'<br/>',
+                          'Direct Object'=>'Customer',
+                          'Direct Object Key'=>$customer_to_merge->id,
+                          'Indirect Object'=>'Customer',
+                          'Indirect Object Key'=>$this->id,
+                          'Action'=>'merged',
+                          'Preposition'=>'to'
+                      );
+        $this->add_customer_history($history_data);
+
+
+        $customer_to_merge->update_orders();
+
+        $this->update_orders();
+
+        $store=new Store($this->data['Customer Store Key']);
+        $store->update_customer_activity_interval();
+
+        $this->update_activity();
+        $this->update_is_new();
+
+
+
+
+
+
+
+        $customer_to_merge->delete('',$customer_id_prefix);
+
+
+
+
+
+        $sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d,`Date Merged`=%s where `Customer Key`=%d ",$this->id,prepare_mysql($this->editor['Date']),$customer_to_merge->id);
+        $res=mysql_query($sql);
+
+        $sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d,%s) ",$customer_to_merge->id,$this->id,prepare_mysql($this->editor['Date']));
+        $res=mysql_query($sql);
+
+        $store=new Store($this->data['Customer Store Key']);
+        $store->update_customer_activity_interval();
+
+
+        $this->merged=true;;
+
+        //Customer Key
+
+
+//Email Campaign Mailing List
 
     }
-    ?>
+
+
+}
+?>

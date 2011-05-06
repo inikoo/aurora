@@ -37,10 +37,10 @@ case('products'):
                              'q'=>array('type'=>'string')
                                  ,'scope'=>array('type'=>'string')
                          ));
-                         
+
     if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
         $data['store_id']=$_REQUEST['store_id'];
-    }                     
+    }
     $data['user']=$user;
     search_products($data);
     break;
@@ -716,6 +716,24 @@ function search_customer($data) {
             $candidates[$row['Customer Key']]=100*$factor;
         }
     }
+    
+    
+      $sql=sprintf('select `Customer Key`,`Customer Main Town` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Town` like  "%s%%" limit 10 ',$stores,$q);
+    //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if ($row['Customer Main Town']==$q)
+            $candidates[$row['Customer Key']]=30;
+        else {
+
+            $len_name=strlen($row['Customer Main Town']);
+            $len_q=strlen($q);
+            $factor=$len_q/$len_name;
+            $candidates[$row['Customer Key']]=20*$factor;
+        }
+    }
+    
+    
 
     $sql=sprintf('select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Email`  like "%s%%" limit 100 ',$stores,$q);
     $res=mysql_query($sql);
@@ -779,6 +797,12 @@ function search_customer($data) {
             $candidates[$row['Subject Key']]=100*$factor;
         }
     }
+    
+    
+    
+    
+    
+    
 
 //print_r($candidates);
 
@@ -807,7 +831,8 @@ function search_customer($data) {
     }
     $customer_keys=preg_replace('/^,/','',$customer_keys);
 
-    $sql=sprintf("select `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` left join `Store Dimension` on (`Customer Store Key`=`Store Key`) where `Customer Key` in (%s)",$customer_keys);
+    $sql=sprintf("select `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` left join `Store Dimension` on (`Customer Store Key`=`Store Key`) where `Customer Key` in (%s)",
+    $customer_keys);
     $res=mysql_query($sql);
 
 
@@ -992,7 +1017,7 @@ function search_products($data) {
     }
 
 
-   if ($data['scope']=='store') {
+    if ($data['scope']=='store') {
         if (in_array($data['store_id'],$user->stores))
             $stores=$data['store_id'];
         else
@@ -1000,7 +1025,7 @@ function search_products($data) {
 
     } else
         $stores=join(',',$user->stores);
-        
+
 
 
 
@@ -1127,8 +1152,8 @@ function search_products($data) {
 
     if ($products_keys) {
         $sql=sprintf("select `Store Code`,`Product ID`,`Product XHTML Short Description`,`Product Code`,`Product Main Image`  from `Product Dimension` left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where `Product ID` in (%s) ",$products_keys);
-   //    print $sql;
-       $res=mysql_query($sql);
+        //    print $sql;
+        $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $image='';
             if ($row['Product Main Image']!='art/nopic.png')
