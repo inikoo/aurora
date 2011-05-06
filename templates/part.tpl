@@ -5,7 +5,7 @@
 
 
 <div style="clear:left">
-  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span></h1>
+  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part{/t} <span class="id">{$part->get_sku()}</span></span></h1>
     <h2 style="padding:0">{$part->get('Part XHTML Description')}</h2>
 
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
