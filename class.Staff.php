@@ -224,11 +224,16 @@ $company=new Company($company_key);
     
    $child=new Contact ('find in staff create update',$data);
 
+    
+
 	if($child->error){
 	  $this->error=true;
 	  $this->error=$child->error;
 	  return;
 	}
+	
+	
+
 	
 	$company->create_contact_bridge($child->id);
 	$data['Staff Contact Key']=$child->id;
@@ -269,7 +274,8 @@ $company=new Company($company_key);
       $this->get_data('id',$this->id);
       
       
-      
+        $sql=sprintf("insert into `Contact Bridge` values (%d,'Staff',%d,'Yes','Yes')",$child->id,$this->id);
+        mysql_query($sql);
       
 
       if(!$this->data['Staff ID']){
