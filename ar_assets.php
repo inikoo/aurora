@@ -1626,6 +1626,9 @@ function list_departments() {
     $_SESSION['state'][$conf_table]['departments']['period']=$period;
     $_SESSION['state'][$conf_table]['departments']['avg']=$avg;
 
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
 
     switch ($parent) {
     case('store'):
@@ -1639,7 +1642,7 @@ function list_departments() {
         $where=sprintf("where `Product Department Store Key` in (%s)",join(',',$user->stores));
 
     }
-
+}
 
     $filter_msg='';
     $wheref=wheref_departments($f_field,$f_value);
@@ -3193,8 +3196,11 @@ function list_products() {
 
     $db_table='`Product Dimension`';
 
-
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
     $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
+    }
     switch ($parent) {
     case('store'):
 
@@ -5490,8 +5496,12 @@ function list_families() {
 
     //  $where.=" and `Product Department Key`=".$id;
 
-    $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
 
+    $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+}
 
     switch ($parent) {
     case('store'):
@@ -6412,6 +6422,9 @@ function list_stores() {
     $_SESSION['state']['stores']['stores']['f_field']=$f_field;
     $_SESSION['state']['stores']['stores']['f_value']=$f_value;
 
+    if(count($user->stores)==0)
+    $where="where false";
+    else
     $where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
     $filter_msg='';
     $wheref=wheref_stores($f_field,$f_value);
@@ -8062,10 +8075,12 @@ function list_customers_per_store() {
 
     //  print_r($_SESSION['tables']['families_list']);
 
-
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
 
     $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-
+}
     $filter_msg='';
     $wheref='';
     if ($f_field=='name' and $f_value!='')
@@ -8436,9 +8451,12 @@ function list_marketing_per_store() {
 
     //  print_r($_SESSION['tables']['families_list']);
 
-
-
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
     $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+}
+
 
     $filter_msg='';
     $wheref='';
@@ -8693,9 +8711,11 @@ function list_orders_per_store() {
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
-
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
     $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-
+}
     $filter_msg='';
     $wheref='';
     if ($f_field=='name' and $f_value!='')
@@ -9218,7 +9238,7 @@ function list_invoices_per_store() {
 }
 
 function list_delivery_notes_per_store() {
-
+global $user;
     $conf=$_SESSION['state']['stores']['delivery_notes'];
 
     if (isset( $_REQUEST['sf']))
@@ -9311,7 +9331,14 @@ function list_delivery_notes_per_store() {
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
-    $where="where true  ";
+  //  $where="where true  ";
+
+ if(count($user->stores)==0)
+    $where="where false";
+    else{
+    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+}
+
 
     $filter_msg='';
     $wheref='';
@@ -9386,7 +9413,18 @@ function list_delivery_notes_per_store() {
     $order='`Store Name`';
 
 
-
+ $total_dn=0;
+        $total_dn_ready_to_pick=0;
+        $total_dn_packing=0;
+        $total_dn_picking=0;
+        $total_dn_ready=0;
+        $total_dn_send=0;
+        $total_dn_returned=0;
+        $total_dn_orders=0;
+        $total_dn_shortages=0;
+        $total_dn_replacements=0;
+        $total_dn_donations=0;
+        $total_dn_samples=0;
 
 
     $sql="select `Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send, `Store Returned Delivery Notes`as dn_returned from `Store Dimension`  $where     ";

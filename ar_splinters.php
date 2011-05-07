@@ -504,7 +504,7 @@ function list_products() {
 
 
 
-    $store=join(',',$user->stores);
+    $store=join(',',$user->stores);if($store=='')$store=0;
 
 
 
@@ -679,7 +679,7 @@ function list_customers() {
 
 
     $store=join(',',$user->stores);
-
+if($store=='')$store=0;
 
     $filter_msg='';
     $wheref='';
