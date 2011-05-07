@@ -613,8 +613,8 @@ if(isset( $_REQUEST['where']))
    
 
    
-  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-//  print $sql ;
+  $sql="select count(*) as total from `Order Dimension`   $where $wheref "  ;
+  //print $sql;
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
