@@ -701,7 +701,7 @@ if($store=='')$store=0;
     switch ($period) {
 
     case('1m'):
-        $where=sprintf(" where `Customer Orders Invoiced`>=0 `and Invoice Store Key` in (%s) and  `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month"))));
+        $where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s) and  `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month"))));
         break;
     case('1y'):
         $where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s)  and `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year"))));
@@ -742,7 +742,7 @@ if($store=='')$store=0;
         $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 
-// print $sql;
+ //print $sql;
     $adata=array();
 
 
