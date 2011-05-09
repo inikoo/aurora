@@ -1,7 +1,6 @@
 
-{*<span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_loginhistory.php">{t}Login History{/t}</a></span>*}
 
-<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_users.php</a>.</span>
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_users.php"></a>.</span>
 
 <span class="nav2 onright" style="padding:0px">{if $next.id>0}<a class="next" href="customer.php?{$parent_info}id={$next.id}" ><img src="art/icons/next_white.png" style="padding:0px 10px" alt=">" title="{$next.name}"  /></a>{/if}</span>
 {if $parent_url}<span class="nav2 onright"><a   href="{$parent_url}">{$parent_title}</a></span>{/if}
