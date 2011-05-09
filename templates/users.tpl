@@ -58,7 +58,6 @@
 {/if}
 	
 </div>
-	<a href="change_style.php">Website Theme Manager</a>
 
 
 
