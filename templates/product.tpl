@@ -169,7 +169,7 @@
      <li> <span class="item {if $block_view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
 
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="customers" {if $view_customers}display:none{/if} ><span>  {t}Customers{/t}</span></span></li>
-   <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="orders"  {if $view_orders}display:none{/if}  >  <span> {t}Orders{/t}</span></span></li>
+   <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders"  {if $view_orders}display:none{/if}  >  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='timeline'}selected{/if}"  id="timeline">  <span> {t}History{/t}</span></span></li>
 
   </ul>
@@ -321,27 +321,14 @@
 
 
 </div>
-
-
-
-
-
- 
-      
-
- 
-  <div  id="block_orders" class="data_table"  style="{if $block_view!='ordes'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div  id="block_orders" class="data_table"  style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
  {if $view_orders} 
     <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable "> </div>
    {/if}
  </div>
-  
-
-  
-
-  <div  id="block_customers" class="data_table"  style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+ <div  id="block_customers" class="data_table"  style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
      {if $view_customers} 
      
       <table    class="show_info_product" style="width:250px">

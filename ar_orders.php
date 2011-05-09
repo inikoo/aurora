@@ -1451,11 +1451,11 @@ if(isset( $_REQUEST['tableid']))
  
 
   if($mode=='code')
-     $where=$where.sprintf(" and P.`Product Code`=%s ",prepare_mysql($tag));
+     $where=$where.sprintf(" and `Product Code`=%s ",prepare_mysql($tag));
    elseif($mode=='pid')
-     $where=$where.sprintf(" and PD.`Product ID`=%d ",$tag);
+     $where=$where.sprintf(" and `Product ID`=%d ",$tag);
    elseif($mode=='key')
-     $where=$where.sprintf(" and PD.`Product Key`=%d ",$tag);
+     $where=$where.sprintf(" and `Product Key`=%d ",$tag);
 
 
 
@@ -1470,7 +1470,7 @@ if(isset( $_REQUEST['tableid']))
   
 
 
-   $sql="select count(DISTINCT `Order Key`) as total from `Order Transaction Fact` OTF  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)  left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)   $where $wheref";
+   $sql="select count(DISTINCT `Order Key`) as total from `Order Transaction Fact` OTF    $where $wheref";
    //print $sql;   
 $res = mysql_query($sql);
    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1479,7 +1479,7 @@ $res = mysql_query($sql);
    if($wheref==''){
      $filtered=0;  $total_records=$total;
    }else{
-     $sql="select count(DISTINCT `Order Key`) as total from `Order Transaction Fact` OTF left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)   left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)  $where      ";
+     $sql="select count(DISTINCT `Order Key`) as total from `Order Transaction Fact` OTF  $where      ";
        $res = mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$total_records=$row['total'];
@@ -1497,21 +1497,30 @@ $res = mysql_query($sql);
 if($order=='dispatched')
       $order='`Shipped Quantity`';
    elseif($order=='order'){
-     $order='';
-     $order_direction ='';
+     $order='`Order Public ID`';
+     
+  }elseif($order=='customer_name'){
+     $order='`Customer Name`';
 
+  }elseif($order=='dispatched'){
+     $order='dispatched';
+
+  } elseif($order=='undispatched'){
+     $order='undispatched';
+
+  
   }else{
-   $order='`Delivery Note Date`';
+   $order='OTF.`Order Date`';
   
   }
   
   
-   $sql=sprintf("select `Delivery Note XHTML Orders`,`Customer Name`,CD.`Customer Key`,`Delivery Note Date`,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispatched  from 
-   `Order Transaction Fact` OTF  left join   `Delivery Note Dimension` DND on (OTF.`Delivery Note Key`=DND.`Delivery Note Key`) left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)   left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)    left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)    %s %s  and OTF.`Delivery Note Key`>0  group by OTF.`Delivery Note Key`  order by  $order $order_direction  limit $start_from,$number_results"
+   $sql=sprintf("select OTF.`Order Key`,OTF.`Order Public ID`,`Customer Name`,CD.`Customer Key`,OTF.`Order Date`,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispatched  from 
+   `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)     %s %s   group by OTF.`Order Key`  order by  $order $order_direction  limit $start_from,$number_results"
 		,$where
 		,$wheref
 		);
-    print $sql;
+   // print $sql;
 
    $res=mysql_query($sql);
    $data=array();
@@ -1525,9 +1534,9 @@ if($order=='dispatched')
 
 
      $data[]=array(
-		   'order'=>$row['Delivery Note XHTML Orders'],
+		   'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 		   'customer_name'=>$customer,
-		   'date'=> strftime("%e %b %y", strtotime($row['Delivery Note Date'])),
+		   'date'=> strftime("%e %b %y", strtotime($row['Order Date'])),
 		   'dispatched'=>number($row['dispatched']),
 		   'undispatched'=>number($row['undispatched'])
 
