@@ -94,7 +94,12 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo=new Family('code','Promo_PL',$store_key);
 $fam_promo_key=$fam_promo->id;
 
-
+$sql="select * from  pl_orders_data.orders  where   deleted='Yes'    ";
+   $res=mysql_query($sql);
+while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+ $order_data_id=$row2['id'];
+    delete_old_data();
+}
 
 $sql="select * from  pl_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  pl_orders_data.orders where filename like '%refund.xls'   order by filename";
