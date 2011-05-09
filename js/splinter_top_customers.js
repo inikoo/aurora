@@ -5,11 +5,11 @@ top_customers_tables= new Object();
 function top_customers_init(){
 
  ids=['top_customers_50','top_customers_10','top_customers_20'];
- YAHOO.util.Event.addListener(ids, "click",change_number);
+ YAHOO.util.Event.addListener(ids, "click",change_top_customer_number);
  
 ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
- YAHOO.util.Event.addListener(ids, "click",change_period);
- 
+ YAHOO.util.Event.addListener(ids, "click",change_top_customer_period);
+
  
 		var tableid=Dom.get('top_customers_index').value;
 	    var tableDivEL="table"+tableid;
@@ -110,8 +110,11 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 YAHOO.util.Event.onDOMReady(top_customers_init);
 
 
-function change_period(){
+function change_top_customer_period(){
+
 var period=this.getAttribute('period');
+
+
 var tableid=Dom.get('top_customers_index').value;
 
 var table=top_customers_tables.table1;
@@ -123,7 +126,8 @@ Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
 }
-function change_number(){
+function change_top_customer_number(){
+
 var nr=this.getAttribute('nr');
 var table=top_customers_tables.table1;
     table.get('paginator').setRowsPerPage(nr)
