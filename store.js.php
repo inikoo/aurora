@@ -437,7 +437,7 @@ function previous_info_period(){
  YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'department'});
 
 ids=['family_general','family_sales','family_stock'];
- YAHOO.util.Event.addListener(ids, "click",change_family_view)
+ YAHOO.util.Event.addListener(ids, "click",change_family_view,{'table_id':1,'subject':'family'})
  ids=['family_period_all','family_period_year','family_period_quarter','family_period_month','family_period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'family'});
  ids=['family_avg_totals','family_avg_month','family_avg_week',"family_avg_month_eff","family_avg_week_eff"];

@@ -134,6 +134,7 @@ function myrenderEvent(){
 ostate=this.getState();
 paginator=ostate.pagination
 if(paginator.totalRecords<=paginator.rowsPerPage){
+
 Dom.setStyle('paginator'+this.table_id,'display','none')
 }
 }

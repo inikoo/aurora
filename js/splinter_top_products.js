@@ -7,8 +7,8 @@ function top_products_init(){
 	    var ProductsColumnDefs = [
 				       {key:"position", label:"", width:2,sortable:false,className:"aleft"}
 				       ,{key:"family", label:Dom.get('label_Fam').value, width:25,sortable:false,className:"aleft"}
-				       ,{key:"description", label:Dom.get('label_Fam').value, width:280,sortable:false,className:"aleft"}
-				       ,{key:"net_sales", label:Dom.get('label_Fam').value, width:65,sortable:false,className:"aright"}
+				       ,{key:"description", label:Dom.get('label_Product').value, width:280,sortable:false,className:"aleft"}
+				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:65,sortable:false,className:"aright"}
 					 ];
 	    top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&tableid="+tableid);
 	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -60,8 +60,8 @@ function top_products_init(){
 	    top_products_tables.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    top_products_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    top_products_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
-		    
+  top_products_tables.table1.table_id=tableid;
+		   top_products_tables.table1.subscribe("renderEvent", myrenderEvent);
 		    
 	   
 
@@ -94,6 +94,22 @@ Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_families&store_keys='+st
 
 
 }
+
+function change_product_type(){
+Dom.removeClass(['top_products_fam','top_products_products'],'selected');
+Dom.addClass(this,'selected');
+
+if(this.id=='top_products_fam')
+type='families'
+else
+type='products';
+
+var table=top_products_tables.table1;
+    var datasource=top_products_tables.dataSourcetopprod;
+    var request='&type=' + type;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+}
+
 function change_product_number(){
 
 var nr=this.getAttribute('nr');
@@ -111,5 +127,11 @@ function init(){
  
 ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
  YAHOO.util.Event.addListener(ids, "click",change_product_period);
+ 
+ 
+ ids=['top_products_fam','top_products_products'];
+ YAHOO.util.Event.addListener(ids, "click",change_product_type);
+ 
+ 
 }
 YAHOO.util.Event.onDOMReady(init);

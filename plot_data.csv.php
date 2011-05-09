@@ -837,7 +837,7 @@ function stacked_store_sales($data) {
 }
 function top_families($data) {
 
-    $max_slices=10;
+    $max_slices=15;
 
 
     $store_keys=preg_split('/,/',$data['store_keys']);
@@ -896,7 +896,7 @@ function top_families($data) {
     }
 
     $others=$total;
-    $sql=sprintf("select `Product Family Name`,`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s) order by sales desc limit %d ",
+    $sql=sprintf("select `Product Family Store Code`,`Product Family Name`,`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s) order by sales desc limit %d ",
                  $field,
                  join(",",$valid_store_keys),
                  $max_slices
@@ -904,7 +904,10 @@ function top_families($data) {
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $descripton='';//$row['Product Family Name'];
-        printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['sales'],$row['Product Family Key'],$descripton);
+                $descripton=$row['Product Family Store Code'].' '.$row['Product Family Code'];
+
+        $code=$row['Product Family Code'];
+        printf("%s;%.2f;;;family.php?id=%d;%s\n",$code,$row['sales'],$row['Product Family Key'],$descripton);
         $others-=$row['sales'];
     }
 
