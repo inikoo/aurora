@@ -189,10 +189,8 @@ function get_tipo_order($ltipo,$header){
   $parent_id='';
   $tipo=0;
  if(preg_match('/proforma/i',$ltipo)){
-
     $tipo=20;
-  }
-  if(preg_match('/DELIVERY NOTE|nota de envio/i',$ltipo)){
+  }else if(preg_match('/DELIVERY NOTE|nota de envio/i',$ltipo)){
 
     $tipo=1;
   }elseif(preg_match('/INVOICE. sample order|invoice|facutura/i',$ltipo)){

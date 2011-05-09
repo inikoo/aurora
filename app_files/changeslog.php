@@ -3024,6 +3024,7 @@ CREATE TABLE `Part Warehouse Bridge` (
   PRIMARY KEY (`Part SKU`,`Warehouse Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Email' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 */
 
 
