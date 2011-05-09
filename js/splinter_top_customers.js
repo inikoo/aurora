@@ -102,7 +102,8 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 	    top_customers_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    top_customers_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		    
+		     top_customers_tables.table1.table_id=tableid;
+		   top_customers_tables.table1.subscribe("renderEvent", myrenderEvent);
 		  
 	
 	

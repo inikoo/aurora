@@ -4,6 +4,7 @@
 <input type="hidden" value="{t}Fam{/t}" id="label_Fam"  />
 <input type="hidden" value="{t}Product{/t}" id="label_Product"  />
 <input type="hidden" value="{t}Sales{/t}" id="label_Sales"  />
+<input type="hidden" value="{t}Description{/t}" id="label_Description"  />
 
 
 
@@ -12,7 +13,10 @@
     <div style="float:left;margin-right:10px">
         <span class="clean_table_title">Top Products</span>
         <div class="home_splinter_options">
-            <span id="top_products_50" nr="50" {if $conf_data.top_products.nr==50}class="selected"{/if} style="float:right;margin-left:5px">50</span>
+                      <span id="top_products_fam" type="families" {if $conf_data.top_products.type=='families'}class="selected"{/if} style="float:right;margin-left:5px">{t}Families{/t}</span>
+           <span id="top_products_products" type="products" {if $conf_data.top_products.type=='products'}class="selected"{/if} style="float:right;margin-left:15px">{t}Products{/t}</span>
+
+           <span id="top_products_50" nr="50" {if $conf_data.top_products.nr==50}class="selected"{/if} style="float:right;margin-left:5px">50</span>
             <span id="top_products_20" nr="20" {if $conf_data.top_products.nr==20}class="selected"{/if} style="float:right;margin-left:5px">20</span>
             <span id="top_products_10" nr="10" {if $conf_data.top_products.nr==10}class="selected"{/if} style="float:right;margin-left:15px">10</span>
             <span id="top_products_all" period="all" {if $conf_data.top_products.period=='all'}class="selected"{/if} style="float:right;margin-left:5px">{t}All times{/t}</span>

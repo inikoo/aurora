@@ -707,8 +707,14 @@ class Order extends DB_Table {
             $this->data ['Order Outstanding Balance Tax Amount'] = 0;
 
 
+$no_shipped=0;
 
-            $sql = sprintf ( "update `Order Dimension` set `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+$no_shipped=$this->data['Order Quantity']-$this->data['No Shipped Due Out of Stock']-$this->data['No Shipped Due Not Found']-$this->data['No Shipped Due No Authorized'];
+//if($no_shipped<0)$no_shipped=0;
+
+
+            $sql = sprintf ( "update `Order Dimension` set  `No Shipped Due Other`=%d,  `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+                             ,$no_shipped
                              , prepare_mysql ( $this->data ['Order Cancelled Date'] )
                              , prepare_mysql ( $this->data ['Order Current Payment State'] )
                              , prepare_mysql ( $this->data ['Order Current Dispatch State'] )

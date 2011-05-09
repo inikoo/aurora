@@ -1515,7 +1515,8 @@ if($order=='dispatched')
   }
   
   
-   $sql=sprintf("select OTF.`Order Key`,OTF.`Order Public ID`,`Customer Name`,CD.`Customer Key`,OTF.`Order Date`,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispatched  from 
+   $sql=sprintf("select OTF.`Order Key`,OTF.`Order Public ID`,`Customer Name`,CD.`Customer Key`,OTF.`Order Date`,sum(`Shipped Quantity`) as dispatched,
+   sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispatched  from 
    `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)     %s %s   group by OTF.`Order Key`  order by  $order $order_direction  limit $start_from,$number_results"
 		,$where
 		,$wheref
