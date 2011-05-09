@@ -331,7 +331,7 @@ var  change_web_status =function(tipo){
 
 function init(){
  init_search('products_store');
-exit;
+
     Event.addListener(['details','customers','orders','timeline','sales'], "click",change_block);
 
 
