@@ -105,7 +105,7 @@ class part extends DB_Table {
             }
             
             $sql=sprintf("insert into `Part Warehouse Bridge` values (%d,%d)",$this->sku,$warehouse_key);
-            print "$sql\n";
+            //print "$sql\n";
             mysql_query($sql);
 	    $this->get_data('id',$this->id);
             $data_for_history=array(

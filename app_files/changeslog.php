@@ -3032,7 +3032,7 @@ CREATE TABLE `Customer History Email Checksum` (
 ) ENGINE = MYISAM ;
 
 ALTER TABLE `Customer History Email Checksum` ADD INDEX ( `Checksum` ( 64 ) ) ;
-ALTER TABLE `Customer History Email Checksum` ADD INDEX ( `History Key` ) 
+ALTER TABLE `Customer History Email Checksum` ADD INDEX ( `History Key` ) ;
 
 */
 
