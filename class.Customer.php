@@ -2964,16 +2964,13 @@ class Customer extends DB_Table {
 
     }
 
-    function add_note($note,$details='',$date=false,$deleteable='No') {
+    function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes') {
 
 
         list($ok,$note,$details)=$this->prepare_note($note,$details);
         if (!$ok) {
             return;
         }
-
-
-
         $history_data=array(
                           'History Abstract'=>$note,
                           'History Details'=>$details,
@@ -2992,7 +2989,7 @@ class Customer extends DB_Table {
 
 
 
-        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable,'Notes');
+        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable,$customer_history_type);
 
 
         $this->updated=true;
