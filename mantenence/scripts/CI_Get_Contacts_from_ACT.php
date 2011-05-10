@@ -155,8 +155,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $contacts_date[$row]=$creation_time;
     
     //print_r($act_data);
-    //   if($row>100)
-    //   break;
+      // if($row>3000)
+      // break;
     print "$row\r";
 
     // print_r($cols);
@@ -296,20 +296,46 @@ if(isset($_customer_data['address_data'])){
   $customer_data['Customer Address Country Name']=$_customer_data['address_data']['country'];
   $customer_data['Customer Address Country First Division']=$_customer_data['address_data']['country_d1'];
   $customer_data['Customer Address Country Second Division']=$_customer_data['address_data']['country_d2'];
+  
+  
+  if(
+    $customer_data['Customer Address Line 1']=='' and
+    $customer_data['Customer Address Line 2']=='' and
+    $customer_data['Customer Address Line 3']=='' and
+   $customer_data['Customer Address Town']=='' and
+  $customer_data['Customer Address Postal Code']=='' and
+  $customer_data['Customer Address Country Name']=='' and
+  $customer_data['Customer Address Country First Division']=='' and
+  $customer_data['Customer Address Country Second Division']==''
+   
+  
+  ){
+  $customer_data['Customer Address Country Name']='Spain';
+  
+  }
+  
+  
   unset($customer_data['address_data']);
 }
 $shipping_addresses=array();
 $customer_data['Customer Delivery Address Link']='Contact';
 //	  print "===================================\n";
 
+if($customer_data['Customer Main Contact Name']=='Ms' and $customer_data['Customer Company Name']=='Ms'){
+$customer_data['Customer Main Contact Name']='';
+$customer_data['Customer Company Name']='';
+}
+
+
 // print_r($customer_data);
- // print_r($act_data);
+//  print_r($act_data);
 //continue;
 
 $customer = new Customer ( 'find create update',  $customer_data);
    
 if(_trim($customer->data['Customer Name'])==''){
-  
+  print_r($customer_data);
+  print_r($act_data);
  print_r($customer);
   exit;
 }
