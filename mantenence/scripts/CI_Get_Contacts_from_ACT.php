@@ -61,7 +61,9 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
     if($row==0){
       // print_r($data);exit;
-      $row++;continue;
+      $row++;
+       $col_names=$data;
+       continue;
     }    
     $row++;
     
@@ -115,6 +117,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $act_data['category']=$cols[27+3];
     $act_data['pay_method']=$cols[37+3];
     $act_data['history']=$cols[96];
+    $act_data['all_data']=$cols;
     $act_data['creator']=$cols[68];
     //    print $cols[92]."\n";
 
@@ -155,8 +158,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $contacts_date[$row]=$creation_time;
     
     //print_r($act_data);
-      // if($row>3000)
-      // break;
+    //   if($row>500)
+     //  break;
     print "$row\r";
 
     // print_r($cols);
@@ -181,7 +184,7 @@ usort($contacts, 'compare');
 //fclose($fp);
 
 
-foreach($contacts as $act_data){
+foreach($contacts as $act_data_contact_key=>$act_data){
 
   //if($act_data['creation_date']!='2006-01-03 12:22:31')
   //  continue;
@@ -345,7 +348,7 @@ if(_trim($customer->data['Customer Name'])==''){
 //  print "Customer ".$customer->id." with History\n\n\n\n\n\n";
 //  print_r($act_data['history']);
 // }
-
+/*
 foreach($act_data['history'] as $h_tipo=>$histories){
   if($h_tipo=='Note')
     foreach($histories as $date=>$history){
@@ -357,6 +360,107 @@ foreach($act_data['history'] as $h_tipo=>$histories){
     }
   }
 }
+*/
+
+
+    $_details='<table>';
+    foreach($act_data['all_data'] as $_key=>$_value) {
+        if ($_value!='' and $col_names[$_key]!='History_Generated')
+            $_details.= '<tr><td>'.$col_names[$_key]."</td><td>$_value</td><tr>";
+    }
+    $_details.='</table>';
+    $_details=_trim($_details);
+    if (!$customer->new) {
+        $history_found=false;
+        $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') and `Metadata`=%s ",
+                     $customer->id,
+                     prepare_mysql(md5($_details))
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $history_found=true;
+        }
+
+        
+$sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and (`History Abstract`='Contact data imported from Act' or `History Abstract`='Contact data imported from Act (Merged)') ",
+                     $customer->id
+                    
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $data_not_imported_yet=false;
+        }else{
+            $data_not_imported_yet=true;
+        }
+
+        if($data_not_imported_yet){
+        $history_key=$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
+        $sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+        mysql_query($sql);
+        }else{
+            
+
+
+        if (!$history_found) {
+            $history_key=$customer->add_note('Contact data imported from Act (Merged)',$_details,date("Y-m-d H:i:s"));
+            $sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+//print "$sql\n";
+            mysql_query($sql);
+        }
+        }
+
+
+    } else {
+        $history_key=$customer->add_note('Contact data imported from Act',$_details,date("Y-m-d H:i:s"));
+        $sql=sprintf("update `History Dimension` set `Metadata`=%s where `History Key`=%d",prepare_mysql(md5($_details)),$customer->new_value);
+        mysql_query($sql);
+    }
+
+  foreach($act_data['history'] as $h_tipo=>$histories) {
+
+        //print_r($histories);
+
+        if ($h_tipo=='Note')
+            foreach($histories as $date=>$history) {
+            $history_found=false;
+            if (!$customer->new) {
+                $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and `History Abstract`=%s  and `History Date`=%s",
+                             $customer->id,
+                             prepare_mysql($history),
+                             prepare_mysql($date)
+                            );
+                //print "$sql\n";
+                $res=mysql_query($sql);
+
+                if ($row=mysql_fetch_assoc($res)) {
+                    $history_found=true;
+                }
+            }
+            if (!(!$customer->new and $history_found) )
+                $customer->add_note($history,'',$date);
+        } else {
+            foreach($histories as $date=>$history) {
+
+
+                $history_found=false;
+                if (!$customer->new) {
+                    $sql=sprintf("select `History Key` from `History Dimension` where `Direct Object`='Customer' and `Direct Object Key`=%d and `History Abstract`=%s  and `History Date`=%s",
+                                 $customer->id,
+                                 prepare_mysql("Old Database Note ($h_tipo)"),
+                                 prepare_mysql($date)
+                                );
+                    $res=mysql_query($sql);
+
+                    if ($row=mysql_fetch_assoc($res)) {
+                        $history_found=true;
+                    }
+                }
+                if (!(!$customer->new and $history_found) )
+
+                    $customer->add_note("Old Database Note ($h_tipo)",$history,$date);
+            }
+        }
+    }
 
 //print "caca";
 //print_r($customer);
