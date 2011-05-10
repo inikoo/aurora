@@ -124,7 +124,20 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
+$sql="select * from  ci_orders_data.orders  where   deleted='Yes'    ";
+   $res=mysql_query($sql);
+while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+ $order_data_id=$row2['id'];
+    delete_old_data();
+}
+
+
+
+
+
+
+
+$sql="select * from  ci_orders_data.orders  where deleted='No' and  (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000479.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
@@ -144,6 +157,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $sql="select * from ci_orders_data.data where id=".$row2['id'];
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    
+    
+    
+    
         $order_data_id=$row2['id'];
         $filename=$row2['filename'];
         $contador++;
@@ -1126,30 +1143,33 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
 
 
-        if($customer_key_from_order_data) {
-  //     exit('pipi');
-       
-            //print "using customer key from order data   $customer_key_from_order_data ";
-            $customer = new Customer($customer_key_from_order_data);
 
-        } if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-// print_r($act_data['act']);
-  //        exit("caca");
+            $customer_posible_key=0;
+            if ($customer_key_from_order_data) {
+                $customer_posible_key=$customer_key_from_order_data;
+                $customer = new Customer($customer_key_from_order_data);
+            }
+            else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-05-09')) ) {
+                $customer_posible_key=$act_data['act'];
+                $customer = new Customer($act_data['act']);
+            } else {
+                print "creating customer old way\n";
+                $customer = new Customer ( 'find create', $data['Customer Data'] );
+            }
+            if (!$customer->id and $customer_posible_key) {
+                $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+                    $customer=new Customer($row2['Customer Key']);
+                }
+            }
 
-            $customer = new Customer($act_data['act']);
-        }
-        else {
-        //        exit("popop");
-            //print_r( $data['Customer Data']);
-            //$data['Customer Data']['Customer Address Line 1']='HOla St 3431';
-            $customer = new Customer ( 'find create', $data['Customer Data'] );
-        }
-    
-    
+        
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             continue;
         }
+
 
          $sql=sprintf("update ci_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
         mysql_query($sql);
@@ -1255,11 +1275,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "Unknown Order $tipo_order\n";
             break;
         }
-
-
-        $store=new Store($store_key);
+ $store=new Store($store_key);
+    $customer->update_orders();
+       
+        $store->update_customer_activity_interval();
+        $customer->update_activity();
+         $customer->update_is_new();
         $store->update_orders();
         $store->update_customers_data();
+        
+         $store->update_up_today_sales();
+         $store->update_last_period_sales();
+        $store->update_interval_sales();
+
+        
 
 
         print "\n";
