@@ -109,6 +109,10 @@ class User extends DB_Table {
                 $base_data[$key]=_trim($value);
         }
 
+   if ($base_data['User Themes']=='')
+            $base_data['User Themes']=1;
+
+
         if ($base_data['User Created']=='')
             $base_data['User Created']=date("Y-m-d H:i:s");
 
@@ -156,7 +160,6 @@ class User extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
-
         if (mysql_query($sql)) {
 
             $user_id=mysql_insert_id();
