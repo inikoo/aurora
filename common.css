@@ -733,3 +733,8 @@ a.state_details:hover{color:#000;text-decoration:none}
 
 span.todo,div.todo {background-color: #C8E02B}
 div.todo {;padding:20px} 
+
+.sticky_note {border:1px solid #BAB84E;background:#EDEB82;float:left;width:300px;padding:0;margin-left:20px}
+
+
+
