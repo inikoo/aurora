@@ -328,7 +328,8 @@ $_SESSION['state']['customer']['table']['elements']=$elements;
                     'delete'=>($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':''),
                      'edit'=>(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':''),
                     'can_delete'=>($row['Deletable']=='Yes'?1:0),
-'delete_type'=>_('delete')
+                    'delete_type'=>_('delete'),
+                    'type'=>$row['Type']
                 );
     }
     mysql_free_result($result);
