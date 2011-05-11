@@ -1156,12 +1156,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $customer_done=true;
             }
             
-             if (!$customer->id and $customer_posible_key) {
+             if ($customer_posible_key) {
+                if(!$customer->id){
                 $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
                 $res2=mysql_query($sql);
                 if ($row2=mysql_fetch_assoc($res2)) {
                     $customer=new Customer($row2['Customer Key']);
                     $customer_done=true;
+                }
                 }
             }
 
