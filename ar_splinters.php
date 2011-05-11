@@ -593,7 +593,7 @@ function list_families() {
  $family_description="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Family Code'].'</a>';
         $adata[]=array(
                      'position'=>'<b>'.$position++.'</b>',
-                     'code'=>$code,
+                     'family_description'=>$family_description,
                      'family'=>$family,
                      'store'=>$store,
                      'description'=>'<b>'.$code.'</b> '.$data['Product Family Short Description'],

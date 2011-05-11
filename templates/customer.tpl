@@ -163,7 +163,7 @@
 </div>
 </div>
 
-<div id="sticky_note_div" style="border:1px solid #eee;background:#e0eefd;float:left;width:300px;padding:0;margin-left:20px">
+<div id="sticky_note_div" class="sticky_note">
 <img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
 <div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 </div>
