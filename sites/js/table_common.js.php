@@ -1,1 +1,1 @@
-../../table_common.js.php
+../../../table_common.js.php
