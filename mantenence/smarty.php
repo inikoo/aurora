@@ -1,4 +1,22 @@
-<?php/* ../templates/assets_navigation.tpl */
+<?php/* ../templates/add_people.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/amcolumn.tpl */
+gettext("Store");
+
+/* ../templates/amcolumn.tpl */
+gettext("Top Departments");
+
+/* ../templates/amcolumn.tpl */
+gettext("Department's Pie");
+
+/* ../templates/assets_navigation.tpl */
+gettext("No results found, try te a more comprensive search");
+
+/* ../templates/assets_navigation.tpl */
+gettext("here");
+
+/* ../templates/assets_navigation.tpl */
 gettext("Stores");
 
 /* ../templates/assets_navigation.tpl */
@@ -14,22 +32,64 @@ gettext("Products");
 gettext("Deals");
 
 /* ../templates/assets_navigation.tpl */
-gettext("Categories");
+gettext("Products Categories");
 
 /* ../templates/assets_navigation.tpl */
-gettext("Parts");
+gettext("Search");
+
+/* ../templates/basic_template.tpl */
+gettext("Marketing");
+
+/* ../templates/basic_template.tpl */
+gettext("Emarketing");
+
+/* ../templates/basic_template.tpl */
+gettext("eNewsletters");
+
+/* ../templates/basic_template.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/basic_template.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/basic_template.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/basic_template.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/basic_template.tpl */
+gettext("Basic Template Preview");
+
+/* ../templates/basic_template.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/basic_template.tpl */
+gettext("Rows per Page");
+
+/* ../templates/basic_template.tpl */
+gettext("Filter options");
 
 /* ../templates/calendar_splinter.tpl */
-gettext("Custom Dates");
+gettext("Other Dates");
 
 /* ../templates/calendar_splinter.tpl */
-gettext("From");
+gettext("Close");
 
 /* ../templates/calendar_splinter.tpl */
-gettext("To:");
+gettext("Choose custom dates");
+
+/* ../templates/calendar_splinter.tpl */
+gettext("clear");
+
+/* ../templates/calendar_splinter.tpl */
+gettext("Go");
 
 /* ../templates/calendar_splinter.tpl */
 gettext("All");
+
+/* ../templates/calendar_splinter.tpl */
+gettext("This Year");
 
 /* ../templates/calendar_splinter.tpl */
 gettext("This Month");
@@ -43,83 +103,59 @@ gettext("Yesterday");
 /* ../templates/calendar_splinter.tpl */
 gettext("Today");
 
-/* ../templates/campaign.tpl */
+/* ../templates/campaign_builder.tpl */
 gettext("Marketing");
 
-/* ../templates/categories.tpl */
-gettext("Categories");
+/* ../templates/campaign_builder.tpl */
+gettext("Emarketing");
 
-/* ../templates/categories.tpl */
-gettext("Subcategories");
+/* ../templates/campaign_builder.tpl */
+gettext("eNewsletters");
 
-/* ../templates/categories.tpl */
-gettext("General");
+/* ../templates/campaign_builder.tpl */
+gettext("Email Campaigns");
 
-/* ../templates/categories.tpl */
-gettext("Stock");
+/* ../templates/campaign_builder.tpl */
+gettext("Site Campaigns");
 
-/* ../templates/categories.tpl */
-gettext("Sales");
+/* ../templates/campaign_builder.tpl */
+gettext("Internet Campaigns");
 
-/* ../templates/categories.tpl */
-gettext("All");
+/* ../templates/campaign_builder.tpl */
+gettext("Other Media Campaigns");
 
-/* ../templates/categories.tpl */
-gettext("1Yr");
+/* ../templates/campaign_builder.tpl */
+gettext("Campaign Builder");
 
-/* ../templates/categories.tpl */
-gettext("1Qtr");
+/* ../templates/campaign_builder.tpl */
+gettext("Email Campaigns");
 
-/* ../templates/categories.tpl */
-gettext("1M");
+/* ../templates/campaign_builder.tpl */
+gettext("Rows per Page");
 
-/* ../templates/categories.tpl */
-gettext("1W");
+/* ../templates/campaign_builder.tpl */
+gettext("Filter options");
 
-/* ../templates/categories.tpl */
-gettext("Totals");
+/* ../templates/campaign_list.tpl */
+gettext("campaign List");
 
-/* ../templates/categories.tpl */
-gettext("M AVG");
+/* ../templates/campaign_list.tpl */
+gettext("Filter options");
 
-/* ../templates/categories.tpl */
-gettext("W AVG");
+/* ../templates/campaign_list.tpl */
+gettext("Rows per Page");
 
-/* ../templates/categories.tpl */
-gettext("Products");
+/* ../templates/campaign_use_segment.tpl */
+gettext("Campaign Builder");
 
-/* ../templates/categories.tpl */
-gettext("General");
+/* ../templates/change_style.tpl */
+gettext("Change Theme");
 
-/* ../templates/categories.tpl */
-gettext("Stock");
+/* ../templates/change_user_theme.tpl */
+gettext("Change Style");
 
-/* ../templates/categories.tpl */
-gettext("Sales");
-
-/* ../templates/categories.tpl */
-gettext("All");
-
-/* ../templates/categories.tpl */
-gettext("1Yr");
-
-/* ../templates/categories.tpl */
-gettext("1Qtr");
-
-/* ../templates/categories.tpl */
-gettext("1M");
-
-/* ../templates/categories.tpl */
-gettext("1W");
-
-/* ../templates/categories.tpl */
-gettext("Totals");
-
-/* ../templates/categories.tpl */
-gettext("M AVG");
-
-/* ../templates/categories.tpl */
-gettext("W AVG");
+/* ../templates/change_user_theme.tpl */
+gettext("Administration Account");
 
 /* ../templates/companies.tpl */
 gettext("Companies");
@@ -138,42 +174,6 @@ gettext("Rows per Page");
 
 /* ../templates/companies.tpl */
 gettext("Filter options");
-
-/* ../templates/company_areas.tpl */
-gettext("Areas");
-
-/* ../templates/company_areas.tpl */
-gettext("Areas List");
-
-/* ../templates/company_areas.tpl */
-gettext("Filter options");
-
-/* ../templates/company_areas.tpl */
-gettext("Rows per Page");
-
-/* ../templates/company_area.tpl */
-gettext("Company Area");
-
-/* ../templates/company_area.tpl */
-gettext("Departments List");
-
-/* ../templates/company_area.tpl */
-gettext("Filter options");
-
-/* ../templates/company_area.tpl */
-gettext("Rows per Page");
-
-/* ../templates/company_departments.tpl */
-gettext("Company Departments");
-
-/* ../templates/company_departments.tpl */
-gettext("Departments List");
-
-/* ../templates/company_departments.tpl */
-gettext("Filter options");
-
-/* ../templates/company_departments.tpl */
-gettext("Rows per Page");
 
 /* ../templates/company.tpl */
 gettext("Customers");
@@ -262,26 +262,152 @@ gettext("Filter options");
 /* ../templates/company.tpl */
 gettext("Rows per Page");
 
-/* ../templates/contact_search.tpl */
-gettext("Name Search");
+/* ../templates/company_area.tpl */
+gettext("Company Area");
 
-/* ../templates/contacts_navigation.tpl */
+/* ../templates/company_area.tpl */
+gettext("Departments List");
+
+/* ../templates/company_area.tpl */
+gettext("Filter options");
+
+/* ../templates/company_area.tpl */
+gettext("Rows per Page");
+
+/* ../templates/company_areas.tpl */
+gettext("Areas");
+
+/* ../templates/company_areas.tpl */
+gettext("Areas List");
+
+/* ../templates/company_areas.tpl */
+gettext("Import (CSV)");
+
+/* ../templates/company_areas.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/company_areas.tpl */
+gettext("Filter options");
+
+/* ../templates/company_areas.tpl */
+gettext("Rows per Page");
+
+/* ../templates/company_departments.tpl */
+gettext("Company Departments");
+
+/* ../templates/company_departments.tpl */
+gettext("Departments List");
+
+/* ../templates/company_departments.tpl */
+gettext("Import (CSV)");
+
+/* ../templates/company_departments.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/company_departments.tpl */
+gettext("Filter options");
+
+/* ../templates/company_departments.tpl */
+gettext("Rows per Page");
+
+/* ../templates/confirm_mail_send.tpl */
+gettext("Confirm Sending");
+
+/* ../templates/confirm_mail_send.tpl */
+gettext("Rows per Page");
+
+/* ../templates/confirm_mail_send.tpl */
+gettext("Filter options");
+
+/* ../templates/contact.tpl */
 gettext("Customers");
 
-/* ../templates/contacts_navigation.tpl */
-gettext("Customers");
-
-/* ../templates/contacts_navigation.tpl */
+/* ../templates/contact.tpl */
 gettext("Companies");
 
-/* ../templates/contacts_navigation.tpl */
+/* ../templates/contact.tpl */
 gettext("Personal Contacts");
 
-/* ../templates/contacts_navigation.tpl */
-gettext("Requests");
+/* ../templates/contact.tpl */
+gettext("Advanced Search");
 
-/* ../templates/contacts_navigation.tpl */
-gettext("Marketing");
+/* ../templates/contact.tpl */
+gettext("Contact Name");
+
+/* ../templates/contact.tpl */
+gettext("Hide Details");
+
+/* ../templates/contact.tpl */
+gettext("Show Details");
+
+/* ../templates/contact.tpl */
+gettext("Hide Details");
+
+/* ../templates/contact.tpl */
+gettext("Show Details");
+
+/* ../templates/contact.tpl */
+gettext("Edit Contact Data");
+
+/* ../templates/contact.tpl */
+gettext("Edit Contact");
+
+/* ../templates/contact.tpl */
+gettext("Quick Note");
+
+/* ../templates/contact.tpl */
+gettext("Long Note");
+
+/* ../templates/contact.tpl */
+gettext("Attach File");
+
+/* ../templates/contact.tpl */
+gettext("Call");
+
+/* ../templates/contact.tpl */
+gettext("Email");
+
+/* ../templates/contact.tpl */
+gettext("Other");
+
+/* ../templates/contact.tpl */
+gettext("Mobile Phone");
+
+/* ../templates/contact.tpl */
+gettext("Telephone");
+
+/* ../templates/contact.tpl */
+gettext("Email Address");
+
+/* ../templates/contact.tpl */
+gettext("Fax");
+
+/* ../templates/contact.tpl */
+gettext("Contact Overview");
+
+/* ../templates/contact.tpl */
+gettext("History/Notes");
+
+/* ../templates/contact.tpl */
+gettext("Cancel");
+
+/* ../templates/contact.tpl */
+gettext("Save");
+
+/* ../templates/contact.tpl */
+gettext("Cancel");
+
+/* ../templates/contact.tpl */
+gettext("Save");
+
+/* ../templates/contact.tpl */
+gettext("Filter options");
+
+/* ../templates/contact.tpl */
+gettext("Rows per Page");
+
+/* ../templates/contact_search.tpl */
+gettext("Name Search");
 
 /* ../templates/contacts.tpl */
 gettext("Contacts");
@@ -481,224 +607,89 @@ gettext("Company");
 /* ../templates/contacts.tpl */
 gettext("Person");
 
-/* ../templates/contact.tpl */
-gettext("Customers");
+/* ../templates/contacts_navigation.tpl */
+gettext("No results found, try te a more comprensive search");
 
-/* ../templates/contact.tpl */
-gettext("Companies");
+/* ../templates/contacts_navigation.tpl */
+gettext("here");
 
-/* ../templates/contact.tpl */
-gettext("Personal Contacts");
-
-/* ../templates/contact.tpl */
-gettext("Advanced Search");
-
-/* ../templates/contact.tpl */
-gettext("Contact Name");
-
-/* ../templates/contact.tpl */
-gettext("Hide Details");
-
-/* ../templates/contact.tpl */
-gettext("Show Details");
-
-/* ../templates/contact.tpl */
-gettext("Hide Details");
-
-/* ../templates/contact.tpl */
-gettext("Show Details");
-
-/* ../templates/contact.tpl */
-gettext("Edit Contact Data");
-
-/* ../templates/contact.tpl */
-gettext("Edit Contact");
-
-/* ../templates/contact.tpl */
-gettext("Quick Note");
-
-/* ../templates/contact.tpl */
-gettext("Long Note");
-
-/* ../templates/contact.tpl */
-gettext("Attach File");
-
-/* ../templates/contact.tpl */
-gettext("Call");
-
-/* ../templates/contact.tpl */
-gettext("Email");
-
-/* ../templates/contact.tpl */
-gettext("Other");
-
-/* ../templates/contact.tpl */
-gettext("Mobile Phone");
-
-/* ../templates/contact.tpl */
-gettext("Telephone");
-
-/* ../templates/contact.tpl */
-gettext("Email Address");
-
-/* ../templates/contact.tpl */
-gettext("Fax");
-
-/* ../templates/contact.tpl */
-gettext("Contact Overview");
-
-/* ../templates/contact.tpl */
-gettext("History/Notes");
-
-/* ../templates/contact.tpl */
-gettext("Cancel");
-
-/* ../templates/contact.tpl */
-gettext("Save");
-
-/* ../templates/contact.tpl */
-gettext("Cancel");
-
-/* ../templates/contact.tpl */
-gettext("Save");
-
-/* ../templates/contact.tpl */
-gettext("Filter options");
-
-/* ../templates/contact.tpl */
-gettext("Rows per Page");
-
-/* ../templates/customers_detail.tpl */
-gettext("Please note: The YUI Charts Control requires Flash Player 9.0.45 or higher. The latest version of Flash Player is available at the");
-
-/* ../templates/customers_detail.tpl */
-gettext("Adobe Flash Player Download Center");
-
-/* ../templates/customer_search.tpl */
-gettext("Id Search");
-
-/* ../templates/customer_search.tpl */
+/* ../templates/contacts_navigation.tpl */
 gettext("Search");
 
-/* ../templates/customer_search.tpl */
-gettext("Search");
+/* ../templates/continent.tpl */
+gettext("World Regions");
 
-/* ../templates/customers_server.tpl */
-gettext("Customer Corporate Overview");
+/* ../templates/continent.tpl */
+gettext("Countries");
 
-/* ../templates/customers_server.tpl */
-gettext("Customers per Store");
+/* ../templates/continent.tpl */
+gettext("Continents");
 
-/* ../templates/customers_server.tpl */
-gettext("General");
+/* ../templates/continent.tpl */
+gettext("World Regions");
 
-/* ../templates/customers_server.tpl */
-gettext("Stock");
+/* ../templates/country.tpl */
+gettext("Population");
 
-/* ../templates/customers_server.tpl */
-gettext("Sales");
+/* ../templates/country.tpl */
+gettext("GNP");
 
-/* ../templates/customers_server.tpl */
-gettext("All");
+/* ../templates/country.tpl */
+gettext("Sold Since");
 
-/* ../templates/customers_server.tpl */
-gettext("1Yr");
+/* ../templates/country.tpl */
+gettext("Currency");
 
-/* ../templates/customers_server.tpl */
-gettext("1Qtr");
+/* ../templates/country.tpl */
+gettext("Exchange");
 
-/* ../templates/customers_server.tpl */
-gettext("1M");
+/* ../templates/country.tpl */
+gettext("Official Name");
 
-/* ../templates/customers_server.tpl */
-gettext("1W");
+/* ../templates/country.tpl */
+gettext("Languages");
 
-/* ../templates/customers_server.tpl */
-gettext("Totals");
+/* ../templates/country.tpl */
+gettext("Capital");
 
-/* ../templates/customers_server.tpl */
-gettext("M AVG");
+/* ../templates/country.tpl */
+gettext("Government");
 
-/* ../templates/customers_server.tpl */
-gettext("W AVG");
+/* ../templates/country.tpl */
+gettext("Product Code Timeline");
 
-/* ../templates/customers_server.tpl */
-gettext("Filter options");
+/* ../templates/country.tpl */
+gettext("Orders with this Product");
 
-/* ../templates/customers_server.tpl */
-gettext("Rows per Page");
+/* ../templates/country.tpl */
+gettext("Customer who order this Product");
 
-/* ../templates/customers.tpl */
-gettext("Customers");
+/* ../templates/country.tpl */
+gettext("Product History");
 
-/* ../templates/customers.tpl */
-gettext("Customers Information");
-
-/* ../templates/customers.tpl */
-gettext("All Contacts");
-
-/* ../templates/customers.tpl */
-gettext("Actual Customers");
-
-/* ../templates/customers.tpl */
-gettext("General");
-
-/* ../templates/customers.tpl */
-gettext("Contact");
-
-/* ../templates/customers.tpl */
-gettext("Address");
-
-/* ../templates/customers.tpl */
-gettext("Shipping Address");
-
-/* ../templates/customers.tpl */
-gettext("Balance");
-
-/* ../templates/customers.tpl */
-gettext("Ranking");
-
-/* ../templates/customers.tpl */
-gettext("Filter options");
-
-/* ../templates/customers.tpl */
-gettext("Rows per Page");
-
-/* ../templates/customers.tpl */
-gettext("Plot frequency");
-
-/* ../templates/customers.tpl */
-gettext("Plot Type");
-
-/* ../templates/customers.tpl */
-gettext("Create new Customer");
-
-/* ../templates/customers.tpl */
-gettext("Company");
-
-/* ../templates/customers.tpl */
-gettext("Individual");
-
-/* ../templates/customers.tpl */
-gettext("Cancel");
+/* ../templates/customer.tpl */
+gettext("Print Address");
 
 /* ../templates/customer.tpl */
 gettext("Quick Note");
 
 /* ../templates/customer.tpl */
+gettext("Sticky Note");
+
+/* ../templates/customer.tpl */
+gettext("Sticky Note");
+
+/* ../templates/customer.tpl */
 gettext("Attach File");
+
+/* ../templates/customer.tpl */
+gettext("Link File");
 
 /* ../templates/customer.tpl */
 gettext("Take Order");
 
 /* ../templates/customer.tpl */
-gettext("Make Order");
-
-/* ../templates/customer.tpl */
 gettext("Long Note");
-
-/* ../templates/customer.tpl */
-gettext("Attach File");
 
 /* ../templates/customer.tpl */
 gettext("Call");
@@ -710,16 +701,70 @@ gettext("Email");
 gettext("Other");
 
 /* ../templates/customer.tpl */
-gettext("Mobile Phone");
+gettext("Email");
+
+/* ../templates/customer.tpl */
+gettext("Email");
 
 /* ../templates/customer.tpl */
 gettext("Telephone");
 
 /* ../templates/customer.tpl */
-gettext("Email Address");
+gettext("Telephone");
+
+/* ../templates/customer.tpl */
+gettext("Mobile");
+
+/* ../templates/customer.tpl */
+gettext("Mobile");
 
 /* ../templates/customer.tpl */
 gettext("Fax");
+
+/* ../templates/customer.tpl */
+gettext("Fax");
+
+/* ../templates/customer.tpl */
+gettext("Billing");
+
+/* ../templates/customer.tpl */
+gettext("Delivery");
+
+/* ../templates/customer.tpl */
+gettext("Billing Address Same as contact address");
+
+/* ../templates/customer.tpl */
+gettext("Same as contact address");
+
+/* ../templates/customer.tpl */
+gettext("Same as billing address");
+
+/* ../templates/customer.tpl */
+gettext("Contact Overview");
+
+/* ../templates/customer.tpl */
+gettext("Lost Customer");
+
+/* ../templates/customer.tpl */
+gettext("Contact Since");
+
+/* ../templates/customer.tpl */
+gettext("Attention");
+
+/* ../templates/customer.tpl */
+gettext("Don't send newsletters");
+
+/* ../templates/customer.tpl */
+gettext("Attention");
+
+/* ../templates/customer.tpl */
+gettext("Don't send marketing by email");
+
+/* ../templates/customer.tpl */
+gettext("Attention");
+
+/* ../templates/customer.tpl */
+gettext("Don't send marketing by post");
 
 /* ../templates/customer.tpl */
 gettext("Orders Overview");
@@ -749,16 +794,133 @@ gettext("per order");
 gettext("This customer usually places an order every");
 
 /* ../templates/customer.tpl */
-gettext("History/Notes");
+gettext("Details");
+
+/* ../templates/customer.tpl */
+gettext("History, Notes");
 
 /* ../templates/customer.tpl */
 gettext("Products Ordered");
+
+/* ../templates/customer.tpl */
+gettext("Orders");
+
+/* ../templates/customer.tpl */
+gettext("Contact Details");
+
+/* ../templates/customer.tpl */
+gettext("Customer Type");
+
+/* ../templates/customer.tpl */
+gettext("Company Name");
+
+/* ../templates/customer.tpl */
+gettext("Company Tax Number");
+
+/* ../templates/customer.tpl */
+gettext("Contact Name");
+
+/* ../templates/customer.tpl */
+gettext("Contact Email");
+
+/* ../templates/customer.tpl */
+gettext("Contact Telephone");
+
+/* ../templates/customer.tpl */
+gettext("Contact Fax");
+
+/* ../templates/customer.tpl */
+gettext("Billing Details");
+
+/* ../templates/customer.tpl */
+gettext("Tax Category Code");
+
+/* ../templates/customer.tpl */
+gettext("Usual Payment Method");
+
+/* ../templates/customer.tpl */
+gettext("Last Payment Method");
+
+/* ../templates/customer.tpl */
+gettext("Billing Address");
+
+/* ../templates/customer.tpl */
+gettext("Delivery Details");
+
+/* ../templates/customer.tpl */
+gettext("Delivery Address");
+
+/* ../templates/customer.tpl */
+gettext("History/Notes");
+
+/* ../templates/customer.tpl */
+gettext("Changes History");
+
+/* ../templates/customer.tpl */
+gettext("Order History");
+
+/* ../templates/customer.tpl */
+gettext("Staff Notes");
+
+/* ../templates/customer.tpl */
+gettext("Product Families Ordered");
+
+/* ../templates/customer.tpl */
+gettext("Orders");
+
+/* ../templates/customer.tpl */
+gettext("Permanent");
+
+/* ../templates/customer.tpl */
+gettext("Deletable");
 
 /* ../templates/customer.tpl */
 gettext("Cancel");
 
 /* ../templates/customer.tpl */
 gettext("Save");
+
+/* ../templates/customer.tpl */
+gettext("Keep Date");
+
+/* ../templates/customer.tpl */
+gettext("Update Date");
+
+/* ../templates/customer.tpl */
+gettext("Cancel");
+
+/* ../templates/customer.tpl */
+gettext("Save");
+
+/* ../templates/customer.tpl */
+gettext("Export Data (using last map)");
+
+/* ../templates/customer.tpl */
+gettext("Export from another map");
+
+/* ../templates/customer.tpl */
+gettext("Export Wizard (new map)");
+
+/* ../templates/customer.tpl */
+gettext("Cancel");
+
+/* ../templates/customer.tpl */
+gettext("Save");
+
+/* ../templates/customer.tpl */
+gettext("Cancel");
+
+/* ../templates/customer.tpl */
+gettext("Save");
+
+/* ../templates/customer.tpl */
+gettext("Link Note");
+
+/* ../templates/customer.tpl */
+gettext("Cancel");
+
+/* ../templates/customer.tpl */
+gettext("Upload");
 
 /* ../templates/customer.tpl */
 gettext("Note");
@@ -774,6 +936,9 @@ gettext("Cancel");
 
 /* ../templates/customer.tpl */
 gettext("Save");
+
+/* ../templates/customer.tpl */
+gettext("Payment Method");
 
 /* ../templates/customer.tpl */
 gettext("Courier");
@@ -799,6 +964,390 @@ gettext("Rows per Page");
 /* ../templates/customer.tpl */
 gettext("Rows per Page");
 
+/* ../templates/customer_categories_base.tpl */
+gettext("Customer Categories Home");
+
+/* ../templates/customer_categories_base.tpl */
+gettext("Main Categories");
+
+/* ../templates/customer_category.tpl */
+gettext("Customer Categories");
+
+/* ../templates/customer_category.tpl */
+gettext("Category");
+
+/* ../templates/customer_category.tpl */
+gettext("Customers in this category");
+
+/* ../templates/customer_category.tpl */
+gettext("General");
+
+/* ../templates/customer_category.tpl */
+gettext("Contact");
+
+/* ../templates/customer_category.tpl */
+gettext("Address");
+
+/* ../templates/customer_category.tpl */
+gettext("Balance");
+
+/* ../templates/customer_category.tpl */
+gettext("Ranking");
+
+/* ../templates/customer_deleted.tpl */
+gettext("Deleted Customer");
+
+/* ../templates/customer_search.tpl */
+gettext("Id Search");
+
+/* ../templates/customer_search.tpl */
+gettext("Search");
+
+/* ../templates/customer_search.tpl */
+gettext("Search");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Next");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Previous");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Customers Split View");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Merge");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Contact Since");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Last Order");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Orders");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Notes");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Attention");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Don't send newsletters");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Attention");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Don't send marketing by email");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Attention");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Don't send marketing by post");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Contact Since");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Last Order");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Orders");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Notes");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Attention");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Don't send newsletters");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Attention");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Don't send marketing by email");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Attention");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Don't send marketing by post");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Customers Merging");
+
+/* ../templates/customer_split_view.tpl */
+gettext("A customer will be deleted, and its notes and orders will be transferred to the other one");
+
+/* ../templates/customer_split_view.tpl */
+gettext("This operation cannot be undone");
+
+/* ../templates/customer_split_view.tpl */
+gettext("swap");
+
+/* ../templates/customer_split_view.tpl */
+gettext("swap");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Cancel");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Merge");
+
+/* ../templates/customer_split_view.tpl */
+gettext("Merging, please wait");
+
+/* ../templates/customers.tpl */
+gettext("Customers");
+
+/* ../templates/customers.tpl */
+gettext("Export Data (using last map)");
+
+/* ../templates/customers.tpl */
+gettext("Export from another map");
+
+/* ../templates/customers.tpl */
+gettext("Export Wizard (new map)");
+
+/* ../templates/customers.tpl */
+gettext("Customers List");
+
+/* ../templates/customers.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/customers.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/customers.tpl */
+gettext("All Contacts");
+
+/* ../templates/customers.tpl */
+gettext("Active Contacts");
+
+/* ../templates/customers.tpl */
+gettext("Contacts with Orders");
+
+/* ../templates/customers.tpl */
+gettext("Lost Contacts");
+
+/* ../templates/customers.tpl */
+gettext("General");
+
+/* ../templates/customers.tpl */
+gettext("Contact");
+
+/* ../templates/customers.tpl */
+gettext("Address");
+
+/* ../templates/customers.tpl */
+gettext("Balance");
+
+/* ../templates/customers.tpl */
+gettext("Ranking");
+
+/* ../templates/customers.tpl */
+gettext("Filter options");
+
+/* ../templates/customers.tpl */
+gettext("Rows per Page");
+
+/* ../templates/customers.tpl */
+gettext("Create new Customer");
+
+/* ../templates/customers.tpl */
+gettext("Manually");
+
+/* ../templates/customers.tpl */
+gettext("Import from file");
+
+/* ../templates/customers_list.tpl */
+gettext("Customer List");
+
+/* ../templates/customers_list.tpl */
+gettext("Customers List");
+
+/* ../templates/customers_list.tpl */
+gettext("General");
+
+/* ../templates/customers_list.tpl */
+gettext("Contact");
+
+/* ../templates/customers_list.tpl */
+gettext("Address");
+
+/* ../templates/customers_list.tpl */
+gettext("Balance");
+
+/* ../templates/customers_list.tpl */
+gettext("Ranking");
+
+/* ../templates/customers_list.tpl */
+gettext("Export Data (using last map)");
+
+/* ../templates/customers_list.tpl */
+gettext("Export from another map");
+
+/* ../templates/customers_list.tpl */
+gettext("Export Wizard (new map)");
+
+/* ../templates/customers_list.tpl */
+gettext("Filter options");
+
+/* ../templates/customers_list.tpl */
+gettext("Rows per Page");
+
+/* ../templates/customers_lists.tpl */
+gettext("Customers Lists");
+
+/* ../templates/customers_lists.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/customers_lists.tpl */
+gettext("Rows per Page");
+
+/* ../templates/customers_server.tpl */
+gettext("Customer Corporate Overview");
+
+/* ../templates/customers_server.tpl */
+gettext("Customers per Store");
+
+/* ../templates/customers_server.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/customers_server.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/customers_server.tpl */
+gettext("Contacts with Orders");
+
+/* ../templates/customers_server.tpl */
+gettext("All Contacts");
+
+/* ../templates/customers_server.tpl */
+gettext("Filter options");
+
+/* ../templates/customers_server.tpl */
+gettext("Rows per Page");
+
+/* ../templates/customers_stats.tpl */
+gettext("Customers Information");
+
+/* ../templates/customers_stats.tpl */
+gettext("Contacts");
+
+/* ../templates/customers_stats.tpl */
+gettext("Customers");
+
+/* ../templates/customers_stats.tpl */
+gettext("Orders");
+
+/* ../templates/customers_stats.tpl */
+gettext("Data Integrity");
+
+/* ../templates/customers_stats.tpl */
+gettext("Referral");
+
+/* ../templates/customers_stats.tpl */
+gettext("Type Business");
+
+/* ../templates/customers_stats.tpl */
+gettext("Geographic Distribution");
+
+/* ../templates/customers_stats.tpl */
+gettext("Correlations");
+
+/* ../templates/customers_stats.tpl */
+gettext("Customers Correlation (Possible Duplicates)");
+
+/* ../templates/customers_stats.tpl */
+gettext("Active Customers");
+
+/* ../templates/customers_stats.tpl */
+gettext("New Customer (1 month)");
+
+/* ../templates/customers_stats.tpl */
+gettext("Lost Customers (1 month)");
+
+/* ../templates/customers_stats.tpl */
+gettext("Contacts");
+
+/* ../templates/customers_stats.tpl */
+gettext("New Contacts (1 month)");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Marketing");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Emarketing");
+
+/* ../templates/customise_template_create.tpl */
+gettext("eNewsletters");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Customise Template");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Rows per Page");
+
+/* ../templates/customise_template_create.tpl */
+gettext("Filter options");
+
+/* ../templates/dashboard_customers_contacts.tpl */
+gettext("All times");
+
+/* ../templates/dashboard_customers_contacts.tpl */
+gettext("1y");
+
+/* ../templates/dashboard_customers_contacts.tpl */
+gettext("1q");
+
+/* ../templates/dashboard_customers_contacts.tpl */
+gettext("1m");
+
+/* ../templates/dashboard_top_customers.tpl */
+gettext("All times");
+
+/* ../templates/dashboard_top_customers.tpl */
+gettext("1y");
+
+/* ../templates/dashboard_top_customers.tpl */
+gettext("1q");
+
+/* ../templates/dashboard_top_customers.tpl */
+gettext("1m");
+
+/* ../templates/dashboard_top_products.tpl */
+gettext("All times");
+
+/* ../templates/dashboard_top_products.tpl */
+gettext("1y");
+
+/* ../templates/dashboard_top_products.tpl */
+gettext("1q");
+
+/* ../templates/dashboard_top_products.tpl */
+gettext("1m");
+
 /* ../templates/deals.tpl */
 gettext("Store Deals");
 
@@ -809,115 +1358,28 @@ gettext("Deals Information");
 gettext("Deals");
 
 /* ../templates/deals.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/deals.tpl */
 gettext("Rows per Page");
 
 /* ../templates/deals.tpl */
 gettext("Filter options");
 
-/* ../templates/departments.tpl */
-gettext("Stores");
+/* ../templates/department.tpl */
+gettext("Details");
 
-/* ../templates/departments.tpl */
-gettext("Departments");
-
-/* ../templates/departments.tpl */
-gettext("Families");
-
-/* ../templates/departments.tpl */
-gettext("Products");
-
-/* ../templates/departments.tpl */
+/* ../templates/department.tpl */
 gettext("Categories");
 
-/* ../templates/departments.tpl */
-gettext("Parts");
+/* ../templates/department.tpl */
+gettext("Families");
 
-/* ../templates/departments.tpl */
-gettext("Product Code");
+/* ../templates/department.tpl */
+gettext("Products");
 
-/* ../templates/departments.tpl */
-gettext("show details");
-
-/* ../templates/departments.tpl */
-gettext("hide details");
-
-/* ../templates/departments.tpl */
-gettext("hide details");
-
-/* ../templates/departments.tpl */
-gettext("show details");
-
-/* ../templates/departments.tpl */
-gettext("edit");
-
-/* ../templates/departments.tpl */
-gettext("General");
-
-/* ../templates/departments.tpl */
-gettext("Stock");
-
-/* ../templates/departments.tpl */
-gettext("Sales");
-
-/* ../templates/departments.tpl */
-gettext("All");
-
-/* ../templates/departments.tpl */
-gettext("1Yr");
-
-/* ../templates/departments.tpl */
-gettext("1Qtr");
-
-/* ../templates/departments.tpl */
-gettext("1M");
-
-/* ../templates/departments.tpl */
-gettext("1W");
-
-/* ../templates/departments.tpl */
-gettext("Totals");
-
-/* ../templates/departments.tpl */
-gettext("M AVG");
-
-/* ../templates/departments.tpl */
-gettext("W AVG");
-
-/* ../templates/departments.tpl */
-gettext("Normal Mode");
-
-/* ../templates/departments.tpl */
-gettext("Comparison Mode");
-
-/* ../templates/departments.tpl */
-gettext("Comparison Mode");
-
-/* ../templates/departments.tpl */
-gettext("Normal Mode");
-
-/* ../templates/departments.tpl */
-gettext("Number of Products");
-
-/* ../templates/departments.tpl */
-gettext("Number of Families");
-
-/* ../templates/departments.tpl */
-gettext("Number of Departments");
-
-/* ../templates/departments.tpl */
-gettext("Stock Value");
-
-/* ../templates/departments.tpl */
-gettext("Total Sales");
-
-/* ../templates/departments.tpl */
-gettext("Departments");
-
-/* ../templates/departments.tpl */
-gettext("Rows per Page");
-
-/* ../templates/departments.tpl */
-gettext("Filter options");
+/* ../templates/department.tpl */
+gettext("Offers");
 
 /* ../templates/department.tpl */
 gettext("Department Information");
@@ -1019,34 +1481,19 @@ gettext("Department Sales");
 gettext("Top Families");
 
 /* ../templates/department.tpl */
-gettext("Family Pie");
-
-/* ../templates/department.tpl */
-gettext("Sales");
-
-/* ../templates/department.tpl */
-gettext("Profit");
-
-/* ../templates/department.tpl */
-gettext("All");
-
-/* ../templates/department.tpl */
-gettext("Year");
-
-/* ../templates/department.tpl */
-gettext("Quarter");
-
-/* ../templates/department.tpl */
-gettext("Month");
-
-/* ../templates/department.tpl */
-gettext("Week");
-
-/* ../templates/department.tpl */
-gettext("update");
+gettext("Families");
 
 /* ../templates/department.tpl */
 gettext("Families");
+
+/* ../templates/department.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/department.tpl */
+gettext("List");
+
+/* ../templates/department.tpl */
+gettext("Thumbnails");
 
 /* ../templates/department.tpl */
 gettext("Normal Mode");
@@ -1103,6 +1550,72 @@ gettext("M AVG");
 gettext("W AVG");
 
 /* ../templates/department.tpl */
+gettext("Products");
+
+/* ../templates/department.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/department.tpl */
+gettext("Export (XML)");
+
+/* ../templates/department.tpl */
+gettext("Normal Mode");
+
+/* ../templates/department.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/department.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/department.tpl */
+gettext("Normal Mode");
+
+/* ../templates/department.tpl */
+gettext("General");
+
+/* ../templates/department.tpl */
+gettext("Stock");
+
+/* ../templates/department.tpl */
+gettext("Sales");
+
+/* ../templates/department.tpl */
+gettext("Parts");
+
+/* ../templates/department.tpl */
+gettext("Groups");
+
+/* ../templates/department.tpl */
+gettext("All");
+
+/* ../templates/department.tpl */
+gettext("1Yr");
+
+/* ../templates/department.tpl */
+gettext("1Qtr");
+
+/* ../templates/department.tpl */
+gettext("1M");
+
+/* ../templates/department.tpl */
+gettext("1W");
+
+/* ../templates/department.tpl */
+gettext("Totals");
+
+/* ../templates/department.tpl */
+gettext("M AVG");
+
+/* ../templates/department.tpl */
+gettext("W AVG");
+
+/* ../templates/department.tpl */
+gettext("M EAVG");
+
+/* ../templates/department.tpl */
+gettext("W EAVG");
+
+/* ../templates/department.tpl */
 gettext("Plot frequency");
 
 /* ../templates/department.tpl */
@@ -1117,41 +1630,152 @@ gettext("Filter options");
 /* ../templates/department.tpl */
 gettext("Rows per Page");
 
+/* ../templates/department.tpl */
+gettext("Filter options");
+
+/* ../templates/department.tpl */
+gettext("Rows per Page");
+
+/* ../templates/dn.tpl */
+gettext("Delivery Note");
+
+/* ../templates/dn.tpl */
+gettext("Shipped to");
+
+/* ../templates/dn.tpl */
+gettext("Weight");
+
+/* ../templates/dn.tpl */
+gettext("Parcels");
+
+/* ../templates/dn.tpl */
+gettext("Picker");
+
+/* ../templates/dn.tpl */
+gettext("Packer");
+
+/* ../templates/dn.tpl */
+gettext("Order Date");
+
+/* ../templates/dn.tpl */
+gettext("Orders");
+
+/* ../templates/dn.tpl */
+gettext("Invoices");
+
+/* ../templates/dn.tpl */
+gettext("Items");
+
+/* ../templates/dn.tpl */
+gettext("Items Out of Stock");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Delivery Note");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Tel");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Estimated Weight");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Creation Date");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Orders");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Invoices");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Items");
+
+/* ../templates/dn_in_process.tpl */
+gettext("Items Out of Stock");
+
 /* ../templates/edit_address_splinter.tpl */
 gettext("Address Type");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Office");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Shop");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Warehouse");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Other");
 
 /* ../templates/edit_address_splinter.tpl */
 gettext("Address Function");
 
 /* ../templates/edit_address_splinter.tpl */
+gettext("Contact");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Billing");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Shipping");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Other");
+
+/* ../templates/edit_address_splinter.tpl */
 gettext("Description");
 
 /* ../templates/edit_address_splinter.tpl */
-gettext("Region");
+gettext("Telephone");
 
 /* ../templates/edit_address_splinter.tpl */
-gettext("Subregion");
-
-/* ../templates/edit_address_splinter.tpl */
-gettext("Postal Code");
-
-/* ../templates/edit_address_splinter.tpl */
-gettext("City");
-
-/* ../templates/edit_address_splinter.tpl */
-gettext("City 1st Div");
-
-/* ../templates/edit_address_splinter.tpl */
-gettext("City 2nd Div");
-
-/* ../templates/edit_address_splinter.tpl */
-gettext("Street/Number");
+gettext("Internal");
 
 /* ../templates/edit_address_splinter.tpl */
 gettext("Building");
 
 /* ../templates/edit_address_splinter.tpl */
-gettext("Internal");
+gettext("Street");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("City 2nd Div");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("City 1st Div");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("City");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Postal Code");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("5rd Division");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("4rd Division");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("3rd Division");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Subregion");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Region");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Country");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("List");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_address_splinter.tpl */
+gettext("Save");
 
 /* ../templates/edit_assets_product.tpl */
 gettext("Next");
@@ -1507,336 +2131,6 @@ gettext("Rows per Page");
 /* ../templates/edit_companies.tpl */
 gettext("Filter options");
 
-/* ../templates/edit_company_areas.tpl */
-gettext("Editing Company Areas");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Company Areas");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Save");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Close Dialog");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Area Name");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Areas List");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("History");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Filter options");
-
-/* ../templates/edit_company_areas.tpl */
-gettext("Rows per Page");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Editing Company Area");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Details");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Departments");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Save");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Reset");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Area Name");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Add");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Close Dialog");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Create Department");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Department Name");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Department List");
-
-/* ../templates/edit_company_area.tpl */
-gettext("History");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Filter options");
-
-/* ../templates/edit_company_area.tpl */
-gettext("Rows per Page");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Editing Company Departments");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Company Departments");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Save");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Close Dialog");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Department Name");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Department List");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("History");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Filter options");
-
-/* ../templates/edit_company_departments.tpl */
-gettext("Rows per Page");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Company Details");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Contacts");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Edit");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Edit");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Gender");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Male");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Female");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Unknown");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Salutation");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("First Name(s)");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Surname(s)");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Suffix(s)");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Profession");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Title");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Contact Email & Mobiles");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Email");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Cancel Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Cancel New Email");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Edit Details");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Email Type");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Work");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Personal");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Email Contact Name");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Mobile");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Cancel Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Country Code");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("NAC");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Number");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Contact Address & Landlines");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Telephone");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Cancel Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Country Code");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("NAC");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Area Code");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Number");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Extension");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Fax");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Cancel Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Delete");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Country Code");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("NAC");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Area Code");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Number");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Move to New Address");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Add Address");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Contacts");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Remove");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Edit");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Contacts");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Telephones");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Main");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Remove");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Edit");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Address Type");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Address Function");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Description");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Region");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Subregion");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Postal Code");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("City");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("City 1st Div");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("City 2nd Div");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Street/Number");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Building");
-
-/* ../templates/edit_company_splinter.tpl */
-gettext("Internal");
-
 /* ../templates/edit_company.tpl */
 gettext("Exit Edit");
 
@@ -2074,6 +2368,315 @@ gettext("Area Code");
 /* ../templates/edit_company.tpl */
 gettext("Number");
 
+/* ../templates/edit_company_area.tpl */
+gettext("Editing Company Area");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Details");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Save");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Reset");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Area Name");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Area Description");
+
+/* ../templates/edit_company_area.tpl */
+gettext("History");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_company_area.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Editing Company Areas");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Company Areas");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Save");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Close Dialog");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Area Name");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Areas List");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("History");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_company_areas.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Editing Company Department");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Department Details");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Save");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Reset");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Department Name");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Department Description");
+
+/* ../templates/edit_company_department.tpl */
+gettext("History");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_company_department.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Editing Company Departments");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Company Departments");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Save");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Close Dialog");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Department Name");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Department List");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("History");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_company_departments.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Company Details");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Contacts");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Edit");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Edit");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Gender");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Male");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Female");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Unknown");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Salutation");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("First Name(s)");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Surname(s)");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Suffix(s)");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Profession");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Title");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Contact Email & Mobiles");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Email");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Cancel Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Cancel New Email");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Edit Details");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Email Type");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Work");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Personal");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Email Contact Name");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Mobile");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Cancel Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Country Code");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("NAC");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Number");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Contact Address & Landlines");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Telephone");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Cancel Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Country Code");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("NAC");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Area Code");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Number");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Extension");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Fax");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Cancel Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Country Code");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("NAC");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Area Code");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Number");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Address List");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Move to New Address");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Add Address");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Contacts");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Remove");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Edit");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Contacts");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Telephones");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Remove");
+
+/* ../templates/edit_company_splinter.tpl */
+gettext("Edit");
+
 /* ../templates/edit_contact.tpl */
 gettext("Customers");
 
@@ -2158,33 +2761,6 @@ gettext("Area Code");
 /* ../templates/edit_contact.tpl */
 gettext("Number");
 
-/* ../templates/edit_customers.tpl */
-gettext("General");
-
-/* ../templates/edit_customers.tpl */
-gettext("Contact");
-
-/* ../templates/edit_customers.tpl */
-gettext("Address");
-
-/* ../templates/edit_customers.tpl */
-gettext("Shipping Address");
-
-/* ../templates/edit_customers.tpl */
-gettext("Balance");
-
-/* ../templates/edit_customers.tpl */
-gettext("Ranking");
-
-/* ../templates/edit_customers.tpl */
-gettext("Filter options");
-
-/* ../templates/edit_customers.tpl */
-gettext("Rows per Page");
-
-/* ../templates/edit_customer.tpl */
-gettext("Edit Customer");
-
 /* ../templates/edit_customer.tpl */
 gettext("Customer Details");
 
@@ -2195,22 +2771,118 @@ gettext("Company Details");
 gettext("Delivery Options");
 
 /* ../templates/edit_customer.tpl */
-gettext("Same as Contact Address");
+gettext("Categories");
 
 /* ../templates/edit_customer.tpl */
-gettext("Delivery Address");
+gettext("Communications");
 
 /* ../templates/edit_customer.tpl */
-gettext("Cancel");
+gettext("Merge");
 
 /* ../templates/edit_customer.tpl */
-gettext("Save");
+gettext("Merge with: (Customer ID)");
+
+/* ../templates/edit_customer.tpl */
+gettext("Go");
+
+/* ../templates/edit_customer.tpl */
+gettext("Emails");
+
+/* ../templates/edit_customer.tpl */
+gettext("Send Newsletter");
+
+/* ../templates/edit_customer.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer.tpl */
+gettext("No");
+
+/* ../templates/edit_customer.tpl */
+gettext("Send Marketing Emails");
+
+/* ../templates/edit_customer.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer.tpl */
+gettext("No");
+
+/* ../templates/edit_customer.tpl */
+gettext("Post");
+
+/* ../templates/edit_customer.tpl */
+gettext("Send Marketing Post");
+
+/* ../templates/edit_customer.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer.tpl */
+gettext("No");
+
+/* ../templates/edit_customer.tpl */
+gettext("Send Post ");
+
+/* ../templates/edit_customer.tpl */
+gettext("Add Customer To Send Post");
+
+/* ../templates/edit_customer.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer.tpl */
+gettext("No");
+
+/* ../templates/edit_customer.tpl */
+gettext("Post Type");
+
+/* ../templates/edit_customer.tpl */
+gettext("Letter");
+
+/* ../templates/edit_customer.tpl */
+gettext("Catalogue");
+
+/* ../templates/edit_customer.tpl */
+gettext("Categories");
+
+/* ../templates/edit_customer.tpl */
+gettext("Unknown");
 
 /* ../templates/edit_customer.tpl */
 gettext("Save");
 
 /* ../templates/edit_customer.tpl */
 gettext("Reset");
+
+/* ../templates/edit_customer.tpl */
+gettext("Delete Customer");
+
+/* ../templates/edit_customer.tpl */
+gettext("This operation cannot be undone");
+
+/* ../templates/edit_customer.tpl */
+gettext("Would you like to proceed?");
+
+/* ../templates/edit_customer.tpl */
+gettext("No i dont want to delete it");
+
+/* ../templates/edit_customer.tpl */
+gettext("Yes, delete it!");
+
+/* ../templates/edit_customer.tpl */
+gettext("Deleting customer, wait please");
+
+/* ../templates/edit_customer.tpl */
+gettext("Delete Customer");
+
+/* ../templates/edit_customer.tpl */
+gettext("Convert to Company");
+
+/* ../templates/edit_customer.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_customer.tpl */
+gettext("Save Conversion to Company");
+
+/* ../templates/edit_customer.tpl */
+gettext("Company Name");
 
 /* ../templates/edit_customer.tpl */
 gettext("Type");
@@ -2220,6 +2892,9 @@ gettext("Company");
 
 /* ../templates/edit_customer.tpl */
 gettext("Person");
+
+/* ../templates/edit_customer.tpl */
+gettext("Tax Number");
 
 /* ../templates/edit_customer.tpl */
 gettext("Company Name");
@@ -2234,25 +2909,46 @@ gettext("Contact Email");
 gettext("Contact Telephone");
 
 /* ../templates/edit_customer.tpl */
-gettext("Cancel");
+gettext("Contact Mobile");
 
 /* ../templates/edit_customer.tpl */
-gettext("Save");
+gettext("Contact Fax");
 
 /* ../templates/edit_customer.tpl */
 gettext("Contact Address");
 
 /* ../templates/edit_customer.tpl */
-gettext("Billing Address");
+gettext("Billing Information");
 
 /* ../templates/edit_customer.tpl */
 gettext("Cancel");
+
+/* ../templates/edit_customer.tpl */
+gettext("Fiscal Name");
+
+/* ../templates/edit_customer.tpl */
+gettext("Save");
+
+/* ../templates/edit_customer.tpl */
+gettext("Reset");
+
+/* ../templates/edit_customer.tpl */
+gettext("Same as contact address");
+
+/* ../templates/edit_customer.tpl */
+gettext("Set up different address");
 
 /* ../templates/edit_customer.tpl */
 gettext("Delivery Address");
 
 /* ../templates/edit_customer.tpl */
 gettext("Cancel");
+
+/* ../templates/edit_customer.tpl */
+gettext("Same as contact address");
+
+/* ../templates/edit_customer.tpl */
+gettext("Same as billing address");
 
 /* ../templates/edit_customer.tpl */
 gettext("Save");
@@ -2266,11 +2962,125 @@ gettext("Filter options");
 /* ../templates/edit_customer.tpl */
 gettext("Rows per Page");
 
-/* ../templates/edit_departments.tpl */
-gettext("Exit");
+/* ../templates/edit_customer.tpl */
+gettext("Country List");
 
-/* ../templates/edit_departments.tpl */
-gettext("Departments");
+/* ../templates/edit_customer_category.tpl */
+gettext("Customer Categories");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Editing Category");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Editing Main Categories");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Description");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Save");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Reset");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Category Name");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("History");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_customers.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_customers.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Order");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Delivery Address Library");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Save");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Contacts");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Main");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Remove");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Edit");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Tel");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Contacts");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Telephones");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Set as Main");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Remove");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Edit");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Tel");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Contacts");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Telephones");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Set as Main");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Contact");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Billing");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Remove");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Edit");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Current Delivery Address");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Save");
 
 /* ../templates/edit_department.tpl */
 gettext("Editing Department");
@@ -2291,28 +3101,28 @@ gettext("Families");
 gettext("Web Pages");
 
 /* ../templates/edit_department.tpl */
+gettext("Save");
+
+/* ../templates/edit_department.tpl */
+gettext("Reset");
+
+/* ../templates/edit_department.tpl */
 gettext("Department Code");
 
 /* ../templates/edit_department.tpl */
 gettext("Department Name");
 
 /* ../templates/edit_department.tpl */
-gettext("Save Changes");
+gettext("Save New Family");
 
 /* ../templates/edit_department.tpl */
-gettext("Reset");
+gettext("Cancel New Family");
 
 /* ../templates/edit_department.tpl */
-gettext("Code");
+gettext("Create New Family");
 
 /* ../templates/edit_department.tpl */
-gettext("Name");
-
-/* ../templates/edit_department.tpl */
-gettext("Save");
-
-/* ../templates/edit_department.tpl */
-gettext("Close Dialog");
+gettext("Import Families (CSV)");
 
 /* ../templates/edit_department.tpl */
 gettext("Family Code");
@@ -2346,6 +3156,9 @@ gettext("Page Short Title");
 
 /* ../templates/edit_department.tpl */
 gettext("Page Description");
+
+/* ../templates/edit_department.tpl */
+gettext("Page Keyworlds");
 
 /* ../templates/edit_department.tpl */
 gettext("Title");
@@ -2407,6 +3220,39 @@ gettext("Filter options");
 /* ../templates/edit_department.tpl */
 gettext("Rows per Page");
 
+/* ../templates/edit_departments.tpl */
+gettext("Exit");
+
+/* ../templates/edit_departments.tpl */
+gettext("Departments");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Editing Company Staff");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Staff Details");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Save");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Reset");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Staff Name");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Staff Alias");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("History");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_each_staff.tpl */
+gettext("Rows per Page");
+
 /* ../templates/edit_family.tpl */
 gettext("Editing Family");
 
@@ -2450,30 +3296,6 @@ gettext("Family Char");
 gettext("Description");
 
 /* ../templates/edit_family.tpl */
-gettext("Save caption");
-
-/* ../templates/edit_family.tpl */
-gettext("Save caption");
-
-/* ../templates/edit_family.tpl */
-gettext("Save caption");
-
-/* ../templates/edit_family.tpl */
-gettext("Save caption");
-
-/* ../templates/edit_family.tpl */
-gettext("Main Image");
-
-/* ../templates/edit_family.tpl */
-gettext("Set as the principal image");
-
-/* ../templates/edit_family.tpl */
-gettext("Delete");
-
-/* ../templates/edit_family.tpl */
-gettext("Delete");
-
-/* ../templates/edit_family.tpl */
 gettext("Deal Name");
 
 /* ../templates/edit_family.tpl */
@@ -2481,6 +3303,126 @@ gettext("Deal Description");
 
 /* ../templates/edit_family.tpl */
 gettext("Deals");
+
+/* ../templates/edit_family.tpl */
+gettext("Create Page");
+
+/* ../templates/edit_family.tpl */
+gettext("Page Properties");
+
+/* ../templates/edit_family.tpl */
+gettext("URL");
+
+/* ../templates/edit_family.tpl */
+gettext("Save");
+
+/* ../templates/edit_family.tpl */
+gettext("Reset");
+
+/* ../templates/edit_family.tpl */
+gettext("Title");
+
+/* ../templates/edit_family.tpl */
+gettext("Keywords");
+
+/* ../templates/edit_family.tpl */
+gettext("Title");
+
+/* ../templates/edit_family.tpl */
+gettext("Save");
+
+/* ../templates/edit_family.tpl */
+gettext("Reset");
+
+/* ../templates/edit_family.tpl */
+gettext("Subtitle");
+
+/* ../templates/edit_family.tpl */
+gettext("Slogan");
+
+/* ../templates/edit_family.tpl */
+gettext("Short Introduction");
+
+/* ../templates/edit_family.tpl */
+gettext("Offers");
+
+/* ../templates/edit_family.tpl */
+gettext("Auto");
+
+/* ../templates/edit_family.tpl */
+gettext("Do not show offers");
+
+/* ../templates/edit_family.tpl */
+gettext("New Products");
+
+/* ../templates/edit_family.tpl */
+gettext("New Products");
+
+/* ../templates/edit_family.tpl */
+gettext("Products back in stock");
+
+/* ../templates/edit_family.tpl */
+gettext("Do not show any");
+
+/* ../templates/edit_family.tpl */
+gettext("Save");
+
+/* ../templates/edit_family.tpl */
+gettext("Reset");
+
+/* ../templates/edit_family.tpl */
+gettext("Family Description");
+
+/* ../templates/edit_family.tpl */
+gettext("Header Block Layout");
+
+/* ../templates/edit_family.tpl */
+gettext("Splited");
+
+/* ../templates/edit_family.tpl */
+gettext("Tabbed");
+
+/* ../templates/edit_family.tpl */
+gettext("Fluid Block");
+
+/* ../templates/edit_family.tpl */
+gettext("Products Layout");
+
+/* ../templates/edit_family.tpl */
+gettext("Thumbnails");
+
+/* ../templates/edit_family.tpl */
+gettext("List");
+
+/* ../templates/edit_family.tpl */
+gettext("Slideshow:");
+
+/* ../templates/edit_family.tpl */
+gettext("Handmade:");
+
+/* ../templates/edit_family.tpl */
+gettext("Slideshow Layout");
+
+/* ../templates/edit_family.tpl */
+gettext("Products");
+
+/* ../templates/edit_family.tpl */
+gettext("Thumbnails Layout");
+
+/* ../templates/edit_family.tpl */
+gettext("Products");
+
+/* ../templates/edit_family.tpl */
+gettext("List Layout");
+
+/* ../templates/edit_family.tpl */
+gettext("Products");
+
+/* ../templates/edit_family.tpl */
+gettext("Handmade Product Layout");
+
+/* ../templates/edit_family.tpl */
+gettext("HTML files");
 
 /* ../templates/edit_family.tpl */
 gettext("Code");
@@ -2635,6 +3577,429 @@ gettext("Shape Type");
 /* ../templates/edit_newsletter.tpl */
 gettext("Marketing");
 
+/* ../templates/edit_page.tpl */
+gettext("Editing Page");
+
+/* ../templates/edit_page.tpl */
+gettext("Properties");
+
+/* ../templates/edit_page.tpl */
+gettext("Header");
+
+/* ../templates/edit_page.tpl */
+gettext("Footer");
+
+/* ../templates/edit_page.tpl */
+gettext("Content");
+
+/* ../templates/edit_page.tpl */
+gettext("Style");
+
+/* ../templates/edit_page.tpl */
+gettext("Media");
+
+/* ../templates/edit_page.tpl */
+gettext("Setup");
+
+/* ../templates/edit_page.tpl */
+gettext("Save");
+
+/* ../templates/edit_page.tpl */
+gettext("Reset");
+
+/* ../templates/edit_page.tpl */
+gettext("Page Properties");
+
+/* ../templates/edit_page.tpl */
+gettext("Title");
+
+/* ../templates/edit_page.tpl */
+gettext("Keywords");
+
+/* ../templates/edit_page.tpl */
+gettext("Save");
+
+/* ../templates/edit_page.tpl */
+gettext("Reset");
+
+/* ../templates/edit_page.tpl */
+gettext("Title");
+
+/* ../templates/edit_page.tpl */
+gettext("Subtitle");
+
+/* ../templates/edit_page.tpl */
+gettext("Slogan");
+
+/* ../templates/edit_page.tpl */
+gettext("Short Introduction");
+
+/* ../templates/edit_page.tpl */
+gettext("Save");
+
+/* ../templates/edit_page.tpl */
+gettext("Reset");
+
+/* ../templates/edit_page.tpl */
+gettext("Registration Form");
+
+/* ../templates/edit_page.tpl */
+gettext("Form Type");
+
+/* ../templates/edit_page.tpl */
+gettext("Show all fields");
+
+/* ../templates/edit_page.tpl */
+gettext("Show by steps");
+
+/* ../templates/edit_page.tpl */
+gettext("No Configurable Fields");
+
+/* ../templates/edit_page.tpl */
+gettext("Email");
+
+/* ../templates/edit_page.tpl */
+gettext("Password");
+
+/* ../templates/edit_page.tpl */
+gettext("Type of business");
+
+/* ../templates/edit_page.tpl */
+gettext("Company Name");
+
+/* ../templates/edit_page.tpl */
+gettext("Contact Name");
+
+/* ../templates/edit_page.tpl */
+gettext("at least one should be given");
+
+/* ../templates/edit_page.tpl */
+gettext("Configurable Fields");
+
+/* ../templates/edit_page.tpl */
+gettext("Tax Number");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Address");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Telephone");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Fax");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Where Found Us");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Newsletter");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("E-marketing");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Catalogue");
+
+/* ../templates/edit_page.tpl */
+gettext("Displayed");
+
+/* ../templates/edit_page.tpl */
+gettext("Required");
+
+/* ../templates/edit_page.tpl */
+gettext("Page Content");
+
+/* ../templates/edit_page.tpl */
+gettext("History");
+
+/* ../templates/edit_page.tpl */
+gettext("Add part");
+
+/* ../templates/edit_page.tpl */
+gettext("Save");
+
+/* ../templates/edit_page.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_part.tpl */
+gettext("Editing part");
+
+/* ../templates/edit_part.tpl */
+gettext("Description");
+
+/* ../templates/edit_part.tpl */
+gettext("Products");
+
+/* ../templates/edit_part.tpl */
+gettext("Suppliers");
+
+/* ../templates/edit_part.tpl */
+gettext("Pictures");
+
+/* ../templates/edit_part.tpl */
+gettext("Type of Product");
+
+/* ../templates/edit_part.tpl */
+gettext("Simple");
+
+/* ../templates/edit_part.tpl */
+gettext("Shortcut");
+
+/* ../templates/edit_part.tpl */
+gettext("Mixture");
+
+/* ../templates/edit_part.tpl */
+gettext("Choose the part");
+
+/* ../templates/edit_part.tpl */
+gettext("Part List");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Reset");
+
+/* ../templates/edit_part.tpl */
+gettext("Add Part to List");
+
+/* ../templates/edit_part.tpl */
+gettext("Part");
+
+/* ../templates/edit_part.tpl */
+gettext("Remove");
+
+/* ../templates/edit_part.tpl */
+gettext("Change");
+
+/* ../templates/edit_part.tpl */
+gettext("Parts Per Product");
+
+/* ../templates/edit_part.tpl */
+gettext("Note For Pickers");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Reset");
+
+/* ../templates/edit_part.tpl */
+gettext("Weight");
+
+/* ../templates/edit_part.tpl */
+gettext("Unit Weight");
+
+/* ../templates/edit_part.tpl */
+gettext("Outer Weight");
+
+/* ../templates/edit_part.tpl */
+gettext("Add new part");
+
+/* ../templates/edit_part.tpl */
+gettext("Parts product code");
+
+/* ../templates/edit_part.tpl */
+gettext("Estimated price per");
+
+/* ../templates/edit_part.tpl */
+gettext("Parts product code");
+
+/* ../templates/edit_part.tpl */
+gettext("Cost per");
+
+/* ../templates/edit_part.tpl */
+gettext("Add new part");
+
+/* ../templates/edit_part.tpl */
+gettext("Parts product code");
+
+/* ../templates/edit_part.tpl */
+gettext("Estimated price per");
+
+/* ../templates/edit_part.tpl */
+gettext("Parts product code");
+
+/* ../templates/edit_part.tpl */
+gettext("Cost per");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Reset");
+
+/* ../templates/edit_part.tpl */
+gettext("Units");
+
+/* ../templates/edit_part.tpl */
+gettext("Units Per Outer");
+
+/* ../templates/edit_part.tpl */
+gettext("Units Type");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Reset");
+
+/* ../templates/edit_part.tpl */
+gettext("Name / Description");
+
+/* ../templates/edit_part.tpl */
+gettext("Product Name");
+
+/* ../templates/edit_part.tpl */
+gettext("Special Characteristic");
+
+/* ../templates/edit_part.tpl */
+gettext("Product Description");
+
+/* ../templates/edit_part.tpl */
+gettext("Categories");
+
+/* ../templates/edit_part.tpl */
+gettext("History");
+
+/* ../templates/edit_part.tpl */
+gettext("Choose the part");
+
+/* ../templates/edit_part.tpl */
+gettext("Part");
+
+/* ../templates/edit_part.tpl */
+gettext("will be replaced with");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_part.tpl */
+gettext("Add Part");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_part.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_part.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Parts Categories");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Customer Categories");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Editing Category");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Editing Main Categories");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Description");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Save");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Reset");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Category Name");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_part_category.tpl */
+gettext("History");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_part_category.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_position.tpl */
+gettext("Editing Company Position");
+
+/* ../templates/edit_position.tpl */
+gettext("Details");
+
+/* ../templates/edit_position.tpl */
+gettext("Save");
+
+/* ../templates/edit_position.tpl */
+gettext("Reset");
+
+/* ../templates/edit_position.tpl */
+gettext("Position Name");
+
+/* ../templates/edit_position.tpl */
+gettext("Position Description");
+
+/* ../templates/edit_position.tpl */
+gettext("History");
+
+/* ../templates/edit_position.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_position.tpl */
+gettext("Rows per Page");
+
 /* ../templates/edit_positions.tpl */
 gettext("Editing Company Positions");
 
@@ -2660,48 +4025,6 @@ gettext("History");
 gettext("Filter options");
 
 /* ../templates/edit_positions.tpl */
-gettext("Rows per Page");
-
-/* ../templates/edit_position.tpl */
-gettext("Editing Company Area");
-
-/* ../templates/edit_position.tpl */
-gettext("Details");
-
-/* ../templates/edit_position.tpl */
-gettext("Departments");
-
-/* ../templates/edit_position.tpl */
-gettext("Save");
-
-/* ../templates/edit_position.tpl */
-gettext("Reset");
-
-/* ../templates/edit_position.tpl */
-gettext("Area Name");
-
-/* ../templates/edit_position.tpl */
-gettext("Add");
-
-/* ../templates/edit_position.tpl */
-gettext("Close Dialog");
-
-/* ../templates/edit_position.tpl */
-gettext("Create Department");
-
-/* ../templates/edit_position.tpl */
-gettext("Department Name");
-
-/* ../templates/edit_position.tpl */
-gettext("Department List");
-
-/* ../templates/edit_position.tpl */
-gettext("History");
-
-/* ../templates/edit_position.tpl */
-gettext("Filter options");
-
-/* ../templates/edit_position.tpl */
 gettext("Rows per Page");
 
 /* ../templates/edit_product.tpl */
@@ -2768,7 +4091,25 @@ gettext("Mixture");
 gettext("Choose the part");
 
 /* ../templates/edit_product.tpl */
-gettext("SKU");
+gettext("Part List");
+
+/* ../templates/edit_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_product.tpl */
+gettext("Add Part to List");
+
+/* ../templates/edit_product.tpl */
+gettext("Part");
+
+/* ../templates/edit_product.tpl */
+gettext("Remove");
+
+/* ../templates/edit_product.tpl */
+gettext("Change");
 
 /* ../templates/edit_product.tpl */
 gettext("Parts Per Product");
@@ -2777,130 +4118,40 @@ gettext("Parts Per Product");
 gettext("Note For Pickers");
 
 /* ../templates/edit_product.tpl */
-gettext("Change Part");
-
-/* ../templates/edit_product.tpl */
-gettext("Units Definition");
-
-/* ../templates/edit_product.tpl */
-gettext("Units Per Outer");
-
-/* ../templates/edit_product.tpl */
-gettext("Change");
-
-/* ../templates/edit_product.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_product.tpl */
 gettext("Save");
 
 /* ../templates/edit_product.tpl */
-gettext("Outers Sale Price");
+gettext("Reset");
 
 /* ../templates/edit_product.tpl */
-gettext("Outers Weight");
-
-/* ../templates/edit_product.tpl */
-gettext("Kg");
-
-/* ../templates/edit_product.tpl */
-gettext("Outers Dimensions");
-
-/* ../templates/edit_product.tpl */
-gettext("Wrong Format");
+gettext("Price");
 
 /* ../templates/edit_product.tpl */
 gettext("Price per Outer");
 
 /* ../templates/edit_product.tpl */
-gettext("Price per");
+gettext("Margin");
+
+/* ../templates/edit_product.tpl */
+gettext("RRP per Unit");
 
 /* ../templates/edit_product.tpl */
 gettext("Margin");
 
 /* ../templates/edit_product.tpl */
-gettext("Sale Price");
+gettext("Save");
 
 /* ../templates/edit_product.tpl */
-gettext("RRP");
-
-/* ../templates/edit_product.tpl */
-gettext("RRP not set");
+gettext("Reset");
 
 /* ../templates/edit_product.tpl */
 gettext("Weight");
 
 /* ../templates/edit_product.tpl */
-gettext("Per");
+gettext("Unit Weight");
 
 /* ../templates/edit_product.tpl */
-gettext("Kg");
-
-/* ../templates/edit_product.tpl */
-gettext("Per outer");
-
-/* ../templates/edit_product.tpl */
-gettext("including packing");
-
-/* ../templates/edit_product.tpl */
-gettext("Kg");
-
-/* ../templates/edit_product.tpl */
-gettext("Dimensions");
-
-/* ../templates/edit_product.tpl */
-gettext("Product gross volume");
-
-/* ../templates/edit_product.tpl */
-gettext("including packing");
-
-/* ../templates/edit_product.tpl */
-gettext("Liters");
-
-/* ../templates/edit_product.tpl */
-gettext("cc");
-
-/* ../templates/edit_product.tpl */
-gettext("Calculate");
-
-/* ../templates/edit_product.tpl */
-gettext("Product MOV");
-
-/* ../templates/edit_product.tpl */
-gettext("including packing");
-
-/* ../templates/edit_product.tpl */
-gettext("Liters");
-
-/* ../templates/edit_product.tpl */
-gettext("cc");
-
-/* ../templates/edit_product.tpl */
-gettext("Dimensions");
-
-/* ../templates/edit_product.tpl */
-gettext("Product gross volume");
-
-/* ../templates/edit_product.tpl */
-gettext("including packing");
-
-/* ../templates/edit_product.tpl */
-gettext("Liters");
-
-/* ../templates/edit_product.tpl */
-gettext("cc");
-
-/* ../templates/edit_product.tpl */
-gettext("Wrong Format");
-
-/* ../templates/edit_product.tpl */
-gettext("Outer");
-
-/* ../templates/edit_product.tpl */
-gettext("including packing");
-
-/* ../templates/edit_product.tpl */
-gettext("Wrong Format");
+gettext("Outer Weight");
 
 /* ../templates/edit_product.tpl */
 gettext("Add new part");
@@ -2918,70 +4169,163 @@ gettext("Parts product code");
 gettext("Cost per");
 
 /* ../templates/edit_product.tpl */
-gettext("Product Info");
+gettext("Save");
 
 /* ../templates/edit_product.tpl */
-gettext("Name");
+gettext("Reset");
+
+/* ../templates/edit_product.tpl */
+gettext("Units");
+
+/* ../templates/edit_product.tpl */
+gettext("Units Per Outer");
+
+/* ../templates/edit_product.tpl */
+gettext("Units Type");
+
+/* ../templates/edit_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_product.tpl */
+gettext("Name / Description");
+
+/* ../templates/edit_product.tpl */
+gettext("Product Name");
 
 /* ../templates/edit_product.tpl */
 gettext("Special Characteristic");
 
 /* ../templates/edit_product.tpl */
-gettext("Save short description");
+gettext("Product Description");
 
 /* ../templates/edit_product.tpl */
 gettext("Categories");
 
 /* ../templates/edit_product.tpl */
-gettext("Detailed Description");
-
-/* ../templates/edit_product.tpl */
 gettext("History");
 
 /* ../templates/edit_product.tpl */
-gettext("Product Shape");
+gettext("Choose the part");
 
 /* ../templates/edit_product.tpl */
-gettext("Other");
+gettext("Part");
 
-/* ../templates/edit_stores.tpl */
-gettext("Editing Stores");
+/* ../templates/edit_product.tpl */
+gettext("will be replaced with");
 
-/* ../templates/edit_stores.tpl */
-gettext("HQ");
-
-/* ../templates/edit_stores.tpl */
-gettext("Stores");
-
-/* ../templates/edit_stores.tpl */
-gettext("HQ Name");
-
-/* ../templates/edit_stores.tpl */
+/* ../templates/edit_product.tpl */
 gettext("Save");
 
-/* ../templates/edit_stores.tpl */
+/* ../templates/edit_product.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_product.tpl */
+gettext("Add Part");
+
+/* ../templates/edit_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_product.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_product.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_product.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Product Categories");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Editing Category");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Editing Main Categories");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Description");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Save");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Reset");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Category Name");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_product_category.tpl */
+gettext("History");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_product_category.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_site.tpl */
+gettext("Editing Site");
+
+/* ../templates/edit_site.tpl */
+gettext("General");
+
+/* ../templates/edit_site.tpl */
+gettext("Layout");
+
+/* ../templates/edit_site.tpl */
+gettext("Style");
+
+/* ../templates/edit_site.tpl */
+gettext("Sections");
+
+/* ../templates/edit_site.tpl */
+gettext("Pages");
+
+/* ../templates/edit_site.tpl */
+gettext("History");
+
+/* ../templates/edit_site.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_site.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_staff.tpl */
+gettext("Editing Staff Details");
+
+/* ../templates/edit_staff.tpl */
+gettext("Staff");
+
+/* ../templates/edit_staff.tpl */
+gettext("Save");
+
+/* ../templates/edit_staff.tpl */
 gettext("Close Dialog");
 
-/* ../templates/edit_stores.tpl */
-gettext("Code");
+/* ../templates/edit_staff.tpl */
+gettext("Staff Name");
 
-/* ../templates/edit_stores.tpl */
-gettext("Name");
+/* ../templates/edit_staff.tpl */
+gettext("Staff List");
 
-/* ../templates/edit_stores.tpl */
-gettext("Target Country");
-
-/* ../templates/edit_stores.tpl */
-gettext("Currency");
-
-/* ../templates/edit_stores.tpl */
-gettext("Locale");
-
-/* ../templates/edit_stores.tpl */
-gettext("Stores");
-
-/* ../templates/edit_stores.tpl */
+/* ../templates/edit_staff.tpl */
 gettext("History");
+
+/* ../templates/edit_staff.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_staff.tpl */
+gettext("Rows per Page");
 
 /* ../templates/edit_store.tpl */
 gettext("Editing Store");
@@ -3008,6 +4352,9 @@ gettext("Pictures");
 gettext("Departments");
 
 /* ../templates/edit_store.tpl */
+gettext("Web Sites");
+
+/* ../templates/edit_store.tpl */
 gettext("Web Pages");
 
 /* ../templates/edit_store.tpl */
@@ -3027,6 +4374,24 @@ gettext("Store Code");
 
 /* ../templates/edit_store.tpl */
 gettext("Store Name");
+
+/* ../templates/edit_store.tpl */
+gettext("Store Slogan");
+
+/* ../templates/edit_store.tpl */
+gettext("Store Contact");
+
+/* ../templates/edit_store.tpl */
+gettext("Store Email");
+
+/* ../templates/edit_store.tpl */
+gettext("Store Telephone");
+
+/* ../templates/edit_store.tpl */
+gettext("Store Fax");
+
+/* ../templates/edit_store.tpl */
+gettext("Store URL");
 
 /* ../templates/edit_store.tpl */
 gettext("Deal Name");
@@ -3056,6 +4421,9 @@ gettext("Charge Description");
 gettext("Charges");
 
 /* ../templates/edit_store.tpl */
+gettext("Store Pages");
+
+/* ../templates/edit_store.tpl */
 gettext("Save");
 
 /* ../templates/edit_store.tpl */
@@ -3072,6 +4440,348 @@ gettext("Departments");
 
 /* ../templates/edit_store.tpl */
 gettext("History");
+
+/* ../templates/edit_store.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_store.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_stores.tpl */
+gettext("Editing Stores");
+
+/* ../templates/edit_stores.tpl */
+gettext("Headquarters");
+
+/* ../templates/edit_stores.tpl */
+gettext("Stores");
+
+/* ../templates/edit_stores.tpl */
+gettext("Save");
+
+/* ../templates/edit_stores.tpl */
+gettext("Reset");
+
+/* ../templates/edit_stores.tpl */
+gettext("Corporation Name");
+
+/* ../templates/edit_stores.tpl */
+gettext("Corporation Currency");
+
+/* ../templates/edit_stores.tpl */
+gettext("Save");
+
+/* ../templates/edit_stores.tpl */
+gettext("Close Dialog");
+
+/* ../templates/edit_stores.tpl */
+gettext("Code");
+
+/* ../templates/edit_stores.tpl */
+gettext("Name");
+
+/* ../templates/edit_stores.tpl */
+gettext("Target Country");
+
+/* ../templates/edit_stores.tpl */
+gettext("Currency");
+
+/* ../templates/edit_stores.tpl */
+gettext("Locale");
+
+/* ../templates/edit_stores.tpl */
+gettext("Stores");
+
+/* ../templates/edit_stores.tpl */
+gettext("History");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Edit Supplier");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Supplier Details");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Company Details");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Supplier Products");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Company Name");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Contact Name");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Contact Email");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Telephone");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Fax");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Web Page");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Contact Address");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Save New Product");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Cancel New Product");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Create New Product");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Import Products (CSV)");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Product Name");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Unit");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Units per Case");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Price per Case");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Description");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Suppliers Product List");
+
+/* ../templates/edit_supplier.tpl */
+gettext("History");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_supplier.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Suppliers Categories");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Editing Category");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Editing Main Categories");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Description");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Category Name");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Subcategories");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("History");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_supplier_category.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Editing Product");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Parts");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Description");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Pictures");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Price, Discounts");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Price");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Price per Outer");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Margin");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("RRP per Unit");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Margin");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Add new part");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Parts product code");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Estimated price per");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Parts product code");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Cost per");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Units");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Units Type");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Unit Package Type");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Without packing");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Unit Weight");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Kg");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("With packing");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Unit Weight");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Kg");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("With packing");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Unit Best Approximate Volume");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Liters");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("With packing");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Minimun Orthogonal Volume");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Liters");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Cases");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Units Per Outer");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Case Weight");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Kg");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("With packing");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Minimun Orthogonal Case Volume");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Liters");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Name / Description");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Product ID");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Product Code");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Product Name");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Product Supplier Web Site");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("History");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Add part");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_supplier_product.tpl */
+gettext("Rows per Page");
 
 /* ../templates/edit_suppliers.tpl */
 gettext("Edit Suppliers");
@@ -3109,62 +4819,62 @@ gettext("Filter options");
 /* ../templates/edit_suppliers.tpl */
 gettext("Rows per Page");
 
-/* ../templates/edit_supplier.tpl */
-gettext("Edit Supplier");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Supplier Details");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Company Details");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Supplier Products");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Save");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Reset");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Company Name");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Save");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Reset");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Suppliers Product List");
-
-/* ../templates/edit_supplier.tpl */
-gettext("General");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Products");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Stock");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Sales");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Filter options");
-
-/* ../templates/edit_supplier.tpl */
-gettext("Rows per Page");
-
-/* ../templates/edit_users_staff.tpl */
+/* ../templates/edit_users_customer.tpl */
 gettext("Exit Edit");
 
-/* ../templates/edit_users_staff.tpl */
-gettext("Users");
+/* ../templates/edit_users_customer.tpl */
+gettext("Customer Users");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("show only");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Active (Employees)");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Inactive (Employees)");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Inactive (Ex-employees)");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Change Password for");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Change (Random)");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Change (User Defined)");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Password");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Password");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Repeat Password");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_users_customer.tpl */
+gettext("Save");
 
 /* ../templates/edit_users_staff.tpl */
-gettext("Groups");
+gettext("Staff Users");
+
+/* ../templates/edit_users_staff.tpl */
+gettext("show only");
+
+/* ../templates/edit_users_staff.tpl */
+gettext("Active (Employees)");
+
+/* ../templates/edit_users_staff.tpl */
+gettext("Inactive (Employees)");
+
+/* ../templates/edit_users_staff.tpl */
+gettext("Inactive (Ex-employees)");
 
 /* ../templates/edit_users_staff.tpl */
 gettext("Change Password for");
@@ -3188,6 +4898,48 @@ gettext("Repeat Password");
 gettext("Cancel");
 
 /* ../templates/edit_users_staff.tpl */
+gettext("Save");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Exit Edit");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Supplier Users");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("show only");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Active (Employees)");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Inactive (Employees)");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Inactive (Ex-employees)");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Change Password for");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Change (Random)");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Change (User Defined)");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Password");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Password");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Repeat Password");
+
+/* ../templates/edit_users_supplier.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_users_supplier.tpl */
 gettext("Save");
 
 /* ../templates/edit_warehouse.tpl */
@@ -3222,6 +4974,9 @@ gettext("Warehouse Code");
 
 /* ../templates/edit_warehouse.tpl */
 gettext("Warehouse Name");
+
+/* ../templates/edit_warehouse.tpl */
+gettext("");
 
 /* ../templates/edit_warehouse.tpl */
 gettext("Save");
@@ -3316,62 +5071,176 @@ gettext("Filter options");
 /* ../templates/edit_warehouse.tpl */
 gettext("Rows per Page");
 
-/* ../templates/families.tpl */
-gettext("Families");
+/* ../templates/edit_warehouse.tpl */
+gettext("Area");
 
-/* ../templates/families.tpl */
-gettext("Normal Mode");
+/* ../templates/email_campaign.tpl */
+gettext("Email Campaign");
 
-/* ../templates/families.tpl */
-gettext("Comparison Mode");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Email Campaign");
 
-/* ../templates/families.tpl */
-gettext("Comparison Mode");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Send");
 
-/* ../templates/families.tpl */
-gettext("Normal Mode");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Preview");
 
-/* ../templates/families.tpl */
-gettext("Summary");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Continue Later");
 
-/* ../templates/families.tpl */
-gettext("Stock");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Delete");
 
-/* ../templates/families.tpl */
-gettext("Sales");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Save");
 
-/* ../templates/families.tpl */
-gettext("All");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Reset");
 
-/* ../templates/families.tpl */
-gettext("1Yr");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Invalid Campaign Name");
 
-/* ../templates/families.tpl */
-gettext("1Qtr");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Invalid Campaign Objetive");
 
-/* ../templates/families.tpl */
-gettext("1M");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Please add recipients");
 
-/* ../templates/families.tpl */
-gettext("1W");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Invalid Scope Syntax");
 
-/* ../templates/families.tpl */
-gettext("Totals");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Please add email subject");
 
-/* ../templates/families.tpl */
-gettext("M AVG");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Email content is empty");
 
-/* ../templates/families.tpl */
-gettext("W AVG");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Store:");
 
-/* ../templates/families.tpl */
-gettext("Rows per Page");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Campaign Name");
 
-/* ../templates/families.tpl */
-gettext("Filter options");
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Campaign Objetive");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Recipients");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add manually");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add from Customer List");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Advertising Object");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Department");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Family");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Product");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Offer");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Type of Email");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Text Email");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("HTML Email");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Subject");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Content");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Template");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Choose Template");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Products");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add Product");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add Family");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add Department");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Offers");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Customers");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Fill the form properly");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Email Address");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Contact Name");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Cancel");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Create List");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Subject");
+
+/* ../templates/export_csv_menu_splinter.tpl */
+gettext("Download");
+
+/* ../templates/export_csv_menu_splinter.tpl */
+gettext("Save");
+
+/* ../templates/export_csv_menu_splinter.tpl */
+gettext("Close");
+
+/* ../templates/export_data_maps.tpl */
+gettext("Saved Maps");
+
+/* ../templates/export_wizard.tpl */
+gettext("Export Wizard");
 
 /* ../templates/family.tpl */
 gettext("Family");
+
+/* ../templates/family.tpl */
+gettext("Details");
+
+/* ../templates/family.tpl */
+gettext("Categories");
+
+/* ../templates/family.tpl */
+gettext("Products");
+
+/* ../templates/family.tpl */
+gettext("Offers");
+
+/* ../templates/family.tpl */
+gettext("Image");
 
 /* ../templates/family.tpl */
 gettext("Code");
@@ -3467,40 +5336,22 @@ gettext("Profit");
 gettext("Outers");
 
 /* ../templates/family.tpl */
-gettext("Family");
+gettext("Family Sales");
 
 /* ../templates/family.tpl */
 gettext("Top Products");
 
 /* ../templates/family.tpl */
-gettext("Department's Pie");
-
-/* ../templates/family.tpl */
-gettext("Sales");
-
-/* ../templates/family.tpl */
-gettext("Profit");
-
-/* ../templates/family.tpl */
-gettext("All");
-
-/* ../templates/family.tpl */
-gettext("Year");
-
-/* ../templates/family.tpl */
-gettext("Quarter");
-
-/* ../templates/family.tpl */
-gettext("Month");
-
-/* ../templates/family.tpl */
-gettext("Week");
-
-/* ../templates/family.tpl */
-gettext("update");
+gettext("Products");
 
 /* ../templates/family.tpl */
 gettext("Products");
+
+/* ../templates/family.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/family.tpl */
+gettext("Export (XML)");
 
 /* ../templates/family.tpl */
 gettext("List");
@@ -3575,10 +5426,13 @@ gettext("Filter options");
 gettext("Period");
 
 /* ../templates/footer.tpl */
-gettext("Site Map");
+gettext("Terms of use");
 
 /* ../templates/footer.tpl */
-gettext("Terms of use");
+gettext("Report a problem");
+
+/* ../templates/footer.tpl */
+gettext("Request a feature");
 
 /* ../templates/footer.tpl */
 gettext("Powered by Inikoo");
@@ -3589,6 +5443,51 @@ gettext("Forbidden");
 /* ../templates/forbidden.tpl */
 gettext("You don't have the rights to see this page, plese contact your site administrator");
 
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Marketing");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Emarketing");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("eNewsletters");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Free Template");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Rows per Page");
+
+/* ../templates/free_campaign_template_create.tpl */
+gettext("Filter options");
+
+/* ../templates/free_template_preview.tpl */
+gettext("Free Template Preview");
+
+/* ../templates/ftp_upload.tpl */
+gettext("File Transfer Via FTP");
+
+/* ../templates/ftp_upload.tpl */
+gettext("File Upload To Server");
+
+/* ../templates/ftp_upload.tpl */
+gettext("File Download From Server");
+
 /* ../templates/header.tpl */
 gettext("Help");
 
@@ -3597,6 +5496,63 @@ gettext("Hello");
 
 /* ../templates/header.tpl */
 gettext("Logout");
+
+/* ../templates/hr.tpl */
+gettext("Staff");
+
+/* ../templates/hr.tpl */
+gettext("Staff");
+
+/* ../templates/hr.tpl */
+gettext("Areas");
+
+/* ../templates/hr.tpl */
+gettext("Departments");
+
+/* ../templates/hr.tpl */
+gettext("Positions");
+
+/* ../templates/hr.tpl */
+gettext("Staff List");
+
+/* ../templates/hr.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/hr.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/hr.tpl */
+gettext("Staff");
+
+/* ../templates/hr.tpl */
+gettext("Ex-staff");
+
+/* ../templates/hr.tpl */
+gettext("Everybody");
+
+/* ../templates/hr.tpl */
+gettext("Areas List");
+
+/* ../templates/hr.tpl */
+gettext("Import (CSV)");
+
+/* ../templates/hr.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/hr.tpl */
+gettext("Departments List");
+
+/* ../templates/hr.tpl */
+gettext("Import (CSV)");
+
+/* ../templates/hr.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/hr.tpl */
+gettext("Filter options");
+
+/* ../templates/hr.tpl */
+gettext("Rows per Page");
 
 /* ../templates/hr_navigation.tpl */
 gettext("Staff");
@@ -3610,29 +5566,146 @@ gettext("Departments");
 /* ../templates/hr_navigation.tpl */
 gettext("Positions");
 
-/* ../templates/hr.tpl */
-gettext("Staff");
+/* ../templates/hr_navigation.tpl */
+gettext("Business Holidays");
 
-/* ../templates/hr.tpl */
-gettext("Staff List");
+/* ../templates/hr_navigation.tpl */
+gettext("Staff Holidays");
 
-/* ../templates/hr.tpl */
-gettext("Staff");
+/* ../templates/hr_navigation.tpl */
+gettext("Search");
 
-/* ../templates/hr.tpl */
-gettext("Ex-staff");
+/* ../templates/import_csv_verify.tpl */
+gettext("After scanned your file we found the subsequent fields that are needed to verify. Please make sure that all of your contacts information is filled up properly to the associated fields in the website. Once you filled up the fields properly, the next task you have to do is to hit on the continue button.");
 
-/* ../templates/hr.tpl */
-gettext("Everybody");
+/* ../templates/import_data.tpl */
+gettext("Import Data");
 
-/* ../templates/hr.tpl */
-gettext("Filter options");
+/* ../templates/import_data.tpl */
+gettext("To get started, choose your file format");
 
-/* ../templates/hr.tpl */
-gettext("Rows per Page");
+/* ../templates/import_data.tpl */
+gettext("Import from CSV file");
+
+/* ../templates/import_data.tpl */
+gettext("Excel, Microsoft Outlook and most other applications allow contacts to be exported as a CSV file");
+
+/* ../templates/import_data.tpl */
+gettext("tXML is a markup language for documents containing structured information");
+
+/* ../templates/import_data.tpl */
+gettext("Import from vCard file");
+
+/* ../templates/import_data.tpl */
+gettext("vCard is a file format standard for electronic business cards used by Apple Address Book and many other applications");
 
 /* ../templates/index.tpl */
-gettext("Known Issues");
+gettext("Search");
+
+/* ../templates/index.tpl */
+gettext("cross");
+
+/* ../templates/invoice.tpl */
+gettext("Invoice");
+
+/* ../templates/invoice.tpl */
+gettext("Items Gross");
+
+/* ../templates/invoice.tpl */
+gettext("Discounts");
+
+/* ../templates/invoice.tpl */
+gettext("Items Net");
+
+/* ../templates/invoice.tpl */
+gettext("Credits");
+
+/* ../templates/invoice.tpl */
+gettext("Charges");
+
+/* ../templates/invoice.tpl */
+gettext("Adjust Net");
+
+/* ../templates/invoice.tpl */
+gettext("Shipping");
+
+/* ../templates/invoice.tpl */
+gettext("Total Net");
+
+/* ../templates/invoice.tpl */
+gettext("Adjust Tax");
+
+/* ../templates/invoice.tpl */
+gettext("Tax");
+
+/* ../templates/invoice.tpl */
+gettext("Total");
+
+/* ../templates/invoice.tpl */
+gettext("Invoice Date");
+
+/* ../templates/invoice.tpl */
+gettext("Order");
+
+/* ../templates/invoice.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/invoice.tpl */
+gettext("Payment Method");
+
+/* ../templates/invoice.tpl */
+gettext("Payment State");
+
+/* ../templates/invoice.tpl */
+gettext("Items");
+
+/* ../templates/invoice.tpl */
+gettext("Items Out of Stock");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Invoice");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Items Gross");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Discounts");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Items Net");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Credits");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Charges");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Shipping");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Total Net");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Tax");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Total");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Invoice Date");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Order");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Items");
+
+/* ../templates/invoice_in_process.tpl */
+gettext("Items Out of Stock");
 
 /* ../templates/invoice_old.tpl */
 gettext("Order Search");
@@ -3697,51 +5770,6 @@ gettext("Total");
 /* ../templates/invoice_old.tpl */
 gettext("Items Out of Stock");
 
-/* ../templates/invoice.tpl */
-gettext("Invoice");
-
-/* ../templates/invoice.tpl */
-gettext("Items Gross");
-
-/* ../templates/invoice.tpl */
-gettext("Discounts");
-
-/* ../templates/invoice.tpl */
-gettext("Items Net");
-
-/* ../templates/invoice.tpl */
-gettext("Credits");
-
-/* ../templates/invoice.tpl */
-gettext("Charges");
-
-/* ../templates/invoice.tpl */
-gettext("Shipping");
-
-/* ../templates/invoice.tpl */
-gettext("Total Net");
-
-/* ../templates/invoice.tpl */
-gettext("Tax");
-
-/* ../templates/invoice.tpl */
-gettext("Total");
-
-/* ../templates/invoice.tpl */
-gettext("Invoice Date");
-
-/* ../templates/invoice.tpl */
-gettext("Order");
-
-/* ../templates/invoice.tpl */
-gettext("Delivery Notes");
-
-/* ../templates/invoice.tpl */
-gettext("Items");
-
-/* ../templates/invoice.tpl */
-gettext("Items Out of Stock");
-
 /* ../templates/list_customers.tpl */
 gettext("Contact's List");
 
@@ -3787,36 +5815,6 @@ gettext("Filter options");
 /* ../templates/list_customers.tpl */
 gettext("Rows per Page");
 
-/* ../templates/locations_navigation.tpl */
-gettext("Warehouses");
-
-/* ../templates/locations_navigation.tpl */
-gettext("Warehouses");
-
-/* ../templates/locations_navigation.tpl */
-gettext("Areas");
-
-/* ../templates/locations_navigation.tpl */
-gettext("Shelfs");
-
-/* ../templates/locations_navigation.tpl */
-gettext("Locations");
-
-/* ../templates/locations_navigation.tpl */
-gettext("Parts");
-
-/* ../templates/locations.tpl */
-gettext("Locations");
-
-/* ../templates/locations.tpl */
-gettext("Location List");
-
-/* ../templates/locations.tpl */
-gettext("Filter options");
-
-/* ../templates/locations.tpl */
-gettext("Rows per Page");
-
 /* ../templates/location.tpl */
 gettext("Shelf");
 
@@ -3847,32 +5845,26 @@ gettext("Parts");
 /* ../templates/location.tpl */
 gettext("History");
 
-/* ../templates/location.tpl */
-gettext("Quantity Lost");
+/* ../templates/locations.tpl */
+gettext("Locations");
 
-/* ../templates/location.tpl */
-gettext("max");
+/* ../templates/locations.tpl */
+gettext("Location List");
 
-/* ../templates/location.tpl */
-gettext("Why?");
+/* ../templates/locations.tpl */
+gettext("Filter options");
 
-/* ../templates/location.tpl */
-gettext("Action");
+/* ../templates/locations.tpl */
+gettext("Rows per Page");
 
-/* ../templates/location.tpl */
-gettext("Save");
+/* ../templates/locations_navigation.tpl */
+gettext("No results found, try te a more comprensive search");
 
-/* ../templates/location.tpl */
-gettext("Cancel");
+/* ../templates/locations_navigation.tpl */
+gettext("here");
 
-/* ../templates/location.tpl */
-gettext("Move");
-
-/* ../templates/location.tpl */
-gettext("Save");
-
-/* ../templates/location.tpl */
-gettext("Cancel");
+/* ../templates/locations_navigation.tpl */
+gettext("Search");
 
 /* ../templates/login.tpl */
 gettext("Welcome");
@@ -3888,6 +5880,78 @@ gettext("Log in");
 
 /* ../templates/marketing.tpl */
 gettext("Marketing");
+
+/* ../templates/marketing.tpl */
+gettext("Stats");
+
+/* ../templates/marketing.tpl */
+gettext("eNewsletters");
+
+/* ../templates/marketing.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/marketing.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/marketing.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/marketing.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/marketing.tpl */
+gettext("Follow-up's");
+
+/* ../templates/marketing.tpl */
+gettext("Follow-up's Emails");
+
+/* ../templates/marketing.tpl */
+gettext("Marketing Metrics");
+
+/* ../templates/marketing.tpl */
+gettext("New Email Campaign");
+
+/* ../templates/marketing.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/marketing.tpl */
+gettext("Rows per Page");
+
+/* ../templates/marketing.tpl */
+gettext("Filter options");
+
+/* ../templates/marketing_campaign_builder.tpl */
+gettext("Campaign");
+
+/* ../templates/marketing_campaign_builder_setup.tpl */
+gettext("Campaign Builder");
+
+/* ../templates/marketing_create_campaign.tpl */
+gettext("Campaign Builder");
+
+/* ../templates/marketing_create_campaign.tpl */
+gettext("Rows per Page");
+
+/* ../templates/marketing_create_campaign.tpl */
+gettext("Filter options");
+
+/* ../templates/marketing_list.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/marketing_navigation.tpl */
+gettext("Search");
+
+/* ../templates/marketing_server.tpl */
+gettext("Marketing Corporate Overview");
+
+/* ../templates/marketing_server.tpl */
+gettext("Store Marketing Sections");
+
+/* ../templates/marketing_server.tpl */
+gettext("Filter options");
+
+/* ../templates/marketing_server.tpl */
+gettext("Rows per Page");
 
 /* ../templates/new_campaign.tpl */
 gettext("New Campaign");
@@ -3955,11 +6019,140 @@ gettext("Email Subject:");
 /* ../templates/new_campaign.tpl */
 gettext("Email:");
 
+/* ../templates/new_campaigns.tpl */
+gettext("Marketing");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Emarketing");
+
+/* ../templates/new_campaigns.tpl */
+gettext("eNewsletters");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Create Campaign");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Rows per Page");
+
+/* ../templates/new_campaigns.tpl */
+gettext("Filter options");
+
+/* ../templates/new_category_splinter.tpl */
+gettext("Create new category");
+
+/* ../templates/new_category_splinter.tpl */
+gettext("Category Name Required");
+
+/* ../templates/new_category_splinter.tpl */
+gettext("Name");
+
+/* ../templates/new_category_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/new_category_splinter.tpl */
+gettext("Save");
+
+/* ../templates/new_company.tpl */
+gettext("Cancel");
+
+/* ../templates/new_company_area.tpl */
+gettext("New Company Area");
+
+/* ../templates/new_company_area.tpl */
+gettext("New Company Area");
+
+/* ../templates/new_company_area.tpl */
+gettext("Area Code");
+
+/* ../templates/new_company_area.tpl */
+gettext("Area Name");
+
+/* ../templates/new_company_area.tpl */
+gettext("Area Description");
+
+/* ../templates/new_company_area.tpl */
+gettext("Save");
+
+/* ../templates/new_company_area.tpl */
+gettext("Cancel");
+
+/* ../templates/new_company_area.tpl */
+gettext("New Company Areas");
+
+/* ../templates/new_company_department.tpl */
+gettext("New Company Department");
+
+/* ../templates/new_company_department.tpl */
+gettext("New Company department");
+
+/* ../templates/new_company_department.tpl */
+gettext("Department Code");
+
+/* ../templates/new_company_department.tpl */
+gettext("Department Name");
+
+/* ../templates/new_company_department.tpl */
+gettext("Department Description");
+
+/* ../templates/new_company_department.tpl */
+gettext("Save");
+
+/* ../templates/new_company_department.tpl */
+gettext("Cancel");
+
+/* ../templates/new_company_department.tpl */
+gettext("New Company Department");
+
+/* ../templates/new_company_position.tpl */
+gettext("New Company Position");
+
+/* ../templates/new_company_position.tpl */
+gettext("New Company Position");
+
+/* ../templates/new_company_position.tpl */
+gettext("Position Code");
+
+/* ../templates/new_company_position.tpl */
+gettext("Position Name");
+
+/* ../templates/new_company_position.tpl */
+gettext("Position Description");
+
+/* ../templates/new_company_position.tpl */
+gettext("Save");
+
+/* ../templates/new_company_position.tpl */
+gettext("Cancel");
+
+/* ../templates/new_company_position.tpl */
+gettext("New Company Position");
+
+/* ../templates/new_company_splinter.tpl */
+gettext("Company Info");
+
 /* ../templates/new_company_splinter.tpl */
 gettext("Supplier Code");
 
 /* ../templates/new_company_splinter.tpl */
 gettext("Company Name");
+
+/* ../templates/new_company_splinter.tpl */
+gettext("Contact Info");
 
 /* ../templates/new_company_splinter.tpl */
 gettext("Contact Name");
@@ -4010,40 +6203,16 @@ gettext("Number");
 gettext("Extension");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("Region");
+gettext("Address Info");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("Subregion");
+gettext("Other Info");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("3d Division");
+gettext("Unknown");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("4d Division");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("5d Division");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("Postal Code");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("Town/City");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("City 1st Div");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("City 2nd Div");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("Street/Number");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("Building");
-
-/* ../templates/new_company_splinter.tpl */
-gettext("Internal");
+gettext("Creating Contact");
 
 /* ../templates/new_company_splinter.tpl */
 gettext("Save");
@@ -4055,7 +6224,7 @@ gettext("Cancel");
 gettext("Another contact has been found with the similar details");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("Pick contact founded");
+gettext("Edit the located contact");
 
 /* ../templates/new_company_splinter.tpl */
 gettext("Confirm is new contact and Save");
@@ -4064,16 +6233,16 @@ gettext("Confirm is new contact and Save");
 gettext("Another contact has the same email");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("Edit contact founded");
+gettext("Edit the located company");
 
 /* ../templates/new_company_splinter.tpl */
 gettext("Confirm is new contact and Save");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("Founded contact data will be deleted to avoid muliplicity");
+gettext("Previous contact data (email) will be deleted to avoid muliplicity");
 
 /* ../templates/new_company_splinter.tpl */
-gettext("Company found");
+gettext("Company has been found");
 
 /* ../templates/new_company_splinter.tpl */
 gettext("State of the form");
@@ -4126,8 +6295,14 @@ gettext("Postal Code");
 /* ../templates/new_company_splinter.tpl */
 gettext("Town");
 
-/* ../templates/new_company.tpl */
-gettext("Cancel");
+/* ../templates/new_company_splinter.tpl */
+gettext("Country List");
+
+/* ../templates/new_contact.tpl */
+gettext("New Contact");
+
+/* ../templates/new_contact_splinter.tpl */
+gettext("Contact Info");
 
 /* ../templates/new_contact_splinter.tpl */
 gettext("Contact Name");
@@ -4196,40 +6371,16 @@ gettext("Number");
 gettext("Extension");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("Region");
+gettext("Address Info");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("Subregion");
+gettext("Other Info");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("3d Division");
+gettext("Unknown");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("4d Division");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("5d Division");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("Postal Code");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("Town/City");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("City 1st Div");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("City 2nd Div");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("Street/Number");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("Building");
-
-/* ../templates/new_contact_splinter.tpl */
-gettext("Internal");
+gettext("Creating Contact");
 
 /* ../templates/new_contact_splinter.tpl */
 gettext("Save");
@@ -4238,10 +6389,19 @@ gettext("Save");
 gettext("Cancel");
 
 /* ../templates/new_contact_splinter.tpl */
+gettext("Another customer has been found with the similar details");
+
+/* ../templates/new_contact_splinter.tpl */
+gettext("Edit the located customer");
+
+/* ../templates/new_contact_splinter.tpl */
+gettext("Confirm is new customer and Save");
+
+/* ../templates/new_contact_splinter.tpl */
 gettext("Another contact has been found with the similar details");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("Pick contact founded");
+gettext("Edit the located contact");
 
 /* ../templates/new_contact_splinter.tpl */
 gettext("Confirm is new contact and Save");
@@ -4250,13 +6410,13 @@ gettext("Confirm is new contact and Save");
 gettext("Another contact has the same email");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("Edit contact founded");
+gettext("Edit the located contact");
 
 /* ../templates/new_contact_splinter.tpl */
 gettext("Confirm is new contact and Save");
 
 /* ../templates/new_contact_splinter.tpl */
-gettext("Founded contact data will be deleted to avoid muliplicity");
+gettext("Previous contact data will be deleted to avoid muliplicity");
 
 /* ../templates/new_contact_splinter.tpl */
 gettext("Contact found");
@@ -4309,20 +6469,593 @@ gettext("Postal Code");
 /* ../templates/new_contact_splinter.tpl */
 gettext("Town");
 
-/* ../templates/new_contact.tpl */
-gettext("New Contact");
-
 /* ../templates/new_corporation.tpl */
 gettext("Cancel");
 
 /* ../templates/new_customer.tpl */
-gettext("Customers List");
+gettext("Adding new customer");
+
+/* ../templates/new_customer.tpl */
+gettext("Not a company");
+
+/* ../templates/new_customer.tpl */
+gettext("Company Info");
+
+/* ../templates/new_customer.tpl */
+gettext("Company Name");
+
+/* ../templates/new_customer.tpl */
+gettext("Is a company");
+
+/* ../templates/new_customer.tpl */
+gettext("Contact Info");
+
+/* ../templates/new_customer.tpl */
+gettext("Contact Name");
+
+/* ../templates/new_customer.tpl */
+gettext("Gender");
+
+/* ../templates/new_customer.tpl */
+gettext("Male");
+
+/* ../templates/new_customer.tpl */
+gettext("Female");
+
+/* ../templates/new_customer.tpl */
+gettext("Unknown");
+
+/* ../templates/new_customer.tpl */
+gettext("Salutation");
+
+/* ../templates/new_customer.tpl */
+gettext("First Name(s)");
+
+/* ../templates/new_customer.tpl */
+gettext("Surname(s)");
+
+/* ../templates/new_customer.tpl */
+gettext("Suffix(s)");
+
+/* ../templates/new_customer.tpl */
+gettext("Email");
+
+/* ../templates/new_customer.tpl */
+gettext("Telephone");
+
+/* ../templates/new_customer.tpl */
+gettext("Country Code");
+
+/* ../templates/new_customer.tpl */
+gettext("NAC");
+
+/* ../templates/new_customer.tpl */
+gettext("Area Code");
+
+/* ../templates/new_customer.tpl */
+gettext("Number");
+
+/* ../templates/new_customer.tpl */
+gettext("Extension");
+
+/* ../templates/new_customer.tpl */
+gettext("Address Info");
+
+/* ../templates/new_customer.tpl */
+gettext("Other Info");
+
+/* ../templates/new_customer.tpl */
+gettext("Unknown");
+
+/* ../templates/new_customer.tpl */
+gettext("Send Newsletter");
+
+/* ../templates/new_customer.tpl */
+gettext("Yes");
+
+/* ../templates/new_customer.tpl */
+gettext("No");
+
+/* ../templates/new_customer.tpl */
+gettext("Send Marketing Emails");
+
+/* ../templates/new_customer.tpl */
+gettext("Yes");
+
+/* ../templates/new_customer.tpl */
+gettext("No");
+
+/* ../templates/new_customer.tpl */
+gettext("Send Marketing Post");
+
+/* ../templates/new_customer.tpl */
+gettext("Yes");
+
+/* ../templates/new_customer.tpl */
+gettext("No");
+
+/* ../templates/new_customer.tpl */
+gettext("Creating Contact");
 
 /* ../templates/new_customer.tpl */
 gettext("Save");
 
 /* ../templates/new_customer.tpl */
 gettext("Cancel");
+
+/* ../templates/new_customer.tpl */
+gettext("Another contact has been found with the similar details");
+
+/* ../templates/new_customer.tpl */
+gettext("Edit the Customer found");
+
+/* ../templates/new_customer.tpl */
+gettext("Creating this customer is likely to produce duplicate contacts.");
+
+/* ../templates/new_customer.tpl */
+gettext("Create customer anyway");
+
+/* ../templates/new_customer.tpl */
+gettext("Another contact has the same email");
+
+/* ../templates/new_customer.tpl */
+gettext("Edit the Customer found");
+
+/* ../templates/new_customer.tpl */
+gettext("Creating this customer will produce duplicate contacts. The email will not be added.");
+
+/* ../templates/new_customer.tpl */
+gettext("Create customer anyway");
+
+/* ../templates/new_customer.tpl */
+gettext("Company has been found");
+
+/* ../templates/new_customer.tpl */
+gettext("State of the form");
+
+/* ../templates/new_customer.tpl */
+gettext("Show");
+
+/* ../templates/new_customer.tpl */
+gettext("Input");
+
+/* ../templates/new_customer.tpl */
+gettext("Valid");
+
+/* ../templates/new_customer.tpl */
+gettext("Company Name");
+
+/* ../templates/new_customer.tpl */
+gettext("Contact Name");
+
+/* ../templates/new_customer.tpl */
+gettext("Email");
+
+/* ../templates/new_customer.tpl */
+gettext("Telephone");
+
+/* ../templates/new_customer.tpl */
+gettext("Address");
+
+/* ../templates/new_customer.tpl */
+gettext("Country");
+
+/* ../templates/new_customer.tpl */
+gettext("Country");
+
+/* ../templates/new_customer.tpl */
+gettext("Country");
+
+/* ../templates/new_customer.tpl */
+gettext("Country");
+
+/* ../templates/new_customer.tpl */
+gettext("Country");
+
+/* ../templates/new_customer.tpl */
+gettext("Country");
+
+/* ../templates/new_customer.tpl */
+gettext("Postal Code");
+
+/* ../templates/new_customer.tpl */
+gettext("Town");
+
+/* ../templates/new_customer.tpl */
+gettext("Country List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("New Customers List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Please specify a name");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Contacts who...");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Register between");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("based in (location)");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Postal Code");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("City");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Country");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("World Region");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("have");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("don't have");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("wish to receive");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Categories");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Other Categories");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Type of Business");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Customers who ordered...");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("any of this product(s)");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Product Categories");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Product");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Family");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Department");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("but didn't order this product(s)");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("and did't receive this product(s)");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("during this period");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Enter list name");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Select List Type");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Static");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Dynamic");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Save List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Redo List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Create List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Search in progress");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("General");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Contact");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Address");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Balance");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Ranking");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Rows per Page");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("World Regions");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Country List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Postal Code List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Cities");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Department List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Family List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Product List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Category List");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Filter options");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("New Email Campaign");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Continue");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Cancel");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Invalid Campaign Name");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Invalid Campaign Objetive");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Campaign Name");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Campaign Objetive");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Products");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Add Product");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Add Family");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Add Department");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Offers");
+
+/* ../templates/new_email_campaign.tpl */
+gettext("Customers");
+
+/* ../templates/new_hq.tpl */
+gettext("Adding New HQ");
+
+/* ../templates/new_hq.tpl */
+gettext("Not a company");
+
+/* ../templates/new_hq.tpl */
+gettext("Company Info");
+
+/* ../templates/new_hq.tpl */
+gettext("Company Name");
+
+/* ../templates/new_hq.tpl */
+gettext("Is a company");
+
+/* ../templates/new_hq.tpl */
+gettext("Contact Info");
+
+/* ../templates/new_hq.tpl */
+gettext("Contact Name");
+
+/* ../templates/new_hq.tpl */
+gettext("Gender");
+
+/* ../templates/new_hq.tpl */
+gettext("Male");
+
+/* ../templates/new_hq.tpl */
+gettext("Female");
+
+/* ../templates/new_hq.tpl */
+gettext("Unknown");
+
+/* ../templates/new_hq.tpl */
+gettext("Salutation");
+
+/* ../templates/new_hq.tpl */
+gettext("First Name(s)");
+
+/* ../templates/new_hq.tpl */
+gettext("Surname(s)");
+
+/* ../templates/new_hq.tpl */
+gettext("Suffix(s)");
+
+/* ../templates/new_hq.tpl */
+gettext("Email");
+
+/* ../templates/new_hq.tpl */
+gettext("Telephone");
+
+/* ../templates/new_hq.tpl */
+gettext("Country Code");
+
+/* ../templates/new_hq.tpl */
+gettext("NAC");
+
+/* ../templates/new_hq.tpl */
+gettext("Area Code");
+
+/* ../templates/new_hq.tpl */
+gettext("Number");
+
+/* ../templates/new_hq.tpl */
+gettext("Extension");
+
+/* ../templates/new_hq.tpl */
+gettext("Address Info");
+
+/* ../templates/new_hq.tpl */
+gettext("Other Info");
+
+/* ../templates/new_hq.tpl */
+gettext("Unknown");
+
+/* ../templates/new_hq.tpl */
+gettext("Send Newsletter");
+
+/* ../templates/new_hq.tpl */
+gettext("Yes");
+
+/* ../templates/new_hq.tpl */
+gettext("No");
+
+/* ../templates/new_hq.tpl */
+gettext("Send Marketing Emails");
+
+/* ../templates/new_hq.tpl */
+gettext("Yes");
+
+/* ../templates/new_hq.tpl */
+gettext("No");
+
+/* ../templates/new_hq.tpl */
+gettext("Send Marketing Post");
+
+/* ../templates/new_hq.tpl */
+gettext("Yes");
+
+/* ../templates/new_hq.tpl */
+gettext("No");
+
+/* ../templates/new_hq.tpl */
+gettext("Creating Contact");
+
+/* ../templates/new_hq.tpl */
+gettext("Save");
+
+/* ../templates/new_hq.tpl */
+gettext("Cancel");
+
+/* ../templates/new_hq.tpl */
+gettext("Another contact has been found with the similar details");
+
+/* ../templates/new_hq.tpl */
+gettext("Edit the Customer found");
+
+/* ../templates/new_hq.tpl */
+gettext("Creating this customer is likely to produce duplicate contacts.");
+
+/* ../templates/new_hq.tpl */
+gettext("Create customer anyway");
+
+/* ../templates/new_hq.tpl */
+gettext("Another contact has the same email");
+
+/* ../templates/new_hq.tpl */
+gettext("Edit the Customer found");
+
+/* ../templates/new_hq.tpl */
+gettext("Creating this customer will produce duplicate contacts. The email will not be added.");
+
+/* ../templates/new_hq.tpl */
+gettext("Create customer anyway");
+
+/* ../templates/new_hq.tpl */
+gettext("Company has been found");
+
+/* ../templates/new_hq.tpl */
+gettext("State of the form");
+
+/* ../templates/new_hq.tpl */
+gettext("Show");
+
+/* ../templates/new_hq.tpl */
+gettext("Input");
+
+/* ../templates/new_hq.tpl */
+gettext("Valid");
+
+/* ../templates/new_hq.tpl */
+gettext("Company Name");
+
+/* ../templates/new_hq.tpl */
+gettext("Contact Name");
+
+/* ../templates/new_hq.tpl */
+gettext("Email");
+
+/* ../templates/new_hq.tpl */
+gettext("Telephone");
+
+/* ../templates/new_hq.tpl */
+gettext("Address");
+
+/* ../templates/new_hq.tpl */
+gettext("Country");
+
+/* ../templates/new_hq.tpl */
+gettext("Country");
+
+/* ../templates/new_hq.tpl */
+gettext("Country");
+
+/* ../templates/new_hq.tpl */
+gettext("Country");
+
+/* ../templates/new_hq.tpl */
+gettext("Country");
+
+/* ../templates/new_hq.tpl */
+gettext("Country");
+
+/* ../templates/new_hq.tpl */
+gettext("Postal Code");
+
+/* ../templates/new_hq.tpl */
+gettext("Town");
+
+/* ../templates/new_hq.tpl */
+gettext("Country List");
 
 /* ../templates/new_individual_location_splinter.tpl */
 gettext("Warehouse");
@@ -4393,6 +7126,201 @@ gettext("Pallet Rack");
 /* ../templates/new_location.tpl */
 gettext("Floor Space");
 
+/* ../templates/new_post_order.tpl */
+gettext("Order");
+
+/* ../templates/new_post_order.tpl */
+gettext("Products to Resend");
+
+/* ../templates/new_post_order.tpl */
+gettext("Send to Warehouse");
+
+/* ../templates/new_post_order.tpl */
+gettext("Distinct Products");
+
+/* ../templates/new_post_order.tpl */
+gettext("Market Value");
+
+/* ../templates/new_post_order.tpl */
+gettext("Shipping Address");
+
+/* ../templates/new_post_order.tpl */
+gettext("Change Delivery Address");
+
+/* ../templates/new_post_order.tpl */
+gettext("Set this order is for collection");
+
+/* ../templates/new_post_order.tpl */
+gettext("Set for shipping");
+
+/* ../templates/new_post_order.tpl */
+gettext("Refunds");
+
+/* ../templates/new_post_order.tpl */
+gettext("Save");
+
+/* ../templates/new_post_order.tpl */
+gettext("Distinct Products");
+
+/* ../templates/new_post_order.tpl */
+gettext("Amount");
+
+/* ../templates/new_post_order.tpl */
+gettext("Credits");
+
+/* ../templates/new_post_order.tpl */
+gettext("Save");
+
+/* ../templates/new_post_order.tpl */
+gettext("Distinct Products");
+
+/* ../templates/new_post_order.tpl */
+gettext("Amount");
+
+/* ../templates/new_post_order.tpl */
+gettext("Ordered Items");
+
+/* ../templates/new_post_order.tpl */
+gettext("Rows per Page");
+
+/* ../templates/new_post_order.tpl */
+gettext("Filter options");
+
+/* ../templates/new_post_order.tpl */
+gettext("Close");
+
+/* ../templates/new_products_list.tpl */
+gettext("New Product List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Please specify a name");
+
+/* ../templates/new_products_list.tpl */
+gettext("Product Validity...");
+
+/* ../templates/new_products_list.tpl */
+gettext("Product valid between");
+
+/* ../templates/new_products_list.tpl */
+gettext("Some features...");
+
+/* ../templates/new_products_list.tpl */
+gettext("based in");
+
+/* ../templates/new_products_list.tpl */
+gettext("Family");
+
+/* ../templates/new_products_list.tpl */
+gettext("Department");
+
+/* ../templates/new_products_list.tpl */
+gettext("Customers who ordered...");
+
+/* ../templates/new_products_list.tpl */
+gettext("any of this product(s)");
+
+/* ../templates/new_products_list.tpl */
+gettext("Brand");
+
+/* ../templates/new_products_list.tpl */
+gettext("Tarrif");
+
+/* ../templates/new_products_list.tpl */
+gettext("Special Characteristics");
+
+/* ../templates/new_products_list.tpl */
+gettext("but didn't order this product(s)");
+
+/* ../templates/new_products_list.tpl */
+gettext("and did't receive this product(s)");
+
+/* ../templates/new_products_list.tpl */
+gettext("during this period");
+
+/* ../templates/new_products_list.tpl */
+gettext("Enter list name");
+
+/* ../templates/new_products_list.tpl */
+gettext("Select List Type");
+
+/* ../templates/new_products_list.tpl */
+gettext("Static");
+
+/* ../templates/new_products_list.tpl */
+gettext("Dynamic");
+
+/* ../templates/new_products_list.tpl */
+gettext("Save List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Redo List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Create List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Search in progress");
+
+/* ../templates/new_products_list.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/new_products_list.tpl */
+gettext("General");
+
+/* ../templates/new_products_list.tpl */
+gettext("Contact");
+
+/* ../templates/new_products_list.tpl */
+gettext("Address");
+
+/* ../templates/new_products_list.tpl */
+gettext("Balance");
+
+/* ../templates/new_products_list.tpl */
+gettext("Ranking");
+
+/* ../templates/new_products_list.tpl */
+gettext("Rows per Page");
+
+/* ../templates/new_products_list.tpl */
+gettext("All Customers");
+
+/* ../templates/new_products_list.tpl */
+gettext("Customers");
+
+/* ../templates/new_products_list.tpl */
+gettext("Foreign Customers");
+
+/* ../templates/new_products_list.tpl */
+gettext("with Email");
+
+/* ../templates/new_products_list.tpl */
+gettext("with Telephone");
+
+/* ../templates/new_products_list.tpl */
+gettext("World Regions");
+
+/* ../templates/new_products_list.tpl */
+gettext("Country List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Postal Code List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Cities");
+
+/* ../templates/new_products_list.tpl */
+gettext("Department List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Family List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Product List");
+
+/* ../templates/new_products_list.tpl */
+gettext("Category List");
+
 /* ../templates/new_shelf_splinter.tpl */
 gettext("Warehouse");
 
@@ -4408,9 +7336,6 @@ gettext("Columns");
 /* ../templates/new_shelf_splinter.tpl */
 gettext("Rows");
 
-/* ../templates/newsletter.tpl */
-gettext("Marketing");
-
 /* ../templates/new_staff.tpl */
 gettext("New Staff");
 
@@ -4425,6 +7350,9 @@ gettext("Department");
 
 /* ../templates/new_staff.tpl */
 gettext("Position");
+
+/* ../templates/new_supplier.tpl */
+gettext("Cancel");
 
 /* ../templates/new_warehouse_area.tpl */
 gettext("New Warehouse Area");
@@ -4450,11 +7378,89 @@ gettext("Cancel");
 /* ../templates/new_warehouse_area.tpl */
 gettext("Warehouse Areas");
 
+/* ../templates/newsletter.tpl */
+gettext("Marketing");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Marketing");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Emarketing");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("eNewsletters");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Newsletter1 Template Preview");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Rows per Page");
+
+/* ../templates/newsletter_template1.tpl */
+gettext("Filter options");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Marketing");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Emarketing");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("eNewsletters");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Newsletter Template 2 Preview");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Rows per Page");
+
+/* ../templates/newsletter_template2.tpl */
+gettext("Filter options");
+
 /* ../templates/not_found.tpl */
 gettext("Forbidden");
 
 /* ../templates/not_found.tpl */
 gettext("You don't have the rights to see this page, plese contact your site administrator");
+
+/* ../templates/order.tpl */
+gettext("Orders");
+
+/* ../templates/order.tpl */
+gettext("Order Search");
+
+/* ../templates/order.tpl */
+gettext("to");
 
 /* ../templates/order_cancelled.tpl */
 gettext("Order");
@@ -4507,127 +7513,76 @@ gettext("Items");
 /* ../templates/order_cancelled.tpl */
 gettext("Items Out of Stock");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Order");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Tel");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Shipped to");
 
-/* ../templates/order_dispached.tpl */
-gettext("Items Gross");
+/* ../templates/order_dispatched.tpl */
+gettext("Total Ordered (N)");
 
-/* ../templates/order_dispached.tpl */
-gettext("Discounts");
+/* ../templates/order_dispatched.tpl */
+gettext("Out of Stock (N)");
 
-/* ../templates/order_dispached.tpl */
-gettext("Items Net");
+/* ../templates/order_dispatched.tpl */
+gettext("Invoiced Amounts");
 
-/* ../templates/order_dispached.tpl */
-gettext("Credits");
+/* ../templates/order_dispatched.tpl */
+gettext("Items (N)");
 
-/* ../templates/order_dispached.tpl */
-gettext("Charges");
+/* ../templates/order_dispatched.tpl */
+gettext("Shipping (N)");
 
-/* ../templates/order_dispached.tpl */
-gettext("Shipping");
+/* ../templates/order_dispatched.tpl */
+gettext("Charges (N)");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
+gettext("Other Order Refunds");
+
+/* ../templates/order_dispatched.tpl */
+gettext("Adjusts (N)");
+
+/* ../templates/order_dispatched.tpl */
 gettext("Net");
 
-/* ../templates/order_dispached.tpl */
-gettext("VAT");
+/* ../templates/order_dispatched.tpl */
+gettext("Total (N)");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
+gettext("Tax");
+
+/* ../templates/order_dispatched.tpl */
+gettext("Tax Adjusts");
+
+/* ../templates/order_dispatched.tpl */
 gettext("Total");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Order Date");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Invoices");
 
-/* ../templates/order_dispached.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Delivery Notes");
 
-/* ../templates/order_dispached.tpl */
-gettext("Items");
+/* ../templates/order_dispatched.tpl */
+gettext("This order has some dispatched post transactions");
 
-/* ../templates/order_dispached.tpl */
-gettext("Items Out of Stock");
+/* ../templates/order_dispatched.tpl */
+gettext("Show details)");
 
-/* ../templates/order_in_process.old.tpl */
-gettext("Order");
+/* ../templates/order_dispatched.tpl */
+gettext("Dispatched Post-Order Items");
 
-/* ../templates/order_in_process.old.tpl */
-gettext("Tel");
+/* ../templates/order_dispatched.tpl */
+gettext("Ordered Items");
 
-/* ../templates/order_in_process.old.tpl */
-gettext("To be paid by");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("To be shipped to");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("B&D Address");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Delivery Address");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Billing Address");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Received Date");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("IP Address");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Created Date");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Order Number");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Payment Method");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Delivered by");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Weight");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Parcels");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Items Cost");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Credits");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Charges");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Shipping");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Net");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("VAT");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Total");
-
-/* ../templates/order_in_process.old.tpl */
-gettext("Items");
-
-/* ../templates/order_in_process.old.tpl */
+/* ../templates/order_dispatched.tpl */
 gettext("Items Out of Stock");
 
 /* ../templates/order_in_process.tpl */
@@ -4643,6 +7598,18 @@ gettext("Contact Address");
 gettext("Shipping Address");
 
 /* ../templates/order_in_process.tpl */
+gettext("Change Delivery Address");
+
+/* ../templates/order_in_process.tpl */
+gettext("Set this order is for collection");
+
+/* ../templates/order_in_process.tpl */
+gettext("For collection");
+
+/* ../templates/order_in_process.tpl */
+gettext("Set for shipping");
+
+/* ../templates/order_in_process.tpl */
 gettext("Items Gross");
 
 /* ../templates/order_in_process.tpl */
@@ -4659,6 +7626,12 @@ gettext("Charges");
 
 /* ../templates/order_in_process.tpl */
 gettext("Shipping");
+
+/* ../templates/order_in_process.tpl */
+gettext("Shipping");
+
+/* ../templates/order_in_process.tpl */
+gettext("Change Shipping");
 
 /* ../templates/order_in_process.tpl */
 gettext("Net");
@@ -4679,22 +7652,10 @@ gettext("Items");
 gettext("Recomendations");
 
 /* ../templates/order_in_process.tpl */
-gettext("List");
-
-/* ../templates/order_in_process.tpl */
-gettext("Thumbnails");
-
-/* ../templates/order_in_process.tpl */
 gettext("Show only ordered");
 
 /* ../templates/order_in_process.tpl */
-gettext("Show all products available");
-
-/* ../templates/order_in_process.tpl */
-gettext("Show only ordered");
-
-/* ../templates/order_in_process.tpl */
-gettext("Show all products available");
+gettext("Show All");
 
 /* ../templates/order_in_process.tpl */
 gettext("General");
@@ -4753,6 +7714,33 @@ gettext("Go Back");
 /* ../templates/order_in_process.tpl */
 gettext("Continue");
 
+/* ../templates/order_in_process.tpl */
+gettext("Set Shipping");
+
+/* ../templates/order_in_process.tpl */
+gettext("Reset");
+
+/* ../templates/order_in_process.tpl */
+gettext("Save");
+
+/* ../templates/order_in_process.tpl */
+gettext("You have entered unexisting family");
+
+/* ../templates/order_in_process.tpl */
+gettext("Select Discount");
+
+/* ../templates/order_in_process.tpl */
+gettext("Discount");
+
+/* ../templates/order_in_process.tpl */
+gettext("Cancel");
+
+/* ../templates/order_in_process.tpl */
+gettext("Save");
+
+/* ../templates/order_in_process.tpl */
+gettext("Close");
+
 /* ../templates/order_in_warehouse.tpl */
 gettext("Order");
 
@@ -4802,19 +7790,103 @@ gettext("Delivery Notes");
 gettext("Items");
 
 /* ../templates/order_in_warehouse.tpl */
-gettext("Items Out of Stock");
-
-/* ../templates/order_pick_aid.tpl */
 gettext("Order");
 
+/* ../templates/order_in_warehouse.tpl */
+gettext("Handing");
+
+/* ../templates/order_in_warehouse.tpl */
+gettext("Items Out of Stock");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Continue Later");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Close");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Picking for Delivery Note");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Packer");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Transactions");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Items");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Set as all Picked");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Error, the sum of out of stock and not found units are greater than the number of not packed units");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Pending");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Unspecified");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Out of Stock");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Not Found");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Other Reason");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Save");
+
+/* ../templates/order_pack_aid.tpl */
+gettext("Cancel");
+
 /* ../templates/order_pick_aid.tpl */
-gettext("Order Date");
+gettext("Continue Later");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Close");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Picking for Delivery Note");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Picker");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Transactions");
 
 /* ../templates/order_pick_aid.tpl */
 gettext("Items");
 
 /* ../templates/order_pick_aid.tpl */
-gettext("Items Out of Stock");
+gettext("Set as all Picked");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Error, the sum of out of stock and not found units are greater than the number of not picked units");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Pending");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Unspecified");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Out of Stock");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Not Found");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Other Reason");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Save");
+
+/* ../templates/order_pick_aid.tpl */
+gettext("Cancel");
 
 /* ../templates/order_pick_form.tpl */
 gettext("Order");
@@ -4876,38 +7948,242 @@ gettext("Items");
 /* ../templates/order_pick_form.tpl */
 gettext("Items Out of Stock");
 
+/* ../templates/order_pick_form.tpl */
+gettext("Move");
+
+/* ../templates/order_pick_form.tpl */
+gettext("Save");
+
+/* ../templates/order_pick_form.tpl */
+gettext("Cancel");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Order");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Tel");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Shipping Address");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Items Gross");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Discounts");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Items Net");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Credits");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Charges");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Shipping");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Net");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("VAT");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Total");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Order Date");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Invoices");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Items");
+
+/* ../templates/order_ready_to_ship.tpl */
+gettext("Items Out of Stock");
+
 /* ../templates/order_search.tpl */
 gettext("Order Search");
 
-/* ../templates/orders_server.tpl */
-gettext("Order Search");
+/* ../templates/order_suspended.tpl */
+gettext("Order");
 
-/* ../templates/orders_server.tpl */
-gettext("Orders Corporate Overview");
+/* ../templates/order_suspended.tpl */
+gettext("Tel");
 
-/* ../templates/orders_server.tpl */
-gettext("Orders Per Store");
+/* ../templates/order_suspended.tpl */
+gettext("Contact Address");
 
-/* ../templates/orders_server.tpl */
-gettext("Filter options");
+/* ../templates/order_suspended.tpl */
+gettext("Shipping Address");
 
-/* ../templates/orders_server.tpl */
+/* ../templates/order_suspended.tpl */
+gettext("Items Gross");
+
+/* ../templates/order_suspended.tpl */
+gettext("Discounts");
+
+/* ../templates/order_suspended.tpl */
+gettext("Items Net");
+
+/* ../templates/order_suspended.tpl */
+gettext("Credits");
+
+/* ../templates/order_suspended.tpl */
+gettext("Charges");
+
+/* ../templates/order_suspended.tpl */
+gettext("Shipping");
+
+/* ../templates/order_suspended.tpl */
+gettext("Net");
+
+/* ../templates/order_suspended.tpl */
+gettext("VAT");
+
+/* ../templates/order_suspended.tpl */
+gettext("Total");
+
+/* ../templates/order_suspended.tpl */
+gettext("Order Date");
+
+/* ../templates/order_suspended.tpl */
+gettext("Suspended Date");
+
+/* ../templates/order_suspended.tpl */
+gettext("Items");
+
+/* ../templates/order_suspended.tpl */
+gettext("Items Out of Stock");
+
+/* ../templates/order_unknown.tpl */
+gettext("Order");
+
+/* ../templates/order_unknown.tpl */
+gettext("Tel");
+
+/* ../templates/order_unknown.tpl */
+gettext("Contact Address");
+
+/* ../templates/order_unknown.tpl */
+gettext("Shipping Address");
+
+/* ../templates/order_unknown.tpl */
+gettext("Items Gross");
+
+/* ../templates/order_unknown.tpl */
+gettext("Discounts");
+
+/* ../templates/order_unknown.tpl */
+gettext("Items Net");
+
+/* ../templates/order_unknown.tpl */
+gettext("Credits");
+
+/* ../templates/order_unknown.tpl */
+gettext("Charges");
+
+/* ../templates/order_unknown.tpl */
+gettext("Shipping");
+
+/* ../templates/order_unknown.tpl */
+gettext("Net");
+
+/* ../templates/order_unknown.tpl */
+gettext("VAT");
+
+/* ../templates/order_unknown.tpl */
+gettext("Total");
+
+/* ../templates/order_unknown.tpl */
+gettext("Order Date");
+
+/* ../templates/order_unknown.tpl */
+gettext("Items");
+
+/* ../templates/order_unknown.tpl */
+gettext("Recomendations");
+
+/* ../templates/order_unknown.tpl */
+gettext("List");
+
+/* ../templates/order_unknown.tpl */
+gettext("Thumbnails");
+
+/* ../templates/order_unknown.tpl */
+gettext("Show only ordered");
+
+/* ../templates/order_unknown.tpl */
+gettext("Show all products available");
+
+/* ../templates/order_unknown.tpl */
+gettext("Show only ordered");
+
+/* ../templates/order_unknown.tpl */
+gettext("Show all products available");
+
+/* ../templates/order_unknown.tpl */
+gettext("General");
+
+/* ../templates/order_unknown.tpl */
+gettext("Discounts");
+
+/* ../templates/order_unknown.tpl */
+gettext("Properties");
+
+/* ../templates/order_unknown.tpl */
+gettext("All");
+
+/* ../templates/order_unknown.tpl */
+gettext("1Yr");
+
+/* ../templates/order_unknown.tpl */
+gettext("1Qtr");
+
+/* ../templates/order_unknown.tpl */
+gettext("1M");
+
+/* ../templates/order_unknown.tpl */
+gettext("1W");
+
+/* ../templates/order_unknown.tpl */
+gettext("Totals");
+
+/* ../templates/order_unknown.tpl */
+gettext("M AVG");
+
+/* ../templates/order_unknown.tpl */
+gettext("W AVG");
+
+/* ../templates/order_unknown.tpl */
+gettext("M EAVG");
+
+/* ../templates/order_unknown.tpl */
+gettext("W EAVG");
+
+/* ../templates/order_unknown.tpl */
+gettext("Items Out of Stock");
+
+/* ../templates/order_unknown.tpl */
 gettext("Rows per Page");
 
-/* ../templates/orders.tpl */
-gettext("Orders");
+/* ../templates/order_unknown.tpl */
+gettext("Filter options");
 
-/* ../templates/orders.tpl */
-gettext("Invoices");
+/* ../templates/order_unknown.tpl */
+gettext("Reason of cancellation");
 
-/* ../templates/orders.tpl */
-gettext("Delivery Notes");
+/* ../templates/order_unknown.tpl */
+gettext("Go Back");
 
-/* ../templates/orders.tpl */
-gettext("Warehouse Operations");
-
-/* ../templates/orders.tpl */
-gettext("Order Search");
+/* ../templates/order_unknown.tpl */
+gettext("Continue");
 
 /* ../templates/orders.tpl */
 gettext("Order List");
@@ -4916,19 +8192,22 @@ gettext("Order List");
 gettext("Export (CSV)");
 
 /* ../templates/orders.tpl */
-gettext("show only");
+gettext("All Orders");
 
 /* ../templates/orders.tpl */
 gettext("In Process");
 
 /* ../templates/orders.tpl */
-gettext("Dispached");
-
-/* ../templates/orders.tpl */
-gettext("Cancelled");
+gettext("Dispatched");
 
 /* ../templates/orders.tpl */
 gettext("Unknown");
+
+/* ../templates/orders.tpl */
+gettext("Cancel");
+
+/* ../templates/orders.tpl */
+gettext("Suspended");
 
 /* ../templates/orders.tpl */
 gettext("clear");
@@ -4946,10 +8225,19 @@ gettext("Invoice List");
 gettext("Export (CSV)");
 
 /* ../templates/orders.tpl */
-gettext("show only");
+gettext("All");
+
+/* ../templates/orders.tpl */
+gettext("Invoices");
 
 /* ../templates/orders.tpl */
 gettext("Refunds");
+
+/* ../templates/orders.tpl */
+gettext("To pay");
+
+/* ../templates/orders.tpl */
+gettext("Paid");
 
 /* ../templates/orders.tpl */
 gettext("clear");
@@ -4967,6 +8255,42 @@ gettext("Delivery Note List");
 gettext("Export (CSV)");
 
 /* ../templates/orders.tpl */
+gettext("All");
+
+/* ../templates/orders.tpl */
+gettext("Return");
+
+/* ../templates/orders.tpl */
+gettext("Send");
+
+/* ../templates/orders.tpl */
+gettext("Ready");
+
+/* ../templates/orders.tpl */
+gettext("Packing");
+
+/* ../templates/orders.tpl */
+gettext("Picking");
+
+/* ../templates/orders.tpl */
+gettext("To Pick");
+
+/* ../templates/orders.tpl */
+gettext("Shortages");
+
+/* ../templates/orders.tpl */
+gettext("Replacements");
+
+/* ../templates/orders.tpl */
+gettext("Donations");
+
+/* ../templates/orders.tpl */
+gettext("Samples");
+
+/* ../templates/orders.tpl */
+gettext("Orders");
+
+/* ../templates/orders.tpl */
 gettext("clear");
 
 /* ../templates/orders.tpl */
@@ -4981,191 +8305,71 @@ gettext("Filter options");
 /* ../templates/orders.tpl */
 gettext("Rows per Page");
 
-/* ../templates/order.tpl */
+/* ../templates/orders_navigation.tpl */
+gettext("Warehouse Operations");
+
+/* ../templates/orders_navigation.tpl */
+gettext("Warehouse Operations");
+
+/* ../templates/orders_navigation.tpl */
 gettext("Orders");
 
-/* ../templates/order.tpl */
-gettext("Order Search");
+/* ../templates/orders_navigation.tpl */
+gettext("Invoices");
 
-/* ../templates/order.tpl */
-gettext("to");
+/* ../templates/orders_navigation.tpl */
+gettext("Delivery Notes");
 
-/* ../templates/order_unknown.tpl */
-gettext("Order");
+/* ../templates/orders_navigation.tpl */
+gettext("Search");
 
-/* ../templates/order_unknown.tpl */
-gettext("Tel");
+/* ../templates/orders_server.tpl */
+gettext("Orders Corporate Overview");
 
-/* ../templates/order_unknown.tpl */
-gettext("Contact Address");
+/* ../templates/orders_server.tpl */
+gettext("Orders Per Store");
 
-/* ../templates/order_unknown.tpl */
-gettext("Shipping Address");
+/* ../templates/orders_server.tpl */
+gettext("Export (CSV)");
 
-/* ../templates/order_unknown.tpl */
-gettext("Items Gross");
+/* ../templates/orders_server.tpl */
+gettext("Invoices Per Store");
 
-/* ../templates/order_unknown.tpl */
-gettext("Discounts");
+/* ../templates/orders_server.tpl */
+gettext("Export (CSV)");
 
-/* ../templates/order_unknown.tpl */
-gettext("Items Net");
+/* ../templates/orders_server.tpl */
+gettext("Delivery Notes Per Store");
 
-/* ../templates/order_unknown.tpl */
-gettext("Credits");
+/* ../templates/orders_server.tpl */
+gettext("Export (CSV)");
 
-/* ../templates/order_unknown.tpl */
-gettext("Charges");
+/* ../templates/orders_server.tpl */
+gettext("Dispatch State");
 
-/* ../templates/order_unknown.tpl */
-gettext("Shipping");
+/* ../templates/orders_server.tpl */
+gettext("Type of Order");
 
-/* ../templates/order_unknown.tpl */
-gettext("Net");
-
-/* ../templates/order_unknown.tpl */
-gettext("VAT");
-
-/* ../templates/order_unknown.tpl */
-gettext("Total");
-
-/* ../templates/order_unknown.tpl */
-gettext("Order Date");
-
-/* ../templates/order_unknown.tpl */
-gettext("Items");
-
-/* ../templates/order_unknown.tpl */
-gettext("Recomendations");
-
-/* ../templates/order_unknown.tpl */
-gettext("List");
-
-/* ../templates/order_unknown.tpl */
-gettext("Thumbnails");
-
-/* ../templates/order_unknown.tpl */
-gettext("Show only ordered");
-
-/* ../templates/order_unknown.tpl */
-gettext("Show all products available");
-
-/* ../templates/order_unknown.tpl */
-gettext("Show only ordered");
-
-/* ../templates/order_unknown.tpl */
-gettext("Show all products available");
-
-/* ../templates/order_unknown.tpl */
-gettext("General");
-
-/* ../templates/order_unknown.tpl */
-gettext("Discounts");
-
-/* ../templates/order_unknown.tpl */
-gettext("Properties");
-
-/* ../templates/order_unknown.tpl */
-gettext("All");
-
-/* ../templates/order_unknown.tpl */
-gettext("1Yr");
-
-/* ../templates/order_unknown.tpl */
-gettext("1Qtr");
-
-/* ../templates/order_unknown.tpl */
-gettext("1M");
-
-/* ../templates/order_unknown.tpl */
-gettext("1W");
-
-/* ../templates/order_unknown.tpl */
-gettext("Totals");
-
-/* ../templates/order_unknown.tpl */
-gettext("M AVG");
-
-/* ../templates/order_unknown.tpl */
-gettext("W AVG");
-
-/* ../templates/order_unknown.tpl */
-gettext("M EAVG");
-
-/* ../templates/order_unknown.tpl */
-gettext("W EAVG");
-
-/* ../templates/order_unknown.tpl */
-gettext("Items Out of Stock");
-
-/* ../templates/order_unknown.tpl */
-gettext("Rows per Page");
-
-/* ../templates/order_unknown.tpl */
+/* ../templates/orders_server.tpl */
 gettext("Filter options");
 
-/* ../templates/order_unknown.tpl */
-gettext("Reason of cancellation");
-
-/* ../templates/order_unknown.tpl */
-gettext("Go Back");
-
-/* ../templates/order_unknown.tpl */
-gettext("Continue");
-
-/* ../templates/parts.tpl */
-gettext("Part SKU");
-
-/* ../templates/parts.tpl */
-gettext("Parts");
-
-/* ../templates/parts.tpl */
-gettext("General");
-
-/* ../templates/parts.tpl */
-gettext("Stock");
-
-/* ../templates/parts.tpl */
-gettext("Sales");
-
-/* ../templates/parts.tpl */
-gettext("All");
-
-/* ../templates/parts.tpl */
-gettext("1Yr");
-
-/* ../templates/parts.tpl */
-gettext("1Qtr");
-
-/* ../templates/parts.tpl */
-gettext("1M");
-
-/* ../templates/parts.tpl */
-gettext("1W");
-
-/* ../templates/parts.tpl */
-gettext("Totals");
-
-/* ../templates/parts.tpl */
-gettext("M AVG");
-
-/* ../templates/parts.tpl */
-gettext("W AVG");
-
-/* ../templates/parts.tpl */
-gettext("M EAVG");
-
-/* ../templates/parts.tpl */
-gettext("W EAVG");
-
-/* ../templates/parts.tpl */
+/* ../templates/orders_server.tpl */
 gettext("Rows per Page");
 
-/* ../templates/parts.tpl */
+/* ../templates/orders_server.tpl */
 gettext("Filter options");
+
+/* ../templates/orders_server.tpl */
+gettext("Rows per Page");
+
+/* ../templates/orders_server.tpl */
+gettext("Filter options");
+
+/* ../templates/orders_server.tpl */
+gettext("Rows per Page");
 
 /* ../templates/part.tpl */
-gettext("Part SKU");
+gettext("Part");
 
 /* ../templates/part.tpl */
 gettext("Sold as");
@@ -5276,10 +8480,25 @@ gettext("Stock");
 gettext("Available for");
 
 /* ../templates/part.tpl */
-gettext("Location");
+gettext("Next shipment");
 
 /* ../templates/part.tpl */
-gettext("Next shipment");
+gettext("Locations");
+
+/* ../templates/part.tpl */
+gettext("Add Location");
+
+/* ../templates/part.tpl */
+gettext("audit");
+
+/* ../templates/part.tpl */
+gettext("delete");
+
+/* ../templates/part.tpl */
+gettext("lost");
+
+/* ../templates/part.tpl */
+gettext("move");
 
 /* ../templates/part.tpl */
 gettext("Required");
@@ -5387,12 +8606,246 @@ gettext("Broken");
 gettext("Lost");
 
 /* ../templates/part.tpl */
-gettext("Part Stock History");
+gettext("Description");
+
+/* ../templates/part.tpl */
+gettext("Sales");
+
+/* ../templates/part.tpl */
+gettext("Stock Transactions");
+
+/* ../templates/part.tpl */
+gettext("Stock History");
+
+/* ../templates/part.tpl */
+gettext("Purchase Orders");
 
 /* ../templates/part.tpl */
 gettext("Part Stock Transactions");
 
 /* ../templates/part.tpl */
+gettext("All");
+
+/* ../templates/part.tpl */
+gettext("OIP");
+
+/* ../templates/part.tpl */
+gettext("Out");
+
+/* ../templates/part.tpl */
+gettext("In");
+
+/* ../templates/part.tpl */
+gettext("Audits");
+
+/* ../templates/part.tpl */
+gettext("Movements");
+
+/* ../templates/part.tpl */
+gettext("Stock History");
+
+/* ../templates/part.tpl */
+gettext("Stock History");
+
+/* ../templates/part.tpl */
+gettext("Monthly");
+
+/* ../templates/part.tpl */
+gettext("Weekly");
+
+/* ../templates/part.tpl */
+gettext("Daily");
+
+/* ../templates/part.tpl */
+gettext("Sales");
+
+/* ../templates/part.tpl */
+gettext("Profit");
+
+/* ../templates/part.tpl */
+gettext("Margin");
+
+/* ../templates/part.tpl */
+gettext("GMROI");
+
+/* ../templates/part.tpl */
+gettext("Sales");
+
+/* ../templates/part.tpl */
+gettext("Profit");
+
+/* ../templates/part.tpl */
+gettext("GMROI");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Adquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
+gettext("Required");
+
+/* ../templates/part.tpl */
+gettext("Provided");
+
+/* ../templates/part.tpl */
+gettext("Acquired");
+
+/* ../templates/part.tpl */
+gettext("Sold");
+
+/* ../templates/part.tpl */
+gettext("Given");
+
+/* ../templates/part.tpl */
+gettext("Broken");
+
+/* ../templates/part.tpl */
+gettext("Lost");
+
+/* ../templates/part.tpl */
 gettext("Rows per Page");
 
 /* ../templates/part.tpl */
@@ -5403,6 +8856,147 @@ gettext("Rows per Page");
 
 /* ../templates/part.tpl */
 gettext("Filter options");
+
+/* ../templates/part_categories_base.tpl */
+gettext("Parts Categories");
+
+/* ../templates/part_categories_base.tpl */
+gettext("Part Categories Home");
+
+/* ../templates/part_categories_base.tpl */
+gettext("Main Categories");
+
+/* ../templates/part_category.tpl */
+gettext("Parts Categories");
+
+/* ../templates/part_category.tpl */
+gettext("Part Categories");
+
+/* ../templates/part_category.tpl */
+gettext("Category");
+
+/* ../templates/part_category.tpl */
+gettext("Products");
+
+/* ../templates/part_category.tpl */
+gettext("General");
+
+/* ../templates/part_category.tpl */
+gettext("Stock");
+
+/* ../templates/part_category.tpl */
+gettext("Sales");
+
+/* ../templates/part_category.tpl */
+gettext("All");
+
+/* ../templates/part_category.tpl */
+gettext("1Yr");
+
+/* ../templates/part_category.tpl */
+gettext("1Qtr");
+
+/* ../templates/part_category.tpl */
+gettext("1M");
+
+/* ../templates/part_category.tpl */
+gettext("1W");
+
+/* ../templates/part_category.tpl */
+gettext("Totals");
+
+/* ../templates/part_category.tpl */
+gettext("M AVG");
+
+/* ../templates/part_category.tpl */
+gettext("W AVG");
+
+/* ../templates/parts.tpl */
+gettext("Parts Categories");
+
+/* ../templates/parts.tpl */
+gettext("Parts");
+
+/* ../templates/parts.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/parts.tpl */
+gettext("General");
+
+/* ../templates/parts.tpl */
+gettext("Stock");
+
+/* ../templates/parts.tpl */
+gettext("Sales");
+
+/* ../templates/parts.tpl */
+gettext("All");
+
+/* ../templates/parts.tpl */
+gettext("3Y");
+
+/* ../templates/parts.tpl */
+gettext("1Yr");
+
+/* ../templates/parts.tpl */
+gettext("YTD");
+
+/* ../templates/parts.tpl */
+gettext("6M");
+
+/* ../templates/parts.tpl */
+gettext("1Qtr");
+
+/* ../templates/parts.tpl */
+gettext("1M");
+
+/* ../templates/parts.tpl */
+gettext("10D");
+
+/* ../templates/parts.tpl */
+gettext("1W");
+
+/* ../templates/parts.tpl */
+gettext("All");
+
+/* ../templates/parts.tpl */
+gettext("1Yr");
+
+/* ../templates/parts.tpl */
+gettext("1Qtr");
+
+/* ../templates/parts.tpl */
+gettext("1M");
+
+/* ../templates/parts.tpl */
+gettext("1W");
+
+/* ../templates/parts.tpl */
+gettext("Totals");
+
+/* ../templates/parts.tpl */
+gettext("M AVG");
+
+/* ../templates/parts.tpl */
+gettext("W AVG");
+
+/* ../templates/parts.tpl */
+gettext("M EAVG");
+
+/* ../templates/parts.tpl */
+gettext("W EAVG");
+
+/* ../templates/parts.tpl */
+gettext("Rows per Page");
+
+/* ../templates/parts.tpl */
+gettext("Filter options");
+
+/* ../templates/plot_general_candlestick.xml.tpl */
+gettext("Select");
+
+/* ../templates/plot_general_candlestick.xml.tpl */
+gettext("Show also");
 
 /* ../templates/plot_splinter.tpl */
 gettext("Stock History");
@@ -5630,9 +9224,6 @@ gettext("M EAVG");
 gettext("W EAVG");
 
 /* ../templates/porder_in_process.tpl */
-gettext("Product Code");
-
-/* ../templates/porder_in_process.tpl */
 gettext("Filter options");
 
 /* ../templates/porder_in_process.tpl */
@@ -5640,9 +9231,6 @@ gettext("Rows per Page");
 
 /* ../templates/porder_in_process.tpl */
 gettext("Note: this action can not be undone");
-
-/* ../templates/porder_in_process.tpl */
-gettext("Cancel");
 
 /* ../templates/porder_in_process.tpl */
 gettext("Delete Purchase Order");
@@ -5654,61 +9242,16 @@ gettext("Submit Method");
 gettext("Submit Date");
 
 /* ../templates/porder_in_process.tpl */
-gettext("Modify");
-
-/* ../templates/porder_in_process.tpl */
-gettext("Now");
-
-/* ../templates/porder_in_process.tpl */
-gettext("Submitted Date");
-
-/* ../templates/porder_in_process.tpl */
-gettext("Time");
-
-/* ../templates/porder_in_process.tpl */
-gettext("Expected Date");
+gettext("edit");
 
 /* ../templates/porder_in_process.tpl */
 gettext("Submit By");
 
 /* ../templates/porder_in_process.tpl */
-gettext("Modify");
+gettext("Save");
 
 /* ../templates/porder_in_process.tpl */
 gettext("Close");
-
-/* ../templates/porders.tpl */
-gettext("Order Search");
-
-/* ../templates/porders.tpl */
-gettext("Interval");
-
-/* ../templates/porders.tpl */
-gettext("Go");
-
-/* ../templates/porders.tpl */
-gettext("Orders Overview");
-
-/* ../templates/porders.tpl */
-gettext("Orders");
-
-/* ../templates/porders.tpl */
-gettext("Invoices");
-
-/* ../templates/porders.tpl */
-gettext("show only");
-
-/* ../templates/porders.tpl */
-gettext("In Process");
-
-/* ../templates/porders.tpl */
-gettext("Cancelled");
-
-/* ../templates/porders.tpl */
-gettext("Filter options");
-
-/* ../templates/porders.tpl */
-gettext("Rows per Page");
 
 /* ../templates/porder_submitted.tpl */
 gettext("Return to Supplier Page");
@@ -5745,6 +9288,9 @@ gettext("via");
 
 /* ../templates/porder_submitted.tpl */
 gettext("by");
+
+/* ../templates/porder_submitted.tpl */
+gettext("edit");
 
 /* ../templates/porder_submitted.tpl */
 gettext("Estimated Delivery");
@@ -5804,49 +9350,157 @@ gettext("Rows per Page");
 gettext("Note");
 
 /* ../templates/porder_submitted.tpl */
-gettext("Close");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Cancel Purchase Order");
+gettext("Do it");
 
 /* ../templates/porder_submitted.tpl */
 gettext("Delivery Note Number");
 
 /* ../templates/porder_submitted.tpl */
-gettext("Close");
+gettext("Delivery Note Date");
 
 /* ../templates/porder_submitted.tpl */
 gettext("Match to Delivery Note");
 
 /* ../templates/porder_submitted.tpl */
-gettext("Submit Method");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Submit Date");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Modify");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Now");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Submitted Date");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Time");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Expected Date");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Submit By");
-
-/* ../templates/porder_submitted.tpl */
-gettext("Modify");
+gettext("Estimated Delivery");
 
 /* ../templates/porder_submitted.tpl */
 gettext("Close");
+
+/* ../templates/porders.tpl */
+gettext("Purchse Order List");
+
+/* ../templates/porders.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/porders.tpl */
+gettext("All Orders");
+
+/* ../templates/porders.tpl */
+gettext("In Process");
+
+/* ../templates/porders.tpl */
+gettext("Dispatched");
+
+/* ../templates/porders.tpl */
+gettext("Unknown");
+
+/* ../templates/porders.tpl */
+gettext("Cancel");
+
+/* ../templates/porders.tpl */
+gettext("Suspended");
+
+/* ../templates/porders.tpl */
+gettext("clear");
+
+/* ../templates/porders.tpl */
+gettext("Interval");
+
+/* ../templates/porders.tpl */
+gettext("Go");
+
+/* ../templates/porders.tpl */
+gettext("Invoice List");
+
+/* ../templates/porders.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/porders.tpl */
+gettext("All");
+
+/* ../templates/porders.tpl */
+gettext("Invoices");
+
+/* ../templates/porders.tpl */
+gettext("Refunds");
+
+/* ../templates/porders.tpl */
+gettext("To pay");
+
+/* ../templates/porders.tpl */
+gettext("Paid");
+
+/* ../templates/porders.tpl */
+gettext("clear");
+
+/* ../templates/porders.tpl */
+gettext("Interval");
+
+/* ../templates/porders.tpl */
+gettext("Go");
+
+/* ../templates/porders.tpl */
+gettext("Incoming Delivery Notes List");
+
+/* ../templates/porders.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/porders.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/porders.tpl */
+gettext("All");
+
+/* ../templates/porders.tpl */
+gettext("Return");
+
+/* ../templates/porders.tpl */
+gettext("Send");
+
+/* ../templates/porders.tpl */
+gettext("Ready");
+
+/* ../templates/porders.tpl */
+gettext("Packing");
+
+/* ../templates/porders.tpl */
+gettext("Picking");
+
+/* ../templates/porders.tpl */
+gettext("To Pick");
+
+/* ../templates/porders.tpl */
+gettext("Shortages");
+
+/* ../templates/porders.tpl */
+gettext("Replacements");
+
+/* ../templates/porders.tpl */
+gettext("Donations");
+
+/* ../templates/porders.tpl */
+gettext("Samples");
+
+/* ../templates/porders.tpl */
+gettext("Orders");
+
+/* ../templates/porders.tpl */
+gettext("clear");
+
+/* ../templates/porders.tpl */
+gettext("Interval");
+
+/* ../templates/porders.tpl */
+gettext("Go");
+
+/* ../templates/porders.tpl */
+gettext("Filter options");
+
+/* ../templates/porders.tpl */
+gettext("Rows per Page");
+
+/* ../templates/porders_navigation.tpl */
+gettext("Warehouse Operations");
+
+/* ../templates/porders_navigation.tpl */
+gettext("Purchase Orders");
+
+/* ../templates/porders_navigation.tpl */
+gettext("Supplier's Invoices");
+
+/* ../templates/porders_navigation.tpl */
+gettext("Incoming Delivery Notes");
 
 /* ../templates/positions.tpl */
 gettext("Positions");
@@ -5855,10 +9509,340 @@ gettext("Positions");
 gettext("Positions List");
 
 /* ../templates/positions.tpl */
+gettext("Import (CSV)");
+
+/* ../templates/positions.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/positions.tpl */
 gettext("Filter options");
 
 /* ../templates/positions.tpl */
 gettext("Rows per Page");
+
+/* ../templates/postcard_template.tpl */
+gettext("Marketing");
+
+/* ../templates/postcard_template.tpl */
+gettext("Emarketing");
+
+/* ../templates/postcard_template.tpl */
+gettext("eNewsletters");
+
+/* ../templates/postcard_template.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/postcard_template.tpl */
+gettext("Site Campaigns");
+
+/* ../templates/postcard_template.tpl */
+gettext("Internet Campaigns");
+
+/* ../templates/postcard_template.tpl */
+gettext("Other Media Campaigns");
+
+/* ../templates/postcard_template.tpl */
+gettext("Postcard Template Preview");
+
+/* ../templates/postcard_template.tpl */
+gettext("Email Campaigns");
+
+/* ../templates/postcard_template.tpl */
+gettext("Rows per Page");
+
+/* ../templates/postcard_template.tpl */
+gettext("Filter options");
+
+/* ../templates/product.tpl */
+gettext("Product");
+
+/* ../templates/product.tpl */
+gettext("Historic Product");
+
+/* ../templates/product.tpl */
+gettext("Image");
+
+/* ../templates/product.tpl */
+gettext("Online");
+
+/* ../templates/product.tpl */
+gettext("Offline");
+
+/* ../templates/product.tpl */
+gettext("Sell Price");
+
+/* ../templates/product.tpl */
+gettext("RRP");
+
+/* ../templates/product.tpl */
+gettext("each");
+
+/* ../templates/product.tpl */
+gettext("Sold Since");
+
+/* ../templates/product.tpl */
+gettext("Suppliers");
+
+/* ../templates/product.tpl */
+gettext("Discontinued");
+
+/* ../templates/product.tpl */
+gettext("Discontinued");
+
+/* ../templates/product.tpl */
+gettext("Not for Sale");
+
+/* ../templates/product.tpl */
+gettext("Available");
+
+/* ../templates/product.tpl */
+gettext("Parts");
+
+/* ../templates/product.tpl */
+gettext("Locations");
+
+/* ../templates/product.tpl */
+gettext("Unit Weight");
+
+/* ../templates/product.tpl */
+gettext("Unit Dimensions");
+
+/* ../templates/product.tpl */
+gettext("Outer Weight");
+
+/* ../templates/product.tpl */
+gettext("Kg");
+
+/* ../templates/product.tpl */
+gettext("Outer Dimensions");
+
+/* ../templates/product.tpl */
+gettext("Categories");
+
+/* ../templates/product.tpl */
+gettext("Material");
+
+/* ../templates/product.tpl */
+gettext("Ingredients");
+
+/* ../templates/product.tpl */
+gettext("Details");
+
+/* ../templates/product.tpl */
+gettext("Sales");
+
+/* ../templates/product.tpl */
+gettext("Customers");
+
+/* ../templates/product.tpl */
+gettext("Orders");
+
+/* ../templates/product.tpl */
+gettext("History");
+
+/* ../templates/product.tpl */
+gettext("Invoices");
+
+/* ../templates/product.tpl */
+gettext("Sales");
+
+/* ../templates/product.tpl */
+gettext("Profit");
+
+/* ../templates/product.tpl */
+gettext("Outers");
+
+/* ../templates/product.tpl */
+gettext("Invoices");
+
+/* ../templates/product.tpl */
+gettext("Sales");
+
+/* ../templates/product.tpl */
+gettext("Profit");
+
+/* ../templates/product.tpl */
+gettext("Outers");
+
+/* ../templates/product.tpl */
+gettext("Invoices");
+
+/* ../templates/product.tpl */
+gettext("Sales");
+
+/* ../templates/product.tpl */
+gettext("Profit");
+
+/* ../templates/product.tpl */
+gettext("Outers");
+
+/* ../templates/product.tpl */
+gettext("Invoices");
+
+/* ../templates/product.tpl */
+gettext("Sales");
+
+/* ../templates/product.tpl */
+gettext("Profit");
+
+/* ../templates/product.tpl */
+gettext("Outers");
+
+/* ../templates/product.tpl */
+gettext("Invoices");
+
+/* ../templates/product.tpl */
+gettext("Sales");
+
+/* ../templates/product.tpl */
+gettext("Profit");
+
+/* ../templates/product.tpl */
+gettext("Outers");
+
+/* ../templates/product.tpl */
+gettext("Product Sales");
+
+/* ../templates/product.tpl */
+gettext("Product Code Timeline");
+
+/* ../templates/product.tpl */
+gettext("Product History");
+
+/* ../templates/product.tpl */
+gettext("Orders with this Product");
+
+/* ../templates/product.tpl */
+gettext("Customers");
+
+/* ../templates/product.tpl */
+gettext("Customers");
+
+/* ../templates/product.tpl */
+gettext("Customers");
+
+/* ../templates/product.tpl */
+gettext("Customers");
+
+/* ../templates/product.tpl */
+gettext("Customers");
+
+/* ../templates/product.tpl */
+gettext("Customer who order this Product");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Product Categories Home");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Main Categories");
+
+/* ../templates/product_categories_base.tpl */
+gettext("General");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Stock");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Sales");
+
+/* ../templates/product_categories_base.tpl */
+gettext("All");
+
+/* ../templates/product_categories_base.tpl */
+gettext("1Yr");
+
+/* ../templates/product_categories_base.tpl */
+gettext("1Qtr");
+
+/* ../templates/product_categories_base.tpl */
+gettext("1M");
+
+/* ../templates/product_categories_base.tpl */
+gettext("1W");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Totals");
+
+/* ../templates/product_categories_base.tpl */
+gettext("M AVG");
+
+/* ../templates/product_categories_base.tpl */
+gettext("W AVG");
+
+/* ../templates/product_category.tpl */
+gettext("Product Categories");
+
+/* ../templates/product_category.tpl */
+gettext("Category");
+
+/* ../templates/product_category.tpl */
+gettext("General");
+
+/* ../templates/product_category.tpl */
+gettext("Stock");
+
+/* ../templates/product_category.tpl */
+gettext("Sales");
+
+/* ../templates/product_category.tpl */
+gettext("All");
+
+/* ../templates/product_category.tpl */
+gettext("1Yr");
+
+/* ../templates/product_category.tpl */
+gettext("1Qtr");
+
+/* ../templates/product_category.tpl */
+gettext("1M");
+
+/* ../templates/product_category.tpl */
+gettext("1W");
+
+/* ../templates/product_category.tpl */
+gettext("Totals");
+
+/* ../templates/product_category.tpl */
+gettext("M AVG");
+
+/* ../templates/product_category.tpl */
+gettext("W AVG");
+
+/* ../templates/product_category.tpl */
+gettext("Products");
+
+/* ../templates/product_category.tpl */
+gettext("General");
+
+/* ../templates/product_category.tpl */
+gettext("Stock");
+
+/* ../templates/product_category.tpl */
+gettext("Sales");
+
+/* ../templates/product_category.tpl */
+gettext("All");
+
+/* ../templates/product_category.tpl */
+gettext("1Yr");
+
+/* ../templates/product_category.tpl */
+gettext("1Qtr");
+
+/* ../templates/product_category.tpl */
+gettext("1M");
+
+/* ../templates/product_category.tpl */
+gettext("1W");
+
+/* ../templates/product_category.tpl */
+gettext("Totals");
+
+/* ../templates/product_category.tpl */
+gettext("M AVG");
+
+/* ../templates/product_category.tpl */
+gettext("W AVG");
 
 /* ../templates/product_manage_stock.tpl */
 gettext("units per outer");
@@ -5921,427 +9905,82 @@ gettext("Save");
 gettext("Product Code");
 
 /* ../templates/product_server.tpl */
-gettext("Product Code");
+gettext("Product ID List");
 
-/* ../templates/product_server.tpl */
-gettext("Product Details");
+/* ../templates/refund.tpl */
+gettext("Refund");
 
-/* ../templates/product_server.tpl */
-gettext("Charts");
+/* ../templates/refund.tpl */
+gettext("Credits");
 
-/* ../templates/product_server.tpl */
-gettext("Orders");
+/* ../templates/refund.tpl */
+gettext("Charges");
 
-/* ../templates/product_server.tpl */
-gettext("Customers");
+/* ../templates/refund.tpl */
+gettext("Shipping");
 
-/* ../templates/product_server.tpl */
-gettext("Stock");
+/* ../templates/refund.tpl */
+gettext("Total Net");
 
-/* ../templates/product_server.tpl */
-gettext("Show Product Details");
+/* ../templates/refund.tpl */
+gettext("Tax");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Product Details");
+/* ../templates/refund.tpl */
+gettext("Total");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Product Details");
+/* ../templates/refund.tpl */
+gettext("Refund Date");
 
-/* ../templates/product_server.tpl */
-gettext("Show Charts");
+/* ../templates/refund.tpl */
+gettext("Order");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Charts");
+/* ../templates/refund.tpl */
+gettext("Items");
 
-/* ../templates/product_server.tpl */
-gettext("Show Charts");
+/* ../templates/refund.tpl */
+gettext("Items Out of Stock");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Charts");
+/* ../templates/refund_in_process.tpl */
+gettext("refund");
 
-/* ../templates/product_server.tpl */
-gettext("Show Orders");
+/* ../templates/refund_in_process.tpl */
+gettext("Refund");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Orders");
+/* ../templates/refund_in_process.tpl */
+gettext("Credits");
 
-/* ../templates/product_server.tpl */
-gettext("Show Orders");
+/* ../templates/refund_in_process.tpl */
+gettext("Charges");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Orders");
+/* ../templates/refund_in_process.tpl */
+gettext("Shipping");
 
-/* ../templates/product_server.tpl */
-gettext("Show Customers who have ordered this product");
+/* ../templates/refund_in_process.tpl */
+gettext("Total Net");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Customers who have ordered this product");
+/* ../templates/refund_in_process.tpl */
+gettext("Tax");
 
-/* ../templates/product_server.tpl */
-gettext("Show Customers who have ordered this product");
+/* ../templates/refund_in_process.tpl */
+gettext("Total");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Customers who have ordered this product");
+/* ../templates/refund_in_process.tpl */
+gettext("Refund Date");
 
-/* ../templates/product_server.tpl */
-gettext("Show Stock History");
+/* ../templates/refund_in_process.tpl */
+gettext("Order");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Stock History");
+/* ../templates/refund_in_process.tpl */
+gettext("Items");
 
-/* ../templates/product_server.tpl */
-gettext("Show Stock History");
+/* ../templates/refund_in_process.tpl */
+gettext("Items Out of Stock");
 
-/* ../templates/product_server.tpl */
-gettext("Hide Stock History");
+/* ../templates/regular_campaign.tpl */
+gettext("Campaign Builder");
 
-/* ../templates/product_server.tpl */
-gettext("Weekly");
-
-/* ../templates/product_server.tpl */
-gettext("Monthy");
-
-/* ../templates/product_server.tpl */
-gettext("Quarterly");
-
-/* ../templates/product_server.tpl */
-gettext("Yearly");
-
-/* ../templates/product_server.tpl */
-gettext("Net Sales");
-
-/* ../templates/product_server.tpl */
-gettext("Sales per week");
-
-/* ../templates/product_server.tpl */
-gettext("Sales per month");
-
-/* ../templates/product_server.tpl */
-gettext("Sales per quarter");
-
-/* ../templates/product_server.tpl */
-gettext("Sales per year");
-
-/* ../templates/product_server.tpl */
-gettext("Outers Sold");
-
-/* ../templates/product_server.tpl */
-gettext("Outers sold per month");
-
-/* ../templates/product_server.tpl */
-gettext("Outers sold per month");
-
-/* ../templates/product_server.tpl */
-gettext("Outers sold  per quarter");
-
-/* ../templates/product_server.tpl */
-gettext("Outers sold  per year");
-
-/* ../templates/product_server.tpl */
-gettext("Stock");
-
-/* ../templates/product_server.tpl */
-gettext("Stock History");
-
-/* ../templates/product_server.tpl */
-gettext("Orders with this Product");
-
-/* ../templates/product_server.tpl */
-gettext("Customer who order this Product");
-
-/* ../templates/products.tpl */
-gettext("Products");
-
-/* ../templates/products.tpl */
-gettext("Normal Mode");
-
-/* ../templates/products.tpl */
-gettext("Comparison Mode");
-
-/* ../templates/products.tpl */
-gettext("Comparison Mode");
-
-/* ../templates/products.tpl */
-gettext("Normal Mode");
-
-/* ../templates/products.tpl */
-gettext("General");
-
-/* ../templates/products.tpl */
-gettext("Stock");
-
-/* ../templates/products.tpl */
-gettext("Sales");
-
-/* ../templates/products.tpl */
-gettext("Parts");
-
-/* ../templates/products.tpl */
-gettext("Groups");
-
-/* ../templates/products.tpl */
-gettext("All");
-
-/* ../templates/products.tpl */
-gettext("1Yr");
-
-/* ../templates/products.tpl */
-gettext("1Qtr");
-
-/* ../templates/products.tpl */
-gettext("1M");
-
-/* ../templates/products.tpl */
-gettext("1W");
-
-/* ../templates/products.tpl */
-gettext("Totals");
-
-/* ../templates/products.tpl */
-gettext("M AVG");
-
-/* ../templates/products.tpl */
-gettext("W AVG");
-
-/* ../templates/products.tpl */
-gettext("M EAVG");
-
-/* ../templates/products.tpl */
-gettext("W EAVG");
-
-/* ../templates/products.tpl */
-gettext("Rows per Page");
-
-/* ../templates/products.tpl */
-gettext("Filter options");
-
-/* ../templates/product.tpl */
-gettext("Product Details");
-
-/* ../templates/product.tpl */
-gettext("Charts");
-
-/* ../templates/product.tpl */
-gettext("Orders");
-
-/* ../templates/product.tpl */
-gettext("Customers");
-
-/* ../templates/product.tpl */
-gettext("Stock");
-
-/* ../templates/product.tpl */
-gettext("Show Product Details");
-
-/* ../templates/product.tpl */
-gettext("Hide Product Details");
-
-/* ../templates/product.tpl */
-gettext("Hide Product Details");
-
-/* ../templates/product.tpl */
-gettext("Show Charts");
-
-/* ../templates/product.tpl */
-gettext("Hide Charts");
-
-/* ../templates/product.tpl */
-gettext("Show Charts");
-
-/* ../templates/product.tpl */
-gettext("Hide Charts");
-
-/* ../templates/product.tpl */
-gettext("Show Orders");
-
-/* ../templates/product.tpl */
-gettext("Hide Orders");
-
-/* ../templates/product.tpl */
-gettext("Show Orders");
-
-/* ../templates/product.tpl */
-gettext("Hide Orders");
-
-/* ../templates/product.tpl */
-gettext("Show Customers who have ordered this product");
-
-/* ../templates/product.tpl */
-gettext("Hide Customers who have ordered this product");
-
-/* ../templates/product.tpl */
-gettext("Show Customers who have ordered this product");
-
-/* ../templates/product.tpl */
-gettext("Hide Customers who have ordered this product");
-
-/* ../templates/product.tpl */
-gettext("Show Stock History");
-
-/* ../templates/product.tpl */
-gettext("Hide Stock History");
-
-/* ../templates/product.tpl */
-gettext("Show Stock History");
-
-/* ../templates/product.tpl */
-gettext("Hide Stock History");
-
-/* ../templates/product.tpl */
-gettext("Image");
-
-/* ../templates/product.tpl */
-gettext("Online");
-
-/* ../templates/product.tpl */
-gettext("Offline");
-
-/* ../templates/product.tpl */
-gettext("Sell Price");
-
-/* ../templates/product.tpl */
-gettext("RRP");
-
-/* ../templates/product.tpl */
-gettext("each");
-
-/* ../templates/product.tpl */
-gettext("Sold Since");
-
-/* ../templates/product.tpl */
-gettext("Customers");
-
-/* ../templates/product.tpl */
-gettext("Invoices");
-
-/* ../templates/product.tpl */
-gettext("Sales");
-
-/* ../templates/product.tpl */
-gettext("Profit");
-
-/* ../templates/product.tpl */
-gettext("Outers");
-
-/* ../templates/product.tpl */
-gettext("Customers");
-
-/* ../templates/product.tpl */
-gettext("Invoices");
-
-/* ../templates/product.tpl */
-gettext("Sales");
-
-/* ../templates/product.tpl */
-gettext("Profit");
-
-/* ../templates/product.tpl */
-gettext("Outers");
-
-/* ../templates/product.tpl */
-gettext("Customers");
-
-/* ../templates/product.tpl */
-gettext("Invoices");
-
-/* ../templates/product.tpl */
-gettext("Sales");
-
-/* ../templates/product.tpl */
-gettext("Profit");
-
-/* ../templates/product.tpl */
-gettext("Outers");
-
-/* ../templates/product.tpl */
-gettext("Customers");
-
-/* ../templates/product.tpl */
-gettext("Invoices");
-
-/* ../templates/product.tpl */
-gettext("Sales");
-
-/* ../templates/product.tpl */
-gettext("Profit");
-
-/* ../templates/product.tpl */
-gettext("Outers");
-
-/* ../templates/product.tpl */
-gettext("Customers");
-
-/* ../templates/product.tpl */
-gettext("Invoices");
-
-/* ../templates/product.tpl */
-gettext("Sales");
-
-/* ../templates/product.tpl */
-gettext("Profit");
-
-/* ../templates/product.tpl */
-gettext("Outers");
-
-/* ../templates/product.tpl */
-gettext("Suppliers");
-
-/* ../templates/product.tpl */
-gettext("Discontinued");
-
-/* ../templates/product.tpl */
-gettext("Discontinued");
-
-/* ../templates/product.tpl */
-gettext("Not for Sale");
-
-/* ../templates/product.tpl */
-gettext("Available");
-
-/* ../templates/product.tpl */
-gettext("Parts");
-
-/* ../templates/product.tpl */
-gettext("Locations");
-
-/* ../templates/product.tpl */
-gettext("SKU");
-
-/* ../templates/product.tpl */
-gettext("Unit Weight");
-
-/* ../templates/product.tpl */
-gettext("Unit Dimensions");
-
-/* ../templates/product.tpl */
-gettext("Outer Weight");
-
-/* ../templates/product.tpl */
-gettext("Kg");
-
-/* ../templates/product.tpl */
-gettext("Outer Dimensions");
-
-/* ../templates/product.tpl */
-gettext("Categories");
-
-/* ../templates/product.tpl */
-gettext("Material");
-
-/* ../templates/product.tpl */
-gettext("Ingredients");
-
-/* ../templates/product.tpl */
-gettext("Product Code Timeline");
-
-/* ../templates/product.tpl */
-gettext("Orders with this Product");
-
-/* ../templates/product.tpl */
-gettext("Customer who order this Product");
-
-/* ../templates/product.tpl */
-gettext("Product History");
+/* ../templates/remove_people.tpl */
+gettext("Email Campaigns");
 
 /* ../templates/report_customers.tpl */
 gettext("Top");
@@ -6354,6 +9993,117 @@ gettext("Number of Invoices");
 
 /* ../templates/report_customers.tpl */
 gettext("Based in");
+
+/* ../templates/report_first_order.tpl */
+gettext("First Order Analysis");
+
+/* ../templates/report_first_order.tpl */
+gettext("Stores");
+
+/* ../templates/report_first_order.tpl */
+gettext("Department");
+
+/* ../templates/report_first_order.tpl */
+gettext("Department");
+
+/* ../templates/report_first_order.tpl */
+gettext("Change");
+
+/* ../templates/report_first_order.tpl */
+gettext("Share of order");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Continents");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("World Regions");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Countries");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("World");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Counties");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("World Regions");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Continents");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Filter options");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Filter options");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_geo_sales_world.tpl */
+gettext("Filter options");
+
+/* ../templates/report_issue.tpl */
+gettext("Report Problem");
+
+/* ../templates/report_issue.tpl */
+gettext("Request Feature");
+
+/* ../templates/report_issue.tpl */
+gettext("Summary");
+
+/* ../templates/report_issue.tpl */
+gettext("Description");
+
+/* ../templates/report_issue.tpl */
+gettext("Cancel");
+
+/* ../templates/report_issue.tpl */
+gettext("Send");
+
+/* ../templates/report_issue.tpl */
+gettext("Thank you for submitting the issue");
+
+/* ../templates/report_issue.tpl */
+gettext("Close");
+
+/* ../templates/report_issue.tpl */
+gettext("Report another problem");
+
+/* ../templates/report_issue.tpl */
+gettext("Request other feature");
+
+/* ../templates/report_out_of_stock.tpl */
+gettext("Group by Part");
+
+/* ../templates/report_out_of_stock.tpl */
+gettext("Show Individual Transactions");
+
+/* ../templates/report_out_of_stock.tpl */
+gettext("Filter options");
+
+/* ../templates/report_out_of_stock.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_out_of_stock.tpl */
+gettext("Filter options");
+
+/* ../templates/report_out_of_stock.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_pp.tpl */
+gettext("Pickers Report");
+
+/* ../templates/report_pp.tpl */
+gettext("Packers Report");
 
 /* ../templates/report_pp_server.tpl */
 gettext("Sales by date");
@@ -6436,92 +10186,14 @@ gettext("Africa");
 /* ../templates/report_pp_server.tpl */
 gettext("Oceania");
 
-/* ../templates/report_pp.tpl */
-gettext("Pickers Report");
+/* ../templates/report_sales.tpl */
+gettext("Reports");
 
-/* ../templates/report_pp.tpl */
-gettext("Packers Report");
-
-/* ../templates/report_sales_activity.tpl */
+/* ../templates/report_sales.tpl */
 gettext("Sales Reports");
 
-/* ../templates/report_sales_activity.tpl */
-gettext("Invoices");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("Customers");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("Net Sales");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("invoices");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("customers");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("sales");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("Period");
-
-/* ../templates/report_sales_activity.tpl */
-gettext("compare");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Profit");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Invoices");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Store");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Invoices");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Net Sales");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Tax");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Profit");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Invoices");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Store");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Revenue");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Profit");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Margin");
-
-/* ../templates/report_sales_main.tpl */
-gettext("Invoices per Category");
-
-/* ../templates/report_sales_server.tpl */
-gettext("Sales Reports");
-
-/* ../templates/report_sales_server.tpl */
-gettext("Today");
-
-/* ../templates/report_sales_server.tpl */
-gettext("Go");
-
-/* ../templates/report_sales_server.tpl */
-gettext("Net difference");
-
-/* ../templates/report_sales_server.tpl */
-gettext("Percentage");
+/* ../templates/report_sales.tpl */
+gettext("Store Sales Overview");
 
 /* ../templates/report_sales.tpl */
 gettext("Display orders invoiced in this period");
@@ -6721,20 +10393,179 @@ gettext("All Invoices");
 /* ../templates/report_sales.tpl */
 gettext("No orders has been placed in this period");
 
-/* ../templates/reports_navigation.tpl */
-gettext("General Index");
+/* ../templates/report_sales_activity.tpl */
+gettext("Invoices");
 
-/* ../templates/reports_navigation.tpl */
-gettext("Sales");
+/* ../templates/report_sales_activity.tpl */
+gettext("Customers");
 
-/* ../templates/reports_navigation.tpl */
-gettext("Sales Overview");
+/* ../templates/report_sales_activity.tpl */
+gettext("Net Sales");
 
-/* ../templates/reports_navigation.tpl */
-gettext("Sales Details");
+/* ../templates/report_sales_activity.tpl */
+gettext("invoices");
 
-/* ../templates/reports_navigation.tpl */
-gettext("Activity");
+/* ../templates/report_sales_activity.tpl */
+gettext("customers");
+
+/* ../templates/report_sales_activity.tpl */
+gettext("sales");
+
+/* ../templates/report_sales_activity.tpl */
+gettext("Period");
+
+/* ../templates/report_sales_activity.tpl */
+gettext("compare");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Reports");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Sales Reports");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Profit");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Invoices");
+
+/* ../templates/report_sales_main.tpl */
+gettext("HQ Currency");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Store Currencies");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Store");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Invoices");
+
+/* ../templates/report_sales_main.tpl */
+gettext("% of total");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Yr");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Net Sales");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Net Sales");
+
+/* ../templates/report_sales_main.tpl */
+gettext("");
+
+/* ../templates/report_sales_main.tpl */
+gettext("% of total");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Yr");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Tax");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Tax");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Profit");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Invoices");
+
+/* ../templates/report_sales_main.tpl */
+gettext("HQ Currency");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Store Currencies");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Store");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Revenue");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Revenue");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Profit");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Profit");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Margin");
+
+/* ../templates/report_sales_main.tpl */
+gettext("All Stores");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Invoices per Store");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Invoices per Category");
+
+/* ../templates/report_sales_main.tpl */
+gettext("You need to upgrade your Flash Player");
+
+/* ../templates/report_sales_main.tpl */
+gettext("You need to upgrade your Flash Player");
+
+/* ../templates/report_sales_main.tpl */
+gettext("You need to upgrade your Flash Player");
+
+/* ../templates/report_sales_server.tpl */
+gettext("Sales Reports");
+
+/* ../templates/report_sales_server.tpl */
+gettext("Today");
+
+/* ../templates/report_sales_server.tpl */
+gettext("Go");
+
+/* ../templates/report_sales_server.tpl */
+gettext("Net difference");
+
+/* ../templates/report_sales_server.tpl */
+gettext("Percentage");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Sales without tax");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Original Currency");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Corporate Currency");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("HM Revenue & Customs");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Amount Totals in");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Customers");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Invoices");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Filter options");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Rows per Page");
+
+/* ../templates/report_sales_with_no_tax.tpl */
+gettext("Filter options");
 
 /* ../templates/report_tax_ES1.tpl */
 gettext("Limit");
@@ -6745,50 +10576,161 @@ gettext("Year");
 /* ../templates/report_tax_ES1.tpl */
 gettext("Export (CSV)");
 
-/* ../templates/search_customers.tpl */
-gettext("Contact's List");
+/* ../templates/reports_navigation.tpl */
+gettext("General Index");
+
+/* ../templates/search.tpl */
+gettext("Search");
+
+/* ../templates/search.tpl */
+gettext("Results");
 
 /* ../templates/search_customers.tpl */
-gettext("Customer's List");
+gettext("Search Customers");
 
 /* ../templates/search_customers.tpl */
-gettext("All Customers");
+gettext("No Results Found");
 
 /* ../templates/search_customers.tpl */
+gettext("Company Name");
+
+/* ../templates/search_customers.tpl */
+gettext("Contact Name");
+
+/* ../templates/search_customers.tpl */
+gettext("Contact Name");
+
+/* ../templates/search_customers.tpl */
+gettext("Gender");
+
+/* ../templates/search_customers.tpl */
+gettext("Male");
+
+/* ../templates/search_customers.tpl */
+gettext("Female");
+
+/* ../templates/search_customers.tpl */
+gettext("Unknown");
+
+/* ../templates/search_customers.tpl */
+gettext("Salutation");
+
+/* ../templates/search_customers.tpl */
+gettext("First Name(s)");
+
+/* ../templates/search_customers.tpl */
+gettext("Surname(s)");
+
+/* ../templates/search_customers.tpl */
+gettext("Suffix(s)");
+
+/* ../templates/search_customers.tpl */
+gettext("Email");
+
+/* ../templates/search_customers.tpl */
+gettext("Telephone");
+
+/* ../templates/search_customers.tpl */
+gettext("Country Code");
+
+/* ../templates/search_customers.tpl */
+gettext("NAC");
+
+/* ../templates/search_customers.tpl */
+gettext("Area Code");
+
+/* ../templates/search_customers.tpl */
+gettext("Number");
+
+/* ../templates/search_customers.tpl */
+gettext("Extension");
+
+/* ../templates/search_customers.tpl */
+gettext("Region");
+
+/* ../templates/search_customers.tpl */
+gettext("Subregion");
+
+/* ../templates/search_customers.tpl */
+gettext("3d Division");
+
+/* ../templates/search_customers.tpl */
+gettext("4d Division");
+
+/* ../templates/search_customers.tpl */
+gettext("5d Division");
+
+/* ../templates/search_customers.tpl */
+gettext("Postal Code");
+
+/* ../templates/search_customers.tpl */
+gettext("Town/City");
+
+/* ../templates/search_customers.tpl */
+gettext("City 1st Div");
+
+/* ../templates/search_customers.tpl */
+gettext("City 2nd Div");
+
+/* ../templates/search_customers.tpl */
+gettext("Street/Number");
+
+/* ../templates/search_customers.tpl */
+gettext("Building");
+
+/* ../templates/search_customers.tpl */
+gettext("Internal");
+
+/* ../templates/send_post.tpl */
 gettext("Customers");
 
-/* ../templates/search_customers.tpl */
-gettext("Foreign Customers");
+/* ../templates/send_post.tpl */
+gettext("Customers List");
 
-/* ../templates/search_customers.tpl */
-gettext("with Email");
+/* ../templates/send_post.tpl */
+gettext("All Contacts");
 
-/* ../templates/search_customers.tpl */
-gettext("with Telephone");
+/* ../templates/send_post.tpl */
+gettext("All Customers");
 
-/* ../templates/search_customers.tpl */
-gettext("Advanced Search");
+/* ../templates/send_post.tpl */
+gettext("Active Customers");
 
-/* ../templates/search_customers.tpl */
-gettext("Search in progress");
-
-/* ../templates/search_customers.tpl */
+/* ../templates/send_post.tpl */
 gettext("General");
 
-/* ../templates/search_customers.tpl */
+/* ../templates/send_post.tpl */
 gettext("Contact");
 
-/* ../templates/search_customers.tpl */
-gettext("Export the result list as");
+/* ../templates/send_post.tpl */
+gettext("Address");
 
-/* ../templates/search_customers.tpl */
-gettext("CSV file");
+/* ../templates/send_post.tpl */
+gettext("Balance");
 
-/* ../templates/search_customers.tpl */
+/* ../templates/send_post.tpl */
+gettext("Ranking");
+
+/* ../templates/send_post.tpl */
 gettext("Filter options");
 
-/* ../templates/search_customers.tpl */
+/* ../templates/send_post.tpl */
 gettext("Rows per Page");
+
+/* ../templates/send_post.tpl */
+gettext("Create new Customer");
+
+/* ../templates/send_post.tpl */
+gettext("Company");
+
+/* ../templates/send_post.tpl */
+gettext("Individual");
+
+/* ../templates/send_post.tpl */
+gettext("Import from file");
+
+/* ../templates/send_post.tpl */
+gettext("Cancel");
 
 /* ../templates/shelfs.tpl */
 gettext("Shelfs");
@@ -6802,71 +10744,323 @@ gettext("Filter options");
 /* ../templates/shelfs.tpl */
 gettext("Rows per Page");
 
-/* ../templates/site_map.tpl */
-gettext("Help");
+/* ../templates/site.tpl */
+gettext("Site Information");
 
-/* ../templates/site_map.tpl */
-gettext("Hello");
+/* ../templates/site.tpl */
+gettext("Code");
 
-/* ../templates/site_map.tpl */
-gettext("Logout");
+/* ../templates/site.tpl */
+gettext("Name");
 
-/* ../templates/site_map.tpl */
-gettext("Site Map");
+/* ../templates/site.tpl */
+gettext("Web Page");
 
-/* ../templates/stores.tpl */
-gettext("Corporate Overview");
+/* ../templates/site.tpl */
+gettext("Total Hits");
 
-/* ../templates/stores.tpl */
-gettext("Stores");
+/* ../templates/site.tpl */
+gettext("Unique Visitors");
 
-/* ../templates/stores.tpl */
-gettext("Summary");
+/* ../templates/site.tpl */
+gettext("Hits");
 
-/* ../templates/stores.tpl */
-gettext("Stock");
+/* ../templates/site.tpl */
+gettext("Unique Visitors");
 
-/* ../templates/stores.tpl */
-gettext("Sales");
+/* ../templates/site.tpl */
+gettext("Pages");
 
-/* ../templates/stores.tpl */
-gettext("All");
+/* ../templates/site.tpl */
+gettext("List");
 
-/* ../templates/stores.tpl */
-gettext("1Yr");
+/* ../templates/site.tpl */
+gettext("Thumbnails");
 
-/* ../templates/stores.tpl */
-gettext("1Qtr");
-
-/* ../templates/stores.tpl */
-gettext("1M");
-
-/* ../templates/stores.tpl */
-gettext("1W");
-
-/* ../templates/stores.tpl */
-gettext("Totals");
-
-/* ../templates/stores.tpl */
-gettext("M AVG");
-
-/* ../templates/stores.tpl */
-gettext("W AVG");
-
-/* ../templates/stores.tpl */
-gettext("filter results");
-
-/* ../templates/stores.tpl */
-gettext("Hide filter");
-
-/* ../templates/stores.tpl */
+/* ../templates/site.tpl */
 gettext("Rows per Page");
 
-/* ../templates/stores.tpl */
+/* ../templates/site.tpl */
 gettext("Filter options");
 
-/* ../templates/stores.tpl */
-gettext("Display Mode Options");
+/* ../templates/splinter_contacts_customers.tpl */
+gettext("All times");
+
+/* ../templates/splinter_contacts_customers.tpl */
+gettext("1y");
+
+/* ../templates/splinter_contacts_customers.tpl */
+gettext("1q");
+
+/* ../templates/splinter_contacts_customers.tpl */
+gettext("1m");
+
+/* ../templates/splinter_orders_in_process.tpl */
+gettext("Orders in Process");
+
+/* ../templates/splinter_orders_in_process.tpl */
+gettext("Pending Orders");
+
+/* ../templates/splinter_orders_in_process.tpl */
+gettext("Orders to do");
+
+/* ../templates/splinter_orders_in_process.tpl */
+gettext("Value");
+
+/* ../templates/splinter_outstanding_ord.tpl */
+gettext("Outstanding Order");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Store");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Invoices");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Invoices");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Last Yr Invoices");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Sales");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Sales");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Last Yr Sales");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Corporate Currency");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Store Currencies");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Stores");
+
+/* ../templates/splinter_sales.tpl */
+gettext("Categories");
+
+/* ../templates/splinter_sales.tpl */
+gettext("YTD");
+
+/* ../templates/splinter_sales.tpl */
+gettext("MTD");
+
+/* ../templates/splinter_sales.tpl */
+gettext("WTD");
+
+/* ../templates/splinter_sales.tpl */
+gettext("today");
+
+/* ../templates/splinter_sales.tpl */
+gettext("yesterday");
+
+/* ../templates/splinter_sales.tpl */
+gettext("last w");
+
+/* ../templates/splinter_sales.tpl */
+gettext("last m");
+
+/* ../templates/splinter_sales.tpl */
+gettext("3y");
+
+/* ../templates/splinter_sales.tpl */
+gettext("1y");
+
+/* ../templates/splinter_sales.tpl */
+gettext("1q");
+
+/* ../templates/splinter_sales.tpl */
+gettext("1m");
+
+/* ../templates/splinter_sales.tpl */
+gettext("10d");
+
+/* ../templates/splinter_sales.tpl */
+gettext("1w");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("Customer Name");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("Last Order");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("Invoices");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("Balance");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("Top Customers");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("All times");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("1y");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("1q");
+
+/* ../templates/splinter_top_customers.tpl */
+gettext("1m");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("Fam");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("Product");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("Sales");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("Description");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("Families");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("Products");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("All times");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("1y");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("1q");
+
+/* ../templates/splinter_top_products.tpl */
+gettext("1m");
+
+/* ../templates/staff.tpl */
+gettext("History Notes");
+
+/* ../templates/staff.tpl */
+gettext("Working Hours");
+
+/* ../templates/staff.tpl */
+gettext("History/Notes");
+
+/* ../templates/staff.tpl */
+gettext("Working Hours Details");
+
+/* ../templates/staff_user.tpl */
+gettext("Staff User");
+
+/* ../templates/staff_user.tpl */
+gettext("Login");
+
+/* ../templates/staff_user.tpl */
+gettext("Alias");
+
+/* ../templates/staff_user.tpl */
+gettext("Login Count");
+
+/* ../templates/staff_user.tpl */
+gettext("Last Login");
+
+/* ../templates/staff_user.tpl */
+gettext("Failed Login Count");
+
+/* ../templates/staff_user.tpl */
+gettext("Failed Last Login");
+
+/* ../templates/staff_user.tpl */
+gettext("Change Password for");
+
+/* ../templates/staff_user.tpl */
+gettext("Change (Random)");
+
+/* ../templates/staff_user.tpl */
+gettext("Change (User Defined)");
+
+/* ../templates/staff_user.tpl */
+gettext("Password");
+
+/* ../templates/staff_user.tpl */
+gettext("Password");
+
+/* ../templates/staff_user.tpl */
+gettext("Repeat Password");
+
+/* ../templates/staff_user.tpl */
+gettext("Cancel");
+
+/* ../templates/staff_user.tpl */
+gettext("Save");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Audit Quantity");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Save");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Quantity Lost");
+
+/* ../templates/stock_splinter.tpl */
+gettext("max");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Why?");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Action");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Save");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Move");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Save");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Add Location");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Save");
+
+/* ../templates/stock_splinter.tpl */
+gettext("Cancel");
+
+/* ../templates/store.tpl */
+gettext("Details");
+
+/* ../templates/store.tpl */
+gettext("Categories");
+
+/* ../templates/store.tpl */
+gettext("Departments");
+
+/* ../templates/store.tpl */
+gettext("Families");
+
+/* ../templates/store.tpl */
+gettext("Products");
+
+/* ../templates/store.tpl */
+gettext("Sites");
+
+/* ../templates/store.tpl */
+gettext("Offers");
 
 /* ../templates/store.tpl */
 gettext("Store Information");
@@ -6965,6 +11159,63 @@ gettext("Profit");
 gettext("Outers");
 
 /* ../templates/store.tpl */
+gettext("Store");
+
+/* ../templates/store.tpl */
+gettext("Top Departments");
+
+/* ../templates/store.tpl */
+gettext("Department's Pie");
+
+/* ../templates/store.tpl */
+gettext("Departments");
+
+/* ../templates/store.tpl */
+gettext("All");
+
+/* ../templates/store.tpl */
+gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.tpl */
+gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("1W");
+
+/* ../templates/store.tpl */
+gettext("Families");
+
+/* ../templates/store.tpl */
+gettext("All");
+
+/* ../templates/store.tpl */
+gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.tpl */
+gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("1W");
+
+/* ../templates/store.tpl */
+gettext("Web Sites");
+
+/* ../templates/store.tpl */
+gettext("List");
+
+/* ../templates/store.tpl */
+gettext("Thumbnails");
+
+/* ../templates/store.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.tpl */
 gettext("Departments");
 
 /* ../templates/store.tpl */
@@ -7013,6 +11264,126 @@ gettext("M AVG");
 gettext("W AVG");
 
 /* ../templates/store.tpl */
+gettext("Families");
+
+/* ../templates/store.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.tpl */
+gettext("Normal Mode");
+
+/* ../templates/store.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/store.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/store.tpl */
+gettext("Normal Mode");
+
+/* ../templates/store.tpl */
+gettext("Summary");
+
+/* ../templates/store.tpl */
+gettext("Stock");
+
+/* ../templates/store.tpl */
+gettext("Sales");
+
+/* ../templates/store.tpl */
+gettext("All");
+
+/* ../templates/store.tpl */
+gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.tpl */
+gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("1W");
+
+/* ../templates/store.tpl */
+gettext("Totals");
+
+/* ../templates/store.tpl */
+gettext("M AVG");
+
+/* ../templates/store.tpl */
+gettext("W AVG");
+
+/* ../templates/store.tpl */
+gettext("Products");
+
+/* ../templates/store.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.tpl */
+gettext("Export (XML)");
+
+/* ../templates/store.tpl */
+gettext("Normal Mode");
+
+/* ../templates/store.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/store.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/store.tpl */
+gettext("Normal Mode");
+
+/* ../templates/store.tpl */
+gettext("General");
+
+/* ../templates/store.tpl */
+gettext("Stock");
+
+/* ../templates/store.tpl */
+gettext("Sales");
+
+/* ../templates/store.tpl */
+gettext("Parts");
+
+/* ../templates/store.tpl */
+gettext("Groups");
+
+/* ../templates/store.tpl */
+gettext("All");
+
+/* ../templates/store.tpl */
+gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.tpl */
+gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("1W");
+
+/* ../templates/store.tpl */
+gettext("Totals");
+
+/* ../templates/store.tpl */
+gettext("M AVG");
+
+/* ../templates/store.tpl */
+gettext("W AVG");
+
+/* ../templates/store.tpl */
+gettext("M EAVG");
+
+/* ../templates/store.tpl */
+gettext("W EAVG");
+
+/* ../templates/store.tpl */
+gettext("Product Category Page");
+
+/* ../templates/store.tpl */
 gettext("Rows per Page");
 
 /* ../templates/store.tpl */
@@ -7020,6 +11391,549 @@ gettext("Filter options");
 
 /* ../templates/store.tpl */
 gettext("Period");
+
+/* ../templates/store.tpl */
+gettext("Rows per Page");
+
+/* ../templates/store.tpl */
+gettext("Filter options");
+
+/* ../templates/stores.tpl */
+gettext("Stores");
+
+/* ../templates/stores.tpl */
+gettext("Details");
+
+/* ../templates/stores.tpl */
+gettext("Stores");
+
+/* ../templates/stores.tpl */
+gettext("Departments");
+
+/* ../templates/stores.tpl */
+gettext("Families");
+
+/* ../templates/stores.tpl */
+gettext("Products");
+
+/* ../templates/stores.tpl */
+gettext("Offers");
+
+/* ../templates/stores.tpl */
+gettext("Stores");
+
+/* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
+gettext("Summary");
+
+/* ../templates/stores.tpl */
+gettext("Stock");
+
+/* ../templates/stores.tpl */
+gettext("Sales");
+
+/* ../templates/stores.tpl */
+gettext("All");
+
+/* ../templates/stores.tpl */
+gettext("3Y");
+
+/* ../templates/stores.tpl */
+gettext("1Yr");
+
+/* ../templates/stores.tpl */
+gettext("YTD");
+
+/* ../templates/stores.tpl */
+gettext("6M");
+
+/* ../templates/stores.tpl */
+gettext("1Qtr");
+
+/* ../templates/stores.tpl */
+gettext("1M");
+
+/* ../templates/stores.tpl */
+gettext("10D");
+
+/* ../templates/stores.tpl */
+gettext("1W");
+
+/* ../templates/stores.tpl */
+gettext("Totals");
+
+/* ../templates/stores.tpl */
+gettext("M AVG");
+
+/* ../templates/stores.tpl */
+gettext("W AVG");
+
+/* ../templates/stores.tpl */
+gettext("filter results");
+
+/* ../templates/stores.tpl */
+gettext("Hide filter");
+
+/* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
+gettext("Departments");
+
+/* ../templates/stores.tpl */
+gettext("Normal Mode");
+
+/* ../templates/stores.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/stores.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/stores.tpl */
+gettext("Normal Mode");
+
+/* ../templates/stores.tpl */
+gettext("Summary");
+
+/* ../templates/stores.tpl */
+gettext("Stock");
+
+/* ../templates/stores.tpl */
+gettext("Sales");
+
+/* ../templates/stores.tpl */
+gettext("All");
+
+/* ../templates/stores.tpl */
+gettext("3Y");
+
+/* ../templates/stores.tpl */
+gettext("1Yr");
+
+/* ../templates/stores.tpl */
+gettext("YTD");
+
+/* ../templates/stores.tpl */
+gettext("6M");
+
+/* ../templates/stores.tpl */
+gettext("1Qtr");
+
+/* ../templates/stores.tpl */
+gettext("1M");
+
+/* ../templates/stores.tpl */
+gettext("10D");
+
+/* ../templates/stores.tpl */
+gettext("1W");
+
+/* ../templates/stores.tpl */
+gettext("Totals");
+
+/* ../templates/stores.tpl */
+gettext("M AVG");
+
+/* ../templates/stores.tpl */
+gettext("W AVG");
+
+/* ../templates/stores.tpl */
+gettext("Families");
+
+/* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
+gettext("Normal Mode");
+
+/* ../templates/stores.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/stores.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/stores.tpl */
+gettext("Normal Mode");
+
+/* ../templates/stores.tpl */
+gettext("Summary");
+
+/* ../templates/stores.tpl */
+gettext("Stock");
+
+/* ../templates/stores.tpl */
+gettext("Sales");
+
+/* ../templates/stores.tpl */
+gettext("All");
+
+/* ../templates/stores.tpl */
+gettext("3Y");
+
+/* ../templates/stores.tpl */
+gettext("1Yr");
+
+/* ../templates/stores.tpl */
+gettext("YTD");
+
+/* ../templates/stores.tpl */
+gettext("6M");
+
+/* ../templates/stores.tpl */
+gettext("1Qtr");
+
+/* ../templates/stores.tpl */
+gettext("1M");
+
+/* ../templates/stores.tpl */
+gettext("10D");
+
+/* ../templates/stores.tpl */
+gettext("1W");
+
+/* ../templates/stores.tpl */
+gettext("Totals");
+
+/* ../templates/stores.tpl */
+gettext("M AVG");
+
+/* ../templates/stores.tpl */
+gettext("W AVG");
+
+/* ../templates/stores.tpl */
+gettext("Products");
+
+/* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
+gettext("Export (XML)");
+
+/* ../templates/stores.tpl */
+gettext("Normal Mode");
+
+/* ../templates/stores.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/stores.tpl */
+gettext("Comparison Mode");
+
+/* ../templates/stores.tpl */
+gettext("Normal Mode");
+
+/* ../templates/stores.tpl */
+gettext("Summary");
+
+/* ../templates/stores.tpl */
+gettext("Stock");
+
+/* ../templates/stores.tpl */
+gettext("Sales");
+
+/* ../templates/stores.tpl */
+gettext("Parts");
+
+/* ../templates/stores.tpl */
+gettext("Groups");
+
+/* ../templates/stores.tpl */
+gettext("All");
+
+/* ../templates/stores.tpl */
+gettext("3Y");
+
+/* ../templates/stores.tpl */
+gettext("1Yr");
+
+/* ../templates/stores.tpl */
+gettext("YTD");
+
+/* ../templates/stores.tpl */
+gettext("6M");
+
+/* ../templates/stores.tpl */
+gettext("1Qtr");
+
+/* ../templates/stores.tpl */
+gettext("1M");
+
+/* ../templates/stores.tpl */
+gettext("10D");
+
+/* ../templates/stores.tpl */
+gettext("1W");
+
+/* ../templates/stores.tpl */
+gettext("Totals");
+
+/* ../templates/stores.tpl */
+gettext("M AVG");
+
+/* ../templates/stores.tpl */
+gettext("W AVG");
+
+/* ../templates/stores.tpl */
+gettext("M EAVG");
+
+/* ../templates/stores.tpl */
+gettext("W EAVG");
+
+/* ../templates/stores.tpl */
+gettext("Web Sites");
+
+/* ../templates/stores.tpl */
+gettext("List");
+
+/* ../templates/stores.tpl */
+gettext("Thumbnails");
+
+/* ../templates/stores.tpl */
+gettext("Rows per Page");
+
+/* ../templates/stores.tpl */
+gettext("Filter options");
+
+/* ../templates/stores.tpl */
+gettext("Rows per Page");
+
+/* ../templates/stores.tpl */
+gettext("Filter options");
+
+/* ../templates/stores.tpl */
+gettext("Rows per Page");
+
+/* ../templates/stores.tpl */
+gettext("Filter options");
+
+/* ../templates/stores.tpl */
+gettext("Rows per Page");
+
+/* ../templates/stores.tpl */
+gettext("Filter options");
+
+/* ../templates/stores.tpl */
+gettext("Display Mode Options");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier Details");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier Products");
+
+/* ../templates/supplier.tpl */
+gettext("Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("History");
+
+/* ../templates/supplier.tpl */
+gettext("Show Supplier Details");
+
+/* ../templates/supplier.tpl */
+gettext("Hide Supplier Details");
+
+/* ../templates/supplier.tpl */
+gettext("Hide Supplier Details");
+
+/* ../templates/supplier.tpl */
+gettext("Show Products");
+
+/* ../templates/supplier.tpl */
+gettext("Hide Products");
+
+/* ../templates/supplier.tpl */
+gettext("Show Products");
+
+/* ../templates/supplier.tpl */
+gettext("Hide Products");
+
+/* ../templates/supplier.tpl */
+gettext("Show the Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Hide the Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Show the Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Hide the Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Show History");
+
+/* ../templates/supplier.tpl */
+gettext("Hide History");
+
+/* ../templates/supplier.tpl */
+gettext("Show History");
+
+/* ../templates/supplier.tpl */
+gettext("Hide History");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier Details");
+
+/* ../templates/supplier.tpl */
+gettext("Code");
+
+/* ../templates/supplier.tpl */
+gettext("Name");
+
+/* ../templates/supplier.tpl */
+gettext("Location");
+
+/* ../templates/supplier.tpl */
+gettext("Email");
+
+/* ../templates/supplier.tpl */
+gettext("Total Sales");
+
+/* ../templates/supplier.tpl */
+gettext("Total Profit");
+
+/* ../templates/supplier.tpl */
+gettext("Stock Value");
+
+/* ../templates/supplier.tpl */
+gettext("Items available");
+
+/* ../templates/supplier.tpl */
+gettext("Items no longer available");
+
+/* ../templates/supplier.tpl */
+gettext("Pending Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier Products");
+
+/* ../templates/supplier.tpl */
+gettext("Import (CSV)");
+
+/* ../templates/supplier.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/supplier.tpl */
+gettext("Summary");
+
+/* ../templates/supplier.tpl */
+gettext("Stock");
+
+/* ../templates/supplier.tpl */
+gettext("Sales");
+
+/* ../templates/supplier.tpl */
+gettext("Forecast");
+
+/* ../templates/supplier.tpl */
+gettext("All");
+
+/* ../templates/supplier.tpl */
+gettext("1Yr");
+
+/* ../templates/supplier.tpl */
+gettext("1Qtr");
+
+/* ../templates/supplier.tpl */
+gettext("1M");
+
+/* ../templates/supplier.tpl */
+gettext("1W");
+
+/* ../templates/supplier.tpl */
+gettext("Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/supplier.tpl */
+gettext("Invoices");
+
+/* ../templates/supplier.tpl */
+gettext("Purchase Orders");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier Delivery Notes");
+
+/* ../templates/supplier.tpl */
+gettext("Supplier Invoices");
+
+/* ../templates/supplier.tpl */
+gettext("History");
+
+/* ../templates/supplier.tpl */
+gettext("Filter options");
+
+/* ../templates/supplier.tpl */
+gettext("Rows per Page");
+
+/* ../templates/supplier.tpl */
+gettext("Filter options");
+
+/* ../templates/supplier.tpl */
+gettext("Rows per Page");
+
+/* ../templates/supplier.tpl */
+gettext("Filter options");
+
+/* ../templates/supplier.tpl */
+gettext("Rows per Page");
+
+/* ../templates/supplier_categories_base.tpl */
+gettext("Supplier Categories Home");
+
+/* ../templates/supplier_categories_base.tpl */
+gettext("Main Categories");
+
+/* ../templates/supplier_category.tpl */
+gettext("Supplier Categories");
+
+/* ../templates/supplier_category.tpl */
+gettext("Category");
+
+/* ../templates/supplier_category.tpl */
+gettext("Products");
+
+/* ../templates/supplier_category.tpl */
+gettext("General");
+
+/* ../templates/supplier_category.tpl */
+gettext("Stock");
+
+/* ../templates/supplier_category.tpl */
+gettext("Sales");
+
+/* ../templates/supplier_category.tpl */
+gettext("All");
+
+/* ../templates/supplier_category.tpl */
+gettext("1Yr");
+
+/* ../templates/supplier_category.tpl */
+gettext("1Qtr");
+
+/* ../templates/supplier_category.tpl */
+gettext("1M");
+
+/* ../templates/supplier_category.tpl */
+gettext("1W");
+
+/* ../templates/supplier_category.tpl */
+gettext("Totals");
+
+/* ../templates/supplier_category.tpl */
+gettext("M AVG");
+
+/* ../templates/supplier_category.tpl */
+gettext("W AVG");
 
 /* ../templates/supplier_delivery.tpl */
 gettext("Suppliers Index");
@@ -7325,13 +12239,10 @@ gettext("Assing Locations");
 gettext("Parts");
 
 /* ../templates/supplier_dn_assing_locations.tpl */
-gettext("Copy values from DN");
+gettext("Change Quantity Damaged");
 
 /* ../templates/supplier_dn_assing_locations.tpl */
-gettext("Set Damaged");
-
-/* ../templates/supplier_dn_assing_locations.tpl */
-gettext("Set Received");
+gettext("Change Quantity Received");
 
 /* ../templates/supplier_dn_assing_locations.tpl */
 gettext("Product Code");
@@ -7347,6 +12258,15 @@ gettext("Checked By");
 
 /* ../templates/supplier_dn_assing_locations.tpl */
 gettext("Modify");
+
+/* ../templates/supplier_dn_assing_locations.tpl */
+gettext("Stock Placing for");
+
+/* ../templates/supplier_dn_assing_locations.tpl */
+gettext("Quantity");
+
+/* ../templates/supplier_dn_assing_locations.tpl */
+gettext("Location");
 
 /* ../templates/supplier_dn_assing_locations.tpl */
 gettext("Close");
@@ -7436,87 +12356,6 @@ gettext("Checked By");
 gettext("Modify");
 
 /* ../templates/supplier_dn_assing_skus.tpl */
-gettext("Close");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Supplier Page");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Edit Delivery Note");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Mark Delivery Note as Checked");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Set Damages");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Set SKUs");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Set Locations");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Created");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Captured");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Supplier Delivery Note");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Supplier Delivery Note Key");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Supplier");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Items");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Notes");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Check Delivery");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Set Damages");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Assing SKUs");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Assing Locations");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Supplier Products");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Copy values from DN");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Set Damaged");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Set Received");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Product Code");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Filter options");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Rows per Page");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Checked By");
-
-/* ../templates/supplier_dn_checked.tpl */
-gettext("Modify");
-
-/* ../templates/supplier_dn_checked.tpl */
 gettext("Close");
 
 /* ../templates/supplier_dn_in_process.tpl */
@@ -7754,9 +12593,6 @@ gettext("Notes");
 gettext("Check Delivery");
 
 /* ../templates/supplier_dn_received.tpl */
-gettext("Set Damages");
-
-/* ../templates/supplier_dn_received.tpl */
 gettext("Assing SKUs");
 
 /* ../templates/supplier_dn_received.tpl */
@@ -8131,6 +12967,72 @@ gettext("Filter options");
 /* ../templates/supplier_invoice.tpl */
 gettext("Rows per Page");
 
+/* ../templates/supplier_product.tpl */
+gettext("Suppliers");
+
+/* ../templates/supplier_product.tpl */
+gettext("Product");
+
+/* ../templates/supplier_product.tpl */
+gettext("Image");
+
+/* ../templates/supplier_product.tpl */
+gettext("Supplier");
+
+/* ../templates/supplier_product.tpl */
+gettext("Code");
+
+/* ../templates/supplier_product.tpl */
+gettext("Name");
+
+/* ../templates/supplier_product.tpl */
+gettext("Unit");
+
+/* ../templates/supplier_product.tpl */
+gettext("Sold by unit");
+
+/* ../templates/supplier_product.tpl */
+gettext("Cost");
+
+/* ../templates/supplier_product.tpl */
+gettext("Unit Cost");
+
+/* ../templates/supplier_product.tpl */
+gettext("Unit per Case");
+
+/* ../templates/supplier_product.tpl */
+gettext("Cost per Case");
+
+/* ../templates/supplier_product.tpl */
+gettext("Unit Weight");
+
+/* ../templates/supplier_product.tpl */
+gettext("Unit Dimensions");
+
+/* ../templates/supplier_product.tpl */
+gettext("Outer Weight");
+
+/* ../templates/supplier_product.tpl */
+gettext("Kg");
+
+/* ../templates/supplier_product.tpl */
+gettext("Outer Dimensions");
+
+/* ../templates/supplier_product.tpl */
+gettext("Categories");
+
+/* ../templates/supplier_product.tpl */
+gettext("Material");
+
+/* ../templates/supplier_product.tpl */
+gettext("Ingredients");
+
+/* ../templates/supplier_product.tpl */
+gettext("Parts");
+
+/* ../templates/supplier_product.tpl */
+gettext("Purchase Orders with this Product");
+
 /* ../templates/supplier_products.tpl */
 gettext("Suppliers");
 
@@ -8204,253 +13106,94 @@ gettext("Normal Mode");
 gettext("Supplier Products");
 
 /* ../templates/supplier_products.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/supplier_products.tpl */
 gettext("Rows per Page");
 
 /* ../templates/supplier_products.tpl */
 gettext("Filter options");
 
-/* ../templates/supplier_product.tpl */
-gettext("Departments");
+/* ../templates/suppliers.tpl */
+gettext("Suppliers");
 
-/* ../templates/supplier_product.tpl */
-gettext("Families");
+/* ../templates/suppliers.tpl */
+gettext("Suppliers");
 
-/* ../templates/supplier_product.tpl */
+/* ../templates/suppliers.tpl */
+gettext("Supplier Products");
+
+/* ../templates/suppliers.tpl */
+gettext("Purchase Orders");
+
+/* ../templates/suppliers.tpl */
+gettext("Supplier Invoices");
+
+/* ../templates/suppliers.tpl */
+gettext("Incoming Delivery Notes");
+
+/* ../templates/suppliers.tpl */
+gettext("Suppliers List");
+
+/* ../templates/suppliers.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/suppliers.tpl */
+gettext("General");
+
+/* ../templates/suppliers.tpl */
 gettext("Products");
 
-/* ../templates/supplier_product.tpl */
-gettext("Categories");
-
-/* ../templates/supplier_product.tpl */
-gettext("Parts");
-
-/* ../templates/supplier_product.tpl */
-gettext("Image");
-
-/* ../templates/supplier_product.tpl */
-gettext("Online");
-
-/* ../templates/supplier_product.tpl */
-gettext("Offline");
-
-/* ../templates/supplier_product.tpl */
-gettext("Sell Price");
-
-/* ../templates/supplier_product.tpl */
-gettext("each");
-
-/* ../templates/supplier_product.tpl */
-gettext("RRP");
-
-/* ../templates/supplier_product.tpl */
-gettext("each");
-
-/* ../templates/supplier_product.tpl */
-gettext("Sold Since");
-
-/* ../templates/supplier_product.tpl */
-gettext("TS");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers");
-
-/* ../templates/supplier_product.tpl */
-gettext("AWS");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers/w");
-
-/* ../templates/supplier_product.tpl */
-gettext("AWSQ");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers/w");
-
-/* ../templates/supplier_product.tpl */
-gettext("Supplier");
-
-/* ../templates/supplier_product.tpl */
-gettext("Cost per");
-
-/* ../templates/supplier_product.tpl */
-gettext("No supplier set");
-
-/* ../templates/supplier_product.tpl */
-gettext("Discontinued");
-
-/* ../templates/supplier_product.tpl */
-gettext("Discontinued");
-
-/* ../templates/supplier_product.tpl */
-gettext("Not for Sale");
-
-/* ../templates/supplier_product.tpl */
+/* ../templates/suppliers.tpl */
 gettext("Stock");
 
-/* ../templates/supplier_product.tpl */
-gettext("Available");
+/* ../templates/suppliers.tpl */
+gettext("Sales");
 
-/* ../templates/supplier_product.tpl */
-gettext("Location");
+/* ../templates/suppliers.tpl */
+gettext("Supplier Products");
 
-/* ../templates/supplier_product.tpl */
-gettext("Next shipment");
+/* ../templates/suppliers.tpl */
+gettext("Export (CSV)");
 
-/* ../templates/supplier_product.tpl */
-gettext("Unit Weight");
+/* ../templates/suppliers.tpl */
+gettext("General");
 
-/* ../templates/supplier_product.tpl */
-gettext("Unit Dimensions");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outer Weight");
-
-/* ../templates/supplier_product.tpl */
-gettext("Kg");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outer Dimensions");
-
-/* ../templates/supplier_product.tpl */
-gettext("Categories");
-
-/* ../templates/supplier_product.tpl */
-gettext("Material");
-
-/* ../templates/supplier_product.tpl */
-gettext("Ingredients");
-
-/* ../templates/supplier_product.tpl */
-gettext("Product Code");
-
-/* ../templates/supplier_product.tpl */
-gettext("Product Details");
-
-/* ../templates/supplier_product.tpl */
-gettext("Charts");
-
-/* ../templates/supplier_product.tpl */
-gettext("Orders");
-
-/* ../templates/supplier_product.tpl */
-gettext("Customers");
-
-/* ../templates/supplier_product.tpl */
+/* ../templates/suppliers.tpl */
 gettext("Stock");
 
-/* ../templates/supplier_product.tpl */
-gettext("Show Product Details");
+/* ../templates/suppliers.tpl */
+gettext("Sales");
 
-/* ../templates/supplier_product.tpl */
-gettext("Hide Product Details");
+/* ../templates/suppliers.tpl */
+gettext("All");
 
-/* ../templates/supplier_product.tpl */
-gettext("Hide Product Details");
+/* ../templates/suppliers.tpl */
+gettext("1Yr");
 
-/* ../templates/supplier_product.tpl */
-gettext("Show Charts");
+/* ../templates/suppliers.tpl */
+gettext("1Qtr");
 
-/* ../templates/supplier_product.tpl */
-gettext("Hide Charts");
+/* ../templates/suppliers.tpl */
+gettext("1M");
 
-/* ../templates/supplier_product.tpl */
-gettext("Show Charts");
+/* ../templates/suppliers.tpl */
+gettext("1W");
 
-/* ../templates/supplier_product.tpl */
-gettext("Hide Charts");
+/* ../templates/suppliers.tpl */
+gettext("Totals");
 
-/* ../templates/supplier_product.tpl */
-gettext("Show Orders");
+/* ../templates/suppliers.tpl */
+gettext("M AVG");
 
-/* ../templates/supplier_product.tpl */
-gettext("Hide Orders");
+/* ../templates/suppliers.tpl */
+gettext("W AVG");
 
-/* ../templates/supplier_product.tpl */
-gettext("Show Orders");
+/* ../templates/suppliers.tpl */
+gettext("Filter options");
 
-/* ../templates/supplier_product.tpl */
-gettext("Hide Orders");
-
-/* ../templates/supplier_product.tpl */
-gettext("Show Customers who have ordered this product");
-
-/* ../templates/supplier_product.tpl */
-gettext("Hide Customers who have ordered this product");
-
-/* ../templates/supplier_product.tpl */
-gettext("Show Customers who have ordered this product");
-
-/* ../templates/supplier_product.tpl */
-gettext("Hide Customers who have ordered this product");
-
-/* ../templates/supplier_product.tpl */
-gettext("Show Stock History");
-
-/* ../templates/supplier_product.tpl */
-gettext("Hide Stock History");
-
-/* ../templates/supplier_product.tpl */
-gettext("Show Stock History");
-
-/* ../templates/supplier_product.tpl */
-gettext("Hide Stock History");
-
-/* ../templates/supplier_product.tpl */
-gettext("Weekly");
-
-/* ../templates/supplier_product.tpl */
-gettext("Monthy");
-
-/* ../templates/supplier_product.tpl */
-gettext("Quarterly");
-
-/* ../templates/supplier_product.tpl */
-gettext("Yearly");
-
-/* ../templates/supplier_product.tpl */
-gettext("Net Sales");
-
-/* ../templates/supplier_product.tpl */
-gettext("Sales per week");
-
-/* ../templates/supplier_product.tpl */
-gettext("Sales per month");
-
-/* ../templates/supplier_product.tpl */
-gettext("Sales per quarter");
-
-/* ../templates/supplier_product.tpl */
-gettext("Sales per year");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers Sold");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers sold per month");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers sold per month");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers sold  per quarter");
-
-/* ../templates/supplier_product.tpl */
-gettext("Outers sold  per year");
-
-/* ../templates/supplier_product.tpl */
-gettext("Stock");
-
-/* ../templates/supplier_product.tpl */
-gettext("Stock History");
-
-/* ../templates/supplier_product.tpl */
-gettext("Showing all orders");
-
-/* ../templates/supplier_product.tpl */
-gettext("Showing all customers");
-
-/* ../templates/supplier_product.tpl */
-gettext("Showing all records");
+/* ../templates/suppliers.tpl */
+gettext("Rows per Page");
 
 /* ../templates/suppliers_index.tpl */
 gettext("Wellcome to");
@@ -8468,214 +13211,7 @@ gettext("Purchase Orders");
 gettext("Suppliers Products");
 
 /* ../templates/suppliers_navigation.tpl */
-gettext("Supplier Product Code");
-
-/* ../templates/suppliers.tpl */
-gettext("Suppliers");
-
-/* ../templates/suppliers.tpl */
-gettext("Suppliers List");
-
-/* ../templates/suppliers.tpl */
-gettext("General");
-
-/* ../templates/suppliers.tpl */
-gettext("Products");
-
-/* ../templates/suppliers.tpl */
-gettext("Stock");
-
-/* ../templates/suppliers.tpl */
-gettext("Sales");
-
-/* ../templates/suppliers.tpl */
-gettext("Filter options");
-
-/* ../templates/suppliers.tpl */
-gettext("Rows per Page");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier");
-
-/* ../templates/supplier.tpl */
-gettext("Mobile Phone");
-
-/* ../templates/supplier.tpl */
-gettext("Telephone");
-
-/* ../templates/supplier.tpl */
-gettext("Email Address");
-
-/* ../templates/supplier.tpl */
-gettext("Fax");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier Details");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier Products");
-
-/* ../templates/supplier.tpl */
-gettext("Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("History");
-
-/* ../templates/supplier.tpl */
-gettext("Show Supplier Details");
-
-/* ../templates/supplier.tpl */
-gettext("Hide Supplier Details");
-
-/* ../templates/supplier.tpl */
-gettext("Hide Supplier Details");
-
-/* ../templates/supplier.tpl */
-gettext("Show Products");
-
-/* ../templates/supplier.tpl */
-gettext("Hide Products");
-
-/* ../templates/supplier.tpl */
-gettext("Show Products");
-
-/* ../templates/supplier.tpl */
-gettext("Hide Products");
-
-/* ../templates/supplier.tpl */
-gettext("Show the Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Hide the Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Show the Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Hide the Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Show History");
-
-/* ../templates/supplier.tpl */
-gettext("Hide History");
-
-/* ../templates/supplier.tpl */
-gettext("Show History");
-
-/* ../templates/supplier.tpl */
-gettext("Hide History");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier Details");
-
-/* ../templates/supplier.tpl */
-gettext("Code");
-
-/* ../templates/supplier.tpl */
-gettext("Name");
-
-/* ../templates/supplier.tpl */
-gettext("Location");
-
-/* ../templates/supplier.tpl */
-gettext("Email");
-
-/* ../templates/supplier.tpl */
-gettext("Total Sales");
-
-/* ../templates/supplier.tpl */
-gettext("Total Profit");
-
-/* ../templates/supplier.tpl */
-gettext("Stock Value");
-
-/* ../templates/supplier.tpl */
-gettext("Items availeable");
-
-/* ../templates/supplier.tpl */
-gettext("Items no longer availeable");
-
-/* ../templates/supplier.tpl */
-gettext("Main");
-
-/* ../templates/supplier.tpl */
-gettext("Delete");
-
-/* ../templates/supplier.tpl */
-gettext("Edit");
-
-/* ../templates/supplier.tpl */
-gettext("Pending Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier Products");
-
-/* ../templates/supplier.tpl */
-gettext("Summary");
-
-/* ../templates/supplier.tpl */
-gettext("Stock");
-
-/* ../templates/supplier.tpl */
-gettext("Sales");
-
-/* ../templates/supplier.tpl */
-gettext("Forecast");
-
-/* ../templates/supplier.tpl */
-gettext("All");
-
-/* ../templates/supplier.tpl */
-gettext("1Yr");
-
-/* ../templates/supplier.tpl */
-gettext("1Qtr");
-
-/* ../templates/supplier.tpl */
-gettext("1M");
-
-/* ../templates/supplier.tpl */
-gettext("1W");
-
-/* ../templates/supplier.tpl */
-gettext("Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Delivery Notes");
-
-/* ../templates/supplier.tpl */
-gettext("Invoices");
-
-/* ../templates/supplier.tpl */
-gettext("Purchase Orders");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier Delivery Notes");
-
-/* ../templates/supplier.tpl */
-gettext("Supplier Invoices");
-
-/* ../templates/supplier.tpl */
-gettext("History");
-
-/* ../templates/supplier.tpl */
-gettext("Filter options");
-
-/* ../templates/supplier.tpl */
-gettext("Rows per Page");
-
-/* ../templates/supplier.tpl */
-gettext("Filter options");
-
-/* ../templates/supplier.tpl */
-gettext("Rows per Page");
-
-/* ../templates/supplier.tpl */
-gettext("Filter options");
-
-/* ../templates/supplier.tpl */
-gettext("Rows per Page");
+gettext("Suppliers Categories");
 
 /* ../templates/table2.tpl */
 gettext("Hide items");
@@ -8716,6 +13252,12 @@ gettext("to");
 /* ../templates/table_complex.tpl */
 gettext("All");
 
+/* ../templates/table_dashboard.tpl */
+gettext("filter results");
+
+/* ../templates/table_dashboard.tpl */
+gettext("Close filter");
+
 /* ../templates/table_simple.tpl */
 gettext("%1");
 
@@ -8727,6 +13269,18 @@ gettext("filter");
 
 /* ../templates/table_simple.tpl */
 gettext("Loadding...");
+
+/* ../templates/table_splinter.tpl */
+gettext("filter results");
+
+/* ../templates/table_splinter.tpl */
+gettext("Close filter");
+
+/* ../templates/table_top_products.tpl */
+gettext("filter results");
+
+/* ../templates/table_top_products.tpl */
+gettext("Close filter");
 
 /* ../templates/upload_assets.tpl */
 gettext("Product index");
@@ -8740,24 +13294,6 @@ gettext("CVS File");
 /* ../templates/upload_assets.tpl */
 gettext("Submit");
 
-/* ../templates/users_staff.tpl */
-gettext("Staff Users");
-
-/* ../templates/users_staff.tpl */
-gettext("Supplier Users");
-
-/* ../templates/users_staff.tpl */
-gettext("Customer Users");
-
-/* ../templates/users_staff.tpl */
-gettext("Edit Users");
-
-/* ../templates/users_staff.tpl */
-gettext("Staff Users");
-
-/* ../templates/users_staff.tpl */
-gettext("Groups");
-
 /* ../templates/user.tpl */
 gettext("My Profile");
 
@@ -8767,16 +13303,211 @@ gettext("Login");
 /* ../templates/user.tpl */
 gettext("Alias");
 
-/* ../templates/warehouse_areas.tpl */
+/* ../templates/user_administrator.tpl */
+gettext("Administrative User");
+
+/* ../templates/user_administrator.tpl */
+gettext("Login");
+
+/* ../templates/user_administrator.tpl */
+gettext("Alias");
+
+/* ../templates/user_administrator.tpl */
+gettext("Login Count");
+
+/* ../templates/user_administrator.tpl */
+gettext("Last Login");
+
+/* ../templates/user_administrator.tpl */
+gettext("Failed Login Count");
+
+/* ../templates/user_administrator.tpl */
+gettext("Failed Last Login");
+
+/* ../templates/user_administrator.tpl */
+gettext("Orders with this Product");
+
+/* ../templates/users.tpl */
+gettext("Users Handing");
+
+/* ../templates/users.tpl */
+gettext("Administration Account");
+
+/* ../templates/users.tpl */
+gettext("Handle");
+
+/* ../templates/users.tpl */
+gettext("Login Count");
+
+/* ../templates/users.tpl */
+gettext("Last Login");
+
+/* ../templates/users.tpl */
+gettext("Failed Login Count");
+
+/* ../templates/users.tpl */
+gettext("Last Failed Login");
+
+/* ../templates/users.tpl */
+gettext("Staff");
+
+/* ../templates/users.tpl */
+gettext("Employees");
+
+/* ../templates/users.tpl */
+gettext("Users");
+
+/* ../templates/users.tpl */
+gettext("Suppliers");
+
+/* ../templates/users.tpl */
+gettext("Suppliers");
+
+/* ../templates/users.tpl */
+gettext("Users");
+
+/* ../templates/users.tpl */
+gettext("Customers");
+
+/* ../templates/users.tpl */
+gettext("Online Stores");
+
+/* ../templates/users.tpl */
+gettext("Total Customers");
+
+/* ../templates/users.tpl */
+gettext("Users");
+
+/* ../templates/users.tpl */
+gettext("Store");
+
+/* ../templates/users.tpl */
+gettext("Customers");
+
+/* ../templates/users.tpl */
+gettext("Users");
+
+/* ../templates/users_customer.tpl */
+gettext("Customer Users");
+
+/* ../templates/users_loginhistory.tpl */
+gettext("User Login History");
+
+/* ../templates/users_navigation.tpl */
+gettext("No results found, try te a more comprensive search");
+
+/* ../templates/users_navigation.tpl */
+gettext("Search");
+
+/* ../templates/users_staff.tpl */
+gettext("Staff Users");
+
+/* ../templates/users_staff.tpl */
+gettext("Groups");
+
+/* ../templates/users_staff.tpl */
+gettext("Staff User Login History");
+
+/* ../templates/users_supplier.tpl */
+gettext("Supplier Users");
+
+/* ../templates/warehouse.tpl */
+gettext("Warehouse");
+
+/* ../templates/warehouse.tpl */
+gettext("Parts");
+
+/* ../templates/warehouse.tpl */
+gettext("Locations");
+
+/* ../templates/warehouse.tpl */
+gettext("Areas");
+
+/* ../templates/warehouse.tpl */
+gettext("Shelfs");
+
+/* ../templates/warehouse.tpl */
+gettext("Map");
+
+/* ../templates/warehouse.tpl */
+gettext("Movements");
+
+/* ../templates/warehouse.tpl */
+gettext("Stats");
+
+/* ../templates/warehouse.tpl */
+gettext("Parts");
+
+/* ../templates/warehouse.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/warehouse.tpl */
+gettext("General");
+
+/* ../templates/warehouse.tpl */
+gettext("Stock");
+
+/* ../templates/warehouse.tpl */
+gettext("Sales");
+
+/* ../templates/warehouse.tpl */
+gettext("All");
+
+/* ../templates/warehouse.tpl */
+gettext("3Y");
+
+/* ../templates/warehouse.tpl */
+gettext("1Yr");
+
+/* ../templates/warehouse.tpl */
+gettext("YTD");
+
+/* ../templates/warehouse.tpl */
+gettext("6M");
+
+/* ../templates/warehouse.tpl */
+gettext("1Qtr");
+
+/* ../templates/warehouse.tpl */
+gettext("1M");
+
+/* ../templates/warehouse.tpl */
+gettext("10D");
+
+/* ../templates/warehouse.tpl */
+gettext("1W");
+
+/* ../templates/warehouse.tpl */
+gettext("Totals");
+
+/* ../templates/warehouse.tpl */
+gettext("M AVG");
+
+/* ../templates/warehouse.tpl */
+gettext("W AVG");
+
+/* ../templates/warehouse.tpl */
+gettext("M EAVG");
+
+/* ../templates/warehouse.tpl */
+gettext("W EAVG");
+
+/* ../templates/warehouse.tpl */
+gettext("Locations");
+
+/* ../templates/warehouse.tpl */
 gettext("Warehouse Areas");
 
-/* ../templates/warehouse_areas.tpl */
-gettext("Area List");
-
-/* ../templates/warehouse_areas.tpl */
+/* ../templates/warehouse.tpl */
 gettext("Filter options");
 
-/* ../templates/warehouse_areas.tpl */
+/* ../templates/warehouse.tpl */
+gettext("Rows per Page");
+
+/* ../templates/warehouse.tpl */
+gettext("Filter options");
+
+/* ../templates/warehouse.tpl */
 gettext("Rows per Page");
 
 /* ../templates/warehouse_area.tpl */
@@ -8794,35 +13525,35 @@ gettext("Filter options");
 /* ../templates/warehouse_area.tpl */
 gettext("Rows per Page");
 
-/* ../templates/warehouse_orders.tpl */
-gettext("Warehouse Operations");
+/* ../templates/warehouse_areas.tpl */
+gettext("Warehouse Areas");
+
+/* ../templates/warehouse_areas.tpl */
+gettext("Area List");
+
+/* ../templates/warehouse_areas.tpl */
+gettext("Filter options");
+
+/* ../templates/warehouse_areas.tpl */
+gettext("Rows per Page");
 
 /* ../templates/warehouse_orders.tpl */
-gettext("All");
+gettext("Orders In Warehouse");
+
+/* ../templates/warehouse_orders.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/warehouse_orders.tpl */
+gettext("All Wanting Orders");
 
 /* ../templates/warehouse_orders.tpl */
 gettext("Ready to Pick");
 
 /* ../templates/warehouse_orders.tpl */
-gettext("Picking in Progress");
+gettext("Ready to Pack");
 
 /* ../templates/warehouse_orders.tpl */
-gettext("Picked, ready to Pack");
-
-/* ../templates/warehouse_orders.tpl */
-gettext("Packed, waiting Approval");
-
-/* ../templates/warehouse_orders.tpl */
-gettext("Ready to Dispach");
-
-/* ../templates/warehouse_orders.tpl */
-gettext("Ready to Pick");
-
-/* ../templates/warehouse_orders.tpl */
-gettext("Invoice List");
-
-/* ../templates/warehouse_orders.tpl */
-gettext("Delivery Note List");
+gettext("Ready to Ship");
 
 /* ../templates/warehouse_orders.tpl */
 gettext("Filter options");
@@ -8834,33 +13565,90 @@ gettext("Rows per Page");
 gettext("Staff Name");
 
 /* ../templates/warehouse_orders.tpl */
+gettext("Supervisor PIN");
+
+/* ../templates/warehouse_orders.tpl */
+gettext("Staff Name");
+
+/* ../templates/warehouse_orders.tpl */
 gettext("PIN");
 
-/* ../templates/warehouses.tpl */
-gettext("Warehouses");
+/* ../templates/warehouse_orders.tpl */
+gettext("PIN");
 
-/* ../templates/warehouses.tpl */
-gettext("Warehouses");
+/* ../templates/warehouse_orders.tpl */
+gettext("Staff Name");
 
-/* ../templates/warehouses.tpl */
-gettext("Filter options");
+/* ../templates/warehouse_orders.tpl */
+gettext("Supervisor PIN");
 
-/* ../templates/warehouses.tpl */
-gettext("Rows per Page");
+/* ../templates/warehouse_orders.tpl */
+gettext("Staff Name");
 
-/* ../templates/warehouse.tpl */
+/* ../templates/warehouse_orders.tpl */
+gettext("PIN");
+
+/* ../templates/warehouse_orders.tpl */
+gettext("PIN");
+
+/* ../templates/warehouse_stock_history.tpl */
 gettext("Warehouse");
 
-/* ../templates/warehouse.tpl */
-gettext("Warehouse Areas");
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Part Stock History");
 
-/* ../templates/warehouse.tpl */
-gettext("Locations");
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Monthly");
 
-/* ../templates/warehouse.tpl */
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Weekly");
+
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Daily");
+
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Part Stock Transactions");
+
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Rows per Page");
+
+/* ../templates/warehouse_stock_history.tpl */
 gettext("Filter options");
 
-/* ../templates/warehouse.tpl */
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Rows per Page");
+
+/* ../templates/warehouse_stock_history.tpl */
+gettext("Filter options");
+
+/* ../templates/warehouses.tpl */
+gettext("Warehouses");
+
+/* ../templates/warehouses.tpl */
+gettext("Warehouses");
+
+/* ../templates/warehouses.tpl */
+gettext("Areas");
+
+/* ../templates/warehouses.tpl */
+gettext("Shelfs");
+
+/* ../templates/warehouses.tpl */
+gettext("Locations");
+
+/* ../templates/warehouses.tpl */
+gettext("Parts");
+
+/* ../templates/warehouses.tpl */
+gettext("Warehouses");
+
+/* ../templates/warehouses.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/warehouses.tpl */
+gettext("Filter options");
+
+/* ../templates/warehouses.tpl */
 gettext("Rows per Page");
 
 /* ../templates/widget.search.tpl */
@@ -8871,5 +13659,53 @@ gettext("Order Number");
 
 /* ../templates/widget.search.tpl */
 gettext("Customer");
+
+/* ../templates/world.tpl */
+gettext("Continents");
+
+/* ../templates/world.tpl */
+gettext("World Regions");
+
+/* ../templates/world.tpl */
+gettext("Countries");
+
+/* ../templates/world.tpl */
+gettext("World");
+
+/* ../templates/world.tpl */
+gettext("Counties");
+
+/* ../templates/world.tpl */
+gettext("World Regions");
+
+/* ../templates/world.tpl */
+gettext("Continents");
+
+/* ../templates/world.tpl */
+gettext("Rows per Page");
+
+/* ../templates/world.tpl */
+gettext("Filter options");
+
+/* ../templates/world.tpl */
+gettext("Rows per Page");
+
+/* ../templates/world.tpl */
+gettext("Filter options");
+
+/* ../templates/world.tpl */
+gettext("Rows per Page");
+
+/* ../templates/world.tpl */
+gettext("Filter options");
+
+/* ../templates/wregion.tpl */
+gettext("World");
+
+/* ../templates/wregion.tpl */
+gettext("Region");
+
+/* ../templates/wregion.tpl */
+gettext("Countries");
 
 ?>

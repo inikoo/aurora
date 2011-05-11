@@ -746,7 +746,7 @@ function compare($x, $y) {
 }
 
 
-function get_history_data($raw_history,$customer_creation_formated_time) {
+function get_history_data_old($raw_history,$customer_creation_formated_time) {
     global $tipo_his;
     $customer_creation_time=strtotime($customer_creation_formated_time);
 
@@ -819,5 +819,67 @@ function get_history_data($raw_history,$customer_creation_formated_time) {
 
 }
 
+function get_history_data($raw_history){
+  global $tipo_his;
+
+
+  $history=array('Field Changed'=>array(),'Note'=>array(),'E-mail Sent'=>array(),'Attachment'=>array(),'Contact Deleted'=>array(),'To-do Done'=>array(),'Call Completed'=>array(),'To-do Not Done'=>array());
+
+  $history=array();
+
+ 
+  if($raw_history=='')
+    return $history;
+
+  $date_separator='/\d{2}\/\d{2}\/\d{4}\s\d{2}\:\d{2}\:\d{2}\s-------------------------------------------\s/';
+
+  $date_splited=preg_split($date_separator,$raw_history);
+  unset($date_splited[0]);
+  // print_r($date_splited);
+  
+  foreach($date_splited as $y){
+    $x=preg_split('/\s+\-\s+/',$y);
+    $tipo_his[$x[0]]=1;
+  }
+
+  preg_match_all($date_separator,$raw_history, $_dates);
+  //print_r($_dates);  
+  $dates=array();
+  foreach($_dates[0] as $_tmp){
+
+    
+    $tmp=preg_split('/\s/',$_tmp);
+    $tmp2=preg_split('/\//',$tmp[0]);
+    $formated_time=$tmp2[2].'-'.$tmp2[1].'-'.$tmp2[0].' '.$tmp[1];
+    $creation_time=strtotime($formated_time);
+    $dates[]=date("Y-m-d H:i:s",$creation_time);
+  }
+  //  print "-----\n";
+  //print_r($date_splited);
+  //print_r($dates);  
+  // return;
+  foreach($date_splited as $index=>$y){
+    $x=preg_split('/\s+\-\s+/',$y);
+    $tipo=$x[0];
+    $note=preg_replace("/^$tipo -/",'',$y);
+      
+      
+      
+    if(isset($history[$tipo][$dates[$index-1]]))
+      $history[$tipo][$dates[$index-1]].=";\n".$note;
+    else
+      $history[$tipo][$dates[$index-1]]=$note;
+    
+
+
+  
+
+ 
+  }
+
+  //print_r($dates);
+  return $history;
+
+}
 
 ?>
