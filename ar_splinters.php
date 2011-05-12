@@ -473,7 +473,7 @@ function list_families() {
 
 
     global $myconf,$output_type,$user;
-
+$_SESSION['state']['home']['splinters']['top_products']['type']='families';
     $conf=$_SESSION['state']['home']['splinters']['top_products'];
 //print_r($conf);
     $start_from=0;
@@ -588,15 +588,15 @@ function list_families() {
         }
 
 
-        $family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Family Code'].'</a>';
+        $family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>';
         $store="<a href='store.php?id=".$data['Product Family Store Key']."'>".$data['Store Code'].'</a>';
- $family_description="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Family Code'].'</a>';
+ $family_description="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Name'].'</a>';
         $adata[]=array(
                      'position'=>'<b>'.$position++.'</b>',
                      'family_description'=>$family_description,
                      'family'=>$family,
                      'store'=>$store,
-                     'description'=>'<b>'.$code.'</b> '.$data['Product Family Short Description'],
+                     'description'=>$data['Product Family Name'],
                      'net_sales'=>$sales
                  );
     }
@@ -634,6 +634,7 @@ function list_products() {
 
 
     global $myconf,$output_type,$user;
+$_SESSION['state']['home']['splinters']['top_products']['type']='products';
 
     $conf=$_SESSION['state']['home']['splinters']['top_products'];
 //print_r($conf);

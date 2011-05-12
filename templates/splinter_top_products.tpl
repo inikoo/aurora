@@ -1,8 +1,9 @@
 <input type="hidden" value="{$top_products_index}" id="top_products_index"  />
 <input type="hidden" value="{$top_products_nr}" id="top_products_nr"  />
+<input type="hidden" value="{$splinters.top_products.type}" id="top_products_type"  />
 
 <input type="hidden" value="{t}Fam{/t}" id="label_Fam"  />
-<input type="hidden" value="{t}Product{/t}" id="label_Product"  />
+<input type="hidden" value="{t}Description{/t}" id="label_Product"  />
 <input type="hidden" value="{t}Sales{/t}" id="label_Sales"  />
 <input type="hidden" value="{t}Description{/t}" id="label_Description"  />
 

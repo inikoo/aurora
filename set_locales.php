@@ -60,9 +60,15 @@ $_SESSION['text_locale_encoding']=substr($_SESSION['text_locale'],6);
 
 $other_langs=array();
 
-bindtextdomain('inikoo', './locale');
-bind_textdomain_codeset('inikoo',$_SESSION['text_locale_encoding']);
-textdomain('inikoo');
+//bindtextdomain('inikoo', './locale');
+//bind_textdomain_codeset('inikoo',$_SESSION['text_locale_encoding']);
+//textdomain('inikoo');
+//print_r($_SESSION['text_locale']);
+$text_locale=$_SESSION['text_locale'];
+putenv('LC_MESSAGES='.$text_locale);
+setlocale(LC_MESSAGES, $text_locale);
+bindtextdomain("inikoo", "./locale");
+textdomain("inikoo");
 
 
 $regex['thousand_sep']=str_replace('.','\.','/'.$default_locale_data['thosusand_sep'].'/g');
