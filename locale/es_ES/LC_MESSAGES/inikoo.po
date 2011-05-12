@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-11 12:48+0100\n"
-"PO-Revision-Date: 2011-05-12 08:58+0100\n"
+"PO-Revision-Date: 2011-05-12 12:24+0100\n"
 "Last-Translator: Raul Perusquia <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -3206,7 +3206,7 @@ msgstr "Cliente"
 #: smarty.php:8096
 #: smarty.php:10319
 msgid "Net"
-msgstr "Net"
+msgstr "Neto"
 
 #: report_sales.js.php:104
 #: export_csv.php:942
@@ -4204,7 +4204,7 @@ msgstr "Tipo de Fuente"
 #: orders.php:220
 #: smarty.php:5657
 msgid "Payment State"
-msgstr "El pago del Estado"
+msgstr "Estado del pago"
 
 #: export_csv.php:1027
 #: export_csv.php:1638
@@ -4377,7 +4377,7 @@ msgstr ""
 #: orders_server.js.php:122
 #: orders_server.js.php:186
 msgid "Store Name"
-msgstr "Nombre de la Tienda"
+msgstr "Tienda"
 
 #: export_csv.php:1246
 #: customers_server.php:112
@@ -6464,24 +6464,24 @@ msgstr "Total de Contactos"
 #: customers_server.js.php:32
 #: marketing_server.js.php:26
 msgid "New Contacts"
-msgstr "Nueva Contactos"
+msgstr "Contactos nuevos"
 
 #: customers_server.js.php:27
 #: customers_server.js.php:33
 #: smarty.php:1130
 msgid "Active Contacts"
-msgstr "Active contactos"
+msgstr "Contactos Activos"
 
 #: customers_server.js.php:28
 #: customers_server.js.php:34
 msgid "Losing Contacts"
-msgstr "Perder Contactos"
+msgstr "Contactos perdiendose"
 
 #: customers_server.js.php:29
 #: customers_server.js.php:35
 #: smarty.php:1136
 msgid "Lost Contacts"
-msgstr "Perdida de contactos"
+msgstr "Contactos perdidos"
 
 #: ar_splinters.php:920
 #: ar_contacts_customers.php:455
@@ -6497,7 +6497,7 @@ msgstr "Perdida de contactos"
 #: ar_contacts_customers.php:459
 #: ar_top_customer.php:459
 msgid "order"
-msgstr "fin"
+msgstr "pedido"
 
 #: ar_address.php:6
 #: smarty.php:5441
@@ -14881,7 +14881,7 @@ msgstr "Lista de Áreas"
 #: smarty.php:9512
 #: smarty.php:11819
 msgid "Import (CSV)"
-msgstr "Importación (CSV)"
+msgstr "Importar (CSV)"
 
 #: smarty.php:287
 #: smarty.php:305
@@ -14930,12 +14930,12 @@ msgstr "Importación (CSV)"
 #: smarty.php:13544
 #: smarty.php:13646
 msgid "Export (CSV)"
-msgstr "Exportación (CSV)"
+msgstr "Exportar (CSV)"
 
 #: smarty.php:296
 #: smarty.php:2456
 msgid "Company Departments"
-msgstr "Empresa Departamentos"
+msgstr "Departamentos de la Empresa"
 
 #: smarty.php:314
 msgid "Confirm Sending"
@@ -14958,7 +14958,7 @@ msgstr "Información general del contacto"
 #: smarty.php:410
 #: locale2.php:103
 msgid "Name Search"
-msgstr "Nombre de la búsqueda"
+msgstr "Búsqueda"
 
 #: smarty.php:425
 #: smarty.php:6146
@@ -18966,7 +18966,7 @@ msgstr ""
 
 #: smarty.php:8330
 msgid "Orders Per Store"
-msgstr "Por órdenes de la tienda"
+msgstr "Ordenes por tienda"
 
 #: smarty.php:8336
 msgid "Invoices Per Store"

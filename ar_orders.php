@@ -424,6 +424,8 @@ if(!$user->can_view('orders'))
 
 
 function list_orders(){
+global $user;
+
    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
       $conf=$_SESSION['state']['report']['sales'];
     else
