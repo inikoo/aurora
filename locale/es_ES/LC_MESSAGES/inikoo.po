@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-11 12:48+0100\n"
-"PO-Revision-Date: 2011-05-11 17:57+0100\n"
+"PO-Revision-Date: 2011-05-12 08:58+0100\n"
 "Last-Translator: Raul Perusquia <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgstr ""
 #: edit_site.js.php:44
 #: locale2.php:616
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: marketing_campaign_builder_setup.js.php:25
 #: stores.js.php:194
@@ -114,7 +114,7 @@ msgstr ""
 #: class.Store.php:526
 #: class.Store.php:593
 msgid "Store"
-msgstr ""
+msgstr "Tienda"
 
 #: marketing_campaign_builder_setup.js.php:26
 #: edit_product_category.js.php:126
@@ -256,7 +256,7 @@ msgstr ""
 #: locale2.php:700
 #: locale2.php:724
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: marketing_campaign_builder_setup.js.php:61
 #: edit_product_category.js.php:156
@@ -460,7 +460,7 @@ msgstr ""
 #: position.js.php:52
 #: edit_site.js.php:84
 msgid "Page"
-msgstr ""
+msgstr "Pagina"
 
 #: marketing_campaign_builder_setup.js.php:61
 #: edit_product_category.js.php:156
@@ -666,14 +666,14 @@ msgstr ""
 #: position.js.php:52
 #: edit_site.js.php:84
 msgid "of"
-msgstr ""
+msgstr "de"
 
 #: edit_product_category.js.php:31
 #: edit_customer_category.js.php:31
 #: edit_part_category.js.php:31
 #: edit_supplier_category.js.php:31
 msgid "Invalid Category Name"
-msgstr ""
+msgstr "Categoria Invalida"
 
 #: edit_product_category.js.php:123
 #: edit_customer_category.js.php:123
@@ -719,7 +719,7 @@ msgstr ""
 #: edit_supplier_category.js.php:192
 #: edit_site.js.php:45
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: edit_product_category.js.php:193
 #: edit_family.js.php:865
@@ -764,7 +764,7 @@ msgstr ""
 #: edit_supplier_category.js.php:193
 #: edit_site.js.php:46
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: edit_product_category.js.php:194
 #: edit_family.js.php:866
@@ -808,7 +808,7 @@ msgstr ""
 #: edit_supplier_category.js.php:194
 #: edit_site.js.php:47
 msgid "Qty"
-msgstr ""
+msgstr "Cantidad"
 
 #: edit_product_category.js.php:195
 #: supplier_dn_received.js.php:205
@@ -951,7 +951,7 @@ msgstr ""
 #: locale2.php:328
 #: locale2.php:583
 msgid "Description"
-msgstr ""
+msgstr "Descripcion"
 
 #: supplier_dn_received.js.php:129
 #: supplier_dn_set_damages.js.php:129
@@ -976,7 +976,7 @@ msgstr ""
 #: smarty.php:6965
 #: locale2.php:685
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: supplier_dn_received.js.php:201
 #: supplier_dn_set_damages.js.php:214
@@ -1162,7 +1162,7 @@ msgstr ""
 #: locale2.php:805
 #: locale2.php:838
 msgid "Code"
-msgstr ""
+msgstr "Codigo"
 
 #: supplier_dn_received.js.php:206
 #: supplier_dn_set_damages.js.php:219
@@ -1188,7 +1188,7 @@ msgstr ""
 #: porder_cancelled.js.php:17
 #: supplier.js.php:37
 msgid "Used In"
-msgstr ""
+msgstr "Usado en"
 
 #: supplier_dn_received.js.php:208
 #: supplier_dn_set_damages.js.php:221
@@ -1231,7 +1231,7 @@ msgstr ""
 #: edit_family.js.php:46
 #: edit_department.js.php:30
 msgid "Invalid Family Name"
-msgstr ""
+msgstr "Nombre de Familia invalido"
 
 #: edit_family.js.php:49
 #: edit_department.js.php:33
@@ -1499,7 +1499,7 @@ msgstr "PVP Notas"
 
 #: edit_family.js.php:937
 msgid "Used in"
-msgstr ""
+msgstr "Usado en"
 
 #: edit_family.js.php:938
 msgid "Parts/Pick"
@@ -1507,7 +1507,7 @@ msgstr ""
 
 #: edit_family.js.php:939
 msgid "Notes to Pickers"
-msgstr ""
+msgstr "Notas a los Pickers"
 
 #: edit_family.js.php:961
 msgid "Please assign a part"
@@ -1521,14 +1521,14 @@ msgstr ""
 #: edit_store.js.php:462
 #: hr.php:108
 msgid "Valid From"
-msgstr ""
+msgstr "Valido desde"
 
 #: edit_family.js.php:979
 #: edit_store.js.php:329
 #: edit_store.js.php:396
 #: edit_store.js.php:463
 msgid "Valid Until"
-msgstr ""
+msgstr "Valido Hasta"
 
 #: edit_family.js.php:1042
 #: export_csv.php:1368
@@ -1591,7 +1591,7 @@ msgstr ""
 #: edit_store.php:152
 #: locale2.php:1135
 msgid "Notes"
-msgstr ""
+msgstr "Notas"
 
 #: contact.php:168
 #: company.php:193
@@ -1631,7 +1631,7 @@ msgstr ""
 #: supplier_delivery.php:98
 #: warehouse_areas.php:77
 msgid "code"
-msgstr ""
+msgstr "codigo"
 
 #: supplier_products.php:73
 #: supplier.php:134
@@ -1686,7 +1686,7 @@ msgstr ""
 #: locale2.php:532
 #: locale2.php:604
 msgid "Supplier"
-msgstr ""
+msgstr "Proveedor"
 
 #: supplier_products.php:88
 #: export_csv.php:1563
@@ -1742,7 +1742,7 @@ msgstr ""
 #: smarty.php:4487
 #: continent.js.php:28
 msgid "Currency"
-msgstr ""
+msgstr "Moneda"
 
 #: supplier_products.php:100
 #: export_csv.php:1568
@@ -1788,7 +1788,7 @@ msgstr ""
 #: smarty.php:12995
 #: new_deliverynote.js.php:39
 msgid "Cost"
-msgstr ""
+msgstr "Costo"
 
 #: supplier_products.php:112
 #: supplier_products.php:123
@@ -2168,7 +2168,7 @@ msgstr ""
 #: smarty.php:13022
 #: customer_deleted.php:125
 msgid "Categories"
-msgstr ""
+msgstr "Categorias"
 
 #: store.php:83
 #: store.php:225
@@ -2391,7 +2391,7 @@ msgstr ""
 #: parts.php:143
 #: parts.php:158
 msgid "Low"
-msgstr ""
+msgstr "Bajo"
 
 #: store.php:241
 #: export_csv.php:1503
@@ -2410,7 +2410,7 @@ msgstr ""
 #: parts.php:144
 #: parts.php:159
 msgid "Critical"
-msgstr ""
+msgstr "Critico"
 
 #: store.php:242
 #: export_csv.php:317
@@ -2434,7 +2434,7 @@ msgstr ""
 #: part_categories.js.php:109
 #: supplier_categories.js.php:109
 msgid "Gone"
-msgstr ""
+msgstr "Agotado"
 
 #: store.php:244
 #: export_csv.php:320
@@ -2949,7 +2949,7 @@ msgstr "Clientes"
 #: dashboard.php:189
 #: dashboard_bak.php.php:119
 msgid "Dashboard"
-msgstr "Tablero de instrumentos"
+msgstr "Inicio"
 
 #: common.php:281
 msgid "Export as xls"
@@ -3392,13 +3392,13 @@ msgstr ""
 #: export_csv.php:58
 #: export_csv.php:62
 msgid "stores"
-msgstr ""
+msgstr "tiendas"
 
 #: export_csv.php:65
 #: export_csv.php:69
 #: export_csv.php:77
 msgid "families"
-msgstr ""
+msgstr "familias"
 
 #: export_csv.php:82
 #: export_csv.php:86
@@ -3410,12 +3410,12 @@ msgstr "productos"
 #: export_csv.php:90
 #: export_csv.php:94
 msgid "staff"
-msgstr ""
+msgstr "personal"
 
 #: export_csv.php:98
 #: export_csv.php:102
 msgid "warehouses"
-msgstr ""
+msgstr "almacenes"
 
 #: export_csv.php:106
 #: export_csv.php:110
@@ -3543,7 +3543,7 @@ msgstr ""
 #: plot.php:148
 #: marketing_server.js.php:29
 msgid "New"
-msgstr ""
+msgstr "Nuevo"
 
 #: export_csv.php:321
 #: export_csv.php:387
@@ -3697,7 +3697,7 @@ msgstr ""
 #: edit_user_password.js.php:246
 #: parts.php:126
 msgid "Stores"
-msgstr ""
+msgstr "Tiendas"
 
 #: export_csv.php:445
 #: export_csv.php:1009
@@ -3828,7 +3828,7 @@ msgstr ""
 #: smarty.php:13424
 #: smarty.php:13631
 msgid "Areas"
-msgstr ""
+msgstr "Areas"
 
 #: export_csv.php:564
 #: warehouse_areas.js.php:16
@@ -4016,12 +4016,12 @@ msgstr "Facturas"
 #: orders_server.php:205
 #: orders_server.js.php:124
 msgid "Inv Paid"
-msgstr "Inv pago"
+msgstr "Fact pagada"
 
 #: export_csv.php:882
 #: orders_server.php:206
 msgid "Inv To Pay"
-msgstr "Inv para pagar"
+msgstr "Fact or pagar"
 
 #: export_csv.php:883
 #: customer_categories.js.php:117
@@ -4045,12 +4045,12 @@ msgstr "Reembolsos"
 #: orders_server.php:208
 #: orders_server.js.php:127
 msgid "Ref Paid"
-msgstr "Referencia de pago"
+msgstr "Rembolso pagado"
 
 #: export_csv.php:885
 #: orders_server.php:210
 msgid "Ref To Pay"
-msgstr "Ref. para pagar"
+msgstr "Reenbolso por pagar"
 
 #: export_csv.php:943
 #: smarty.php:8276
@@ -4231,12 +4231,12 @@ msgstr "Forma de pago"
 #: export_csv.php:1079
 #: orders.php:265
 msgid "Invoice For"
-msgstr "Para factura"
+msgstr "factura para"
 
 #: export_csv.php:1080
 #: orders.php:266
 msgid "Invoice Paid"
-msgstr "Factura de pago"
+msgstr "Factura de pagada"
 
 #: export_csv.php:1082
 msgid "Invoice Total Amount"
@@ -4306,7 +4306,7 @@ msgstr "Nombre del cliente"
 #: orders.php:331
 #: warehouse_orders.php:170
 msgid "Parcel Type"
-msgstr "Parcela Tipo"
+msgstr "Tipo de Bulto"
 
 #: export_csv.php:1184
 #: orders.php:296
@@ -4377,7 +4377,7 @@ msgstr ""
 #: orders_server.js.php:122
 #: orders_server.js.php:186
 msgid "Store Name"
-msgstr ""
+msgstr "Nombre de la Tienda"
 
 #: export_csv.php:1246
 #: customers_server.php:112
@@ -4398,7 +4398,7 @@ msgstr ""
 #: smarty.php:10697
 #: customers_server.php:128
 msgid "Active Customers"
-msgstr ""
+msgstr "Clientes Activos"
 
 #: export_csv.php:1250
 #: plot.php:117
@@ -4407,13 +4407,13 @@ msgstr ""
 #: ar_plot.php:1103
 #: customers_server.php:127
 msgid "New Customers"
-msgstr ""
+msgstr "Clientes Nuevos"
 
 #: export_csv.php:1251
 #: ar_plot.php:873
 #: customers_server.php:129
 msgid "Lost Customers"
-msgstr ""
+msgstr "Clientes Perdidos"
 
 #: export_csv.php:1306
 msgid "Customer Id"
@@ -4435,7 +4435,7 @@ msgstr ""
 #: smarty.php:10889
 #: new_products_list.js.php:184
 msgid "Last Order"
-msgstr ""
+msgstr "Ultima Orden"
 
 #: export_csv.php:1370
 msgid "Discription"
@@ -6061,15 +6061,15 @@ msgstr ""
 
 #: locale.php:4
 msgid "English"
-msgstr ""
+msgstr "Ingles"
 
 #: locale.php:5
 msgid "Spanish"
-msgstr ""
+msgstr "Espanol"
 
 #: locale.php:6
 msgid "German"
-msgstr ""
+msgstr "Aleman"
 
 #: locale.php:7
 msgid "French"
@@ -6913,7 +6913,7 @@ msgstr ""
 #: locale2.php:1243
 #: locale2.php:1252
 msgid "Address"
-msgstr ""
+msgstr "Direccion"
 
 #: company_departments.php:20
 msgid "Edit Departments"
@@ -7002,7 +7002,7 @@ msgstr ""
 #: edit_companies.js.php:96
 #: contacts.js.php:100
 msgid "Main Address"
-msgstr ""
+msgstr "Direccion Principal"
 
 #: report_customers.js.php:43
 #: report_customers.js.php:48
@@ -7070,7 +7070,7 @@ msgstr "Region"
 
 #: report_customers.js.php:47
 msgid "Ship to Address"
-msgstr ""
+msgstr "Direccion de Envio"
 
 #: invoice.js.php:23
 #: order_in_warehouse.js.php:23
@@ -9004,7 +9004,7 @@ msgstr ""
 #: smarty.php:12731
 #: locale2.php:619
 msgid "Time"
-msgstr ""
+msgstr "Hora"
 
 #: customer.js.php:528
 #: newpo.js.php:42
@@ -9072,7 +9072,7 @@ msgstr "indemnización no puede ser más del 100%"
 #: class.Contact.php:1564
 #: class.Contact.php:1575
 msgid "Contact Created"
-msgstr "Creado en contacto con"
+msgstr "Contacto creado"
 
 #: class.Contact.php:1565
 #: smarty.php:437
@@ -9110,7 +9110,7 @@ msgstr "Nuevo contacto"
 #: locale2.php:1222
 #: locale2.php:1231
 msgid "Contact"
-msgstr "Póngase en contacto con"
+msgstr "Contacto"
 
 #: class.Contact.php:1576
 #: class.Company.php:755
@@ -9173,7 +9173,7 @@ msgstr "a un nombre desconocido en"
 #: class.Customer.php:2626
 #: class.Company.php:1346
 msgid "Address Changed"
-msgstr "Cambio de Dirección"
+msgstr "Dirección actualizada"
 
 #: class.Contact.php:2478
 msgid "Contact address changed from"
@@ -9204,11 +9204,11 @@ msgstr "Correo electrónico pertenece a otro tipo de contacto"
 
 #: class.Contact.php:2965
 msgid "Email belongs to contact"
-msgstr "Correo electrónico pertenece a ponerte en contacto con"
+msgstr "Correo electrónico pertenece a"
 
 #: class.Contact.php:2977
 msgid "Error an email bellows to more than one contacts"
-msgstr "Error de un fuelle de correo electrónico a más de un contacto"
+msgstr "Error, correo electrónico pertenece a más de un contacto"
 
 #: class.Contact.php:3141
 #: class.Contact.php:3225
@@ -9249,7 +9249,7 @@ msgstr "Hola"
 
 #: class.Contact.php:3797
 msgid "Dear"
-msgstr "Estimados"
+msgstr "Estimado"
 
 #: class.Contact.php:4443
 msgid "Contact Main XHTML Mobile  Changed"
@@ -9605,7 +9605,7 @@ msgstr ""
 #: class.Order.php:1677
 #: class.Order.php:1713
 msgid "Wrong date"
-msgstr ""
+msgstr "Fecha erronea"
 
 #: class.Order.php:1652
 msgid "Error, indicate who receive the order"
@@ -10156,7 +10156,7 @@ msgstr "Localización"
 #: smarty.php:7364
 #: smarty.php:10640
 msgid "Area Code"
-msgstr "Área de Código"
+msgstr "Código del Área "
 
 #: new_warehouse_area.js.php:15
 #: smarty.php:2384
@@ -10165,7 +10165,7 @@ msgstr "Área de Código"
 #: smarty.php:6083
 #: smarty.php:7367
 msgid "Area Name"
-msgstr "Área Nombre"
+msgstr "Área"
 
 #: new_warehouse_area.js.php:16
 #: smarty.php:2387
@@ -10954,7 +10954,7 @@ msgstr "sólo comenzando con estantes"
 #: ar_warehouse.php:879
 #: ar_assets.php:10835
 msgid "shelf"
-msgstr "plataforma"
+msgstr "estante"
 
 #: ar_warehouse.php:881
 #: ar_assets.php:10826
@@ -11653,12 +11653,12 @@ msgstr "d"
 #: smarty.php:1976
 #: locale2.php:529
 msgid "w"
-msgstr "w"
+msgstr "s"
 
 #: common_functions.php:833
 #: common_functions.php:835
 msgid "y"
-msgstr "y"
+msgstr "a"
 
 #: report_pp.php:51
 msgid "Pickers & Packers Report"
@@ -12134,7 +12134,7 @@ msgstr "Restitución"
 
 #: new_post_order.js.php:387
 msgid "Credit"
-msgstr "De crédito"
+msgstr "Crédito"
 
 #: new_post_order.js.php:387
 #: ar_orders.php:2347
@@ -12162,7 +12162,7 @@ msgstr "No recibido"
 
 #: new_post_order.js.php:388
 msgid "Don't Like it"
-msgstr "No Guste"
+msgstr "No Gusto"
 
 #: new_post_order.js.php:389
 msgid "Rtn"
@@ -12195,7 +12195,7 @@ msgstr "Editar cliente"
 #: smarty.php:10688
 #: customers_server.php:68
 msgid "Customers List"
-msgstr "Enumerar los clientes"
+msgstr "Lista de clientes"
 
 #: customer.php:330
 msgid "Potential duplicated"
@@ -12547,7 +12547,7 @@ msgstr "Plataforma de creación"
 
 #: edit_customer.js.php:46
 msgid "Invalid Mobile"
-msgstr "No válido móvil"
+msgstr "Móvil no válido "
 
 #: edit_customer.js.php:50
 msgid "Invalid Tax Number"
@@ -13297,7 +13297,7 @@ msgstr "Región del mundo"
 #: smarty.php:13709
 #: new_products_list.js.php:894
 msgid "Countries"
-msgstr ""
+msgstr "Paises"
 
 #: new_customers_list.js.php:466
 #: new_customers_list.js.php:535
@@ -13307,7 +13307,7 @@ msgstr ""
 #: new_customers_list.js.php:532
 #: new_products_list.js.php:506
 msgid "City Name"
-msgstr ""
+msgstr "Ciudad"
 
 #: new_customers_list.js.php:1012
 #: new_customers_list.js.php:1026
@@ -13333,7 +13333,7 @@ msgstr ""
 
 #: ar_suppliers.php:149
 msgid "You can not do this operation"
-msgstr ""
+msgstr "No puedes realizar esta operacion"
 
 #: ar_suppliers.php:465
 #: ar_suppliers.php:696
@@ -13353,14 +13353,14 @@ msgstr ""
 #: ar_suppliers.php:1317
 #: ar_suppliers.php:1323
 msgid "Fatal Error"
-msgstr ""
+msgstr "Error"
 
 #: ar_suppliers.php:1414
 #: ar_edit_suppliers.php:397
 #: ar_suppliers.php:1430
 #: ar_edit_suppliers.php:406
 msgid "supplier"
-msgstr ""
+msgstr "provedor"
 
 #: ar_suppliers.php:1432
 #: ar_edit_suppliers.php:408
@@ -13877,7 +13877,7 @@ msgstr "Código no válido de la tienda"
 
 #: edit_store.js.php:33
 msgid "Invalid Contact"
-msgstr ""
+msgstr "Contact Invalido"
 
 #: edit_store.js.php:36
 msgid "Invalid Slogan"
@@ -13885,7 +13885,7 @@ msgstr ""
 
 #: edit_store.js.php:48
 msgid "Invalid FAX"
-msgstr ""
+msgstr "FAX invalido"
 
 #: edit_store.js.php:533
 #: smarty.php:2261
@@ -14953,7 +14953,7 @@ msgstr "Modificar contacto"
 #: smarty.php:386
 #: smarty.php:743
 msgid "Contact Overview"
-msgstr "Contacto general"
+msgstr "Información general del contacto"
 
 #: smarty.php:410
 #: locale2.php:103
@@ -15073,7 +15073,7 @@ msgstr "Ahora no"
 #: smarty.php:497
 #: locale2.php:1000
 msgid "Adding a telephone to the contact"
-msgstr "Adición de un teléfono para el contacto"
+msgstr "Agregar teléfono al contacto"
 
 #: smarty.php:500
 #: locale2.php:1003
@@ -15133,7 +15133,7 @@ msgstr "Constructor"
 #: locale2.php:1060
 #: locale2.php:1180
 msgid "Street"
-msgstr "La calle"
+msgstr "Calle"
 
 #: smarty.php:560
 #: smarty.php:10667
@@ -15154,7 +15154,7 @@ msgstr "Condado"
 #: locale2.php:1078
 #: locale2.php:1240
 msgid "Website Name"
-msgstr "Sitio Web Nombre"
+msgstr "Sitio Web"
 
 #: smarty.php:587
 #: locale2.php:1090
@@ -15231,7 +15231,7 @@ msgstr "Imprimir Dirección"
 #: smarty.php:677
 #: smarty.php:680
 msgid "Sticky Note"
-msgstr "Sticky Note"
+msgstr "Nota Semifija"
 
 #: smarty.php:686
 msgid "Link File"
@@ -15239,7 +15239,7 @@ msgstr "Enlace de archivos"
 
 #: smarty.php:689
 msgid "Take Order"
-msgstr "Tome Orden"
+msgstr "Tomar Orden"
 
 #: smarty.php:716
 #: smarty.php:719
@@ -15261,13 +15261,13 @@ msgstr "Facturación Igual que en contacto con la dirección de direcciones"
 
 #: smarty.php:746
 msgid "Lost Customer"
-msgstr "Perdida del cliente"
+msgstr "Cliente perdido"
 
 #: smarty.php:749
 #: smarty.php:1022
 #: smarty.php:1052
 msgid "Contact Since"
-msgstr "Contacto Desde"
+msgstr "Contacto desde"
 
 #: smarty.php:755
 #: smarty.php:1037
@@ -15279,13 +15279,13 @@ msgstr "No enviar boletines de noticias"
 #: smarty.php:1043
 #: smarty.php:1073
 msgid "Don't send marketing by email"
-msgstr "No envíe por e-mail marketing"
+msgstr "No envíe promocones por e-mail"
 
 #: smarty.php:767
 #: smarty.php:1049
 #: smarty.php:1079
 msgid "Don't send marketing by post"
-msgstr "No envíe por correo de marketing"
+msgstr "No envíe por promocines por correo postal"
 
 #: smarty.php:770
 msgid "Orders Overview"
@@ -15293,7 +15293,7 @@ msgstr "Información general sobre las órdenes"
 
 #: smarty.php:773
 msgid "has place one order"
-msgstr "tiene lugar un fin de"
+msgstr "a hecho un solo pedido"
 
 #: smarty.php:776
 msgid "has placed"
@@ -15313,31 +15313,31 @@ msgstr ""
 
 #: smarty.php:788
 msgid "an average of"
-msgstr ""
+msgstr "un promedio de"
 
 #: smarty.php:791
 msgid "per order"
-msgstr ""
+msgstr "por orden"
 
 #: smarty.php:794
 msgid "This customer usually places an order every"
-msgstr ""
+msgstr "El cliente generalmente hace un pedido cada"
 
 #: smarty.php:800
 msgid "History, Notes"
-msgstr ""
+msgstr "Historial, Notas"
 
 #: smarty.php:803
 msgid "Products Ordered"
-msgstr ""
+msgstr "Productos Ordenados"
 
 #: smarty.php:809
 msgid "Contact Details"
-msgstr ""
+msgstr "Detalles del cliente"
 
 #: smarty.php:812
 msgid "Customer Type"
-msgstr ""
+msgstr "Tipo de Cliente"
 
 #: smarty.php:818
 msgid "Company Tax Number"
@@ -15347,17 +15347,17 @@ msgstr ""
 #: smarty.php:2906
 #: smarty.php:4523
 msgid "Contact Email"
-msgstr ""
+msgstr "Email del contacto"
 
 #: smarty.php:827
 #: smarty.php:2909
 msgid "Contact Telephone"
-msgstr ""
+msgstr "Telefono del contacto"
 
 #: smarty.php:830
 #: smarty.php:2915
 msgid "Contact Fax"
-msgstr ""
+msgstr "Fax del contacto"
 
 #: smarty.php:833
 msgid "Billing Details"
@@ -15373,7 +15373,7 @@ msgstr "Forma de pago habitual"
 
 #: smarty.php:842
 msgid "Last Payment Method"
-msgstr "Forma de pago Última"
+msgstr "Última forma de pago "
 
 #: smarty.php:848
 msgid "Delivery Details"
@@ -15381,7 +15381,7 @@ msgstr "Detalles de la entrega"
 
 #: smarty.php:857
 msgid "Changes History"
-msgstr "Cambios Historia"
+msgstr "Historial Cambios "
 
 #: smarty.php:860
 msgid "Order History"
@@ -15389,11 +15389,11 @@ msgstr "Historial de pedidos"
 
 #: smarty.php:863
 msgid "Staff Notes"
-msgstr "Personal Notas"
+msgstr "Notas"
 
 #: smarty.php:866
 msgid "Product Families Ordered"
-msgstr "Familias de productos a Z"
+msgstr "Familias de producto ordenadas"
 
 #: smarty.php:872
 msgid "Permanent"
@@ -15401,7 +15401,7 @@ msgstr "Permanente"
 
 #: smarty.php:875
 msgid "Deletable"
-msgstr "Deletable"
+msgstr "Eliminable"
 
 #: smarty.php:884
 msgid "Keep Date"
@@ -15431,11 +15431,11 @@ msgstr "Asistente para exportación (nuevo mapa)"
 
 #: smarty.php:917
 msgid "Link Note"
-msgstr "Enlace Nota"
+msgstr "Crear Nota"
 
 #: smarty.php:944
 msgid "Courier"
-msgstr "Correo"
+msgstr "Empresa Envio"
 
 #: smarty.php:947
 msgid "Special Instructions"
@@ -15443,7 +15443,7 @@ msgstr "Instrucciones especiales"
 
 #: smarty.php:953
 msgid "Export"
-msgstr "Exportación"
+msgstr "Exportar"
 
 #: smarty.php:968
 msgid "Customer Categories Home"
@@ -15477,7 +15477,7 @@ msgstr "Ranking"
 
 #: smarty.php:998
 msgid "Deleted Customer"
-msgstr "Eliminados del cliente"
+msgstr "Cliente eliminado "
 
 #: smarty.php:1001
 #: locale2.php:4
@@ -15502,13 +15502,13 @@ msgstr "Anterior"
 
 #: smarty.php:1016
 msgid "Customers Split View"
-msgstr "Los clientes de vista dividida"
+msgstr "Vista dual de clientes"
 
 #: smarty.php:1019
 #: smarty.php:1100
 #: smarty.php:2780
 msgid "Merge"
-msgstr "Combinación"
+msgstr "Fusionar"
 
 #: smarty.php:1082
 msgid "Customers Merging"
@@ -15516,7 +15516,7 @@ msgstr "La fusión de los clientes"
 
 #: smarty.php:1085
 msgid "A customer will be deleted, and its notes and orders will be transferred to the other one"
-msgstr "Un cliente se borrarán, y sus notas y los pedidos serán transferidos a la otra"
+msgstr "Un cliente se borrarán, y sus notas y los pedidos serán transferidos al otro"
 
 #: smarty.php:1088
 #: smarty.php:2858
@@ -15526,11 +15526,11 @@ msgstr "Esta operación no se puede deshacer"
 #: smarty.php:1091
 #: smarty.php:1094
 msgid "swap"
-msgstr "de intercambio"
+msgstr "intercambiar"
 
 #: smarty.php:1103
 msgid "Merging, please wait"
-msgstr "La fusión, por favor espere"
+msgstr "Fusionando, por favor espere"
 
 #: smarty.php:1127
 #: smarty.php:1229
@@ -15541,7 +15541,7 @@ msgstr "Todos los contactos"
 #: smarty.php:1133
 #: smarty.php:1226
 msgid "Contacts with Orders"
-msgstr "Los contactos con los pedidos"
+msgstr "Contactos con pedidos"
 
 #: smarty.php:1160
 #: smarty.php:10721
@@ -15563,7 +15563,7 @@ msgstr "Lista de Clientes"
 
 #: smarty.php:1214
 msgid "Customer Corporate Overview"
-msgstr "Panorama general corporativo del cliente"
+msgstr "Panorama general corporativo de los clientes"
 
 #: smarty.php:1217
 msgid "Customers per Store"
@@ -15571,7 +15571,7 @@ msgstr "Clientes por tienda"
 
 #: smarty.php:1238
 msgid "Customers Information"
-msgstr "Los clientes de Información"
+msgstr "Información de los clientes"
 
 #: smarty.php:1250
 msgid "Data Integrity"
@@ -15616,7 +15616,7 @@ msgstr "Nueva Contactos (1 mes)"
 #: smarty.php:10901
 #: smarty.php:10931
 msgid "All times"
-msgstr "Todas las horas"
+msgstr "Siempre"
 
 #: smarty.php:1319
 #: smarty.php:1331
@@ -15870,7 +15870,7 @@ msgstr "1M"
 #: smarty.php:13181
 #: smarty.php:13478
 msgid "1W"
-msgstr "1W"
+msgstr "1S"
 
 #: smarty.php:1544
 #: smarty.php:1604
@@ -15926,7 +15926,7 @@ msgstr "Totales"
 #: smarty.php:13187
 #: smarty.php:13484
 msgid "M AVG"
-msgstr "M AVG"
+msgstr "Pdo M"
 
 #: smarty.php:1550
 #: smarty.php:1610
@@ -15954,14 +15954,14 @@ msgstr "M AVG"
 #: smarty.php:13190
 #: smarty.php:13487
 msgid "W AVG"
-msgstr "W AVG"
+msgstr "Pdo S"
 
 #: smarty.php:1559
 #: smarty.php:5354
 #: smarty.php:11324
 #: smarty.php:11615
 msgid "Export (XML)"
-msgstr "Exportación (XML)"
+msgstr "Exportar (XML)"
 
 #: smarty.php:1613
 #: smarty.php:5414
@@ -16129,24 +16129,24 @@ msgstr "Parcelas"
 #: smarty.php:1814
 #: locale2.php:475
 msgid "Edit General"
-msgstr ""
+msgstr "Edicion Gneral"
 
 #: smarty.php:1817
 #: locale2.php:478
 msgid "Edit Dimensions"
-msgstr ""
+msgstr "Editar Dimensiones"
 
 #: smarty.php:1820
 #: smarty.php:2279
 #: smarty.php:2552
 #: locale2.php:481
 msgid "Edit Details"
-msgstr ""
+msgstr "Editar detalles"
 
 #: smarty.php:1823
 #: locale2.php:484
 msgid "Add Picture"
-msgstr ""
+msgstr "Agregar imagen"
 
 #: smarty.php:1829
 #: smarty.php:2093
@@ -16173,7 +16173,7 @@ msgstr ""
 #: smarty.php:2087
 #: locale2.php:634
 msgid "File"
-msgstr ""
+msgstr "Archivo"
 
 #: smarty.php:1847
 msgid "Product Identification"
@@ -16193,7 +16193,7 @@ msgstr ""
 
 #: smarty.php:1862
 msgid "Families list"
-msgstr ""
+msgstr "Lista de Familias"
 
 #: smarty.php:1865
 msgid "Family unique code: "
@@ -16815,7 +16815,7 @@ msgstr ""
 #: smarty.php:6551
 #: smarty.php:6944
 msgid "Send Newsletter"
-msgstr ""
+msgstr "Enviar Carta Semanal"
 
 #: smarty.php:2801
 #: smarty.php:6560
@@ -16843,7 +16843,7 @@ msgstr ""
 
 #: smarty.php:2837
 msgid "Letter"
-msgstr ""
+msgstr "Carta"
 
 #: smarty.php:2840
 #: smarty.php:3743
@@ -16853,7 +16853,7 @@ msgstr ""
 #: smarty.php:2855
 #: smarty.php:2873
 msgid "Delete Customer"
-msgstr ""
+msgstr "Borrar Cliente"
 
 #: smarty.php:2861
 msgid "Would you like to proceed?"
@@ -16938,7 +16938,7 @@ msgstr "Nombre de la categoría"
 
 #: smarty.php:3014
 msgid "Delivery Address Library"
-msgstr "Entrega de la biblioteca de direcciones"
+msgstr "Direcciones de envio"
 
 #: smarty.php:3044
 #: smarty.php:3062
@@ -16952,7 +16952,7 @@ msgstr "Dirección de entrega actual"
 #: smarty.php:3086
 #: edit_company_department.php:83
 msgid "Editing Department"
-msgstr "Edición del Departamento de"
+msgstr "Modificando el departamento"
 
 #: smarty.php:3101
 #: smarty.php:3272
@@ -17358,7 +17358,7 @@ msgstr ""
 #: smarty.php:3791
 #: smarty.php:4088
 msgid "Mixture"
-msgstr "Mecla"
+msgstr "Mezcla"
 
 #: smarty.php:3794
 #: smarty.php:3908
@@ -17924,7 +17924,7 @@ msgstr ""
 
 #: smarty.php:5213
 msgid "Download"
-msgstr ""
+msgstr "Descargar"
 
 #: smarty.php:5222
 msgid "Saved Maps"
@@ -17991,7 +17991,7 @@ msgstr "Ayuda"
 #: smarty.php:5498
 #: locale2.php:364
 msgid "Logout"
-msgstr "Desconectarse"
+msgstr "Salir"
 
 #: smarty.php:5513
 #: smarty.php:5567
@@ -18005,7 +18005,7 @@ msgstr "Ex-funcionarios"
 
 #: smarty.php:5531
 msgid "Everybody"
-msgstr "Todo el mundo"
+msgstr "Todos"
 
 #: smarty.php:5570
 msgid "Business Holidays"
@@ -18141,7 +18141,7 @@ msgstr "Notas de entrega"
 #: locale2.php:229
 #: locale2.php:1105
 msgid "Order Search"
-msgstr "Orden de búsqueda"
+msgstr "búsqueda (pedidos)"
 
 #: smarty.php:5714
 msgid "Items Cost"
@@ -19882,7 +19882,7 @@ msgstr "Página del producto Categoría"
 #: smarty.php:13274
 #: smarty.php:13280
 msgid "filter results"
-msgstr "resultados del filtro"
+msgstr "filtrar resultados"
 
 #: smarty.php:11480
 msgid "Hide filter"
@@ -20517,7 +20517,7 @@ msgstr ""
 
 #: hr.php:12
 msgid "Holidays"
-msgstr ""
+msgstr "Vacaciones"
 
 #: hr.php:23
 msgid "Add Staff"
@@ -20557,7 +20557,7 @@ msgstr ""
 
 #: class.Store.php:518
 msgid "Store name updated"
-msgstr ""
+msgstr "Nombre de la tienda actializado"
 
 #: class.Store.php:525
 msgid "Store Name Changed"
@@ -20992,7 +20992,7 @@ msgstr ""
 
 #: locale2.php:802
 msgid "New Department"
-msgstr ""
+msgstr "Nuevo Departamento"
 
 #: locale2.php:817
 msgid "Inventory file"
@@ -21000,7 +21000,7 @@ msgstr ""
 
 #: locale2.php:826
 msgid "Edit Menu"
-msgstr ""
+msgstr "Editar Menu"
 
 #: locale2.php:844
 msgid "To add items download this <a href=\"templates_dn.php\">template</a>, and upload it."
@@ -21016,7 +21016,7 @@ msgstr ""
 
 #: locale2.php:853
 msgid "Deliver Note"
-msgstr ""
+msgstr "Nota de Envio"
 
 #: locale2.php:868
 msgid "Products to sell (old)"
@@ -21028,11 +21028,11 @@ msgstr ""
 
 #: locale2.php:877
 msgid "Total Products"
-msgstr ""
+msgstr "Total del Productos"
 
 #: locale2.php:892
 msgid "Diff"
-msgstr ""
+msgstr "Differencia"
 
 #: locale2.php:922
 msgid "Code Search"
@@ -21041,17 +21041,17 @@ msgstr ""
 #: locale2.php:928
 #: locale2.php:1108
 msgid "List of customers"
-msgstr ""
+msgstr "Lista de clientes"
 
 #: locale2.php:931
 #: locale2.php:1111
 msgid "Contacts List"
-msgstr ""
+msgstr "Lista de contactos"
 
 #: locale2.php:934
 #: locale2.php:1114
 msgid "Add Contact"
-msgstr ""
+msgstr "Agregar contacto"
 
 #: locale2.php:1117
 msgid "New personal contact"

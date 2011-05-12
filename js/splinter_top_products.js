@@ -10,7 +10,7 @@ function top_products_init(){
 				       ,{key:"description", label:Dom.get('label_Product').value, width:280,sortable:false,className:"aleft"}
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:65,sortable:false,className:"aright"}
 					 ];
-	    top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&tableid="+tableid);
+	    top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type')+"&tableid="+tableid);
 	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    top_products_tables.dataSourcetopprod.connXhrMode = "queueRequests";
 	    top_products_tables.dataSourcetopprod.responseSchema = {
@@ -91,7 +91,7 @@ ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_families&store_keys='+stores_keys+'&period='+period); 
-
+//alert ('plot_data.csv.php?tipo=top_families&store_keys='+stores_keys+'&period='+period)
 
 }
 

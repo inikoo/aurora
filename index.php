@@ -158,12 +158,13 @@ $splinters=array(
                                   'tpl'=>'splinter_top_products.tpl',
                                   'js'=>'js/splinter_top_products.js',
                                   'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
-                                  'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
-
+                                  'nr'=>$_SESSION['state']['home']['splinters']['top_products']['nr'],
+                                   'type'=> $_SESSION['state']['home']['splinters']['top_products']['type']
 
                               ),
 
            );
+           
 
 foreach($splinters as $splinter_name=>$splinter) {
 

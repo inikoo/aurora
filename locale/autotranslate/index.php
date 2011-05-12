@@ -32,7 +32,7 @@
  * This reduces load on the server and plays nice with Google. If you want a faster
  * experience, simply host Pepipopum on your own server and lower this value.
  */ 
-define('PEPIPOPUM_DELAY', 0.5);
+define('PEPIPOPUM_DELAY', 0.1);
  
  /**
  * POProcessor provides a simple PO file parser
@@ -196,7 +196,7 @@ class POProcessor
     protected function showProgress($percentComplete, $remainingTime)
     {
     
-    
+    return;
         if (is_array($this->progressCallback))
         {
             $obj=$this->progressCallback[0];

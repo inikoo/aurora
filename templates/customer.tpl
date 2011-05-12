@@ -21,7 +21,7 @@
  
      
 <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
-    <tr><td  ><a href="pdf_customer.php?id={$customer->id}">{t}Print Address{/t}</a></td></tr>
+    <tr><td  ><a href="pdf_customer.php?id={$customer->id}" target="_blank">{t}Print Address{/t}</a></td></tr>
 
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
     <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
