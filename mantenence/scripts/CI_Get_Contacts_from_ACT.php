@@ -119,7 +119,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     
     $act_data['tax_type']='S1';
     
-    if($cols[90]=='Yes')
+    if($cols[90]=='Si')
       $act_data['tax_type']='S3';
 
 
