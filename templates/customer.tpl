@@ -39,7 +39,7 @@
        
 
      
-<div  style="width:500px;float:left" >    
+<div  style="width:490px;float:left" >    
      
 <table id="customer_data" border=0 style="width:100%">
     <tr>
@@ -163,7 +163,7 @@
 </div>
 </div>
 
-<div id="sticky_note_div" class="sticky_note">
+<div id="sticky_note_div" class="sticky_note" style="width:270px">
 <img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
 <div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 </div>
