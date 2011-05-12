@@ -330,6 +330,16 @@
      </tr>
 {/if}
 
+<tr>
+<td>{t}Tax Code{/t}:</td><td>
+<select id="tax_code">
+  {foreach from=$tax_codes item=sub_cat key=sub_cat_key name=foo2  }
+    
+        <option {if $customer->get('Customer Tax Category Code')==$sub_cat.code }selected="selected"{/if} value="{$sub_cat.code}">{$sub_cat.name}</option>
+    {/foreach}
+</select></td>
+</tr>
+
       
       
      </table>
