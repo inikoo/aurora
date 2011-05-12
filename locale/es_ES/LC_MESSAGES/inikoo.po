@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-11 12:48+0100\n"
-"PO-Revision-Date: 2011-05-12 12:24+0100\n"
+"PO-Revision-Date: 2011-05-12 12:35+0100\n"
 "Last-Translator: Raul Perusquia <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1697,7 +1697,7 @@ msgstr "Proveedor"
 #: smarty.php:4763
 #: new_products_list.js.php:807
 msgid "Product Name"
-msgstr ""
+msgstr "Nombre del producto"
 
 #: supplier_products.php:89
 #: export_csv.php:1564
@@ -2022,7 +2022,7 @@ msgstr ""
 #: edit_family.php:267
 #: department.js.php:6
 msgid "Last Year"
-msgstr ""
+msgstr "Año pasado"
 
 #: store.php:61
 #: store.php:198
@@ -2041,7 +2041,7 @@ msgstr ""
 #: edit_family.php:266
 #: department.js.php:6
 msgid "Last Quarter"
-msgstr ""
+msgstr "Trimestre pasado"
 
 #: store.php:61
 #: store.php:197
@@ -2058,7 +2058,7 @@ msgstr ""
 #: edit_family.php:166
 #: department.js.php:6
 msgid "Last Month"
-msgstr ""
+msgstr "Mes pasado"
 
 #: store.php:61
 #: store.php:196
@@ -2076,7 +2076,7 @@ msgstr ""
 #: edit_family.php:264
 #: department.js.php:6
 msgid "Last Week"
-msgstr ""
+msgstr "Semana pasada"
 
 #: store.php:61
 #: store.php:200
@@ -2231,7 +2231,7 @@ msgstr "Categorias"
 #: parts.php:129
 #: department.js.php:77
 msgid "Products"
-msgstr ""
+msgstr "Productos"
 
 #: store.php:224
 #: export_csv.php:692
@@ -2254,7 +2254,7 @@ msgstr ""
 #: smarty.php:11414
 #: smarty.php:11546
 msgid "Families"
-msgstr ""
+msgstr "Familias"
 
 #: store.php:227
 #: export_csv.php:313
@@ -3366,7 +3366,7 @@ msgstr ""
 #: order_pack_aid.js.php:268
 #: orders_server.js.php:60
 msgid "Pending"
-msgstr ""
+msgstr "Por hacer"
 
 #: customers_lists.js.php:44
 #: email_campaign_in_process.js.php:24
@@ -3387,7 +3387,7 @@ msgstr ""
 #: export_csv.php:53
 #: smarty.php:10409
 msgid "customers"
-msgstr ""
+msgstr "clientes"
 
 #: export_csv.php:58
 #: export_csv.php:62
@@ -3435,7 +3435,7 @@ msgstr ""
 #: export_csv.php:130
 #: export_csv.php:134
 msgid "departments"
-msgstr ""
+msgstr "departamentos"
 
 #: export_csv.php:149
 #: export_csv.php:154
@@ -3455,13 +3455,13 @@ msgstr ""
 #: export_csv.php:177
 #: export_csv.php:181
 msgid "orders"
-msgstr ""
+msgstr "pedidos"
 
 #: export_csv.php:186
 #: export_csv.php:190
 #: smarty.php:10406
 msgid "invoices"
-msgstr ""
+msgstr "facturas"
 
 #: export_csv.php:195
 #: export_csv.php:199
@@ -7902,19 +7902,19 @@ msgstr "Error desconocido"
 #: index.php:121
 #: dashboard_bak.php.php:71
 msgid "Display Board"
-msgstr "Mostrar Junta"
+msgstr "Anuncios Corporativos"
 
 #: dashboard.php:103
 #: dashboard_bak.php.php:78
 msgid "Pending orders"
-msgstr "En espera de órdenes"
+msgstr "Ordenes por hacer"
 
 #: dashboard.php:112
 #: index.php:155
 #: dashboard_bak.php.php:87
 #: smarty.php:5342
 msgid "Top Products"
-msgstr "Productos principales"
+msgstr "Mejores Productos"
 
 #: dashboard.php:119
 #: index.php:128
@@ -7922,7 +7922,7 @@ msgstr "Productos principales"
 #: smarty.php:10898
 #: report_customers.php:43
 msgid "Top Customers"
-msgstr "Subir"
+msgstr "Mejores Clientes"
 
 #: dashboard.php:126
 msgid "Contacts and Customers"
@@ -7934,7 +7934,7 @@ msgstr "Los pedidos pendientes"
 
 #: dashboard.php:140
 msgid "Worst Product"
-msgstr "Lo peor del producto"
+msgstr "Peor producto"
 
 #: product_categories.js.php:106
 #: stores.js.php:115
@@ -14373,7 +14373,7 @@ msgstr ""
 
 #: smarty.php:35
 msgid "Products Categories"
-msgstr ""
+msgstr "Categoria de productos"
 
 #: smarty.php:44
 #: smarty.php:110
@@ -15626,7 +15626,7 @@ msgstr "Siempre"
 #: smarty.php:10904
 #: smarty.php:10934
 msgid "1y"
-msgstr "Estimado en 1 año"
+msgstr "1a"
 
 #: smarty.php:1322
 #: smarty.php:1334
@@ -20533,7 +20533,7 @@ msgstr ""
 
 #: class.Store.php:351
 msgid "Store can not be deleted because it has some products"
-msgstr ""
+msgstr "La tienda no se puede borrar por que contiene productos"
 
 #: class.Store.php:417
 msgid "Error: There is another store with the same code"
