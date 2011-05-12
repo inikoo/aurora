@@ -127,8 +127,8 @@ $export_data=array(
 		   ,"o"
 		   ,$data['payment_method']
 		   ,$customer->id
-		   ,"q"
-		   ,""
+		   ,$customer->data['Customer Tax Category Code']
+		   ,$customer->get_fiscal_name()
 		   ,""
 		   ,""
 		   
