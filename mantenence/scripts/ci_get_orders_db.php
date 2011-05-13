@@ -228,8 +228,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         if (!isset($header[1][22])) {
-            print_r($header);
-            print "Error in Order $filename\n";
+           // print_r($header);
+            print "Error in Order posible pastania con GRAFICO $filename\n";
 
             continue;
         }
