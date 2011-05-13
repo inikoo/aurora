@@ -124,7 +124,7 @@ $export_data=array(
 		   ,$alias
 		   ,"m"
 		   ,"n"
-		   ,"o"
+		   ,$customer->data['Recargo Equivalencia']
 		   ,$data['payment_method']
 		   ,$customer->id
 		   ,$customer->data['Customer Tax Category Code']

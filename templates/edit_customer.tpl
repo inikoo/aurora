@@ -330,6 +330,16 @@
      </tr>
 {/if}
 
+{if $hq_country=='ES'}
+<tr>
+<td>RE:</td>
+<td>
+  <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <span class="{if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</span><br/><br/>
+   </div>
+<td>
+</tr>
+{else}
 <tr>
 <td>{t}Tax Code{/t}:</td><td>
 <select id="tax_code">
@@ -339,7 +349,7 @@
     {/foreach}
 </select></td>
 </tr>
-
+{/if}
       
       
      </table>

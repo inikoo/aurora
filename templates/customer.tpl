@@ -203,8 +203,39 @@
   
  
   <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-<h2>{t}Contact Details{/t}</h2>
+
+<h2 style="clear:both">{t}Billing Details{/t}</h2>
+
 <div style="float:left;width:450px">
+<table    class="show_info_product">
+
+
+  <tr>
+		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
+		    </tr>
+		 <tr style="{if $hq_country!='ES'}display:none;{/if};border-top:1px solid #ccc">
+		    <td>Recargo Equivalencia</td><td>{$customer->get('Recargo Equivalencia')}</td>
+		    </tr>
+		
+		  <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
+
+		    </tr>
+		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
+		   <tr>
+		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
+
+		    </tr>
+		 {/if}
+		   <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
+
+		    </tr>
+		</table>
+</div>
+
+<h2 style="clear:both">{t}Contact Details{/t}</h2>
+<div style="float:both;width:450px">
 <table    class="show_info_product">
   <tr>
 		    <td>{t}Customer Type{/t}:</td><td>{$customer->get('Customer Type')}</td>
@@ -236,35 +267,12 @@
 		</table>
 </div>
 
-<div class="contact_cards"  >
+<div class="contact_cards" style="display:none" >
 {foreach from=$customer->get_contact_cards() item=card}
 {$card}
 {/foreach}
 </div>
-<h2 style="clear:both">{t}Billing Details{/t}</h2>
 
-<div style="float:left;width:450px">
-<table    class="show_info_product">
-  <tr>
-		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
-		    </tr>
-		
-		  <tr style="border-top:1px solid #ccc">
-		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
-
-		    </tr>
-		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
-		   <tr>
-		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
-
-		    </tr>
-		 {/if}
-		   <tr style="border-top:1px solid #ccc">
-		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
-
-		    </tr>
-		</table>
-</div>
 
 <h2 style="clear:both">{t}Delivery Details{/t}</h2>
 
