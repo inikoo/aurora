@@ -518,17 +518,30 @@
 
 <div id="dialog_make_order">
   <div id="long_note_msg"></div>
+
   <table >
+
 <input type="hidden" id="make_order_customer_id" value="{$customer->id}">
     <tr><td colspan=2>{t}Payment Method{/t}:</td></tr><tr><td colspan=2>
 	<select id="make_order_payment_method">
-	  <option>Credit Card</option>
-	  <option>Paypal</option>
-	  <option>Bank Transfer</option>
-	  <option>Cheque</option>
-	  <option>Cash</option>
-	  <option>Account</option>
-	  <option>Postal Order</option>
+	{if $hq_country=='ES'}
+	 <option>{t}Tarjeta{/t}</option>
+	  <option>{t}Paypal{/t}</option>
+	  <option>{t}Ingreso{/t}</option>
+	  <option>{t}Contra Reembolso{/t}</option>
+	  <option>{t}Transferencia{/t}</option>
+	{else}
+	
+	  <option>{t}Credit Card{/t}</option>
+	  <option>{t}Paypal{/t}</option>
+	  <option>{t}Bank Transfer{/t}</option>
+	  <option>{t}Cheque{/t}</option>
+	  <option>{t}Cash{/t}</option>
+	  <option>{t}Account{/t}</option>
+	  <option>{t}Postal Order{/t}</option>
+	  <option>{t}Cash on delivery{/t}</option>
+{/if}
+
 	</select>
     </td></tr>
 <tr><td colspan=2>Gold Reward:</td></tr><tr><td colspan=2>
