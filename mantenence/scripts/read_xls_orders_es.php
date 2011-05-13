@@ -58,7 +58,7 @@ $update_all=false;
 $contador=1;
 $do_refunds=false;
 $correct_partner=true;
-$force_update=true;
+$force_update=false;
 
 
 $orders_array_full_path = glob("/data/share/*/6*.xls");

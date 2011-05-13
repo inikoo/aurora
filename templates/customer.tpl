@@ -538,6 +538,8 @@
 	  <option>{t}Ingreso{/t}</option>
 	  <option>{t}Contra Reembolso{/t}</option>
 	  <option>{t}Transferencia{/t}</option>
+	  	  <option>{t}Efectivo{/t}</option>
+
 	{else}
 	
 	  <option>{t}Credit Card{/t}</option>
