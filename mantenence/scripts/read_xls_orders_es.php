@@ -14,9 +14,9 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
-include_once('de_local_map.php');
+include_once('ci_local_map.php');
 
-include_once('de_map_order_functions.php');
+include_once('ci_map_order_functions.php');
 
 
 //require_once 'MDB2.php';            // PEAR Database Abstraction Layer
@@ -58,7 +58,7 @@ $update_all=false;
 $contador=1;
 $do_refunds=false;
 $correct_partner=true;
-$force_update=false;
+$force_update=true;
 
 
 $orders_array_full_path = glob("/data/share/*/6*.xls");
