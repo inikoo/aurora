@@ -16,7 +16,7 @@ $smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 //$modify=false;
-$modify=$user->can_edit('stores');
+$modify=$user->can_edit('customers');
 
 get_header_info($user,$smarty);
 $general_options_list=array();
