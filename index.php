@@ -116,7 +116,7 @@ $js_files=array(
 */
 
 
-$splinters=array(
+$splinters_data=array(
                'messages'=>array(
                               'title'=>_('Display Board'),
                               'index'=>200,
@@ -158,12 +158,20 @@ $splinters=array(
                                   'tpl'=>'splinter_top_products.tpl',
                                   'js'=>'js/splinter_top_products.js',
                                   'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
-                                  'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
-
+                                  'nr'=>$_SESSION['state']['home']['splinters']['top_products']['nr'],
+                                   'type'=> $_SESSION['state']['home']['splinters']['top_products']['type']
 
                               ),
 
            );
+           
+         $splinters=array();  
+           foreach($myconf['splinters'] as $splinter_name){
+           if(array_key_exists($splinter_name,$splinters_data))
+           $splinters[$splinter_name]=$splinters_data[$splinter_name];
+           }
+          //exit; 
+ //     print_r($splinters)     ;
 
 foreach($splinters as $splinter_name=>$splinter) {
 

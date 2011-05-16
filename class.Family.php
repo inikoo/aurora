@@ -259,7 +259,7 @@ var $external_DB_link=false;
 
         } else {
             $this->error=true;
-            $this->msg=_("$sql  Error can not create the family");
+            $this->msg="$sql  Error can not create the family";
         }
     }
     /*

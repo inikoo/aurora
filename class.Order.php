@@ -2379,7 +2379,6 @@ where `Order Key`=%d",
             $array_state[$row['state']]=$row['state'];
         }
 
-
         $old_dispatch_state=$this->data['Order Current Dispatch State'];
         $this->data['Order Current Dispatch State']=$this->translate_dispatch_state($array_state);
         $this->data['Order Current XHTML State']=$this->calculate_state();

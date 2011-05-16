@@ -21,17 +21,20 @@ case('customers'):
     $results=list_customers();
     break;
 case('products'):
+    if($_REQUEST['type']=='products')
     $results=list_products();
+    else
+    $results=list_families();
     break;
 case('sales'):
 
-  if (isset( $_REQUEST['type'])) {
+    if (isset( $_REQUEST['type'])) {
         $type=$_REQUEST['type'];
         $_SESSION['state']['home']['splinters']['sales']['type']=$type;
     } else
         $type=$_SESSION['state']['home']['splinters']['sales']['type'];
-    if($type=='stores')
-    $results=store_sales_overview();
+    if ($type=='stores')
+        $results=store_sales_overview();
     else
         $results=invoice_categories_sales_overview();
 
@@ -95,72 +98,72 @@ function invoice_categories_sales_overview() {
 
     switch ($period) {
     case('1w'):
-     $fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales, `1 Week Acc 1YB Invoices` as invoices_1yb,`1 Week Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC 1 Week Acc Invoiced Amount` as dc_sales,`DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales, `1 Week Acc 1YB Invoices` as invoices_1yb,`1 Week Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC 1 Week Acc Invoiced Amount` as dc_sales,`DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('10d'):
-    $fields=sprintf(" `10 Day Acc Invoices` as invoices,`10 Day Acc Invoiced Amount` as sales, `10 Day Acc 1YB Invoices` as invoices_1yb,`10 Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC 10 Day Acc Invoiced Amount` as dc_sales,`DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `10 Day Acc Invoices` as invoices,`10 Day Acc Invoiced Amount` as sales, `10 Day Acc 1YB Invoices` as invoices_1yb,`10 Day Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC 10 Day Acc Invoiced Amount` as dc_sales,`DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('1m'):
- $fields=sprintf(" `1 Month Acc Invoices` as invoices,`1 Month Acc Invoiced Amount` as sales, `1 Month Acc 1YB Invoices` as invoices_1yb,`1 Month Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC 1 Month Acc Invoiced Amount` as dc_sales,`DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;        
+        $fields=sprintf(" `1 Month Acc Invoices` as invoices,`1 Month Acc Invoiced Amount` as sales, `1 Month Acc 1YB Invoices` as invoices_1yb,`1 Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC 1 Month Acc Invoiced Amount` as dc_sales,`DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
     case('1q'):
- $fields=sprintf(" `1 Quarter Acc Invoices` as invoices,`1 Quarter Acc Invoiced Amount` as sales, `1 Quarter Acc 1YB Invoices` as invoices_1yb,`1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC 1 Quarter Acc Invoiced Amount` as dc_sales,`DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `1 Quarter Acc Invoices` as invoices,`1 Quarter Acc Invoiced Amount` as sales, `1 Quarter Acc 1YB Invoices` as invoices_1yb,`1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC 1 Quarter Acc Invoiced Amount` as dc_sales,`DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('1y'):
- $fields=sprintf(" `1 Year Acc Invoices` as invoices,`1 Year Acc Invoiced Amount` as sales, `1 Year Acc 1YB Invoices` as invoices_1yb,`1 Year Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC 1 Year Acc Invoiced Amount` as dc_sales,`DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `1 Year Acc Invoices` as invoices,`1 Year Acc Invoiced Amount` as sales, `1 Year Acc 1YB Invoices` as invoices_1yb,`1 Year Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC 1 Year Acc Invoiced Amount` as dc_sales,`DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('3y'):
- $fields=sprintf(" `3 Year Acc Invoices` as invoices,`3 Year Acc Invoiced Amount` as sales, `3 Year Acc Invoices` as invoices_1yb,`3 Year Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC 3 Year Acc Invoiced Amount` as dc_sales,`DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
-     case('yesterday'):
- $fields=sprintf(" `Yesterday Acc Invoices` as invoices,`Yesterday Acc Invoiced Amount` as sales, `Yesterday Acc 1YB Invoices` as invoices_1yb,`Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Yesterday Acc Invoiced Amount` as dc_sales,`DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
-     case('last_m'):
- $fields=sprintf(" `Last Month Acc Invoices` as invoices,`Last Month Acc Invoiced Amount` as sales, `Last Month Acc 1YB Invoices` as invoices_1yb,`Last Month Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Last Month Acc Invoiced Amount` as dc_sales,`DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
-         case('last_w'):
- $fields=sprintf(" `Last Week Acc Invoices` as invoices,`Last Week Acc Invoiced Amount` as sales, `Last Week Acc 1YB Invoices` as invoices_1yb,`Last Week Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Last Week Acc Invoiced Amount` as dc_sales,`DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;     
-      case('today'):
- $fields=sprintf(" `Today Acc Invoices` as invoices,`Today Acc Invoiced Amount` as sales, `Today Acc 1YB Invoices` as invoices_1yb,`Today Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Today Acc Invoiced Amount` as dc_sales,`DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;          
-        
-      case('wtd'):
+        $fields=sprintf(" `3 Year Acc Invoices` as invoices,`3 Year Acc Invoiced Amount` as sales, `3 Year Acc Invoices` as invoices_1yb,`3 Year Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC 3 Year Acc Invoiced Amount` as dc_sales,`DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('yesterday'):
+        $fields=sprintf(" `Yesterday Acc Invoices` as invoices,`Yesterday Acc Invoiced Amount` as sales, `Yesterday Acc 1YB Invoices` as invoices_1yb,`Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC Yesterday Acc Invoiced Amount` as dc_sales,`DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('last_m'):
+        $fields=sprintf(" `Last Month Acc Invoices` as invoices,`Last Month Acc Invoiced Amount` as sales, `Last Month Acc 1YB Invoices` as invoices_1yb,`Last Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC Last Month Acc Invoiced Amount` as dc_sales,`DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('last_w'):
+        $fields=sprintf(" `Last Week Acc Invoices` as invoices,`Last Week Acc Invoiced Amount` as sales, `Last Week Acc 1YB Invoices` as invoices_1yb,`Last Week Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC Last Week Acc Invoiced Amount` as dc_sales,`DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('today'):
+        $fields=sprintf(" `Today Acc Invoices` as invoices,`Today Acc Invoiced Amount` as sales, `Today Acc 1YB Invoices` as invoices_1yb,`Today Acc 1YB Invoiced Amount` as sales_1yb,
+                        `DC Today Acc Invoiced Amount` as dc_sales,`DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+
+    case('wtd'):
         $fields=sprintf(" `Week To Day Acc Invoices` as invoices,`Week To Day Acc Invoiced Amount` as sales, `Week To Day Acc 1YB Invoices` as invoices_1yb,`Week To Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Week To Day Acc Invoiced Amount` as dc_sales,`DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
+                        `DC Week To Day Acc Invoiced Amount` as dc_sales,`DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
     case('mtd'):
         $fields=sprintf(" `Month To Day Acc Invoices` as invoices,`Month To Day Acc Invoiced Amount` as sales, `Month To Day Acc 1YB Invoices` as invoices_1yb,`Month To Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Month To Day Acc Invoiced Amount` as dc_sales,`DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+                        `DC Month To Day Acc Invoiced Amount` as dc_sales,`DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
-     case('ytd'):
+    case('ytd'):
         $fields=sprintf(" `Year To Day Acc Invoices` as invoices,`Year To Day Acc Invoiced Amount` as sales, `Year To Day Acc 1YB Invoices` as invoices_1yb,`Year To Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `DC Year To Day Acc Invoiced Amount` as dc_sales,`DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;    
-        
+                        `DC Year To Day Acc Invoiced Amount` as dc_sales,`DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+
     default:
         $fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales " );
     }
@@ -171,18 +174,18 @@ function invoice_categories_sales_overview() {
     $position=1;
     $result=mysql_query($sql);
     $sum_invoices=0;
-     $sum_invoices_1yb=0;
-      $sum_dc_sales=0;
-        $sum_dc_sales_1yb=0;
+    $sum_invoices_1yb=0;
+    $sum_dc_sales=0;
+    $sum_dc_sales_1yb=0;
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total++;
         $sum_invoices+=$row['invoices'];
         $sum_invoices_1yb+=$row['invoices_1yb'];
-        
+
         $sum_dc_sales+=$row['dc_sales'];
         $sum_dc_sales_1yb+=$row['dc_sales_1yb'];
-        
-        
+
+
         $category="<a href='report_sales.php?invoice_category_key=".$row['Category Key']."'>".$row['Category Label'].'</a>';
         $adata[]=array(
 
@@ -198,10 +201,10 @@ function invoice_categories_sales_overview() {
                      'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_symbol),
                      'dc_sales_delta'=>delta($row['dc_sales'],$row['dc_sales_1yb']),
                      'dc_sales_share'=>$row['dc_sales']
-  
-  
-  
-  );
+
+
+
+                 );
     }
     mysql_free_result($result);
 
@@ -212,18 +215,18 @@ function invoice_categories_sales_overview() {
 
     }
 
-$adata[]=array(
+    $adata[]=array(
 
-                     'store'=>_('Total'),
-                     'invoices'=>number($sum_invoices),
-                     'invoices_1yb'=>'',
-                     'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
-                     'sales'=>'',
-                     'sales_delta'=>'',
-                     'dc_sales'=>money($sum_dc_sales,$corporate_symbol),
-                     'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
-                     'invoices_share'=>''
-                 );
+                 'store'=>_('Total'),
+                 'invoices'=>number($sum_invoices),
+                 'invoices_1yb'=>'',
+                 'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
+                 'sales'=>'',
+                 'sales_delta'=>'',
+                 'dc_sales'=>money($sum_dc_sales,$corporate_symbol),
+                 'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
+                 'invoices_share'=>''
+             );
 
 
 
@@ -305,72 +308,72 @@ function store_sales_overview() {
 
     switch ($period) {
     case('1w'):
-     $fields=sprintf(" `Store 1 Week Acc Invoices` as invoices,`Store 1 Week Acc Invoiced Amount` as sales, `Store 1 Week Acc 1YB Invoices` as invoices_1yb,`Store 1 Week Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC 1 Week Acc Invoiced Amount` as dc_sales,`Store DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `Store 1 Week Acc Invoices` as invoices,`Store 1 Week Acc Invoiced Amount` as sales, `Store 1 Week Acc 1YB Invoices` as invoices_1yb,`Store 1 Week Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 1 Week Acc Invoiced Amount` as dc_sales,`Store DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('10d'):
-    $fields=sprintf(" `Store 10 Day Acc Invoices` as invoices,`Store 10 Day Acc Invoiced Amount` as sales, `Store 10 Day Acc 1YB Invoices` as invoices_1yb,`Store 10 Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC 10 Day Acc Invoiced Amount` as dc_sales,`Store DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `Store 10 Day Acc Invoices` as invoices,`Store 10 Day Acc Invoiced Amount` as sales, `Store 10 Day Acc 1YB Invoices` as invoices_1yb,`Store 10 Day Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 10 Day Acc Invoiced Amount` as dc_sales,`Store DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('1m'):
- $fields=sprintf(" `Store 1 Month Acc Invoices` as invoices,`Store 1 Month Acc Invoiced Amount` as sales, `Store 1 Month Acc 1YB Invoices` as invoices_1yb,`Store 1 Month Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC 1 Month Acc Invoiced Amount` as dc_sales,`Store DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;        
+        $fields=sprintf(" `Store 1 Month Acc Invoices` as invoices,`Store 1 Month Acc Invoiced Amount` as sales, `Store 1 Month Acc 1YB Invoices` as invoices_1yb,`Store 1 Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 1 Month Acc Invoiced Amount` as dc_sales,`Store DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
     case('1q'):
- $fields=sprintf(" `Store 1 Quarter Acc Invoices` as invoices,`Store 1 Quarter Acc Invoiced Amount` as sales, `Store 1 Quarter Acc 1YB Invoices` as invoices_1yb,`Store 1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Store DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `Store 1 Quarter Acc Invoices` as invoices,`Store 1 Quarter Acc Invoiced Amount` as sales, `Store 1 Quarter Acc 1YB Invoices` as invoices_1yb,`Store 1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Store DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('1y'):
- $fields=sprintf(" `Store 1 Year Acc Invoices` as invoices,`Store 1 Year Acc Invoiced Amount` as sales, `Store 1 Year Acc 1YB Invoices` as invoices_1yb,`Store 1 Year Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC 1 Year Acc Invoiced Amount` as dc_sales,`Store DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+        $fields=sprintf(" `Store 1 Year Acc Invoices` as invoices,`Store 1 Year Acc Invoiced Amount` as sales, `Store 1 Year Acc 1YB Invoices` as invoices_1yb,`Store 1 Year Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 1 Year Acc Invoiced Amount` as dc_sales,`Store DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
     case('3y'):
- $fields=sprintf(" `Store 3 Year Acc Invoices` as invoices,`Store 3 Year Acc Invoiced Amount` as sales, `Store 3 Year Acc 1YB Invoices` as invoices_1yb,`Store 3 Year Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC 3 Year Acc Invoiced Amount` as dc_sales,`Store DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
-     case('yesterday'):
- $fields=sprintf(" `Store Yesterday Acc Invoices` as invoices,`Store Yesterday Acc Invoiced Amount` as sales, `Store Yesterday Acc 1YB Invoices` as invoices_1yb,`Store Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Yesterday Acc Invoiced Amount` as dc_sales,`Store DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
-     case('last_m'):
- $fields=sprintf(" `Store Last Month Acc Invoices` as invoices,`Store Last Month Acc Invoiced Amount` as sales, `Store Last Month Acc 1YB Invoices` as invoices_1yb,`Store Last Month Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Last Month Acc Invoiced Amount` as dc_sales,`Store DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
-         case('last_w'):
- $fields=sprintf(" `Store Last Week Acc Invoices` as invoices,`Store Last Week Acc Invoiced Amount` as sales, `Store Last Week Acc 1YB Invoices` as invoices_1yb,`Store Last Week Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Last Week Acc Invoiced Amount` as dc_sales,`Store DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;     
-      case('today'):
- $fields=sprintf(" `Store Today Acc Invoices` as invoices,`Store Today Acc Invoiced Amount` as sales, `Store Today Acc 1YB Invoices` as invoices_1yb,`Store Today Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Today Acc Invoiced Amount` as dc_sales,`Store DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;          
-        
-      case('wtd'):
+        $fields=sprintf(" `Store 3 Year Acc Invoices` as invoices,`Store 3 Year Acc Invoiced Amount` as sales, `Store 3 Year Acc 1YB Invoices` as invoices_1yb,`Store 3 Year Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 3 Year Acc Invoiced Amount` as dc_sales,`Store DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('yesterday'):
+        $fields=sprintf(" `Store Yesterday Acc Invoices` as invoices,`Store Yesterday Acc Invoiced Amount` as sales, `Store Yesterday Acc 1YB Invoices` as invoices_1yb,`Store Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC Yesterday Acc Invoiced Amount` as dc_sales,`Store DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('last_m'):
+        $fields=sprintf(" `Store Last Month Acc Invoices` as invoices,`Store Last Month Acc Invoiced Amount` as sales, `Store Last Month Acc 1YB Invoices` as invoices_1yb,`Store Last Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC Last Month Acc Invoiced Amount` as dc_sales,`Store DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('last_w'):
+        $fields=sprintf(" `Store Last Week Acc Invoices` as invoices,`Store Last Week Acc Invoiced Amount` as sales, `Store Last Week Acc 1YB Invoices` as invoices_1yb,`Store Last Week Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC Last Week Acc Invoiced Amount` as dc_sales,`Store DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+    case('today'):
+        $fields=sprintf(" `Store Today Acc Invoices` as invoices,`Store Today Acc Invoiced Amount` as sales, `Store Today Acc 1YB Invoices` as invoices_1yb,`Store Today Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC Today Acc Invoiced Amount` as dc_sales,`Store DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+
+    case('wtd'):
         $fields=sprintf(" `Store Week To Day Acc Invoices` as invoices,`Store Week To Day Acc Invoiced Amount` as sales, `Store Week To Day Acc 1YB Invoices` as invoices_1yb,`Store Week To Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Week To Day Acc Invoiced Amount` as dc_sales,`Store DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;   
+                        `Store DC Week To Day Acc Invoiced Amount` as dc_sales,`Store DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
     case('mtd'):
         $fields=sprintf(" `Store Month To Day Acc Invoices` as invoices,`Store Month To Day Acc Invoiced Amount` as sales, `Store Month To Day Acc 1YB Invoices` as invoices_1yb,`Store Month To Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Month To Day Acc Invoiced Amount` as dc_sales,`Store DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
+                        `Store DC Month To Day Acc Invoiced Amount` as dc_sales,`Store DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
         break;
-     case('ytd'):
+    case('ytd'):
         $fields=sprintf(" `Store Year To Day Acc Invoices` as invoices,`Store Year To Day Acc Invoiced Amount` as sales, `Store Year To Day Acc 1YB Invoices` as invoices_1yb,`Store Year To Day Acc 1YB Invoiced Amount` as sales_1yb,
-       `Store DC Year To Day Acc Invoiced Amount` as dc_sales,`Store DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-        " );
-        break;    
-        
+                        `Store DC Year To Day Acc Invoiced Amount` as dc_sales,`Store DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+        break;
+
     default:
         $fields=sprintf(" `Store 1 Week Acc Invoices` as invoices,`Store 1 Week Acc Invoiced Amount` as sales " );
     }
@@ -381,18 +384,18 @@ function store_sales_overview() {
     $position=1;
     $result=mysql_query($sql);
     $sum_invoices=0;
-     $sum_invoices_1yb=0;
-      $sum_dc_sales=0;
-        $sum_dc_sales_1yb=0;
+    $sum_invoices_1yb=0;
+    $sum_dc_sales=0;
+    $sum_dc_sales_1yb=0;
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total++;
         $sum_invoices+=$row['invoices'];
         $sum_invoices_1yb+=$row['invoices_1yb'];
-        
+
         $sum_dc_sales+=$row['dc_sales'];
         $sum_dc_sales_1yb+=$row['dc_sales_1yb'];
-        
-        
+
+
         $store="<a href='report_sales.php?store_key=".$row['Store Key']."'>".$row['Store Name'].'</a>';
         $adata[]=array(
 
@@ -408,10 +411,10 @@ function store_sales_overview() {
                      'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_symbol),
                      'dc_sales_delta'=>delta($row['dc_sales'],$row['dc_sales_1yb']),
                      'dc_sales_share'=>$row['dc_sales']
-  
-  
-  
-  );
+
+
+
+                 );
     }
     mysql_free_result($result);
 
@@ -422,18 +425,18 @@ function store_sales_overview() {
 
     }
 
-$adata[]=array(
+    $adata[]=array(
 
-                     'store'=>_('Total'),
-                     'invoices'=>number($sum_invoices),
-                     'invoices_1yb'=>'',
-                     'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
-                     'sales'=>'',
-                     'sales_delta'=>'',
-                     'dc_sales'=>money($sum_dc_sales,$corporate_symbol),
-                     'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
-                     'invoices_share'=>''
-                 );
+                 'store'=>_('Total'),
+                 'invoices'=>number($sum_invoices),
+                 'invoices_1yb'=>'',
+                 'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
+                 'sales'=>'',
+                 'sales_delta'=>'',
+                 'dc_sales'=>money($sum_dc_sales,$corporate_symbol),
+                 'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
+                 'invoices_share'=>''
+             );
 
 
 
@@ -444,7 +447,7 @@ $adata[]=array(
 
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total-1,
+                                      'total_records'=>$total,
                                       'records_offset'=>$start_from,
 
                                       'records_perpage'=>$total,
@@ -464,10 +467,174 @@ $adata[]=array(
 
 
 
+
+
+function list_families() {
+
+
+    global $myconf,$output_type,$user;
+$_SESSION['state']['home']['splinters']['top_products']['type']='families';
+    $conf=$_SESSION['state']['home']['splinters']['top_products'];
+//print_r($conf);
+    $start_from=0;
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+        $_SESSION['state']['home']['splinters']['top_products']['nr']=$number_results;
+    } else
+        $number_results=$conf['nr'];
+
+    if (isset( $_REQUEST['o'])) {
+        $order=$_REQUEST['o'];
+        $_SESSION['state']['home']['splinters']['top_products']['order']=$order;
+    } else
+        $order=$conf['order'];
+    $order_direction='desc';
+    $order_dir='desc';
+
+    if (isset( $_REQUEST['period'])) {
+        $period=$_REQUEST['period'];
+        $_SESSION['state']['home']['splinters']['top_products']['period']=$period;
+    } else
+        $period=$conf['period'];
+
+
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+    $store=join(',',$user->stores);
+    if ($store=='')$store=0;
+
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+    if (!$store)
+        $where=sprintf(' and false ');
+
+    else
+        $where=sprintf(' and `Product Family Store Key` in (%s) ',$store);
+
+
+
+
+    $filtered=0;
+    $rtext='';
+    $total=$number_results;
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='profits')
+        $order='`Product Family 1 Year Acc Profit`';
+
+    else {
+        switch ($period) {
+        case('all'):
+            $order='`Product Family Total Invoiced Amount`';
+            break;
+        case('1m'):
+            $order='`Product Family 1 Month Acc Invoiced Amount`';
+            break;
+        case('1y'):
+            $order='`Product Family 1 Year Acc Invoiced Amount`';
+            break;
+        case('1q'):
+            $order='`Product Family 1 Quarter Acc Invoiced Amount`';
+            break;
+        default:
+            $order='`Product Family 1 Year Acc Invoiced Amount`';
+
+        }
+
+    }
+
+    $sql="select  * from `Product Family Dimension` P  left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+    $adata=array();
+    //print $sql;
+    $position=1;
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+        switch ($period) {
+        case('all'):
+            $sales=money($data['Product Family Total Invoiced Amount'],$data['Store Currency Code']);
+            break;
+        case('1m'):
+            $sales=money($data['Product Family 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
+            break;
+        case('1y'):
+            $sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+            break;
+        case('1q'):
+            $sales=money($data['Product Family 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
+            break;
+        default:
+            $sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+
+        }
+
+
+        $family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>';
+        $store="<a href='store.php?id=".$data['Product Family Store Key']."'>".$data['Store Code'].'</a>';
+ $family_description="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Name'].'</a>';
+        $adata[]=array(
+                     'position'=>'<b>'.$position++.'</b>',
+                     'family_description'=>$family_description,
+                     'family'=>$family,
+                     'store'=>$store,
+                     'description'=>$data['Product Family Name'],
+                     'net_sales'=>$sales
+                 );
+    }
+    mysql_free_result($result);
+
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'sort_key'=>'position',
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$_order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    if ($output_type=='ajax') {
+        echo json_encode($response);
+        return;
+    } else {
+        return $response;
+    }
+
+}
 function list_products() {
 
 
     global $myconf,$output_type,$user;
+$_SESSION['state']['home']['splinters']['top_products']['type']='products';
 
     $conf=$_SESSION['state']['home']['splinters']['top_products'];
 //print_r($conf);
@@ -504,7 +671,8 @@ function list_products() {
 
 
 
-    $store=join(',',$user->stores);if($store=='')$store=0;
+    $store=join(',',$user->stores);
+    if ($store=='')$store=0;
 
 
 
@@ -679,7 +847,7 @@ function list_customers() {
 
 
     $store=join(',',$user->stores);
-if($store=='')$store=0;
+    if ($store=='')$store=0;
 
     $filter_msg='';
     $wheref='';
@@ -742,7 +910,7 @@ if($store=='')$store=0;
         $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 
- //print $sql;
+//print $sql;
     $adata=array();
 
 

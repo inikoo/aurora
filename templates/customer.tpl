@@ -21,13 +21,13 @@
  
      
 <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
-    <tr><td  ><a href="pdf_customer.php?id={$customer->id}">{t}Print Address{/t}</a></td></tr>
+    <tr><td  ><a href="pdf_customer.php?id={$customer->id}" target="_blank">{t}Print Address{/t}</a></td></tr>
 
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
     <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
     <tr id="sticky_note_bis_tr" ><td id="sticky_note_bis">{t}Sticky Note{/t}</td></tr>
 
-    <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
+    <tr><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr style="display:none"><td id="take_order">{t}Take Order{/t}</td></tr>
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
@@ -39,7 +39,7 @@
        
 
      
-<div  style="width:500px;float:left" >    
+<div  style="width:490px;float:left" >    
      
 <table id="customer_data" border=0 style="width:100%">
     <tr>
@@ -163,7 +163,7 @@
 </div>
 </div>
 
-<div id="sticky_note_div" style="border:1px solid #eee;background:#e0eefd;float:left;width:300px;padding:0;margin-left:20px">
+<div id="sticky_note_div" class="sticky_note" style="width:270px">
 <img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
 <div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 </div>
@@ -195,7 +195,7 @@
     <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
-    <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
+    <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Order Details{/t}</span></span></li>
  </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
 
@@ -203,8 +203,39 @@
   
  
   <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-<h2>{t}Contact Details{/t}</h2>
+
+<h2 style="clear:both">{t}Billing Details{/t}</h2>
+
 <div style="float:left;width:450px">
+<table    class="show_info_product">
+
+
+  <tr>
+		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
+		    </tr>
+		 <tr style="{if $hq_country!='ES'}display:none;{/if};border-top:1px solid #ccc">
+		    <td>Recargo Equivalencia</td><td>{$customer->get('Recargo Equivalencia')}</td>
+		    </tr>
+		
+		  <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
+
+		    </tr>
+		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
+		   <tr>
+		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
+
+		    </tr>
+		 {/if}
+		   <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
+
+		    </tr>
+		</table>
+</div>
+
+<h2 style="clear:both">{t}Contact Details{/t}</h2>
+<div style="float:both;width:450px">
 <table    class="show_info_product">
   <tr>
 		    <td>{t}Customer Type{/t}:</td><td>{$customer->get('Customer Type')}</td>
@@ -236,35 +267,12 @@
 		</table>
 </div>
 
-<div class="contact_cards"  >
+<div class="contact_cards" style="display:none" >
 {foreach from=$customer->get_contact_cards() item=card}
 {$card}
 {/foreach}
 </div>
-<h2 style="clear:both">{t}Billing Details{/t}</h2>
 
-<div style="float:left;width:450px">
-<table    class="show_info_product">
-  <tr>
-		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
-		    </tr>
-		
-		  <tr style="border-top:1px solid #ccc">
-		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
-
-		    </tr>
-		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
-		   <tr>
-		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
-
-		    </tr>
-		 {/if}
-		   <tr style="border-top:1px solid #ccc">
-		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
-
-		    </tr>
-		</table>
-</div>
 
 <h2 style="clear:both">{t}Delivery Details{/t}</h2>
 
@@ -287,9 +295,9 @@
            <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
 
-            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Changes}selected{/if}"  id="elements_changes" table_type="changes"   >{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span>
-            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Orders}selected{/if}"  id="elements_orders" table_type="orders"   >{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span>
-            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Notes}selected{/if}"  id="elements_notes" table_type="notes"   >{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes"  id="elements_changes" table_type="changes"   >{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders"  id="elements_orders" table_type="orders"   >{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes"  id="elements_notes" table_type="notes"   >{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span>
 
         </div>
      </div>
@@ -518,17 +526,32 @@
 
 <div id="dialog_make_order">
   <div id="long_note_msg"></div>
+
   <table >
+
 <input type="hidden" id="make_order_customer_id" value="{$customer->id}">
     <tr><td colspan=2>{t}Payment Method{/t}:</td></tr><tr><td colspan=2>
 	<select id="make_order_payment_method">
-	  <option>Credit Card</option>
-	  <option>Paypal</option>
-	  <option>Bank Transfer</option>
-	  <option>Cheque</option>
-	  <option>Cash</option>
-	  <option>Account</option>
-	  <option>Postal Order</option>
+	{if $hq_country=='ES'}
+	 <option>{t}Tarjeta{/t}</option>
+	  <option>{t}Paypal{/t}</option>
+	  <option>{t}Ingreso{/t}</option>
+	  <option>{t}Contra Reembolso{/t}</option>
+	  <option>{t}Transferencia{/t}</option>
+	  	  <option>{t}Efectivo{/t}</option>
+
+	{else}
+	
+	  <option>{t}Credit Card{/t}</option>
+	  <option>{t}Paypal{/t}</option>
+	  <option>{t}Bank Transfer{/t}</option>
+	  <option>{t}Cheque{/t}</option>
+	  <option>{t}Cash{/t}</option>
+	  <option>{t}Account{/t}</option>
+	  <option>{t}Postal Order{/t}</option>
+	  <option>{t}Cash on delivery{/t}</option>
+{/if}
+
 	</select>
     </td></tr>
 <tr><td colspan=2>Gold Reward:</td></tr><tr><td colspan=2>

@@ -424,6 +424,8 @@ if(!$user->can_view('orders'))
 
 
 function list_orders(){
+global $user;
+
    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
       $conf=$_SESSION['state']['report']['sales'];
     else
@@ -716,9 +718,9 @@ else if($order=='customer')
        $state.=' ('.$row ['Order Type'].')';
    
     
-     $mark_out_of_stock="<span style='visibility:hidden'>&otimes</span>";
+     $mark_out_of_stock="<span style='visibility:hidden'>&otimes;</span>";
      $mark_out_of_credits="<span style='visibility:hidden'>&crarr;</span>";
-     $mark_out_of_error="<span style='visibility:hidden'>&epsilon</span>";
+     $mark_out_of_error="<span style='visibility:hidden'>&epsilon;</span>";
      $out_of_stock=false;
      $errors=false;
      $refunded=false;
@@ -732,7 +734,7 @@ else if($order=='customer')
 	   $info.='; '._('Tax').': '.money($row['Order Out of Stock Tax Amount'],$row['Order Currency']);
 	 }
 	 $info=preg_replace('/^\;\s*/','',$info);
-	 $mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes</span>";
+	 $mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes;</span>";
 	 
      }
      

@@ -899,10 +899,14 @@ function create_post_order($data,$data_dn_transactions) {
         }
 
         // exit("$store_code.$order_data_id\n");
-
+                          
         $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type'],$store_code.$order_data_id);
-
-
+        if($parent_order->error){
+          print "Parent order found but still delivery note ";
+        create_post_order_with_out_order($data);
+        return;
+        }
+        
 
         foreach($post_data as $post_transaction) {
             $transaction_data=$dn->add_orphan_transactions($post_transaction);

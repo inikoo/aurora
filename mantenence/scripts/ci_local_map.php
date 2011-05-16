@@ -181,7 +181,7 @@ function get_tipo_order($ltipo,$header){
   $tipo=0;
 if(preg_match('/^devoluci|^refund|VAT REFUND|abono/i',$ltipo)){
     $tipo=9;
- }elseif(preg_match('/^quote|Pro-forma/i',$ltipo)){
+ }elseif(preg_match('/^quote|Pro-forma|proforma/i',$ltipo)){
     $tipo=11;
   }elseif(preg_match('/DELIVERY NOTE|nota de envio|proforma invoice/i',$ltipo)){
     $tipo=1;

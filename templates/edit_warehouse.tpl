@@ -61,7 +61,7 @@
 		 />
 	    </td>
 	  </tr>
-	<tr><td class="label">{t}{/t}</td><td>
+	<tr><td class="label"></td><td>
 	      <input
 		 id="warehouse_key"
 		 onKeyUp="changed(this)"

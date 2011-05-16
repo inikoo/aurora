@@ -434,6 +434,19 @@ Event.addListener(window, "load", function() {
 		    var tableid=0; // Change if you have more the 1 table
 		    var tableDivEL="table"+tableid;  
 		    
+		    
+		    var myRowFormatter = function(elTr, oRecord) {
+		   
+    if (oRecord.getData('type') =='Orders') {
+        Dom.addClass(elTr, 'customer_history_orders');
+    }else if (oRecord.getData('type') =='Notes') {
+        Dom.addClass(elTr, 'customer_history_notes');
+    }else if (oRecord.getData('type') =='Changes') {
+        Dom.addClass(elTr, 'customer_history_changes');
+    }
+    return true;
+}; 
+		    
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -462,10 +475,11 @@ Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key","edit"]};
+                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key","edit","type"]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
+								 formatRow: myRowFormatter,
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator0', 
@@ -879,6 +893,11 @@ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2
 
 
 }
+
+
+
+
+
 
 YAHOO.util.Event.onDOMReady(init);
 
