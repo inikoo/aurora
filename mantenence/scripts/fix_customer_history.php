@@ -29,43 +29,6 @@ require_once '../../conf/conf.php';
 
 
 
-$sql="select `History Key` ,`Indirect Object Key` from `History Dimension`  where `Direct Object`='Note' and `Indirect Object`='Customer'";
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
-  $sql=sprintf('insert into  `Customer History Bridge`  values (%d,%d,"No","Notes") ',
-                                  $row['History Key'],
-                                
-                                 $row['Indirect Object Key']
-                                );
-       //print "$sql\n";
-        mysql_query($sql);
-                                
-}
-
-
-
-
-
-
-
-$sql="select H.`History Key`, B.`History Key` as h from `Customer History Bridge` B left join  `History Dimension` H on (B.`History Key`=H.`History Key`)";
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-if($row['History Key']==''){
-  $sql=sprintf('delete  from `Customer History Bridge`  where `History Key`=%d ',
-                                 
-                                
-                                 $row['h']
-                                );
-        mysql_query($sql);
-                                
-}
-}
-
-
-
-
 $sql="select * from `Customer History Bridge` B left join  `History Dimension` H on (B.`History Key`=H.`History Key`)";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
