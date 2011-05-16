@@ -316,6 +316,18 @@ $smarty->assign('recent_merges',$correlation_msg);
 
 $smarty->assign('options_box_width','550px');
 
+
+$tax_codes=array();
+
+$sql=sprintf("select * from `Tax Category Dimension`");
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$tax_codes[$row['Tax Category Code']]=array('code'=>$row['Tax Category Code'],'name'=>$row['Tax Category Name'],'rate'=>$row['Tax Category Rate']);
+}
+
+$smarty->assign('tax_codes',$tax_codes);
+$smarty->assign('hq_country',$myconf['country']);
+
 $smarty->display('edit_customer.tpl');
 exit();
 

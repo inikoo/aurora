@@ -447,7 +447,7 @@ function store_sales_overview() {
 
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total-1,
+                                      'total_records'=>$total,
                                       'records_offset'=>$start_from,
 
                                       'records_perpage'=>$total,

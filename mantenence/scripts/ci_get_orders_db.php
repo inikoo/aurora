@@ -140,7 +140,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 $sql="select * from  ci_orders_data.orders  where deleted='No' and  (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000479.xls'  order by filename";
 //7/60002384.xls
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '%/60015676.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
 //$sql="select * from  ci_orders_data.orders where  filename like '%60000112.xls' or  filename like '%60000416.xls' or  filename like '%60000686.xls'  or  filename like '%60001014.xls' or  filename like '%60001295.xls'  or  filename like '%60001373.xls'  order by filename";
 
@@ -228,8 +228,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         if (!isset($header[1][22])) {
-            print_r($header);
-            print "Error in Order $filename\n";
+           // print_r($header);
+            print "Error in Order posible pastania con GRAFICO $filename\n";
 
             continue;
         }
@@ -1146,6 +1146,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $customer_done=false;
             $customer_posible_key=0;
             if ($customer_key_from_order_data) {
+                    print "use prev ";
                 $customer_posible_key=$customer_key_from_order_data;
                 $customer = new Customer($customer_key_from_order_data);
                 $customer_done=true;

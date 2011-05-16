@@ -67,7 +67,7 @@ function sales_init(){
 	    sales_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
-		    
+		 
 	   
 
 	    sales_tables.table1.filter={key:'',value:''};
@@ -80,7 +80,7 @@ function sales_init(){
  ids=['type_stores','type_invoice_categories'];
  YAHOO.util.Event.addListener(ids, "click",change_type);
 
-  
+    
 }
 
 
