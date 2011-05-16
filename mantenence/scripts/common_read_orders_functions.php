@@ -257,6 +257,8 @@ function delete_old_data() {
     mysql_query($sql);
 
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
+    
+    //print "$sql\n";
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
 
