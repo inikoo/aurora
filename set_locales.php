@@ -49,7 +49,7 @@ if(!isset($_SESSION['text_locale'])){
  
 
 
-setlocale(LC_MESSAGES,$_SESSION['text_locale'] );
+$lc_messages_locale=setlocale(LC_MESSAGES,$_SESSION['text_locale'] );
 setlocale(LC_TIME, $_SESSION['text_locale']);
 
 

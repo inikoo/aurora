@@ -116,7 +116,7 @@ function save_new_customer(e){
    //return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+	//	alert(o.responseText);
 		//return;
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){

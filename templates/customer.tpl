@@ -39,7 +39,7 @@
        
 
      
-<div  style="width:500px;float:left" >    
+<div  style="width:490px;float:left" >    
      
 <table id="customer_data" border=0 style="width:100%">
     <tr>
@@ -163,7 +163,7 @@
 </div>
 </div>
 
-<div id="sticky_note_div" class="sticky_note">
+<div id="sticky_note_div" class="sticky_note" style="width:270px">
 <img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
 <div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 </div>
@@ -203,8 +203,39 @@
   
  
   <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-<h2>{t}Contact Details{/t}</h2>
+
+<h2 style="clear:both">{t}Billing Details{/t}</h2>
+
 <div style="float:left;width:450px">
+<table    class="show_info_product">
+
+
+  <tr>
+		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
+		    </tr>
+		 <tr style="{if $hq_country!='ES'}display:none;{/if};border-top:1px solid #ccc">
+		    <td>Recargo Equivalencia</td><td>{$customer->get('Recargo Equivalencia')}</td>
+		    </tr>
+		
+		  <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
+
+		    </tr>
+		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
+		   <tr>
+		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
+
+		    </tr>
+		 {/if}
+		   <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
+
+		    </tr>
+		</table>
+</div>
+
+<h2 style="clear:both">{t}Contact Details{/t}</h2>
+<div style="float:both;width:450px">
 <table    class="show_info_product">
   <tr>
 		    <td>{t}Customer Type{/t}:</td><td>{$customer->get('Customer Type')}</td>
@@ -236,35 +267,12 @@
 		</table>
 </div>
 
-<div class="contact_cards"  >
+<div class="contact_cards" style="display:none" >
 {foreach from=$customer->get_contact_cards() item=card}
 {$card}
 {/foreach}
 </div>
-<h2 style="clear:both">{t}Billing Details{/t}</h2>
 
-<div style="float:left;width:450px">
-<table    class="show_info_product">
-  <tr>
-		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
-		    </tr>
-		
-		  <tr style="border-top:1px solid #ccc">
-		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
-
-		    </tr>
-		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
-		   <tr>
-		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
-
-		    </tr>
-		 {/if}
-		   <tr style="border-top:1px solid #ccc">
-		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
-
-		    </tr>
-		</table>
-</div>
 
 <h2 style="clear:both">{t}Delivery Details{/t}</h2>
 
@@ -518,17 +526,32 @@
 
 <div id="dialog_make_order">
   <div id="long_note_msg"></div>
+
   <table >
+
 <input type="hidden" id="make_order_customer_id" value="{$customer->id}">
     <tr><td colspan=2>{t}Payment Method{/t}:</td></tr><tr><td colspan=2>
 	<select id="make_order_payment_method">
-	  <option>Credit Card</option>
-	  <option>Paypal</option>
-	  <option>Bank Transfer</option>
-	  <option>Cheque</option>
-	  <option>Cash</option>
-	  <option>Account</option>
-	  <option>Postal Order</option>
+	{if $hq_country=='ES'}
+	 <option>{t}Tarjeta{/t}</option>
+	  <option>{t}Paypal{/t}</option>
+	  <option>{t}Ingreso{/t}</option>
+	  <option>{t}Contra Reembolso{/t}</option>
+	  <option>{t}Transferencia{/t}</option>
+	  	  <option>{t}Efectivo{/t}</option>
+
+	{else}
+	
+	  <option>{t}Credit Card{/t}</option>
+	  <option>{t}Paypal{/t}</option>
+	  <option>{t}Bank Transfer{/t}</option>
+	  <option>{t}Cheque{/t}</option>
+	  <option>{t}Cash{/t}</option>
+	  <option>{t}Account{/t}</option>
+	  <option>{t}Postal Order{/t}</option>
+	  <option>{t}Cash on delivery{/t}</option>
+{/if}
+
 	</select>
     </td></tr>
 <tr><td colspan=2>Gold Reward:</td></tr><tr><td colspan=2>
