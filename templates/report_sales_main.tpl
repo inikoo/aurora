@@ -36,13 +36,13 @@
 <tr>
 <td style="width:150px">{t}Store{/t}</td>
 <td>{t}Invoices{/t}</td>
- <td class="aleft">{t}% of total{/t}</td>
+ <td class="aleft">% {t}of total{/t}</td>
  
    <td >&Delta;1{t}Yr{/t}</td>
     <td style="{if $currencies=='corporation'}display:none{/if}">{t}Net Sales{/t}</td>
     <td style="{if $currencies!='corporation'}display:none{/if}">{t}Net Sales{/t}</td>
-    <td style="{if $currencies=='corporation'}display:none{/if}" class="aleft">{t}{/t}</td>
-    <td style="{if $currencies!='corporation'}display:none{/if}" class="aleft">{t}% of total{/t}</td>
+    <td style="{if $currencies=='corporation'}display:none{/if}" class="aleft"></td>
+    <td style="{if $currencies!='corporation'}display:none{/if}" class="aleft">% {t}of total{/t}</td>
 
   
         <td >&Delta;1{t}Yr{/t}</td>

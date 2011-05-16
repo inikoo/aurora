@@ -331,7 +331,7 @@ $correlation_msg='';
 
         }
 $smarty->assign('correlation_msg',$correlation_msg);
-
+$smarty->assign('hq_country',$myconf['country']);
 
 $smarty->assign('gold_reward',$gold_reward);
 

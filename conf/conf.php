@@ -10,7 +10,7 @@ $report_data=array('ES1'=>array('umbral'=>3000,'year'=>date('Y')-1));
 
 
 $myconf=array(
-
+'splinters'=>array('top_customers','top_products','messages','sales'),
             'tax_rates'=>array(),
             'data_from'=>"2003-06-01 09:00:00",
             'order_id_type'=>'Order Header Numeric ID',

@@ -99,5 +99,33 @@ color:#fff;
 
 .dropdown dt {  padding:0 10px; cursor:pointer; background:#F2A532;}
 
+.label_customer_history_orders,span.state_details.label_customer_history_orders.selected, span.state_details.label_customer_history_orders:hover{color:#a33;}
 
+.yui-skin-sam .yui-dt tr.customer_history_orders,
+.yui-skin-sam .yui-dt tr.customer_history_orders td.yui-dt-asc,
+.yui-skin-sam .yui-dt tr.customer_history_orders td.yui-dt-desc,
+.yui-skin-sam .yui-dt tr.customer_history_orders td.yui-dt-asc,
+.yui-skin-sam .yui-dt tr.customer_history_orders td.yui-dt-desc {
+    background-color: #a33;
+    color: #fff;
+}
+.label_customer_history_notes ,span.state_details.label_customer_history_notes.selected, span.state_details.label_customer_history_notes:hover{color:#76A876;}
+.yui-skin-sam .yui-dt tr.customer_history_notes,
+.yui-skin-sam .yui-dt tr.customer_history_notes td.yui-dt-asc,
+.yui-skin-sam .yui-dt tr.customer_history_notes td.yui-dt-desc,
+.yui-skin-sam .yui-dt tr.customer_history_notes td.yui-dt-asc,
+.yui-skin-sam .yui-dt tr.customer_history_notes td.yui-dt-desc,customer_history_notes {
+    background-color: #76A876;
+    color: #fff;
+}
+.label_customer_history_changes, 
+span.state_details.label_customer_history_changes.selected, span.state_details.label_customer_history_changes:hover {color:#767EA6;}
 
+.yui-skin-sam .yui-dt tr.customer_history_changes,
+.yui-skin-sam .yui-dt tr.customer_history_changes td.yui-dt-asc,
+.yui-skin-sam .yui-dt tr.customer_history_changes td.yui-dt-desc,
+.yui-skin-sam .yui-dt tr.customer_history_changes td.yui-dt-asc,
+.yui-skin-sam .yui-dt tr.customer_history_changes td.yui-dt-desc,customer_history_changes {
+    background-color: #767EA6;
+    color: #fff;
+}

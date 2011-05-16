@@ -153,7 +153,7 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('orders_per_store').'.csv';
 	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
-        $data=get_orders_data($wheref);
+        $data=get_orders_in_store_data($wheref);
         break; 
    case 'invoices_per_store':
         $filename=_('invoices_per_store').'.csv';
@@ -170,7 +170,7 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['stores']['delivery_notes']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('delivery_notes_per_store').'.csv';
-	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
+	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['orders']['store']);
         $data=get_delivery_notes_data($wheref);
         break;
    case 'orders':
@@ -179,8 +179,12 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['orders']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('orders').'.csv';
-        $where=sprintf(' `Order Store Key`=%d ',$_SESSION['state']['store']['id']);
-        $data=get_orders_in_order_data($wheref,$where);
+        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+
+        $where=sprintf(' `Order Store Key`=%d ',$_SESSION['state']['orders']['store']).$date_interval['mysql'];
+        
+        
+        $data=get_orders_data($wheref,$where);
         break;  
    case 'invoices':
         $filename=_('invoices').'.csv';
@@ -802,7 +806,7 @@ return $data;
 }
 
 
-function get_orders_data($wheref,$where='true'){
+function get_orders_in_store_data($wheref,$where='true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
@@ -992,7 +996,7 @@ return $data;
 }
 
 
-function get_orders_in_order_data($wheref,$where='true'){
+function get_orders_data($wheref,$where='true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){

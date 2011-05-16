@@ -837,7 +837,7 @@ function stacked_store_sales($data) {
 }
 function top_families($data) {
 
-    $max_slices=15;
+    $max_slices=20;
 
 
     $store_keys=preg_split('/,/',$data['store_keys']);
@@ -862,15 +862,15 @@ function top_families($data) {
     switch ($period) {
 
     case('1m'):
-        $field='(`Product Family 1 Month Acc Quantity Invoiced`)';
+        $field='(`Product Family 1 Month Acc Invoiced Amount`)';
 
         break;
     case('1y'):
-        $field='(`Product Family 1 Year Acc Quantity Invoiced`)';
+        $field='(`Product Family 1 Year Acc Invoiced Amount`)';
 
         break;
     case('1q'):
-        $field='(`Product Family 1 Quarter Acc Quantity Invoiced`)';
+        $field='(`Product Family 1 Quarter Acc Invoiced Amount`)';
 
         break;
     default:
@@ -902,6 +902,7 @@ function top_families($data) {
                  $max_slices
                 );
     $res=mysql_query($sql);
+    //print $sql;
     while ($row=mysql_fetch_assoc($res)) {
         $descripton='';//$row['Product Family Name'];
                 $descripton=$row['Product Family Store Code'].' '.$row['Product Family Code'];
