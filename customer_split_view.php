@@ -46,7 +46,7 @@ if ($customer->id) {
 
     $customer_a['formated_id']=$customer->get_formated_id($myconf['customer_id_prefix']);
     $customer_a['card']=$customer->display('card',$myconf['customer_id_prefix']);
-    $customer_a['sticky_note=']=$customer->get('Sticky Note');
+    $customer_a['sticky_note']=$customer->get('Sticky Note');
     $customer_a['since']=$customer->get('First Contacted Date');
     $customer_a['last_order_date']=$customer->get('Last Order Date');
     $customer_a['orders']=$customer->get('Orders');
@@ -63,7 +63,7 @@ if ($customer->id) {
     if ($row=mysql_fetch_assoc($res)) {
         $customer_a['formated_id']=$myconf['customer_id_prefix'].sprintf("%05d",$row['Customer Key']);
         $customer_a['card']=$row['Customer Card'];
-        $customer_a['sticky_note=']='';
+        $customer_a['sticky_note']='';
         $customer_a['since']='';
         $customer_a['last_order_date']='';
         $customer_a['orders']=0;
@@ -105,7 +105,7 @@ $customer=new customer($customer_id_b);
 if ($customer->id) {
     $customer_b['formated_id']=$customer->get_formated_id($myconf['customer_id_prefix']);
     $customer_b['card']=$customer->display('card',$myconf['customer_id_prefix']);
-    $customer_b['sticky_note=']=$customer->get('Sticky Note');
+    $customer_b['sticky_note']=$customer->get('Sticky Note');
     $customer_b['since']=$customer->get('First Contacted Date');
     $customer_b['last_order_date']=$customer->get('Last Order Date');
     $customer_b['orders']=$customer->get('Orders');
@@ -124,7 +124,7 @@ if ($customer->id) {
     if ($row=mysql_fetch_assoc($res)) {
         $customer_b['formated_id']=$myconf['customer_id_prefix'].sprintf("%05d",$row['Customer Key']);
         $customer_b['card']=$row['Customer Card'];
-        $customer_b['sticky_note=']='';
+        $customer_b['sticky_note']='';
         $customer_b['since']='';
         $customer_b['last_order_date']='';
         $customer_b['orders']=0;
