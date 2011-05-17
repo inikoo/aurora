@@ -2616,6 +2616,8 @@ function list_customers_send_post() {
 
 function show_posible_customer_matches($the_data) {
 
+
+
     $found_email=false;
     $found_name='';
     $candidates_data=array();
@@ -2680,10 +2682,10 @@ function show_posible_customer_matches($the_data) {
                 } else {
 
                     $other_store=new Store($customer->data['Customer Store Key']);
-                    $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                    $link.=sprintf('<br/>%s (<span onClick="clone_customer(%d)">%s</span>)'
                                    ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
                                    ,$customer->id
-                                   ,_('Recollect Data')
+                                   ,_('Use contact data to create new customer in this store')
                                   );
 
                     $in_other_store=true;
@@ -2719,6 +2721,9 @@ function show_posible_customer_matches($the_data) {
     $found_key=0;
 
     if ($found_email) {
+        if($in_other_store)
+           $action='found_email_other_store';
+        else
         $action='found_email';
         $found_key=$scope_found_key;
     }
@@ -2793,10 +2798,10 @@ function show_posible_customer_matches($the_data) {
             }
             elseif(!$in_other_store) {
                 $other_store=new Store($customer->data['Customer Store Key']);
-                $link.=sprintf('<br/>%s (<span onClick="recollect_data_from_customer(%s)">%s</span>)'
+                $link.=sprintf('<br/>%s (<span onClick="clone_customer(%d)">%s</span>)'
                                ,_('Customer in another store').' ('.$other_store->data['Store Code'].')'
                                ,$customer->id
-                               ,_('Recollect Data')
+                               ,_('Use contact data to create new customer in this store')
                               );
                 $in_other_store=true;
 

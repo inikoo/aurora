@@ -72,15 +72,12 @@ var saved_details=0;
 var error_details=0;
 var values=new Object;
 
-
+subject_found_email_other_store=false;
 
 function update_category(o){
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
-
-subject_data['Cat'+parent_category_key]=category_key;
-
-
+    var parent_category_key=o.getAttribute('cat_key');
+    var category_key=o.options[o.selectedIndex].value;
+    subject_data['Cat'+parent_category_key]=category_key;
 }
 
 
@@ -99,36 +96,25 @@ function save_new_customer(e){
  
         var ar_file='ar_edit_contacts.php';
    
-  // for (x in subject_data){
-//alert(x+' '+subject_data[x])
-//}
-
- //var value=new Object();
-
-// for (i in subject_data)
-  //          value[i]=my_encodeURIComponent(subject_data[i]);
+  
 
 
    var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(subject_data));
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
-   //alert(request);
-   //return;
+ 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	//	alert(o.responseText);
-		//return;
+
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    if(action_after_create=='add_another'){
 
 
 		    }else{
-		       
-		           window.location='customer.php?r=nc&id='+r.customer_key;
+		       	window.location='customer.php?r=nc&id='+r.customer_key;
 
-		      
-		      
 		    }
 		    
 		}else{
@@ -211,6 +197,78 @@ subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
 
+
+function update_save_button(){
+	//	alert(subject_found);
+	validate_form();
+	
+	//Dom.get('email_found_key')
+	
+	if(subject_found==true && valid_form){
+
+	    Dom.get('save_new_'+Subject).style.display='none';
+	    
+	    if(subject_found_email_other_store==true){
+		
+		Dom.get('email_found_dialog').style.display='none';
+		Dom.get(Subject+'_found_dialog').style.display='none';
+        Dom.get('email_found_other_store_dialog').style.display='';
+        
+	    }
+	    else if(subject_found_email==true){
+		Dom.get('email_found_dialog').style.display='';
+		Dom.get(Subject+'_found_dialog').style.display='none';
+         Dom.get('email_found_other_store_dialog').style.display='none';
+	    }else{
+		Dom.get(Subject+'_found_dialog').style.display='';
+		Dom.get('email_found_dialog').style.display='none';
+         Dom.get('email_found_other_store_dialog').style.display='none';
+	    }
+	    
+	}else{
+	
+	    Dom.get('save_new_'+Subject).style.display='';
+	    Dom.get(Subject+'_found_dialog').style.display='none';
+	    Dom.get('email_found_dialog').style.display='none';
+	     Dom.get('email_found_other_store_dialog').style.display='none';
+
+	}
+	
+    }
+
+function clone_founded(){
+clone_customer(Dom.get('found_email_other_store_customer_key').value);
+}
+
+
+function clone_customer(customer_id){
+
+Dom.setStyle("creating_message",'display','');
+	  Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
+
+var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_key}); 
+  var request='ar_edit_contacts.php?tipo=clone_customer&customer_id=' + customer_id+'&scope=' + my_encodeURIComponent(json_value_scope); 
+  
+  
+       YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.action=='created'){
+		           window.location='customer.php?r=nc&id='+r.customer_key;
+		    
+		}else{
+		    alert(r.msg);
+		}
+			    
+
+			
+	    }
+	});
+ 
+
+}
+
 function find_subject(){
     get_data();
 
@@ -222,12 +280,15 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
   
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText)
+	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		var old_subject_found=subject_found;
 		var old_subject_found_email=subject_found_email;
-
+Dom.get('found_email_other_store_customer_key').value=0;
 		if(r.action=='found_email'){
+		
+	
+		
 		    subject_found=true;
 		    subject_found_email=true;
 		    subject_found_key=r.found_key;
@@ -235,6 +296,19 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 		    contact_with_same_email=r.found_key;
 		    
 		    		    Dom.get('email_founded_name').innerHTML=r.found_name;
+
+		    //alert(subject_found+' '+subject_found_email);
+		     update_save_button();
+		}else if(r.action=='found_email_other_store'){
+		
+	subject_found_email_other_store=true;
+		
+		    subject_found=true;
+		    subject_found_key=r.found_key;
+		    display_form_state();
+		    contact_with_same_email=r.found_key;
+		    Dom.get('found_email_other_store_customer_key').value=r.found_key;
+		    Dom.get('email_founded_name').innerHTML=r.found_name;
 
 		    //alert(subject_found+' '+subject_found_email);
 		     update_save_button();

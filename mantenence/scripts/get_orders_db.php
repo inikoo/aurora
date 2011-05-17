@@ -1361,6 +1361,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $customer_done=true;
             }
             else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+                    print "inikko ";
                 $customer_posible_key=$act_data['act'];
                 $customer = new Customer($act_data['act']);
                 $customer_done=true;
@@ -1393,6 +1394,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         
         
         if (!$customer->id) {
+        print_r($act_data);
             print "Error !!!! customer not found\n";
             continue;
         }

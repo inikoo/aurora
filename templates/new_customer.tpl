@@ -244,6 +244,16 @@ hide_buttons=1
 	  <tr><td><span style="color:red">{t}Creating this customer will produce duplicate contacts. The email will not be added.{/t}</span></br><span  style="cursor:pointer;text-decoration:underline;color:red" id="force_new">{t}Create customer anyway{/t}</span></td></tr>
 	</table>
       </div>
+      
+          <div id="email_found_other_store_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+	<b>{t}A Customer has the same email in another store{/t}</b>.
+	<table style="margin:10px 0">
+	<input type="hidden" value="" id="found_email_other_store_customer_key">
+	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="clone_founded()">{t}Use contact data to create new customer in this store{/t}</td></tr>
+	</table>
+      </div>
+      
+      
       <div style="clear:both;padding:10px;" id="validation">
 
 	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_Customer_found">{t}Company has been found{/t}</div>
