@@ -91,6 +91,18 @@ case('new_company'):
 
     break;
 
+case('clone_customer'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'scope'=>array('type'=>'json array'),
+                              'customer_key'=>array('type'=>'key')
+
+                         ));
+    clone_customer($data);
+
+
+    break;
+
 case('new_customer'):
 
     $data=prepare_values($_REQUEST,array(
@@ -2168,6 +2180,74 @@ function convert_customer_to_company($data) {
     $response= array('state'=>200,'action'=>'changed','name'=>$company->data['Company Name']);
     echo json_encode($response);
 
+
+}
+
+
+function clone_customer($data){
+
+  global $editor,$user;
+
+    if (!in_array($data['scope']['store_key'],$user->stores)) {
+        $response= array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
+        echo json_encode($response);
+        return;
+
+    }
+
+$customer=new Customer($data['customer_key']);
+
+if(!$customer->id){
+ $response= array('state'=>400,'action'=>'error','msg'=>'customer not found');
+        echo json_encode($response);
+        return;
+}
+
+if($customer->data['Customer Store Key']==$data['scope']['store_key']){
+
+ $response= array('state'=>400,'action'=>'error','msg'=>'customer in same store');
+        echo json_encode($response);
+        return;
+}
+
+$customer_data=array(
+'Customer Type'=>$customer->data['Customer Type'],
+'Customer Company Key'=>$customer->data['Customer Company Key'],
+'Customer Main Contact Key'=>$customer->data['Customer Main Contact Key'],
+'Customer Store Key'=>$data['scope']['store_key']
+);
+ $customer=new Customer();
+    $customer->editor=$editor;
+    $customer->create($customer_data);
+
+
+
+  if ($customer->new) {
+        $store=new Store($customer->data['Customer Store Key']);
+       
+
+        $customer->update_orders();
+     
+        $customer->update_activity();
+ $store->update_customers_data();
+
+        $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
+
+
+       
+
+
+    } else {
+
+        $response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg);
+    }
+
+    //Timer::dump_profile();
+
+    echo json_encode($response);
+
+
+//print_r($data);
 
 }
 

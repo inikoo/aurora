@@ -702,7 +702,9 @@ function search_customer($data) {
     }
 
 //print "->$q <-";
-    $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
+    //  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
+    $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
+
     //print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
@@ -716,9 +718,25 @@ function search_customer($data) {
             $candidates[$row['Customer Key']]=100*$factor;
         }
     }
-    
-    
-      $sql=sprintf('select `Customer Key`,`Customer Main Town` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Town` like  "%s%%" limit 10 ',$stores,$q);
+
+
+    $sql=sprintf('select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Tax Number` like  "%s%%" limit 10 ',$stores,$q);
+    //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if ($row['Customer Tax Number']==$q)
+            $candidates[$row['Customer Key']]=30;
+        else {
+
+            $len_name=strlen($row['Customer Tax Number']);
+            $len_q=strlen($q);
+            $factor=$len_q/$len_name;
+            $candidates[$row['Customer Key']]=20*$factor;
+        }
+    }
+
+
+    $sql=sprintf('select `Customer Key`,`Customer Main Town` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Town` like  "%s%%" limit 10 ',$stores,$q);
     //print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
@@ -732,8 +750,10 @@ function search_customer($data) {
             $candidates[$row['Customer Key']]=20*$factor;
         }
     }
-    
-    
+
+
+
+
 
     $sql=sprintf('select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Email`  like "%s%%" limit 100 ',$stores,$q);
     $res=mysql_query($sql);
@@ -797,12 +817,12 @@ function search_customer($data) {
             $candidates[$row['Subject Key']]=100*$factor;
         }
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 
 //print_r($candidates);
 
@@ -832,18 +852,18 @@ function search_customer($data) {
     $customer_keys=preg_replace('/^,/','',$customer_keys);
 
     $sql=sprintf("select `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` left join `Store Dimension` on (`Customer Store Key`=`Store Key`) where `Customer Key` in (%s)",
-    $customer_keys);
+                 $customer_keys);
     $res=mysql_query($sql);
 
 
     //   $customer_card='<table>';
     while ($row=mysql_fetch_array($res)) {
 
-        if ($row['Customer Type']=='Company') {
-            $name=$row['Customer Name'].'<br/>'.$row['Customer Main Contact Name'];
-        } else {
-            $name=$row['Customer Name'];
 
+        $name=$row['Customer Name'];
+        if ($row['Customer Tax Number'])$name.='<br/>'.$row['Customer Tax Number'];
+        if ($row['Customer Type']=='Company') {
+            $name.= '<br/>'.$row['Customer Main Contact Name'];
         }
 
         $address=$row['Customer Main Plain Email'];

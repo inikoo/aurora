@@ -21,8 +21,11 @@ var can_add_subject=false;
 var subject_data={
     "Customer Name":""
     ,"Customer Main Contact Name":""
+    ,"Customer Tax Number":""
     ,"Customer Main Plain Email":""
     ,"Customer Main Plain Telephone":""
+     ,"Customer Main Plain FAX":""
+      ,"Customer Main Plain Mobile":""
     ,"Customer Address Line 1":""
     ,"Customer Address Line 2":""
     ,"Customer Address Line 3":""
@@ -102,7 +105,8 @@ function save_new_customer(e){
    var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(subject_data));
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
- 
+  // alert(request);return;
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	//	alert(o.responseText);
@@ -131,9 +135,13 @@ function save_new_customer(e){
 
 function customer_is_a_person(){
 Dom.get('Customer_Type').value='Person'
+Dom.get('Company_Tax_Number').value='';
 validate_data.company_name.validated=true;
 Dom.setStyle('company_section','display','none');
 Dom.setStyle('set_as_company','display','');
+
+subject_data['Customer Tax Number']=Dom.get('Company_Tax_Number').value;
+
 validate_form();
 }
 function customer_is_a_company(){
@@ -188,11 +196,14 @@ window.location='companies.php?edit=1';
 }
 function get_subject_data(){
     subject_data[Subject+' Name']=Dom.get('Company_Name').value;
-    
+        subject_data[Subject+' Tax Number']=Dom.get('Company_Tax_Number').value;
+
 }
 function get_contact_data(){
     subject_data[Subject+' Main Contact Name']=Dom.get('Contact_Name').value;
 	subject_data[Subject+' Main Plain Telephone']=Dom.get('Telephone').value;
+	subject_data[Subject+' Main Plain FAX']=Dom.get('FAX').value;
+	subject_data[Subject+' Main Plain Mobile']=Dom.get('Mobile').value;
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
@@ -244,15 +255,15 @@ clone_customer(Dom.get('found_email_other_store_customer_key').value);
 function clone_customer(customer_id){
 
 Dom.setStyle("creating_message",'display','');
-	  Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
+	  Dom.setStyle(["save_new_Customer","cancel_add_Customer","email_found_other_store_dialog"],'display','none');
 
 var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_key}); 
-  var request='ar_edit_contacts.php?tipo=clone_customer&customer_id=' + customer_id+'&scope=' + my_encodeURIComponent(json_value_scope); 
+  var request='ar_edit_contacts.php?tipo=clone_customer&customer_key=' + customer_id+'&scope=' + my_encodeURIComponent(json_value_scope); 
   
   
        YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-alert(o.responseText)
+
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		           window.location='customer.php?r=nc&id='+r.customer_key;
@@ -277,7 +288,6 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 
 
     var request='ar_contacts.php?tipo=show_posible_customer_matches&values=' + my_encodeURIComponent(json_value)+'&scope=' + my_encodeURIComponent(json_value_scope); 
-  
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	//	alert(o.responseText)
