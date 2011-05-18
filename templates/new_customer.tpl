@@ -51,6 +51,17 @@
 	  </td>
 	  <td style="width:70px"></td>
 	</tr>
+	
+	<tr >
+	<td style="width:120px" class="label">{t}Tax Number{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;width:100%" id="Company_Tax_Number" value="" ovalue="" valid="0">
+	      <div id="Company_Tax_Number_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	</tr>
 	 </tbody>
 	 
 	 <tr class="title" style="height:30px">
@@ -151,7 +162,39 @@
 		  <td  class="label">{t}Extension{/t}:</td><td ><input id="Telephone_Extension" class="Extension" style="width:5em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
-		
+
+
+	<tr id="mobile_mould"  style="{if $scope=='corporation'}display:none{/if}" >
+	  <td  class="label">
+	    
+	    {t}Mobile{/t}:<img  id="{$address_identifier}mobile_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+	  </td>
+	  <td>
+	    <div>
+	    <input  style="width:100%" class="Telecom" telecom_key=0 telecom_type="mobile" id="Mobile" 
+		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
+	    <div id="Mobile_Container" style="" ></div>
+	    </div>
+	  </td >
+	</tr>
+	
+	<tr id="FAX_mould"  style="{if $scope=='corporation'}display:none{/if}" >
+	  <td  class="label">
+	    
+	    {t}Fax{/t}:<img  id="{$address_identifier}FAX_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+	  </td>
+	  <td>
+	    <div>
+	    <input  style="width:100%" class="Telecom" telecom_key=0 telecom_type="FAX" id="FAX" 
+		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
+	    <div id="FAX_Container" style="" ></div>
+	    </div>
+	  </td >
+	  </tr>
+	
+	
+	
+	
  <tr class="title" style="height:30px">
       <td colspan=3>{t}Address Info{/t}</td>
       </tr>
