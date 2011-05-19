@@ -180,7 +180,7 @@
     <td  style="width:70px">
    
         {if $default_country_2alpha}
-        <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onClick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"  ><img style="cursor:pointer;vertical-align:-1px;"  src="art/flags/{$default_country_2alpha}.gif" alt="({$default_country_2alpha})"/></span>	
+        <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onClick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"  ><img style="cursor:pointer;vertical-align:-1px;"  src="art/flags/{$default_country_2alpha|lower}.gif" alt="({$default_country_2alpha})"/></span>	
 	    <span  id="{$address_identifier}default_country_selector"></span>
 	    {else}
 	    {/if}

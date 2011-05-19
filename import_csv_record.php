@@ -14,7 +14,7 @@
 	$h = $csv->getHeaders();
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
-	//echo '<pre>'; print_r($colorArray);
+	//echo '<pre>'; print_r($records_ignored_by_user);
 	//$r =  $csv->getRow($index); 
 	$raw = $csv->getrawArray();
 	//$upper_value = count($raw);
@@ -173,8 +173,8 @@
 <!-- ------------------------------------------------------------------------------------------------------------------------------------ -->
 <div id="display">
 <?php
-	//print_r($colorArray);
-  	$search = in_array($index,$colorArray);
+	//print_r($records_ignored_by_user);
+  	$search = in_array($index,$records_ignored_by_user);
  
 	if(isset($search) && $search>0)
 	{

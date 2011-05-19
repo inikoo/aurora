@@ -1363,6 +1363,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "Error !!!! customer not found\n";
             continue;
         }
+        
+        if($customer->data['Customer Store Key']!=$store->id){
+             print "Error !!!! customer from another store\n";
+            continue;
+        }
+        
+        
         $sql=sprintf("update de_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
         //print $sql;
         mysql_query($sql);

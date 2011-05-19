@@ -12,6 +12,8 @@
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT|E_NOTICE);
 include_once('common.php');
+//include_once('common_import.php');
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -43,6 +45,11 @@ $js_files=array(
 		'js/dropdown.js'
         	);
 
+
+$_SESSION['records_ignored_by_user']=array();
+
+
+
 if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
 }
@@ -52,36 +59,7 @@ exit("to do a page where the user can choose the correct options");
 }
 $scope=$_REQUEST['subject'];
 
-switch($scope){
-case('customers_store'):
-//$scope_args=$_SESSION['state']['customers']['store'];
-$scope_args=$_REQUEST['subject_key'];
-break;
 
-case('supplier_products'):
-//$scope_args=$_SESSION['state']['supplier']['id'];
-$scope_args=$_REQUEST['subject_key'];
-break;
-
-case('staff'):
-$scope_args=$_REQUEST['subject_key'];
-break;
-
-case('positions'):
-$scope_args=$_REQUEST['subject_key'];
-break;
-
-case('areas'):
-$scope_args=$_REQUEST['subject_key'];
-break;
-
-case('departments'):
-$scope_args=$_REQUEST['subject_key'];
-break;
-
-default:
-$scope_args='';
-}
 
 if(isset($_POST['submit']))
 {
@@ -116,10 +94,16 @@ if(isset($_POST['submit']))
 					//loading the CSV File
 					$csv->load($target_path);
 
-					$h = $csv->getHeaders();
-
+					$headers = $csv->getHeaders();
+                    $map=array();
+                    foreach($headers as $header_key=>$header_value){
+                    $map[$header_key]=0;
+                    }
+                    
+                    $_SESSION['map']=$map;
+                    
 					$_SESSION['file_path'] = $target_path;
-					$r = $csv->connect();
+					//$r = $csv->connect();
 				}
 	    		}
 	  	}
@@ -135,9 +119,11 @@ if(isset($_SESSION['error']))
    $smarty->assign('showerror',$_SESSION['error']);
 }
 
-$v = 0;
+$index = 0;
 
-$smarty->assign('v',$v);
+$smarty->assign('index',$index);
+$smarty->assign('scope',$scope);
+
 $smarty->assign('subject',$scope);
 $smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
