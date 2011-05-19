@@ -1,14 +1,12 @@
 ﻿{include file='header.tpl'}
  
-<script language="Javascript">
-	window.onload = get_default({$v});
-</script>
 
+
+<input type="hidden" id="scope" value="{$scope}">
 <div id="bd">
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
 
-    <h1>Import Contacts From CSV File 
-</h1>
+    <h1>{t}Import Contacts From CSV File{/t}</h1>
   </div>
 	<div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div>
 <br>
@@ -21,7 +19,7 @@
 	<label  for="fileUpload" class="import_level" style="font-size:14px;">
 	Step 2 - Verify fields</label>
         <span style="font-size:12px;">
-                {t}After scanned your file we found the subsequent fields that are needed to verify. Please make sure that all of your contacts information is filled up properly to the associated fields in the website. Once you filled up the fields properly, the next task you have to do is to hit on the continue button.{/t}
+                {t}Match the fields{/t}
         </span>
 	    </div></div>    
                     </div>

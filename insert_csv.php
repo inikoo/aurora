@@ -51,46 +51,54 @@ $js_files=array(
 	$h = $csv->getHeaders();
 	$raw = $csv->getrawArray();
 	$count_rows = $csv->countRows();
-	$session_array = array_unique($_SESSION['colorArray']);
-	$tt = array();
+	
+	
+	print_r($_SESSION['records_ignored_by_user']);
+	$session_array = array_unique($_SESSION['records_ignored_by_user']);
+	$records_ignored_by_user = array();
 	foreach($session_array as $session=>$vv)
 	{
 		if($session != '')
 		{
-			$tt[] = $vv;
+			$records_ignored_by_user[] = $vv;
 		}
 	}
-	//print_r($tt);
-	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
-	$arr = array();
+	print_r($records_ignored_by_user);
+	$csv_data_map = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
+	
+	$csv_parsed_data = array();
 	$k = 0;
 	$nArray = array();
 	for($i=0; $i<=$count_rows; $i++)
 	{
 	  $k = 0;
-	  for($j=0; $j<count($assign); $j++)
+	  for($j=0; $j<count($csv_data_map); $j++)
 	  {
-		if($assign[$k] != 'Ignore')
+		if($csv_data_map[$k] != 'Ignore')
 		{
-			$nArray[$assign[$k]]=$raw[$i][$j];
+			$nArray[$csv_data_map[$k]]=$raw[$i][$j];
 		}
 			$k++;
 			}
-			$arr[]=$nArray;
+			$csv_parsed_data[]=$nArray;
 		}
-		//print_r($arr);
+		//print_r($csv_parsed_data);
 		$previous=array();
-                $previous=$arr;
-		foreach($tt as $key=>$value)
+                $previous=$csv_parsed_data;
+		foreach($records_ignored_by_user as $key=>$value)
 		{
-			if(array_key_exists($value,$arr))
+			if(array_key_exists($value,$csv_parsed_data))
 			{
-				unset($arr[$value]);
+				unset($csv_parsed_data[$value]);
 			}
 		}
-	       $ignore[]=array_diff($previous,$arr);
-		//print_r($ignore);
-		//print_r($arr);
+	       $ignore[]=array_diff($previous,$csv_parsed_data);
+		
+		//print_r($csv_parsed_data);
+
+
+// Importing to database //
+/*
 
 if(!isset($_REQUEST['subject'])){
 exit("to do a page where the user can choose the correct options");
@@ -141,73 +149,21 @@ switch($scope){
 	default:
 }
 
-// Importing to database //
-/*for($x=1; $x<count($arr); $x++){
-	$data=$arr[$x];
+
+for($x=1; $x<count($csv_parsed_data); $x++){
+	$data=$csv_parsed_data[$x];
 	insert($data, $tbl, $fld, $scope_args);
 }*/ //Put off this comments to insert data in database //
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('arr',$arr);
-$smarty->assign('tt',$tt);
-$smarty->assign('ignored_array',$assign);
+
+
+
+exit;
+
 $smarty->display('insert_csv.tpl');
 unset($_SESSION['getQueryString']);
 
-// Functions //
-function insert($raw_data, $table, $fld, $scope_args) {
-	/*if(array_key_exists($fld, $raw_data)){
-		unset($raw_data[$fld]);
-	}*/
-	$data = dataprotection($raw_data);
-	if (!is_array($data)) {
-	 die("insertion failed, input data must be an array");
-	}
-	//building the query
-	$sql = "INSERT INTO `".$table."` (";
-	for ($i=0; $i<count($data); $i++) {
-		//we need to get the key in the info array, which represents the column in $table
-		$sql .= "`".key($data)."`";
-		//echo commas after each key except the last, then echo a closing parenthesis
-		if ($i < (count($data)-1)) {
-			$sql .= ", ";
-		}else{
-			if($fld != '')
-			$sql .= ", `$fld`) ";
-			else $sql .= " ) ";
-		}
-		//advance the array pointer to point to the next key
-		next($data);
-	}
-	//now lets reuse $data to get the values which represent the insert field values
-	reset($data);
-	$sql .= "VALUES (";
-	for ($j=0; $j<count($data); $j++) {
-		$sql .= "'".current($data)."'";
-		if ($j < (count($data)-1)) {
-		   $sql .= ", ";
-		}else{
-		   if($fld != '')
-		   $sql .= ", '$scope_args') ";
-		   else $sql .= " ) ";
-		}
-		next($data);
-	}
-	//execute the query
-	//echo $sql;echo "<br />";
-	//mysql_query($sql) or die("query failed ".mysql_error());
-	$query=mysql_query($sql);
-	if($query){ return true; }else{ return false;}
-	//return mysql_affected_rows();
-}
-
-function dataprotection($data){
- $new_data = array();
-foreach($data as $key=>$value){
-	$new_data[$key]=addslashes($value);
-}
-return $new_data;
-}
 
 ?>

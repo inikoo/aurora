@@ -1155,7 +1155,7 @@ if (!class_exists('TCPDF', false)) {
 		 * @access protected
 		 * @since 4.4.003 (2008-12-09)
 		 */
-		protected $htmlLinkColorArray = array(0, 0, 255);
+		protected $htmlLinkcolorarray = array(0, 0, 255);
 
 		/**
 		 * Default font style to add to html links
@@ -2780,7 +2780,7 @@ if (!class_exists('TCPDF', false)) {
 		* @since 3.1.000 (2008-06-11)
 		* @see SetDrawColor()
 		*/
-		public function SetDrawColorArray($color) {
+		public function SetDrawcolorarray($color) {
 			if (isset($color)) {
 				$color = array_values($color);
 				$r = isset($color[0]) ? $color[0] : -1;
@@ -2801,7 +2801,7 @@ if (!class_exists('TCPDF', false)) {
 		* @param int $col4 Key (Black) color for CMYK. Value between 0 and 255
 		* @access public
 		* @since 1.3
-		* @see SetDrawColorArray(), SetFillColor(), SetTextColor(), Line(), Rect(), Cell(), MultiCell()
+		* @see SetDrawcolorarray(), SetFillColor(), SetTextColor(), Line(), Rect(), Cell(), MultiCell()
 		*/
 		public function SetDrawColor($col1=0, $col2=-1, $col3=-1, $col4=-1) {
 			// set default values
@@ -2860,7 +2860,7 @@ if (!class_exists('TCPDF', false)) {
 		* @since 3.1.000 (2008-6-11)
 		* @see SetFillColor()
 		*/
-		public function SetFillColorArray($color) {
+		public function SetFillcolorarray($color) {
 			if (isset($color)) {
 				$color = array_values($color);
 				$r = isset($color[0]) ? $color[0] : -1;
@@ -2881,7 +2881,7 @@ if (!class_exists('TCPDF', false)) {
 		* @param int $col4 Key (Black) color for CMYK. Value between 0 and 255
 		* @access public
 		* @since 1.3
-		* @see SetFillColorArray(), SetDrawColor(), SetTextColor(), Rect(), Cell(), MultiCell()
+		* @see SetFillcolorarray(), SetDrawColor(), SetTextColor(), Rect(), Cell(), MultiCell()
 		*/
 		public function SetFillColor($col1=0, $col2=-1, $col3=-1, $col4=-1) {
 			// set default values
@@ -2944,7 +2944,7 @@ if (!class_exists('TCPDF', false)) {
 		* @since 3.1.000 (2008-6-11)
 		* @see SetFillColor()
 		*/
-		public function SetTextColorArray($color) {
+		public function SetTextcolorarray($color) {
 			if (isset($color)) {
 				$color = array_values($color);
 				$r = isset($color[0]) ? $color[0] : -1;
@@ -2965,7 +2965,7 @@ if (!class_exists('TCPDF', false)) {
 		* @param int $col4 Key (Black) color for CMYK. Value between 0 and 255
 		* @access public
 		* @since 1.3
-		* @see SetTextColorArray(), SetDrawColor(), SetFillColor(), Text(), Cell(), MultiCell()
+		* @see SetTextcolorarray(), SetDrawColor(), SetFillColor(), Text(), Cell(), MultiCell()
 		*/
 		public function SetTextColor($col1=0, $col2=-1, $col3=-1, $col4=-1) {
 			// set default values
@@ -7700,9 +7700,9 @@ if (!class_exists('TCPDF', false)) {
 			$prevcolor = $this->fgcolor;
 			$prevstyle = $this->FontStyle;
 			if (empty($color)) {
-				$this->SetTextColorArray($this->htmlLinkColorArray);
+				$this->SetTextcolorarray($this->htmlLinkcolorarray);
 			} else {
-				$this->SetTextColorArray($color);
+				$this->SetTextcolorarray($color);
 			}
 			if ($style == -1) {
 				$this->SetFont('', $this->FontStyle.$this->htmlLinkFontStyle);
@@ -7712,7 +7712,7 @@ if (!class_exists('TCPDF', false)) {
 			$ret = $this->Write($this->lasth, $name, $url, $fill, '', false, 0, $firstline);
 			// restore settings
 			$this->SetFont('', $prevstyle);
-			$this->SetTextColorArray($prevcolor);
+			$this->SetTextcolorarray($prevcolor);
 			return $ret;
 		}
 		
@@ -8377,7 +8377,7 @@ if (!class_exists('TCPDF', false)) {
 				$this->_out($this->linestyleDash);
 			}
 			if (isset($color)) {
-				$this->SetDrawColorArray($color);
+				$this->SetDrawcolorarray($color);
 			}
 		}
 		
@@ -8495,7 +8495,7 @@ if (!class_exists('TCPDF', false)) {
 		*/
 		public function Rect($x, $y, $w, $h, $style='', $border_style=array(), $fill_color=array()) {
 			if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-				$this->SetFillColorArray($fill_color);
+				$this->SetFillcolorarray($fill_color);
 			}
 			switch ($style) {
 				case 'F': {
@@ -8593,7 +8593,7 @@ if (!class_exists('TCPDF', false)) {
 		*/
 		public function Curve($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3, $style='', $line_style=array(), $fill_color=array()) {
 			if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-				$this->SetFillColorArray($fill_color);
+				$this->SetFillcolorarray($fill_color);
 			}
 			switch ($style) {
 				case 'F': {
@@ -8650,7 +8650,7 @@ if (!class_exists('TCPDF', false)) {
 		*/
 		public function Polycurve($x0, $y0, $segments, $style='', $line_style=array(), $fill_color=array()) {
 			if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-				$this->SetFillColorArray($fill_color);
+				$this->SetFillcolorarray($fill_color);
 			}
 			switch ($style) {
 				case 'F': {
@@ -8722,7 +8722,7 @@ if (!class_exists('TCPDF', false)) {
 			}
 			if ($rx) {
 				if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-					$this->SetFillColorArray($fill_color);
+					$this->SetFillcolorarray($fill_color);
 				}
 				switch ($style) {
 					case 'F': {
@@ -8883,7 +8883,7 @@ if (!class_exists('TCPDF', false)) {
 				$nc += 4;
 			}
 			if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-				$this->SetFillColorArray($fill_color);
+				$this->SetFillcolorarray($fill_color);
 			}
 			switch ($style) {
 				case 'F': {
@@ -9102,7 +9102,7 @@ if (!class_exists('TCPDF', false)) {
 				$this->Rect($x, $y, $w, $h, $style, $border_style, $fill_color);
 			} else { // Rounded
 				if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-					$this->SetFillColorArray($fill_color);
+					$this->SetFillcolorarray($fill_color);
 				}
 				switch ($style) {
 					case 'F': {
@@ -12106,8 +12106,8 @@ if (!class_exists('TCPDF', false)) {
 				$style['stretchtext'] = 4;
 			}
 			// set foreground color
-			$this->SetDrawColorArray($style['fgcolor']);
-			$this->SetTextColorArray($style['fgcolor']);
+			$this->SetDrawcolorarray($style['fgcolor']);
+			$this->SetTextcolorarray($style['fgcolor']);
 			if ($this->empty_string($w) OR ($w <= 0)) {
 				if ($this->rtl) {
 					$w = $this->x - $this->lMargin;
@@ -12337,7 +12337,7 @@ if (!class_exists('TCPDF', false)) {
 				$style['border'] = false;
 			}
 			// set foreground color
-			$this->SetDrawColorArray($style['fgcolor']);
+			$this->SetDrawcolorarray($style['fgcolor']);
 			if ($this->empty_string($x)) {
 				$x = $this->GetX();
 			}
@@ -13239,13 +13239,13 @@ if (!class_exists('TCPDF', false)) {
 					// get current position on page buffer
 					$curpos = $this->pagelen[$startlinepage];
 					if (isset($dom[$key]['bgcolor']) AND ($dom[$key]['bgcolor'] !== false)) {
-						$this->SetFillColorArray($dom[$key]['bgcolor']);
+						$this->SetFillcolorarray($dom[$key]['bgcolor']);
 						$wfill = true;
 					} else {
 						$wfill = $fill | false;
 					}
 					if (isset($dom[$key]['fgcolor']) AND ($dom[$key]['fgcolor'] !== false)) {
-						$this->SetTextColorArray($dom[$key]['fgcolor']);
+						$this->SetTextcolorarray($dom[$key]['fgcolor']);
 					}
 					if (isset($dom[$key]['align'])) {
 						$lalign = $dom[$key]['align'];
@@ -13503,7 +13503,7 @@ if (!class_exists('TCPDF', false)) {
 					$pbrk = $this->checkPageBreak($this->lasth);
 					$this->SetFont($fontname, $fontstyle, $fontsize);
 					if ($wfill) {
-						$this->SetFillColorArray($this->bgcolor);
+						$this->SetFillcolorarray($this->bgcolor);
 					}
 					$startlinex = $this->x;
 					$startliney = $this->y;
@@ -13997,7 +13997,7 @@ if (!class_exists('TCPDF', false)) {
 					if (array_key_exists('href', $tag['attribute'])) {
 						$this->HREF['url'] = $tag['attribute']['href'];
 					}
-					$this->HREF['color'] = $this->htmlLinkColorArray;
+					$this->HREF['color'] = $this->htmlLinkcolorarray;
 					$this->HREF['style'] = $this->htmlLinkFontStyle;
 					if (array_key_exists('style', $tag['attribute'])) {
 						// get style attributes
@@ -14613,7 +14613,7 @@ if (!class_exists('TCPDF', false)) {
 										$cborder = $this->getBorderMode($border, $position='middle');
 									}
 									if (isset($cellpos['bgcolor']) AND ($cellpos['bgcolor']) !== false) {
-										$this->SetFillColorArray($cellpos['bgcolor']);
+										$this->SetFillcolorarray($cellpos['bgcolor']);
 										$fill = true;
 									} else {
 										$fill = false;
@@ -14641,7 +14641,7 @@ if (!class_exists('TCPDF', false)) {
 							} else {
 								$this->setPage($startpage);
 								if (isset($cellpos['bgcolor']) AND ($cellpos['bgcolor']) !== false) {
-									$this->SetFillColorArray($cellpos['bgcolor']);
+									$this->SetFillcolorarray($cellpos['bgcolor']);
 									$fill = true;
 								} else {
 									$fill = false;
@@ -14951,7 +14951,7 @@ if (!class_exists('TCPDF', false)) {
 		* @since 4.4.003 (2008-12-09)
 		*/
 		public function setHtmlLinksStyle($color=array(0,0,255), $fontstyle='U') {
-			$this->htmlLinkColorArray = $color;
+			$this->htmlLinkcolorarray = $color;
 			$this->htmlLinkFontStyle = $fontstyle;
         }
 

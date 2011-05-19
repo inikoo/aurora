@@ -980,7 +980,7 @@ class TCPDF {
 	 * @protected
 	 * @since 4.4.003 (2008-12-09)
 	 */
-	protected $htmlLinkColorArray = array(0, 0, 255);
+	protected $htmlLinkcolorarray = array(0, 0, 255);
 
 	/**
 	 * Default font style to add to html links.
@@ -4120,7 +4120,7 @@ class TCPDF {
 	 * @since 3.1.000 (2008-06-11)
 	 * @see SetDrawColor()
 	 */
-	public function SetDrawColorArray($color, $ret=false) {
+	public function SetDrawcolorarray($color, $ret=false) {
 		if (is_array($color)) {
 			$color = array_values($color);
 			$r = isset($color[0]) ? $color[0] : -1;
@@ -4146,7 +4146,7 @@ class TCPDF {
 	 * @return string the PDF command
 	 * @public
 	 * @since 1.3
-	 * @see SetDrawColorArray(), SetFillColor(), SetTextColor(), Line(), Rect(), Cell(), MultiCell()
+	 * @see SetDrawcolorarray(), SetFillColor(), SetTextColor(), Line(), Rect(), Cell(), MultiCell()
 	 */
 	public function SetDrawColor($col1=0, $col2=-1, $col3=-1, $col4=-1, $ret=false, $name='') {
 		// set default values
@@ -4219,7 +4219,7 @@ class TCPDF {
 	 * @since 3.1.000 (2008-6-11)
 	 * @see SetFillColor()
 	 */
-	public function SetFillColorArray($color, $ret=false) {
+	public function SetFillcolorarray($color, $ret=false) {
 		if (is_array($color)) {
 			$color = array_values($color);
 			$r = isset($color[0]) ? $color[0] : -1;
@@ -4244,7 +4244,7 @@ class TCPDF {
 	 * @return string the PDF command
 	 * @public
 	 * @since 1.3
-	 * @see SetFillColorArray(), SetDrawColor(), SetTextColor(), Rect(), Cell(), MultiCell()
+	 * @see SetFillcolorarray(), SetDrawColor(), SetTextColor(), Rect(), Cell(), MultiCell()
 	 */
 	public function SetFillColor($col1=0, $col2=-1, $col3=-1, $col4=-1, $ret=false, $name='') {
 		// set default values
@@ -4318,7 +4318,7 @@ class TCPDF {
 	 * @since 3.1.000 (2008-6-11)
 	 * @see SetFillColor()
 	 */
-	public function SetTextColorArray($color, $ret=false) {
+	public function SetTextcolorarray($color, $ret=false) {
 		if (is_array($color)) {
 			$color = array_values($color);
 			$r = isset($color[0]) ? $color[0] : -1;
@@ -4342,7 +4342,7 @@ class TCPDF {
 	 * @param $name (string) spot color name (if any)
 	 * @public
 	 * @since 1.3
-	 * @see SetTextColorArray(), SetDrawColor(), SetFillColor(), Text(), Cell(), MultiCell()
+	 * @see SetTextcolorarray(), SetDrawColor(), SetFillColor(), Text(), Cell(), MultiCell()
 	 */
 	public function SetTextColor($col1=0, $col2=-1, $col3=-1, $col4=-1, $ret=false, $name='') {
 		// set default values
@@ -11332,9 +11332,9 @@ class TCPDF {
 		$prevcolor = $this->fgcolor;
 		$prevstyle = $this->FontStyle;
 		if (empty($color)) {
-			$this->SetTextColorArray($this->htmlLinkColorArray);
+			$this->SetTextcolorarray($this->htmlLinkcolorarray);
 		} else {
-			$this->SetTextColorArray($color);
+			$this->SetTextcolorarray($color);
 		}
 		if ($style == -1) {
 			$this->SetFont('', $this->FontStyle.$this->htmlLinkFontStyle);
@@ -11344,7 +11344,7 @@ class TCPDF {
 		$ret = $this->Write($this->lasth, $name, $url, $fill, '', false, 0, $firstline, $firstblock, 0);
 		// restore settings
 		$this->SetFont('', $prevstyle);
-		$this->SetTextColorArray($prevcolor);
+		$this->SetTextcolorarray($prevcolor);
 		return $ret;
 	}
 
@@ -12611,7 +12611,7 @@ class TCPDF {
 			$s .= $this->linestyleDash.' ';
 		}
 		if (isset($color)) {
-			$s .= $this->SetDrawColorArray($color, true).' ';
+			$s .= $this->SetDrawcolorarray($color, true).' ';
 		}
 		if (!$ret) {
 			$this->_out($s);
@@ -12741,7 +12741,7 @@ class TCPDF {
 	 */
 	public function Rect($x, $y, $w, $h, $style='', $border_style=array(), $fill_color=array()) {
 		if (!(false === strpos($style, 'F')) AND !empty($fill_color)) {
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 		}
 		$op = $this->getPathPaintOperator($style);
 		if ((!$border_style) OR (isset($border_style['all']))) {
@@ -12796,7 +12796,7 @@ class TCPDF {
 	 */
 	public function Curve($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3, $style='', $line_style=array(), $fill_color=array()) {
 		if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 		}
 		$op = $this->getPathPaintOperator($style);
 		if ($line_style) {
@@ -12823,7 +12823,7 @@ class TCPDF {
 	 */
 	public function Polycurve($x0, $y0, $segments, $style='', $line_style=array(), $fill_color=array()) {
 		if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 		}
 		$op = $this->getPathPaintOperator($style);
 		if ($op == 'f') {
@@ -12863,7 +12863,7 @@ class TCPDF {
 			$ry = $rx;
 		}
 		if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 		}
 		$op = $this->getPathPaintOperator($style);
 		if ($op == 'f') {
@@ -13069,7 +13069,7 @@ class TCPDF {
 			$nc += 4;
 		}
 		if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 		}
 		$op = $this->getPathPaintOperator($style);
 		if ($op == 'f') {
@@ -13269,7 +13269,7 @@ class TCPDF {
 		}
 		// Rounded
 		if (!(false === strpos($style, 'F')) AND isset($fill_color)) {
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 		}
 		$op = $this->getPathPaintOperator($style);
 		if ($op == 'f') {
@@ -15749,7 +15749,7 @@ class TCPDF {
 				$this->LinearGradient($xb, $yb, $wb, $hb, $col_a, $col_b, $coords);
 			} else {
 				// color rectangle
-				$this->SetFillColorArray($col_b);
+				$this->SetFillcolorarray($col_b);
 				$this->Rect($xb, $yb, $wb, $hb, 'F', array());
 			}
 			$xb += $xd;
@@ -15841,16 +15841,16 @@ class TCPDF {
 	 */
 	public function registrationMark($x, $y, $r, $double=false, $cola=array(0,0,0), $colb=array(255,255,255)) {
 		$line_style = array('width' => (0.5 / $this->k), 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $cola);
-		$this->SetFillColorArray($cola);
+		$this->SetFillcolorarray($cola);
 		$this->PieSector($x, $y, $r, 90, 180, 'F');
 		$this->PieSector($x, $y, $r, 270, 360, 'F');
 		$this->Circle($x, $y, $r, 0, 360, 'C', $line_style, array(), 8);
 		if ($double) {
 			$r2 = $r * 0.5;
-			$this->SetFillColorArray($colb);
+			$this->SetFillcolorarray($colb);
 			$this->PieSector($x, $y, $r2, 90, 180, 'F');
 			$this->PieSector($x, $y, $r2, 270, 360, 'F');
-			$this->SetFillColorArray($cola);
+			$this->SetFillcolorarray($cola);
 			$this->PieSector($x, $y, $r2, 0, 90, 'F');
 			$this->PieSector($x, $y, $r2, 180, 270, 'F');
 			$this->Circle($x, $y, $r2, 0, 360, 'C', $line_style, array(), 8);
@@ -16957,8 +16957,8 @@ class TCPDF {
 			$this->Rect($xpos_rect, $y, $w, $h, 'D');
 		}
 		// set foreground color
-		$this->SetDrawColorArray($style['fgcolor']);
-		$this->SetTextColorArray($style['fgcolor']);
+		$this->SetDrawcolorarray($style['fgcolor']);
+		$this->SetTextcolorarray($style['fgcolor']);
 		// print bars
 		foreach ($arrcode['bcode'] as $k => $v) {
 			$bw = ($v['w'] * $xres);
@@ -17257,7 +17257,7 @@ class TCPDF {
 			$this->Rect($xpos, $y, $w, $h, 'D');
 		}
 		// set foreground color
-		$this->SetDrawColorArray($style['fgcolor']);
+		$this->SetDrawcolorarray($style['fgcolor']);
 		// print barcode cells
 		// for each row
 		for ($r = 0; $r < $rows; ++$r) {
@@ -18511,7 +18511,7 @@ class TCPDF {
 						if (isset($dom[$key]['style']['color']) AND (!$this->empty_string($dom[$key]['style']['color']))) {
 							$dom[$key]['fgcolor'] = $this->convertHTMLColorToDec($dom[$key]['style']['color']);
 						} elseif ($dom[$key]['value'] == 'a') {
-							$dom[$key]['fgcolor'] = $this->htmlLinkColorArray;
+							$dom[$key]['fgcolor'] = $this->htmlLinkcolorarray;
 						}
 						// background color
 						if (isset($dom[$key]['style']['background-color']) AND (!$this->empty_string($dom[$key]['style']['background-color']))) {
@@ -18798,7 +18798,7 @@ class TCPDF {
 					if (isset($dom[$key]['attribute']['color']) AND (!$this->empty_string($dom[$key]['attribute']['color']))) {
 						$dom[$key]['fgcolor'] = $this->convertHTMLColorToDec($dom[$key]['attribute']['color']);
 					} elseif (!isset($dom[$key]['style']['color']) AND ($dom[$key]['value'] == 'a')) {
-						$dom[$key]['fgcolor'] = $this->htmlLinkColorArray;
+						$dom[$key]['fgcolor'] = $this->htmlLinkcolorarray;
 					}
 					// set background color attribute
 					if (isset($dom[$key]['attribute']['bgcolor']) AND (!$this->empty_string($dom[$key]['attribute']['bgcolor']))) {
@@ -19290,16 +19290,16 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				// get current position on page buffer
 				$curpos = $this->pagelen[$startlinepage];
 				if (isset($dom[$key]['bgcolor']) AND ($dom[$key]['bgcolor'] !== false)) {
-					$this->SetFillColorArray($dom[$key]['bgcolor']);
+					$this->SetFillcolorarray($dom[$key]['bgcolor']);
 					$wfill = true;
 				} else {
 					$wfill = $fill | false;
 				}
 				if (isset($dom[$key]['fgcolor']) AND ($dom[$key]['fgcolor'] !== false)) {
-					$this->SetTextColorArray($dom[$key]['fgcolor']);
+					$this->SetTextcolorarray($dom[$key]['fgcolor']);
 				}
 				if (isset($dom[$key]['strokecolor']) AND ($dom[$key]['strokecolor'] !== false)) {
-					$this->SetDrawColorArray($dom[$key]['strokecolor']);
+					$this->SetDrawcolorarray($dom[$key]['strokecolor']);
 				}
 				if (isset($dom[$key]['align'])) {
 					$lalign = $dom[$key]['align'];
@@ -19733,7 +19733,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					AND ($this->emptypagemrk[$this->page] == $this->pagelen[$this->page]))) {
 					$this->SetFont($fontname, $fontstyle, $fontsize);
 					if ($wfill) {
-						$this->SetFillColorArray($this->bgcolor);
+						$this->SetFillcolorarray($this->bgcolor);
 					}
 				}
 			} // end newline
@@ -21179,7 +21179,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 							$border = $cellpos['border'];
 						}
 						if (isset($cellpos['bgcolor']) AND ($cellpos['bgcolor']) !== false) {
-							$this->SetFillColorArray($cellpos['bgcolor']);
+							$this->SetFillcolorarray($cellpos['bgcolor']);
 							$fill = true;
 						} else {
 							$fill = false;
@@ -21576,7 +21576,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		if (isset($tag['bgcolor']) AND ($tag['bgcolor'] !== false)) {
 			// get background color
 			$old_bgcolor = $this->bgcolor;
-			$this->SetFillColorArray($tag['bgcolor']);
+			$this->SetFillcolorarray($tag['bgcolor']);
 			$fill = true;
 		}
 		if (!$border AND !$fill) {
@@ -21742,7 +21742,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		$this->page_regions = $temp_page_regions;
 		if (isset($old_bgcolor)) {
 			// restore background color
-			$this->SetFillColorArray($old_bgcolor);
+			$this->SetFillcolorarray($old_bgcolor);
 		}
 		// restore pointer position
 		$this->x = $prev_x;
@@ -21872,7 +21872,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 	 * @since 4.4.003 (2008-12-09)
 	 */
 	public function setHtmlLinksStyle($color=array(0,0,255), $fontstyle='U') {
-		$this->htmlLinkColorArray = $color;
+		$this->htmlLinkcolorarray = $color;
 		$this->htmlLinkFontStyle = $fontstyle;
 	}
 
@@ -23132,10 +23132,10 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 	 * @see addTOCPage(), endTOCPage(), addTOC()
 	 */
 	public function addHTMLTOC($page='', $toc_name='TOC', $templates=array(), $correct_align=true) {
-		$prev_htmlLinkColorArray = $this->htmlLinkColorArray;
+		$prev_htmlLinkcolorarray = $this->htmlLinkcolorarray;
 		$prev_htmlLinkFontStyle = $this->htmlLinkFontStyle;
 		// set new style for link
-		$this->htmlLinkColorArray = array();
+		$this->htmlLinkcolorarray = array();
 		$this->htmlLinkFontStyle = '';
 		$page_first = $this->getPage();
 		// get the font type used for numbers in each template
@@ -23171,7 +23171,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			$this->writeHTML($row, false, false, true, false, '');
 		}
 		// restore link styles
-		$this->htmlLinkColorArray = $prev_htmlLinkColorArray;
+		$this->htmlLinkcolorarray = $prev_htmlLinkcolorarray;
 		$this->htmlLinkFontStyle = $prev_htmlLinkFontStyle;
 		// move TOC page and replace numbers
 		$page_last = $this->getPage();
@@ -24835,10 +24835,10 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		}
 		// color
 		$fill_color = $this->convertHTMLColorToDec($svgstyle['color']);
-		$this->SetFillColorArray($fill_color);
+		$this->SetFillcolorarray($fill_color);
 		// text color
 		$text_color = $this->convertHTMLColorToDec($svgstyle['text-color']);
-		$this->SetTextColorArray($text_color);
+		$this->SetTextcolorarray($text_color);
 		// clip
 		if (preg_match('/rect\(([a-z0-9\-\.]*)[\s]*([a-z0-9\-\.]*)[\s]*([a-z0-9\-\.]*)[\s]*([a-z0-9\-\.]*)\)/si', $svgstyle['clip'], $regs)) {
 			$top = (isset($regs[1])?$this->getHTMLUnitToUnits($regs[1], 0, $this->svgunit, false):0);
@@ -24967,7 +24967,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			if ($svgstyle['fill-opacity'] != 1) {
 				$this->SetAlpha($svgstyle['fill-opacity']);
 			}
-			$this->SetFillColorArray($fill_color);
+			$this->SetFillcolorarray($fill_color);
 			if ($svgstyle['fill-rule'] == 'evenodd') {
 				$objstyle .= 'F*';
 			} else {

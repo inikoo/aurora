@@ -1,12 +1,12 @@
 <?php
-	include('common.php');
+	include_once('common.php');
 
 
-	$_SESSION['colorArray'][] = isset($_REQUEST['colorArray'])?$_REQUEST['colorArray']:'';
+	$_SESSION['records_ignored_by_user'][] = isset($_REQUEST['records_ignored_by_user'])?$_REQUEST['records_ignored_by_user']:'';
 	
-	$colorArray = array();
+	$records_ignored_by_user = array();
 
-	$colorArray = array_unique($_SESSION['colorArray']);
+	$records_ignored_by_user = array_unique($_SESSION['records_ignored_by_user']);
 
 	
 

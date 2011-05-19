@@ -87,12 +87,11 @@ function update_category(o){
 function save_new_customer(e){
    
     if(!can_add_subject){
-
 	return;
     }
 
  Dom.setStyle("creating_message",'display','');
-	  Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
+Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
 
     get_data();
 

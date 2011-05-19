@@ -1,3 +1,6 @@
+  var Dom   = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
+
 function Inint_AJAX() {
 try { return new ActiveXObject("Msxml2.XMLHTTP");} catch(e) {} //IE
 try { return new ActiveXObject("Microsoft.XMLHTTP");} catch(e) {} //IE
@@ -5,9 +8,35 @@ try { return new XMLHttpRequest();} catch(e) {} //Native Javascript
 alert("XMLHttpRequest not supported");
 return null;
 };
-function get_default(v) {
 
- var v;
+
+
+function get_record_data(index){
+  var ar_file='ar_import_csv.php';
+    var request=ar_file+"?tipo=get_record_data&index="+index+"&scope="+Dom.get('scope').value; 
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	
+	  success:function(o) {
+	  // alert(o.responseText)
+	  
+	//Dom.get('call_table').innerHTML=o.responseText;
+		
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		  
+		  Dom.get('call_table').innerHTML=r.result
+		}else{
+		    alert(r.msg);
+		}
+	    }
+	});
+
+}
+
+
+function get_default(index) {
+
+ 
  var qstring = window.location.toString();
  arr=qstring.split("?");
  var str=arr[1];
@@ -22,6 +51,7 @@ function get_default(v) {
            }
       }
  };
+// alert("ar_import_csv.php?tipo=import_csv&v="+v+"&"+str)
  req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null);
@@ -90,50 +120,62 @@ document.getElementById('ignore_message').innerHTML="";
 }
 
 
-function getIgnore(v) {
- var v;
-
-
-	//create an array to insert the color change id 
-	var colorArray = new Array();
-	
-		if(v>=0){	
-			//v = v+1;
-			colorArray.push(v);
-
+function next_record(index){
+    var ar_file='ar_import_csv.php';
+    var request=ar_file+"?tipo=import_csv&v="+index+"&myArray="+myArray+"&"+str; 
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		   Dom.setStyle(['ignore_record_label','unignore'],'display','');
+		   Dom.setStyle(['ignore'],'display','none');
+		}else{
+		    alert(r.msg);
 		}
-	
-	//alert(document.getElementById('ignore_msg').innerHTML);
-
- var req = Inint_AJAX();
- req.onreadystatechange = function () {
-      if (req.readyState==4) {
-           if (req.status==200) {
-
-		//alert(req.responseText);
-
-		var splitter = req.responseText;
-
-		var splitterResult = splitter.split("@");
-
-		//alert(req.responseText);
-
-		//alert(splitterResult[1]);
-
-		document.getElementById('display').innerHTML=splitterResult[0]; 
-
-                document.getElementById('ignore_message').innerHTML="This data will be ignored";
-                document.getElementById('show').innerHTML=splitterResult[1];
-
-           }
-      }
- };
-	//v=v+1;
-
-   req.open("GET", "removeResult.php?v="+v+"&colorArray="+colorArray);
- req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
- req.send(null);
+	    }
+	});
 }
+
+function ignore_record(index){
+    var ar_file='ar_import_csv.php';
+    var request=ar_file+'?tipo=ignore_record&index='+index; 
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		   Dom.setStyle(['ignore_record_label','unignore'],'display','');
+		   Dom.setStyle(['ignore'],'display','none');
+		}else{
+		    alert(r.msg);
+		}
+	    }
+	});
+}
+
+function read_record(index){
+    var ar_file='ar_import_csv.php';
+    var request=ar_file+'?tipo=read_record&index='+index; 
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		   Dom.setStyle(['ignore_record_label','unignore'],'display','none');
+		   Dom.setStyle(['ignore'],'display','');
+		}else{
+		    alert(r.msg);
+		}
+	    }
+	});
+}
+
+
+
+function init(){
+get_record_data(0);
+}
+
+YAHOO.util.Event.onDOMReady(init);
+
 
 
 
