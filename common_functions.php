@@ -870,6 +870,7 @@ function customers_awhere($awhere) {
                     'dont_have'=>array(),
                     'have'=>array(),
                     'allow'=>array(),
+                    'dont_allow'=>array(),
                     'categories'=>'',
                    'store_key'=>false
                 );
@@ -1034,6 +1035,29 @@ function customers_awhere($awhere) {
     $allow_where=preg_replace('/^\s*or/','',$allow_where);
     if($allow_where!=''){
     $where.="and ($allow_where)";
+    }
+
+    $dont_allow_where='';
+   foreach($where_data['dont_allow'] as $dont_allow) {
+        switch ($dont_allow) {
+        case 'newsletter':
+            $dont_allow_where.=sprintf(" or `Customer Send Newsletter`='No' ");
+            break;
+        case 'marketing_email':
+            $dont_allow_where.=sprintf(" or `Customer Send Email Marketing`='No'  ");
+            break;
+        case 'marketing_post':
+            $dont_allow_where.=sprintf(" or  `Customer Send Postal Marketing`='No'  ");
+            break;
+       
+        }
+        
+        
+        
+    }
+    $dont_allow_where=preg_replace('/^\s*or/','',$dont_allow_where);
+    if($dont_allow_where!=''){
+    $where.="and ($dont_allow_where)";
     }
 
 

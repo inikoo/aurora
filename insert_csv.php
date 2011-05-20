@@ -42,122 +42,46 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/dropdown.js',
+		'js/insert_csv.js'
         	);
+        	
+        	
+        	
 
-	//total array from the csv
-	require_once 'csvparser.php';
-	$csv = new CSV_PARSER;
-	$csv->load($_SESSION['file_path']);
-	$h = $csv->getHeaders();
-	$raw = $csv->getrawArray();
-	$count_rows = $csv->countRows();
-	
-	
-	print_r($_SESSION['records_ignored_by_user']);
-	$session_array = array_unique($_SESSION['records_ignored_by_user']);
-	$records_ignored_by_user = array();
-	foreach($session_array as $session=>$vv)
-	{
-		if($session != '')
-		{
-			$records_ignored_by_user[] = $vv;
-		}
-	}
-	print_r($records_ignored_by_user);
-	$csv_data_map = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'Ignore';
-	
-	$csv_parsed_data = array();
-	$k = 0;
-	$nArray = array();
-	for($i=0; $i<=$count_rows; $i++)
-	{
-	  $k = 0;
-	  for($j=0; $j<count($csv_data_map); $j++)
-	  {
-		if($csv_data_map[$k] != 'Ignore')
-		{
-			$nArray[$csv_data_map[$k]]=$raw[$i][$j];
-		}
-			$k++;
-			}
-			$csv_parsed_data[]=$nArray;
-		}
-		//print_r($csv_parsed_data);
-		$previous=array();
-                $previous=$csv_parsed_data;
-		foreach($records_ignored_by_user as $key=>$value)
-		{
-			if(array_key_exists($value,$csv_parsed_data))
-			{
-				unset($csv_parsed_data[$value]);
-			}
-		}
-	       $ignore[]=array_diff($previous,$csv_parsed_data);
-		
-		//print_r($csv_parsed_data);
-
-
-// Importing to database //
-/*
-
-if(!isset($_REQUEST['subject'])){
-exit("to do a page where the user can choose the correct options");
-}
-if(!isset($_REQUEST['subject_key'])){
-	if($_REQUEST['subject']!='staff' && $_REQUEST['subject']!='positions' && $_REQUEST['subject']!='areas' && $_REQUEST['subject']!='departments')
-exit("to do a page where the user can choose the correct options");
-}
-$scope=$_REQUEST['subject'];
-$scope_args=$_REQUEST['subject_key'];
-switch($scope){
-	case('customers_store'):
-	$tbl = "Customer Dimension";
-	$fld = "Customer Store Key";
-	$pk = "Customer Key";
-	break;
-
-	case('supplier_products'):
-	$tbl = "Supplier Product Dimension";
-	$fld = "Supplier Key";
-	$pk = "Supplier Product Key";
-	break;
-
-	case('staff'):
-	$tbl="Staff Dimension";
-	$fld = "";
-	$pk = "Staff Key";
-	break;
-
-	case('positions'):
-	$tbl="Company Position Dimension";
-	$fld = "";
-	$pk = "Company Position Key";
-	break;
-
-	case('areas'):
-	$tbl="Company Area Dimension";
-	$fld = "";
-	$pk = "Company Area Key";
-	break;
-
-	case('departments'):
-	$tbl="Company Department Dimension";
-	$fld = "";
-	$pk = "Company Department Key";
-	break;
-
-	default:
-}
-
-
-for($x=1; $x<count($csv_parsed_data); $x++){
-	$data=$csv_parsed_data[$x];
-	insert($data, $tbl, $fld, $scope_args);
-}*/ //Put off this comments to insert data in database //
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 
+  $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
+  $map = $_SESSION['state']['import']['map'];
+   $options = $_SESSION['state']['import']['options'];
+  require_once 'csvparser.php';
+    $csv = new CSV_PARSER;
+    if (isset($_SESSION['state']['import']['file_path'])) {
+        $csv->load($_SESSION['state']['import']['file_path']);
+    }
+    $headers = $csv->getHeaders();
+    $number_of_records = $csv->countRows();
+    
+    $data_to_import=array();
+    
+    $raw = $csv->getrawArray();
+
+    foreach($raw as $record_key=>$record_data){
+        if(array_key_exists($record_key,$records_ignored_by_user))
+            continue;
+        $parsed_record_data=array();    
+        
+        foreach($record_data as $field_key=>$field){
+        $mapped_field_key=$map[$field_key];
+       
+            if($mapped_field_key)
+            $parsed_record_data[$_SESSION['state']['import']['options_db_fields'][$mapped_field_key]]=$field;
+        }
+         $data_to_import[]=$parsed_record_data;
+    }
+
+print_r($data_to_import);
 
 
 exit;

@@ -40,7 +40,7 @@
       
       
     <tr>
-        <td>{t}have{/t}:</td>
+        <td>{t}have{/t}: <span style="cursor:pointer" id="show_dont_have">&#8623;</span></td>
         <td>
    <div id="have_options" default_cat=""   class="options" style="margin:5px 0">
      {foreach from=$have_options item=cat3 key=cat_key name=foo3}
@@ -51,7 +51,7 @@
         
     </tr>
    
-     <tr>
+     <tr style="display:none" id='tr_dont_have'>
         <td>{t}don't have{/t}:</td>
         <td>
          <div id="dont_have_options" default_cat=""   class="options" style="margin:5px 0">
@@ -65,7 +65,7 @@
     
     
      <tr>
-        <td>{t}wish to receive{/t}:</td>
+        <td>{t}wish to receive{/t}: <span style="cursor:pointer" id="show_dont_wish_to_receive">&#8623;</span></td>
         <td>
          <div id="allow_options" default_cat=""   class="options" style="margin:5px 0">
      {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
@@ -73,8 +73,20 @@
      {/foreach}
     </div>    
         </td>
-        
     </tr>
+    
+        <tr style="display:none"  id="tr_dont_wish_to_receive">
+        <td>{t}don't wish to receive{/t}:</td>
+        <td>
+         <div id="dont_allow_options" default_cat=""   class="options" style="margin:5px 0">
+     {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
+     <span  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}display:none{/if}" onclick="checkbox_changed_allow(this)" id="dont_allow_{$cat_key}" parent="dont_allow_"  cat="{$cat_key}" >{$cat3.name}</span>
+     {/foreach}
+    </div>    
+        </td>
+    </tr>
+    
+
      <tr><td>{t}Categories{/t}</td><td><input id="customer_categories" value="" style="width:500px" />
       <div class="general_options" >
                 <span id="customer_category" class="state_details">{t}Other Categories{/t}</span>

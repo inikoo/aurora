@@ -12,7 +12,7 @@
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT|E_NOTICE);
 include_once('common.php');
-//include_once('common_import.php');
+include_once('common_import.php');
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -46,7 +46,7 @@ $js_files=array(
         	);
 
 
-$_SESSION['records_ignored_by_user']=array();
+$_SESSION['state']['import']['records_ignored_by_user']=array();
 
 
 
@@ -58,7 +58,7 @@ if(!isset($_REQUEST['subject_key'])){
 exit("to do a page where the user can choose the correct options");
 }
 $scope=$_REQUEST['subject'];
-
+$scope_key=$_REQUEST['subject_key'];
 
 
 if(isset($_POST['submit']))
@@ -68,7 +68,7 @@ if(isset($_POST['submit']))
 
 	if(($_FILES["fileUpload"]["size"]) >= $filesize)
 	{
-		$_SESSION['error'] = 'Uploading Error : too large file to upload';
+		$_SESSION['state']['import']['error'] = 'Uploading Error : too large file to upload';
 		header("location:import_csv.php?subject=$scope&subject_key=$scope_args");
 		exit();
 	}
@@ -99,10 +99,11 @@ if(isset($_POST['submit']))
                     foreach($headers as $header_key=>$header_value){
                     $map[$header_key]=0;
                     }
-                    
-                    $_SESSION['map']=$map;
-                    
-					$_SESSION['file_path'] = $target_path;
+                    $_SESSION['state']['import']['scope']=$scope;
+                    $_SESSION['state']['import']['scope_key']=$scope_key;
+                    $_SESSION['state']['import']['map']=$map;
+                    list($_SESSION['state']['import']['options_db_fields'],$_SESSION['state']['import']['options_labels'])=get_options($scope);
+					$_SESSION['state']['import']['file_path'] = $target_path;
 					//$r = $csv->connect();
 				}
 	    		}
@@ -114,9 +115,9 @@ if(isset($_POST['submit']))
 	}
 }
 
-if(isset($_SESSION['error'])) 
+if(isset($_SESSION['state']['import']['error'])) 
 { 
-   $smarty->assign('showerror',$_SESSION['error']);
+   $smarty->assign('showerror',$_SESSION['state']['import']['error']);
 }
 
 $index = 0;
@@ -124,8 +125,8 @@ $index = 0;
 $smarty->assign('index',$index);
 $smarty->assign('scope',$scope);
 
-$smarty->assign('subject',$scope);
-$smarty->assign('subject_key',$scope_args);
+//$smarty->assign('subject',$scope);
+//$smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->display('import_csv_verify.tpl');
