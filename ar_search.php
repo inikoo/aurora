@@ -801,9 +801,7 @@ function search_customer($data) {
 
     }
 
-
-    $sql=sprintf('select `Subject Key`,`Contact Name` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  REGEXP "[[:<:]]%s"  limit 100 ',$stores,$q);
-//rint $sql;
+ $sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  like "%s%%"  limit 20',$stores,$q);
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if ($row['Contact Name']==$q) {
@@ -812,6 +810,23 @@ function search_customer($data) {
         } else {
 
             $len_name=$row['Contact Name'];
+            $len_q=strlen($q);
+            $factor=$len_name/$len_q;
+            $candidates[$row['Subject Key']]=100*$factor;
+        }
+    }
+
+
+
+    $sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Surname`  like "%s%%"  limit 20 ',$stores,$q);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if ($row['Contact Surname']==$q) {
+
+            $candidates[$row['Subject Key']]=120;
+        } else {
+
+            $len_name=$row['Contact Surname'];
             $len_q=strlen($q);
             $factor=$len_name/$len_q;
             $candidates[$row['Subject Key']]=100*$factor;
