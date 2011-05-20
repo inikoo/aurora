@@ -145,15 +145,5 @@ var table=sales_tables.table1;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
 }
 
-function change_product_number(){
 
-var nr=this.getAttribute('nr');
-var table=sales_tables.table1;
-    table.get('paginator').setRowsPerPage(nr)
-
-ids=['sales_50','sales_10','sales_20'];
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
-
-}
 
