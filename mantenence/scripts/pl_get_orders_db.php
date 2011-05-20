@@ -1357,7 +1357,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             continue;
         }
         
-           if($customer->data['Customer Store Key']!=$store->id){
+        if($customer->data['Customer Store Key']!=$store->id){
              print "Error !!!! customer from another store\n";
             continue;
         }

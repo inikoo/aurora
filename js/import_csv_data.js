@@ -168,10 +168,19 @@ function read_record(index){
 	});
 }
 
+function option_changed(key,option_key){
+   var ar_file='ar_import_csv.php';
+    var request=ar_file+'?tipo=change_option&key='+key+'&option_key='+option_key; 
+    YAHOO.util.Connect.asyncRequest('POST',request ,{});
+}
 
+function insert_data(){
+window.location.href='insert_csv.php';
+}
 
 function init(){
 get_record_data(0);
+Event.addListener(['insert_data'], "click",insert_data);
 }
 
 YAHOO.util.Event.onDOMReady(init);

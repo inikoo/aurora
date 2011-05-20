@@ -72,6 +72,18 @@ var data_returned=function(){
 	 }	 
     }
     
+
+function show_dont_wish_to_receive(){
+Dom.setStyle('show_dont_wish_to_receive','display','none')
+Dom.setStyle('tr_dont_wish_to_receive','display','')
+}
+
+function show_dont_have(){
+Dom.setStyle('show_dont_have','display','none')
+Dom.setStyle('tr_dont_have','display','')
+}    
+    
+    
 function checkbox_changed_allow(o){
 
 cat=Dom.get(o).getAttribute('cat');
@@ -82,6 +94,7 @@ if(    Dom.hasClass(o,'selected')){
 return;
 }else{
 Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'),'selected');
+Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'),'selected');
 Dom.addClass(o,'selected');
 
 }
@@ -89,19 +102,35 @@ Dom.addClass(o,'selected');
 
 
 }else{
-
 Dom.removeClass('allow_all','selected');
 
-    
+
+
+cat=Dom.get(o).getAttribute('cat');
+this_parent=Dom.get(o).getAttribute('parent');
+if(this_parent=='allow_'){
+    other_parent='dont_allow_';
+}else{
+    other_parent='allow_';
+}    
 if(    Dom.hasClass(o,'selected')){
     Dom.removeClass(o,'selected');
-        
-
 }else{
     Dom.addClass(o,'selected');
-  
-
+    Dom.removeClass(other_parent+cat,'selected');
 }
+
+
+
+
+//if(Dom.hasClass(o,'selected')){
+//    Dom.removeClass(o,'selected');
+//}else{
+//    Dom.addClass(o,'selected');
+//}
+
+
+
 
 }
 
@@ -111,20 +140,19 @@ function checkbox_changed_have(o){
 
 cat=Dom.get(o).getAttribute('cat');
 this_parent=Dom.get(o).getAttribute('parent');
-if(this_parent=='have_')
+if(this_parent=='have_'){
     other_parent='dont_have_';
-else//
+}else{
     other_parent='have_';
-    
+}    
 if(    Dom.hasClass(o,'selected')){
     Dom.removeClass(o,'selected');
-        
-
 }else{
     Dom.addClass(o,'selected');
     Dom.removeClass(other_parent+cat,'selected');
-
 }
+
+
 
 }
  
@@ -844,11 +872,16 @@ allow=Dom.getElementsByClassName('selected', 'span', 'allow_options');
         allow_array[x]=allow[x].getAttribute('cat');
     }
 
-
+dont_allow=Dom.getElementsByClassName('selected', 'span', 'dont_allow_options');
+    dont_allow_array= new Array();
+    for(x in dont_allow){
+        dont_allow_array[x]=dont_allow[x].getAttribute('cat');
+    }
     var data={ 
     dont_have:dont_have_array,
     have:have_array,
     allow:allow_array,
+      dont_allow:dont_allow_array,
 	geo_constraints:Dom.get('geo_constraints').value,
 
 	product_ordered1:Dom.get('product_ordered_or').value,
@@ -907,6 +940,8 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init(){
+
+
   init_search('customers_store');
 var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS1.queryMatchContains = true;
@@ -1004,6 +1039,9 @@ YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
 YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
+
+YAHOO.util.Event.addListener(['show_dont_wish_to_receive'], "click",show_dont_wish_to_receive);
+YAHOO.util.Event.addListener(['show_dont_have'], "click",show_dont_have);
 
 
 //var ids=['general','contact'];
