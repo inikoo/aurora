@@ -1049,7 +1049,6 @@ function customers_awhere($awhere) {
         case 'marketing_post':
             $dont_allow_where.=sprintf(" or  `Customer Send Postal Marketing`='No'  ");
             break;
-       
         }
         
         
