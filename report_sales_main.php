@@ -38,6 +38,7 @@ $js_files=array(
 
               //		'report_sales.js.php',
               'report_sales_main.js.php',
+              'js/calendar_interval.js',
               'reports_calendar.js.php',
               'js/dropdown.js'
 
@@ -58,6 +59,10 @@ if (isset($_REQUEST['tipo'])) {
     $_SESSION['state']['report_sales']['tipo']=$tipo;
 } else
     $tipo=$_SESSION['state']['report_sales']['tipo'];
+    
+  
+ 
+    
 
 $sql=sprintf("select count(*) as num_stores,GROUP_CONCAT(Distinct `Currency Symbol`) as store_currencies from  `Store Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Store Currency Code`) ");
 $res=mysql_query($sql);
@@ -483,7 +488,7 @@ $smarty->assign('from',$from);
 $smarty->assign('to',$to);
 $smarty->assign('currency',$myconf['currency_symbol']);
 
-
+ $smarty->assign('quick_period',$quick_period);
 $smarty->display('report_sales_main.tpl');
 
 

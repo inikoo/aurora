@@ -1,8 +1,71 @@
-<div  class="cal_menu_container" style="xborder:1px solid black" >
-<span id="show_calendar_div" onClick="show_calendar_div()" class="state_details">{t}Other Dates{/t} &darr;</span>
-<span id="hide_calendar_div" onClick="hide_calendar_div()" class="state_details" style="display:none">{t}Close{/t} &uarr;</span>
+<div style="width:620px;float:right">
 
-<div  class="cal_menu" id="calendar_div"  style="display:none";   >
+<div style="text-align:right;font-size:90%">
+ <span id="other"  class="state_details {if  $quick_period=='other'}selected{/if}" style="margin-left:10px">{t}Other{/t}</span>
+ <span id="ytd"  class="state_details {if  $quick_period=='ytd'}selected{/if}" style="margin-left:10px">{t}YTD{/t}</span>
+ <span id="mtd" class="state_details {if  $quick_period=='mtd'}selected{/if}" style="margin-left:10px">{t}MTD{/t}</span>
+ <span id="wtd" class="state_details {if  $quick_period=='wtd'}selected{/if}" style="margin-left:10px">{t}WTD{/t}</span>
+ <span id="today"  class="state_details {if  $quick_period=='today'}selected{/if}" style="margin-left:10px">{t}today{/t}</span>
+ <span id="yesterday" class="state_details {if  $quick_period=='yesterday'}selected{/if}" style="margin-left:10px">{t}yesterday{/t}</span>
+ <span id="last_w"  class="state_details {if  $quick_period=='last_w'}selected{/if}" style="margin-left:10px">{t}last w{/t}</span>
+ <span id="last_m"  class="state_details {if  $quick_period=='last_m'}selected{/if}" style="margin-left:10px">{t}last m{/t}</span>
+ <span id="1w" class="state_details {if  $quick_period=='1w'}selected{/if}" style="margin-left:10px">{t}1w{/t}</span>
+ <span id="10d" class="state_details {if  $quick_period=='10d'}selected{/if}" style="margin-left:10px">{t}10d{/t}</span>
+ <span id="1m" class="state_details {if  $quick_period=='1m'}selected{/if}" style="margin-left:10px">{t}1m{/t}</span>
+ <span id="1q"  class="state_details {if  $quick_period=='1q'}selected{/if}" style="margin-left:10px">{t}1q{/t}</span>
+ <span id="1y" class="state_details {if  $quick_period=='1y'}selected{/if}" style="margin-left:10px">{t}1y{/t}</span>
+ <span id="3y" class="state_details {if  $quick_period=='3y'}selected{/if}" style="margin-left:10px">{t}3y{/t}</span>
+ <span id="all" class="state_details {if  $quick_period=='all'}selected{/if}" style="margin-left:10px">{t}All{/t}</span>
+</div>
+</div>
+
+
+<div id="dialog_calendar_splinter"  class="xcal_menu_container" style="padding:5px 20px" >
+ <div class="bd">
+
+
+<div class="custom_dates" style="width:100%;margin-top:10px;border-top:1px solid#ccc;font-size:90%">
+  
+  <div style="margin-top:10px" id="cal1Container"></div>
+<div style="float:left;padding:10px">
+  <form action="orders.php?" method="GET" style="margin-top:10px">
+
+ <table border=0 >
+ <tr>
+ <td>
+    
+      <span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span>
+      <input id="in" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_little_edian}"/>
+     
+      </td>
+       <td>
+   	  <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  alt="{t}Go{/t}" /> 
+</td>
+ <tr>
+ <td>
+      
+      <input   style="left:0px;margin-top:5px" class="calpop" id="out" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to_little_edian}"/>
+	  
+      
+   
+   </td>
+  <td></td>
+</tr>
+    </table>
+
+ </form>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+
+<div id="calendar_browser" style="padding:10px 20px 20px 15px">
+
+<div  class="xcal_menu" id="calendar_div"  style=""  >
 
       {if $up}<a class="prev" href="{$report_url}?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
 
@@ -10,9 +73,7 @@
       {if $prev}<a class="prev" href="{$report_url}?{$prev.url}" ><img src="art/icons/previous.png" alt="<" title="{$prev.title}"  /></a>{/if}
       {if $next}<a class="next" href="{$report_url}?{$next.url}" ><img src="art/icons/next.png" alt=">" title="{$next.title}"  /></a>{/if}
 
-{if $tipo=='f'}
 
-{/if}
 {if $tipo=='y'}
 <table  class="calendar_year">
 <tr>
@@ -62,54 +123,6 @@
 
 
 {/if}
-<div class="custom_dates" style="width:100%;border:0px solid red;font-size:90%">
-<span id="show_custom_dates" class="state_details">{t}Choose custom dates{/t}</span>
-
- 
-    <form action="orders.php?" method="GET" style="margin-top:10px">
-      <div style="position:relative;left:18px"><span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span>
-      <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_little_edian}"/>
-      <img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
-      <span class="calpop"></span>
-      <br/>
-      <input   style="left:0px;margin-top:5px" class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to_little_edian}"/>
-      <img   style="left:-18px" id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
-	  <br/>
-	  <img style="position:relative;right:16px;cursor:pointer;height:15px;margin-top:5px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  alt="{t}Go{/t}" /> 
-      </div>
-    </form>
-    <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
-    <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-    
-
-
-
-
-
-
-
 
 </div>
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div style="text-align:right;width:700px;margin-right:20px">
-
-<span id="quick_all" class="state_details" style="margin-left:12px" >{t}All{/t}</span>
-<span id="quick_this_year" class="state_details" style="margin-left:12px">{t}This Year{/t}</span>
-<span id="quick_this_month" class="state_details" style="margin-left:12px">{t}This Month{/t}</span>
-<span id="quick_this_week" class="state_details" style="margin-left:12px">{t}This Week{/t}</span>
-<span id="quick_yesterday" class="state_details" style="margin-left:12px">{t}Yesterday{/t}</span>
-<span id="quick_today" class="state_details"style="margin-left:12px" >{t}Today{/t}</span>
-
 </div>
