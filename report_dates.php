@@ -1,41 +1,138 @@
 <?php
 
+$quick_period='other';
 
-if ($tipo=='quick_this_month') {
+if ($tipo=='quick_this_month' ) {
     $tipo='m';
+  
     $_SESSION['state'][$report_name]['y']=date('Y');
     $_SESSION['state'][$report_name]['m']=date('m');
 }
-elseif($tipo=='quick_this_year') {
+if ($tipo=='1w' ) {
+    $tipo='f';
+    $quick_period='1w';
+    $_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -1 week"));;
+    $_REQUEST['to']=date("Y-m-d");
+}
+if ($tipo=='10d' ) {
+    $tipo='f';
+    $quick_period='10d';
+    $_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -10 day"));;
+    $_REQUEST['to']=date("Y-m-d");
+}
+if ($tipo=='1m' ) {
+    $tipo='f';
+    $quick_period='1m';
+    $_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -1 month"));;
+    $_REQUEST['to']=date("Y-m-d");
+}
+if ($tipo=='1q' ) {
+    $tipo='f';
+    $quick_period='1q';
+    $_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -3 month"));;
+    $_REQUEST['to']=date("Y-m-d");
+}
+if ($tipo=='1y' ) {
+    $tipo='f';
+    $quick_period='1y';
+    $_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -1 year"));;
+    $_REQUEST['to']=date("Y-m-d");
+}
+if ($tipo=='3y' ) {
+    $tipo='f';
+    $quick_period='3y';
+    $_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -3 year"));;
+    $_REQUEST['to']=date("Y-m-d");
+}
+elseif($tipo=='quick_this_year' ) {
     $tipo='y';
+    
     $_SESSION['state'][$report_name]['y']=date('Y');
 }
-elseif($tipo=='quick_this_week') {
+elseif($tipo=='quick_this_week' ) {
     $tipo='w';
+  
     $_SESSION['state'][$report_name]['y']=date('Y');
     $_SESSION['state'][$report_name]['w']=date('W');
 }
-elseif($tipo=='quick_yesterday') {
+elseif($tipo=='quick_yesterday' or  $tipo=='yesterday') {
     $tipo='d';
+      $quick_period='yesterday';
     $_SESSION['state'][$report_name]['y']=date('Y',strtotime('yesterday'));
     $_SESSION['state'][$report_name]['m']=date('m',strtotime('yesterday'));
     $_SESSION['state'][$report_name]['d']=date('d',strtotime('yesterday'));
 
 
 }
-elseif($tipo=='quick_today') {
+elseif($tipo=='quick_today'  or  $tipo=='today') {
     $tipo='d';
+    $quick_period='today';
     $_SESSION['state'][$report_name]['y']=date('Y');
     $_SESSION['state'][$report_name]['m']=date('m');
     $_SESSION['state'][$report_name]['d']=date('d');
 
+}elseif($tipo=='ytd') {
+    $tipo='f';
+    $quick_period='ytd';
+    $_REQUEST['from']=date("Y-01-01");
+    $_REQUEST['to']=date("Y-m-d");
+}elseif($tipo=='mtd') {
+    $tipo='f';
+      $quick_period='mtd';
+    $_REQUEST['from']=date("Y-m-01");
+    $_REQUEST['to']=date("Y-m-d");
+
+}elseif($tipo=='wtd') {
+    $tipo='f';
+      $quick_period='wtd';
+      
+      $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                
+                    $_REQUEST['from']=$row['First Day'];
+
+            }
+      
+
+    $_REQUEST['to']=date("Y-m-d");
+
+}elseif($tipo=='last_w') {
+    $tipo='f';
+      $quick_period='last_w';
+        $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $_REQUEST['from']=date('Y-m-d',strtotime($row['First Day'].' -1 week'));
+    $_REQUEST['to']=date("Y-m-d");
+    
+    }
+    
+}elseif($tipo=='last_m') {
+    $tipo='m';
+      $quick_period='last_m';
+      
+    $_REQUEST['y']=date('Y',mktime(0,0,0,date('m')-1,1,date('Y')));
+    $_REQUEST['m']=date('m',mktime(0,0,0,date('m')-1,1,date('Y')));
+     $_SESSION['state'][$report_name]['y']=$_REQUEST['y'];
+    $_SESSION['state'][$report_name]['m']=$_REQUEST['m'];
+ 
+    
 }
+
+  $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+                $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+            } 
 
 
 
 if ($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all') {
     $tipo='f';
-
+$quick_period='all';
     $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
     // print $sql;
 
@@ -51,11 +148,14 @@ if ($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all') {
 }
 elseif($tipo=='f') {
 
-    $from=$_REQUEST['from'];
-    $to=$_REQUEST['to'];
+    $from=(isset($_REQUEST['from'])?$_REQUEST['from']:$_SESSION['state'][$report_name]['from']);
+    $to=(isset($_REQUEST['to'])?$_REQUEST['to']:$_SESSION['state'][$report_name]['to']);
     $title=$root_title.sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
     $period='';
     $link=$link="&tipo=f&from=".$from."&to=".$to;
+    $_SESSION['state'][$report_name]['from']=$from;
+    $_SESSION['state'][$report_name]['to']=$to;
+    
 }
 elseif($tipo=='w') {
 

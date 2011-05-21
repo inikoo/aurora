@@ -778,7 +778,7 @@ function stacked_store_sales($data) {
 
                 );
 
-//print $sql;
+print $sql;
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {

@@ -6,12 +6,10 @@
 {include file='calendar_splinter.tpl'}
 
 
-<div class="branch"> 
-  <span><a  href="reports.php">{t}Reports{/t}</a> &rarr; <a  href="reports_section.php?category=Sales%20Reports">{t}Sales Reports{/t}</a>
-</div>
 
 
-<h1 style="clear:left">{$title}</h1>
+
+<h1 style="clear:left">{$title} <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.gif"/></h1> 
 
 <table class="report_sales1" id="report_sales_invoices" style="width:900px;{if $view!='invoices'}display:none{/if}">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
