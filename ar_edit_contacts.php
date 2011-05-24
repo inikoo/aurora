@@ -18,10 +18,20 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('set_contact_address_as_billing'):
+  $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                          
+                         ));
+    set_contact_address_as_billing($data);
+
+
+break;
 case('customer_merge'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
-                           'merge_key'=>array('type'=>'key')
+                             'merge_key'=>array('type'=>'key')
 
                          ));
     customer_merge($data);
@@ -29,7 +39,7 @@ case('customer_merge'):
 case('delete_customer'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
-                           
+
 
                          ));
     delete_customer($data);
@@ -38,7 +48,7 @@ case('delete_customer'):
 case('delete_customer_list'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
-                           
+
 
                          ));
     delete_customer_list($data);
@@ -95,7 +105,7 @@ case('clone_customer'):
 
     $data=prepare_values($_REQUEST,array(
                              'scope'=>array('type'=>'json array'),
-                              'customer_key'=>array('type'=>'key')
+                             'customer_key'=>array('type'=>'key')
 
                          ));
     clone_customer($data);
@@ -130,6 +140,8 @@ case('new_address'):
     break;
 case('new_Delivery_address'):
 case('new_delivery_address'):
+case('new_Billing_address'):
+
     new_address();
     break;
 
@@ -749,7 +761,7 @@ function edit_mobile($data) {
 
 
 function edit_address_main_telephone($number,$address_key) {
-// Dont use it to change customer/supplier main telephone
+
     global $editor;
 
     $address=new Address($address_key);
@@ -761,7 +773,6 @@ function edit_address_main_telephone($number,$address_key) {
     $telecom_key=$address->get_principal_telecom_key('Telephone');
 
     if ($telecom_key and $number=='') {
-
         $telephone=new Telecom($telecom_key);
         $telephone->delete();
         return 1;
@@ -771,34 +782,36 @@ function edit_address_main_telephone($number,$address_key) {
     $telephone_data['editor']=$editor;
     $telephone_data['Telecom Raw Number']=$number;
     $telephone_data['Telecom Type']='Telephone';
-
-
-
-
     $proposed_telephone=new Telecom("find complete country code ".$address->data['Address Country Code'],$telephone_data);
     if ($proposed_telephone->found) {
         $response=array('state'=>400,'msg'=>'Telephone found in another address');
         echo json_encode($response);
         exit;
     }
-
-
     if (!$telecom_key) {
-
         $telephone=new Telecom("find complete create country code ".$address->data['Address Country Code'],$telephone_data);
         $address->associate_telecom($telephone->id,'Telephone');
         return 1;
-
     } else {
-
         $address->update_telecom($telecom_key,$number);
         return $address->updated;
     }
-
-
-
 }
 
+function edit_address_main_contact($contact,$address_key) {
+
+    global $editor;
+
+    $address=new Address($address_key);
+    if (!$address->id) {
+        $response=array('state'=>400,'msg'=>"Address not found $address_key");
+        echo json_encode($response);
+        exit;
+    }
+    $address->editor=$editor;
+    $address->update_field_switcher('Address Contact',$contact);
+        return $address->updated;
+}
 
 function edit_telecom($data) {
     global $editor;
@@ -939,6 +952,10 @@ function edit_telecom($data) {
 function new_address() {
     global $editor;
     $warning='';
+    
+    
+    
+    
     if ( !isset($_REQUEST['value']) ) {
         $response=array('state'=>400,'msg'=>'Error no value');
         echo json_encode($response);
@@ -1002,9 +1019,12 @@ function new_address() {
                     'building'=>'Address Building',
                     'type'=>'Address Type',
                     'function'=>'Address Function',
-                    'description'=>'Address Description'
-
+                    'description'=>'Address Description',
+                    'contact'=>'Address Contact'
                 );
+
+
+
 
 
     $data=array('editor'=>$editor);
@@ -1078,7 +1098,15 @@ function new_address() {
     }
 
     if ($subject=='Customer') {
+      
+        if(preg_match('/billing/i',$_REQUEST['tipo'])){
+         
+        $subject_object->associate_billing_address($address->id);
+        $subject_object->update_principal_billing_address($address->id);
+        }else{
         $subject_object->associate_delivery_address($address->id);
+        }
+        
     } else
         $subject_object->associate_address($address->id);
 
@@ -1092,12 +1120,9 @@ function new_address() {
         }
 
         if ($raw_data['use_tel'] and $raw_data['telephone']!='') {
-
             edit_address_main_telephone($raw_data['telephone'],$address->id);
-
         }
-
-
+      
 
         $updated_address_data=array(
                                   'country'=>$address->data['Address Country Name'],
@@ -1116,8 +1141,9 @@ function new_address() {
                                   'function'=>$address_bridge_data['Address Function'],
                                   'description'=>$address->data['Address Description'],
                                   'telephone'=>$address->get_formated_principal_telephone(),
-                                  'key'=>$address->id  
-                                  
+                                  'contact'=>$address->data['Address Contact'],
+                                  'key'=>$address->id
+
                               );
 
 
@@ -1307,6 +1333,30 @@ function edit_address_type() {
     echo json_encode($response);
 }
 
+
+
+function set_contact_address_as_billing(){
+
+  global $editor;
+  
+$customer=new Customer($_REQUEST['customer_key']);
+   $customer->editor=$editor;
+   
+   $current_billing_address=$customer->get_principal_billing_address_key();
+   
+   $customer->update_principal_billing_address($customer->get_principal_contact_address_key());
+    if($current_billing_address!=$customer->get_principal_contact_address_key())
+    $customer->disassociate_billing_address($current_billing_address);
+    $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
+
+   $response=array('state'=>200,'action'=>'updated','xhtml_billing_address'=>$billing_address);
+
+    echo json_encode($response);
+    return;
+
+
+  
+}
 
 
 function edit_billing_address($raw_data) {
@@ -1506,6 +1556,7 @@ function edit_address($data) {
                     'street'=>'Street Data',
                     'internal'=>'Address Internal',
                     'building'=>'Address Building',
+                    'contact'=>'Address Contact'
                 );
 
 
@@ -1529,22 +1580,22 @@ function edit_address($data) {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
                 if ($address->id==$proposed_address->id) {
-                  //  print_r($update_data);
-                  $address->update($update_data,'cascade');
-                 if($address->updated){
-                            $response=address_response($address,$subject,$subject_object,$warning);
-    echo json_encode($response);
-                 }else{
-                  $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
-                    echo json_encode($response);
-                 }
-                    
-                   
+                    //  print_r($update_data);
+                    $address->update($update_data,'cascade');
+                    if ($address->updated) {
+                        $response=address_response($address->id,$subject,$subject_object,$warning);
+                        echo json_encode($response);
+                    } else {
+                        $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','xxx'=>'xx');
+                        echo json_encode($response);
+                    }
+
+
                     exit;
                 } else {
                     $subject_object->update_principal_address($proposed_address->id);
 
-                    $response=address_response($proposed_address,$subject,$subject_object);
+                    $response=address_response($proposed_address->id,$subject,$subject_object);
                     $response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
                     echo json_encode($response);
                     return;
@@ -1557,10 +1608,12 @@ function edit_address($data) {
 
                 //print_r($data['value']);
 
-                if ($data['value']['use_tel']) {
+                if ($data['value']['use_tel'] or $data['value']['use_contact']) {
 
                     edit_address_main_telephone($data['value']['telephone'],$proposed_address->id);
-                    $response=address_response($proposed_address,$subject,$subject_object);
+                    edit_address_main_contact($data['value']['contact'],$proposed_address->id);
+                    
+                    $response=address_response($proposed_address->id,$subject,$subject_object);
 
 
 
@@ -1679,7 +1732,7 @@ function edit_address($data) {
     if ($updated) {
 
 
-        $response=address_response($address,$subject,$subject_object,$warning);
+        $response=address_response($address->id,$subject,$subject_object,$warning);
 
 
     } else {
@@ -1695,7 +1748,10 @@ function edit_address($data) {
 
 }
 
-function address_response($address,$subject,$subject_object,$warning='') {
+function address_response($address_key,$subject,$subject_object,$warning='') {
+
+$address=new Address($address_key);
+
     $updated_address_data=array(
                               'country'=>$address->data['Address Country Name'],
                               'country_code'=>$address->data['Address Country Code'],
@@ -1710,8 +1766,8 @@ function address_response($address,$subject,$subject_object,$warning='') {
                               'building'=>  $address->data['Address Building'],
                               'internal'=> $address->data['Address Internal'],
                               'description'=>$address->data['Address Description'],
-                              'telephone'=>$address->get_formated_principal_telephone()
-
+                              'telephone'=>$address->get_formated_principal_telephone(),
+                              'contact'=>$address->data['Address Contact']  
                           );
     $is_main='No';
     $is_main_delivery='No';
@@ -1991,9 +2047,9 @@ function delete_address() {
 
     $billing_address='';
     if ($subject=='Customer' ) {
-    
-    
-        
+
+
+
         $address_main_delivery=$subject_object->delivery_address_xhtml();
 
         if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
@@ -2184,9 +2240,9 @@ function convert_customer_to_company($data) {
 }
 
 
-function clone_customer($data){
+function clone_customer($data) {
 
-  global $editor,$user;
+    global $editor,$user;
 
     if (!in_array($data['scope']['store_key'],$user->stores)) {
         $response= array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
@@ -2195,46 +2251,46 @@ function clone_customer($data){
 
     }
 
-$customer=new Customer($data['customer_key']);
+    $customer=new Customer($data['customer_key']);
 
-if(!$customer->id){
- $response= array('state'=>400,'action'=>'error','msg'=>'customer not found');
+    if (!$customer->id) {
+        $response= array('state'=>400,'action'=>'error','msg'=>'customer not found');
         echo json_encode($response);
         return;
-}
+    }
 
-if($customer->data['Customer Store Key']==$data['scope']['store_key']){
+    if ($customer->data['Customer Store Key']==$data['scope']['store_key']) {
 
- $response= array('state'=>400,'action'=>'error','msg'=>'customer in same store');
+        $response= array('state'=>400,'action'=>'error','msg'=>'customer in same store');
         echo json_encode($response);
         return;
-}
+    }
 
-$customer_data=array(
-'Customer Type'=>$customer->data['Customer Type'],
-'Customer Company Key'=>$customer->data['Customer Company Key'],
-'Customer Main Contact Key'=>$customer->data['Customer Main Contact Key'],
-'Customer Store Key'=>$data['scope']['store_key']
-);
- $customer=new Customer();
+    $customer_data=array(
+                       'Customer Type'=>$customer->data['Customer Type'],
+                       'Customer Company Key'=>$customer->data['Customer Company Key'],
+                       'Customer Main Contact Key'=>$customer->data['Customer Main Contact Key'],
+                       'Customer Store Key'=>$data['scope']['store_key']
+                   );
+    $customer=new Customer();
     $customer->editor=$editor;
     $customer->create($customer_data);
 
 
 
-  if ($customer->new) {
+    if ($customer->new) {
         $store=new Store($customer->data['Customer Store Key']);
-       
+
 
         $customer->update_orders();
-     
+
         $customer->update_activity();
- $store->update_customers_data();
+        $store->update_customers_data();
 
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
 
 
-       
+
 
 
     } else {
@@ -2398,12 +2454,12 @@ function new_customer($data) {
     // $customer=new Customer('find create',$data['values']);
     if ($customer->new) {
         $store=new Store($customer->data['Customer Store Key']);
-       
+
 
         $customer->update_orders();
-     
+
         $customer->update_activity();
- $store->update_customers_data();
+        $store->update_customers_data();
 
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
 
@@ -2903,7 +2959,7 @@ function list_customers() {
     $order='`Customer Type by Activity`';
 
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-      
+
     $adata=array();
 
 
@@ -3350,13 +3406,13 @@ function edit_company_area($data) {
 
 
 function delete_customer($data) {
-global $editor,$myconf;
+    global $editor,$myconf;
 
     $customer=new Customer($data['customer_key']);
-   $customer->editor=$editor;
-  // print_r($customer->editor);
-  // exit;
-   if ($customer->id) {
+    $customer->editor=$editor;
+    // print_r($customer->editor);
+    // exit;
+    if ($customer->id) {
         $customer->delete('',$myconf['customer_id_prefix']);
         if ($customer->deleted) {
             $response=array('state'=>200,'action'=>'deleted','msg'=>$customer->msg);
@@ -3432,19 +3488,19 @@ function new_delivery_address() {
 
 
     $translator=array(
-                    'country_code'=>'Address Country Code'
-                                   ,'country_d1'=>'Address Country First Division'
-                                                 ,'country_d2'=>'Address Country Second Division'
-                                                               ,'town'=>'Address Town'
-                                                                       ,'town_d1'=>'Address Town First Division'
-                                                                                  ,'town_d2'=>'Address Town Second Division'
-                                                                                             ,'postal_code'=>'Address Postal Code'
-                                                                                                            ,'street'=>'Street Data'
-                                                                                                                      ,'internal'=>'Address Internal'
-                                                                                                                                  ,'building'=>'Address Building'
-                                                                                                                                              ,'type'=>'Address Type'
-                                                                                                                                                      ,'function'=>'Address Function'
-                                                                                                                                                                  ,'description'=>'Address Description'
+                    'country_code'=>'Address Country Code',
+                    'country_d1'=>'Address Country First Division',
+                    'country_d2'=>'Address Country Second Division',
+                    'town'=>'Address Town',
+                    'town_d1'=>'Address Town First Division',
+                    'town_d2'=>'Address Town Second Division',
+                    'postal_code'=>'Address Postal Code',
+                    'street'=>'Street Data',
+                    'internal'=>'Address Internal',
+                    'building'=>'Address Building',
+                    'type'=>'Address Type',
+                    'function'=>'Address Function',
+                    'description'=>'Address Description'
 
                 );
 
@@ -3468,30 +3524,30 @@ function new_delivery_address() {
 
 
         $updated_address_data=array(
-                                  'country'=>$ship_to->data['Ship To Country Name']
-                                            ,'country_code'=>$ship_to->data['Ship To Country Code']
-                                                            ,'country_d1'=> $ship_to->data['Ship To Line 4']
-                                                                          ,'country_d2'=> ''
-                                                                                        ,'town'=> $ship_to->data['Ship To Town']
-                                                                                                ,'postal_code'=> $ship_to->data['Ship To Postal Code']
-                                                                                                               ,'town_d1'=> ''
-                                                                                                                          ,'town_d2'=> ''
-                                                                                                                                     ,'fuzzy'=> ''
-                                                                                                                                              ,'street'=> $ship_to->data['Ship To Line 1']
-                                                                                                                                                        ,'building'=>  $ship_to->data['Ship To Line 2']
-                                                                                                                                                                    ,'internal'=> $ship_to->data['Ship To Line 3']
-                                                                                                                                                                                ,'type'=>''
-                                                                                                                                                                                        ,'function'=>''
-                                                                                                                                                                                                    ,'description'=>''
+                                  'country'=>$ship_to->data['Ship To Country Name'],
+                                  'country_code'=>$ship_to->data['Ship To Country Code'],
+                                  'country_d1'=> $ship_to->data['Ship To Line 4'],
+                                  'country_d2'=> '',
+                                  'town'=> $ship_to->data['Ship To Town'],
+                                  'postal_code'=> $ship_to->data['Ship To Postal Code'],
+                                  'town_d1'=> '',
+                                  'town_d2'=> '',
+                                  'fuzzy'=> '',
+                                  'street'=> $ship_to->data['Ship To Line 1'],
+                                  'building'=>  $ship_to->data['Ship To Line 2'],
+                                  'internal'=> $ship_to->data['Ship To Line 3'],
+                                  'type'=>'',
+                                  'function'=>'',
+                                  'description'=>''
                               );
 
         $response=array(
-                      'state'=>200
-                              ,'action'=>'created'
-                                        ,'msg'=>$customer->msg_updated
-                                               ,'updated_data'=>$updated_address_data
-                                                               ,'xhtml_address'=>$ship_to->display('xhtml')
-                                                                                ,'address_key'=>$ship_to->id
+                      'state'=>200,
+                      'action'=>'created',
+                      'msg'=>$customer->msg_updated,
+                      'updated_data'=>$updated_address_data,
+                      'xhtml_address'=>$ship_to->display('xhtml'),
+                      'address_key'=>$ship_to->id
                   );
         echo json_encode($response);
         return;
@@ -3569,73 +3625,73 @@ function edit_company_department() {
     echo json_encode($response);
 
 }
-function delete_customer_list($data){
-global $user;
-$sql=sprintf("select `Customer List Store Key`,`Customer List Key` from `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+function delete_customer_list($data) {
+    global $user;
+    $sql=sprintf("select `Customer List Store Key`,`Customer List Key` from `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
 
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
 
-if(in_array($row['Customer List Store Key'],$user->stores)){
-$sql=sprintf("delete from  `Customer List Customer Bridge` where `Customer List Key`=%d",$data['key']);
-mysql_query($sql);
-$sql=sprintf("delete from  `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
-mysql_query($sql);
-$response=array('state'=>200,'action'=>'deleted');
+        if (in_array($row['Customer List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `Customer List Customer Bridge` where `Customer List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from  `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $response=array('state'=>200,'action'=>'deleted');
+            echo json_encode($response);
+            return;
+
+
+
+        } else {
+            $response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+            echo json_encode($response);
+            return;
+        }
+
+
+
+    } else {
+        $response=array('state'=>400,'msg'=>'Error no customer list');
         echo json_encode($response);
         return;
 
+    }
 
 
-}else{
- $response=array('state'=>400,'msg'=>_('Forbidden Operation'));
-        echo json_encode($response);
-        return;
+
 }
 
+function customer_merge($data) {
+    global $user,$editor,$myconf;
+    $customer=new Customer($data['customer_key']);
+    $customer->editor=$editor;
+    $customer_to_be_deleted=new Customer($data['merge_key']);
+    $customer_to_be_deleted->editor=$editor;
+    if (!$customer->id or !$customer_to_be_deleted->id) {
+        $response=array('state'=>400,'msg'=>'Customer(s) not found');
+        echo json_encode($response);
+        return;
+    }
 
+    if (!in_array($customer->data['Customer Store Key'],$user->stores) or !in_array($customer_to_be_deleted->data['Customer Store Key'],$user->stores)) {
+        $response=array('state'=>400,'msg'=>_('Forbidden operation'));
+        echo json_encode($response);
+        return;
+    }
 
-}else{
-  $response=array('state'=>400,'msg'=>'Error no customer list');
+    $customer->merge($customer_to_be_deleted->id,$myconf['customer_id_prefix']);
+
+    if ($customer->merged) {
+        $response=array('state'=>200,'action'=>'merged');
+        echo json_encode($response);
+        return;
+    } else {
+        $response=array('state'=>400,'msg'=>$customer->msg);
         echo json_encode($response);
         return;
 
-}
-
-
-
-}
-
-function customer_merge($data){
-global $user,$editor,$myconf;
-$customer=new Customer($data['customer_key']);
-$customer->editor=$editor;
-$customer_to_be_deleted=new Customer($data['merge_key']);
-$customer_to_be_deleted->editor=$editor;
-if(!$customer->id or !$customer_to_be_deleted->id){
-$response=array('state'=>400,'msg'=>'Customer(s) not found');
-        echo json_encode($response);
-        return;
-}
-
-if(!in_array($customer->data['Customer Store Key'],$user->stores) or !in_array($customer_to_be_deleted->data['Customer Store Key'],$user->stores)){
-$response=array('state'=>400,'msg'=>_('Forbidden operation'));
-        echo json_encode($response);
-        return;
-}
-
-$customer->merge($customer_to_be_deleted->id,$myconf['customer_id_prefix']);
-
-if($customer->merged){
-$response=array('state'=>200,'action'=>'merged');
-        echo json_encode($response);
-        return;
-}else{
-$response=array('state'=>400,'msg'=>$customer->msg);
-        echo json_encode($response);
-        return;
-
-}
+    }
 
 
 
