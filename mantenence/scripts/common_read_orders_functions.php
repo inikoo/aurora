@@ -1718,7 +1718,7 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true) {
     if ($header_data['date_order']=='1899-12-30')
         $header_data['date_order']='';
 
-
+  
 
 
     $datetime_updated=date("Y-m-d H:i:s",$filedate);
