@@ -29,7 +29,8 @@ $data=array(
 	    'payment_method'=>'',
 	    'courier'=>'',
 	    'special_instructions'=>'',
-	    'gold_reward'=>'Standard Order'
+	    'gold_reward'=>'Standard Order',
+	    'offer'=>''
 	    );
 
 //print_r($_REQUEST);
@@ -134,7 +135,7 @@ $export_data=array(
 		   ,"f"
 		   ,"g"
 		   ,"Wholesaler website"
-		   ,"h"
+		   ,$data['offer']
 		   ,"i"
 		   ,"j"
 		   ,"k"
