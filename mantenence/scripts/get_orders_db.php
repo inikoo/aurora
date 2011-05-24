@@ -1354,6 +1354,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 //-----------------
          $customer_done=false;
             $customer_posible_key=0;
+            $customer=false;
+            
             if ($customer_key_from_order_data) {
                     print "use prev ";
                 $customer_posible_key=$customer_key_from_order_data;
