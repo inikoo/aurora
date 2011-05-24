@@ -101,7 +101,8 @@ function make_order(){
 	'courier':Dom.get('make_order_courier').value,
 	'special_instructions':Dom.get('make_order_special_instructions').value,
 	'payment_method':Dom.get('make_order_payment_method').value,
-	'gold_reward':Dom.get('gold_reward').value
+	'gold_reward':Dom.get('gold_reward').value,
+	'offer':Dom.get('offer').value,
     };
     //alert('customer_csv.php?id='+customer_id+'&data='+encodeURIComponent(YAHOO.lang.JSON.stringify(data)))
 

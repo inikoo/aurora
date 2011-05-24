@@ -554,6 +554,19 @@
 
 	</select>
     </td></tr>
+    
+    
+     <tr  style="{if $hq_country=='ES'}display:none{/if}"  ><td colspan=2>{t}Special Offer{/t}:</td></tr><tr><td colspan=2>
+	<select id="offer">
+	<option value="none">None</option>
+	  <option value="gift focus">Gift Focus</option>
+	  <option value="garden" >Garden</option>
+	</select>
+    </td></tr>
+
+    
+    
+    
 <tr><td colspan=2>Gold Reward:</td></tr><tr><td colspan=2>
 	<select id="gold_reward">
 	  
