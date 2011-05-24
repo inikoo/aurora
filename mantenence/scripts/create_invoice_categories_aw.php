@@ -52,6 +52,8 @@ $cat=new Category('find create',$data);
 $data=array('Category Store Key'=>7,'Category Name'=>'PO','Category Subject'=>'Invoice','Category Function'=>'if(true)');
 $cat=new Category('find create',$data);
 
+$data=array('Category Store Key'=>8,'Category Name'=>'IT','Category Subject'=>'Invoice','Category Function'=>'if(true)');
+$cat=new Category('find create',$data);
 
 //$data=array('Category Store Key'=>1,'Category Name'=>'Staff','Category Subject'=>'Invoice','Category Function'=>'');
 //$cat=new Category('find create',$data);
