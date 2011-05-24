@@ -66,7 +66,7 @@ header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"out.txt\"");
 
 
-$address=new Address($customer->data['Customer Main Address Key']);
+$address=new Address($customer->data['Customer Billing Address Key']);
 $address_lines=$address->display('3lines');
 
 $tel=($customer->data['Customer Main XHTML Telephone']==''?$customer->data['Customer Main XHTML Mobile']:$customer->data['Customer Main XHTML Telephone']);
@@ -85,11 +85,32 @@ $alias=$match[0];
 else
 $alias=$user->get("User Alias");
 
+if($customer->data['Customer Type']=='Company'){
+if($customer->get('Customer Fiscal Name')!=$customer->data['Customer Name']){
+$contact_name1=$customer->get('Customer Fiscal Name');
+$contact_name2=$customer->data['Customer Main Contact Name'].' ('.$customer->data['Customer Name'].')' ;
+
+}else{
+$contact_name1=$customer->data['Customer Name'];
+$contact_name2=$customer->data['Customer Main Contact Name'];
+}
+}else{
+$contact_name1=$customer->data['Customer Name'];
+$contact_name2='';
+}
+
+$delivery_address_contact_line1=$contact_name1;
+$delivery_address_contact_line2=$contact_name2;
+if($delivery_address->data['Address Contact']!=''){
+
+}
+
+
 $export_data=array(
 		   "Public"
 		   ,""
-		   ,$customer->data['Customer Name']
-		   ,$customer->data['Customer Main Contact Name']
+		   ,$contact_name1
+		   ,$contact_name2
 		   ,$address_lines[1]
 		   ,$address_lines[3]
 		   ,$address_lines[2]
@@ -148,9 +169,10 @@ $export_data=array(
 		   
 		   
 		   
-		   ,""
+		   ,$delivery_address_contact_line1
 		   
-		   ,"","","","","","","","","","","","","inikoo","inikoo","c","d","e"
+		   ,$delivery_address_contact_line2
+		   ,"","","","","","","","","","","","inikoo","inikoo","c","d","e"
 		   ,$number_orders+1
 		   ,"","","","","","","","","","","","",""
 		   ,$data['courier']
