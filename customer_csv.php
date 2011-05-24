@@ -102,7 +102,8 @@ $contact_name2='';
 $delivery_address_contact_line1=$contact_name1;
 $delivery_address_contact_line2=$contact_name2;
 if($delivery_address->data['Address Contact']!=''){
-
+$delivery_address_contact_line1=$delivery_address->data['Address Contact'];
+$delivery_address_contact_line2='';
 }
 
 
