@@ -3094,10 +3094,12 @@ class Customer extends DB_Table {
         return $address_keys;
 
     }
-    function get_address_objects() {
+ 
+    
+     function get_delivery_address_objects() {
 
 
-        $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
         $address_keys=array();
         $result=mysql_query($sql);
 
@@ -3108,6 +3110,9 @@ class Customer extends DB_Table {
         return $address_keys;
 
     }
+    
+    
+    
 
     function get_main_address_key() {
         return $this->data['Customer Main Address Key'];
@@ -3591,6 +3596,49 @@ class Customer extends DB_Table {
 
 
     }
+    
+    
+      function disassociate_billing_address($address_key) {
+        if (!$address_key) {
+            return;
+
+        }
+        $current_billing_address=$this->get_principal_billing_address_key();
+        
+        $sql=sprintf("delete * from `Address Bridge` CB where  `Address Function`='Billing' and  `Subject Type`='Customer' and `Subject Key`=%d  and `Address Key` ",$address_key);
+        mysql_query($sql);
+        
+        
+        
+         if($current_billing_address==$address_key){
+        
+        $address_keys=$this->get_billing_address_keys();
+        
+        
+        
+        
+        
+        if(count($address_keys)==0){
+        $this->update_principal_billing_address($this->get_principal_contact_address_key());
+        }else{
+        $new_billing_address=array_pop($address_keys);
+        $this->update_principal_billing_address($new_billing_address);
+
+        }
+        
+        }
+        
+         $address=new Address($address_key);
+            if ($address->id and !$address->has_parents()) {
+                $address->delete();
+            }
+     
+
+    }
+    
+    
+    
+    
     function create_contact_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Contact',%d,%d)  ",
                      $this->id,
@@ -3628,7 +3676,7 @@ class Customer extends DB_Table {
 
                     );
         mysql_query($sql);
-        //print $sql;
+       
         if (
             !$this->get_principal_billing_address_key()
             or ! $this->data['Customer Billing Address Key']
@@ -3755,9 +3803,6 @@ class Customer extends DB_Table {
         if ($main_address_key!=$address_key or
                 ( $this->data['Customer Billing Address Link']=='Contact'  and $address_key!=$this->data['Customer Main Address Key'] )
                 or ( $this->data['Customer Billing Address Link']=='None'  and $address_key==$this->data['Customer Main Address Key'] )
-
-
-
            ) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
@@ -3790,6 +3835,16 @@ class Customer extends DB_Table {
             $address->update_parents(false,($this->new?false:true));
 
             $this->get_data('id',$this->id);
+            
+           //  $history_data=array(
+             //                 'History Abstract'=>_('Billing address Changed'),
+               //               'History Details'=>'<div class="history_address" style="border:1px solid grey;padding:5px;width:250px">'.$this->display('xhtml')."</div> "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
+
+                 //             'Action'=>'created'
+                   //       );
+            //$this->add_customer_history($history_data);
+            
+            
             $this->updated=true;
             $this->new_value=$address->id;
         }
@@ -3982,18 +4037,7 @@ class Customer extends DB_Table {
         return false;
     }
 
-    function get_delivery_address_objects() {
-
-        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
-        $address_objects=array();
-        $result=mysql_query($sql);
-
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            $address_objects[$row['Address Key']]= new Address($row['Address Key']);
-        }
-        return $address_objects;
-    }
+  
 
 
 
@@ -4541,7 +4585,9 @@ class Customer extends DB_Table {
         $company_keys=array();
 
         $contact_keys=$this->get_contact_keys();
+ $company_keys=$this->get_company_keys();
 
+      
 
         $sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d",$this->id);
         mysql_query($sql);
@@ -4613,9 +4659,9 @@ class Customer extends DB_Table {
 
 
         if ($this->data['Customer Type']=='Company') {
-            $company_keys=$this->get_company_keys();
+           
 //unset($company_keys[$this->data['Customer Company Key']]);
-
+       //     print_r($company_keys);
 
             foreach($company_keys as  $company_key) {
                 $company=new Company($company_key);
@@ -4631,7 +4677,8 @@ class Customer extends DB_Table {
                 foreach($contact_keys as $contact_key) {
                     unset($company_contact_keys[$contact_key]);
                 }
-
+              //  print_r($company_contact_keys);
+                //  print_r($company_customer_keys);
                 if (count($company_customer_keys)==0 and count($company_supplier_keys)==0 and count($company_contact_keys)==0 and count($company_hq_keys)==0) {
 
 

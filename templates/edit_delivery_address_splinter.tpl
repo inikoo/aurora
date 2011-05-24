@@ -13,9 +13,9 @@
        <span id="add_new_delivery_address" class="state_details">Add New Delivery Address</span>
        </div>
        <table id="new_delivery_address_table" border=0 style="width:540px;display:none">
-       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' show_tel=true address_function='Shipping'  hide_type=true hide_description=true show_form=false  show_components=false }
-
+       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' show_tel=true show_contact=true  address_function='Shipping'  hide_type=true hide_description=true show_form=false  show_components=false }
      </table>
+
       <table>
        <tr id="tr_address_showcase">
 	    <td colspan=2 style="xborder:1px solid black"  id="delivery_address_showcase">
@@ -33,7 +33,8 @@
 
 	      <div class="address_container"  style="display:none" id="delivery_address_container0">
 	      
-	    <div style="color:#777;font-size:90%"><span class="delivery_address_tel_label" id="delivery_address_tel_label0" style="visibility:hidden;">{t}Tel{/t}: </span><span  class="delivery_address_tel" id="delivery_address_tel0"></span></div>
+	    <div class="delivery_address_tel_div" id="delivery_address_tel_div0" style="color:#777;font-size:90%;"><span class="delivery_address_tel_label" id="delivery_address_tel_label0" style="visibility:hidden">{t}Tel{/t}: </span><span  class="delivery_address_tel" id="delivery_address_tel0"></span></div>
+
 		<div class="address_display"  id="delivery_address_display0"></div>
 		<div class="address_buttons" id="delivery_address_buttons0">
 		  <span class="" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
@@ -49,11 +50,13 @@
 	      
 	      
 
-	      {foreach  from=$customer->get_address_objects()  item=address key=key }
+	      {foreach  from=$customer->get_delivery_address_objects()  item=address key=key }
 	      
 	      <div class="address_container"  id="delivery_address_container{$address->id}">
-	      <div style="color:#777;font-size:90%"><span id="delivery_address_tel_label{$address->id}" style="{if !$address->get_principal_telecom_key('Telephone')}visibility:hidden;{/if}">{t}Tel{/t}: </span><span id="delivery_address_tel{$address->id}">{$address->get_formated_principal_telephone()}</span></div>
-		<div class="address_display"  id="delivery_address_display{$address->id}">{$address->display('xhtml')}</div>
+
+		      <div id="delivery_address_tel_div{$address->id}" style="color:#777;font-size:90%;"><span id="delivery_address_tel_label{$address->id}"  style="{if !$address->get_principal_telecom_key('Telephone')}visibility:hidden;{/if}" >{t}Tel{/t}: </span><span id="delivery_address_tel{$address->id}">{$address->get_formated_principal_telephone()}</span></div>
+
+	<div class="address_display"  id="delivery_address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div style="clear:both" class="address_buttons" id="delivery_address_buttons{$address->id}">
 		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>

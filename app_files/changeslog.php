@@ -3035,6 +3035,8 @@ ALTER TABLE `Customer History Email Checksum` ADD INDEX ( `Checksum` ( 64 ) ) ;
 ALTER TABLE `Customer History Email Checksum` ADD INDEX ( `History Key` ) ;
 ALTER TABLE `Customer Dimension` ADD `Recargo Equivalencia` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 
+ALTER TABLE `Address Dimension` ADD `Address Contact` VARCHAR( 256 ) NULL DEFAULT NULL ;
+
 */
 
 

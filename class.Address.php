@@ -1074,11 +1074,7 @@ function find_fast($data=false,$subject_data=false){
     }
 
 
-    /*Method: update
-      Switcher calling the apropiate update method
-      Parameters:
-      $data - associated array with Email Dimension fields
-    */
+  
     Public function update($data,$options='') {
 
 
@@ -1177,12 +1173,7 @@ function find_fast($data=false,$subject_data=false){
         }
     }
 
-    /*
-      Function:update
-      Update the Record
-    */
-    // function update($data){
-    // }
+  
     function update_field_switcher($field,$value,$options='') {
         // print "**** $field\n";
         switch ($field) {
@@ -1463,9 +1454,10 @@ function find_fast($data=false,$subject_data=false){
             } else {
                 //print_r($this->data);
                 $address='';
-
+ if ($this->data['Address Contact']!='')
+                    $address.=_trim($this->data['Address Contact']).$separator;
                 if ($this->data['Address Internal']!='')
-                    $address=_trim($this->data['Address Internal']).$separator;
+                    $address.=_trim($this->data['Address Internal']).$separator;
                 if ($this->data['Address Building']!='')
                     $address.=_trim($this->data['Address Building']).$separator;
 
