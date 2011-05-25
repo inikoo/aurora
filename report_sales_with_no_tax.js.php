@@ -256,8 +256,22 @@ function change_currency_type() {
     location.href=sURL+'?currency_type='+this.id;
 }
 
+
+function change_block(){
+ids=['overview','customers','invoices'];
+block_ids=['block_overview','block_customers','block_invoices'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales_with_no_tax-view&value='+this.id ,{});
+}
+
+
  function init(){
- 
+   Event.addListener(['overview','customers','invoices'], "click",change_block);
+
      var ids=['original','corparate_currency','hm_revenue_and_customs'];
      YAHOO.util.Event.addListener(ids, "click", change_currency_type);
 
