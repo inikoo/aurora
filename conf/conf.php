@@ -1069,6 +1069,7 @@ $default_state=array(
                                                   'w'=>date('W'),
                                                   'stores'=>false,
                                                   'currency_type'=>'original',
+                                                  'view'=>'overview',
                                                   'overview'=>array(
                                                                  'order'=>'date',
                                                                  'order_dir'=>'',

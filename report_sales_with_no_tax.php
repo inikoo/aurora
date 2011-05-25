@@ -126,7 +126,7 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
-$smarty->assign('view','overview');
+$smarty->assign('view',$_SESSION['state'][$report_name]['view']);
 $smarty->assign('title',$title);
 $smarty->assign('tipo',$tipo);
  $smarty->assign('quick_period',$quick_period);

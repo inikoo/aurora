@@ -21,8 +21,8 @@
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='overview'}selected{/if}"  id="overview">  <span> {t}Sales Overview{/t}</span></span></li>
-    <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers with no tax{/t}</span></span></li>
-    <li> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders with no tax{/t}</span></span></li>
+    <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
+    <li> <span class="item {if $view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
    
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -53,7 +53,7 @@
     <div  id="table1"   class="data_table_container dtable btable with_total"></div>
   </div>
 </div>
-<div id="block_orders" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 <div class="data_table" style="clear:both;">
     <span   class="clean_table_title">{t}Invoices{/t}</span>
    
