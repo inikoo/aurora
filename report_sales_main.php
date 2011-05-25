@@ -35,7 +35,6 @@ $js_files=array(
               'external_libs/amstock/amstock/swfobject.js',
               'js/common.js',
               'js/table_common.js',
-
               //		'report_sales.js.php',
               'report_sales_main.js.php',
               'js/calendar_interval.js',

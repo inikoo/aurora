@@ -126,6 +126,8 @@ $this->update_customer=true;
 
 function create_refund($invoice_data){
 
+//print_r($invoice_data);
+
    $this->data=$this->base_data();
    $this->data ['Invoice Title']='Refund';
 

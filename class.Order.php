@@ -80,6 +80,7 @@ class Order extends DB_Table {
 
         if (array_key_exists('Invoice Metadata',$data))$refund_data['Invoice Metadata']=$data['Invoice Metadata'];
         if (array_key_exists('Invoice Date',$data))$refund_data['Invoice Date']=$data['Invoice Date'];
+        if (array_key_exists('Invoice Tax Code',$data))$refund_data['Invoice Tax Code']=$data['Invoice Tax Code'];
 
         $refund=new Invoice('create refund',$refund_data);
 

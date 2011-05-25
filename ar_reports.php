@@ -16,6 +16,10 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('tax_overview'):
+    tax_overview_gb();
+    break;
+
 case('store_sales'):
     list_store_sales();
     break;
@@ -28,7 +32,7 @@ case('wregion_sales'):
     break;
 case('continent_sales'):
     list_continent_sales();
-    break;    
+    break;
 case('first_order_share_histogram'):
 
     $data=prepare_values($_REQUEST,array(
@@ -628,14 +632,14 @@ function es_1() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   $_SESSION['state']['customers']['table']['order']=$order;
+    $_SESSION['state']['customers']['table']['order']=$order;
     $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
     $_SESSION['state']['customers']['table']['nr']=$number_results;
-     $_SESSION['state']['customers']['table']['sf']=$start_from;
-      $_SESSION['state']['customers']['table']['where']=$where;
-       $_SESSION['state']['customers']['table']['f_field']=$f_field;
-        $_SESSION['state']['customers']['table']['f_value']=$f_value;
-   $filter_msg='';
+    $_SESSION['state']['customers']['table']['sf']=$start_from;
+    $_SESSION['state']['customers']['table']['where']=$where;
+    $_SESSION['state']['customers']['table']['f_field']=$f_field;
+    $_SESSION['state']['customers']['table']['f_value']=$f_value;
+    $filter_msg='';
     $wheref='';
 
     $where=' where true ';
@@ -671,28 +675,29 @@ function es_1() {
         $sql2=sprintf("select `Tax Code`,sum(`Tax Amount`) as amount from `Invoice Tax Bridge` where `Invoice Key` in (%s) group by `Tax Code`  ", $data['invoice_keys']);
         $res2=mysql_query($sql2);
 //print "$sql2<br>";
-	$tax1=0;
-	$tax2=0;
+        $tax1=0;
+        $tax2=0;
 
         while ($row2=mysql_fetch_array($res2)) {
-	  if ($row2['Tax Code']=='S1') {
-	    $tax1+=$row2['amount'];
-	  }
-	  elseif ($row2['Tax Code']=='S2') {
-	    $tax2+=$row2['amount'];
-	  }elseif ($row2['Tax Code']=='S3') {
-	    $tax1+=0.8*$row2['amount'];
-	    $tax2+=0.2*$row2['amount'];
-	  } 
+            if ($row2['Tax Code']=='S1') {
+                $tax1+=$row2['amount'];
+            }
+            elseif ($row2['Tax Code']=='S2') {
+                $tax2+=$row2['amount'];
+            }
+            elseif ($row2['Tax Code']=='S3') {
+                $tax1+=0.8*$row2['amount'];
+                $tax2+=0.2*$row2['amount'];
+            }
         }
 
-	if($tax2>0 and $tax1==0){
-	$tax2+=$data['adjust_tax'];
+        if ($tax2>0 and $tax1==0) {
+            $tax2+=$data['adjust_tax'];
 
-	}else{
-	
-	$tax1+=$data['adjust_tax'];
-	}
+        } else {
+
+            $tax1+=$data['adjust_tax'];
+        }
 
         $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
         $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
@@ -1558,6 +1563,7 @@ function transactions_parts_marked_as_out_of_stock() {
 
 }
 
+
 function list_invoices_with_no_tax() {
 
 
@@ -1645,15 +1651,15 @@ function list_invoices_with_no_tax() {
 
 
 
-  //  $_SESSION['state']['report_sales_with_no_tax']['invoices']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    //  $_SESSION['state']['report_sales_with_no_tax']['invoices']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 //$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']=
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['order']=$order;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['order_dir']=$order_direction;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['nr']=$number_results;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['sf']=$start_from;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['where']=$where;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_field']=$f_field;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_value']=$f_value;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['order']=$order;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['order_dir']=$order_direction;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['nr']=$number_results;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['sf']=$start_from;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['where']=$where;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['f_field']=$f_field;
+    $_SESSION['state']['report_sales_with_no_tax']['invoices']['f_value']=$f_value;
 
 
 
@@ -1897,6 +1903,235 @@ $_SESSION['state']['report_sales_with_no_tax']['invoices']['f_value']=$f_value;
     echo json_encode($response);
 }
 
+function tax_overview_gb() {
+
+
+    $conf=$_SESSION['state']['report_sales_with_no_tax']['overview'];
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr']-1;
+
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+        $where=stripslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['from']))
+        $from=$_REQUEST['from'];
+    else {
+
+        $from=$conf['from'];
+
+    }
+
+    if (isset( $_REQUEST['to']))
+        $to=$_REQUEST['to'];
+    else {
+
+        $to=$conf['to'];
+
+    }
+
+    if (isset( $_REQUEST['currency_type'])) {
+        $currency_type=$_REQUEST['currency_type'];
+        $_SESSION['state']['report_sales_with_no_tax']['currency_type']=$currency_type;
+    } else {
+
+        $currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
+
+    }
+
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+//print $where;
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+
+
+
+
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['order']=$order;
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['order_dir']=$order_direction;
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['nr']=$number_results;
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['sf']=$start_from;
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['where']=$where;
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['f_field']=$f_field;
+    $_SESSION['state']['report_sales_with_no_tax']['overview']['f_value']=$f_value;
+
+
+
+    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    if ($date_interval['error']) {
+        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+    } else {
+        $_SESSION['state']['report_sales_with_no_tax']['overview']['from']=$date_interval['from'];
+        $_SESSION['state']['report_sales_with_no_tax']['overview']['to']=$date_interval['to'];
+    }
+
+
+    $where=sprintf(" where   `Invoice Date`>=%s and   `Invoice Date`<=%s   "
+                   ,prepare_mysql($date_interval['from'])
+                   ,prepare_mysql($date_interval['to'])
+                  );
+
+    $rtext='';
+    $filter_msg='';
+    $rtext_rpp='';
+
+
+    $corporate_currency='GBP';
+    $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $corporate_currency=$row['HQ Currency'];
+    }
+
+    $sum_net=0;
+    $sum_tax=0;
+    $sum_total=0;
+    $sum_invoices=0;
+    $records=1;
+
+//   $sql="select `Invoice Tax Code`,`Invoice Currency`,sum(`Invoice Total Amount`*`Invoice Currency Exchange` as `Invoice Total Amount Corporate`) ,  sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`,sum( `Invoice Total Net Amount`) as net,sum(`Invoice Total Amount`) as total  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+
+    $where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
+    $sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+    $data=array();
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $records++;
+        $sum_net+=$row['net_hq'];
+        $sum_tax+=$row['tax_hq'];
+        $sum_total+=$row['total_hq'];
+  $sum_invoices+=$row['invoices'];
+        $data[]=array(
+                    'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+                    'category'=>'GB+IM',
+                    'net'=>money($row['net_hq'],$corporate_currency),
+                    'tax'=>money($row['tax_hq'],$corporate_currency),
+                    'total'=>money($row['total_hq'],$corporate_currency),
+                    'invoices'=>number($row['invoices'])
+                );
+    }
+    mysql_free_result($res);
+
+    $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
+    $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
+  
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $records++;
+        $sum_net+=$row['net_hq'];
+        $sum_tax+=$row['tax_hq'];
+        $sum_total+=$row['total_hq'];
+         $sum_invoices+=$row['invoices'];
+
+        $data[]=array(
+                    'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+                    'category'=>'EU (no GB)',
+                    'net'=>money($row['net_hq'],$corporate_currency),
+                    'tax'=>money($row['tax_hq'],$corporate_currency),
+                    'total'=>money($row['total_hq'],$corporate_currency),
+                    'invoices'=>number($row['invoices'])
+                );
+    }
+    mysql_free_result($res);
+
+
+   $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
+    $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+  
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $records++;
+        $sum_net+=$row['net_hq'];
+        $sum_tax+=$row['tax_hq'];
+        $sum_total+=$row['total_hq'];
+         $sum_invoices+=$row['invoices'];
+
+        $data[]=array(
+                    'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+                    'category'=>'no EU',
+                    'net'=>money($row['net_hq'],$corporate_currency),
+                    'tax'=>money($row['tax_hq'],$corporate_currency),
+                    'total'=>money($row['total_hq'],$corporate_currency),
+                    'invoices'=>number($row['invoices'])
+                );
+    }
+    mysql_free_result($res);
+
+    $data[]=array(
+                'tax_category'=>'',
+                'category'=>'',
+                'net'=>money($sum_net,$corporate_currency),
+                'tax'=>money($sum_tax,$corporate_currency),
+                'total'=>money($sum_total,$corporate_currency),
+                 'invoices'=>number($sum_invoices),
+            );
+
+
+
+
+    $total_records=$records;
+    $number_results++;
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data,
+                                      'sort_key'=>'category',
+                                      'sort_dir'=>'',
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from+1,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
 
 
 function list_customers_with_no_tax() {
@@ -1989,13 +2224,13 @@ function list_customers_with_no_tax() {
 //    $_SESSION['state']['report_sales_with_no_tax']['customers']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['customers']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 
-$_SESSION['state']['report_sales_with_no_tax']['customers']['order']=$order;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['nr']=$number_results;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['sf']=$start_from;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['where']=$where;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['f_field']=$f_field;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['f_value']=$f_value;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['order']=$order;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['nr']=$number_results;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['sf']=$start_from;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['where']=$where;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['f_field']=$f_field;
+    $_SESSION['state']['report_sales_with_no_tax']['customers']['f_value']=$f_value;
 
 
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
@@ -2120,7 +2355,7 @@ $_SESSION['state']['report_sales_with_no_tax']['customers']['f_value']=$f_value;
     else if ($order=='num_invoices')
         $order='`Invoices`';
     else
-         $order='`Customer Name`';
+        $order='`Customer Name`';
 
     $corporate_currency='GBP';
     $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
@@ -2514,7 +2749,7 @@ function  list_wregion_sales() {
     else
         $tableid=0;
 
-  if (isset( $_REQUEST['from']))
+    if (isset( $_REQUEST['from']))
         $from=$_REQUEST['from'];
     else {
 
@@ -2545,7 +2780,7 @@ function  list_wregion_sales() {
     $_SESSION['state']['report_geo_sales']['wregions']['f_value']=$f_value;
 
 
- $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     if ($date_interval['error']) {
         $date_interval['mysql']='';
     } else {
@@ -2673,8 +2908,8 @@ function  list_wregion_sales() {
         $i++;
     }
     mysql_free_result($res);
-    
-     $sql="select `World Region Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`  left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`)   $where $wheref group by  `World Region Code`";
+
+    $sql="select `World Region Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`  left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`)   $where $wheref group by  `World Region Code`";
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if (array_key_exists($row['World Region Code'],$index_array))
@@ -2685,7 +2920,7 @@ function  list_wregion_sales() {
         $adata[$index]['invoices_formated']=number($row['invoices']);
     }
     mysql_free_result($res);
-    
+
 
     $response=array('resultset'=>
                                 array('state'=>200,
@@ -2748,7 +2983,7 @@ function  list_continent_sales() {
     else
         $tableid=0;
 
-  if (isset( $_REQUEST['from']))
+    if (isset( $_REQUEST['from']))
         $from=$_REQUEST['from'];
     else {
 
@@ -2779,10 +3014,10 @@ function  list_continent_sales() {
     $_SESSION['state']['report_geo_sales']['continents']['f_value']=$f_value;
 
 
- $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     if ($date_interval['error']) {
         $date_interval['mysql']='';
-    } 
+    }
 
     $where=sprintf('where true %s ',$date_interval['mysql']);
 
@@ -2790,8 +3025,8 @@ function  list_continent_sales() {
     $filter_msg='';
     $wheref='';
 
-if($f_field=='continent_code' and $f_value!='')
-    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+    if ($f_field=='continent_code' and $f_value!='')
+        $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
 
     $sql="select count(Distinct  `Continent Code`) as total from kbase.`Country Dimension`  $wheref  ";
 
@@ -2825,7 +3060,7 @@ if($f_field=='continent_code' and $f_value!='')
 
     switch ($f_field) {
 
-   
+
     case('continent_code'):
         if ($total==0 and $filtered>0)
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any continent with code")." <b>".$f_value."*</b> ";
@@ -2895,8 +3130,8 @@ if($f_field=='continent_code' and $f_value!='')
         $i++;
     }
     mysql_free_result($res);
-    
-     $sql="select `Continent Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`  left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`)   $where $wheref group by  `Continent Code`";
+
+    $sql="select `Continent Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`  left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`)   $where $wheref group by  `Continent Code`";
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if (array_key_exists($row['Continent Code'],$index_array))
@@ -2907,7 +3142,7 @@ if($f_field=='continent_code' and $f_value!='')
         $adata[$index]['invoices_formated']=number($row['invoices']);
     }
     mysql_free_result($res);
-    
+
 
     $response=array('resultset'=>
                                 array('state'=>200,
@@ -3232,7 +3467,7 @@ function list_stores() {
             mysql_free_result($result);
         } else {
             $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
-           //print $sql;
+            //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -3307,7 +3542,7 @@ function list_stores() {
     }
 
 
- elseif($period=='yeartoday') {
+    elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store YearToDay Acc Profit`<0,`Store YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Store YearToDay Acc Profit`>=0,`Store YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store YearToDay Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -3323,7 +3558,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
- elseif($period=='three_year') {
+    elseif($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 3 Year Acc Profit`<0,`Store 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 3 Year Acc Profit`>=0,`Store 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 3 Year Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -3339,7 +3574,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
- elseif($period=='six_month') {
+    elseif($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 6 Month Acc Profit`<0,`Store 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 6 Month Acc Profit`>=0,`Store 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 6 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -3355,8 +3590,8 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
- 
- elseif($period=='ten_day') {
+
+    elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 10 Day Acc Profit`<0,`Store 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Store 10 Day Acc Profit`>=0,`Store 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 10 Day Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -3441,7 +3676,7 @@ function list_stores() {
             }
 
 
-	    elseif($period=='yeartoday') {
+            elseif($period=='yeartoday') {
                 $tsall=percentage($row['Store DC YearToDay Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC YearToDay Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC YearToDay Acc Profit'],$sum_total_profit_plus,2);
@@ -3462,8 +3697,8 @@ function list_stores() {
                 else
                     $tprofit=percentage($row['Store DC 6 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-  
-	 elseif($period=='ten_day') {
+
+            elseif($period=='ten_day') {
                 $tsall=percentage($row['Store DC 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 10 Day Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 10 Day Acc Profit'],$sum_total_profit_plus,2);
@@ -3681,7 +3916,7 @@ function list_stores() {
             }
 
 
-elseif($period=="yeartoday") {
+            elseif($period=="yeartoday") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -3718,7 +3953,7 @@ elseif($period=="yeartoday") {
                 $tsall=($row["Store".$DC_tag." YearToDay Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." YearToDay Acc Profit"]*$factor);
             }
-elseif($period=="three_year") {
+            elseif($period=="three_year") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -3755,7 +3990,7 @@ elseif($period=="three_year") {
                 $tsall=($row["Store".$DC_tag." 3 Year Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 3 Year Acc Profit"]*$factor);
             }
-elseif($period=="six_month") {
+            elseif($period=="six_month") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
@@ -3792,7 +4027,7 @@ elseif($period=="six_month") {
                 $tsall=($row["Store".$DC_tag." 6 Month Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 6 Month Acc Profit"]*$factor);
             }
-elseif($period=="ten_day") {
+            elseif($period=="ten_day") {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
