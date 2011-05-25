@@ -17,8 +17,8 @@
     <li> <span class="item {if $view=='type_business'}selected{/if}" id="type_business"  ><span>  {t}Type Business{/t}</span></span></li>
     <li> <span class="item {if $view=='geo'}selected{/if}"  id="geo">  <span> {t}Geographic Distribution{/t}</span></span></li>
     <li> <span class="item {if $view=='correlations'}selected{/if}"  id="correlations">  <span> {t}Correlations{/t}</span></span></li>
-
 </ul>
+
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div id="block_correlations" style="{if $view!='correlations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">

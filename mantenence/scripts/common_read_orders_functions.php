@@ -1072,6 +1072,7 @@ function create_refund($data,$header_data,$data_dn_transactions) {
     $refund=$parent_order->create_refund(array(
                                              'Invoice Metadata'=>$store_code.$order_data_id,
                                              'Invoice Date'=>$date_inv,
+                                             'Invoice Tax Code'=>$tax_category_object->data['Tax Category Code']
                                          )
                                         );
     foreach($data_invoice_transactions as $transaction) {

@@ -1069,6 +1069,22 @@ $default_state=array(
                                                   'w'=>date('W'),
                                                   'stores'=>false,
                                                   'currency_type'=>'original',
+                                                  'overview'=>array(
+                                                                 'order'=>'date',
+                                                                 'order_dir'=>'',
+                                                                 'country'=>'uk',
+                                                                 'sf'=>0,
+                                                                 'nr'=>25,
+                                                                 'where'=>'where true',
+                                                                 'f_field'=>'public_id',
+                                                                 'f_value'=>'',
+                                                                 'f_show'=>false,
+                                                                 'from'=>'',
+                                                                 'to'=>'',
+                                                                 'elements'=>array()
+                                                             )
+                                                  
+                                                  ,
                                                   'invoices'=>array(
                                                                  'order'=>'date',
                                                                  'order_dir'=>'',

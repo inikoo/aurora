@@ -33,10 +33,22 @@ $js_files=array(
 		'js/php.default.min.js',
 		'js/common.js',
 		'js/table_common.js',
+		'js/calendar_interval.js',
 		'report_sales_with_no_tax.js.php',
         'reports_calendar.js.php',
 		'js/dropdown.js'
 		);
+
+
+
+
+
+
+
+
+
+
+
 
 $root_title=_('Sales Report');
 
@@ -73,6 +85,8 @@ $_SESSION['state'][$report_name]['invoices']['from']=$from;
 $_SESSION['state'][$report_name]['invoices']['to']=$to;
 $_SESSION['state'][$report_name]['customers']['from']=$from;
 $_SESSION['state'][$report_name]['customers']['to']=$to;
+$_SESSION['state'][$report_name]['overview']['from']=$from;
+$_SESSION['state'][$report_name]['overview']['to']=$to;
 $smarty->assign('tipo',$tipo);
 $smarty->assign('currency_type',$currency_type);
 
@@ -111,6 +125,11 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
+
+$smarty->assign('view','overview');
+$smarty->assign('title',$title);
+$smarty->assign('tipo',$tipo);
+ $smarty->assign('quick_period',$quick_period);
 
 $smarty->display('report_sales_with_no_tax.tpl');
 ?>
