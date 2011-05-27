@@ -40,29 +40,63 @@
 </div>
 
 <div id="block_customers" style="{if $view!='customers'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-<div class="data_table" style="clear:both;">
-    <span   class="clean_table_title">{t}Customers{/t}</span>
-      <div id="table_type">
-         <a  style="float:right"  class="table_type state_details"  href="report_sales_with_no_tax_customers_csv.php" >{t}Export (CSV){/t}</a>
-
+<div style="display:table-cell; vertical-align:middle;width:927px;xborder:1px solid green">
+   
+   
+ <div xid="table_type" class="table_type" style="margin:0;padding:0px;float:right;xborder:1px solid black;width:720px">
+         <div  style="padding:0px;margin:0;font-size:90%;clear:both;text-align:right"   xid="transaction_chooser" >
+            <span style="xfloat:right;margin-left:20px;" class=" table_type transaction_type state_details {if $regions_selected.GBIM}selected{/if} label_region_GBIM"  id="elements_region_GBIM" table_type="GBIM"   >GB+IM</span>
+            <span style="xfloat:right;margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.EU}selected{/if} label_region_EU"  id="elements_region_EU" table_type="EU"   >EU (no GB,IM)</span>
+            <span style="xfloat:right;margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.NOEU}selected{/if} label_region_NOEU"  id="elements_region_NOEU" table_type="NOEU"   >No EU</span>
+        </div>
+        <div  style="padding:0px;margin:0px;margin-top:10px;font-size:90%;text-align:right"   xid="transaction_chooser" >
+         {foreach from=$tax_categories item=tax_category}
+                  <span style="padding:0px;margin:0px;xfloat:right;margin-left:20px;" class=" table_type transaction_type state_details {if $tax_category.selected}selected{/if} label_customer_history_changes"  id="elements_tax_category_{$tax_category.code}" table_type="changes"   >{$tax_category.code}{$tax_category.name} (<span id="elements_changes_number">{$tax_category.customers}</span>)</span>
+         {/foreach}
+            </div>
+       
+        <div style="clear:both"></div>
      </div>
+      <div style="xborder: 1px solid red;width:200px;height:37px;display:table-cell; vertical-align:bottom;">
+    <span   class="clean_table_title" >{t}Customers{/t} <img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+</div>
 
+</div>
     <div style="clear:both;margin:0 0 10px 0;padding:0 20px ;border-bottom:1px solid #999"></div>
     
         {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
-    <div  id="table1"   class="data_table_container dtable btable with_total"></div>
-  </div>
+    <div  id="table1"  style="font-size:90%" class="data_table_container dtable btable with_total"></div>
+
 </div>
 <div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-<div class="data_table" style="clear:both;">
-    <span   class="clean_table_title">{t}Invoices{/t}</span>
+
+ <div style="display:table-cell; vertical-align:middle;width:927px;xborder:1px solid green">
    
+   
+ <div xid="table_type" class="table_type" style="margin:0;padding:0px;float:right;xborder:1px solid black;width:720px">
+         <div  style="padding:0px;margin:0;font-size:90%;clear:both;text-align:right"   xid="transaction_chooser" >
+            <span style="xfloat:right;margin-left:20px;" class=" table_type transaction_type state_details {if $regions_selected.GBIM}selected{/if} label_region_GBIM"  id="elements_region_GBIM_bis" table_type="GBIM"   >GB+IM</span>
+            <span style="xfloat:right;margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.EU}selected{/if} label_region_EU"  id="elements_region_EU_bis" table_type="EU"   >EU (no GB,IM)</span>
+            <span style="xfloat:right;margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.NOEU}selected{/if} label_region_NOEU"  id="elements_region_NOEU_bis" table_type="NOEU"   >No EU</span>
+        </div>
+        <div  style="padding:0px;margin:0px;margin-top:10px;font-size:90%;text-align:right"   xid="transaction_chooser" >
+         {foreach from=$tax_categories item=tax_category}
+                  <span style="padding:0px;margin:0px;xfloat:right;margin-left:20px;" class=" table_type transaction_type state_details {if $tax_category.selected}selected{/if} label_customer_history_changes"  id="elements_tax_category_{$tax_category.code}_bis" table_type="changes"   >{$tax_category.code}{$tax_category.name} (<span id="elements_changes_number">{$tax_category.customers}</span>)</span>
+         {/foreach}
+            </div>
+       
+        <div style="clear:both"></div>
+     </div>
+      <div style="xborder: 1px solid red;width:200px;height:37px;display:table-cell; vertical-align:bottom;">
+    <span   class="clean_table_title" >{t}Invoices{/t} <img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+</div>
+
+</div>  
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:0px solid #999"></div>
     
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
-</div>
 
 
 

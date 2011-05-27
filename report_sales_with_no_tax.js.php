@@ -2,12 +2,32 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
+
+print "var tax_categories=[";
+$tmp='';
+ foreach($_SESSION['state']['report_sales_with_no_tax']['GBR']['tax_category'] as $key=>$value){
+ $tmp.=",'elements_tax_category_$key'";
+ }
+ $tmp=preg_replace('/^,/','',$tmp);
+print "$tmp];";
+
+
+print "var tax_categories_bis=[";
+$tmp='';
+ foreach($_SESSION['state']['report_sales_with_no_tax']['GBR']['tax_category'] as $key=>$value){
+ $tmp.=",'elements_tax_category_$key"."_bis'";
+ }
+ $tmp=preg_replace('/^,/','',$tmp);
+print "$tmp];";
+
 ?>
 var Dom   = YAHOO.util.Dom;
 
 
 var link='report_sales_with_no_tax.php';
-  
+
+
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -97,12 +117,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				   
 				    {key:"name",label:"<?php echo _('Customer')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"tax_number",label:"<?php echo _('Tax Number')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"tax_number",label:"<?php echo _('Tax Number')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    
-				    ,{key:"send_to",label:"<?php echo _('Send to')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"send_to",label:"<?php echo _('Send to')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"num_invoices",label:"<?php echo _('Invoices')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"net_hq", label:"<?php echo _('Net')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				    ,{key:"total_amount", label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"tax_hq", label:"<?php echo _('Tax')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //  ,{key:"state", label:"<?php echo _('Status')?>", width:33,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    
 				    
@@ -126,7 +147,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "name","tax_number","num_invoices","send_to","total_amount"
+			 "name","tax_number","num_invoices","send_to","total_amount","tax_hq","net_hq"
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -185,10 +206,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=tax_overview&tableid=1");
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_reports.php?tipo=tax_overview&tableid=2");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rtext:"resultset.rtext",
@@ -205,12 +226,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "category","tax_code","net","invoices","tax","total"
 			 ]};
 	    
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
-						     this.dataSource1, {
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource2, {
 							 //draggableColumns:true,
 							 renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage:<?php echo$_SESSION['state']['report_sales_with_no_tax']['overview']['nr']?>,containers : 'paginator1', 
+								 rowsPerPage:<?php echo$_SESSION['state']['report_sales_with_no_tax']['overview']['nr']?>,containers : 'paginator2', 
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -227,14 +248,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 
 						     }
 						     );
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.doBeforeLoadData=mydoBeforeLoadData;
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.doBeforeLoadData=mydoBeforeLoadData;
 	    
 	    
 	    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['report_sales_with_no_tax']['overview']['f_field']?>',value:'<?php echo$_SESSION['state']['report_sales_with_no_tax']['overview']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['report_sales_with_no_tax']['overview']['f_field']?>',value:'<?php echo$_SESSION['state']['report_sales_with_no_tax']['overview']['f_value']?>'};
 
 
 
@@ -269,7 +290,143 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_
 }
 
 
+function change_elements(e,type){
+
+var x_id=this.id+'_bis';
+
+
+
+if(type=='region')
+ids=['elements_region_GBIM','elements_region_EU','elements_region_NOEU'];
+else
+ids=tax_categories;
+
+
+if(Dom.hasClass(this,'selected')){
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+Dom.removeClass(x_id,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+Dom.addClass(x_id,'selected')
+
+}
+
+
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+ 
+//alert(request)
+ table_id=1;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+    
+  
+   table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
+
+    
+}  
+
+
+
+function change_elements_bis(e,type){
+
+id=this.id;
+var x_id=id.replace("_bis", "");
+
+if(type=='region')
+ids=['elements_region_GBIM_bis','elements_region_EU_bis','elements_region_NOEU_bis'];
+else
+ids=tax_categories_bis;
+
+
+if(Dom.hasClass(this,'selected')){
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+
+
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+Dom.removeClass(x_id,'selected')
+}
+
+}else{
+Dom.addClass(this,'selected')
+Dom.addClass(x_id,'selected')
+}
+
+
+var request='';
+for(i in ids){
+
+x=ids[i].replace("_bis", "")
+
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+x+'=1'
+
+}else{
+request=request+'&'+x+'=0'
+
+}
+}
+ 
+
+
+ table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ 
+   table_id=1;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ 
+
+}  
+
+
+
+
+
  function init(){
+ 
+ Event.addListener(['elements_region_GBIM','elements_region_EU','elements_region_NOEU'], "click",change_elements,'region');
+  Event.addListener(['elements_region_GBIM_bis','elements_region_EU_bis','elements_region_NOEU_bis'], "click",change_elements_bis,'region');
+
+Event.addListener(tax_categories, "click",change_elements,'tax_codes');
+Event.addListener(tax_categories_bis, "click",change_elements_bis,'tax_codes');
+
+ 
    Event.addListener(['overview','customers','invoices'], "click",change_block);
 
      var ids=['original','corparate_currency','hm_revenue_and_customs'];
