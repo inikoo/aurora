@@ -246,7 +246,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource0
 						     , {
-							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
 								 rowsPerPage    : <?php echo$_SESSION['state']['product']['stock_history']['nr']?>,containers : 'paginator0', alwaysVisible:false,
@@ -865,11 +864,23 @@ function add_product(){
     Dom.get("manage_stock_products").style.display='';
 }
 
+
+function change_block(){
+ids=['details','parts','history'];
+block_ids=['block_details','block_parts','block_history'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=location-view&value='+this.id ,{});
+}
+
 function init(){
 
- 
+    Event.addListener(['details','parts','history'], "click",change_block);
 
-YAHOO.util.Event.addListener('details', "click",change_details,'location');
+
 
 
 Event.addListener('location_submit_search', "click",submit_search,'location');

@@ -752,7 +752,7 @@ class PartLocation extends DB_Table {
     }
     function create($data) {
 
-        // print_r($data);
+        //print_r($data);
 
         $this->data=$this->base_data();
         foreach($data as $key=>$value) {
@@ -805,7 +805,7 @@ class PartLocation extends DB_Table {
 
                         );
             mysql_query($sql);
-           
+
             $this->new=true;
             $part=new Part($this->part_sku);
             $part->load('locations');
@@ -1065,25 +1065,25 @@ class PartLocation extends DB_Table {
             $this->error=true;
             return;
         }
-$old_qty=$this->data['Quantity On Hand'];
-$old_value=$this->data['Stock Value'];
-$this->disassociate();
+        $old_qty=$this->data['Quantity On Hand'];
+        $old_value=$this->data['Stock Value'];
+        $this->disassociate();
 
 
-$data=array(
-	      'Location Key'=>$location_key
-	      ,'Part SKU'=>$this->part_sku
-	      ,'editor'=>$this->editor
-	      );
-  
- 
- 
-  $part_location=new PartLocation('find',$data,'create');
+        $data=array(
+                  'Location Key'=>$location_key
+                                 ,'Part SKU'=>$this->part_sku
+                                             ,'editor'=>$this->editor
+              );
 
 
 
+        $part_location=new PartLocation('find',$data,'create');
 
- $data_inventory_audit=array(
+
+
+
+        $data_inventory_audit=array(
                                   'Inventory Audit Date'=>$this->editor['Date'],
                                   'Inventory Audit Part SKU'=>$this->part_sku,
                                   'Inventory Audit Location Key'=>$location_key,
@@ -1093,9 +1093,9 @@ $data=array(
                                   'Inventory Audit Quantity'=>$old_qty
                               );
         $audit=new InventoryAudit('find',$data_inventory_audit,'create');
-$part_location->set_audits();
-$part_location->update_stock();
-$part_location->part->update_stock();
+        $part_location->set_audits();
+        $part_location->update_stock();
+        $part_location->part->update_stock();
 
     }
 
@@ -1111,8 +1111,8 @@ $part_location->part->update_stock();
     }
 
     function move_stock($data) {
-    
-   
+
+
         if ($this->error) {
             $this->msg=_('Unknown error');
             return;
@@ -1161,8 +1161,8 @@ $part_location->part->update_stock();
 
         $this->stock_transfer(array(
                                   'Quantity'=>-$data['Quantity To Move'],
-                                             'Transaction Type'=>'Move Out',
-                                                                 'Destination'=>$destination->location->data['Location Code']
+                                  'Transaction Type'=>'Move Out',
+                                  'Destination'=>$destination->location->data['Location Code']
 
                               ));
         if ($this->error) {
@@ -1171,13 +1171,13 @@ $part_location->part->update_stock();
 
         $destination->stock_transfer(array(
                                          'Quantity'=>$data['Quantity To Move'],
-                                                    'Transaction Type'=>'Move In',
-                                                                        'Origin'=>$this->location->data['Location Code']
+                                         'Transaction Type'=>'Move In',
+                                         'Origin'=>$this->location->data['Location Code']
 
                                      ));
-                                     
-                                     
-                                
+
+
+
         if ($this->location_key==1) {
             $data_disasociate=array(
                                   'Note'=>_('Location now known'),
@@ -1261,6 +1261,7 @@ $part_location->part->update_stock();
 
 
         }
+        print $sql;
         mysql_query($sql);
         $this->get_data();
 
@@ -1335,7 +1336,7 @@ $part_location->part->update_stock();
 
     function disassociate($data=false) {
 
-    
+
         $date=$this->editor['Date'];
         if (!$this->editor['Date'])
             $date=date("Y-m-d H:i:s");
@@ -1397,20 +1398,20 @@ $part_location->part->update_stock();
 
 
         list($stock,$stock_value)=$this->get_stock($date);
-    print "";
-        if($stock!=0){
-        $data_inventory_audit=array(
-                                  'Inventory Audit Date'=>$base_data['Date'],
-                                  'Inventory Audit Part SKU'=>$this->part_sku,
-                                  'Inventory Audit Location Key'=>$this->location_key,
-                                  'Inventory Audit Note'=>'',
-                                  'Inventory Audit Type'=>'Discontinued',
-                                  'Inventory Audit User Key'=>0,
-                                  'Inventory Audit Quantity'=>0
-                              );
-        $audit=new InventoryAudit('find',$data_inventory_audit,'create');
-$this->set_audits();
-}
+        print "";
+        if ($stock!=0) {
+            $data_inventory_audit=array(
+                                      'Inventory Audit Date'=>$base_data['Date'],
+                                      'Inventory Audit Part SKU'=>$this->part_sku,
+                                      'Inventory Audit Location Key'=>$this->location_key,
+                                      'Inventory Audit Note'=>'',
+                                      'Inventory Audit Type'=>'Discontinued',
+                                      'Inventory Audit User Key'=>0,
+                                      'Inventory Audit Quantity'=>0
+                                  );
+            $audit=new InventoryAudit('find',$data_inventory_audit,'create');
+            $this->set_audits();
+        }
         $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%d,%d,'Disassociate',0,0,%s,%s,%s)"
                      ,prepare_mysql($date)
                      ,$this->part_sku
@@ -1420,13 +1421,13 @@ $this->set_audits();
                      ,prepare_mysql($base_data['History Type'],false)
 
                     );
-       // print_r($base_data);
-       // print "$sql\n";
+        // print_r($base_data);
+        // print "$sql\n";
         if (!mysql_query($sql)) {
             $this->error=true;
         }
 
-        
+
         $this->deleted=true;
         $this->deleted_msg=_('Part no longer associated with location');
 
@@ -1434,7 +1435,7 @@ $this->set_audits();
 
 
 
-   
+
 
 
 
@@ -1481,36 +1482,36 @@ $this->set_audits();
     }
 
 
-function get_ohlc($date) {
+    function get_ohlc($date) {
 
 
 
-    $day_before_date = date ("Y-m-d", strtotime ($date."-1 day", strtotime($date)));
+        $day_before_date = date ("Y-m-d", strtotime ($date."-1 day", strtotime($date)));
 
-    list ($open,$open_value)=$this->get_stock($day_before_date." 23:59:59");
+        list ($open,$open_value)=$this->get_stock($day_before_date." 23:59:59");
 
-                             $high=$open;
-    $low=$open;
-    $close=$open;
-    $sql=sprintf("select `Inventory Transaction Quantity` as delta from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d order by `Date` "
-                 ,prepare_mysql($date)
-                 ,$this->part_sku
-                 ,$this->location_key
-                );
-    $res=mysql_query($sql);
+        $high=$open;
+        $low=$open;
+        $close=$open;
+        $sql=sprintf("select `Inventory Transaction Quantity` as delta from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d order by `Date` "
+                     ,prepare_mysql($date)
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+        $res=mysql_query($sql);
 
-    while ($row=mysql_fetch_array($res)) {
-        $close+=$row['delta'];
-        if ($high<$close)
-            $high=$close;
-        if ($low>$close)
-            $low=$close;
+        while ($row=mysql_fetch_array($res)) {
+            $close+=$row['delta'];
+            if ($high<$close)
+                $high=$close;
+            if ($low>$close)
+                $low=$close;
+
+        }
+        return array($open,$high,$low,$close);
 
     }
-    return array($open,$high,$low,$close);
 
-}
-   
 
     function get_stock($date='') {
         if (!$date)
@@ -1623,10 +1624,10 @@ function get_ohlc($date) {
 
     function get_history_intervals() {
         $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Inventory Transaction Key` ",
-        $this->part_sku,
-        $this->location_key
-        );
-      //  print "$sql\n";
+                     $this->part_sku,
+                     $this->location_key
+                    );
+        // print "$sql\n";
         $dates=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1655,7 +1656,6 @@ function get_ohlc($date) {
         $intervals=$this-> get_history_intervals();
 
 
-        // print_r($intervals);
 
         foreach($intervals as $interval) {
             $this->update_stock_history_interval($interval['From'],($interval['To']?$interval['To']:date('Y-m-d',strtotime('now'))));
@@ -1663,64 +1663,64 @@ function get_ohlc($date) {
 
     }
 
-function update_stock_history_interval($from,$to) {
-   $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
-                 ,prepare_mysql($from)
-                 ,prepare_mysql($to)
-                );
-    $result=mysql_query($sql);
-
-   //print $this->part_sku." ".$this->location_key." $from $to \n";
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-        list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
-        list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
-        list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
-        list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
-        list($open,$high,$low,$close)=$this->get_ohlc($row['Date']);
-
-
-        $storing_cost=0;
-        $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
-        $location_type="Unknown";
-        $warehouse_key=1;
-        $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%s) ",
-                     prepare_mysql($row['Date']),
-
-                     $this->part_sku,
-                     $warehouse_key,
-
-                     $this->location_key,
-
-                     $stock,
-                     $value,
-
-                     $sales_value,
-                     $comercial_value,
-
-                     $storing_cost,
-
-                     $sold,
-                     $in,
-                     $lost,
-                     $open,
-                     $high,
-                     $low,
-                     prepare_mysql($location_type)
-
+    function update_stock_history_interval($from,$to) {
+        $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
+                     ,prepare_mysql($from)
+                     ,prepare_mysql($to)
                     );
-        mysql_query($sql);
-       //print "$sql\n";
-    }
+        $result=mysql_query($sql);
 
-}
- function set_audits() {
+        //print $this->part_sku." ".$this->location_key." $from $to \n";
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+            list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
+            list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
+            list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
+            list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
+            list($open,$high,$low,$close)=$this->get_ohlc($row['Date']);
+
+
+            $storing_cost=0;
+            $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
+            $location_type="Unknown";
+            $warehouse_key=1;
+            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%s) ",
+                         prepare_mysql($row['Date']),
+
+                         $this->part_sku,
+                         $warehouse_key,
+
+                         $this->location_key,
+
+                         $stock,
+                         $value,
+
+                         $sales_value,
+                         $comercial_value,
+
+                         $storing_cost,
+
+                         $sold,
+                         $in,
+                         $lost,
+                         $open,
+                         $high,
+                         $low,
+                         prepare_mysql($location_type)
+
+                        );
+            mysql_query($sql);
+            //print "$sql\n";
+        }
+
+    }
+    function set_audits() {
 
         $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Part SKU`=%d and `Location Key`=%d"
-        ,$this->part_sku
-        ,$this->location_key
-        );
-       // print "$sql\n";
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+        // print "$sql\n";
         mysql_query($sql);
 
         $sql=sprintf('select `Inventory Audit Key` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d order by `Inventory Audit Date`,`Inventory Audit Key`'
@@ -1763,7 +1763,7 @@ function update_stock_history_interval($from,$to) {
         else if ($audit->data['Inventory Audit Type']=='Discontinued')
             $notes=_('Change due Discontinuation');
         else if ($audit->data['Inventory Audit Type']=='Identify')
-            $notes=_('Copying unknown location state');    
+            $notes=_('Copying unknown location state');
         else if ($audit->data['Inventory Audit Type']=='Out of Stock')
             $notes=_('Change due Out of Stock');
 
@@ -1780,7 +1780,7 @@ function update_stock_history_interval($from,$to) {
                      ,$cost
                      ,prepare_mysql($notes)
                     );
-           // print "$sql\n";
+        // print "$sql\n";
         mysql_query($sql);
 
     }

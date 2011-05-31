@@ -185,26 +185,16 @@
  <div style="clear:both"></div>
  
  
- <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-      <li> <span class="item {if $view=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-
-     <li> <span class="item {if $view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
-
-    <li> <span class="item {if $view=='transactions'}selected{/if}"  id="transactions">  <span> {t}Stock Transactions{/t}</span></span></li>
-        <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}Stock History{/t}</span></span></li>
-        <li> <span class="item {if $view=='purchase_orders'}selected{/if}"  id="purchase_orders">  <span> {t}Purchase Orders{/t}</span></span></li>
-
-        
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li><span class="item {if $view=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li><span class="item {if $view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
+    <li><span class="item {if $view=='transactions'}selected{/if}"  id="transactions">  <span> {t}Stock Transactions{/t}</span></span></li>
+    <li><span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}Stock History{/t}</span></span></li>
+    <li><span class="item {if $view=='purchase_orders'}selected{/if}"  id="purchase_orders">  <span> {t}Purchase Orders{/t}</span></span></li>
   </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
- 
- 
- 
-
-
- 
-  <div id="block_transactions" class="data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
+ <div id="block_transactions" class="data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
     <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
      <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
@@ -224,8 +214,7 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
 <div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
- 
-  <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+ <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
     <span   class="clean_table_title">{t}Stock History{/t}</span>
 
 
@@ -263,10 +252,8 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
- 
- 
  <div id="block_description" class="data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
-  <div id="block_sales" class="data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+ <div id="block_sales" class="data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
   
   <div   style="margin-top:20px;width:900px">
 
@@ -391,13 +378,8 @@
   </div>
  <div id="block_purchase_orders" class="data_table" style="{if $view!='purchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
 
- 
- 
- 
-
 </div>
 </div>
-
 
 
 </div>{include file='footer.tpl'}

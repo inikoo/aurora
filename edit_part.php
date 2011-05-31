@@ -41,7 +41,6 @@ if(!$part= new Part($part_id))
   exit('Error product not found');
 
 
-
 $smarty->assign('part',$part);
 
 $general_options_list=array();

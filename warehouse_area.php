@@ -28,31 +28,32 @@ $smarty->assign('view_parts',$user->can_view('parts'));
 
 
 
-$show_details=$_SESSION['state']['store']['details'];
-$smarty->assign('show_details',$show_details);
+
 get_header_info($user,$smarty);
 
 $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse Area '));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Map'):_('Show Map')));
 
 $smarty->assign('general_options_list',$general_options_list);
 
 
+$smarty->assign('view',$_SESSION['state']['warehouse_area']['view']);
 
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 
+		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 $yui_path.'container/assets/skins/sam/container.css',
+		 'common.css',
 		 'button.css',
-		 'container.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
+
+
 
 $js_files=array(
 
@@ -68,7 +69,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/dropdown.js',
-		'warehouse.js.php'
+		'warehouse_area.js.php'
 		);
 
 

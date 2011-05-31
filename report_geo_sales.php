@@ -125,28 +125,66 @@ switch ($mode) {
 case 'world':
  $tag='world';
  $js_files[]='report_geo_sales_world.js.php';
-    $view=$_SESSION['state'][$report_name]['view'];
-
+ $view=$_SESSION['state'][$report_name]['world']['view'];
+    $map_link=$_SESSION['state'][$report_name]['world']['map_links'];
 
 
     $smarty->assign('settings_file','conf/world_heatmap_settings.xml');
     $smarty->assign('view',$view);
+    $smarty->assign('map_links',$map_link);
 
 
     $template='report_geo_sales_world.tpl';
     break;
 case 'wregion':
-  $js_files[]='wregion.js.php';
+
+
+  $sql=sprintf("select `World Region`,`Continent`,`Continent Code` from kbase.`Country Dimension` where `World Region Code`=%s",prepare_mysql($tag));
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        $smarty->assign('wregion_name',$row['World Region']);
+                $smarty->assign('continent_name',$row['Continent']);
+
+                $smarty->assign('continent_code',$row['Continent Code']);
+
+    } else {
+        header('Location: report_geo_sales.php?world');
+        print $sql;
+        exit;
+
+    }
+
+
+
+  $js_files[]='report_geo_sales_wregion.js.php';
     $smarty->assign('wregion_code',$tag);
-    $template='wregion.tpl';
+    $template='report_geo_sales_wregion.tpl';
     $_SESSION['state']['wregion']['code']=$tag;
+    
+    
+    
+       $view=$_SESSION['state'][$report_name]['wregion']['view'];
+$map_link=$_SESSION['state'][$report_name]['wregion']['map_links'];
+    $smarty->assign('view',$view);
+    $smarty->assign('map_links',$map_link);
+
+    
 
     break;
 case 'continent':
- $js_files[]='continent.js.php';
+ $js_files[]='report_geo_sales_continent.js.php';
     $smarty->assign('continent_code',$tag);
-    $template='continent.tpl';
+    $template='report_geo_sales_continent.tpl';
     $_SESSION['state']['continent']['code']=$tag;
+    
+    
+       $view=$_SESSION['state'][$report_name]['continent']['view'];
+$map_link=$_SESSION['state'][$report_name]['continent']['map_links'];
+    $smarty->assign('view',$view);
+    $smarty->assign('map_links',$map_link);
+
+    
+    
     break;
 
 case 'country':

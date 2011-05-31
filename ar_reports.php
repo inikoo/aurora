@@ -2109,6 +2109,8 @@ function tax_overview_gb() {
 
     $where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
     $sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+
+
     $data=array();
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -2673,7 +2675,8 @@ function list_country_sales() {
     $_SESSION['state']['report_geo_sales']['countries']['f_field']=$f_field;
     $_SESSION['state']['report_geo_sales']['countries']['f_value']=$f_value;
 
-
+   $mode=$_SESSION['state']['report_geo_sales']['mode'];
+$mode_key=$_SESSION['state']['report_geo_sales']['mode_key'];
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     if ($date_interval['error']) {
         $date_interval['mysql']='';
@@ -2683,7 +2686,14 @@ function list_country_sales() {
     }
 
 
-    $where=sprintf('where true %s ',$date_interval['mysql']);
+    $where=sprintf(' %s ',$date_interval['mysql']);
+
+ $where_geo=' where true ';
+    if($mode=='continent'){
+        $where_geo=sprintf(" where  `Continent Code`=%s",prepare_mysql($mode_key));
+    }elseif($mode=='wregion'){
+        $where_geo=sprintf(" where  `World Region Code`=%s",prepare_mysql($mode_key));
+    }
 
 
     $filter_msg='';
@@ -2697,7 +2707,7 @@ function list_country_sales() {
     elseif($f_field=='continent_code' and $f_value!='')
     $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from kbase.`Country Dimension`  $wheref  ";
+    $sql="select count(*) as total from kbase.`Country Dimension`  $where_geo $wheref  ";
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -2708,7 +2718,7 @@ function list_country_sales() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from kbase.`Country Dimension`    ";
+        $sql="select count(*) as total from kbase.`Country Dimension`  $where_geo   ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -2768,7 +2778,7 @@ function list_country_sales() {
 
 
     $adata=array();
-    $sql="select  `World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension`  $wheref ";
+    $sql="select  `World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension`  $where_geo $wheref ";
 
     //print $sql;
     $res=mysql_query($sql);
@@ -2819,8 +2829,9 @@ function list_country_sales() {
 
 
 
-    $sql="select `Invoice Billing Country 2 Alpha Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`     $where $wheref group by  `Invoice Billing Country 2 Alpha Code`";
-    $res=mysql_query($sql);
+    $sql="select `Invoice Billing Country 2 Alpha Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  $where_geo    $where $wheref group by  `Invoice Billing Country 2 Alpha Code`";
+   //print $sql;
+   $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if (array_key_exists($row['Invoice Billing Country 2 Alpha Code'],$index_array))
             $index=$index_array[$row['Invoice Billing Country 2 Alpha Code']];
@@ -2921,6 +2932,8 @@ function  list_wregion_sales() {
     $_SESSION['state']['report_geo_sales']['wregions']['f_field']=$f_field;
     $_SESSION['state']['report_geo_sales']['wregions']['f_value']=$f_value;
 
+    $mode=$_SESSION['state']['report_geo_sales']['mode'];
+$mode_key=$_SESSION['state']['report_geo_sales']['mode_key'];
 
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     if ($date_interval['error']) {
@@ -2931,7 +2944,12 @@ function  list_wregion_sales() {
     }
 
 
-    $where=sprintf('where true %s ',$date_interval['mysql']);
+    $where=sprintf(' %s ',$date_interval['mysql']);
+
+    $where_geo=' where true ';
+    if($mode=='continent'){
+        $where_geo=sprintf(" where  `Continent Code`=%s",prepare_mysql($mode_key));
+    }
 
 
     $filter_msg='';
@@ -2943,8 +2961,8 @@ function  list_wregion_sales() {
     elseif($f_field=='continent_code' and $f_value!='')
     $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
 
-    $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension`  $wheref  ";
-
+    $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension` $where_geo  $wheref  ";
+//print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -2954,7 +2972,7 @@ function  list_wregion_sales() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension`    ";
+        $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension`  $where_geo  ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -3015,14 +3033,14 @@ function  list_wregion_sales() {
 
     $index_array=array();
     $adata=array();
-    $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`World Region Code` from kbase.`Country Dimension`  $wheref group by `World Region Code` ";
+    $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`World Region Code` from kbase.`Country Dimension` $where_geo $wheref group by `World Region Code` ";
 
-    // print $sql;
+     //print $sql;
     $res=mysql_query($sql);
     $i=0;
     while ($row=mysql_fetch_array($res)) {
-        $wregion_name=sprintf('<a href="region.php?wregion=%s">%s</a>',$row['World Region Code'],$row['World Region']);
-        $wregion_code=sprintf('<a href="region.php?wregion=%s">%s</a>',$row['World Region Code'],$row['World Region Code']);
+        $wregion_name=sprintf('<a href="report_geo_sales.php?wregion=%s">%s</a>',$row['World Region Code'],$row['World Region']);
+        $wregion_code=sprintf('<a href="report_geo_sales.php?wregion=%s">%s</a>',$row['World Region Code'],$row['World Region Code']);
         if ($row['Population']<100000) {
             $population='>0.1M';
         } else {
@@ -3051,8 +3069,9 @@ function  list_wregion_sales() {
     }
     mysql_free_result($res);
 
-    $sql="select `World Region Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`  left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`)   $where $wheref group by  `World Region Code`";
-    $res=mysql_query($sql);
+    $sql="select `World Region Code`,count(*) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as sales from `Invoice Dimension`  left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) $where_geo  $where $wheref group by  `World Region Code`";
+  // print $sql;
+   $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if (array_key_exists($row['World Region Code'],$index_array))
             $index=$index_array[$row['World Region Code']];
@@ -3237,14 +3256,14 @@ function  list_continent_sales() {
 
     $index_array=array();
     $adata=array();
-    $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`Continent Code` from kbase.`Country Dimension`  $wheref group by `Continent Code` ";
+    $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`Continent Code`,`Continent` from kbase.`Country Dimension`  $wheref group by `Continent Code` ";
 
     // print $sql;
     $res=mysql_query($sql);
     $i=0;
     while ($row=mysql_fetch_array($res)) {
-        $continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Continent Code'],$row['World Region']);
-        $continent_code=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Continent Code'],$row['Continent Code']);
+        $continent_name=sprintf('<a href="report_geo_sales.php?continent=%s">%s</a>',$row['Continent Code'],$row['Continent']);
+        $continent_code=sprintf('<a href="report_geo_sales.php?continent=%s">%s</a>',$row['Continent Code'],$row['Continent Code']);
         if ($row['Population']<100000) {
             $population='>0.1M';
         } else {

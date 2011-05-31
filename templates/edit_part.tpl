@@ -8,154 +8,15 @@
     <h2 id="title_description">{$part->get('Part XHTML Description')}</h2>
 </div>
 
-
-
-  
-  <ul class="tabs" id="chooser_ul">
-      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-
-    <li><span  class="item {if $edit=='products'}selected{/if}" id="products" > <span>{t}Products{/t}</span></span></li>
-        <li><span  class="item {if $edit=='suppliers'}selected{/if}" id="suppliers" > <span>{t}Suppliers{/t}</span></span></li>
-    <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
-	</ul>
+<ul class="tabs" id="chooser_ul">
+    <li><span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li><span class="item {if $edit=='products'}selected{/if}" id="products" > <span>{t}Products{/t}</span></span></li>
+    <li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers" > <span>{t}Suppliers{/t}</span></span></li>
+    <li><span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
+</ul>
 
  
-     <div class="tabbed_container" > 
- 
- 
-     
-
-
-<div class="edit_block" {if $edit!="descripton2"}style="display:none"{/if}   id="d_description2">
-	
-	<table style="margin:5px 0px ;xwidth:500px"  border=0 class="edit">
-	 <tr class="title"><td >{t}Type of Product{/t}</td></tr>
-	 <tr>
-	   
-	    
-	    <td style="text-align:center" >
-	      <div class="options" style="margin:0px 0;font-size:140%">
-		<span {if $part->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Simple{/t}</span>
-		<span {if $part->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
-		<span {if $part->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
-	      </div>
-	    </td>
-	    
-	  </tr>
-</table>
-
-
-
-
-	    {if $num_parts==0}
-	  {t}Choose the part{/t} 
-	   
-	    <div id="adding_new_part" style="width:400px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
-	  
-	  {else}
-	  
-	  
-	  
-	  
-	 	  <table class="edit" border=0  id="part_editor_table"   >
-	 	   <tr class="title">
-	 	   <td colspan=2 >{t}Part List{/t}</td>
-	 	   <td colspan=2>
-	 	   <div style="text-align:right;font-weight:100"  id="product_part_items" product_part_key="{$part->get_current_product_part_key()}"  >
-	 
-	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
-	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
-	   <span style="margin-right:10px;" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
-	  </div>
-	 	   </td>
-	 	   </tr>
-	   
-	  {foreach from=$part->get_current_part_list('smarty') key=sku item=part_list}
-	   
-	   <tr  id="part_list{$sku}" sku="{$sku}" class="top title">
-		<td class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
-		<td style="width:120px"><span>{$part_list.part->get_sku()}</span></td>
-		<td style="width:350px">{$part_list.part->get('Part XHTML Description')}</td>
-		<td>
-		<span onClick="remove_part({$sku})" style="cursor:pointer"><img   src="art/icons/delete_bw.png"/> {t}Remove{/t}</span>
-		<span onClick="show_change_part_dialog({$sku},this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> {t}Change{/t}</span>
-		</td>
-	    </tr>
-	   
-	   <tr id="sup_tr2_{$sku}">
-		<td class="label" >{t}Parts Per Product{/t}:</td>
-		<td style="text-align:left;" colspan=3>
-		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part_list.Parts_Per_Product}"  
-		  onblur="part_changed(this)"  onkeyup="part_changed(this)"  
-		  ovalue="{$part_list.Parts_Per_Product}" id="parts_per_product{$sku}"> <span  id="parts_per_product_msg{$sku}"></span></td>
-	      </tr>
-	    
-	    <tr id="sup_tr3_{$sku}" class="last">
-		<td class="label">{t}Note For Pickers{/t}:</td>
-	     <td style="text-align:left" colspan=3>
-	     <input id="pickers_note{$sku}" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="{$part_list.Product_Part_List_Note}" ovalue="{$part_list.Product_Part_List_Note}" ></td>
-	      </tr>
-	      
-	   {/foreach}
-	    
-	  </table>	  
-	  
-	  
-	  {/if}
-	
-	
-	
-
-</div>
-
-
-
-
-
-<div class="edit_block" {if $edit!="dimensions"}style="display:none"{/if}  id="d_dimensions">
-
-
-<div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_weight" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_weight" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
-
-<table class="edit" >
- <tr class="title">
- <td colspan=3>{t}Weight{/t}</td>
- </tr>
-<tr class="first"><td style="" class="label">{t}Unit Weight{/t}:</td>
-   <td  style="text-align:left;width:4em;">
-     <div  style="width:4em;position:relative;top:00px" >
-       <input style="text-align:left;width:4em" id="Product_Unit_Weight" value="{$part->get('Net Weight Per Unit')}" ovalue="{$part->get('Net Weight Per Unit')}" valid="0"> 
-       <div id="Product_Unit_Weight_Container" style="" ></div>
-     </div>
-    
-   </td><td>Kg</td>
-   <td style="width:450px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
- </tr>
-<tr style="display:none">
-<td style="" class="label">{t}Outer Weight{/t}:<br/><small>with packing</small></td>
-   <td  style="text-align:left">
-     <div  style="width:4em;position:relative;top:00px" >
-       <input style="text-align:left;width:4em" id="Product_Outer_Weight" value="{$part->get('Product Gross Weight')}" ovalue="{$part->get('Product Gross Weight')}" valid="0">
-       <div id="Product_Outer_Weight_Container" style="" ></div>
-     </div>
-   </td><td>Kg</td>
-   <td id="Product_Outer_Weight_msg" class="edit_td_alert"></td>
- </tr>
-
-
-</table>
-
-
-
-
-
-</div>
-
+<div class="tabbed_container" > 
 <div class="edit_block" {if $edit!="products"}style="display:none"{/if}  id="d_products">
  
  {t}Add new part{/t} 
@@ -269,7 +130,6 @@
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
     {include file='edit_images_splinter.tpl'}
 </div>
-
 <div class="edit_block" {if $edit!="description"}style="display:none"{/if}"  id="d_description">
 
 <div class="general_options" style="float:right">
@@ -279,18 +139,10 @@
 	
       </div>
 
-<table class="edit">
+<table class="edit"  style="width:700px">
  <tr class="title"><td colspan=5>{t}Units{/t}</td></tr>
-<tr class="first"><td style="" class="label">{t}Units Per Outer{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Product_Units_Per_Case" value="{$part->get('Product Units Per Case')}" ovalue="{$part->get('Product Units Per Case')}" valid="0">
-       <div id="Product_Units_Per_Case_Container" style="" ></div>
-     </div>
-   </td>
-   <td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
- </tr>
-<tr><td style="" class="label">{t}Units Type{/t}:</td>
+
+<tr><td style="width:120px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
 
 <select>
@@ -302,10 +154,51 @@
 
 
    </td>
-   <td id="Product_Units_Type_msg" class="edit_td_alert"></td>
+   <td id="Part_Units_Type_msg" class="edit_td_alert"></td>
  </tr>
 
+<tr class="first"><td style="" class="label">{t}Unit Description{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Part_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0">
+       <div id="Part_Description_Container" style="" ></div>
+     </div>
+   </td>
+   <td style="width:200px" id="Part_Description_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ <tr><td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0">
+       <div id="Part_Gross_Weight_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
+ </tr>
+ 
 
+ 
+  <tr><td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0">
+       <div id="Part_Gross_Weight_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+   <tr><td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0">
+       <div id="Part_Gross_Weight_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
+ </tr>
+ 
 </table>
 
 
@@ -317,32 +210,28 @@
 	
       </div>
 
-<table class="edit">
- <tr class="title"><td colspan=5>{t}Name / Description{/t}</td></tr>
-<tr class="first"><td style="" class="label">{t}Product Name{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Product_Name" value="{$part->get('Product Name')}" ovalue="{$part->get('Product Name')}" valid="0">
-       <div id="Product_Name_Container" style="" ></div>
-     </div>
-   </td>
-   <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
- </tr>
-<tr><td style="" class="label">{t}Special Characteristic{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Product_Special_Characteristic" value="{$part->get('Product Special Characteristic')}" ovalue="{$part->get('Product Special Characteristic')}" valid="0">
-       <div id="Product_Special_Characteristic_Container" style="" ></div>
-     </div>
-   </td>
-   <td id="Product_Special_Characteristic_msg" class="edit_td_alert"></td>
- </tr>
-<tr><td style="" class="label">{t}Product Description{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="height:100px;width:25em;position:relative;top:00px" >
+<table class="edit" border=0 style="width:700px">
+ <tr class="title"><td colspan=5>{t}Description{/t}</td></tr>
 
-<textarea id="Product_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Product Description')}"  ovalue="{$part->get('Product Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Product Description')}</textarea>
-       
+
+
+
+
+<tr><td style="width:200px" class="label">{t}General Description{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:25em;position:" >
+    <textarea id="Product_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Product Description')}"  ovalue="{$part->get('Product Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Product Description')}</textarea>
+       <div id="Product_Description_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Product_Description_msg" class="edit_td_alert"></td>
+ </tr>
+
+<tr>
+<td style="width:200px" class="label">{t}Health & Safety{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:25em;" >
+    <textarea id="Product_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Product Description')}"  ovalue="{$part->get('Product Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Product Description')}</textarea>
        <div id="Product_Description_Container" style="" ></div>
      </div>
    </td>

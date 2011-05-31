@@ -1837,7 +1837,7 @@ left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B
            //print_r($pl_data);
             $part_location=new PartLocation('find',$pl_data
                                             ,'create');
-            //print_r($part_location);
+           // print_r($part_location);
             if ($part_location->found) {
 
                 $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') and `Part SKU`=%d and `Location Key`=%d  limit 1 "

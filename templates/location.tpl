@@ -1,40 +1,40 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-<div id="bd" >
+<div id="bd" style="padding:0">
+<div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
  <div style="clear:left;"> 
  <span class="branch" ><a  href="warehouse.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')}({$location->get('Warehouse Code')})</a> &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')}({$location->get('Warehouse Area Code')})</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if}</span>
  </div>
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-    <h1>{t}Location{/t}: {$location->get('Location Code')}
-    {if $next.id>0}<a class="prev" href="location.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.code}"  /></a></span>{/if}
-    {if $next.id>0}<a class="next" href="location.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.code}"  /></a></span>{/if}
-     </h1>
+    <h1>{t}Location{/t}: {$location->get('Location Code')} </h1>
   </div>
+</div>
 
 
 
-<div id="info" style="{if !$show_details}display:none;{/if}">
- <h1>{t}Location{/t}: {$location->get('Location Code')}
-    {if $next.id>0}<a class="prev" href="location.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.code}"  /></a></span>{/if}
-    {if $next.id>0}<a class="next" href="location.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.code}"  /></a></span>{/if}
-     </h1>
-  <div style="clear:left;margin-top:5px;width:20em">
-    <table class="show_info_product">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+    <li> <span class="item {if $view=='parts'}selected{/if}"  id="parts">  <span> {t}Parts{/t}</span></span></li>
+    <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}Stock History{/t}</span></span></li>
+</ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+
+<div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+ <table class="show_info_product">
       <tr><td>{t}Location{/t}:</td><td style="font-weight:800">{$location->get('Location Code')}</td></tr>
       <tr><td>{t}Used for{/t}:</td><td>{$location->get('Location Mainly Used For')}</td></tr>
       <tr><td>{t}Max Capacity{/t}:</td><td>{$location->get('Location Max Volume')}</td></tr>
       <tr><td>{t}Max Weight{/t}:</td><td>{$location->get('Location Max Weight')}</td></tr>
       <tr><td>{t}Max Slots{/t}:</td><td>{$location->get('Location Max Slots')}</td></tr>
-
     </table>
 
-
-</div>
-</div>
 <div id="plot" style="{if !$show_details}display:none;{/if}"></div>
+</div>     
 
-<div id="the_table1" class="data_table" style=" clear:both;padding-top:10px">
+<div id="block_parts" style="{if $view!='parts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
 
   <div style="">
     <div style="float:right;padding:0;margin:0">
@@ -75,9 +75,11 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
   </div>
   <div  id="table1" style="font-size:90%"  class="data_table_container dtable btable "> </div>
+
 </div>
 
-<div id="the_table0" class="data_table" style="clear:both;padding-top:10px">
+<div id="block_history" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
   
   <span class="clean_table_title">{t}History{/t}</span>
   <div  id="clean_table_caption0" class="clean_table_caption"  style="clear:both;">
@@ -87,7 +89,11 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0" style="font-size:90%"  class="data_table_container dtable btable "> </div>
+
 </div>
+
+
+
 
       
 

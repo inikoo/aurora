@@ -36,22 +36,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
-$loc= new Location(1);
-if (!$loc->id)
-    mysql_query($sql);
-$sql2=
-    "INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
-$loc= new Location(2);
-if (!$loc->id)
-    mysql_query($sql2);
 
-$wa_data=array(	'Warehouse Area Name'=>'Unknown',
-                'Warehouse Area Code'=>'Unk',
-                'Warehouse Key'=>1
-              );
-
-$wa=new WarehouseArea('find',$wa_data,'create');
 
 
 
@@ -63,7 +48,7 @@ $location_code=_trim($row2['code']);
 
 //if (!preg_match('/^\d+[a-z]\d+$/i',$location_code))
 //continue;
-if (!preg_match('/^(\d+\-\d+\-\d+|\d+[a-z]+\d+)$/i',$location_code)){
+if (!preg_match('/^(\d+\-\d+\-\d+|\d+[a-z]+\d+|[a-z]\-[a-z]\d|[a-z]{2}\d|\d{3\-\d{2}}|\d{1,2}\-\d{1,2}[a-z]\d|\d{1,3}\-\d{1,3})$/i',$location_code)){
 print "$location_code\n";
 continue;
 }

@@ -1299,7 +1299,7 @@ function list_warehouses(){
  
     
 
-      $conf=$_SESSION['state']['warehouses']['table'];
+      $conf=$_SESSION['state']['warehouses']['warehouses'];
      
       $conf_table='warehouses';
 
