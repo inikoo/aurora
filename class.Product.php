@@ -1707,7 +1707,7 @@ return $part_locations;
 
   /*
     Method: load
-    Carga y actualiza datos de la tabla Product Dimension, extrae información de Product Part List,Supplier Product Dimension,Part Dimension
+    Carga y actualiza datos de la tabla Product Dimension, extrae informaci√≥n de Product Part List,Supplier Product Dimension,Part Dimension
   */
 
   function load($key) {
@@ -2425,7 +2425,7 @@ function add_image($image_key,$args='') {
   // JFA
 
   function removeaccents($string) {
-    return strtr($string,"é","e");
+    return strtr($string,"√©","e");
   }
 
 
@@ -5676,10 +5676,10 @@ function get_parts_objects(){
 function get_full_order_form(){
 
     if ($this->locale=='de_DE') {
-	$out_of_stock='nicht vorrätig';
+	$out_of_stock='nicht vorr√§tig';
 	$discontinued='ausgelaufen';
       }if ($this->locale=='de_DE') {
-	$out_of_stock='nicht vorrätig';
+	$out_of_stock='nicht vorr√§tig';
 	$discontinued='ausgelaufen';
       }
 elseif($this->locale=='es_ES') {
@@ -5739,14 +5739,14 @@ elseif($this->locale=='es_ES') {
 function get_order_list_form($data){
    
       if ($this->locale=='de_DE') {
-	$out_of_stock='nicht vorrätig';
+	$out_of_stock='nicht vorr√§tig';
 	$discontinued='ausgelaufen';
       }
       elseif($this->locale=='fr_FR') {
 	$out_of_stock='Rupture de stock';
 	$discontinued='Rupture de stock';
       }elseif($this->locale=='pl_PL') {
-	$out_of_stock='Chwilowo Niedostępne';
+	$out_of_stock='Chwilowo Niedostƒôpne';
 	$discontinued='Wyprzedane';
       }elseif($this->locale=='es_ES') {
 	$out_of_stock='Fuera de Stock';

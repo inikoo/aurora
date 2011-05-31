@@ -36,13 +36,6 @@ var link='report_geo_sales.php'
 			        ,{key:"sales_formated", label:"<?php echo _('Sales')?>",width:100 ,sortable:true,className:"aright",sortOptions:{field: "sales",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 			      ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				 
-			      
-	     
-
-
-			
-			
 			];
 			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=country_sales&tableid=0");
@@ -106,8 +99,6 @@ var tableid=1;
 		      var ColumnDefs = [
 		      		{key:"wregion_code", label:"<?php echo _('Code')?>",width:80, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"wregion_name", label:"<?php echo _('World Region')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					// ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      // ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			     ,{key:"invoices_formated", label:"<?php echo _('Invoices')?>",width:200 ,sortable:true,className:"aright",sortOptions:{field: "invoices",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 			        ,{key:"sales_formated", label:"<?php echo _('Sales')?>",width:100 ,sortable:true,className:"aright",sortOptions:{field: "sales",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 			     
@@ -161,68 +152,6 @@ var tableid=1;
 		    //  this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
                //    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['report_geo_sales']['wregions']['f_field']?>',value:'<?php echo$_SESSION['state']['report_geo_sales']['wregions']['f_value']?>'};
-// -------------------------------------------------- continents table starts here --------------------------------------
-var tableid=2;
-		      var tableDivEL="table"+tableid;
-		      
-		      var ColumnDefs = [
-		      		{key:"continent_code", label:"<?php echo _('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"continent_name", label:"<?php echo _('Continents')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					// ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			   //    ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			         ,{key:"invoices_formated", label:"<?php echo _('Invoices')?>",width:200 ,sortable:true,className:"aright",sortOptions:{field: "invoices",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			        ,{key:"sales_formated", label:"<?php echo _('Sales')?>",width:100 ,sortable:true,className:"aright",sortOptions:{field: "sales",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			 
-					];
-		    
-		      
-		      this.dataSource2 = new YAHOO.util.DataSource("ar_reports.php?tipo=continent_sales&tableid=2");
-		      this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		      this.dataSource2.connXhrMode = "queueRequests";
-		      this.dataSource2.responseSchema = {
-			  resultsList: "resultset.data", 
-			  metaFields: {
-			    rowsPerPage:"resultset.records_perpage",
-			    rtext:"resultset.rtext",
-			     rtext_rpp:"resultset.rtext_rpp",
-			    sort_key:"resultset.sort_key",
-			    sort_dir:"resultset.sort_dir",
-			    tableid:"resultset.tableid",
-			    filter_msg:"resultset.filter_msg",
-			    totalRecords: "resultset.total_records"
-			  },
-			  
-			  fields: [
-				  "continent_name","continent_code","population","gnp",'sales','sales_formated',"_name","_code","invoices",'invoices_formated'
-				   ]};
-		      
-		    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource2
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['report_geo_sales']['continents']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-									  })
-								   
-								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['report_geo_sales']['continents']['order']?>",
-								       dir: "<?php echo $_SESSION['state']['report_geo_sales']['continents']['order_dir']?>"
-								   }
-								//   ,dynamicData : true
-								 
-							       }
-							       );
-		      this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
-		  //    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
-		  //    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-            //       this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['report_geo_sales']['continents']['f_field']?>',value:'<?php echo$_SESSION['state']['report_geo_sales']['continents']['f_value']?>'};	    
 
 	
 	};
@@ -230,20 +159,20 @@ var tableid=2;
 
 
 function change_block(){
-ids=['overview','map','continents','wregions','countries'];
+ids=['overview','map','wregions','countries'];
 block_ids=['block_overview','block_map','block_continents','block_wregions','block_countries'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_geo_sales-world-view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_geo_sales-continent-view&value='+this.id ,{});
 }
 
 
 
 function change_map_link(){
-ids=['map_links_countries','map_links_continents','map_links_wregions'];
+ids=['map_links_countries','map_links_wregions'];
 map_ids=['map_countries','map_continents','map_wregions'];
 
 Dom.removeClass(ids,'selected');
@@ -252,15 +181,15 @@ var the_id=this.id.replace("map_links_", "");
 Dom.setStyle(map_ids,'display','none');
 Dom.setStyle('map_'+the_id,'display','');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_geo_sales-world-map_links&value='+escape(      the_id     ),{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_geo_sales-continent-map_links&value='+escape(      the_id     ),{});
 }
 
  function init(){
 
- ids=['overview','map','continents','wregions','countries'];
+ ids=['overview','map','wregions','countries'];
 YAHOO.util.Event.addListener(ids, "click",change_block);
 
- var ids=['map_links_countries','map_links_continents','map_links_wregions'];
+ var ids=['map_links_countries','map_links_wregions'];
 YAHOO.util.Event.addListener(ids, "click",change_map_link);
 
  

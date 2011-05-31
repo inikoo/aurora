@@ -23,7 +23,6 @@
     <li> <span class="item {if $view=='overview'}selected{/if}"  id="overview">  <span> {t}Sales Overview{/t}</span></span></li>
     <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
     <li> <span class="item {if $view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
-   
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 

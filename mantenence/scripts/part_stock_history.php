@@ -34,7 +34,7 @@ date_default_timezone_set('UTC');
 $where='and  `Part XHTML Currently Used In` like "%avalon-01%"';
 $where='and `Part SKU`=4303';
 $where='';
-$sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s ',$where);
+$sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s   order by `Part Valid From` desc ',$where);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $total=$row['num'];
@@ -51,7 +51,7 @@ while($row=mysql_fetch_array($res)){
 
   $part=new Part($row['Part SKU']);
 
-  print percentage($count,$total,5)."  ".$part->data['Part SKU']."\n";
+  print percentage($count,$total,5)."  ".$part->data['Part SKU']."\r";
  $part->update_stock_history();
 
 

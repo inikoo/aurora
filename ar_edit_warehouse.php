@@ -46,7 +46,12 @@ case('new_shelf_type'):
   new_shelf($data);
   break;
 case('new_location'):
-  new_location();
+ $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+
+  new_location($data);
   break;
   case('edit_warehouse_areas'):
 case('warehouse_areas'):
@@ -554,36 +559,23 @@ function list_warehouse_areas_for_edition(){
 
    }
 
-function new_location(){
+function new_location($data){
 global $editor;
 
-if( !isset($_REQUEST['values']) ){
-    $response=array('state'=>400,'msg'=>'Error no value');
-    echo json_encode($response);
-    return;
-   }
+
    
-   $tmp=preg_replace('/\\\"/','"',$_REQUEST['values']);
-   $tmp=preg_replace('/\\\\\"/','"',$tmp);
-   
-   $raw_data=json_decode($tmp, true);
-   if(!is_array($raw_data)){
-     $response=array('state'=>400,'msg'=>'Wrong value');
-     echo json_encode($response);
-     return;
-   }
-
-   if(!isset($raw_data['Location Warehouse Area Key'])  or !is_numeric($raw_data['Location Warehouse Area Key']) ){
-     $response=array('state'=>400,'msg'=>'Wrong value');
-     echo json_encode($response);
-     return;
+//print_r($data['values']);
+  
+  
+   if(!isset($data['values']['Location Warehouse Area Key'])  or !is_numeric($data['values']['Location Warehouse Area Key']) ){
+    $data['values']['Location Warehouse Area Key']=1;
    }
 
 
 
-   // print_r($raw_data);
+   // print_r($data['values']);
 
-   $warehouse_area=new WarehouseArea($raw_data['Location Warehouse Area Key']);
+   $warehouse_area=new WarehouseArea($data['values']['Location Warehouse Area Key']);
    
    if(!$warehouse_area->id){
      $response=array('state'=>400,'msg'=>'Wrong Warehouse Area');
@@ -592,13 +584,14 @@ if( !isset($_REQUEST['values']) ){
    }
 	
 
-   $raw_data['editor']=$editor;
+   $data['values']['editor']=$editor;
  
-   $warehouse_area->add_location($raw_data);
-   if($warehouse_area->new_area){
+   $warehouse_area->add_location($data['values']);
+   if($warehouse_area->updated){
      $response=array(
 		     'state'=>200
 		     ,'action'=>'created'
+		     ,'location_key'=>$warehouse_area->new_location->id
 		     ,'msg'=>_('Location added to Warehouse Area')
 		     );
      echo json_encode($response);

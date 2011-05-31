@@ -44,7 +44,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouses']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouses']['warehouses']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -53,8 +53,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouses']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouses']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouses']['warehouses']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouses']['warehouses']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -62,7 +62,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouses']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouses']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouses']['warehouses']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouses']['warehouses']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 	
@@ -70,10 +70,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+   
+
+function change_block(){
+ ids=['warehouses','areas','shelfs','locations','parts'];
+block_ids=['block_warehouses','block_areas','block_shelfs','block_locations','block_parts'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouses-view&value='+this.id ,{});
+}
 
 
 
  function init(){
+
+ ids=['warehouses','areas','shelfs','locations','parts'];
+  Event.addListener(ids, "click",change_block);
+
+ 
 YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'warehouses');
  YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'warehouses'});
   csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
@@ -87,20 +104,7 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'warehouses');
  var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS0);
  oAutoComp0.minQueryLength = 0; 
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
 
-
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["filter_name0","tr", "bl"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
 
 
 
@@ -145,5 +149,23 @@ YAHOO.util.Event.addListener(ids, "click",change_view);
 
 
  }
+ 
+ 
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["filter_name0","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });

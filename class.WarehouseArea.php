@@ -247,15 +247,18 @@ var $warehouse=false;
  
 
   function add_location($data){
-    $this->new_area=false;
+    $this->updated=false;
     $data['Location Warehouse Key']=$this->data['Warehouse Key'];
     $data['Location Warehouse Area Key']=$this->id;
 
     $location= new Location('find',$data,'create');
     $this->new_location_msg=$location->msg;
-    if($location->new)
-      $this->new_location=true;
-    else{
+    if($location->new){
+      
+      $this->updated=true;
+      $this->new_location=$location;
+         
+    }else{
       if($location->found)
 	$this->new_location_msg=_('Location Code already in the warehouse');
     }

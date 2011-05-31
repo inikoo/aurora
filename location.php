@@ -43,12 +43,12 @@ $smarty->assign('modify_stock',$modify_stock);
 $view_suppliers=$user->can_view('suppliers');
 $view_cust=$user->can_view('customers');
 
-$show_details=$_SESSION['state']['location']['details'];
-$smarty->assign('show_details',$show_details);
+$smarty->assign('view',$_SESSION['state']['location']['view']);
+
+
 $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_location.php?id='.$location_id,'label'=>_('Edit Location'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -69,13 +69,10 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 $yui_path.'container/assets/skins/sam/container.css',
-
 		 'common.css',
-		 //	 'container.css',
 		 'button.css',
 		 'table.css',
-		 		 'css/dropdown.css'
-
+		 'css/dropdown.css'
 		 );
 include_once('Theme.php');
 $js_files=array(

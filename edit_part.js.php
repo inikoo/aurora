@@ -123,19 +123,10 @@ function validate_part_rrp(query){
 
 function change_block(e){
  
- 	var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
- 	var block_ids = ["d_description","d_pictures","d_prices","d_parts","d_dimat","d_config","d_web"]; 
+ 	var ids = ["description","pictures","products","suppliers"]; 
+ 	var block_ids = ["d_description","d_pictures","d_products","d_suppliers"]; 
 
- 
-	if(this.id=='pictures'){
-	    Dom.get('info_name').style.display='';
-	}else
-	    Dom.get('info_name').style.display='none';
 
-	if(this.id=='xprices'){
-	    Dom.get('info_price').style.display='';
-	}else
-	    Dom.get('info_price').style.display='none';
 	
 	Dom.setStyle(block_ids,'display','none');
 		Dom.setStyle('d_'+this.id,'display','');
@@ -147,7 +138,7 @@ function change_block(e){
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id,{} );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-edit&value='+this.id,{} );
 }
 
 function save_edit_description(){
@@ -518,9 +509,11 @@ close_add_part_dialog();
 
 
 
-
-
 function init(){
+
+ var ids = ["description","pictures","products","suppliers"]; 
+    Event.addListener(ids, "click", change_block);
+
 Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});
     Editor_change_part.render();
     
@@ -537,8 +530,7 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 
 
 
-    var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
-    Event.addListener(ids, "click", change_block);
+   
     
     Event.addListener('save_edit_part_description', "click", save_edit_description);
     Event.addListener('reset_edit_part_description', "click", reset_edit_description);

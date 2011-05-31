@@ -34,7 +34,7 @@ $to_update=array(
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
     print "Error can not connect with database server\n";
-     print "->End.(GO DE) ".date("r")."\n";
+    print "->End.(GO DE) ".date("r")."\n";
     exit;
 }
 
@@ -42,7 +42,7 @@ if (!$con) {
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
-     print "->End.(GO DE) ".date("r")."\n";
+    print "->End.(GO DE) ".date("r")."\n";
     exit;
 }
 date_default_timezone_set('UTC');
@@ -56,7 +56,7 @@ include_once('../../set_locales.php');
 
 require_once '../../conf/conf.php';
 require('../../locale.php');
- print "->Start.(GO DE) ".date("r")."\n";
+print "->Start.(GO DE) ".date("r")."\n";
 
 $_SESSION['locale_info'] = localeconv();
 
@@ -102,9 +102,9 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  de_orders_data.orders  where   deleted='Yes'    ";
-   $res=mysql_query($sql);
+$res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
- $order_data_id=$row2['id'];
+    $order_data_id=$row2['id'];
     delete_old_data();
 }
 
@@ -963,7 +963,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             if (!$product->id) {
                 print_r($product_data);
                 print "Error inserting a product\n";
-                 print "->End.(GO DE) ".date("r")."\n";
+                print "->End.(GO DE) ".date("r")."\n";
                 exit;
             }
 
@@ -1088,7 +1088,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     print_r($product);
                     print "->End.(GO DE) ".date("r")."\n";
                     exit("error: $sql");
-                     
+
                 }
                 mysql_free_result($res_x);
 
@@ -1108,10 +1108,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
                 if (!$product_part_key) {
-                print "Error can not find product part list (get_orders_db)\n";
-                print "->End.(GO DE) ".date("r")."\n";
+                    print "Error can not find product part list (get_orders_db)\n";
+                    print "->End.(GO DE) ".date("r")."\n";
                     exit();
-                     
+
                 }
 
                 $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
@@ -1266,8 +1266,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         chdir('mantenence/scripts/');
 
         if ($exchange==0) {
-        print "error exhange is zero for $exchange_date  ($date_order - $date_inv)  \n";
- print "->End.(GO DE) ".date("r")."\n";
+            print "error exhange is zero for $exchange_date  ($date_order - $date_inv)  \n";
+            print "->End.(GO DE) ".date("r")."\n";
             exit();
         }
         list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
@@ -1319,57 +1319,56 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         //print_r($data['Customer Data']);
 
 
-   $customer_done=false;
-            $customer_posible_key=0;
-            if ($customer_key_from_order_data) {
-                    print "use prev ";
-                $customer_posible_key=$customer_key_from_order_data;
-                $customer = new Customer($customer_key_from_order_data);
-                $customer_done=true;
-            }
-            else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-                $customer_posible_key=$act_data['act'];
-                $customer = new Customer($act_data['act']);
-                $customer_done=true;
-            }
-            
-             if ($customer_posible_key) {
-                if(!$customer->id){
+        $customer_done=false;
+        $customer_posible_key=0;
+        if ($customer_key_from_order_data) {
+            print "use prev ";
+            $customer_posible_key=$customer_key_from_order_data;
+            $customer = new Customer($customer_key_from_order_data);
+            $customer_done=true;
+        } else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+            $customer_posible_key=$act_data['act'];
+            $customer = new Customer($act_data['act']);
+            $customer_done=true;
+        }
+
+        if ($customer_posible_key) {
+            if (!$customer->id) {
                 $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
                 $res2=mysql_query($sql);
                 if ($row2=mysql_fetch_assoc($res2)) {
                     $customer=new Customer($row2['Customer Key']);
                     $customer_done=true;
                 }
-                }
             }
+        }
 
-            
-            if(!$customer_done or !$customer->id) {
-                
-               $customer = new Customer ( 'find', $data['Customer Data'] );
-            }
-            
-            if (!$customer->id) {
-                           $customer = new Customer ( 'find create', $data['Customer Data'] );
-            }
-         
 
-        
-        
-        
-        
+        if (!$customer_done or !$customer->id) {
+
+            $customer = new Customer ( 'find', $data['Customer Data'] );
+        }
+
+        if (!$customer->id) {
+            $customer = new Customer ( 'find create', $data['Customer Data'] );
+        }
+
+
+
+
+
+
         if (!$customer->id) {
             print "Error !!!! customer not found\n";
             continue;
         }
-        
-        if($customer->data['Customer Store Key']!=$store->id){
-             print "Error !!!! customer from another store\n";
+
+        if ($customer->data['Customer Store Key']!=$store->id) {
+            print "Error !!!! customer from another store\n";
             continue;
         }
-        
-        
+
+
         $sql=sprintf("update de_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
         //print $sql;
         mysql_query($sql);
@@ -1473,16 +1472,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "Unknown ".$header_data['ltipo'];
             break;
         }
-        
-     $customer->update_orders();
+
+        $customer->update_orders();
         $store->update_customer_activity_interval();
         $customer->update_activity();
-         $customer->update_is_new();
+        $customer->update_is_new();
         $store->update_orders();
         $store->update_customers_data();
-        
-         $store->update_up_today_sales();
-         $store->update_last_period_sales();
+
+        $store->update_up_today_sales();
+        $store->update_last_period_sales();
         $store->update_interval_sales();
 
         print "\n";
@@ -1509,16 +1508,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         }
-        
-        
-        
+
+
+
     }
     mysql_free_result($result);
 }
 mysql_free_result($res);
 update_data($to_update);
 
- print "->End.(GO DE) ".date("r")."\n";
+print "->End.(GO DE) ".date("r")."\n";
 //  print_r($data);
 //print "\n$tipo_order\n";
 

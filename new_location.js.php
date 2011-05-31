@@ -4,7 +4,6 @@ location_draw_height=300;
 
 var individual_location_data =new Object;
 var current_shape='Box';
-  //START OF THE TABLE=========================================================================================================================
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 		var tableid=0; // Change if you have more the 1 table
@@ -125,8 +124,8 @@ function shape_type_changed(){
 
 
 function get_block(){
-alert(this.id)
-    Dom.get('wellcome').innerHTML='<?php echo _('Adding new location')?>';
+
+    Dom.get('welcome').innerHTML='<?php echo _('Adding new location')?>';
     Dom.get('the_chooser').style.display='none';
     Dom.get('block_'+this.id).style.display='';
 	
@@ -167,22 +166,27 @@ function reset_location_data(){
 }
 
 
-function add_location(){
+function save_add_location(){
 
     get_location_data();
     var json_value = YAHOO.lang.JSON.stringify(individual_location_data);
     var request='ar_edit_warehouse.php?tipo=new_location&values=' + encodeURIComponent(json_value); 
-    //alert(request)
+    alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	  alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
-		    reset_location_data();
-		    var table=tables['table0']
-		    var datasource=tables['dataSource0'];
+		
+		
+		    window.location='location.php?r=nl&id='+r.location_key;
+		
+		    //reset_location_data();
+		    //var table=tables['table0']
+		    //var datasource=tables['dataSource0'];    
+		    //datasource.sendRequest('',table.onDataReturnInitializeTable, table);
 		    
-		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+		    
 		}else if(r.action=='error'){
 		    alert(r.msg);
 		}
@@ -193,59 +197,6 @@ function add_location(){
 	});
 
 }
-
-
-function init(){
-    var ids = ["individual","shelf","rack","floor"]; 
-    YAHOO.util.Event.addListener(ids, "click", get_block);
-
-    YAHOO.util.Event.addListener('add_location', "click", add_location);
-
-    var waDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
-     waDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
- 	waDS.responseSchema = {
- 	    resultsList : "data",
- 	    fields : ["name","code","key"]
- 	};
-	var waAC = new YAHOO.widget.AutoComplete("location_area", "location_area_container", waDS);
-	waAC.generateRequest = function(sQuery) {
-
-	    return "?tipo=find_warehouse_area&parent_key=0&query=" + sQuery ;
-	};
-	waAC.forceSelection = true; 
-	wa_selected= function(sType, aArgs) {
-	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
-	    Dom.get("location_warehouse_area_key").value = oData[2];
-	    
-	};
-	waAC.itemSelectEvent.subscribe(wa_selected); 
-
-
-
-	var R = Raphael("paper",300,300 );
- 
-	
-
-	iso=draw_isometric_box(100,200,50,300,300);
-	var b = R.path(iso.svg_path_base);
-	b.translate(iso.translate.x,iso.translate.y);
-	b.attr("fill", "#a8bcd7");
-	var c = R.path(iso.svg_path);
-	c.translate(iso.translate.x,iso.translate.y);
-	c.attr({"fill": "#fff","fill-opacity":.7});
-	var t = R.path(iso.svg_path_top);
-	t.translate(iso.translate.x,iso.translate.y);
-	t.attr({"fill": "#fff","fill-opacity":.9});
-	var t = R.text(50, 50, "Area 1");
-	t.rotate(-30);
-// following line will paint first letter in red
-	
-
-
-}
-YAHOO.util.Event.onDOMReady(init);
-
-
 
 function draw_location(){
     	iso=draw_isometric_box(100,200,50,300,300);
@@ -260,9 +211,6 @@ function draw_location(){
 	t.attr({"fill": "#fff","fill-opacity":.9});
 
 }
-
-
-
 function draw_isometric_box(width,height,deep,canvas_width,canvas_height){
     var path3d=new Array();
     var svg_path='';
@@ -355,7 +303,6 @@ function draw_isometric_box(width,height,deep,canvas_width,canvas_height){
     return ret_data;
 
 }
-
 function isometric_transformation(path3d){
     
     var sqrt3=1.73205;
@@ -393,3 +340,60 @@ function isometric_transformation(path3d){
      }
      return data;
 }
+
+function init(){
+
+
+
+
+    var ids = ["individual","shelf","rack","floor"]; 
+    YAHOO.util.Event.addListener(ids, "click", get_block);
+
+    YAHOO.util.Event.addListener('add_location', "click", save_add_location);
+
+    var waDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
+     waDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	waDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["name","code","key"]
+ 	};
+	var waAC = new YAHOO.widget.AutoComplete("location_area", "location_area_container", waDS);
+	waAC.generateRequest = function(sQuery) {
+
+	    return "?tipo=find_warehouse_area&parent_key=0&query=" + sQuery ;
+	};
+	waAC.forceSelection = true; 
+	wa_selected= function(sType, aArgs) {
+	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+	    Dom.get("location_warehouse_area_key").value = oData[2];
+	    
+	};
+	waAC.itemSelectEvent.subscribe(wa_selected); 
+
+
+
+	var R = Raphael("paper",300,300 );
+ 
+	
+
+	iso=draw_isometric_box(100,200,50,300,300);
+	var b = R.path(iso.svg_path_base);
+	b.translate(iso.translate.x,iso.translate.y);
+	b.attr("fill", "#a8bcd7");
+	var c = R.path(iso.svg_path);
+	c.translate(iso.translate.x,iso.translate.y);
+	c.attr({"fill": "#fff","fill-opacity":.7});
+	var t = R.path(iso.svg_path_top);
+	t.translate(iso.translate.x,iso.translate.y);
+	t.attr({"fill": "#fff","fill-opacity":.9});
+	var t = R.text(50, 50, "Area 1");
+	t.rotate(-30);
+// following line will paint first letter in red
+	
+
+
+}
+YAHOO.util.Event.onDOMReady(init);
+
+
+
