@@ -94,4 +94,16 @@ while($row=mysql_fetch_array($result)   ){
 }
 
 
+$sql="select * from `Part Dimension`  ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $part=new Part('sku',$row['Part SKU']);
+$part->update_estimated_future_cost();
+  $part->load('used in');
+  $part->load('supplied by');
+  $part->load('sales');
+
+}
+
+
 ?>

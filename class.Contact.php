@@ -1871,6 +1871,9 @@ $this->parent=$parent;
     function update_principal_email($email_key) {
         $main_email_key=$this->get_principal_email_key();
 
+
+
+
         if ($main_email_key!=$email_key) {
             $email=new Email($email_key);
 
@@ -2757,7 +2760,7 @@ $this->parent=$parent;
 
 
     public function update($data,$options='') {
-        // print_r($this->data);
+      //  print_r($data);
         if (isset($data['editor'])) {
             foreach($data['editor'] as $key=>$value) {
 
@@ -2933,7 +2936,7 @@ $this->parent=$parent;
             $this->update_Contact_Name($old_value);
             break;
         case('Contact Main Plain Email'):
-      
+    
             $main_email_key=$this->get_principal_email_key();
 
             if ($value=='') {
@@ -2949,8 +2952,17 @@ $this->parent=$parent;
                 $email_data['editor']=$this->editor;
                 $email=new Email('find',$email_data);
 
-                if ($email->found) {
 
+			
+
+       //         if ($email->found) {
+                
+              
+                
+					//	 $this->update_principal_email($email->id);
+                   //         return;
+
+				/*
                     $email_contacts_keys=$email->get_parent_keys('Contact');
                     
                     $number_contact_keys=count($email_contacts_keys);
@@ -2978,7 +2990,9 @@ $this->parent=$parent;
                             return;
 
                     }
-                }
+                    
+                    */
+              //  }
                 
                
 
@@ -4688,7 +4702,7 @@ $this->parent=$parent;
                      
                      ,$this->id);
         $result=mysql_query($sql);
-        //print $sql;
+        print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $keys[$row['Subject Key']]= $row['Subject Key'];
 

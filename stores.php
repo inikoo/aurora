@@ -249,91 +249,15 @@ $smarty->assign('paginator_menu3',$paginator_menu);
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['code']),
-                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['name']),
-                                                             'departments'=>array('label'=>_('Departments'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['departments']),
-                                                             'families'=>array('label'=>_('Families'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['families']),
-                                                             'products'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['products']),
-                                                   
-                                                             'discontinued'=>array('label'=>_('Discontinued'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['discontinued']),
-                                                             'new'=>array('label'=>_('New'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['new']),
+                                                             'description'=>array('label'=>_('Description'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['description']),
+                                                             'stock'=>array('label'=>_('Stock'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['stock']),
+                                                             'sales'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales']),
+                                                            
                                                      
                                                          )
                                                      )
-                                          ),
-                            'stock'=>array(
-                                        'title'=>_('Stock'),
-                                        'rows'=>
-                                               array(
-                                                   array(
-                                                       'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['surplus']),
-                                                       'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['ok']),
-                                                       'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['low']),
-                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['critical']),
-                                                       'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['gone']),
-                                                
-                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['unknown']),
-                                                             array('label'=>''),
-                                                       
-
-                                                   )
-                                               )
-                                    ),
-                            'sales_all'=>array('title'=>_('Sales (All times)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_all']),
-                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_all']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-'sales_1y'=>array('title'=>_('Sales (1 Year)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1y']),
-                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1y']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-'sales_1q'=>array('title'=>_('Sales (1 Quarter)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1q']),
-                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1q']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-'sales_1m'=>array('title'=>_('Sales (1 Month)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1m']),
-                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1m']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-                            'sales_1w'=>array('title'=>_('Sales (1 Week)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales_1w']),
-                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['profit_1w']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            )
+                                          )
+  
                         );
 $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
