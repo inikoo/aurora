@@ -40,9 +40,9 @@ var validate_scope_data=
     'customer':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
-	,'email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query='
-	
-	,'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'other_email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Other_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
 
@@ -126,6 +126,18 @@ if(query==''){
 }
 
 }
+
+function validate_customer_other_email(query){
+
+ validate_general('customer','other_email',unescape(query));
+if(query==''){
+    validate_scope_data.customer.other_email.validated=true;
+	validate_scope('customer'); 
+    Dom.get(validate_scope_data.customer.other_email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
+}
+
+}
+
 function validate_customer_name(query){
  validate_general('customer','name',unescape(query));
 }
@@ -526,9 +538,20 @@ reset_address(false,'billing_')
 }
 
 
+function display_add_other_email(){
+
+
+
+Dom.setStyle('display_add_other_email','display','none');
+Dom.setStyle('tr_add_other_email','display','');
+
+}
+
 function init(){
   init_search('customers_store');
 
+
+    Event.addListener("display_add_other_email", "click", display_add_other_email , true);
 
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);
     customer_merge_oACDS.queryMatchContains = true;
@@ -594,6 +617,15 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     var customer_email_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Email","Customer_Main_Email_Container", customer_email_oACDS);
     customer_email_oAutoComp.minQueryLength = 0; 
     customer_email_oAutoComp.queryDelay = 0.1;
+
+
+
+   var customer_other_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_other_email);
+    customer_other_email_oACDS.queryMatchContains = true;
+    var customer_other_email_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Other_Email","Customer_Other_Email_Container", customer_other_email_oACDS);
+    customer_other_email_oAutoComp.minQueryLength = 0; 
+    customer_other_email_oAutoComp.queryDelay = 0.1;
+
 
 
     var customer_telephone_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone);

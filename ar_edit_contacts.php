@@ -2658,6 +2658,7 @@ function edit_customer() {
                      'fiscal_name'=>'Customer Fiscal Name',
                      'name'=>'Customer Name',
                      'email'=>'Customer Main Plain Email',
+                     'other_email'=>'Other Email',
                      'telephone'=>'Customer Main Plain Telephone',
                      'mobile'=>'Customer Main Plain Mobile',
                      'fax'=>'Customer Main Plain FAX',

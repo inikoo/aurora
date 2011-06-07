@@ -1912,7 +1912,7 @@ $this->parent=$parent;
     
     
     
-    function associate_email_to_parents($parent,$parent_key,$email_key){
+    function associate_email_to_parents($parent,$parent_key,$email_key,$set_as_main=true){
     
 
                 if ($parent=='Customer') {
@@ -1940,7 +1940,7 @@ $this->parent=$parent;
                 //print "$sql\n";
 
                 $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
-                if ($old_principal_email_key!=$email_key) {
+                if ($set_as_main and $old_principal_email_key!=$email_key) {
 
                     $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
                                  $parent_object->id
@@ -2760,7 +2760,7 @@ $this->parent=$parent;
 
 
     public function update($data,$options='') {
-      //  print_r($data);
+      
         if (isset($data['editor'])) {
             foreach($data['editor'] as $key=>$value) {
 
@@ -2777,7 +2777,7 @@ $this->parent=$parent;
         foreach($data as $key=>$value) {
 
 
-            if (preg_match('/^(Address.*Data|Contact Main Email Key|Contact Main Telphone Key|Contact Main Mobile Key|Contact Name Components)$/',$key)) {
+            if (preg_match('/^(Address.*Data|Contact Main Email Key|Contact Main Telphone Key|Contact Main Mobile Key|Contact Name Components|Other Email)$/',$key)) {
 
                 $this->update_field_switcher($key,$value,$options);
 
@@ -2934,6 +2934,28 @@ $this->parent=$parent;
             }
             $this->data['Contact Name']=$this->display('name');
             $this->update_Contact_Name($old_value);
+            break;
+            
+        case('Other Email'):    
+         
+           print $this->id;
+            if ($value=='')return;
+              $email_data['Email']=$value;
+                $email_data['Email Contact Name']=$this->display('name');
+                $email_data['editor']=$this->editor;
+            $email=new Email('find create',$email_data);
+             if ($email->id)
+                        $this->associate_email($email->id);
+            
+            
+            $this->other_email_key=$email->id;
+            $this->updated=true;
+            $this->new_value=$email->data['Email'];
+            
+            
+            
+            
+            
             break;
         case('Contact Main Plain Email'):
     
@@ -4702,7 +4724,7 @@ $this->parent=$parent;
                      
                      ,$this->id);
         $result=mysql_query($sql);
-        print $sql;
+      //  print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $keys[$row['Subject Key']]= $row['Subject Key'];
 

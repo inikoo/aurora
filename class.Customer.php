@@ -1242,6 +1242,68 @@ class Customer extends DB_Table {
             $this->new_value=$contact->new_value;
             break;
 
+
+case('Other Email'):
+
+    if ($value=='') {return;} 
+    $email=new Email('email',$value);
+    if($email->id){
+          $customers_with_this_email=$email->get_customer_keys();
+          
+          if(in_array($this->id,$customers_with_this_email)){
+            $this->msg=_('The customer already has this email');
+                        $this->error=true;
+          
+          return;
+          }
+            unset($customers_with_this_email[$this->id]);
+            
+            
+               foreach($customers_with_this_email as $customer_with_this_email) {
+               $other_customer_with_this_email=new Customer($customer_with_this_email);
+                        if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
+                         $this->msg=_('Email could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$other_customer_with_this_email->data['Customer Data'].'</a>';
+
+                        $this->error=true;
+          
+          return;
+                        }
+                        
+               }
+            
+          
+    
+    }
+    
+    
+    $contact=new Contact($this->data['Customer Main Contact Key']);
+   
+
+      $contact->update(array('Other Email'=>$value));
+                $this->updated=$contact->updated;
+                $this->msg=$contact->msg;
+                $this->new_value=$contact->new_value;
+    
+
+if($email_key=$contact->other_email_key){
+
+if($this->data['Customer Company Key']){
+            $contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
+
+}
+            $contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
+
+}
+  
+
+
+
+
+
+
+
+
+break;
         case('Customer Main Plain Email'):
 
 
@@ -1307,7 +1369,7 @@ return;
 
 
                     if ($error_customer_in_the_same_store) {
-                        $this->msg=_('Email could not be updates, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
+                        $this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
                         $this->error=true;
                         return;
                     }
@@ -3272,17 +3334,33 @@ function get_telecom_keys($type='Telephone') {
 }
 
 
+function get_other_emails_data(){
+
+  $sql=sprintf("select B.`Email Key`,`Email` from `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) where  `Subject Type`='Customer' and `Subject Key`=%d "
+                 ,$this->id );
+
+    $email_keys=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        if($row['Email Key']!=$this->data['Customer Main Email Key'])
+        $email_keys[$row['Email Key']]= array('email'=>$row['email'],
+                        'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>');
+    }
+    return $email_keys;
+
+}
+
 
 function get_email_keys() {
     $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
                  ,$this->id );
 
-    $ship_to=array();
+    $email_keys=array();
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $ship_to[$row['Email Key']]= $row['Email Key'];
+        $email_keys[$row['Email Key']]= $row['Email Key'];
     }
-    return $ship_to;
+    return $email_keys;
 
 }
 function get_ship_to_keys() {
