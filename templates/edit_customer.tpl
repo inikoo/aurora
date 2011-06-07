@@ -240,6 +240,7 @@
    </td>
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
+
  <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
@@ -247,8 +248,24 @@
        <div id="Customer_Main_Email_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Main_Email_msg" class="edit_td_alert">{$main_email_warning}</td>
+   <td>
+   <span id="display_add_other_email" class="state_details" style="font-size:80%;color:#777;display:none">{t}Add other Email{/t}</span>
+   <span id="Customer_Main_Email_msg" class="edit_td_alert">{$main_email_warning}</span>
+   </td>
  </tr>
+
+
+ <tr id="tr_add_other_email" class="" style="display:none"><td style="" class="label">{t}Other Email{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Other_Email" value="" ovalue="" valid="0">
+       <div id="Customer_Other_Email_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Other_Email_msg" class="edit_td_alert"></td>
+ </tr>
+
+
  <tr class=""><td style="" class="label">{t}Contact Telephone{/t}:</td>
    <td  style="text-align:left">
      <div   >
