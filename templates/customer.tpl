@@ -574,6 +574,9 @@
 	<option value="Gold Reward Member"  {if $gold_reward}selected="selected"{/if}>Yes</option>
 	</select>
     </td></tr>
+    
+  
+    
 
     <tr><td colspan=2>{t}Courier{/t}:</td></tr><tr><td colspan=2><input  id="make_order_courier"  /></td></tr>
     

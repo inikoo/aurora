@@ -958,7 +958,26 @@ function remove_from_parent($parent,$parent_key){
 
 
 
+function get_customer_keys(){
+     $keys=array();
 
+    $sql=sprintf("select `Subject Key`,`Subject Type` from `Email Bridge` where `Email Key`=%d  and `Subject Type`='Customer' "
+
+                 ,$this->id);
+    $result=mysql_query($sql);
+  
+ // print $sql;
+  
+  while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $keys[$row['Subject Key']]= $row['Subject Key'];
+
+    }
+
+
+    return $keys;
+    
+    
+}
 
 
 

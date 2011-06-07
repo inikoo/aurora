@@ -701,23 +701,7 @@ function search_customer($data) {
         }
     }
 
-//print "->$q <-";
-    //  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
-    $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
 
-    //print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-        if ($row['Customer Name']==$q)
-            $candidates[$row['Customer Key']]=110;
-        else {
-
-            $len_name=strlen($row['Customer Name']);
-            $len_q=strlen($q);
-            $factor=$len_q/$len_name;
-            $candidates[$row['Customer Key']]=100*$factor;
-        }
-    }
 
 
     $sql=sprintf('select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Tax Number` like  "%s%%" limit 10 ',$stores,$q);
@@ -834,6 +818,41 @@ function search_customer($data) {
     }
 
 
+//print "->$q <-";
+    //  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
+    $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
+
+    //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if ($row['Customer Name']==$q)
+            $candidates[$row['Customer Key']]=55;
+        else {
+
+            $len_name=strlen($row['Customer Name']);
+            $len_q=strlen($q);
+            $factor=$len_q/$len_name;
+            $candidates[$row['Customer Key']]=50*$factor;
+        }
+    }
+
+
+     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
+   // $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
+
+    //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if ($row['Customer Name']==$q)
+            $candidates[$row['Customer Key']]=55;
+        else {
+
+            $len_name=strlen($row['Customer Name']);
+            $len_q=strlen($q);
+            $factor=$len_q/$len_name;
+            $candidates[$row['Customer Key']]=50*$factor;
+        }
+    }
 
 
 
