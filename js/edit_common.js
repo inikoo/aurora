@@ -679,7 +679,7 @@ function cancel_new_general(branch) {
 
 };
 
-function post_item_updated_actions(branch,key,newvalue) {
+function post_item_updated_actions(branch,r) {
     return true;
 }
 
@@ -711,7 +711,7 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	    // alert(request);
+	   //  alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
@@ -725,7 +725,7 @@ function save_edit_general(branch) {
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
 
-                        post_item_updated_actions(branch,r.key,r.newvalue);
+                        post_item_updated_actions(branch,r);
 
 
                     } else {

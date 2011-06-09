@@ -316,7 +316,9 @@ function save_edit_email_campaign(){
 save_edit_general('email_campaign');
 }
 
-function post_item_updated_actions(branch,key,newvalue){
+function post_item_updated_actions(branch,r){
+key=r.key;
+newvalue=r.newvalue;
 
 switch ( branch ) {
 	case 'email_campaign':

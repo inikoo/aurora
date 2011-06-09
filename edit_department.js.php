@@ -596,8 +596,9 @@ var table_id=0
 
 }
 
-function post_item_updated_actions(branch,key,newvalue){
-
+function post_item_updated_actions(branch,r){
+key=r.key;
+newvalue=r.newvalue;
  if(key=='name'){
      Dom.get('title_name').innerHTML=newvalue;
      Dom.get('title_name_bis').innerHTML=newvalue;

@@ -25,6 +25,18 @@ if($row['Send Post Status']=='To Send')
 if($row['Post Type']!='Letter')
 	$send_post_type='Catalogue';
 }
+
+
+print "var emails={";
+$count=0;
+foreach($customer->get_other_emails_data()  as $email_key=>$email  ){
+printf("%s%d:{email:'%s'}",($count?',':''),$email_key,$email['email']);
+$count++;
+}
+
+print "};";
+
+
 ?>
 var send_post_status='<?php echo $send_post_status;?>';
 var send_post_type='<?php echo $send_post_type;?>';
@@ -41,6 +53,19 @@ var validate_scope_data=
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+<?php
+foreach($customer->get_other_emails_data()  as $email_key=>$email  ){
+printf(",'email%d':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Email%d','validation':[{'regexp':regexp_valid_email,'invalid_msg':'%s'}]}",
+
+$email_key,
+$email_key,
+_('Invalid Email')
+);
+}
+?>
+
+
+
 	,'other_email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Other_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
 
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
@@ -57,6 +82,15 @@ var validate_scope_data=
   }
   
 };
+
+
+
+
+
+
+
+
+
 
 //"[ext\d\(\)\[\]\-\s]+"
 var validate_scope_metadata={
@@ -117,15 +151,46 @@ query=query.replace(/[^A-Z0-9]/i, "");
 
 
 function validate_customer_email(query){
-
- validate_general('customer','email',unescape(query));
 if(query==''){
     validate_scope_data.customer.email.validated=true;
+    
+ if(Dom.get(validate_scope_data.customer.email.name).getAttribute('ovalue')!=query){
+     validate_scope_data.customer.email.changed=true;
+ }else{
+    validate_scope_data.customer.email.changed=false;
+ }
+    
 	validate_scope('customer'); 
     Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
-}
+}else{
+validate_general('customer','email',unescape(query));
 
 }
+
+
+}
+
+function validate_customer_email_other(query,id){
+
+id=id.scope.email_id;
+if(query==''){
+    validate_scope_data.customer['email'+id].validated=true;
+    
+     if(Dom.get(validate_scope_data.customer['email'+id].name).getAttribute('ovalue')!=query){
+     validate_scope_data.customer['email'+id].changed=true;
+ }else{
+    validate_scope_data.customer['email'+id].changed=false;
+ }
+    
+	validate_scope('customer'); 
+    Dom.get(validate_scope_data.customer['email'+id].name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
+     
+}else{
+validate_general('customer','email'+id,unescape(query));
+
+}
+}
+
 
 function validate_customer_other_email(query){
 
@@ -379,17 +444,47 @@ var request='ar_edit_contacts.php?tipo=convert_customer_to_company&company_name=
 
 
 }
-
 function cancel_convert_to_company(){
 Dom.setStyle(['New_Company_Name_tr','save_convert_to_company','cancel_convert_to_company'],'display','none');
 Dom.setStyle('convert_to_company','display','');
 Dom.get('New_Company_Name').value='';
 }
-
 function convert_to_company(){
 Dom.setStyle(['New_Company_Name_tr','save_convert_to_company','cancel_convert_to_company'],'display','');
 Dom.setStyle('convert_to_company','display','none');
 Dom.get('New_Company_Name').focus();
+}
+
+
+
+function save_convert_to_person(){
+if(Dom.hasClass('save_convert_to_person','disabled')){
+return;
+}
+
+var request='ar_edit_contacts.php?tipo=convert_customer_to_person&customer_key=' + customer_id
+	           
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           //alert(o.responseText);	
+			    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			    if(r.state==200){
+                    location.href='edit_customer.php?id='+customer_id;
+                }else{
+                    Dom.get('convert_to_person_info').innerHTML=r.msg;
+                }
+   			}
+    });
+
+
+}
+function cancel_convert_to_person(){
+Dom.setStyle(['convert_to_person_info','save_convert_to_person','cancel_convert_to_person'],'display','none');
+Dom.setStyle('convert_to_person','display','');
+}
+function convert_to_person(){
+Dom.setStyle(['convert_to_person_info','save_convert_to_person','cancel_convert_to_person'],'display','');
+Dom.setStyle('convert_to_person','display','none');
 }
 
 
@@ -538,6 +633,22 @@ reset_address(false,'billing_')
 }
 
 
+function post_item_updated_actions(branch,r){
+key=r.key;
+newvalue=r.newvalue;
+
+if(r.action=='other_email_added'){
+setTimeout("location.reload(true)", 250);
+}else if(r.action=='other_email_deleted'){
+
+Dom.setStyle('tr_other_email'+r.email_key,'display','none')
+}
+
+
+
+}
+
+
 function display_add_other_email(){
 
 
@@ -582,14 +693,18 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
      YAHOO.util.Event.addListener('save_edit_billing_data', "click", save_edit_billing_data);
     YAHOO.util.Event.addListener('reset_edit_billing_data', "click", reset_edit_billing_data);
     
-    YAHOO.util.Event.addListener('convert_to_company', "click", convert_to_company);
     
         YAHOO.util.Event.addListener('delete_customer', "click", delete_customer);
         YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
         YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
 
+    YAHOO.util.Event.addListener('convert_to_company', "click", convert_to_company);
     YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
     YAHOO.util.Event.addListener('save_convert_to_company', "click", save_convert_to_company);
+
+ YAHOO.util.Event.addListener('convert_to_person', "click", convert_to_person);
+    YAHOO.util.Event.addListener('cancel_convert_to_person', "click", cancel_convert_to_person);
+    YAHOO.util.Event.addListener('save_convert_to_person', "click", save_convert_to_person);
 
 
   var new_company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_new_company_name);
@@ -617,6 +732,22 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     var customer_email_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Email","Customer_Main_Email_Container", customer_email_oACDS);
     customer_email_oAutoComp.minQueryLength = 0; 
     customer_email_oAutoComp.queryDelay = 0.1;
+
+<?php
+foreach($customer->get_other_emails_data()  as $email_key=>$email  ){
+printf("var customer_email%d_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email_other);\ncustomer_email%d_oACDS.queryMatchContains = true;\nvar customer_email%d_oAutoComp = new YAHOO.widget.AutoComplete('Customer_Email%d','Customer_Email%d_Container', customer_email%d_oACDS);\ncustomer_email%d_oAutoComp.minQueryLength = 0;\ncustomer_email%d_oAutoComp.queryDelay = 0.1;;\ncustomer_email%d_oAutoComp.email_id =%d;",
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,$email_key,
+$email_key
+);
+}
+?>
 
 
 

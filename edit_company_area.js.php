@@ -93,8 +93,9 @@ function validate_department_name(query){
 
 
 
-function post_item_updated_actions(branch,key,newvalue){
-
+function post_item_updated_actions(branch,r){
+key=r.key;
+newvalue=r.newvalue;
  if(key=='name')
      Dom.get('title_name').innerHTML=newvalue;
  

@@ -27,7 +27,7 @@ include_once('class.Contact.php');
 class Email extends DB_Table {
 
      public  $deleted=false;
-  
+    public $updated=false;
 
 
 
@@ -448,7 +448,7 @@ class Email extends DB_Table {
             $this->warning=true;
         }
         $old_value=$this->data['Email'];
-      //  print "$old_value -> $data";
+       // print "$old_value -> $data";
 
         if ($old_value==$data) {
             $this->msg=_('Nothing to change');
@@ -475,7 +475,7 @@ return;
         $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
       
       mysql_query($sql);
-
+//print $sql;
         $affected=mysql_affected_rows();
 
         if ($affected==-1) {
