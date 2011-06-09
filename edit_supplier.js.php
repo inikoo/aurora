@@ -194,7 +194,10 @@ var table_id=0
 }
 
 
-function post_item_updated_actions(branch,key,newvalue){
+function post_item_updated_actions(branch,r){
+
+key=r.key;
+newvalue=r.newvalue;
 
 	var table_id=1
 

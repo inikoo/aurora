@@ -134,8 +134,9 @@ function reset_edit_family_page_content(){ reset_edit_general('family_page_conte
 function save_edit_family_page_content(){save_edit_general('family_page_content');}
 
 
-function post_item_updated_actions(branch,key,newvalue){
-
+function post_item_updated_actions(branch,r){
+key=r.key;
+newvalue=r.newvalue;
  if(key=='name')
      Dom.get('title_name').innerHTML=newvalue;
  

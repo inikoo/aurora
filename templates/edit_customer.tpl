@@ -186,6 +186,22 @@
 <td></td>
 </tr>
 
+<tr>
+<td></td>
+<td style="text-align:right;color:#777;font-size:90%">
+<div  id="convert_to_person_info" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none;margin-bottom:5px">
+<p>
+{t}This operation will delete the company{/t}
+</p>
+<div style="color:#999">
+<span id="cancel_convert_to_person" class="state_details" style="display:none" >{t}Cancel{/t}</span>
+<span id="save_convert_to_person" class="state_details" style="display:none;margin-left:10px;color:#777">{t}Do it!{/t}</span>
+</div>
+</div>
+<span id="convert_to_person" class="state_details" style="{if $customer_type!='Company'}display:none{/if}">{t}Convert to Person{/t}</span>
+</td>
+</tr>
+
 
 <tr>
 <td></td>
@@ -193,7 +209,6 @@
 <span id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</span>
 <span id="cancel_convert_to_company" class="state_details" style="display:none" >{t}Cancel{/t}</span>
 <span id="save_convert_to_company" class="disabled state_details" style="display:none;margin-left:10px;;color:#777;">{t}Save Conversion to Company{/t}</span>
-
 </td>
 </tr>
    
@@ -249,10 +264,29 @@
      </div>
    </td>
    <td>
-   <span id="display_add_other_email" class="state_details" style="font-size:80%;color:#777;display:none">{t}Add other Email{/t}</span>
+   <span id="display_add_other_email" class="state_details" style="font-size:80%;color:#777;">{t}Add other Email{/t}</span>
    <span id="Customer_Main_Email_msg" class="edit_td_alert">{$main_email_warning}</span>
    </td>
  </tr>
+
+
+
+ {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
+ 
+  <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label">{t}Other Email{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
+       <div id="Customer_Email{$other_email_key}_Container" style="" ></div>
+     </div>
+   </td>
+   <td>
+  
+   <span id="Customer_Email{$other_email_key}_msg" class="edit_td_alert"></span>
+   </td>
+ </tr>
+ 
+                {/foreach}
 
 
  <tr id="tr_add_other_email" class="" style="display:none"><td style="" class="label">{t}Other Email{/t}:</td>
@@ -264,6 +298,8 @@
    </td>
    <td id="Customer_Other_Email_msg" class="edit_td_alert"></td>
  </tr>
+
+
 
 
  <tr class=""><td style="" class="label">{t}Contact Telephone{/t}:</td>

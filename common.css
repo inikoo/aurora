@@ -113,11 +113,11 @@ table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid 
 xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
 .prodinfo{font-size:120%}
 table.show_info_product td.number div{width:5em;text-align:right}
--
+
 
 .prod_info table.notes{clear:both;border:none;}
 
--
+
 
 .newcontact{border:1px solid #3b5998;padding:10px}
 .newcontact table, .newcontact div {border:none;float:left;margin-right:10px}
@@ -181,14 +181,14 @@ input.normal_right{color:#000;text-align:right}
 
 img{vertical-align:bottom}
 
-.chooser {width:670px;bxorder:1px solid black;margin:0px auto}
+.chooser {width:670px;margin:0px auto}
 .chooser ul {;margin:0px auto;}
 .chooser{padding:0px 0px 0 0px;}
 .chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
 .chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
 .chooser img {position:relative;top:2px;}
 .chooser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
-.chooser li.show {default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:200;color:#666}
+.chooser li.show {default;border-color:#aaa;opacity: 1;filter: alpha(opacity=100);font-weight:200;color:#666}
 .chooser li.show:hover {default;border-color:#777;;opacity: 1;filter: alpha(opacity=100);font-weight:200;color:#333}
 
 

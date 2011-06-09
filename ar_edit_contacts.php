@@ -61,6 +61,13 @@ case('convert_customer_to_company'):
                          ));
     convert_customer_to_company($data);
     break;
+case('convert_customer_to_person'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key')
+                         ));
+    convert_customer_to_person($data);
+    break;    
+    
 case('delete_customer_history'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -2209,14 +2216,7 @@ function convert_customer_to_company($data) {
 
 
 
-    $sql=sprintf('update `Customer Dimension` set `Customer Type`="Company", `Customer Company Key`=%d ,`Customer Name`=%s,`Customer Company Name`=%s where `Customer Key`=%d',
-                 $company->id,
-                 prepare_mysql($company->data['Company Name']),
-                 prepare_mysql( $company->data['Company Name']),
-                 $customer->id
-
-                );
-
+ 
     $sql=sprintf('update `Customer Dimension` set `Customer Type`="Company"  where `Customer Key`=%d',
 
                  $customer->id
@@ -2234,6 +2234,69 @@ function convert_customer_to_company($data) {
                   );
     $customer->add_customer_history($history_data);
     $response= array('state'=>200,'action'=>'changed','name'=>$company->data['Company Name']);
+    echo json_encode($response);
+
+
+}
+
+
+function convert_customer_to_person($data) {
+
+    global $editor;
+
+  
+
+
+    $customer=new Customer($data['customer_key']);
+    if (!$customer->id) {
+        $response= array('state'=>400,'action'=>'error','msg'=>'customer not found');
+        echo json_encode($response);
+        return;
+    }
+
+    if ($customer->data['Customer Type']=='Person') {
+        $response= array('state'=>400,'action'=>'error','msg'=>_('Customer is already a person'));
+        echo json_encode($response);
+        return;
+
+    }
+$contact=new contact ($customer->data['Customer Main Contact Key']);
+    $company=new Company($customer->data['Customer Company Key']);
+                $company_customer_keys=$company->get_parent_keys('Customer');
+                $company_supplier_keys=$company->get_parent_keys('Supplier');
+                $company_hq_keys=$company->get_parent_keys('HQ');
+    
+    unset($company_customer_keys[$customer->id]);
+    
+   
+     $sql=sprintf('delete from `Company Bridge` where `Subject Type`="Customer" and `Subject Key`=%d',
+                 $customer->id
+                 );
+     mysql_query($sql);
+     
+   $sql=sprintf('update `Customer Dimension` set `Customer Type`="Person", `Customer Company Key`=0 ,`Customer Name`=%s,`Customer File As`=%s,`Customer Company Name`="" where `Customer Key`=%d',
+                prepare_mysql($contact->display('name')),
+                 prepare_mysql( $contact->display('file as')),
+                 $customer->id
+             );
+    mysql_query($sql);
+    
+    
+     if (count($company_customer_keys)==0 and count($company_supplier_keys)==0  and count($company_hq_keys)==0) {
+                  $company->delete();
+      }            
+   
+    
+    
+
+
+    $history_data=array(
+                      'History Abstract'=>_('Customer set up as a person'),
+                      'History Details'=>_trim(_('Customer now known as')." ".$contact->display('name')),
+                      'Action'=>'edited'
+                  );
+    $customer->add_customer_history($history_data);
+    $response= array('state'=>200,'action'=>'changed','name'=>$contact->display('name'));
     echo json_encode($response);
 
 
@@ -2624,6 +2687,10 @@ function customer_edit_note($data) {
 
 }
 function edit_customer() {
+
+ $other_email_deleted=false;
+            $other_email_added=false;
+
     $key=$_REQUEST['key'];
 
 
@@ -2681,10 +2748,35 @@ function edit_customer() {
 
 
 
+
+
         if (array_key_exists($_REQUEST['key'],$key_dic))
             $key=$key_dic[$_REQUEST['key']];
 
+
+
+
+
         $the_new_value=_trim($_REQUEST['newvalue']);
+
+
+
+
+
+        if(preg_match('/^email\d+$/i',$key)){
+            $email_id=preg_replace('/^email/','',$key);
+            $customer->update_other_email($email_id,$the_new_value);
+            
+            if($the_new_value==''){
+            $other_email_deleted=true;
+            }
+            
+        }
+
+
+if($key=='Other Email'){
+ $other_email_added=true;
+}
 
 
         if ($key=='Customer Fiscal Name') {
@@ -2699,8 +2791,17 @@ function edit_customer() {
 
 
     if ($customer->updated) {
-        $response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>$_REQUEST['key']);
+    
+    if($other_email_deleted){
+        $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$_REQUEST['key'],'email_key'=>$email_id);
 
+    }elseif($other_email_added){
+            $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$_REQUEST['key'],'new_eamil_key'=>$customer->new_email_key);
+
+    }else{
+    
+        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$_REQUEST['key']);
+}
     } else {
         $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$_REQUEST['key']);
     }
