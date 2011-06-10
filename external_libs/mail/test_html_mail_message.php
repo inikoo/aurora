@@ -28,11 +28,9 @@
  *  Change these lines or else you will be mailing the class author.
  */
 	$to_name="Manuel Lemos";
-	$to_address="rulovico@gmail.com";
+	$to_address="mlemos@acm.org";
 
-	$subject="xxxaaa Testing Manuel Lemos' MIME E-mail composing and sÁèÎõÜ ending PHP class: HTML message";
-
-$subject=mb_convert_encoding($subject, 'ISO-8859-1', 'UTF-8');
+	$subject="Testing Manuel Lemos' MIME E-mail composing and sending PHP class: HTML message";
 	$email_message=new email_message_class;
 	$email_message->SetEncodedEmailHeader("To",$to_address,$to_name);
 	$email_message->SetEncodedEmailHeader("From",$from_address,$from_name);
@@ -137,7 +135,7 @@ A:link, A:visited, A:active { text-decoration: underline }
 <center><h1>$subject</h1></center>
 <hr>
 <P>Hello ".strtok($to_name," ").",<br><br>
-This message is just to let ÁèÎõÜ you know that the <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
+This message is just to let you know that the <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
 <center><h2>Here is an image embedded in a message as a separate part:</h2></center>
 <center><img src=\"cid:".$image_content_id."\"></center>".
 /*
@@ -154,9 +152,6 @@ $from_name</p>
 </table>
 </body>
 </html>";
-
-$html_message=mb_convert_encoding($html_message, 'ISO-8859-1', 'UTF-8');
-
 	$email_message->CreateQuotedPrintableHTMLPart($html_message,"",$html_part);
 
 /*

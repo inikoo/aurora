@@ -30,8 +30,8 @@
 	$to_name="Manuel Lemos";
 	$to_address="mlemos@acm.org";
 	$to_address="mlemos@linux.local";
-$to_address='rulovico@gmail.com';
-	$subject="xTesting Manuel Lemos' MIME E-mail composing haracters Á ß  in and sending PHP class: HTML message";
+
+	$subject="Testing Manuel Lemos' MIME E-mail composing and sending PHP class: HTML message";
 	$email_message=new email_message_class;
 	$email_message->SetEncodedEmailHeader("To",$to_address,$to_name);
 	$email_message->SetEncodedEmailHeader("From",$from_address,$from_name);
@@ -46,14 +46,9 @@ $to_address='rulovico@gmail.com';
 	&& strcmp(substr(PHP_OS,0,3),"WIN"))
 		$email_message->SetHeader("Return-Path",$error_delivery_address);
 
-$email_message->SetEncodedHeader("Subject",$subject);
-//$caca=base64_encode(" just tão let you know ß that t");
+	$email_message->SetEncodedHeader("Subject",$subject);
 
-$caca=htmlentities('messageß  is just tão let you know that th',ENT_QUOTES,'UTF-8');
-//print $caca;
-//exit;
-
-$html_message="<html>
+	$html_message="<html>
 <head>
 <title>$subject</title>
 <style type=\"text/css\"><!--
@@ -68,7 +63,7 @@ A:link, A:visited, A:active { text-decoration: underline }
 <center><h1>$subject</h1></center>
 <hr>
 <P>Hello ".strtok($to_name," ").",<br><br>
-This  <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
+This message is just to let you know that the <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
 Thank you,<br>
 $from_name</p>
 </td>
@@ -76,10 +71,7 @@ $from_name</p>
 </table>
 </body>
 </html>";
-
-
-
-//	$email_message->CreateQuotedPrintableHTMLPart($html_message,"",$html_part);
+	$email_message->CreateQuotedPrintableHTMLPart($html_message,"",$html_part);
 
 /*
  *  It is strongly recommended that when you send HTML messages,
@@ -101,7 +93,7 @@ $from_name</p>
 		$text_part,
 		$html_part
 	);
-//$email_message->AddAlternativeMultipart($alternative_parts);
+	$email_message->AddAlternativeMultipart($alternative_parts);
 
 /*
  *  The message is now ready to be assembled and sent.
@@ -114,21 +106,4 @@ $from_name</p>
 		echo "Error: $error\n";
 	else
 		echo "Message sent to $to_name\n";
-
-
- function safe_utf8($string){
-    $string=htmlentities($string,ENT_QUOTES,'UTF-8');
-    $string = str_replace("&lt;","<",$string);
-    $string = str_replace("&gt;",">",$string);
-    $string = str_replace("&quot;",'"',$string);
-    $string = str_replace("&amp;",'&',$string);
-    
-    return $string;
-}
-
-
-
-
-
-
 ?>
