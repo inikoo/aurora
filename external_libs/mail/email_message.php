@@ -2,7 +2,7 @@
 /*
  * email_message.php
  *
- * @(#) $Header: /home/mlemos/cvsroot/mimemessage/email_message.php,v 1.90 2009/08/12 04:23:48 mlemos Exp $
+ * @(#) $Header: /home/mlemos/cvsroot/mimemessage/email_message.php,v 1.92 2011/01/28 06:32:16 mlemos Exp $
  *
  *
  */
@@ -13,7 +13,7 @@
 
 	<package>net.manuellemos.mimemessage</package>
 
-	<version>@(#) $Id: email_message.php,v 1.90 2009/08/12 04:23:48 mlemos Exp $</version>
+	<version>@(#) $Id: email_message.php,v 1.92 2011/01/28 06:32:16 mlemos Exp $</version>
 	<copyright>Copyright © (C) Manuel Lemos 1999-2004</copyright>
 	<title>MIME E-mail message composing and sending</title>
 	<author>Manuel Lemos</author>
@@ -353,7 +353,7 @@ class email_message_class
 	<variable>
 		<name>mailer</name>
 		<type>STRING</type>
-		<value>http://www.phpclasses.org/mimemessage $Revision: 1.90 $</value>
+		<value>http://www.phpclasses.org/mimemessage $Revision: 1.92 $</value>
 		<documentation>
 			<purpose>Specify the base text that is used identify the name and the
 				version of the class that is used to send the message by setting an
@@ -515,6 +515,23 @@ class email_message_class
 */
 	var $error="";
 
+/*
+{metadocument}
+	<variable>
+		<name>localhost</name>
+		<type>STRING</type>
+		<value></value>
+		<documentation>
+			<purpose>Specify the domain name of the computer sending the
+				message.</purpose>
+			<usage>This value is used as default domain of the sender e-mail
+				address when generating automatic <tt>Message-Id</tt>
+				headers.</usage>
+		</documentation>
+	</variable>
+{/metadocument}
+*/
+	var $localhost="";
 
 	/* Private methods */
 
@@ -988,7 +1005,7 @@ class email_message_class
 */
 	Function ValidateEmailAddress($address)
 	{
-		return(eregi($this->email_regular_expression,$address));
+		return(preg_match('/'.str_replace('/', '\\/'. $this->email_regular_expression).'/i',$address));
 	}
 /*
 {metadocument}
@@ -3503,10 +3520,10 @@ class email_message_class
 		$content_type="";
 		while(strlen($additional_headers))
 		{
-			ereg("([^\r\n]+)(\r?\n)?(.*)\$",$additional_headers,$matches);
+			preg_match("/([^\r\n]+)(\r?\n)?(.*)\$/",$additional_headers,$matches);
 			$header=$matches[1];
 			$additional_headers=$matches[3];
-			if(!ereg("^([^:]+):[ \t]+(.+)\$",$header,$matches))
+			if(!preg_match("/^([^:]+):[ \t]+(.+)\$/",$header,$matches))
 			{
 				$this->error="invalid header \"$header\"";
 				return(0);
@@ -3525,9 +3542,9 @@ class email_message_class
 		}
 		if(strlen($additional_parameters))
 		{
-			if(ereg("^[ \t]*-f[ \t]*([^@]+@[^ \t]+)[ \t]*(.*)\$"/*"^[ \t]?-f([^@]@[^ \t]+)[ \t]?(.*)\$"*/,$additional_parameters,$matches))
+			if(preg_match("/^[ \t]*-f[ \t]*([^@]+@[^ \t]+)[ \t]*(.*)\$/", $additional_parameters, $matches))
 			{
-				if(!eregi($this->email_regular_expression,$matches[1]))
+				if(!preg_match('/'.str_replace('/', '\\/', $this->email_regular_expression).'/i', $matches[1]))
 				{
 					$this->error="it was specified an invalid e-mail address for the additional parameter -f";
 					return(0);

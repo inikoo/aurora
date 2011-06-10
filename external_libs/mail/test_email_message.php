@@ -15,9 +15,9 @@
 	$reply_address=$from_address;
 	$error_delivery_name=$from_name;
 	$error_delivery_address=$from_address;
-$to_name="Manuel Lemos";
-$to_address="rulovico@gmail.com";
-$subject="Testing Manuel Lemos' MIME Email composition PHP class: some non-ASCII characters ÁèÎõÜ in a message header";
+	$to_name="Manuel Lemos";
+	$to_address="mlemos@acm.org";
+	$subject="Testing Manuel Lemos' MIME Email composition PHP class: some non-ASCII characters ÁèÎõÜ in a message header";
 	$message="Hello ".strtok($to_name," ").",\n\nThis message is just to let you know that your e-mail sending class is working as expected.\n\nHere's some non-ASCII characters ÁèÎõÜ in the message body to let you see if they are sent properly encoded.\n\nThank you,\n$from_name";
 	$email_message=new email_message_class;
 	$email_message->SetEncodedEmailHeader("To",$to_address,$to_name);
@@ -25,7 +25,7 @@ $subject="Testing Manuel Lemos' MIME Email composition PHP class: some non-ASCII
 	$email_message->SetEncodedEmailHeader("Reply-To",$reply_address,$reply_name);
 /*
 	Set the Return-Path header to define the envelope sender address to which bounced messages are delivered.
-	If you are using Windows, you need to use the smtp_memoressage_class to set the return-path address.
+	If you are using Windows, you need to use the smtp_message_class to set the return-path address.
 */
 	if(defined("PHP_OS")
 	&& strcmp(substr(PHP_OS,0,3),"WIN"))
