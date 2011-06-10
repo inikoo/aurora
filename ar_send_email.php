@@ -60,9 +60,8 @@ exit;
 $message_object->smtp_port=$conection_data['smtp_port'];  
 $message_object->smtp_ssl=$conection_data['smtp_ssl'];  
 
-	/*
-	 *  Change these variables to specify your test sender and recipient addresses
-	 */
+//print_r($conection_data);
+//exit;
 	$from=$conection_data['email'];
 	$to=$conection_data['email'];
 

@@ -55,7 +55,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','home');
-$smarty->assign('title', _('Terms & Conditions'));
+$smarty->assign('title', _('Issues'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
