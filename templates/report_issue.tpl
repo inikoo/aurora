@@ -6,6 +6,32 @@
 {else}
 <h1>{t}Request Feature{/t}</h1>
 {/if}
+
+<div style="float:right;margin-top:20px;width:300px;" >
+<div style="border:1px solid #ccc;padding:10px 20px 0px 20px">
+<h2>{t}Help Line{/t}: <span style="color:#ff6600">+44 7984903265</span></h2>
+<p style="font-size:70%">
+{t}Line open{/t}: 9am-9pm GMT,  {t}Mon-Fri{/t}<br>
+{t}System Down Emergency{/t} 24/7
+</p>
+</div>
+<div style="border:1px solid #ccc;margin-top:20px;padding:10px 20px 20px 20px">
+<h2>{t}Issue Tracking{/t}</h2>
+<p style="margin-top:10px">
+<a href="http://aw-kaktus.info:8080" target=blank><span class="state_details"">{t}Track the progress of ongoing issues{/t}</span></a>
+</p>
+
+<table style="font-size:90%;margin-bottom:10px">
+<tr><td>{t}login{/t}:</td><td>kaktus_user<td/></tr>
+<tr><td>{t}password{/t}:</td><td>public<td/></tr>
+</table>
+
+<a href="http://aw-kaktus.info:8080" target=blank>
+<img style="border:1px solid #ccc" src="art/jira.png" alt="jira">
+</a>
+
+</div>
+</div>
 <div id="send_from">
 <div id="message_error" style="padding:10px;"></div>
 
@@ -26,6 +52,9 @@
 </tr>
 </table>
 </div>
+
+
+
 <div id="issue_send" style="display:none">
 <div style="margin:15px 0">
 {t}Thank you for submitting the issue{/t}
