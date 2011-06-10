@@ -6,10 +6,10 @@ include_once('common.php');
 if(isset($_REQUEST['t']) and $_REQUEST['t']=='feature'){
 $type='feature';
 
-$email='raul@ancientwisdom.biz';
+//$email='raul@ancientwisdom.biz';
 }else{
 $type='bug';
-$email='raul@ancientwisdom.biz';
+//$email='raul@ancientwisdom.biz';
 }
 $metadata="Client: ".$myconf['name']."\n";
 $metadata.="User: ".$user->data['User Alias']." (".$user->id.")\n";
@@ -19,7 +19,7 @@ $metadata.="Agent: ".$_SERVER['HTTP_USER_AGENT']."\n";
 
 $smarty->assign('type',$type);
 $smarty->assign('metadata',$metadata);
-$smarty->assign('email',$email);
+//$smarty->assign('email',$email);
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

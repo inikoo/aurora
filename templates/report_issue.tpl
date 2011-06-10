@@ -11,7 +11,7 @@
 
 <table class="edit">
 <input type="hidden" id="metadata" value="{$metadata}"/>
-<input type="hidden" id="email" value="{$email}"/>
+<input type="hidden" id="type" value="{$type}"/>
 
 
 <tr>

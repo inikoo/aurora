@@ -32,33 +32,14 @@ $response=array('state'=>400,'msg'=>_('You must specify a summary of the issue.'
 echo json_encode($response);
 exit;
 }
-//requests requests DXggmAf1mQ
-/*
-    require("external_libs/mail/email_message.php");
 
-    $from_name='Inikoo User';
-    $from_address='anon.user@aw-inikoo.com';
-    $reply_name=$from_name;
-    $reply_address=$from_address;
-    $reply_address=$from_address;
-    $error_delivery_name=$from_name;
-    $error_delivery_address=$from_address;
-    $to_name="Inikoo Jira";
-    $to_address=$data['values']['email'];
-    $subject=$data['values']['summary'];
-    $message=$data['values']['description']."\n\n".$data['values']['metadata'];
-    $email_message=new email_message_class;
-    $email_message->SetEncodedEmailHeader("To",$to_address,$to_name);
-    $email_message->SetEncodedEmailHeader("From",$from_address,$from_name);
-    $email_message->SetEncodedEmailHeader("Reply-To",$reply_address,$reply_name);
-    $email_message->SetEncodedEmailHeader("Errors-To",$error_delivery_address,$error_delivery_name);
-    $email_message->SetEncodedHeader("Subject",$subject);
-    $email_message->AddQuotedPrintableTextPart($email_message->WrapText($message));
-  
-  
-  */
   require("external_libs/mail/smtp_mail.php");
-  require("app_files/keys/request_keys.php");
+  
+  
+  if($data['values']['type']=='bug')
+  require("app_files/keys/requests_key.php");
+  else
+    require("app_files/keys/bugs_key.php");
 
 
 
@@ -82,8 +63,8 @@ $message_object->smtp_ssl=$conection_data['smtp_ssl'];
 	/*
 	 *  Change these variables to specify your test sender and recipient addresses
 	 */
-	$from="requests@inikoo.com";
-	$to="rulovico@gmail.com";
+	$from=$conection_data['email'];
+	$to=$conection_data['email'];
 
 	$subject=$data['values']['summary'];
 	$message=$data['values']['description']."\n\n".$data['values']['metadata'];

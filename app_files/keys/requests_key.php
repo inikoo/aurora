@@ -3,6 +3,7 @@
 
 
 $conection_data=array(
+    'mail'=>'requests@inikoo.com',
     'smtp_host'=>"smtp.gmail.com",
     'smtp_user'=>"requests@inikoo.com",
     'smtp_password'=>"DXggmAf1mQ",
