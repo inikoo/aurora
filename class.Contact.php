@@ -848,7 +848,7 @@ class Contact extends DB_Table {
 
 
 
-      
+
 
 
         if (isset($data['Contact Tax Number'])) {
@@ -1040,7 +1040,7 @@ class Contact extends DB_Table {
     Key of the Compnay found, if create is found in the options string  returns the new key
     */
     function find($raw_data,$options) {
-     //    print $options."---------------------------------------------------\n";
+        //    print $options."---------------------------------------------------\n";
         //   print_r($raw_data);
 
         $find_type='complete';
@@ -1122,7 +1122,7 @@ class Contact extends DB_Table {
                 $data[$_key]=$val;
             }
             $parent='supplier';
-            
+
         }
         elseif(preg_match('/from customer|in customer/i',$options)) {
             foreach($raw_data as $key=>$val) {
@@ -1148,7 +1148,7 @@ class Contact extends DB_Table {
             }
             $parent='customer';
 
-			
+
         }
 
 
@@ -1230,7 +1230,7 @@ class Contact extends DB_Table {
         }
         // print " $find_type $options 8888888\n";
         //exit;
-$this->parent=$parent;
+        $this->parent=$parent;
         $options.=' parent:'.$parent;
 
 
@@ -1437,11 +1437,11 @@ $this->parent=$parent;
        (example end)
 
     */
-     function create ($data,$address_home_data='',$options='') {
-     
-   
-     
-     
+    function create ($data,$address_home_data='',$options='') {
+
+
+
+
         global $myconf;
         if (is_string($data))
             $data['Contact Name']=$data;
@@ -1609,14 +1609,14 @@ $this->parent=$parent;
 
 
             $home_address_key=0;
-            
-            
-           
-            
+
+
+
+
             if (is_array($address_home_data) and !array_empty($address_home_data)) {
-            
-           
-            
+
+
+
                 $address_home_data['editor']=$this->editor;
                 $home_address=new Address("find in contact ".$this->id." $options create update",$address_home_data);
                 $home_address->editor=$this->editor;
@@ -1691,9 +1691,9 @@ $this->parent=$parent;
 //print_r($home_address);
                 $telephone=new Telecom("find in company fast create country code ".$home_address->data['Address Country Code'],$telephone_data);
                 $telephone->editor=$this->editor;
-                
-               
-                
+
+
+
                 if (!$telephone->error) {
                     // if ($telephone->is_mobile())
                     //   $mobile_keys[]=$telephone->id;
@@ -1731,8 +1731,8 @@ $this->parent=$parent;
 
 
             foreach($telephone_keys as $telecom_key) {
-           // print "address $home_address_key =".$home_address->id." ; tel: $telecom_key\n";
-            
+                // print "address $home_address_key =".$home_address->id." ; tel: $telecom_key\n";
+
                 $home_address->associate_telecom($telecom_key,'Telephone');
             }
 
@@ -1908,64 +1908,112 @@ $this->parent=$parent;
         }
 
     }
-    
-    
-    
-    
-    function associate_email_to_parents($parent,$parent_key,$email_key,$set_as_main=true){
-    
-
-                if ($parent=='Customer') {
-                    $parent_object=new Customer($parent_key);
-                    $parent_label=_('Customer');
-                }
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($parent_key);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($parent_key);
-                    $parent_label=_('Company');
-                }
-
-                $parent_emails=$parent_object->get_email_keys();
-
-                if (!array_key_exists($email_key,$parent_emails)) {
-                    $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'$parent',%d,'No','')  "
-                                 ,$email_key
-                                 ,$parent_object->id
-                                );
-                    mysql_query($sql);
-                }
-                //print "$sql\n";
-
-                $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
-                if ($set_as_main and $old_principal_email_key!=$email_key) {
-
-                    $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
-                                 $parent_object->id
-
-                                );
-                    mysql_query($sql);
-                    $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Email Key`=%d",
-                                 $parent_object->id
-                                 ,$email_key
-                                );
-                    mysql_query($sql);
-                    $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=%d where `$parent Key`=%d"
-                                 ,$email_key
-                                 ,$parent_object->id
-                                );
-                    mysql_query($sql);
 
 
 
 
-                }
-            
-    
+    function associate_email_to_parents($parent,$parent_key,$email_key,$set_as_main=true) {
+
+
+        if ($parent=='Customer') {
+            $parent_object=new Customer($parent_key);
+            $parent_label=_('Customer');
+        }
+        elseif($parent=='Supplier') {
+            $parent_object=new Supplier($parent_key);
+            $parent_label=_('Supplier');
+        }
+        elseif($parent=='Company') {
+            $parent_object=new Company($parent_key);
+            $parent_label=_('Company');
+        }
+
+        $parent_emails=$parent_object->get_email_keys();
+
+        if (!array_key_exists($email_key,$parent_emails)) {
+            $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'$parent',%d,'No','')  "
+                         ,$email_key
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+        }
+        //print "$sql\n";
+
+        $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
+        if ($set_as_main and $old_principal_email_key!=$email_key) {
+
+            $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
+                         $parent_object->id
+
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Email Key`=%d",
+                         $parent_object->id
+                         ,$email_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=%d where `$parent Key`=%d"
+                         ,$email_key
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+        }
     }
-    
+
+
+ function associate_mobile_to_parents($parent,$parent_key,$mobile_key,$set_as_main=true) {
+
+
+        if ($parent=='Customer') {
+            $parent_object=new Customer($parent_key);
+            $parent_label=_('Customer');
+        }
+        elseif($parent=='Supplier') {
+            $parent_object=new Supplier($parent_key);
+            $parent_label=_('Supplier');
+        }
+        elseif($parent=='Company') {
+            $parent_object=new Company($parent_key);
+            $parent_label=_('Company');
+        }
+
+        $parent_mobiles=$parent_object->get_telecom_keys('Mobile');
+
+        if (!array_key_exists($mobile_key,$parent_mobiles)) {
+            $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`) values (%d,'$parent',%d,'No')  "
+                         ,$mobile_key
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+        }
+        //print "$sql\n";
+
+		if($parent=='Customer'){
+
+        $old_principal_mobile_key=$parent_object->data[$parent.' Main Mobile Key'];
+        if ($set_as_main and $old_principal_mobile_key!=$mobile_key) {
+
+            $sql=sprintf("update `Mobile Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
+                         $parent_object->id
+
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Mobile Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Mobile Key`=%d",
+                         $parent_object->id
+                         ,$mobile_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `$parent Dimension` set `$parent Main Mobile Key`=%d where `$parent Key`=%d"
+                         ,$mobile_key
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+        }
+      }  
+        
+    }
+
+
 
     function update_parents_principal_email_keys() {
         $email_key=$this->data['Contact Main Email Key'];
@@ -1979,9 +2027,9 @@ $this->parent=$parent;
 
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-            
-            $this->associate_email_to_parents($parent,$row['Parent Key'],$email_key);
-            
+
+                $this->associate_email_to_parents($parent,$row['Parent Key'],$email_key);
+
             }
         }
     }
@@ -2233,7 +2281,7 @@ $this->parent=$parent;
                         $history_data['Indirect Object']=$parent;
                         $history_data['Indirect Object Key']=$parent_object->id;
 
-                      
+
                     } else {
 
                         if ($this->display('name')=='') {
@@ -2250,10 +2298,10 @@ $this->parent=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Contact Main Name';
                         $history_data['Indirect Object Key']='';
-                        
+
 
                     }
-                      if ($parent=='Customer') {
+                    if ($parent=='Customer') {
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
@@ -2261,15 +2309,15 @@ $this->parent=$parent;
 
                 }
 
-/*
-                $this->update_parents_principal_email_keys();
-                $email=new Email($this->get_principal_email_key());
-                $email->editor=$this->editor;
-                $email->new=$this->new;
-                if ($email->id)
-                    $email->update_parents($add_parent_history);
-                    
- */                   
+                /*
+                                $this->update_parents_principal_email_keys();
+                                $email=new Email($this->get_principal_email_key());
+                                $email->editor=$this->editor;
+                                $email->new=$this->new;
+                                if ($email->id)
+                                    $email->update_parents($add_parent_history);
+
+                 */
 
             }
         }
@@ -2760,7 +2808,7 @@ $this->parent=$parent;
 
 
     public function update($data,$options='') {
-      
+
         if (isset($data['editor'])) {
             foreach($data['editor'] as $key=>$value) {
 
@@ -2786,7 +2834,7 @@ $this->parent=$parent;
             elseif(array_key_exists($key,$base_data)) {
 
                 if ($value!=$this->data[$key]) {
-        //print "xxx $key,$value,$options\n";
+                    //print "xxx $key,$value,$options\n";
                     $this->update_field_switcher($key,$value,$options);
 
                 }
@@ -2807,83 +2855,45 @@ $this->parent=$parent;
 //print "$field,$value,$options\n";
         switch ($field) {
 
-  case('Contact Tax Number'):
+        case('Contact Tax Number'):
             $this->update_field($field,$value,$options);
-            if($this->updated){
+            if ($this->updated) {
                 $this->update_parents_tax_number();
             }
-        break;
+            break;
 
         case('Contact Main Plain FAX'):
         case('Contact Main Plain Telephone'):
+
             if ($field=='Contact Main Plain Telephone')
                 $type='Telephone';
             else
                 $type='FAX';
             $address=new Address($this->data['Contact Main Address Key']);
 
+
             $address->editor=$this->editor;
             if ($value=='') {
                 if ($telecom_key=$address->get_principal_telecom_key($type)) {
                     $telecom=new Telecom($telecom_key);
                     $telecom->delete();
+                    if ($telecom->deleted) {
+                        $this->updated=true;
+                        $this->new_value='';
+                    }
                 }
-
             } else {
 
-/*
- if ($email->found) {
+                if ($address->get_principal_telecom_key($type)) {
 
-                    $email_contacts_keys=$email->get_parent_keys('Contact');
-                    $number_contact_keys=count($email_contacts_keys);
-                    if ($number_contact_keys==1) {
-
-                        $email_contact_key=array_pop($email_contacts_keys);
-
-                        if ($email_contact_key!=$this->id) {
-                            $this->error=true;
-                            $this->msg=_('Email bellows to other contact');
-                            $contact=new Contact($email_contact_key);
-                            $this->msg_extended=_('Email belongs to contact').' <a href="contact.php?id='.$contact->id.'">'.$contact->display('name').'</a>';
-                            return;
-                        } else {
-                            // print "updating principal email\n";
-                            $this->update_principal_email($email->id);
-                            return;
-                        }
-
-
-                    }
-                    elseif($number_contact_keys>1) {
-                        exit("Error an email has more tan one contacts as parent\n");
-
-                    }
-                }
-
-
-*/
-
-
-
-
-                if ($address->get_number_of_associated_telecoms($type)>0) {
-              
-              			
-                    $telecom_key=$address->update_principal_telecom_number($value,$type);
-                  	//print "======================";
-                    $address->update_parents_principal_telecom_keys($type);
-                   // print "-----------------";
-                    
+                    $address->update_principal_telecom_number($value,$type);
                 } else {
                     $telephone_data=array();
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;
                     $telephone_data['Telecom Type']=$type;
-
-                    $telephone=new Telecom("find in Contact create country code ".$address->data['Address Country Code'],$telephone_data);
+                    $telephone=new Telecom("find in contact create country code ".$address->data['Address Country Code'],$telephone_data);
                     $address->associate_telecom($telephone->id,$type);
-
-
                 }
                 $this->updated=$address->updated;
                 if ($this->updated) {
@@ -2891,13 +2901,8 @@ $this->parent=$parent;
                     $this->new_value=$this->data['Contact Main XHTML '.$type];
                 }
             }
+
             break;
-
-
-
-
-
-
 
 
         case('Contact Main Mobile Key'):
@@ -2935,30 +2940,53 @@ $this->parent=$parent;
             $this->data['Contact Name']=$this->display('name');
             $this->update_Contact_Name($old_value);
             break;
-            
-        case('Other Email'):    
-         
-         //  print $this->id;
+        case('Add Other Mobile'):
+
             if ($value=='')return;
-              $email_data['Email']=$value;
-                $email_data['Email Contact Name']=$this->display('name');
-                $email_data['editor']=$this->editor;
-            $email=new Email('find create',$email_data);
-             if ($email->id)
-                        $this->associate_email($email->id);
-            
-            
-            $this->other_email_key=$email->id;
-            $this->updated=true;
-            $this->new_value=$email->data['Email'];
-            
-            
-            
-            
-            
+           
+
+
+            $mobile_data=array();
+            $mobile_data['editor']=$this->editor;
+            $mobile_data['Telecom Raw Number']=$value;
+            $mobile_data['Telecom Type']='Mobile';
+            $mobile=new Telecom("find in contact $options create country code ".$this->data['Contact Main Country Code'],$mobile_data);
+
+            if ($mobile->id) {
+					$this->associate_mobile($mobile->id);
+                $this->other_mobile_key=$mobile->id;
+                $this->updated=true;
+                $this->new_value=$mobile->display('xhtml');
+            } else {
+                $this->msg=$mobile->msg;
+                $this->error=true;
+            }
+
+
             break;
+
+        case('Add Other Email'):
+            if ($value=='')return;
+            $email_data['Email']=$value;
+            $email_data['Email Contact Name']=$this->display('name');
+            $email_data['editor']=$this->editor;
+            $email=new Email('find create',$email_data);
+            if ($email->id) {
+                $this->associate_email($email->id);
+
+
+                $this->other_email_key=$email->id;
+                $this->updated=true;
+                $this->new_value=$email->data['Email'];
+            } else {
+                $this->msg=$email->msg;
+                $this->other_email_key=0;
+            }
+
+            break;
+
         case('Contact Main Plain Email'):
-    
+
             $main_email_key=$this->get_principal_email_key();
 
             if ($value=='') {
@@ -2975,23 +3003,23 @@ $this->parent=$parent;
                 $email=new Email('find',$email_data);
 
 
-			
 
-       //         if ($email->found) {
-                
-              
-                
-					//	 $this->update_principal_email($email->id);
-                   //         return;
 
-				/*
+                //         if ($email->found) {
+
+
+
+                //	 $this->update_principal_email($email->id);
+                //         return;
+
+                /*
                     $email_contacts_keys=$email->get_parent_keys('Contact');
-                    
+
                     $number_contact_keys=count($email_contacts_keys);
                     if ($number_contact_keys==1) {
-						
+
                         $contact_data=array_pop($email_contacts_keys);
-							
+
                         if ($contact_data['Subject Key']!=$this->id) {
                             $this->error=true;
                             $this->msg=_('Email belongs to other contact');
@@ -3012,17 +3040,17 @@ $this->parent=$parent;
                             return;
 
                     }
-                    
+
                     */
-              //  }
-                
-               
+                //  }
+
+
 
 
                 if ($main_email_key) {
                     $email=new email($main_email_key);
                     $email->editor=$this->editor;
-                 
+
                     $email->update_Email($value);
                     $this->updated=$email->updated;
                     $this->new_value=$email->new_value;
@@ -3065,24 +3093,24 @@ $this->parent=$parent;
             break;
         case('Contact Main Plain Mobile'):
             $main_mobile_key=$this->get_principal_mobile_key();
-        
-                    
-           if ($main_mobile_key) {
-           
-                
-            if($value==''){
-            	  $telecom=new Telecom($main_mobile_key);
+
+
+            if ($main_mobile_key) {
+
+
+                if ($value=='') {
+                    $telecom=new Telecom($main_mobile_key);
                     $telecom->delete();
-                    
-                    	$this->updated=$telecom->deleted;
-                    }else{
-           
-           
-           $mobile=new Telecom($main_mobile_key);
-                $mobile->editor=$this->editor;
-                $mobile->update_number($value,$this->data['Contact Main Country Code']);
-				$this->updated=$mobile->updated;
-}
+
+                    $this->updated=$telecom->deleted;
+                } else {
+
+
+                    $mobile=new Telecom($main_mobile_key);
+                    $mobile->editor=$this->editor;
+                    $mobile->update_number($value,$this->data['Contact Main Country Code']);
+                    $this->updated=$mobile->updated;
+                }
 
             } else {
                 $mobile_data=array();
@@ -3640,7 +3668,7 @@ $this->parent=$parent;
 
         }
 
-        
+
 
 
 
@@ -4335,7 +4363,7 @@ $this->parent=$parent;
 
     }
 
-   
+
 
 
 
@@ -4535,18 +4563,18 @@ $this->parent=$parent;
 
 
     function get_telecom_keys($type=false) {
-		$where_type='';
-		
-		
-		if($type){
-		$where_type=sprintf('and `Telecom Type`=%s',prepare_mysql($type));
-		
-		}
-		
-		
+        $where_type='';
+
+
+        if ($type) {
+            $where_type=sprintf('and `Telecom Type`=%s',prepare_mysql($type));
+
+        }
+
+
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where     `Subject Type`='Contact' and `Subject Key`=%d  $where_type group by `Telecom Key` order by `Is Main` desc  "
-                    
+
                      ,$this->id);
         $address_keys=array();
         $result=mysql_query($sql);
@@ -4562,19 +4590,19 @@ $this->parent=$parent;
 
 
     function get_mobile_keys() {
-    
-    return $this->get_telecom_keys('Mobile');
-    /*
-        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Subject Type`='Contact' and `Telecom Technology Type`='Mobile' and  `Subject Key`=%d "
-                     ,$this->id );
 
-        $mobiles=array();
-        $result=mysql_query($sql);
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $mobiles[$row['Telecom Key']]= $row['Telecom Key'];
-        }
-        return $mobiles;
-*/
+        return $this->get_telecom_keys('Mobile');
+        /*
+            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Subject Type`='Contact' and `Telecom Technology Type`='Mobile' and  `Subject Key`=%d "
+                         ,$this->id );
+
+            $mobiles=array();
+            $result=mysql_query($sql);
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $mobiles[$row['Telecom Key']]= $row['Telecom Key'];
+            }
+            return $mobiles;
+        */
     }
 
 
@@ -4614,8 +4642,8 @@ $this->parent=$parent;
         $main_mobile_key=$this->get_principal_mobile_key();
 
         if ($main_mobile_key!=$mobile_key) {
-            $mobil=new Telecom($mobile_key);
-            $mobil->editor=$this->editor;
+            $mobile=new Telecom($mobile_key);
+            $mobile->editor=$this->editor;
             $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Mobile'  "
                          ,$this->id
                          ,$main_mobile_key
@@ -4624,20 +4652,20 @@ $this->parent=$parent;
 
             $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
                          ,$this->id
-                         ,$mobil->id
+                         ,$mobile->id
                         );
             mysql_query($sql);
 
 
-            $sql=sprintf("update `Contact Dimension` set  `Contact Main Mobile Key`=%d where `Contact Key`=%d",$mobil->id,$this->id);
-            $this->data['Contact Main Mobile Key']=$mobil->id;
+            $sql=sprintf("update `Contact Dimension` set  `Contact Main Mobile Key`=%d where `Contact Key`=%d",$mobile->id,$this->id);
+            $this->data['Contact Main Mobile Key']=$mobile->id;
             mysql_query($sql);
             $this->updated=true;
-            $this->new_value=$mobil->display('xhtml');
+            $this->new_value=$mobile->display('xhtml');
 
             $this->update_parents_principal_mobile_keys();
-            $mobil->new=$this->new;
-            $mobil->update_parents();
+            $mobile->new=$this->new;
+            $mobile->update_parents();
 
 
         }
@@ -4709,22 +4737,22 @@ $this->parent=$parent;
 
 
     function get_parent_keys($type=false) {
-         $where_type='';
+        $where_type='';
         $keys=array();
-        
-              if ($type)  {
+
+        if ($type)  {
             if (!preg_match('/^(Supplier|Customer|Company|Staff)$/',$type)) {
                 return $keys;
             }
             $where_type=' and `Subject Type`='.prepare_mysql($type);
         }
-        
-     
+
+
         $sql=sprintf("select `Subject Key` from `Contact Bridge` where  `Contact Key`=%d  $where_type "
-                     
+
                      ,$this->id);
         $result=mysql_query($sql);
-      //  print $sql;
+        //  print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $keys[$row['Subject Key']]= $row['Subject Key'];
 
@@ -4735,7 +4763,7 @@ $this->parent=$parent;
 
 
 
- function update_parents_tax_number() {
+    function update_parents_tax_number() {
 
         $parents=array('Customer');
         foreach($parents as $parent) {
@@ -4765,7 +4793,7 @@ $this->parent=$parent;
                 if ($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Person')) {
                     $sql=sprintf("update `$parent Dimension` set `$parent Tax Number`=%s where `$parent Key`=%d"
                                  ,prepare_mysql($parent_object->data[$parent.' Tax Number'])
-                              
+
 
                                  ,$parent_object->id
                                 );
@@ -4786,11 +4814,11 @@ $this->parent=$parent;
                         $history_data['History Abstract']='Tax Number Associated '.$this->data['Contact Tax Number'];
                         $history_data['History Details']=$this->data['Contact Tax Number']." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
-                         $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']=$parent.' Tax Name';
                         $history_data['Indirect Object Key']='';
-                       
+
                     } else {
                         $history_data['History Abstract']='Tax Number changed to '.$this->data['Contact Tax Number'];
                         $history_data['History Details']=_('Tax Number changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Contact Tax Number'].", ".$parent_label.": ".$parent_object->get_name();
@@ -4800,10 +4828,10 @@ $this->parent=$parent;
                         $history_data['Indirect Object']=$parent.' Tax Name';
                         $history_data['Indirect Object Key']='';
 
-                       
+
 
                     }
-                       if ($parent=='Customer') {
+                    if ($parent=='Customer') {
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
@@ -4817,128 +4845,128 @@ $this->parent=$parent;
             }
         }
     }
-/*
+    /*
 
-function disassociate_email($email_key){
+    function disassociate_email($email_key){
 
 
- $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d and `Subject Type`='Contact' and `Subject Key`=%d", $this->id);
-    mysql_query($sql);
-    $this->deleted=true;
-    
-    
-   
-    $parents=array('Company','Customer','Supplier');
-    foreach($parents as $parent) {
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
+     $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d and `Subject Type`='Contact' and `Subject Key`=%d", $this->id);
+        mysql_query($sql);
+        $this->deleted=true;
 
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $principal_email_changed=false;
 
-            if ($parent=='Contact') {
-                $parent_object=new Contact($row['Parent Key']);
-                $parent_label=_('Contact');
-            }
-            elseif($parent=='Customer') {
-                $parent_object=new Customer($row['Parent Key']);
-                $parent_label=_('Customer');
-            }
-            elseif($parent=='Supplier') {
-                $parent_object=new Supplier($row['Parent Key']);
-                $parent_label=_('Supplier');
-            }
-            elseif($parent=='Company') {
-                $parent_object=new Company($row['Parent Key']);
-                $parent_label=_('Company');
-            }
-            $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=NULL, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d"
 
-                         ,$parent_object->id
-                        );
-            mysql_query($sql);
-            $history_data['History Abstract']='Email Removed';
-            $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-            $history_data['Action']='disassociate';
-            $history_data['Direct Object']=$parent;
-            $history_data['Direct Object Key']=$parent_object->id;
-            $history_data['Indirect Object']='Email';
-            $history_data['Indirect Object Key']=$this->id;
-            $this->add_history($history_data);
-            if ($parent=='Contact') {
-                $emails=$parent_object->get_emails();
-                foreach($emails as $email) {
-                    $parent_object->update_principal_email($email->id);
-                    break;
+        $parents=array('Company','Customer','Supplier');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_email_changed=false;
+
+                if ($parent=='Contact') {
+                    $parent_object=new Contact($row['Parent Key']);
+                    $parent_label=_('Contact');
                 }
+                elseif($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=NULL, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d"
+
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+                $history_data['History Abstract']='Email Removed';
+                $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['Action']='disassociate';
+                $history_data['Direct Object']=$parent;
+                $history_data['Direct Object Key']=$parent_object->id;
+                $history_data['Indirect Object']='Email';
+                $history_data['Indirect Object Key']=$this->id;
+                $this->add_history($history_data);
+                if ($parent=='Contact') {
+                    $emails=$parent_object->get_emails();
+                    foreach($emails as $email) {
+                        $parent_object->update_principal_email($email->id);
+                        break;
+                    }
+                }
+
+
             }
-
-
         }
+
+
     }
 
 
-}
+    function delete_email($email_key){
 
+    $sql=sprintf("select * from `Email Bridge` where `Subject Type`='Contact'  and `Email Key`=%d",$this->id $email_key);
+    $res=mysql_query($sql);
+    $email_in_other_contact=false;
+    $email_in_contact=false;
+    while($row=mysql_fetch_assoc($res)){
+    if($row[`Subject Key`]==$this->id)
+    $email_in_contact=true;
+    else
+    $email_in_other_contact=true;
+    }
+    if(!$email_in_contact){
+    $this->msg='Email not associated with contact';
+    return;
+    }
 
-function delete_email($email_key){
+    if($email_in_other_contact){
+    $this->disassociate_email($email_key);
+    }else{
+    $email=new Email($email_key);
+    $email->delete();
 
-$sql=sprintf("select * from `Email Bridge` where `Subject Type`='Contact'  and `Email Key`=%d",$this->id $email_key);
-$res=mysql_query($sql);
-$email_in_other_contact=false;
-$email_in_contact=false;
-while($row=mysql_fetch_assoc($res)){
-if($row[`Subject Key`]==$this->id)
-$email_in_contact=true;
-else
-$email_in_other_contact=true;
-}
-if(!$email_in_contact){
-$this->msg='Email not associated with contact';
-return;
-}
+    }
 
-if($email_in_other_contact){
-$this->disassociate_email($email_key);
-}else{
-$email=new Email($email_key);
-$email->delete();
+    }
+    */
+    function delete() {
 
-}
-
-}
-*/
-function delete(){
-
-$sql=sprintf("delete from `Contact Dimension` where `Contact Key`=%d",$this->id);
+        $sql=sprintf("delete from `Contact Dimension` where `Contact Key`=%d",$this->id);
 //print "$sql\n";
-mysql_query($sql);
- $address_to_delete=$this->get_address_keys();
+        mysql_query($sql);
+        $address_to_delete=$this->get_address_keys();
         $emails_to_delete=$this->get_email_keys();
         $telecom_to_delete=$this->get_telecom_keys();
-     $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Category Bridge` where `Subject`='Contact' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Company Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Contact Old ID Bridge` where  `Contact Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-             $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
+        $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Category Bridge` where `Subject`='Contact' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Company Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Contact Old ID Bridge` where  `Contact Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
 
-  
 
-   foreach($emails_to_delete as $email_key) {
+
+        foreach($emails_to_delete as $email_key) {
             $email=new Email($email_key);
             if ($email->id and !$email->has_parents()) {
                 $email->delete();
             }
         }
 
-       
+
 
         foreach($address_to_delete as $address_key) {
             $address=new Address($address_key);
@@ -4962,7 +4990,7 @@ mysql_query($sql);
 
 
 
-}
+    }
 
 
 }

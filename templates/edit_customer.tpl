@@ -153,19 +153,11 @@
 </div>
 <div  class="edit_block" style="{if $edit!="details"}display:none{/if};"  id="d_details">
   
-       <div class="general_options" style="float:right">
-	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_customer" class="state_details">{t}Save{/t}</span>
-	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span>
-      </div>
+      
 
    <table class="edit" border=0 style="clear:both;margin-bottom:40px;width:100%">
 
 
-<tr>
-<td style="width:150px"></td>
-<td style="width:300px"></td>
-<td ></td>
-</tr>
 
 <tr>
 <td></td>
@@ -183,12 +175,17 @@
 <span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes'}display:none{/if}">{t}Delete Customer{/t}</span>
 
 </td>
-<td></td>
+<td>
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_customer" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span>
+      </div>
+</td>
 </tr>
 
 <tr>
-<td></td>
-<td style="text-align:right;color:#777;font-size:90%">
+<td style="width:150px"></td>
+<td style="text-align:right;color:#777;font-size:90%;width:300px">
 <div  id="convert_to_person_info" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none;margin-bottom:5px">
 <p>
 {t}This operation will delete the company{/t}
@@ -272,7 +269,6 @@
 
 
  {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
- 
   <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label">{t}Other Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
@@ -281,12 +277,10 @@
      </div>
    </td>
    <td>
-  
    <span id="Customer_Email{$other_email_key}_msg" class="edit_td_alert"></span>
    </td>
  </tr>
- 
-                {/foreach}
+{/foreach}
 
 
  <tr id="tr_add_other_email" class="" style="display:none"><td style="" class="label">{t}Other Email{/t}:</td>
@@ -309,8 +303,41 @@
        <div id="Customer_Main_Telephone_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Main_Telephone_msg" class="edit_td_alert">{$main_telephone_warning}</td>
+   <td>
+    <span id="display_add_other_telephone" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main XHTML Telephone')==''}display:none{/if}">{t}Add other Telephone{/t}</span>
+    <span id="Customer_Main_Telephone_msg" class="edit_td_alert">{$main_telephone_warning}</span>
+   </td>
  </tr>
+ 
+ 
+ 
+  {foreach from=$customer->get_other_telephones_data() key=other_telephone_key item=other_telephone }
+ <tr class="" id="tr_other_telephone{$other_telephone_key}"><td style="" class="label">{t}Other Telephone{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Telephone{$other_telephone_key}" value="{$other_telephone.xhtml}" ovalue="{$other_telephone.xhtml}" valid="0">
+       <div id="Customer_Telephone{$other_telephone_key}_Container" style="" ></div>
+     </div>
+   </td>
+   <td>
+   <span id="Customer_Telephone{$other_telephone_key}_msg" class="edit_td_alert"></span>
+   </td>
+ </tr>
+{/foreach}
+
+ <tr id="tr_add_other_telephone" class="" style="display:none"><td style="" class="label">{t}Other Telephone{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Other_Telephone" value="" ovalue="" valid="0">
+       <div id="Customer_Other_Telephone_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Other_Telephone_msg" class="edit_td_alert"></td>
+ </tr>
+
+ 
+ 
+ 
   <tr class=""><td style="" class="label">{t}Contact Mobile{/t}:</td>
    <td  style="text-align:left">
      <div   >
@@ -318,7 +345,39 @@
        <div id="Customer_Main_Mobile_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Main_Mobile_msg" class="edit_td_alert"></td>
+  
+   
+      <td>
+    <span id="display_add_other_mobile" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main XHTML Mobile')==''}display:none{/if}">{t}Add other Mobile{/t}</span>
+    <span id="Customer_Main_Mobile_msg" class="edit_td_alert">{$main_mobile_warning}</span>
+   </td>
+   
+ </tr>
+ 
+ 
+ 
+   {foreach from=$customer->get_other_mobiles_data() key=other_mobile_key item=other_mobile }
+ <tr class="" id="tr_other_mobile{$other_mobile_key}"><td style="" class="label">{t}Other Mobile{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Mobile{$other_mobile_key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0">
+       <div id="Customer_Mobile{$other_mobile_key}_Container" style="" ></div>
+     </div>
+   </td>
+   <td>
+   <span id="Customer_Mobile{$other_mobile_key}_msg" class="edit_td_alert"></span>
+   </td>
+ </tr>
+{/foreach}
+
+ <tr id="tr_add_other_mobile" class="" style="display:none"><td style="" class="label">{t}Other Mobile{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Other_Mobile" value="" ovalue="" valid="0">
+       <div id="Customer_Other_Mobile_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Other_Mobile_msg" class="edit_td_alert"></td>
  </tr>
  
  
@@ -329,9 +388,35 @@
        <div id="Customer_Main_FAX_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Main_FAX_msg" class="edit_td_alert"></td>
+   <td>
+<span id="display_add_other_fax" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main XHTML FAX')==''}display:none{/if}">{t}Add other Fax{/t}</span>
+    <span id="Customer_Main_FAX_msg" class="edit_td_alert">{$main_fax_warning}</span>
+   </td>
  </tr>
 
+ {foreach from=$customer->get_other_faxes_data() key=other_fax_key item=other_fax }
+ <tr class="" id="tr_other_fax{$other_fax_key}"><td style="" class="label">{t}Other Fax{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_FAX{$other_fax_key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0">
+       <div id="Customer_FAX{$other_fax_key}_Container" style="" ></div>
+     </div>
+   </td>
+   <td>
+   <span id="Customer_FAX{$other_fax_key}_msg" class="edit_td_alert"></span>
+   </td>
+ </tr>
+{/foreach}
+
+ <tr id="tr_add_other_fax" class="" style="display:none"><td style="" class="label">{t}Other Fax{/t}:</td>
+   <td  style="text-align:left">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Other_FAX" value="" ovalue="" valid="0">
+       <div id="Customer_Other_FAX_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Other_FAX_msg" class="edit_td_alert"></td>
+ </tr>
 
 
      </table>

@@ -1655,7 +1655,7 @@ class PartLocation extends DB_Table {
 
         $intervals=$this-> get_history_intervals();
 
-
+//print_r($intervals);
 
         foreach($intervals as $interval) {
             $this->update_stock_history_interval($interval['From'],($interval['To']?$interval['To']:date('Y-m-d',strtotime('now'))));
