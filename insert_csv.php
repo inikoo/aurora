@@ -54,7 +54,7 @@ $smarty->assign('css_files',$css_files);
 
   $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
   $map = $_SESSION['state']['import']['map'];
-   $options = $_SESSION['state']['import']['options'];
+//   $options = $_SESSION['state']['import']['options'];
   require_once 'csvparser.php';
     $csv = new CSV_PARSER;
     if (isset($_SESSION['state']['import']['file_path'])) {
