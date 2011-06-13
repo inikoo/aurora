@@ -239,15 +239,25 @@ function save(tipo){
 	 case('sticky_note'):
 	  case('new_sticky_note'):
 
-    var value=my_encodeURIComponent(Dom.get(tipo+"_input").value);
+  //  var value=my_encodeURIComponent(Dom.get(tipo+"_input").value);
 
-	var request="ar_edit_contacts.php?tipo=edit_customer&key="+tipo+"&customer_key="+customer_key+"&newvalue="+value;
+
+ var data_to_update=new Object;
+ data_to_update[tipo]={'okey':tipo,'value':Dom.get(tipo+"_input").value}
+
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+
+var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_key
 
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	//	alert(o.responseText)
+		    var ra =  YAHOO.lang.JSON.parse(o.responseText);
+		      for (x in ra){
+               r=ra[x]
+		    
 		    if (r.state==200) {
 		    
 		    Dom.get('sticky_note_content').innerHTML=r.newvalue;
@@ -272,6 +282,7 @@ var table=tables['table0'];
 			
 		    }else
 			Dom.get(tipo+'_msg').innerHTML=r.msg;
+		}
 		}
 	    });        
 	
