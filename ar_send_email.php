@@ -67,8 +67,11 @@ $message_object->smtp_ssl=$conection_data['smtp_ssl'];
 
 	$subject=$data['values']['summary'];
 	$message=$data['values']['description']."\n\n".$data['values']['metadata'];
-	$additional_headers="From: $from";
+	$additional_headers="From: $from\nBcc: raul@inikoo.com";
 	$additional_parameters="-f ".$from;
+	
+	
+	
 	if(smtp_mail($to,$subject,$message,$additional_headers,$additional_parameters))
 		 $response=array('state'=>200,'msg'=>'ok');
 	else

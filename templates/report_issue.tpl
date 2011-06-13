@@ -47,7 +47,8 @@
 <td class="label">{t}Description{/t}:</td><td><textarea id="description" rows=10 style="width:400px"></textarea></td>
 <tr>
 <tr>
-<td colspan=2 style="text-align:right"><button id="cancel" onClick="window.history.back()" return_url="{$return_url}" >{t}Cancel{/t}</button><button id="send" style="margin-left:10px">{t}Send{/t}</button>
+<td colspan=2 style="text-align:right">
+<span style="display:none" id="sending">{t}Sending{/t}</span><button id="cancel" onClick="window.history.back()" return_url="{$return_url}" >{t}Cancel{/t}</button><button id="send" style="margin-left:10px">{t}Send{/t}</button>
 </td>
 </tr>
 </table>
