@@ -711,11 +711,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	   //  alert(request);
+	     alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-				//alert(o.responseText)
+				alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 
@@ -728,7 +728,8 @@ function save_edit_general(branch) {
                         post_item_updated_actions(branch,r);
 
 
-                    } else {
+                    } 
+                    else {
                         validate_scope_data[branch][r.key].changed=true;
                         validate_scope_data[branch][r.key].validated=false;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;
@@ -742,6 +743,80 @@ function save_edit_general(branch) {
     }
 
 }
+
+
+function save_edit_general_bulk(branch) {
+    operation='edit';
+    scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
+    branch_key=validate_scope_metadata[branch]['key'];
+    branch_key_name=validate_scope_metadata[branch]['key_name'];
+
+//alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
+ var data_to_update=new Object;
+    for (item in validate_scope_data[branch]) {
+
+        if (validate_scope_data[branch][item].changed && validate_scope_data[branch][item].validated) {
+            var item_input=Dom.get(validate_scope_data[branch][item].name);
+            var updated_items=0;
+
+            if (validate_scope_data[branch][item].dbname!=undefined) {
+                item_name=validate_scope_data[branch][item].dbname;
+            } else {
+                item_name=item;
+            }
+           
+           // alert(item)
+            data_to_update[item_name]={'okey':item,'value':item_input.value}
+        }
+    }
+
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
+//alert(request);//return;
+ YAHOO.util.Connect.asyncRequest('POST',request , {
+success:function(o) {
+ // alert(o.responseText);
+
+            var ra =  YAHOO.lang.JSON.parse(o.responseText);
+            
+            
+            for (x in ra){
+               r=ra[x]
+             
+             if (r.state==200) {
+
+                        validate_scope_data[branch][r.key].changed=false;
+                        validate_scope_data[branch][r.key].validated=true;
+                        Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
+                        Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
+                        Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
+
+                        post_item_updated_actions(branch,r);
+
+
+                    } 
+                    else {
+                        validate_scope_data[branch][r.key].changed=true;
+                        validate_scope_data[branch][r.key].validated=false;
+                        Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;
+
+                    }
+                    
+             
+             
+}
+validate_scope_edit(branch)
+
+        }
+    });
+  
+
+           
+     
+
+}
+
+
 function save_new_general(branch) {
 
 if(Dom.hasClass('save_new_'+branch,'disabled')){

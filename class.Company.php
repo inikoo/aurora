@@ -996,12 +996,12 @@ class Company extends DB_Table {
 
         case('Company Main Plain FAX'):
         case('Company Main Plain Telephone'):
+
             if ($field=='Company Main Plain Telephone')
                 $type='Telephone';
             else
                 $type='FAX';
             $address=new Address($this->data['Company Main Address Key']);
-
 
 
             $address->editor=$this->editor;
@@ -1014,26 +1014,19 @@ class Company extends DB_Table {
                         $this->new_value='';
                     }
                 }
-
             } else {
-
-
-                if ($address->get_number_of_associated_telecoms($type)>0) {
+            
+            //print $type;
+            
+                if ($address->get_principal_telecom_key($type)) {
                     $address->update_principal_telecom_number($value,$type);
-
-
-
-
                 } else {
-
                     $telephone_data=array();
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;
                     $telephone_data['Telecom Type']=$type;
                     $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
                     $address->associate_telecom($telephone->id,$type);
-
-
                 }
                 $this->updated=$address->updated;
                 if ($this->updated) {
@@ -1042,12 +1035,6 @@ class Company extends DB_Table {
                 }
             }
             break;
-
-
-
-
-
-
 
         case('Company Old ID'):
             $this->update_Company_Old_ID($value,$options);
@@ -2110,16 +2097,16 @@ class Company extends DB_Table {
 
     function get_telecom_keys($type=false) {
 
-$where_type='';
-		
-		
-		if($type){
-		$where_type=sprintf('and `Telecom Type`=%s',prepare_mysql($type));
-		
-		}
+        $where_type='';
+
+
+        if ($type) {
+            $where_type=sprintf('and `Telecom Type`=%s',prepare_mysql($type));
+
+        }
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where     `Subject Type`='Company' and `Subject Key`=%d  $where_type group by `Telecom Key` order by `Is Main` desc  "
-                   
+
                      ,$this->id);
         $address_keys=array();
         $result=mysql_query($sql);
@@ -2676,40 +2663,40 @@ $where_type='';
     }
 
 
-function delete(){
+    function delete() {
 
 
-$sql=sprintf("delete from `Company Dimension` where `Company Key`=%d",$this->id);
+        $sql=sprintf("delete from `Company Dimension` where `Company Key`=%d",$this->id);
 //print "$sql\n";
-mysql_query($sql);
+        mysql_query($sql);
 //mysql_query($sql);
 
- $address_to_delete=$this->get_address_keys();
+        $address_to_delete=$this->get_address_keys();
         $emails_to_delete=$this->get_email_keys();
         $telecom_to_delete=$this->get_telecom_keys();
 
-     $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Category Bridge` where `Subject`='Company' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-             
-             $sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-              $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
-             $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
-            mysql_query($sql);
+        $sql=sprintf("delete from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Category Bridge` where `Subject`='Company' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+
+        $sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Company' and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
 
 
 
-   foreach($emails_to_delete as $email_key) {
+        foreach($emails_to_delete as $email_key) {
             $email=new Email($email_key);
             if ($email->id and !$email->has_parents()) {
                 $email->delete();
             }
         }
 
-       
+
 
         foreach($address_to_delete as $address_key) {
             $address=new Address($address_key);
@@ -2729,22 +2716,22 @@ mysql_query($sql);
 
 
 
-/*
-if(!$ignore_contacts_keys){
-$ignore_contacts_keys=array();
-}
+        /*
+        if(!$ignore_contacts_keys){
+        $ignore_contacts_keys=array();
+        }
 
-$company_address_keys=$this->get_address_keys();
-$company_contacts_keys=$this->get_contact_keys();
-foreach($ignore_contacts_keys as $ignore_contacts_key){
-unset($company_contacts_keys[$ignore_contacts_key]);
-}
+        $company_address_keys=$this->get_address_keys();
+        $company_contacts_keys=$this->get_contact_keys();
+        foreach($ignore_contacts_keys as $ignore_contacts_key){
+        unset($company_contacts_keys[$ignore_contacts_key]);
+        }
 
-print "address:\n";
-print_r($company_address_keys);
-print_r($company_contacts_keys);
-*/
-}
+        print "address:\n";
+        print_r($company_address_keys);
+        print_r($company_contacts_keys);
+        */
+    }
 
 
 }

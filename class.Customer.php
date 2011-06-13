@@ -1212,11 +1212,32 @@ class Customer extends DB_Table {
             break;
         case('Customer Main Plain Telephone'):
         case('Customer Main Plain FAX'):
-
             if ($field=='Customer Main Plain Telephone')
                 $type='Telephone';
             else
                 $type='FAX';
+
+            $telephone_data=array();
+            $telephone_data['editor']=$this->editor;
+            $telephone_data['Telecom Raw Number']=$value;
+            $telephone_data['Telecom Type']=$type;
+            $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+
+            if ($proposed_telephone->id) {
+                $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
+
+                if (in_array($this->id,$customers_with_this_telephone)) {
+                    $this->msg=_('The customer already has this number');
+                    $this->error=true;
+
+                    return;
+                }
+            }
+
+
+
+
+
             if ($this->data['Customer Type']=='Person') {
                 $subject=new Contact($this->data['Customer Main Contact Key']);
                 $subject_type='Contact';
@@ -1225,7 +1246,11 @@ class Customer extends DB_Table {
                 $subject_type='Company';
 
             }
+
+
+
             $subject->editor=$this->editor;
+
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
@@ -1234,6 +1259,24 @@ class Customer extends DB_Table {
 
             break;
         case('Customer Main Plain Mobile'):
+
+            $type='Mobile';
+            $telephone_data=array();
+            $telephone_data['editor']=$this->editor;
+            $telephone_data['Telecom Raw Number']=$value;
+            $telephone_data['Telecom Type']=$type;
+            $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+
+            if ($proposed_telephone->id) {
+                $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
+
+                if (in_array($this->id,$customers_with_this_telephone)) {
+                    $this->msg=_('The customer already has this number');
+                    $this->error=true;
+
+                    return;
+                }
+            }
             $contact=new Contact($this->data['Customer Main Contact Key']);
             $contact->editor=$this->editor;
             $contact->update(array('Contact Main Plain Mobile'=>$value));
@@ -1242,8 +1285,17 @@ class Customer extends DB_Table {
             $this->new_value=$contact->new_value;
             break;
 
+         case('Add Other Mobile'):
+            $this->add_other_telecom('Mobile',$value);
+            break;    
 
-        case('Other Email'):
+        case('Add Other FAX'):
+            $this->add_other_telecom('FAX',$value);
+            break;
+        case('Add Other Telephone'):
+            $this->add_other_telecom('Telephone',$value);
+            break;
+        case('Add Other Email'):
 
             if ($value=='') {
                 return;
@@ -1264,7 +1316,7 @@ class Customer extends DB_Table {
                 foreach($customers_with_this_email as $customer_with_this_email) {
                     $other_customer_with_this_email=new Customer($customer_with_this_email);
                     if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
-                        $this->msg=_('Email could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$other_customer_with_this_email->data['Customer Data'].'</a>';
+                        $this->msg=_('Email could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$other_customer_with_this_email->data['Customer Name'].'</a>';
 
                         $this->error=true;
 
@@ -1272,14 +1324,10 @@ class Customer extends DB_Table {
                     }
 
                 }
-
-
-
             }
 
-
             $contact=new Contact($this->data['Customer Main Contact Key']);
-            $contact->update(array('Other Email'=>$value));
+            $contact-> update_field_switcher('Add Other Email',$value);
             $this->updated=$contact->updated;
             $this->msg=$contact->msg;
             $this->new_value=$contact->new_value;
@@ -1293,14 +1341,7 @@ class Customer extends DB_Table {
                 $contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
 
             }
-
             $this->new_email_key=$email_key;
-
-
-
-
-
-
             break;
         case('Customer Main Plain Email'):
 
@@ -1463,7 +1504,7 @@ class Customer extends DB_Table {
                     $other_customer_with_this_email=new Customer($customer_with_this_email);
                     if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
                         $this->error=true;
-                        $this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$$other_customer_with_this_email->data['Customer Name'].'</a>';
+                        $this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$other_customer_with_this_email->data['Customer Name'].'</a>';
 
                         return;
                     }
@@ -1472,23 +1513,23 @@ class Customer extends DB_Table {
 
 
                 $this->remove_email($email->id);
- $contact=new Contact($this->data['Customer Main Contact Key']);
-            $contact->update(array('Other Email'=>$value));
-            $this->updated=$contact->updated;
-            $this->msg=$contact->msg;
-            $this->new_value=$contact->new_value;
+                $contact=new Contact($this->data['Customer Main Contact Key']);
+                $contact->update(array('New Other Email'=>$value));
+                $this->updated=$contact->updated;
+                $this->msg=$contact->msg;
+                $this->new_value=$contact->new_value;
 
-            if ($email_key=$contact->other_email_key) {
+                if ($email_key=$contact->other_email_key) {
 
-                if ($this->data['Customer Company Key']) {
-                    $contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
+                    if ($this->data['Customer Company Key']) {
+                        $contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
+
+                    }
+                    $contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
 
                 }
-                $contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
 
-            }
-
-            $this->new_email_key=$email_key;
+                $this->new_email_key=$email_key;
 
 
 
@@ -1514,6 +1555,127 @@ class Customer extends DB_Table {
 
     }
 
+    function update_other_fax($telecom_key,$value) {
+        return $this->update_other_telecom('FAX',$telecom_key,$value);
+    }
+       function update_other_mobile($telecom_key,$value) {
+        return $this->update_other_telecom('Mobile',$telecom_key,$value);
+    }
+    function update_other_telephone($telecom_key,$value) {
+        return $this->update_other_telecom('Telephone',$telecom_key,$value);
+    }
+
+    function update_other_telecom($type,$telecom_key,$value) {
+
+        if (!array_key_exists($telecom_key,$this->get_other_telecoms_data($type))) {
+            $this->error=true;
+            $this->msg=_('Telecom not associated with customer');
+            return;
+        }
+
+        if ($value=='') {
+            //print $telecom_key;//fax67795;fax67796
+            $this->remove_telecom($type,$telecom_key);
+
+        } else {
+            $this->add_other_telecom($type,$value,$telecom_key);
+
+        }
+
+
+
+    }
+
+
+    function add_other_telecom($type='Telephone',$value,$telecom_key_to_replace=0) {
+
+        if ($value=='') {
+            return;
+        }
+
+        $telephone_data=array();
+        $telephone_data['editor']=$this->editor;
+        $telephone_data['Telecom Raw Number']=$value;
+        $telephone_data['Telecom Type']=$type;
+        $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+
+
+        if ($proposed_telephone->id) {
+            $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
+
+            if (in_array($this->id,$customers_with_this_telephone)) {
+                $this->msg=_('The customer already has this number');
+                $this->error=true;
+
+                return;
+            }
+            unset($customers_with_this_telephone[$this->id]);
+
+
+            foreach($customers_with_this_telephone as $customer_with_this_telephone) {
+                $other_customer_with_this_telephone=new Customer($customer_with_this_telephone);
+                if ($other_customer_with_this_telephone->data['Customer Store Key']==$this->data['Customer Store Key']) {
+
+                    if ($type=='Telephone')
+                        $this->msg=_('Telephone could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
+                    else if ($type=='Mobile')
+                        $this->msg=_('Mobile could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
+                    else
+                        $this->msg=_('Fax could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
+
+                    $this->error=true;
+
+                    return;
+                }
+
+            }
+        }
+
+
+        $this->remove_telecom($type,$telecom_key_to_replace);
+        
+        if($type=='Mobile'){
+        $contact=new Contact($this->data['Customer Main Contact Key']);
+        $contact->update_field_switcher('Add Other Mobile',$value);
+        $this->updated=$contact->updated;
+        $this->msg=$contact->msg;
+        $this->new_value=$contact->new_value;
+
+        if ($telecom_key=$contact->other_mobile_key) {
+
+            
+            $contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,false);
+           // $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+
+        }
+        }else{
+        
+        $address=new Address($this->data['Customer Main Address Key']);
+        $address->update_field_switcher('Add Other '.$type,$value);
+        $this->updated=$address->updated;
+        $this->msg=$address->msg;
+        $this->new_value=$address->new_value;
+
+        if ($telecom_key=$address->other_telecom_key) {
+
+            if ($this->data['Customer Company Key']) {
+                $address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telecom_key,false);
+            }
+            $address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,false);
+            $address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+
+        }
+        }
+        if ($type=='Telephone')
+            $this->new_telephone_key=$telecom_key;
+         elseif ($type=='Mobile')
+            $this->new_mobile_key=$telecom_key;    
+        else
+            $this->new_fax_key=$telecom_key;
+
+
+
+    }
 
 
 
@@ -3414,6 +3576,43 @@ class Customer extends DB_Table {
     }
 
 
+    function get_other_faxes_data() {
+        return $this->get_other_telecoms_data('FAX');
+    }
+
+    function get_other_mobiles_data() {
+        return $this->get_other_telecoms_data('Mobile');
+    }
+    function get_other_telephones_data() {
+        return $this->get_other_telecoms_data('Telephone');
+    }
+
+    function get_other_telecoms_data($type='Telephone') {
+
+        $sql=sprintf("select B.`Telecom Key` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Customer' and `Subject Key`=%d ",
+                     prepare_mysql($type),
+                     $this->id
+                    );
+
+        $telecom_keys=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['Telecom Key']!=$this->data["Customer Main $type Key"]) {
+
+                $telecom=new Telecom($row['Telecom Key']);
+
+                $telecom_keys[$row['Telecom Key']]= array(
+                                                        'number'=>$telecom->display('plain'),
+                                                        'xhtml'=>$telecom->display('xhtml')
+                                                    );
+
+            }
+        }
+        return $telecom_keys;
+
+    }
+
+
     function get_other_emails_data() {
 
         $sql=sprintf("select B.`Email Key`,`Email` from `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) where  `Subject Type`='Customer' and `Subject Key`=%d "
@@ -4709,9 +4908,9 @@ class Customer extends DB_Table {
         $email_contacts_number_keys=count($email_contacts_keys);
         $email_suppliers_number_keys=count($email_suppliers_keys);
         $email_companies_number_keys=count($email_companies_keys);
-
+        $email->remove_from_parent('Customer',$this->id);
         if ($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys>0) {
-            $email->remove_from_parent('Customer',$this->id);
+
 
             if ($this->data['Customer Type']=='Company') {
                 $company=new Company($this->data['Customer Company Key']);
@@ -4743,17 +4942,84 @@ class Customer extends DB_Table {
             $this->msg=_('Email Removed from Customer');;
             $this->new_value='';
             return;
-        } else {
-            $contact=new Contact($this->data['Customer Main Contact Key']);
-            $contact->editor=$this->editor;
-            $contact->update(array('Contact Main Plain Email'=>''));
-            $this->updated=$contact->updated;
-            $this->msg=$contact->msg;
-            $this->new_value=$contact->new_value;
-            return;
-
         }
 
+
+        $this->updated=true;
+        $this->msg='';
+        $this->new_value='';
+        return;
+
+
+    }
+
+    function remove_telecom($type,$telecom_key) {
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+
+            $this->msg='Error, main telecom not found';
+            return;
+        }
+
+
+        $telecom_customer_keys=$telecom->get_parent_keys('Customer');
+        unset($telecom_customer_keys[$this->id]);
+        $telecom_contacts_keys=$telecom->get_parent_keys('Contact');
+        unset($telecom_contacts_keys[$this->data['Customer Main Contact Key']]);
+
+        $telecom_companies_keys=$telecom->get_parent_keys('Company');
+        unset($telecom_companies_keys[$this->data['Customer Company Key']]);
+
+
+        $telecom_suppliers_keys=$telecom->get_parent_keys('Supplier');
+
+        $telecom_customer_number_keys=count($telecom_customer_keys);
+        $telecom_contacts_number_keys=count($telecom_contacts_keys);
+        $telecom_suppliers_number_keys=count($telecom_suppliers_keys);
+        $telecom_companies_number_keys=count($telecom_companies_keys);
+        $telecom->remove_from_parent('Customer',$this->id,$type);
+        if ($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys>0) {
+
+
+            if ($this->data['Customer Type']=='Company') {
+                $company=new Company($this->data['Customer Company Key']);
+                $company_customers_keys=$company->get_parent_keys('Customer');
+                unset($company_customers_keys[$this->id]);
+                $company_suppliers_keys=$company->get_parent_keys('Supplier');
+                $company_customers_number_keys=count($company_customers_keys);
+                $company_suppliers_number_keys=count($company_suppliers_keys);
+                if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
+                    $telecom->remove_from_parent('Company',$company->id);
+                }
+            }
+            $contact=new Contact($this->data['Customer Main Contact Key']);
+            $contact_customers_keys=$contact->get_parent_keys('Customer');
+            //  print_r($contact_customers_keys);
+            unset($contact_customers_keys[$this->id]);
+            $contact_suppliers_keys=$contact->get_parent_keys('Supplier');
+            $contact_customers_number_keys=count($contact_customers_keys);
+            $contact_suppliers_number_keys=count($contact_suppliers_keys);
+
+            //print_r($contact_customers_keys);
+            // print_r($contact_suppliers_keys);
+
+            if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
+                $telecom->remove_from_parent('Contact',$contact->id);
+            }
+
+            $this->updated=true;
+            $this->msg=_('Telecom Removed from Customer');;
+            $this->new_value='';
+            return;
+        }else{
+        $telecom->delete();
+        }
+
+        $this->updated=true;
+        $this->msg='';
+        $this->new_value='';
+        return;
 
 
 
@@ -4899,7 +5165,7 @@ class Customer extends DB_Table {
                 //  print_r($company_contact_keys);
                 //  print_r($company_customer_keys);
                 if (count($company_customer_keys)==0 and count($company_supplier_keys)==0 and count($company_contact_keys)==0 and count($company_hq_keys)==0) {
-                  $company->delete();
+                    $company->delete();
                     $deleted_company_keys[$company->id]=$company->id;
 
 

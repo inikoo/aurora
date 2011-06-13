@@ -1174,9 +1174,32 @@ function find_fast($data=false,$subject_data=false){
     }
 
   
+  function add_other_telecom($type='Telephone',$value){
+   if ($value=='')return;
+          $telephone_data=array();
+    $telephone_data['editor']=$this->editor;
+    $telephone_data['Telecom Raw Number']=$value;
+    $telephone_data['Telecom Type']=$type;
+
+  $telephone=new Telecom("find complete create country code ".$this->data['Address Country Code'],$telephone_data);
+        $this->associate_telecom($telephone->id,$type);
+
+
+            $this->other_telecom_key=$telephone->id;
+            $this->updated=true;
+            $this->new_value=$telephone->display('formated');
+  
+  }
+  
     function update_field_switcher($field,$value,$options='') {
-        // print "**** $field\n";
         switch ($field) {
+        
+        case('Add Other Telephone'):
+            $this->add_other_telecom('Telephone',$value);
+            break;
+        case('Add Other FAX'):
+            $this->add_other_telecom('FAX',$value);
+            break;        
         case('Address First Postal Code'):
         case('Address Second Postal Code'):
         case('Address Location'):
@@ -4808,20 +4831,70 @@ function find_fast($data=false,$subject_data=false){
 
     function associate_telecom($telecom_key,$type) {
 
-
-
         $telecom_keys=$this->get_telecom_type_keys($type);
 
         if (!array_key_exists($telecom_key,$telecom_keys)) {
             $this->create_telecom_bridge($telecom_key,$type);
+        }
+    }
+    
+    
+    
+     function associate_telecom_to_parents($type='Telephone',$parent,$parent_key,$telecom_key,$set_as_main=true) {
 
 
-
-
+        if ($parent=='Customer') {
+            $parent_object=new Customer($parent_key);
+            $parent_label=_('Customer');
+        }
+        elseif($parent=='Supplier') {
+            $parent_object=new Supplier($parent_key);
+            $parent_label=_('Supplier');
+        }
+        elseif($parent=='Company') {
+            $parent_object=new Company($parent_key);
+            $parent_label=_('Company');
+        }  elseif($parent=='Contact') {
+            $parent_object=new Contact($parent_key);
+            $parent_label=_('Contact');
         }
 
 
+        $parent_telecoms=$parent_object->get_telecom_keys($type);
+
+        if (!array_key_exists($telecom_key,$parent_telecoms)) {
+            $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`) values (%d,'$parent',%d,'No')  "
+                         ,$telecom_key
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+        }
+        //print "$sql\n";
+
+        $old_principal_telecom_key=$parent_object->data[$parent.' Main '.$type.' Key'];
+        if ($set_as_main and $old_principal_telecom_key!=$telecom_key) {
+
+            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d ",
+                         $parent_object->id
+
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d",
+                         $parent_object->id
+                         ,$telecom_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=%d where `$parent Key`=%d"
+                         ,$telecom_key
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+        }
     }
+
+    
+    
+    
 
     function get_telecom_keys() {
         $sql=sprintf("select `Telecom Key` from `Telecom Bridge` where  `Subject Type`='Address'   and `Subject Key`=%d "
@@ -4841,7 +4914,7 @@ function find_fast($data=false,$subject_data=false){
         $sql=sprintf("select  count(*) as num  from `Telecom Bridge` TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Subject Type`='Address' and `Telecom Type`=%s and  `Subject Key`=%d "
                      ,prepare_mysql($type)
                      ,$this->id );
-
+//print $sql;
         $telecoms=0;
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4895,7 +4968,7 @@ function find_fast($data=false,$subject_data=false){
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                      ,prepare_mysql($type)
                      ,$this->id );
-        // print $sql;
+       // print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $main_telecom_key=$row['Telecom Key'];
@@ -5037,6 +5110,7 @@ function find_fast($data=false,$subject_data=false){
 
 
     function update_principal_telecom_number($value,$type) {
+    
         if ($type=='Telephone')
             $this->update_principal_telephone_number($value);
         else
@@ -5049,6 +5123,7 @@ function find_fast($data=false,$subject_data=false){
         $telephone_key=$this->get_principal_telecom_key('Telephone');
 
         if (!$telephone_key) {
+            
             $this->error=true;
             $this->msg="No principal telephone\n";
             return 0;
@@ -5057,7 +5132,7 @@ function find_fast($data=false,$subject_data=false){
             $telephone=new Telecom($telephone_key);
 
             $telephone->update_number($value,$this->data['Address Country Code']);
-            //print_r($telephone);
+            
             $this->updated=$telephone->updated;
             $this->new_value=$telephone->display('xhtml');
             return $telephone->id;
@@ -5074,7 +5149,8 @@ function find_fast($data=false,$subject_data=false){
             $fax=new Telecom($fax_key);
             $fax->update_number($value,$this->data['Address Country Code']);
             $this->updated=$fax->updated;
-
+            $this->new_value=$fax->display('xhtml');
+            return $fax->id;
         }
     }
 

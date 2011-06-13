@@ -26,7 +26,7 @@ include_once('class.Contact.php');
 
 class Email extends DB_Table {
 
-     public  $deleted=false;
+    public  $deleted=false;
     public $updated=false;
 
 
@@ -125,7 +125,7 @@ class Email extends DB_Table {
 
         if (preg_match('/fuzzy/i',$options)) {
             $find_fuzzy=true;
-            
+
         }
 
         $this->found=false;
@@ -220,19 +220,19 @@ class Email extends DB_Table {
                 $email_max_score=200;
                 $score_prize=800;
                 $this->found=false;
-                
-                
-                
+
+
+
                 $sql=sprintf("select `Subject Key`,T.`Email Key`,damlevlim256(UPPER(%s),UPPER(`Email`),3) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 10"
                              ,prepare_mysql($raw_data['Email'])
                             );
-               
+
                 $result=mysql_query($sql);
                 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                     if ($row['dist1']>=3)
                         break;
                     $row['dist1']=    $row['dist1']/strlen($raw_data['Email']);
-                        
+
                     $score=$email_max_score*exp(-200*$row['dist1']*$row['dist1']);
 
 
@@ -448,7 +448,7 @@ class Email extends DB_Table {
             $this->warning=true;
         }
         $old_value=$this->data['Email'];
-       // print "$old_value -> $data";
+        // print "$old_value -> $data";
 
         if ($old_value==$data) {
             $this->msg=_('Nothing to change');
@@ -464,8 +464,8 @@ class Email extends DB_Table {
             //print_r($row);
             //print"email $data alredy n the system whan trying to updating it !!!!!!!! cjack in class.Email.php\n";
             $this->msg_updated=_('Email is already associated with another contact');
-$this->error_updated=true;
-return;
+            $this->error_updated=true;
+            return;
         }
 
 
@@ -473,8 +473,8 @@ return;
 
 
         $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
-      
-      mysql_query($sql);
+
+        mysql_query($sql);
 //print $sql;
         $affected=mysql_affected_rows();
 
@@ -539,7 +539,7 @@ return;
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
                 }
-                  $parent_object->editor=$this->editor;
+                $parent_object->editor=$this->editor;
                 $old_princial_email=$parent_object->data[$parent.' Main Plain Email'];
                 $parent_object->data[$parent.' Main Plain Email']=$this->display('plain');
                 $parent_object->data[$parent.' Main XHTML Email']=$this->display('xhtml');
@@ -574,13 +574,13 @@ return;
 
 
                     }
-                     if ($parent=='Customer') {
-                       // print_r($history_data);
+                    if ($parent=='Customer') {
+                        // print_r($history_data);
                         $parent_object->add_customer_history($history_data);
                     } else {
                         $this->add_history($history_data);
                     }
-                    
+
 
                 }
 
@@ -856,155 +856,151 @@ return;
 
 
 
-function has_parents(){
-     $has_parents=false;
-     $sql=sprintf("select count(*) as total from `Email Bridge`  where  `Email Key`=%d  ",$this->id);
-     $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-       if($row['total']>0)
-        $has_parents=true;
-     }
-     return $has_parents;
-}
-
-
-function delete() {
-    $sql=sprintf("delete from `Email Dimension` where `Email Key`=%d",$this->id);
-    mysql_query($sql);
-   
-    $this->deleted=true;
-    $history_data['History Abstract']='Email Deleted';
-    $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted');
-    $history_data['Action']='deleted';
-    $history_data['Direct Object']='Email';
-    $history_data['Direct Object Key']=$this->id;
-    $history_data['Indirect Object']='';
-    $history_data['Indirect Object Key']='';
-    $this->add_history($history_data);
-    
-    
-    $parents=array('Contact','Company','Customer','Supplier');
-    foreach($parents as $parent) {
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
-
+    function has_parents() {
+        $has_parents=false;
+        $sql=sprintf("select count(*) as total from `Email Bridge`  where  `Email Key`=%d  ",$this->id);
         $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-        $this->remove_from_parent($parent,$row['Parent Key']);
+        if ($row=mysql_fetch_array($res)) {
+            if ($row['total']>0)
+                $has_parents=true;
         }
-    }
-     $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d  ",$this->id);
-    mysql_query($sql);
-}
-
-
-function remove_from_parent($parent,$parent_key){
-
-
- $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d and `Subject Type`=%s and `Subject Key`=%d  ",
- $this->id,
- prepare_mysql($parent),
- $parent_key
- 
- );
-    mysql_query($sql);
-      //  print $sql;
-        
-            $principal_email_changed=false;
-
-            if ($parent=='Contact') {
-                $parent_object=new Contact($parent_key);
-                $parent_label=_('Contact');
-            }
-            elseif($parent=='Customer') {
-                $parent_object=new Customer($parent_key);
-                $parent_label=_('Customer');
-            }
-            elseif($parent=='Supplier') {
-                $parent_object=new Supplier($parent_key);
-                $parent_label=_('Supplier');
-            }
-            elseif($parent=='Company') {
-                $parent_object=new Company($parent_key);
-                $parent_label=_('Company');
-            }
-            $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=NULL, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d and `$parent Main Email Key`=%d"
-
-                         ,$parent_object->id
-                         ,$this->id
-                        );
-            mysql_query($sql);
-             //print $sql;
-            $history_data['History Abstract']='Email Removed';
-            $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-            $history_data['Action']='disassociate';
-            $history_data['Direct Object']=$parent;
-            $history_data['Direct Object Key']=$parent_object->id;
-            $history_data['Indirect Object']='Email';
-            $history_data['Indirect Object Key']=$this->id;
-            $this->add_history($history_data);
-            if ($parent=='Contact') {
-                $emails=$parent_object->get_emails();
-                foreach($emails as $email) {
-                    $parent_object->update_principal_email($email->id);
-                    break;
-                }
-            }
-
-
-        
-
-}
-
-
-
-
-function get_customer_keys(){
-     $keys=array();
-
-    $sql=sprintf("select `Subject Key`,`Subject Type` from `Email Bridge` where `Email Key`=%d  and `Subject Type`='Customer' "
-
-                 ,$this->id);
-    $result=mysql_query($sql);
-  
- // print $sql;
-  
-  while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $keys[$row['Subject Key']]= $row['Subject Key'];
-
+        return $has_parents;
     }
 
 
-    return $keys;
-    
-    
-}
+    function delete() {
+        $sql=sprintf("delete from `Email Dimension` where `Email Key`=%d",$this->id);
+        mysql_query($sql);
+
+        $this->deleted=true;
+        $history_data['History Abstract']='Email Deleted';
+        $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted');
+        $history_data['Action']='deleted';
+        $history_data['Direct Object']='Email';
+        $history_data['Direct Object Key']=$this->id;
+        $history_data['Indirect Object']='';
+        $history_data['Indirect Object Key']='';
+        $this->add_history($history_data);
 
 
+        $parents=array('Contact','Company','Customer','Supplier');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
 
-function get_parent_keys($type=false) {
-    $where_type='';
-
-    $keys=array();
-
-    if ($type)  {
-        if (!preg_match('/^(Contact|Company|Supplier|User|Customer)$/',$type)) {
-            return $keys;
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $this->remove_from_parent($parent,$row['Parent Key']);
+            }
         }
-        $where_type=' and `Subject Type`='.prepare_mysql($type);
+        $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d  ",$this->id);
+        mysql_query($sql);
+    }
+
+
+    function remove_from_parent($parent,$parent_key) {
+
+
+        $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d and `Subject Type`=%s and `Subject Key`=%d  ",
+                     $this->id,
+                     prepare_mysql($parent),
+                     $parent_key
+
+                    );
+        mysql_query($sql);
+        //  print $sql;
+
+        $principal_email_changed=false;
+
+        if ($parent=='Contact') {
+            $parent_object=new Contact($parent_key);
+            $parent_label=_('Contact');
+        }
+        elseif($parent=='Customer') {
+            $parent_object=new Customer($parent_key);
+            $parent_label=_('Customer');
+        }
+        elseif($parent=='Supplier') {
+            $parent_object=new Supplier($parent_key);
+            $parent_label=_('Supplier');
+        }
+        elseif($parent=='Company') {
+            $parent_object=new Company($parent_key);
+            $parent_label=_('Company');
+        }
+        $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=NULL, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d and `$parent Main Email Key`=%d"
+
+                     ,$parent_object->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        
+      $principal_affected=mysql_affected_rows();
+
+        
+        //print $sql;
+        $history_data['History Abstract']='Email Removed';
+        $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+        $history_data['Action']='disassociate';
+        $history_data['Direct Object']=$parent;
+        $history_data['Direct Object Key']=$parent_object->id;
+        $history_data['Indirect Object']='Email';
+        $history_data['Indirect Object Key']=$this->id;
+        $this->add_history($history_data);
+       
+   if (mysql_affected_rows() and $parent=='Contact') {
+            $emails=$parent_object->get_emails();
+            foreach($emails as $email) {
+                $parent_object->update_principal_email($email->id);
+                break;
+            }
+        }
+
+
 
     }
-    $sql=sprintf("select `Subject Key`,`Subject Type` from `Email Bridge` where `Email Key`=%d  $where_type "
 
-                 ,$this->id);
-    $result=mysql_query($sql);
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $keys[$row['Subject Key']]= array('Subject Key'=>$row['Subject Key'],'Subject Type'=>$row['Subject Type']);
 
+
+
+    function get_customer_keys() {
+        $keys=array();
+
+        $sql=sprintf("select `Subject Key`,`Subject Type` from `Email Bridge` where `Email Key`=%d  and `Subject Type`='Customer' "
+
+                     ,$this->id);
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $keys[$row['Subject Key']]= $row['Subject Key'];
+        }
+        return $keys;
     }
-    // print $sql;
 
-    return $keys;
-}
+
+
+    function get_parent_keys($type=false) {
+        $where_type='';
+
+        $keys=array();
+
+        if ($type)  {
+            if (!preg_match('/^(Contact|Company|Supplier|User|Customer)$/',$type)) {
+                return $keys;
+            }
+            $where_type=' and `Subject Type`='.prepare_mysql($type);
+
+        }
+        $sql=sprintf("select `Subject Key`,`Subject Type` from `Email Bridge` where `Email Key`=%d  $where_type "
+
+                     ,$this->id);
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $keys[$row['Subject Key']]= array('Subject Key'=>$row['Subject Key'],'Subject Type'=>$row['Subject Type']);
+
+        }
+        // print $sql;
+
+        return $keys;
+    }
 
 }
 
