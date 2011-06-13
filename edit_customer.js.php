@@ -349,7 +349,7 @@ function validate_customer_main_contact_name(query){
 }
 
 function save_edit_billing_data(){
-    save_edit_general('billing_data');
+    save_edit_general_bulk('billing_data');
 }
 function reset_edit_billing_data(){
     reset_edit_general('billing_data')
