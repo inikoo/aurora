@@ -17,26 +17,103 @@
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='overview'}selected{/if}"  id="overview">  <span> {t}Sales Overview{/t}</span></span></li>
-        <li> <span class="item {if $view=='map'}selected{/if}"  id="map">  <span> {t}Map{/t}</span></span></li>
+    <li> <span class="item {if $view=='map'}selected{/if}"  id="map">  <span> {t}Map{/t}</span></span></li>
     <li> <span class="item {if $view=='continents'}selected{/if}"  id="continents">  <span> {t}Continents{/t}</span></span></li>
-
     <li> <span class="item {if $view=='wregions'}selected{/if}"  id="wregions">  <span> {t}Word Regions{/t}</span></span></li>
     <li> <span class="item {if $view=='countries'}selected{/if}"  id="countries">  <span> {t}Countries{/t}</span></span></li>
-   
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 
 <div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+  <div id="close1">
+    {if !$top_countries}
+    {$no_sales_message}
+    {$from}
+    {t}to{/t}
+    {$to}
+    {else}
+    <h2>{t}Top Countries{/t}</h2>
+    <div style="float:right;width:300px">
+      <table>
+	<tr><td>{t}Country{/t}</td><td>{t}Sales{/t}</td></tr>
+	{foreach from = $top_countries item=data_country}
+	<tr>
+	  <td>{$data_country.country}</td>
+	  <td>{$data_country.sales}</td>
+	</tr>
+	{/foreach}
+      </table>
+    </div>
+    <div id="plot1" style="float:left;width:500px" >
+      <strong>You need to upgrade your Flash Player</strong>
+    </div>
+    
+    <script type="text/javascript">
+      // <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_countries_sales&from={$from}&to={$to}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot1");
+		// ]]>
+    </script>
+    {/if}
+  </div>
+
+  
+  <div id="close2" style="clear:both">
+    {if !$top_regions}
+    
+    {else}
+  <h2>{t}Top Regions{/t}</h2>
+  <div style="float:right;width:300px">
+    <table>
+      <tr><td>{t}Region{/t}</td><td>{t}Sales{/t}</td></tr>
+      {foreach from = $top_regions item=data_region}
+      <tr>
+	<td>{$data_region.region}</td>
+	<td>{$data_region.sales}</td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>
+  <div id="plot2" style="float:left;width:500px" >
+    <strong>You need to upgrade your Flash Player</strong>
+  </div>
+  
+  <script type="text/javascript">
+    // <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_regions_sales&from={$from}&to={$to}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot2");
+		// ]]>
+  </script>
+
+  
+  
+  {/if}
+  </div>
+
 </div>
+
+
 <div id="block_map" style="{if $view!='map'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-
-<div class="branch" style="margin:0px;float:right;width:100px;text-align:right">
-
-
- <span id="map_links_continents" class="{if $map_links=='continents'}selected{/if}" >{t}Continents{/t} &crarr;</span>
-<span id="map_links_wregions" class="{if $map_links=='wregions'}selected{/if}" style="display:block;margin-top:10px;" >{t}World Regions{/t} &crarr;</span>
-<span id="map_links_countries" class="{if $map_links=='countries'}selected{/if}" style="display:block;margin-top:10px;" >{t}Countries{/t} &crarr;</span>
+  
+  <div class="branch" style="margin:0px;float:right;width:100px;text-align:right">
+    
+    
+    <span id="map_links_continents" class="{if $map_links=='continents'}selected{/if}" >{t}Continents{/t} &crarr;</span>
+    <span id="map_links_wregions" class="{if $map_links=='wregions'}selected{/if}" style="display:block;margin-top:10px;" >{t}World Regions{/t} &crarr;</span>
+    <span id="map_links_countries" class="{if $map_links=='countries'}selected{/if}" style="display:block;margin-top:10px;" >{t}Countries{/t} &crarr;</span>
 
 
 </div>
@@ -46,7 +123,7 @@
 	<div id="map_countries" style="{if $map_links!='countries'}display:none;{/if}width:700px;height:480px;">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
-
+	
 <div id="map_wregions" style="{if $map_links!='wregions'}display:none;{/if}width:700px;height:480px;">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
@@ -82,13 +159,14 @@
 	
 	
 </div>
+			
 
 </div>  
 <div id="block_countries" style="{if $view!='countries'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-    <span id="table_title" class="clean_table_title">{t}Counties{/t}</span>
-     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
-    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+  <span id="table_title" class="clean_table_title">{t}Counties{/t}</span>
+  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
+  <div  id="table0"   class="data_table_container dtable btable "> </div>
   
 </div>
 <div id="block_wregions" style="{if $view!='wregions'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -101,6 +179,9 @@
  
 
 </div>
+
+
+
 <div id="block_continents" style="{if $view!='continents'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
     <span id="table_title" class="clean_table_title">{t}Continents{/t}</span>
          <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
@@ -197,5 +278,6 @@
 
 
 
-</div>{include file='footer.tpl'}
+</div>
+{include file='footer.tpl'}
 

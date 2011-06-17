@@ -4,100 +4,12 @@ var Dom   = YAHOO.util.Dom;
 
 var link='report_geo_sales.php'
 
-
-
-
-
-
-
-          
+      
     YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-	    
-	    //START OF THE TABLE ========================================================================================
-	 
-	    var tableid=0; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
 
-
-	   
-	    var ColumnDefs = [
-			
-			
-                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-                   ,{key:"code", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{field: "_code",defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			       ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{field: "_name",defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-			     // ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			      // ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"invoices_formated", label:"<?php echo _('Invoices')?>",width:200 ,sortable:true,className:"aright",sortOptions:{field: "invoices",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			        ,{key:"sales_formated", label:"<?php echo _('Sales')?>",width:100 ,sortable:true,className:"aright",sortOptions:{field: "sales",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			      ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-			];
-	var where_data=new Object();
-	    
-	    where_data={geo_constraints:'<?php echo $_SESSION['state']['country']['code']?>'};
-	    var where=YAHOO.lang.JSON.stringify(where_data);
-		       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=country_sales&tableid=0");
-	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource0.connXhrMode = "queueRequests";
-	    this.dataSource0.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
-		
-		
-		fields: [
-			 "name","flag",'code','population','gnp','wregion','sales','sales_formated',"_name","_code","invoices",'invoices_formated'
-			 ]};
-
-	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource0
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['report_geo_sales']['countries']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['report_geo_sales']['countries']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['report_geo_sales']['countries']['order_dir']?>"
-								     },
-								   //  dynamicData : true
-
-								  }
-								   
-								 );
-	    
-	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-	   // this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	 //   this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-
-
-	   // this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_geo_sales']['countries']['f_field']?>',value:'<?php echo $_SESSION['state']['report_geo_sales']['countries']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
-	
-// -----------------------------------------------Customer table starts here --------------
-	var tableid=1; // Change if you have more the 1 table
+	var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 
@@ -130,14 +42,14 @@ var link='report_geo_sales.php'
 
 	    var where_data=new Object();
 	    
-	    where_data={geo_constraints:"wr(<?php echo $_SESSION['state']['wregion']['code']?>)"};
+	    where_data={geo_constraints:'<?php echo $_SESSION['state']['country']['code']?>'};
 	    var where=YAHOO.lang.JSON.stringify(where_data);
-	//    alert("ar_contacts.php?tipo=customers&sf=0&where="+where);
-	  
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&tableid=1&sf=0&all_stores=1&where="+where);
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
+	    
+	    // alert("ar_contacts.php?tipo=customers&sf=0&where="+where);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&sf=0&all_stores=1&where="+where);
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -171,18 +83,18 @@ var link='report_geo_sales.php'
 
 
 
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   this.dataSource1
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   this.dataSource0
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['table']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 
 
 
@@ -198,15 +110,77 @@ var link='report_geo_sales.php'
 								   
 								 );
 	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
 		    
-	    this.table1.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['customers']['view']?>';
 
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
+
+
+
+var tableid=1;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+		      		{key:"country_code", label:"<?php echo _('Code')?>",width:80, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"country_name", label:"<?php echo _('Country')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     ,{key:"invoices_formated", label:"<?php echo _('Invoices')?>",width:200 ,sortable:true,className:"aright",sortOptions:{field: "invoices",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			        ,{key:"sales_formated", label:"<?php echo _('Sales')?>",width:100 ,sortable:true,className:"aright",sortOptions:{field: "sales",defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     
+					];
+		    
+		      
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=country_sales&tableid=1");
+		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource1.connXhrMode = "queueRequests";
+		      this.dataSource1.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			    rowsPerPage:"resultset.records_perpage",
+			    rtext:"resultset.rtext",
+			     rtext_rpp:"resultset.rtext_rpp",
+			    sort_key:"resultset.sort_key",
+			    sort_dir:"resultset.sort_dir",
+			    tableid:"resultset.tableid",
+			    filter_msg:"resultset.filter_msg",
+			    totalRecords: "resultset.total_records"
+			  },
+			  
+			  fields: [
+				  "country_name","country_code","population","gnp",'sales','sales_formated',"_name","_code","invoices",'invoices_formated'
+				   ]};
+		      
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource1
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['report_geo_sales']['countries']['nr']?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								   
+								   ,sortedBy : {
+								      Key: "<?php echo $_SESSION['state']['report_geo_sales']['countries']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['report_geo_sales']['countries']['order_dir']?>"
+								   }
+								  // ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+		     // this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+		    //  this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+               //    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['report_geo_sales']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['report_geo_sales']['countries']['f_value']?>'};
 
 	
 	};
@@ -214,16 +188,15 @@ var link='report_geo_sales.php'
 
 
 function change_block(){
-ids=['overview','map','wregions','countries', 'customers','invoices'];
-block_ids=['block_overview','block_map','block_continents','block_wregions','block_countries','block_customers', 'block_invoices'];
+    ids=['overview','customers','invoices','details'];
+    block_ids=['block_overview','block_customers','block_invoices','block_details'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_geo_sales-wregion-view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_geo_sales-country-view&value='+this.id ,{});
 }
-
 
 
 function change_map_link(){
@@ -241,10 +214,10 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_
 
  function init(){
 
- ids=['overview','map','wregions','countries', 'customers', 'invoices'];
+     ids=['overview','customers','invoices','details'];
 YAHOO.util.Event.addListener(ids, "click",change_block);
 
- var ids=['map_links_countries','map_links_wregions'];
+ var ids=['map_links_countries','map_l-inks_wregions'];
 YAHOO.util.Event.addListener(ids, "click",change_map_link);
 
  

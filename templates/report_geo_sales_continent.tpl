@@ -27,6 +27,84 @@
 
 
 <div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+ <div id="close1">
+    {$continent_code}
+    {if !$top_countries_in_continent}
+    {$no_sales_message}
+    {$from}
+    {t}to{/t}
+    {$to}
+    {else}
+    <h2>{t}Top Countries{/t}</h2>
+    <div style="float:right;width:300px">
+      <table>
+	<tr><td>{t}Country{/t}</td><td>{t}Sales{/t}</td></tr>
+	{foreach from = $top_countries_in_continent item=data_country}
+	<tr>
+	  <td>{$data_country.country}</td>
+	  <td>{$data_country.sales}</td>
+	</tr>
+	{/foreach}
+      </table>
+    </div>
+    <div id="plot1" style="float:left;width:500px" >
+      <strong>You need to upgrade your Flash Player</strong>
+    </div>
+    
+    <script type="text/javascript">
+      // <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_countries_sales_by_continent&from={$from}&to={$to}&continent_id={$continent_code}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot1");
+		// ]]>
+    </script>
+    {/if}
+  </div>
+
+  
+  <div id="close2" style="clear:both">
+    {if !$top_regions}
+    
+    {else}
+  <h2>{t}Top Regions{/t}</h2>
+  <div style="float:right;width:300px">
+    <table>
+      <tr><td>{t}Region{/t}</td><td>{t}Sales{/t}</td></tr>
+      {foreach from = $top_regions_in_continent item=data_region}
+      <tr>
+	<td>{$data_region.region}</td>
+	<td>{$data_region.sales}</td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>
+  <div id="plot2" style="float:left;width:500px" >
+    <strong>You need to upgrade your Flash Player</strong>
+  </div>
+  
+  <script type="text/javascript">
+    // <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_regions_sales_by_continent&from={$from}&to={$to}&continent_id={$continent_code}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot2");
+		// ]]>
+  </script>
+
+  
+  
+  {/if}
+  </div>
+
 </div>
 <div id="block_map" style="{if $view!='map'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
