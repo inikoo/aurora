@@ -1,13 +1,6 @@
   var Dom   = YAHOO.util.Dom;
-var Event = YAHOO.util.Event;
+    var Event = YAHOO.util.Event;
 
-function Inint_AJAX() {
-try { return new ActiveXObject("Msxml2.XMLHTTP");} catch(e) {} //IE
-try { return new ActiveXObject("Microsoft.XMLHTTP");} catch(e) {} //IE
-try { return new XMLHttpRequest();} catch(e) {} //Native Javascript
-alert("XMLHttpRequest not supported");
-return null;
-};
 
 
 

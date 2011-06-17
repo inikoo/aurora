@@ -54,7 +54,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 //     $customer->update_temporal_data();
   //$customer->update_activity();
   //$customer->update_full_search();
-  print $customer->id."\t\t\r";
+ // print $customer->id."\t\t\r";
  }
  
 

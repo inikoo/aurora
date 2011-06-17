@@ -56,25 +56,7 @@ case('customers_lists'):
 case('customer_list_static'):
     list_customer_list_static();
     break;
-case('new_list'):
 
-
-
-    if (!$user->can_view('customers'))
-        exit();
-
-    $data=prepare_values($_REQUEST,array(
-                             'awhere'=>array('type'=>'json array'),
-                             'store_id'=>array('type'=>'key'),
-                             'list_name'=>array('type'=>'string'),
-                             'list_type'=>array('type'=>'enum',
-                                                'valid values regex'=>'/static|Dynamic/i'
-                                               )
-                         ));
-
-
-    new_customers_list($data);
-    break;
 
 case('used_email'):
     used_email();
@@ -5186,103 +5168,10 @@ function list_customer_categories() {
 }
 
 
-function new_customers_list($data) {
-
-    $list_name=$data['list_name'];
-    $store_id=$data['store_id'];
-
-    $sql=sprintf("select * from `Customer List Dimension`  where `Customer List Name`=%s and `Customer List Store Key`=%d ",
-                 prepare_mysql($list_name),
-                 $store_id
-                );
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $response=array('resultset'=>
-                                    array(
-                                        'state'=>400,
-                                        'msg'=>_('Another list has the same name')
-                                    )
-                       );
-        echo json_encode($response);
-        return;
-    }
-
-    $list_type=$data['list_type'];
-
-    $awhere=$data['awhere'];
-    $table='`Customer Dimension` C ';
-
-
-//   $where=customers_awhere($awhere);
-    list($where,$table)=customers_awhere($awhere);
-
-    $where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
-
-    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where";
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-        if ($row['total']==0) {
-            $response=array('resultset'=>
-                                        array(
-                                            'state'=>400,
-                                            'msg'=>_('No customer match this criteria')
-                                        )
-                           );
-            echo json_encode($response);
-            return;
-
-        }
-
-
-    }
-    mysql_free_result($res);
-
-    $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%s,%s,%s,NOW())",
-                      $store_id,
-                      prepare_mysql($list_name),
-                      prepare_mysql($list_type),
-                      prepare_mysql(json_encode($data['awhere']))
-
-                     );
-    mysql_query($list_sql);
-    $customer_list_key=mysql_insert_id();
-
-    if ($list_type=='Static') {
-
-
-        $sql="select C.`Customer Key` from $table  $where group by C.`Customer Key`";
-        //   print $sql;
-        $result=mysql_query($sql);
-        while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            $customer_key=$data['Customer Key'];
-            $sql=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
-                         $customer_list_key,
-                         $customer_key
-                        );
-            mysql_query($sql);
-
-        }
-        mysql_free_result($result);
 
 
 
 
-    }
-
-
-
-
-    $response=array(
-                  'state'=>200,
-                  'customer_list_key'=>$customer_list_key
-
-              );
-    echo json_encode($response);
-
-}
 function list_customers_lists() {
 
     global $user;

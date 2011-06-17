@@ -24,9 +24,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('import_customer_csv_status'):
+    import_customer_csv_status();
+    break;
 case('insert_data'):
-insert_data();
-break;
+    insert_data();
+    break;
 case('change_option'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'numeric'),
@@ -92,13 +96,13 @@ function get_record_data($data) {
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
     $raw = $csv->getrawArray();
 
-   // $options=$_SESSION['state']['import']['options'];
-    
+    $options=$_SESSION['state']['import']['todo']=$number_of_records+1;
+
 
     $result="<table class='recordList' border=0>
             <tr>
             <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Assigned Field')."</th>
-            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Record').' '.$index.' '._('of').' '.$number_of_records.' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>'."
+            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records+1).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>'."
             <th style='width:100px'>";
     $result.="<span style='cursor:pointer;".($index > 0?'':'visibility:hidden')."' class='subtext' id='prev' onclick='get_record_data(".($index-1).")'>"._('Previous')."</span>";
 
@@ -113,7 +117,7 @@ function get_record_data($data) {
     foreach($headers as $key=>$value) {
 
         $select='<select onChange="option_changed(this.options[this.selectedIndex].value,this.selectedIndex)">';
-        
+
         foreach($_SESSION['state']['import']['options_labels'] as $option_key=>$option_label) {
 
             $selected='';
@@ -121,7 +125,7 @@ function get_record_data($data) {
                 $selected='selected="selected"';
 
             $select.=sprintf('<option %s value="%d"  >%s</option>',$selected,$key,$option_label);
-            
+
         }
         $select.='</select>';
 
@@ -138,16 +142,45 @@ function get_record_data($data) {
 }
 
 
-function insert_data(){
+function insert_data() {
 
 
-switch($_SESSION['state']['import']['map']['scope']){
-case('customers_store'):
-insert_customers();
+    switch ($_SESSION['state']['import']['scope']) {
+    case('customers_store'):
+        insert_customers_from_csv();
+    }
 }
 
-function insert_customers(){
+
+
+
+
+
+
+
+
+
+function insert_customers_from_csv() {
+    global $editor;
+
+    $error_log_file_name='customers_'.date('U');
+    $fp = fopen("app_files/import_errors/$error_log_file_name.csv", 'w');
+
+
+//    if ($_SESSION['state']['import']['in_progress'])
+//       return;
+    include_once('class.Customer.php');
+    include_once('edit_customers_functions.php');
+
+    $_SESSION['state']['import']['in_progress']=1;
+    $_SESSION['state']['import']['error_file']=false;
+    $store_key=$_SESSION['state']['import']['scope_key'];
+    $customer_list_key=0;
+
+
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
+    $map = $_SESSION['state']['import']['map'];
+//   $options = $_SESSION['state']['import']['options'];
     require_once 'csvparser.php';
     $csv = new CSV_PARSER;
     if (isset($_SESSION['state']['import']['file_path'])) {
@@ -155,12 +188,189 @@ function insert_customers(){
     }
     $headers = $csv->getHeaders();
     $number_of_records = $csv->countRows();
-    $ignore_record = array_key_exists($index,$records_ignored_by_user);
+
+    $data_to_import=array();
+
     $raw = $csv->getrawArray();
+
+
+
+
+
+    foreach($raw as $record_key=>$record_data) {
+        if (array_key_exists($record_key,$records_ignored_by_user)) {
+            $record_data[]='Ignored';
+            //print_r($record_data);
+            fputcsv($fp, $record_data);
+            $_SESSION['state']['import']['ignored']++;
+            continue;
+
+        }
+
+
+        $parsed_record_data=array('csv_key'=>$record_key);
+        foreach($record_data as $field_key=>$field) {
+            //$field['csv_key']=$field_key;
+            $mapped_field_key=$map[$field_key];
+
+            if ($mapped_field_key)
+                $parsed_record_data[$_SESSION['state']['import']['options_db_fields'][$mapped_field_key]]=$field;
+        }
+        $data_to_import[]=$parsed_record_data;
+    }
+
+    $_SESSION['state']['import']['todo']=count($data_to_import);
+//print_r($data_to_import);
+//print_r($_SESSION['state']['import'][]);
+
+   
+
+    foreach($data_to_import as $_customer_data) {
+
+
+ $customer_data=array(
+                       'Customer Company Name'=>'',
+                       'Customer Main Contact Name'=>'',
+                       'Customer Type'=>'',
+                       'Customer Store Key'=>$store_key,
+                       'Customer Address Line 1'=>'',
+                       'Customer Address Line 2'=>'',
+                       'Customer Address Line 3'=>'',
+                       'Customer Address Postal Code'=>'',
+                       'Customer Address Country Name'=>'',
+                       'Customer Address Country Code'=>'',
+                       'Customer Address Country 2 Alpha Code'=>'',
+                       'Customer Address Country First Division'=>'',
+                       'Customer Address Country Second Division'=>'',
+                       'editor'=>$editor
+                   );
+
+
+//print_r($_customer_data);
+        foreach($_customer_data as $key=>$value) {
+            $customer_data[$key]=$value;
+        }
+
+
+        if ($customer_data['Customer Main Contact Name']=='' and $customer_data['Customer Company Name']=='') {
+            $_SESSION['state']['import']['errors']++;
+            $_SESSION['state']['import']['todo']--;
+
+            continue;
+        }
+
+//        print_r($customer_data);
+        if (  !( $customer_data['Customer Type']=='Person' or  $customer_data['Customer Type']=='Company')    ) {
+            list($customer_data['Customer Type'] ,$customer_data['Customer Company Name'],$customer_data['Customer Main Contact Name'])=parse_company_person($customer_data['Customer Company Name'],$customer_data['Customer Main Contact Name']);
+        }
+
+        if ($customer_data['Customer Type']=='Company')
+            $customer_data['Customer Name']=$customer_data['Customer Company Name'];
+        else
+            $customer_data['Customer Name']=$customer_data['Customer Main Contact Name'];
+
+
+
+
+        if ($customer_data['Customer Address Country 2 Alpha Code']!='') {
+            $country=new Country('2alpha',$customer_data['Customer Address Country 2 Alpha Code']);
+            $customer_data['Customer Address Country Code']=$country->data['Country Code'];
+            unset($country);
+        }
+        elseif($customer_data['Customer Address Country Code']!='') {
+            $country=new Country('code',$customer_data['Customer Address Country Code']);
+            $customer_data['Customer Address Country Code']=$country->data['Country Code'];
+            unset($country);
+        }
+        elseif($customer_data['Customer Address Country Name']!='') {
+            $country=new Country('code',$customer_data['Customer Address Country Name']);
+            $customer_data['Customer Address Country Code']=$country->data['Country Code'];
+            unset($country);
+        }
+        else {
+            $customer_data['Customer Address Country Code']='UNK';
+        }
+
+//exit;
+
+
+
+        $customer=new Customer('find complete',$customer_data);
+
+        // print_r($customer_data);
+
+//print_r($customer);
+        if (!$customer->found) {
+
+
+
+
+            $response=add_customer($customer_data) ;
+            //   print_r($response);
+
+
+            if ($response['state']==200 and $response['action']=='created') {
+
+                if (!$customer_list_key) {
+                    $customer_list_key=new_imported_csv_customers_list($store_key);
+
+
+
+                }
+
+                $sql=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
+                             $customer_list_key,
+                             $response['customer_key']
+                            );
+                mysql_query($sql);
+
+                if ($_SESSION['state']['import']['done_comments']=='') {
+                    $_SESSION['state']['import']['done_comments']=sprintf("<a href='customers_list.php?id=%d'>%s</a>",
+                            $customer_list_key,
+                            _('Imported customers list')
+                                                                         );
+                }
+
+                $_SESSION['state']['import']['done']++;
+                $_SESSION['state']['import']['todo']--;
+
+            } else {
+                $_SESSION['state']['import']['errors']++;
+                $_SESSION['state']['import']['todo']--;
+            }
+
+
+        } else {
+
+            $_record_data=$csv->getRow($_customer_data['csv_key']);
+            $_record_data[]='Already in DB';;
+            //print_r($record_data);
+            fputcsv($fp, $_record_data);
+
+            $_SESSION['state']['import']['errors']++;
+            $_SESSION['state']['import']['todo']--;
+        }
+        unset($customer);
+//exit;
+    }
+
+    fclose($fp);
 
 }
 
+function import_customer_csv_status() {
 
+
+
+    $data=array(
+              'todo'=>array('number'=>$_SESSION['state']['import']['todo'],'comments'=>$_SESSION['state']['import']['todo_comments']),
+              'done'=>array('number'=>$_SESSION['state']['import']['done'],'comments'=>$_SESSION['state']['import']['done_comments']),
+              'error'=>array('number'=>$_SESSION['state']['import']['errors'],'comments'=>$_SESSION['state']['import']['errors_comments']),
+              'ignored'=>array('number'=>$_SESSION['state']['import']['ignored'],'comments'=>$_SESSION['state']['import']['ignored_comments'])
+
+          );
+    $response= array('state'=>200,'data'=>$data);
+    echo json_encode($response);
 }
 
 
