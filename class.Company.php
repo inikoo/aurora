@@ -973,6 +973,12 @@ class Company extends DB_Table {
                 $this->update_parents_tax_number();
             }
             break;
+        case('Company Registration Number'):
+            $this->update_field($field,$value,$options);
+            if ($this->updated) {
+                $this->update_parents_registration_number();
+            }
+            break;
         case('Company Main Contact Key'):
             $this->update_main_contact_name($value);
             break;
@@ -2639,6 +2645,89 @@ class Company extends DB_Table {
         }
     }
 
+     function update_parents_registration_number() {
+
+        $parents=array('Customer');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key` from  `$parent Dimension` where `$parent Company Key`=%d group by `$parent Key`",$this->id);
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_contact_changed=false;
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+//print_r($parent_object);
+                $old_principal_name=$parent_object->data[$parent.' Registration Number'];
+                                                        
+                $parent_object->data[$parent.' Registration Number']=$this->data['Company Registration Number'];
+                $sql=sprintf("update `$parent Dimension` set  `$parent Registration Number`=%s  where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$parent.' Registration Number'])
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+
+                if ($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Company')) {
+                    $sql=sprintf("update `$parent Dimension` set `$parent Registration Number`=%s where `$parent Key`=%d"
+                                 ,prepare_mysql($parent_object->data[$parent.' Registration Number'])
+
+
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+                    //   print "$sql\n";
+                }
+
+
+
+
+                if ($old_principal_name!=$parent_object->data[$parent.' Registration Number'])
+                    $principal_contact_changed=true;
+
+                if ($principal_contact_changed) {
+
+                    if ($old_principal_name=='') {
+
+                        $history_data['History Abstract']='Registration Number Associated '.$this->data['Company Registration Number'];
+                        $history_data['History Details']=$this->data['Company Registration Number']." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['Action']='associated';
+                        $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object Key']=$parent_object->id;
+                        $history_data['Indirect Object']=$parent.' Tax Name';
+                        $history_data['Indirect Object Key']='';
+
+                    } else {
+                        $history_data['History Abstract']='Registration Number changed to '.$this->data['Company Registration Number'];
+                        $history_data['History Details']=_('Registration Number changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Company Registration Number'].", ".$parent_label.": ".$parent_object->get_name();
+                        $history_data['Action']='changed';
+                        $history_data['Direct Object']=$parent;
+                        $history_data['Direct Object Key']=$parent_object->id;
+                        $history_data['Indirect Object']=$parent.' Tax Name';
+                        $history_data['Indirect Object Key']='';
+
+
+
+                    }
+                    if ($parent=='Customer') {
+                        $parent_object->add_customer_history($history_data);
+                    } else {
+                        $this->add_history($history_data);
+                    }
+
+                }
+
+
+
+
+            }
+        }
+    }
 
 
 

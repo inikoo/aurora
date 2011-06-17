@@ -263,6 +263,9 @@
 		     <tr>
 		      <td>{t}Company Tax Number{/t}:</td><td>{$customer->get('Customer Tax Number')}</td>
 		    </tr>
+		    <tr>
+		      <td>{t}Company Registration Number{/t}:</td><td>{$customer->get('Customer Registration Number')}</td>
+		    </tr>
 		  {/if}
 		  <tr style="border-top:1px solid #ccc">
 		  

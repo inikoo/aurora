@@ -50,16 +50,16 @@ $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 
 
-if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders)$/',$_REQUEST['view']) ) {
+if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|details)$/',$_REQUEST['view']) ) {
 
     $view=$_REQUEST['view'];
 } else {
     $view=$_SESSION['state']['customer']['view'];
 }
-if (!$customer->data['Customer Orders']) {
-    $view='history';
+if (!$customer->data['Customer Orders'] and ($view=='products' or $view=='orders')) {
+ //   $view='history';
 }
-
+//print $view;
 $smarty->assign('view',$view);
 $_SESSION['state']['customer']['view']=$view;
 
