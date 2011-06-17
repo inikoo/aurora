@@ -9,8 +9,7 @@
  
  Version 2.0
 */
-ini_set('display_errors',1);
-error_reporting(E_ALL|E_STRICT|E_NOTICE);
+
 include_once('common.php');
 include_once('common_import.php');
 
@@ -99,6 +98,19 @@ if(isset($_POST['submit']))
                     foreach($headers as $header_key=>$header_value){
                     $map[$header_key]=0;
                     }
+                   // print "x";
+                    //exit($csv->countRows());
+                    //$_SESSION['state']['import']=array();
+                    $_SESSION['state']['import']['in_progress']=0;
+                    $_SESSION['state']['import']['todo']=$csv->countRows();
+                    $_SESSION['state']['import']['done']=0;
+                    $_SESSION['state']['import']['errors']=0;
+                    $_SESSION['state']['import']['ignored']=0;
+
+                    $_SESSION['state']['import']['todo_comments']='';
+                    $_SESSION['state']['import']['done_comments']='';
+                    $_SESSION['state']['import']['errors_comments']='';
+                    $_SESSION['state']['import']['ignored_comments']='';
                     $_SESSION['state']['import']['scope']=$scope;
                     $_SESSION['state']['import']['scope_key']=$scope_key;
                     $_SESSION['state']['import']['map']=$map;

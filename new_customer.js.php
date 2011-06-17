@@ -104,7 +104,7 @@ Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
    var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(subject_data));
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
-  // alert(request);return;
+  //alert(request);return;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {

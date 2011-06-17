@@ -2,69 +2,15 @@
 <div id="bd" >
  
 
-<div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-    <h1>Import Contacts From CSV File
-</h1>
-  </div>
-<br>
+    <h1>{t}Import Results{/t}</h1>
+  
+<table   class="report_sales1"  style="margin-top:20px">
+<tr><td>{t}To do records{/t}</td><td id="records_todo"></td><td id="records_todo_comments"></td></tr>
+<tr><td>{t}Imported Records{/t}</td><td id="records_imported"></td><td id="records_imported_comments"></td></tr>
+<tr><td>{t}Ignored{/t}</td><td id="records_ignored"></td><td id="records_ignored_comments"></td></tr>
+<tr><td>{t}Errors{/t}</td><td id="records_error"></td><td id="records_error_comments"></td></tr>
 
-<div class="left3Quarters">
-               
-
-<form id="form" name="form" method="post" action="" enctype="multipart/form-data">
-<input type="hidden" name="form" value="form" />
- 
-                    <div class="unframedsection"><div id="form:j_id68">
-
-   
-    <div class="prop">
-    <label  for="fileUpload" class="import_level" style="font-size:14px;">
-    Step 3</label>
-       
-        </div></div>   
-                    </div>
-                    <div class="clear"></div>
-                    <ul class="formActions">
-                        <li>
-                            <div class="framedsection">
-		
-			 {php}
-       
-        echo "The Ignored array fields:<br>";
-         $ignored_array = $this->get_template_vars('ignored_array');
-                echo "<pre>";
-                print_r($ignored_array);
-                         {/php}      
-               
-		<br>
-	<br>
-	<br>
-
-                {php}
-         
-                 echo"<br>";
-		echo "The Final array<br>";
-                  $final = $this->get_template_vars('arr');
-                echo "<pre>";
-                print_r($final);
-               
-                {/php}
-                      
-       
-		
-               
-
-    
-
-                            </div>
-               
-                        </li>
-                    </ul>
-                   
-                   
-</form> 
-               
-            </div>
+</table>
 
 
 

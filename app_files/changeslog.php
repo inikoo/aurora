@@ -3037,6 +3037,15 @@ ALTER TABLE `Customer Dimension` ADD `Recargo Equivalencia` ENUM( 'Yes', 'No' ) 
 
 ALTER TABLE `Address Dimension` ADD `Address Contact` VARCHAR( 256 ) NULL DEFAULT NULL ;
 
+
+
+kaktus =====================
+
+ALTER TABLE `Customer List Dimension` ADD `Customer List Use Type` ENUM( 'User Defined', 'CSV Import' ) NOT NULL DEFAULT 'User Defined' AFTER `Customer List Key` , ADD INDEX ( `Customer List Use Type` );
+
+
+
+
 */
 
 

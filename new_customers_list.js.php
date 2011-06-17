@@ -36,7 +36,7 @@ function save_search_list(){
 	
 	var awhere=get_awhere();
 	
-	var request="ar_contacts.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
+	var request="ar_edit_contacts.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
 	
 	
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
