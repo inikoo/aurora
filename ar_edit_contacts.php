@@ -18,6 +18,25 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('new_list'):
+
+
+
+    if (!$user->can_view('customers'))
+        exit();
+
+    $data=prepare_values($_REQUEST,array(
+                             'awhere'=>array('type'=>'json array'),
+                             'store_id'=>array('type'=>'key'),
+                             'list_name'=>array('type'=>'string'),
+                             'list_type'=>array('type'=>'enum',
+                                                'valid values regex'=>'/static|Dynamic/i'
+                                               )
+                         ));
+
+
+    new_customers_list($data);
+    break;
 
 case('set_contact_address_as_billing'):
     $data=prepare_values($_REQUEST,array(
@@ -2376,7 +2395,15 @@ function clone_customer($data) {
 
 }
 
+
+
+
+
+
+
 function new_customer($data) {
+include_once('edit_customers_functions.php');
+
     //Timer::timing_milestone('begin');
     global $editor,$user;
 
@@ -2398,169 +2425,13 @@ function new_customer($data) {
     $data['values']['editor']=$editor;
 
 
-    if ($data['values']['Customer Type']=='Person') {
-        $data['values']['Customer Name']=$data['values']['Customer Main Contact Name'];
-        $data['values']['Customer Company Name']='';
 
-        $contact=new Contact();
-        $contact->editor=$editor;
-        $address_home_data=array(
-                               'Contact Home Address Line 1'=>'',
-                               'Contact Home Address Town'=>'',
-                               'Contact Home Address Line 2'=>'',
-                               'Contact Home Address Line 3'=>'',
-                               'Contact Home Address Postal Code'=>'',
-                               'Contact Home Address Country Name'=>'',
-                               'Contact Home Address Country Code'=>'',
-                               'Contact Home Address Country First Division'=>'',
-                               'Contact Home Address Country Second Division'=>''
-                           );
-
-        $contact_data=array();
-        foreach($data['values'] as $key=>$val) {
-            if ($key=='Customer Main Contact Name') {
-                $_key='Contact Name';
-            } else if (preg_match('/Customer Address/i',$key)) {
-                $_key=preg_replace('/Customer Address/i','Contact Home Address',$key);
-            } else {
-                $_key=preg_replace('/Customer /','Contact ',$key);
-            }
-            $contact_data[$_key]=$val;
-
-            if (array_key_exists($_key,$address_home_data))
-                $address_home_data[$_key]=$val;
-        }
-
-        $contact->create($contact_data,$address_home_data);
-
-        // print_r($contact_data);
-        //exit;
-        $data['values']['Customer Main Contact Key']=$contact->id;
-
-    } else {
-        $data['values']['Customer Company Name']=$data['values']['Customer Name'];
-
-        $contact=new Contact();
-        $contact->editor=$editor;
-
-        $contact_data=array();
-        foreach($data['values'] as $key=>$val) {
-            if ($key=='Customer Main Contact Name') {
-                $_key='Contact Name';
-            } else {
-                $_key=preg_replace('/Customer /','Contact ',$key);
-            }
-
-            if (preg_match('/telephone|fax/i',$key)) {
-                $val='';
-            }
-            $contact_data[$_key]=$val;
-        }
-        $contact->create($contact_data);
-        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
-
-        $company_data=array();
-        foreach($data['values'] as $key=>$val) {
-            if ($key!='Customer Type') {
-                $_key=preg_replace('/Customer /','Company ',$key);
-                $company_data[$_key]=$val;
-            }
-
-            if (array_key_exists($_key,$address_data))
-                $address_data[$_key]=$val;
-
-        }
-
-
-        $company=new Company();
-        $company->editor=$editor;
-
-        $company->create($company_data,$address_data,'use contact '.$contact->id);
-        $data['values']['Customer Main Contact Key']=$contact->id;
-        $data['values']['Customer Company Key']=$company->id;
-
-    }
-
-
-
-    $customer=new Customer();
-    $customer->editor=$editor;
-    $customer->create($data['values']);
-
-
-
-
-//print_r($data['values']);
-//exit;
-    /*
-        foreach($data['values'] as $key=>$value) {
-            $data['values'][preg_replace('/^Company / ','Customer ',$key)]=$value;
-        }
-        foreach($data['values'] as $key=>$value) {
-            $data['values'][preg_replace('/^Contact / ','Customer ',$key)]=$value;
-        }
-        if (isset($data['values']['Company Name']))
-            $data['values']['Customer Company Name']=$data['values']['Company Name'];
-    //print_r($data['values']);
-      */
-
-
-
-    /*
-        if (isset($_REQUEST['delete_email']) and  $_REQUEST['delete_email']) {
-
-            $email=new Email('email',$data['values']['Customer Main Plain Email']);
-            if ($email->id) {
-                $email->delete();
-            }
-        }
-
-    */
-//print_r($data['values']);
-
-
-
-    // $customer=new Customer('find create',$data['values']);
-    if ($customer->new) {
-        $store=new Store($customer->data['Customer Store Key']);
-
-
-        $customer->update_orders();
-
-        $customer->update_activity();
-        $store->update_customers_data();
-
-        $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
-
-
-        foreach($data['values'] as $data_key=>$data_value) {
-
-            if (preg_match('/^cat\d+$/i',$data_key)) {
-                //  print"$data_key\n";
-                // $category_key=preg_replace('/^cat/i','',$data_key);
-                //  print"$category_key\n";
-
-                $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
-                             $data_value,
-
-                             $customer->id
-                            );
-                mysql_query($sql);
-                // print($sql);
-            }
-        }
-
-
-    } else {
-
-        $response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg);
-    }
-
-    //Timer::dump_profile();
+$response=add_customer($data['values']) ;
 
     echo json_encode($response);
 
 }
+
 
 
 
@@ -3905,6 +3776,104 @@ function customer_merge($data) {
 
 
 
+
+}
+
+function new_customers_list($data) {
+
+    $list_name=$data['list_name'];
+    $store_id=$data['store_id'];
+
+    $sql=sprintf("select * from `Customer List Dimension`  where `Customer List Name`=%s and `Customer List Store Key`=%d ",
+                 prepare_mysql($list_name),
+                 $store_id
+                );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $response=array('resultset'=>
+                                    array(
+                                        'state'=>400,
+                                        'msg'=>_('Another list has the same name')
+                                    )
+                       );
+        echo json_encode($response);
+        return;
+    }
+
+    $list_type=$data['list_type'];
+
+    $awhere=$data['awhere'];
+    $table='`Customer Dimension` C ';
+
+
+//   $where=customers_awhere($awhere);
+    list($where,$table)=customers_awhere($awhere);
+
+    $where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
+
+    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where";
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        if ($row['total']==0) {
+            $response=array('resultset'=>
+                                        array(
+                                            'state'=>400,
+                                            'msg'=>_('No customer match this criteria')
+                                        )
+                           );
+            echo json_encode($response);
+            return;
+
+        }
+
+
+    }
+    mysql_free_result($res);
+
+    $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%s,%s,%s,NOW())",
+                      $store_id,
+                      prepare_mysql($list_name),
+                      prepare_mysql($list_type),
+                      prepare_mysql(json_encode($data['awhere']))
+
+                     );
+    mysql_query($list_sql);
+    $customer_list_key=mysql_insert_id();
+
+    if ($list_type=='Static') {
+
+
+        $sql="select C.`Customer Key` from $table  $where group by C.`Customer Key`";
+        //   print $sql;
+        $result=mysql_query($sql);
+        while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $customer_key=$data['Customer Key'];
+            $sql=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
+                         $customer_list_key,
+                         $customer_key
+                        );
+            mysql_query($sql);
+
+        }
+        mysql_free_result($result);
+
+
+
+
+    }
+
+
+
+
+    $response=array(
+                  'state'=>200,
+                  'customer_list_key'=>$customer_list_key
+
+              );
+    echo json_encode($response);
 
 }
 
