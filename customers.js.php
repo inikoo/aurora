@@ -1,5 +1,8 @@
 <?php
 include_once('common.php');
+
+print "var store_key=".$_REQUEST['store_key'].";"
+
 ?>
    var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
@@ -10,7 +13,10 @@ var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>
 
 
 function  new_customer_from_file(){
-location.href='import_data.php?tipo=customers_store';
+//location.href='import_data.php?tipo=customers_store';
+//import_csv.php?subject=customers_store&subject_key=3
+location.href='import_csv.php?subject=customers_store&subject_key='+store_key;
+
 }
 
 function close_dialog(tipo){

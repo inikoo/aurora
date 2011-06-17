@@ -119,7 +119,7 @@ $js_files=array(
               'js/edit_common.js',
               'js/csv_common.js',
               'common_customers.js.php',
-              'customers.js.php',
+              'customers.js.php?store_key='.$store->id,
               'js/import_csv.js'
           );
 
