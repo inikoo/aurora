@@ -345,7 +345,7 @@ function insert_customers_from_csv() {
             $_record_data=$csv->getRow($_customer_data['csv_key']);
             $_record_data[]='Already in DB';;
             //print_r($record_data);
-            fputcsv($fp, $_record_data);
+  n          fputcsv($fp, $_record_data);
 
             $_SESSION['state']['import']['errors']++;
             $_SESSION['state']['import']['todo']--;

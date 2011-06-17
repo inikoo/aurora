@@ -9,6 +9,12 @@ var Country_Address_Labels=
 	'country_d1':{'name':'Union Country','oname':'Union Country','hide':true,'in_use':true}
 	,'country_d2':{'name':'County','oname':'County','hide':false,'in_use':true}
     }
+    
+     ,'ITA':{
+	'country_d1':{'name':'Region','oname':'Regione','hide':false,'in_use':true}
+	,'country_d2':{'name':'Province','oname':'Provincia','hide':false,'in_use':true}
+    }
+    
     ,'DEU':{
 	'country_d1':{'name':'State','oname':'Länder','hide':false,'in_use':true}
 		,'country_d2':{'hide':true,'in_use':true}
