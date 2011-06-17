@@ -2640,6 +2640,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
         $key_dic=array(
                      'fiscal_name'=>'Customer Fiscal Name',
+                     'registration_number'=>'Customer Registration Number',
                      'name'=>'Customer Name',
                      'email'=>'Customer Main Plain Email',
                      'other_email'=>'Add Other Email',
@@ -2727,6 +2728,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
         }
         elseif ($key=='Customer Tax Number') {
             $customer->update_tax_number($the_new_value);
+        }elseif ($key=='Customer Registration Number') {
+            $customer->update_registration_number($the_new_value);
         }
         else {
             $customer->update(array($key=>$the_new_value));

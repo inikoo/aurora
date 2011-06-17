@@ -98,6 +98,7 @@ _('Invalid Mobile')
 ,'other_telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Other_Telephone','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'other_mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Other_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
 	,'other_fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Other_FAX','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
+  	,'registration_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Registration_Number','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Registration Number')?>'}]}
 
 
   },
@@ -174,6 +175,38 @@ query=query.replace(/[^A-Z0-9]/i, "");
  }
 
 }
+
+
+
+function validate_customer_tax_number(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('billing_data','tax_number',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.billing_data.tax_number.validated=true;
+     validate_scope('billing_data'); 
+ }
+
+}
+
+function validate_customer_registration_number(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('customer','registration_number',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.customer.registration_number.validated=true;
+     validate_scope('customer'); 
+ }
+
+}
+
+
 
 
 function validate_customer_email(query){
@@ -973,6 +1006,14 @@ $mobile_key
     var customer_Tax_Number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Tax_Number","Customer_Tax_Number_Container", customer_Tax_Number_oACDS);
     customer_Tax_Number_oAutoComp.minQueryLength = 0; 
     customer_Tax_Number_oAutoComp.queryDelay = 0.1;
+    
+    
+     var customer_Registration_Number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_registration_number);
+    customer_Registration_Number_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Registration_Number","Customer_Registration_Number_Container", customer_Registration_Number_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+    
 
 	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 

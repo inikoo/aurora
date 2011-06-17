@@ -14,6 +14,7 @@ $tipo=$_REQUEST['tipo'];
 
 switch($tipo){
  case('update'):
+
    $keys=preg_split('/-/',$_REQUEST['keys']);
    switch(count($keys)){
    case 1:

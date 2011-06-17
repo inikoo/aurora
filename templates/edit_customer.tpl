@@ -219,6 +219,9 @@
    </td>
    <td id="New_Company_Name_msg"  class="edit_td_alert"></td>
  </tr> 
+ 
+ 
+ 
    
  <tr style="display:none"><td class="label">{t}Type{/t}:</td>
 	       <td > 
@@ -242,6 +245,19 @@
    </td>
    <td id="Customer_Name_msg"  class="edit_td_alert"></td>
  </tr>
+ 
+  <tr {if $customer_type!='Company'}style="display:none"{/if} class="first"><td style="" class="label">{t}Registration Number{/t}:</td>
+   <td  style="text-align:left;">
+     <div  >
+       <input style="text-align:left;width:100%" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0">
+       <div id="Customer_Registration_Number_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Registration_Number_msg"  class="edit_td_alert"></td>
+ </tr>
+ 
+ 
+ 
 
  <tr class=""><td style="" class="label" >{t}Contact Name{/t}:</td>
    <td  style="text-align:left;">
@@ -252,6 +268,7 @@
    </td>
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
+
 
  <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
    <td  style="text-align:left">

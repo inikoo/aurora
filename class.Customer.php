@@ -506,126 +506,11 @@ class Customer extends DB_Table {
         else
             return false;
         $result=mysql_query($sql);
+        
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $this->id=$this->data['Customer Key'];
         }
     }
-
-    /*   function compley_get_data($data){ */
-    /*     $weight=array( */
-    /* 		   'Same Other ID'=>100 */
-    /* 		   ,'Same Email'=>100 */
-    /* 		   ,'Similar Email'=>20 */
-
-    /* 		   ); */
-
-
-    /*       if($data['Customer Email']!=''){ */
-    /* 	$has_email=true; */
-    /* 	$sql=sprintf("select `Email Key` from `Email Dimension` where `Email`=%s",prepare_mysql($data['Customer Email'])); */
-    /* 	$result=mysql_query($sql); */
-    /* 	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-    /* 	  $email_key=$row['Email Key']; */
-    /* 	  $sql=sprintf("select `Subject Key` from `Email Bridge` where `Email Key`=%s and `Subject Type`='Customer'",prepare_mysql($email_key)); */
-    /* 	  $result2=mysql_query($sql); */
-    /* 	  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){ */
-    /* 	    // Email found assuming this is th customer */
-
-    /* 	    return $row2['Subject Key']; */
-    /* 	  } */
-    /* 	} */
-    /*       }else */
-    /* 	$has_email=false; */
-
-    /*      $telephone=Telephone::display(Telephone::parse_telecom(array('Telecom Original Number'=>$data['Telephone']),$data['Country Key'])); */
-    /*     // Email not found check if we have a mantch in other id */
-    /*      if($data['Customer Other ID']!=''){ */
-    /*        $no_other_id=false; */
-    /* 	$sql=sprintf("select `Customer Key`,`Customer Name`,`Customer Main XHTML Telephone` from `Customer Dimension` where `Customer Other ID`=%s",prepare_mysql($data['Customer Other ID'])); */
-    /* 	$result=mysql_query($sql); */
-    /* 	$num_rows = mysql_num_rows($result); */
-    /* 	if($num_rows==1){ */
-    /* 	  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
-    /* 	  return $row['Customer Key']; */
-    /* 	}elseif($num_rows>1){ */
-    /* 	  // Get the candidates */
-
-    /* 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-    /* 	    $candidate[$row['Customer Key']]['field']=array('Customer Other ID'); */
-    /* 	    $candidate[$row['Customer Key']]['points']=$weight['Same Other ID']; */
-    /* 	    // from this candoateed of one has the same name we wouls assume that this is the one */
-    /* 	    if($data['Customer Name']!='' and $data['Customer Name']==$row['Customer Name']) */
-    /* 	      return $row2['Customer Key']; */
-    /* 	    if($telephone!='' and $telephone==$row['Customer Main XHTML Telephone']) */
-    /* 	      return $row2['Customer Key']; */
-
-
-    /* 	  } */
-
-
-
-
-    /* 	} */
-    /*      }else */
-    /*        $no_other_id=true; */
-
-
-
-
-    /*      //If customer has the same name ond same address */
-    /*      //$addres_finger_print=preg_replace('/[^\d]/','',$data['Full Address']).$data['Address Town'].$data['Postal Code']; */
-
-
-    /*      //if thas the same name,telephone and address get it */
-
-
-
-
-
-    /*      if($has_email){ */
-    /*      //Get similar candidates from email */
-
-    /*        $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20" */
-    /* 		    ,prepare_mysql($data['Customer Email']) */
-    /* 		    ,prepare_mysql($data['Customer Email']) */
-    /* 		    ); */
-    /*        $result=mysql_query($sql); */
-    /*        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-    /* 	  $candidate[$row['Subject Key']]['field'][]='Customer Other ID'; */
-    /* 	  $dist=0.5*$row['dist1']+$row['dist2']; */
-    /* 	  if($dist==0) */
-    /* 	    $candidate[$row['Subject Key']]['points']+=$weight['Same Other ID']; */
-    /* 	  else */
-    /* 	    $candidate[$row['Subject Key']]['points']=$weight['Similar Email']/$dist; */
-
-    /*        } */
-    /*      } */
-
-
-    /*      //Get similar candidates from emailby name */
-    /*      if($data['Customer Name']!=''){ */
-    /*      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Customer Name`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Customer Name`))) as dist2, `Customer Key`  from `Customer Dimension`   where dist1<=3 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20" */
-    /* 		  ,prepare_mysql($data['Customer Name']) */
-    /* 		  ,prepare_mysql($data['Customer Name']) */
-    /* 		  ); */
-    /*      $result=mysql_query($sql); */
-    /*      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-    /*        $candidate[$row['Subject Key']]['field'][]='Customer Name'; */
-    /*        $dist=0.5*$row['dist1']+$row['dist2']; */
-    /*        if($dist==0) */
-    /* 	 $candidate[$row['Subject Key']]['points']+=$weight['Same Customer Name']; */
-    /*        else */
-    /* 	 $candidate[$row['Subject Key']]['points']=$weight['Similar Customer Name']/$dist; */
-
-    /*      } */
-    /*      } */
-    /*      // Address finger print */
-
-
-
-
-    /*  } */
-
 
 
 
@@ -2653,6 +2538,9 @@ class Customer extends DB_Table {
         if ($key=='Customer Tax Number' or $key=='Tax Number') {
             return $this->get_tax_number();
         }
+        if ($key=='Customer Registration Number' or $key=='Registration Number') {
+            return $this->get_registration_number();
+        }
         elseif ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
             return $this->get_fiscal_name();
         }
@@ -3018,6 +2906,26 @@ class Customer extends DB_Table {
     }
 
 
+ function update_registration_number($value) {
+        if ($this->data['Customer Type']=='Person') {
+            $subject=new Contact($this->data['Customer Main Contact Key']);
+            $subject->editor=$this->editor;
+
+            $subject->update(array('Contact Identification Number'=>$value));
+
+        } else {
+            $subject=new Company($this->data['Customer Company Key']);
+            $subject->editor=$this->editor;
+
+            $subject->update(array('Company Registration Number'=>$value));
+
+        }
+        $this->updated=$subject->updated;
+        $this->msg=$subject->msg;
+        $this->error=$subject->error;
+        $this->new_value=$subject->new_value;
+    }
+
     function get_fiscal_name() {
         if ($this->data['Customer Type']=='Person') {
             $this->data['Customer Fiscal Name']=$this->data['Customer Name'];
@@ -3044,38 +2952,11 @@ class Customer extends DB_Table {
 
     function get_tax_number($reread=false) {
         return $this->data['Customer Tax Number'];
-
-        /*
-            if ($this->tax_number_read and $reread)
-                return $this->data['Customer Tax Number'];
-
-            if ($this->data['Customer Type']=='Person') {
-                $subject='Contact';
-                $subject_key=$this->data['Customer Main Contact Key'];
-            } else {
-                $subject='Company';
-                $subject_key=$this->data['Customer Company Key'];
-            }
-
-            $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
-            // print $sql;
-            $res=mysql_query($sql);
-
-            if ($row=mysql_fetch_assoc($res)) {
-                $this->data['Customer Tax Number']=$row['tax_number'];
-                $this->tax_number_read=true;
-                return $this->data['Customer Tax Number'];
-            } else {
-                $this->error;
-                return '';
-            }
-
-        */
-
-
     }
 
-
+    function get_registration_number($reread=false) {
+        return $this->data['Customer Registration Number'];
+    }
 
 
 

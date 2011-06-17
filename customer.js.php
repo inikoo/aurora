@@ -723,9 +723,11 @@ ids=['orders','history','products','details'];
 block_ids=['block_orders','block_history','block_products','block_details'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
 
+Dom.removeClass(ids,'selected');
+
+Dom.addClass(this,'selected');
+//alert('ar_sessions.php?tipo=update&keys=customer-view&value='+this.id)
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-view&value='+this.id ,{});
 }
 
