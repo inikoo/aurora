@@ -22,10 +22,11 @@ var subject_data={
     "Customer Name":""
     ,"Customer Main Contact Name":""
     ,"Customer Tax Number":""
+    ,"Customer Registration Number":""
     ,"Customer Main Plain Email":""
     ,"Customer Main Plain Telephone":""
-     ,"Customer Main Plain FAX":""
-      ,"Customer Main Plain Mobile":""
+    ,"Customer Main Plain FAX":""
+    ,"Customer Main Plain Mobile":""
     ,"Customer Address Line 1":""
     ,"Customer Address Line 2":""
     ,"Customer Address Line 3":""
@@ -45,7 +46,7 @@ var subject_data={
 var suggest_country=true;
 var suggest_d1=true;
 var suggest_d2=true;
-var suggest_d3=false;
+var suggest_d3=true;
 var suggest_d4=false;
 var suggest_d4=false;
 var suggest_town=true;
@@ -135,11 +136,13 @@ Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
 function customer_is_a_person(){
 Dom.get('Customer_Type').value='Person'
 Dom.get('Company_Tax_Number').value='';
+Dom.get('Company_Registration_Number').value='';
 validate_data.company_name.validated=true;
 Dom.setStyle('company_section','display','none');
 Dom.setStyle('set_as_company','display','');
 
 subject_data['Customer Tax Number']=Dom.get('Company_Tax_Number').value;
+subject_data['Company_Registration_Number']=Dom.get('Company_Registration_Number').value;
 
 validate_form();
 }
@@ -196,6 +199,7 @@ window.location='companies.php?edit=1';
 function get_subject_data(){
     subject_data[Subject+' Name']=Dom.get('Company_Name').value;
         subject_data[Subject+' Tax Number']=Dom.get('Company_Tax_Number').value;
+        subject_data[Subject+' Registration Number']=Dom.get('Company_Registration_Number').value;
 
 }
 function get_contact_data(){

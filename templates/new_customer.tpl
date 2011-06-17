@@ -62,6 +62,18 @@
 	  </td>
 	  <td style="width:70px"></td>
 	</tr>
+	
+	<tr >
+	<td style="width:120px" class="label">{t}Registration Number{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;width:100%" id="Company_Registration_Number" value="" ovalue="" valid="0">
+	      <div id="Company_Registration_Number_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	</tr>
+	
 	 </tbody>
 	 
 	 <tr class="title" style="height:30px">

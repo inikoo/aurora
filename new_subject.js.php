@@ -638,7 +638,7 @@ function init(){
 //		+"&country_d3_code="+Dom.get('address_country_d3_code').value	 
 
 		+"&query=" + sQuery ;
-	//    alert(request);
+	   alert(request);
 		return request;
 	    };
  	var Country_1d_selected = function(sType, aArgs) {
