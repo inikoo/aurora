@@ -877,8 +877,13 @@ $default_state=array(
 
                                           'continent'=>array('view'=>'countries',
                                                              'map_links'=>'countries'),
-                                          'wregion'=>array('view'=>'countries',
-                                                           'map_links'=>'countries'),
+                                          		'wregion'=>array(
+								'view'=>'countries',	
+                                                           'map_links'=>'countries',	
+							   'plot_tipo'=>'plot_all_stores'),
+					  'country'=>array('view'=>'overview',
+							   'plot_tipo'=>'plot_all_stores'),
+                                                        
 
                                           'countries'=>array(
                                                           'display'=>'all',
@@ -3741,7 +3746,7 @@ $default_state=array(
 
                    'wregion'=>array(
                                  'code'=>'',
-
+				
                                  'countries'=>array(
                                                  'display'=>'all',
                                                  'order'=>'name',

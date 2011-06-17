@@ -202,6 +202,9 @@ $smarty->assign('search_label',_('Search'));
 $smarty->assign('splinters',$splinters);
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Home'));
+$smarty->assign('test','hola');
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->display('index.tpl');

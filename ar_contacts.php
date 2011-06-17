@@ -162,6 +162,7 @@ case('customers'):
         exit();
     list_customers();
     break;
+
 case('customers_send_post'):
     if (!$user->can_view('customers'))
         exit();
@@ -1830,6 +1831,8 @@ function list_customers() {
         $f_value=$_REQUEST['f_value'];
     else
         $f_value=$conf['f_value'];
+
+
     if (isset( $_REQUEST['where']))
 
 
@@ -1868,12 +1871,16 @@ function list_customers() {
     $where_type='';
 
     if ($awhere) {
+
+
+
         $tmp=preg_replace('/\\\"/','"',$awhere);
         $tmp=preg_replace('/\\\\\"/','"',$tmp);
         $tmp=preg_replace('/\'/',"\'",$tmp);
 
         $raw_data=json_decode($tmp, true);
         $raw_data['store_key']=$store;
+//print_r( $raw_data);
         list($where,$table)=customers_awhere($raw_data);
 
 
@@ -1942,19 +1949,24 @@ function list_customers() {
     $wheref='';
 
     $currency='';
+
+     $where_stores=sprintf(' and  false');
+
     if (is_numeric($store) and in_array($store,$user->stores)) {
-        $where.=sprintf(' and  `Customer Store Key`=%d ',$store);
+        $where_stores=sprintf(' and  `Customer Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
     } else {
-       $where.=sprintf(' and  false');
+     
         $currency='';
+}
+
+
+    if(isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  ){
+    	$where_stores=sprintf('and `Customer Store Key` in (%s)  ',join(',',$user->stores));      			       
     }
 
-
-
-
-
+    $where.=$where_stores;
 
     //  print $f_field;
 
@@ -2175,7 +2187,7 @@ function list_customers() {
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
-    // print $sql;
+    //print $sql;
     $adata=array();
 
 

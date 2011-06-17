@@ -13,6 +13,82 @@ $colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
 
 switch ($tipo) {
 
+case('sales_from_invoices'):
+global $user;
+$stores_keys=$user->stores;
+    $use_corporate=0;
+    $staked_by_store=false;
+    $staked_by_subregion=false;
+    $region_level='Continent';
+    $region_code='WERP';
+    if (isset($_REQUEST['stacked_by_store']) and $_REQUEST['stacked_by_store'])$staked_by_store=true;
+    if (isset($_REQUEST['stacked_by_subregion']) and $_REQUEST['stacked_by_subregion'])$staked_by_subregion=true;
+    if (isset($_REQUEST['region_level']) and $_REQUEST['region_level'])$region_level=$_REQUEST['region_level'];
+    if (isset($_REQUEST['region_code']) and $_REQUEST['region_code'])$region_code=$_REQUEST['region_code'];
+
+$title=_('Sales by Region');
+     if (isset($_REQUEST['title']) and $_REQUEST['title'])$title=$_REQUEST['title'];
+
+    $graphs_data=array();
+    $gid=0;
+    if ($staked_by_store) {
+        $sql=sprintf("select `Store Name`,`Store Code`,`Store Currency Code` from `Store Dimension` where `Store Key` in (%s)",addslashes(join(',',$stores_keys)));
+//  .'&stacked_by_store='.$_REQUEST['stacked_by_store'].'&stacked_by_subregion='.$_REQUEST['stacked_by_subregion']
+
+      $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $graphs_data[]=array(
+                               'gid'=>$gid,
+                               'title'=>$row['Store Code'],
+                               'currency_code'=>$corporate_currency,
+                               'color'=>$colors[$gid]
+                           );
+            $gid++;
+        }
+        $data_args='tipo=stacked_store_sales&store_key='.join(',',$stores_keys);
+        $template='plot_stacked_asset_sales.xml.tpl';
+
+    } else {// no stakecked
+
+
+        $sql=sprintf("select `Store Name`,`Store Code`,`Store Currency Code` from `Store Dimension`");
+// where `Store Key` in (%s)",addslashes(join(',',$stores_keys)));
+        $res=mysql_query($sql);
+        $title='';
+        $currencies=array();
+        while ($row=mysql_fetch_assoc($res)) {
+           // $title.=','.$row['Store Code'];
+
+
+            $currency_code=$row['Store Currency Code'];
+            $currencies[$currency_code]=1;
+
+        }
+
+
+        if (count($currencies)>1)
+            $use_corporate=1;
+
+
+
+
+        $graphs_data[]=array(
+                           'gid'=>0,
+                           'title'=>$title,
+                           'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+                       );
+        $data_args='tipo=region_sales&store_key='.join(',',$stores_keys).'&use_corporate='.$use_corporate.'&region_level='.$region_level.'&region_code='.$region_code;
+        
+        $template='plot_asset_sales.xml.tpl';
+
+    }
+
+
+
+
+
+break;
 case('store_sales'):
 
     
@@ -313,6 +389,88 @@ break;
 
 break; 
 
+case('sales_from_country'):
+global $user;
+$stores_keys=$user->stores;
+    $use_corporate=0;
+    $staked_by_store=false;
+    $staked_by_subregion=false;
+    $region_level='Country';
+    $country_code='GBR';
+    if (isset($_REQUEST['stacked_by_store']) and $_REQUEST['stacked_by_store'])$staked_by_store=true;
+    if (isset($_REQUEST['stacked_by_subregion']) and $_REQUEST['stacked_by_subregion'])$staked_by_subregion=true;
+   // if (isset($_REQUEST['region_level']) and $_REQUEST['region_level'])$region_level=$_REQUEST['region_level'];
+    if (isset($_REQUEST['country_code']) and $_REQUEST['country_code'])$country_code=$_REQUEST['country_code'];
+
+$title=_('Sales by Country');
+     if (isset($_REQUEST['title']) and $_REQUEST['title'])$title=$_REQUEST['title'];
+
+    $graphs_data=array();
+    $gid=0;
+    if ($staked_by_store) {
+        $sql=sprintf("select `Store Name`,`Store Code`,`Store Currency Code`, `Country Code` from `Store Dimension` left join kbase.`Country Dimension` C on (C.`Country Name`=`Store Dimension`.`Store Home Country Code 2 Alpha`) where `Store Key` in (%s) and `Country Code`=%s",addslashes(join(',',$stores_keys)),$_SESSION['state']['country']['code']);
+//  .'&stacked_by_store='.$_REQUEST['stacked_by_store'].'&stacked_by_subregion='.$_REQUEST['stacked_by_subregion']
+
+      $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $graphs_data[]=array(
+                               'gid'=>$gid,
+                               'title'=>$row['Store Code'],
+                               'currency_code'=>$corporate_currency,
+                               'color'=>$colors[$gid]
+                           );
+            $gid++;
+        }
+        $data_args='tipo=stacked_store_sales&store_key='.join(',',$stores_keys);
+        $template='plot_stacked_asset_sales.xml.tpl';
+
+    } else {// no stakecked
+
+
+        //$sql=sprintf("select `Store Name`,`Store Code`,`Store Currency Code` from `Store Dimension`");
+ 	$sql=sprintf("select `Store Name`,`Store Code`,`Store Currency Code` from `Store Dimension`  where `Store Key` in (%s) ",
+addslashes(join(',',$stores_keys)),
+prepare_mysql($_SESSION['state']['country']['code']));
+
+// where `Store Key` in (%s)",addslashes(join(',',$stores_keys)));
+
+//print $sql;
+        $res=mysql_query($sql);
+        $title='';
+        $currencies=array();
+        while ($row=mysql_fetch_assoc($res)) {
+           // $title.=','.$row['Store Code'];
+
+
+            $currency_code=$row['Store Currency Code'];
+            $currencies[$currency_code]=1;
+
+        }
+
+
+        if (count($currencies)>1)
+            $use_corporate=1;
+
+
+
+
+        $graphs_data[]=array(
+                           'gid'=>0,
+                           'title'=>$title,
+                           'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+                       );
+        $data_args='tipo=region_sales&store_key='.join(',',$stores_keys).'&use_corporate='.$use_corporate.'&region_level='.$region_level.'&region_code='.$country_code;
+        
+        $template='plot_asset_sales.xml.tpl';
+
+    }
+
+
+
+
+
+break;
 
 }
 

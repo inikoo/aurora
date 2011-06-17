@@ -8,7 +8,7 @@
 
 
 <div class="branch" style="width:300px;padding-top:5px"> 
-   <span ><a  href="report_geo_sales.php?world=1">{t}World{/t}</a> &rarr; <a  href="report_geo_sales.php?continent={$continent_code}">{$continent_name}</a> &rarr; <a  href="report_geo_sales.php?wregion={$wregion_code}">{$wregion_name}</a></span>
+   <span ><a  href="report_geo_sales.php?world=1">{t}World{/t}</a> &rarr; <a  href="report_geo_sales.php?continent={$continent_code}">{$continent_name}</a> &rarr; <a  href="report_geo_sales.php?wregion={$wregion_code}">{$wregion_name}</a> &rarr;<a  href="report_geo_sales.php?country={$country_code}">{$country_name}</a></span>
 
 </div>
 <h1 style="clear:left">{$title}</h1>
@@ -17,16 +17,86 @@
 
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Country Info{/t}</span></span></li>
+
     <li> <span class="item {if $view=='overview'}selected{/if}"  id="overview">  <span> {t}Sales Overview{/t}</span></span></li>
-    <li> <span class="item {if $view=='map'}selected{/if}"  id="map">  <span> {t}Map{/t}</span></span></li>
-    <li> <span class="item {if $view=='countries'}selected{/if}"  id="countries">  <span> {t}Countries{/t}</span></span></li>
-    <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
-    <li> <span class="item {if $view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
+    <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customer List{/t}</span></span></li>
+    <li> <span class="item {if $view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoice List{/t}</span></span></li>
+   
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+<div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div style="float:left;">
 
+	  <h2>{$country_name} [{$country_code}]</h2>
+	  <div class=""  style="width:100%;">
+	    <div class="" style="width:100%;font-size:90%"   >
+              <div class="" style="width:200px;float:left;margin-right:20px">
+	
+		<table    class="show_info_product">
+		    <tr>
+		      <td>{t}Population{/t}:</td><td  class="price aright">{$country->get('Population')}</td>
+		    </tr>
+		   <tr>
+		      <td>{t}GNP{/t}:</td><td  class="price aright">{$country->get('GNP')}</td>
+		    </tr>
+		    
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$country->get('For Sale Since Date')} </td>
+		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
+		    </tr>
+		  
+		</table>
+
+	 
+
+
+
+	      </div>
+              <div class="" style="width:220px;float:left">
+
+	
+
+	
+		
+		
+		
+
+	 <table   class="show_info_product">
+		    <tr ><td>{t}Currency{/t}:</td><td class="aright">{$country->get('Country Currency Name')} ({$country->get('Country Currency Code')})</td></tr>
+		    <tr ><td>{t}Exchange{/t}:</td><td class="aright">
+		   
+		    <table style="float:right">
+		    {$country->get_formated_exchange_reverse('GBP',false,'tr')}
+		    {$country->get_formated_exchange('GBP',false,'tr')}
+		    </table>
+		    </td></tr>
+
+
+		
+		  </table>
+	  
+		  <table  class="show_info_product">
+		    <tr ><td>{t}Official Name{/t}:</td><td class="aright">{$country->get('Country Native Name')}</td></tr>
+		    <tr ><td>{t}Languages{/t}:</td><td class="aright">{$country->get('Country Languages')}</td></tr>
+		    <tr ><td>{t}Capital{/t}:</td><td class="aright">{$country->get('Country Capital Name')}</td></tr>
+		    <tr ><td>{t}Government{/t}:</td><td class="aright">{$country->get('Country Goverment Form')}<br>{$country->get('Country Head of State')}</td></tr>
+
+		
+		  </table>
+	
+		
+              </div>
+	    </div>
+	  </div>
+	</div>
+
+
+</div>
 
 <div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
+
+
 
 <div id="plot" class="top_bar" style="position:relative;clear:both;padding:0;margin:0">
     <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
@@ -52,7 +122,7 @@
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=sales_from_invoices&store_key={$am_safe_store_keys}&from={$from}&to={$to}&region_level=wregion&region_code={$wregion_code}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=sales_from_country&store_key={$am_safe_store_keys}&from={$from}&to={$to}&country_code={$country_code}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("div_plot_all_stores");
 		// ]]>
@@ -126,47 +196,6 @@
 </div>
 
 
-<div id="block_map" style="{if $view!='map'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-
-
-
-<div style="border:1px solid #ccc;padding:10px;margin-top:5px;">
-
-	<div id="map_countries" style="{if $map_links!='countries'}display:none;{/if}width:700px;height:480px;">
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-
-
-
-	<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("{$ammap_path}/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
-        so.addVariable("path", "{$ammap_path}/ammap/");
-		so.addVariable("data_file", escape("map_data_world_countries.xml.php?report=sales&from={$from}&to={$to}"));
-        so.addVariable("settings_file", escape("{$settings_file}"));		
-		so.addVariable("preloader_color", "#999999");
-		so.write("map_countries");
-		
-		
-		
-			
-		
-		// ]]>
-	</script>
-	
-	
-</div>
-
-</div>  
-<div id="block_countries" style="{if $view!='countries'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-    <span id="table_title" class="clean_table_title">{t}Counties{/t}</span>
-     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
-    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
-
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
-  
-</div>
-
 <div id="block_customers" style="{if $view!='customers'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
   <div id="the_table" class="data_table" style="clear:both">
@@ -183,8 +212,8 @@
 	  <td {if $customer_view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
 	</tr>
       </table>
-{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
- <div  id="table1"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+ <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
  </div>
 
   
@@ -196,7 +225,7 @@
 </div>  
 
 
-<div id="block_invoice" style="{if $view!='invoice'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
     <span id="table_title" class="clean_table_title">{t}Counties{/t}</span>
      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
@@ -204,6 +233,8 @@
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   
 </div>
+
+
      
 <div id="photo_container" style="display:none;float:left;border:0px solid #777;width:510px;height:320px">
 

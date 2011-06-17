@@ -106,6 +106,7 @@ $_SESSION['state'][$report_name]['from']=$from;
 $_SESSION['state'][$report_name]['to']=$to;
 
 
+
 $smarty->assign('tipo',$tipo);
 $smarty->assign('period',$period);
 
@@ -137,34 +138,37 @@ case 'world':
     $template='report_geo_sales_world.tpl';
     break;
 case 'wregion':
+$smarty->assign('plot_tipo',$_SESSION['state'][$report_name]['wregion']['plot_tipo']);
 
-
-  $sql=sprintf("select `World Region`,`Continent`,`Continent Code` from kbase.`Country Dimension` where `World Region Code`=%s",prepare_mysql($tag));
+  $sql=sprintf("select `World Region`,`World Region Code`,`Continent`,`Continent Code` from kbase.`Country Dimension` where `World Region Code`=%s",prepare_mysql($tag));
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
         $smarty->assign('wregion_name',$row['World Region']);
                 $smarty->assign('continent_name',$row['Continent']);
 
                 $smarty->assign('continent_code',$row['Continent Code']);
-
+	//	print $row['World Region Code'];
+		$_SESSION['state']['wregion']['code']=$row['World Region Code'];
     } else {
-        header('Location: report_geo_sales.php?world');
-        print $sql;
+      	   
+        header('Location: report_geo_sales.php?world?error');
+        //print $sql;
         exit;
 
     }
 
 
-
   $js_files[]='report_geo_sales_wregion.js.php';
+  $js_files[]='common_customers.js.php';
     $smarty->assign('wregion_code',$tag);
     $template='report_geo_sales_wregion.tpl';
     $_SESSION['state']['wregion']['code']=$tag;
     
+ 
+      
     
-    
-       $view=$_SESSION['state'][$report_name]['wregion']['view'];
-$map_link=$_SESSION['state'][$report_name]['wregion']['map_links'];
+    $view=$_SESSION['state'][$report_name]['wregion']['view'];
+    $map_link=$_SESSION['state'][$report_name]['wregion']['map_links'];
     $smarty->assign('view',$view);
     $smarty->assign('map_links',$map_link);
 
@@ -172,14 +176,14 @@ $map_link=$_SESSION['state'][$report_name]['wregion']['map_links'];
 
     break;
 case 'continent':
- $js_files[]='report_geo_sales_continent.js.php';
+    $js_files[]='report_geo_sales_continent.js.php';
     $smarty->assign('continent_code',$tag);
     $template='report_geo_sales_continent.tpl';
     $_SESSION['state']['continent']['code']=$tag;
     
     
-       $view=$_SESSION['state'][$report_name]['continent']['view'];
-$map_link=$_SESSION['state'][$report_name]['continent']['map_links'];
+    $view=$_SESSION['state'][$report_name]['continent']['view'];
+    $map_link=$_SESSION['state'][$report_name]['continent']['map_links'];
     $smarty->assign('view',$view);
     $smarty->assign('map_links',$map_link);
 
@@ -190,8 +194,34 @@ $map_link=$_SESSION['state'][$report_name]['continent']['map_links'];
 case 'country':
 
     $country=new Country('code',  Address::parse_country($tag));
+    $smarty->assign('plot_tipo',$_SESSION['state'][$report_name]['country']['plot_tipo']);
+    $sql=sprintf("select `World Region`,`World Region Code`,`Continent`,`Continent Code`, `Country Name`from kbase.`Country Dimension` where `Country Code`=%s",prepare_mysql($country->data['Country Code']));
+//print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        $smarty->assign('wregion_name',$row['World Region']);
+        $smarty->assign('wregion_code',$row['World Region Code']);
+	$smarty->assign('continent_name',$row['Continent']);
+        $smarty->assign('continent_code',$row['Continent Code']);
+	$smarty->assign('country_name',$row['Country Name']);
+    } else {
+        header('Location: report_geo_sales.php?world');
+        //print $sql;
+        exit;
+    }
+    $view=$_SESSION['state'][$report_name]['country']['view'];
+  
+    $js_files[]='report_geo_sales_country.js.php';
+    $js_files[]='common_customers.js.php';
+
+    $smarty->assign('country_code',$tag);
+
+    $smarty->assign('customer_view',$_SESSION['state']['customers']['view']);
+    $_SESSION['state']['country']['code']=$tag;
     $smarty->assign('country',$country);
-    $template='country.tpl';
+    $smarty->assign('view',$view);
+    $template='report_geo_sales_country.tpl';
+
 }
 $_SESSION['state']['region']['tag']=$tag;
 $_SESSION['state']['region']['mode']=$mode;
@@ -230,6 +260,106 @@ $smarty->assign('filter_value1',$_SESSION['state']['world']['wregions']['f_value
 $paginator_menu1=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu1);
 
+//Top countries in the world
+$top_countries=array();
+
+$sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE `Invoice Date`>%s and  `Invoice Date`<%s group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+prepare_mysql($from),
+prepare_mysql($to)
+);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$top_countries[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+}
+
+
+	$smarty->assign('top_countries',$top_countries);
+
+//Top regions in the world	
+	$top_regions=array();
+
+	$sql = sprintf("SELECT `World Region` as region, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE `Invoice Date`>%s and  `Invoice Date`<%s group by region ORDER BY net  DESC LIMIT 5",
+
+prepare_mysql($from),
+prepare_mysql($to)
+);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$top_regions[]=array('region'=>$row['region'],'sales'=>money($row['net'],$corporate_symbol));
+}
+
+$smarty->assign('top_regions',$top_regions);
+
+//Top countries by Continent
+$top_countries_in_continent=array();
+
+$sql = sprintf("SELECT `Country Name`, `World Region`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE `Invoice Date`>%s and  `Invoice Date`<%s and `Continent Code`=%s group by `World Region`, `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+prepare_mysql($from),
+prepare_mysql($to),
+prepare_mysql($tag)
+);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$top_countries_in_continent[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+}
+
+	$smarty->assign('top_countries_in_continent',$top_countries_in_continent);
+
+//Top Regions by Continent
+	$top_regions_in_continent=array();
+
+	$sql = sprintf("SELECT `World Region` as region, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE `Invoice Date`>%s and  `Invoice Date`<%s and `Continent Code`=%s group by region ORDER BY net  DESC LIMIT 5",
+prepare_mysql($from),
+prepare_mysql($to),
+prepare_mysql($tag)
+);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$top_regions_in_continent[]=array('region'=>$row['region'],'sales'=>money($row['net'],$corporate_symbol));
+}
+
+
+$smarty->assign('top_regions_in_continent',$top_regions_in_continent);
+	
+//Top Countries in the region
+$top_countries_in_region=array();
+
+$sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE `Invoice Date`>=%s and  `Invoice Date`<=%s and `World Region Code`=%s group by  `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+prepare_mysql($from),
+prepare_mysql($to),
+prepare_mysql($tag)
+);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$top_countries_in_region[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+}
+
+	$smarty->assign('top_countries_in_region',$top_countries_in_region);
+
+
+//Customers by country
+$customers_by_country=array();
+
+$sql = sprintf("SELECT `Invoice Customer Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE `Invoice Date`>=%s and  `Invoice Date`<=%s and `World Region Code`=%s group by  `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+prepare_mysql($from),
+prepare_mysql($to),
+prepare_mysql($tag)
+);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$top_countries_in_region[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+}
+
+	$smarty->assign('top_countries_in_region',$top_countries_in_region);
+
+
+
 
 $tipo_filter2=$_SESSION['state']['world']['continents']['f_field'];
 $filter_menu2=array(
@@ -242,9 +372,9 @@ $smarty->assign('filter1',$tipo_filter2);
 $smarty->assign('filter_value2',$_SESSION['state']['world']['continents']['f_value']);
 $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
-
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+$smarty->assign('no_sales_message','There\'s no sales from');
 
 $smarty->display($template);
 ?>
