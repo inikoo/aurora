@@ -27,7 +27,7 @@
     <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
     <tr id="sticky_note_bis_tr" ><td id="sticky_note_bis">{t}Sticky Note{/t}</td></tr>
 
-    <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
+    <tr><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr style="display:none"><td id="take_order">{t}Take Order{/t}</td></tr>
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
@@ -119,16 +119,16 @@
     
     
 </table>
-<div id="overviews" style="border-top:1px solid #eee;width:900px">
+<div id="overviews" style="border-top:1px solid #eee;width:800px">
 
 <div id="orders_overview" style="float:left;;margin-right:40px;width:300px" >
   <h2 style="font-size:120% ">{t}Contact Overview{/t}</h2>
 
 
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;min-width:300px">
-  <tr><td>
- 
-  
+  <tr>
+  <td>
+
   {if $customer->get('Customer Type by Activity')=='Losing'}
   
     {elseif $customer->get('Customer Type by Activity')=='Lost'}
@@ -158,7 +158,7 @@
 </div>
 
 {if $customer->get('Customer Orders')>0}
-<div id="customer_overview"  style="float:left;width:500px" >
+<div id="customer_overview"  style="float:left;width:400px" >
   <h2 style="font-size:120% ">{t}Orders Overview{/t}</h2>
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;">
     <tr><td>
@@ -501,6 +501,8 @@
 
 <div id="dialog_attach">
   <div id="attach_msg"></div>
+  
+  {*
   <table >
      <tr><td colspan=2>
 
@@ -522,6 +524,18 @@
   <td style="text-align:center;width:50%">
     <span  onclick="save('attach')" id="upload_attach"  class="state_details"     xstyle="visibility:hidden;" >{t}Upload{/t}</span></td></tr>
 </table>
+*}
+<div>
+	<div id="fileProgress" style="border: black 1px solid; width:300px; height:40px;float:left">
+		<div id="fileName" style="text-align:center; margin:5px; font-size:15px; width:290px; height:25px; overflow:hidden"></div>
+		<div id="progressBar" style="width:300px;height:5px;background-color:#CCCCCC"></div>
+	</div>
+<div id="uploaderUI" style="width:70px;height:16px;margin-left:5px;float:left;cursor:pointer"></div>
+<div class="uploadButton" style="float:left"><a class="rolloverButton disabled" href="#" onClick="upload(); return false;"></a></div>
+<div class="clearButton" style="float:left"><a class="rolloverButton disabled" href="#" onClick="handleClearFiles(); return false;"></a></div>
+</div>
+
+
 </div>
 
 {*}

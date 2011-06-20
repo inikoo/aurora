@@ -91,12 +91,16 @@ $js_files=array(
               $yui_path.'editor/editor-min.js',
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
+              $yui_path.'uploader/uploader-min.js',
+              
               'external_libs/ampie/ampie/swfobject.js',
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
-              'customer.js.php'
+             
+              'customer.js.php',
+               'upload_common.js.php',
           );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

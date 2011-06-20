@@ -432,14 +432,30 @@ var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&ne
 
 
 function save_comunications(key,value){
-var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	
+
+
+
+ var data_to_update=new Object;
+ data_to_update[key]={'okey':key,'value':value}
+
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+
+var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
+
+
+//var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
+	//alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
+//alert(o.responseText)
+				var ra =  YAHOO.lang.JSON.parse(o.responseText);
+				  for (x in ra){
+               r=ra[x]
 				if(r.state==200){
-			 
+			
+  
+ 
             if (r.newvalue=='No' || r.newvalue=='Yes') {
                            Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
 
@@ -447,6 +463,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' +
 
             }else{
                 alert(r.msg)
+            }
             }
         }
     }
