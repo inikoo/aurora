@@ -307,6 +307,11 @@ class CSV_PARSER
 
     public function getRow($number)
     {
+    
+        if($number<0){
+            return $this->getHeaders();
+        }
+    
         $raw = $this->rows;
         if (array_key_exists($number, $raw)) {
             return $raw[$number];
