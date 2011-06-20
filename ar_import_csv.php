@@ -99,7 +99,7 @@ function get_record_data($data) {
     $options=$_SESSION['state']['import']['todo']=$number_of_records+1;
 
 
-    $result="<table class='recordList' border=0>
+    $result="<table class='recordList' border=0  >
             <tr>
             <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Assigned Field')."</th>
             <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records+1).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>'."
@@ -112,7 +112,6 @@ function get_record_data($data) {
     $result.=sprintf('<span style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</span>',(!$ignore_record?'':'display:none'),$index,_('Ignore Record'));
     $result.=sprintf('<span style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</span>',($ignore_record?'':'display:none'),$index,_('Read Record'));
     $result.='</th></tr>';
-
 
     foreach($headers as $key=>$value) {
 
@@ -128,8 +127,9 @@ function get_record_data($data) {
 
         }
         $select.='</select>';
-
-        $result.=sprintf('<tr style="height:20px;border-top:1px solid #ccc"><td>%s</td><td colspan="3">%s</td></tr>',$select,$raw[$index][$key]);
+        $text= $raw[$index][$key];
+        $newtext = wordwrap($text, 50, "<br />\n");
+        $result.=sprintf('<tr style="height:20px;border-top:1px solid #ccc"><td>%s</td><td colspan="3" >%s</td></tr>',$select,$newtext);
     }
 
 
@@ -202,6 +202,14 @@ function insert_customers_from_csv() {
             $record_data[]='Ignored';
             //print_r($record_data);
             fputcsv($fp, $record_data);
+            
+            if($_SESSION['state']['import']['errors_comments']==''){
+                $_SESSION['state']['import']['errors_comments']=sprintf('<a href="%s" target="_blank">%s</a>',
+                    "app_files/import_errors/$error_log_file_name.csv",
+                    _('No added records')
+                    );
+            }
+            
             $_SESSION['state']['import']['ignored']++;
             continue;
 
@@ -223,27 +231,30 @@ function insert_customers_from_csv() {
 //print_r($data_to_import);
 //print_r($_SESSION['state']['import'][]);
 
-   
+
 
     foreach($data_to_import as $_customer_data) {
 
 
- $customer_data=array(
-                       'Customer Company Name'=>'',
-                       'Customer Main Contact Name'=>'',
-                       'Customer Type'=>'',
-                       'Customer Store Key'=>$store_key,
-                       'Customer Address Line 1'=>'',
-                       'Customer Address Line 2'=>'',
-                       'Customer Address Line 3'=>'',
-                       'Customer Address Postal Code'=>'',
-                       'Customer Address Country Name'=>'',
-                       'Customer Address Country Code'=>'',
-                       'Customer Address Country 2 Alpha Code'=>'',
-                       'Customer Address Country First Division'=>'',
-                       'Customer Address Country Second Division'=>'',
-                       'editor'=>$editor
-                   );
+        $customer_data=array(
+                           'Customer Company Name'=>'',
+                           'Customer Main Contact Name'=>'',
+                           'Customer Type'=>'',
+                           'Customer Store Key'=>$store_key,
+                           'Customer Address Line 1'=>'',
+                           'Customer Address Line 2'=>'',
+                           'Customer Address Line 3'=>'',
+                           'Customer Address Postal Code'=>'',
+                           'Customer Address Country Name'=>'',
+                           'Customer Address Country Code'=>'',
+                           'Customer Address Country 2 Alpha Code'=>'',
+                           'Customer Address Country First Division'=>'',
+                           'Customer Address Country Second Division'=>'',
+                           'Customer Send Newsletter'=>'Yes',
+                            'Customer Send Email Marketing'=>'Yes',
+                             'Customer Send Postal Marketing'=>'Yes',
+                           'editor'=>$editor
+                       );
 
 
 //print_r($_customer_data);
@@ -255,6 +266,19 @@ function insert_customers_from_csv() {
         if ($customer_data['Customer Main Contact Name']=='' and $customer_data['Customer Company Name']=='') {
             $_SESSION['state']['import']['errors']++;
             $_SESSION['state']['import']['todo']--;
+
+
+    $_record_data=$csv->getRow($_customer_data['csv_key']-1);
+            $_record_data[]='No Company/Contact name';
+            //print_r($record_data);
+            fputcsv($fp, $_record_data);
+
+  if($_SESSION['state']['import']['errors_comments']==''){
+                $_SESSION['state']['import']['errors_comments']=sprintf('<a href="%s" target="_blank">%s</a>',
+                    "app_files/import_errors/$error_log_file_name.csv",
+                    _('No added records')
+                    );
+            }
 
             continue;
         }
@@ -337,16 +361,31 @@ function insert_customers_from_csv() {
             } else {
                 $_SESSION['state']['import']['errors']++;
                 $_SESSION['state']['import']['todo']--;
+                  $_record_data=$csv->getRow($_customer_data['csv_key']-1);
+            $_record_data[]='Can not add to the DB';
+            //print_r($record_data);
+            fputcsv($fp, $_record_data);
+                  if($_SESSION['state']['import']['errors_comments']==''){
+                $_SESSION['state']['import']['errors_comments']=sprintf('<a href="%s" target="_blank">%s</a>',
+                    "app_files/import_errors/$error_log_file_name.csv",
+                    _('No added records')
+                    );
+            }
             }
 
 
         } else {
 
-            $_record_data=$csv->getRow($_customer_data['csv_key']);
+            $_record_data=$csv->getRow($_customer_data['csv_key']-1);
             $_record_data[]='Already in DB';;
-            //print_r($record_data);
-  n          fputcsv($fp, $_record_data);
-
+           // print_r($_record_data);
+            fputcsv($fp, $_record_data);
+  if($_SESSION['state']['import']['errors_comments']==''){
+                $_SESSION['state']['import']['errors_comments']=sprintf('<a href="%s" target="_blank">%s</a>',
+                    "app_files/import_errors/$error_log_file_name.csv",
+                    _('No added records')
+                    );
+            }
             $_SESSION['state']['import']['errors']++;
             $_SESSION['state']['import']['todo']--;
         }

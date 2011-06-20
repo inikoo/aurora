@@ -437,6 +437,7 @@ $num++;
 
                      );
     mysql_query($list_sql);
+    print "$list_sql";
     $customer_list_key=mysql_insert_id();
 
 return $customer_list_key;
