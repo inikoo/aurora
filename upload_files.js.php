@@ -48,12 +48,20 @@ include_once('common.php');
 	// You can manage the queue on your own and use "upload" instead,
 	// if you need to modify the properties of the request for each
 	// individual file.
-	function upload() {
+	function upload_bis() {
 	if (fileList != null) {
 		uploader.setSimUploadLimit(parseInt(document.getElementById("simulUploads").value));
 		uploader.uploadAll("upload_files.php", "POST", null, "Filedata");
 	
 	}	
+	}
+	
+	
+	function upload() {
+	if (fileID != null) {
+		uploader.upload(fileID, "http://www.yswfblog.com/upload/upload_simple.php");
+		fileID = null;
+	}
 	}
 	
 	// Fired when the user selects files in the "Browse" dialog

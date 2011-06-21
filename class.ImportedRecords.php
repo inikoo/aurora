@@ -198,17 +198,21 @@ $this->update_field_switcher('Not Imported Log',$value);
  }
  }
  
- function get_scope_list_link(){
+ function get_not_imported_log_link(){
  
- if($thi)
- 
- sprintf('<a href="%s" target="_blank">%s</a>',
-                        "app_files/import_errors/$error_log_file_name.csv",
-                        _('No added records')
+ if($this->data['Not Imported Log']!=''){
  
  
+ 
+ return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
+                        $this->id,
+                       _('No added records'));
+ 
+ }else{
+    return '';
  }
+ 
   
 }
-
+}
 ?>

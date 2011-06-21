@@ -13,7 +13,7 @@
 */
 
 include_once('common.php');
-require_once 'class.ImportedRecordss.php';
+require_once 'class.ImportedRecords.php';
 
 require_once 'ar_edit_common.php';
 require_once 'common_import.php';
@@ -413,7 +413,7 @@ function import_customer_csv_status() {
     $data=array(
               'todo'=>array('number'=>$imported_records->get('To do'),'comments'=>''),
               'done'=>array('number'=>$imported_records->get('Imported'),'comments'=>$imported_records->get_scope_list_link()),
-              'error'=>array('number'=>$imported_records->get('Errors'),'comments'=>$imported_records->get_scope_list_link()),
+              'error'=>array('number'=>$imported_records->get('Errors'),'comments'=>$imported_records->get_not_imported_log_link()),
               'ignored'=>array('number'=>$imported_records->get('Ignored'),'comments'=>'')
 
           );
