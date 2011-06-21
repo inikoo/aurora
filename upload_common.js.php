@@ -3,9 +3,11 @@
 	var fileID;
 var uploader
 
-	function upload() {
+   	
+   function upload() {
 	if (fileID != null) {
-		uploader.upload(fileID, "upload_files.php");
+	
+		uploader.upload(fileID, "http://localhost/dw/upload_files.php");
 		fileID = null;
 	}
 	}
@@ -30,8 +32,7 @@ function init(){
 	uploader.addListener('uploadComplete',onUploadComplete);
 	uploader.addListener('uploadCompleteData',onUploadResponse);
 	uploader.addListener('uploadError', onUploadError);
-    	
-   
+ 
 	
 	function handleClearFiles() {
 	uploader.clearFileList();
@@ -87,11 +88,13 @@ function init(){
 
     // Do something on each file's upload start.
 	function onUploadStart(event) {
-	
+
 	}
 	
 	// Do something on each file's upload progress event.
 	function onUploadProgress(event) {
+
+
 		prog = Math.round(300*(event["bytesLoaded"]/event["bytesTotal"]));
 	  	progbar = "<div style=\"background-color: #f00; height: 5px; width: " + prog + "px\"/>";
 
@@ -123,7 +126,10 @@ function init(){
 	
 	// Do something when data is received back from the server.
 	function onUploadResponse(event) {
-		YAHOO.log("Server response received.");
+		for (x in event){
+		alert(x+' '+event[x])
+		break;
+		}
 	}
 
 }

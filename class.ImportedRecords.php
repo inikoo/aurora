@@ -165,13 +165,13 @@ $this->update_field_switcher('Not Imported Log',$value);
     switch($key){
       
       case('To do'):
-      return number($this->data['Original Records']-$this->data['Ignored Records']-$this->data['Imported Recordss']-$this->data['Error Records']);
+      return number($this->data['Original Records']-$this->data['Ignored Records']-$this->data['Imported Records']-$this->data['Error Records']);
       break;
       case('Ignored'):
       return number($this->data['Ignored Records']);
       break;
             case('Imported'):
-      return number($this->data['Imported Recordss']);
+      return number($this->data['Imported Records']);
       break;
             case('Error'):
       return number($this->data['Error Records']);
@@ -206,7 +206,7 @@ $this->update_field_switcher('Not Imported Log',$value);
  
  return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
                         $this->id,
-                       _('No added records'));
+                       _('Error Log'));
  
  }else{
     return '';
@@ -214,5 +214,21 @@ $this->update_field_switcher('Not Imported Log',$value);
  
   
 }
+
+function get_ignored_log_link(){
+
+if($this->data['Error Records'] or $this->data['Ignored Records']==0){
+    return '';
+}
+
+return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
+                        $this->id,
+                       _('Ignored Log'));
+
+
+}
+
+
+
 }
 ?>
