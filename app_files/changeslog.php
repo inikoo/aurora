@@ -3046,6 +3046,27 @@ ALTER TABLE `Customer List Dimension` ADD `Customer List Use Type` ENUM( 'User D
 ALTER TABLE `Customer Dimension` ADD `Customer Registration Number` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Tax Number` ;
 ALTER TABLE `Contact Dimension` ADD `Contact Identification Number` VARCHAR( 256 ) NOT NULL DEFAULT '' AFTER `Contact Tax Number` ;
 
+CREATE TABLE `Imported Record Dimension` (
+`Imported Record Key` MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Imported Record Creation Date` DATETIME NOT NULL ,
+`Imported Record Start Date` DATETIME NULL DEFAULT NULL ,
+`Imported Record Finish Date` DATETIME NULL DEFAULT NULL ,
+`Imported Record Scope` VARCHAR( 64 ) NOT NULL ,
+`Imported Record Scope Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,
+`Original Records` INT NOT NULL DEFAULT '0',
+`Ignored Records` INT NOT NULL DEFAULT '0',
+`Imported Records` INT NOT NULL DEFAULT '0',
+`Error Records` INT NOT NULL DEFAULT '0',
+`Not Imported Log` LONGTEXT NULL DEFAULT NULL ,
+`Scope List Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Imported Record Dimesion` CHANGE `Imported Record Scope` `Imported Record Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Not Imported Log` `Not Imported Log` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Imported Record Dimesion` ADD `Imported Record Checksum File` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Imported Record Key` ;
+
+
+
 */
 
 

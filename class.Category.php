@@ -793,7 +793,7 @@ class Category extends DB_Table {
       $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d order by `Category Name` ",
                        $this->id
                       );
-                      print $sql;
+                    //  print $sql;
         $res=mysql_query($sql);
         $children_keys=array();
         while ($row=mysql_fetch_assoc($res)) {

@@ -10,7 +10,7 @@ function get_record_data(index){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	
 	  success:function(o) {
-	//   alert(o.responseText)
+	//alert(o.responseText)
 	  
 	//Dom.get('call_table').innerHTML=o.responseText;
 		

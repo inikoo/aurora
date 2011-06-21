@@ -114,9 +114,22 @@ function add_customer($data) {
 
             if (preg_match('/^cat\d+$/i',$data_key)) {
                 //  print"$data_key\n";
-                // $category_key=preg_replace('/^cat/i','',$data_key);
+                $category_key=preg_replace('/^cat/i','',$data_key);
                 //  print"$category_key\n";
 
+                if(!is_numeric($data_value)){
+                    $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Parent Key=%d and `Category Name`=%s ",
+                    $category_key,
+                    prepare_mysql($data_value)
+                    );
+                    print $sql;
+                    $res=mysql_query($sql);
+                    if($row=mysql_fetch_assoc($res)){
+                    $data_value=$row['Category Key'];
+                    }
+                }
+
+                if($data_value){
                 $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
                              $data_value,
 
@@ -124,6 +137,7 @@ function add_customer($data) {
                             );
                 mysql_query($sql);
                 // print($sql);
+                }
             }
         }
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
@@ -437,7 +451,7 @@ $num++;
 
                      );
     mysql_query($list_sql);
-    print "$list_sql";
+   // print "$list_sql";
     $customer_list_key=mysql_insert_id();
 
 return $customer_list_key;

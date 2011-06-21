@@ -2604,10 +2604,25 @@ function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Coun
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function array_to_CSV($data)
+    {
+        $outstream = fopen("php://temp", 'r+');
+        fputcsv($outstream, $data, ',', '"');
+        rewind($outstream);
+        $csv = fgets($outstream);
+        fclose($outstream);
+        return $csv;
+    }
 
-
-
+    function CSV_to_array($data)
+    {
+        $instream = fopen("php://temp", 'r+');
+        fwrite($instream, $data);
+        rewind($instream);
+        $csv = fgetcsv($instream, 9999999, ',', '"');
+        fclose($instream);
+        return($csv);
+    }
 
 
 ?>

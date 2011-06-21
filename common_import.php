@@ -1,5 +1,5 @@
 <?php
-function get_options($scope) {
+function get_options($scope,$scope_key) {
 
     switch ($scope) {
 
@@ -38,6 +38,19 @@ function get_options($scope) {
 
 
                 );
+                
+               $categories=array();
+$sql=sprintf("select `Category Key`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$scope_key);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+
+
+$fields['cat'.$row['Category Key']]=$row['Category Label'];
+
+}
+
+                
+                
         break;
 
     case('supplier_products'):
