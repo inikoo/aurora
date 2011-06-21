@@ -3064,7 +3064,15 @@ CREATE TABLE `Imported Record Dimension` (
 ALTER TABLE `Imported Record Dimesion` CHANGE `Imported Record Scope` `Imported Record Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 CHANGE `Not Imported Log` `Not Imported Log` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Imported Record Dimesion` ADD `Imported Record Checksum File` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Imported Record Key` ;
+RENAME TABLE `Imported Record Dimension` TO `Imported Records Dimension` ;
 
+ALTER TABLE `Imported Records Dimension` CHANGE `Imported Record Key` `Imported Records Key` MEDIUMINT( 9 ) NOT NULL AUTO_INCREMENT ,
+CHANGE `Imported Record Checksum File` `Imported Records Checksum File` VARCHAR( 64 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
+CHANGE `Imported Record Creation Date` `Imported Records Creation Date` DATETIME NOT NULL ,
+CHANGE `Imported Record Start Date` `Imported Records Start Date` DATETIME NULL DEFAULT NULL ,
+CHANGE `Imported Record Finish Date` `Imported Records Finish Date` DATETIME NULL DEFAULT NULL ,
+CHANGE `Imported Record Scope` `Imported Records Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Imported Record Scope Key` `Imported Records Scope Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
 
 
 */

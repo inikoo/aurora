@@ -11,14 +11,14 @@
 include_once('class.DB_Table.php');
 
 
-class ImportedRecord extends DB_Table{
+class ImportedRecords extends DB_Table{
 
   
   
-  function ImportedRecord($a1,$a2=false,$a3=false) {
+  function ImportedRecords($a1,$a2=false,$a3=false) {
 
-    $this->table_name='Imported Record';
-    $this->ignore_fields=array('Imported Record Key');
+    $this->table_name='Imported Records';
+    $this->ignore_fields=array('Imported Records Key');
 
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
@@ -33,14 +33,14 @@ class ImportedRecord extends DB_Table{
   function get_data($key,$tag){
     
     if($key=='id'){
-    //  $sql=sprintf("select `Imported Record Key`,`Imported Record Creation Date`,`Imported Record Start Date`,`Imported Record Finish Date`,`Imported Record Scope`,`Imported Record Scope Key`,`Original Records`,`Ignored Records`,`Imported Records`,`Error Records`,`Scope List Key` from `Imported Record Dimension` where `Imported Record Key`=%d",$tag);
-      $sql=sprintf("select * from `Imported Record Dimension` where `Imported Record Key`=%d",$tag);
+    //  $sql=sprintf("select `Imported Records Key`,`Imported Records Creation Date`,`Imported Records Start Date`,`Imported Records Finish Date`,`Imported Records Scope`,`Imported Records Scope Key`,`Original Records`,`Ignored Records`,`Imported Recordss`,`Error Records`,`Scope List Key` from `Imported Records Dimension` where `Imported Records Key`=%d",$tag);
+      $sql=sprintf("select * from `Imported Records Dimension` where `Imported Records Key`=%d",$tag);
    
    }
      
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->id=$this->data['Imported Record Key'];
+      $this->id=$this->data['Imported Records Key'];
     }
       
 
@@ -77,25 +77,25 @@ class ImportedRecord extends DB_Table{
 
     //    print_r($raw_data);
 
-    if($data['Imported Record Scope']=='' ){
+    if($data['Imported Records Scope']=='' ){
       $this->error=true;
-      $this->msg='Imported Record Scope empty';
+      $this->msg='Imported Records Scope empty';
       return;
     }
 
 
     
 
-    $sql=sprintf("select `Imported Record Key` from `Imported Record Dimension` where `Imported Record Scope`=%s and `Imported Record Scope Key`=%s and `Imported Record Checksum File`=%s  and `Imported Record Start Date` is NULL",
-		 prepare_mysql($data['Imported Record Scope']),
-		 prepare_mysql($data['Imported Record Scope Key']),
-		 prepare_mysql($data['Imported Record Checksum File'])
+    $sql=sprintf("select `Imported Records Key` from `Imported Records Dimension` where `Imported Records Scope`=%s and `Imported Records Scope Key`=%s and `Imported Records Checksum File`=%s  and `Imported Records Start Date` is NULL",
+		 prepare_mysql($data['Imported Records Scope']),
+		 prepare_mysql($data['Imported Records Scope Key']),
+		 prepare_mysql($data['Imported Records Checksum File'])
 		 ); 
 
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->found=true;
-      $this->found_key=$row['Imported Record Key'];
+      $this->found_key=$row['Imported Records Key'];
     }
    
    
@@ -132,18 +132,18 @@ function create($data){
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
-    $sql=sprintf("insert into `Imported Record Dimension` %s %s",$keys,$values);
+    $sql=sprintf("insert into `Imported Records Dimension` %s %s",$keys,$values);
     
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
-      $this->msg=_("Imported Record");
+      $this->msg=_("Imported Records");
       $this->get_data('id',$this->id);
    $this->new=true;
   
    
    return;
  }else{
-   $this->msg=" Error can not create Imported Record";
+   $this->msg=" Error can not create Imported Records";
  }
 }
  
@@ -165,13 +165,13 @@ $this->update_field_switcher('Not Imported Log',$value);
     switch($key){
       
       case('To do'):
-      return number($this->data['Original Records']-$this->data['Ignored Records']-$this->data['Imported Records']-$this->data['Error Records']);
+      return number($this->data['Original Records']-$this->data['Ignored Records']-$this->data['Imported Recordss']-$this->data['Error Records']);
       break;
       case('Ignored'):
       return number($this->data['Ignored Records']);
       break;
             case('Imported'):
-      return number($this->data['Imported Records']);
+      return number($this->data['Imported Recordss']);
       break;
             case('Error'):
       return number($this->data['Error Records']);
