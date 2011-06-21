@@ -1,3 +1,4 @@
+
  // Variable for holding the selected file ID.
 	var fileID;
 var uploader

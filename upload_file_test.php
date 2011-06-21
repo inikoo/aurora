@@ -18,11 +18,11 @@ body {
 }
 </style>
 
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/fonts/fonts-min.css" />
-<script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/element/element-min.js"></script>
+<link rel="stylesheet" type="text/css" href="external_libs/yui/2.9/build/fonts/fonts-min.css" />
+<script type="text/javascript" src="external_libs/yui/2.9/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="external_libs/yui/2.9/build/element/element-min.js"></script>
 
-<script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/uploader/uploader-min.js"></script>
+<script type="text/javascript" src="external_libs/yui/2.9/build/uploader/uploader-min.js"></script>
 <script type="text/javascript" src="upload_common.js.php"></script>
 
 <!--there is no custom header content for this example-->
