@@ -98,23 +98,43 @@ if(isset($_POST['submit']))
                     foreach($headers as $header_key=>$header_value){
                     $map[$header_key]=0;
                     }
-                   // print "x";
-                    //exit($csv->countRows());
-                    //$_SESSION['state']['import']=array();
-                    $_SESSION['state']['import']['in_progress']=0;
-                    $_SESSION['state']['import']['todo']=$csv->countRows();
-                    $_SESSION['state']['import']['done']=0;
-                    $_SESSION['state']['import']['errors']=0;
-                    $_SESSION['state']['import']['ignored']=0;
+                    
+                    
+                    include_once('class.ImportedRecord.php');
+                    
+                    $imported_records_data=array(
+                        'Imported Record Checksum File'=>md5_file($target_path),
+                        'Imported Record Creation Date'=>date('Y-m-d H:i:s'),
+                        'Imported Record Scope'=>$scope,
+                        'Imported Record Scope Key'=>$scope_key
+                    );
+                    $imported_records=new ImportedRecord('find',$imported_records_data,'create');
+                    
+                  
+                  
+                  
+                  
+                  
+            
 
-                    $_SESSION['state']['import']['todo_comments']='';
-                    $_SESSION['state']['import']['done_comments']='';
-                    $_SESSION['state']['import']['errors_comments']='';
-                    $_SESSION['state']['import']['ignored_comments']='';
+    $number_of_records = $csv->countRows()+1;
+   $imported_records->update(array(
+        'Original Records'=>$number_of_records
+        ,'Ignored Records'=>0
+        ));
+                
+                  
+                  
+             
+                  
+                  
+                    //$_SESSION['state']['import']=array();
+                    $_SESSION['state']['import']['records_ignored_by_user']=array();
+                 $_SESSION['state']['import']['key']=$imported_records->id;
                     $_SESSION['state']['import']['scope']=$scope;
                     $_SESSION['state']['import']['scope_key']=$scope_key;
                     $_SESSION['state']['import']['map']=$map;
-                    list($_SESSION['state']['import']['options_db_fields'],$_SESSION['state']['import']['options_labels'])=get_options($scope);
+                    list($_SESSION['state']['import']['options_db_fields'],$_SESSION['state']['import']['options_labels'])=get_options($scope,$scope_key);
 					$_SESSION['state']['import']['file_path'] = $target_path;
 					//$r = $csv->connect();
 				}
