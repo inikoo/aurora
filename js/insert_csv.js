@@ -32,7 +32,7 @@ success:function(o) {
                 Dom.get('records_ignored_comments').innerHTML=r.data.ignored.comments;  
                 if(r.data.todo.number!=0){
                
-                setTimeout("read_results()",100);
+                setTimeout("read_results()",1000);
                 }
             } else {
                 //Dom.get('message_error').innerHTML=r.msg;
@@ -48,7 +48,7 @@ function init(){
 
 
 read_results();
- //insert_data();
+insert_data();
 }
 
 YAHOO.util.Event.onDOMReady(init);
