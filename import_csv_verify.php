@@ -103,10 +103,10 @@ if(isset($_POST['submit']))
                     include_once('class.ImportedRecords.php');
                     
                     $imported_records_data=array(
-                        'Imported Record Checksum File'=>md5_file($target_path),
-                        'Imported Record Creation Date'=>date('Y-m-d H:i:s'),
-                        'Imported Record Scope'=>$scope,
-                        'Imported Record Scope Key'=>$scope_key
+                        'Imported Records Checksum File'=>md5_file($target_path),
+                        'Imported Records Creation Date'=>date('Y-m-d H:i:s'),
+                        'Imported Records Scope'=>$scope,
+                        'Imported Records Scope Key'=>$scope_key
                     );
                     $imported_records=new ImportedRecords('find',$imported_records_data,'create');
                     
