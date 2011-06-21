@@ -46,7 +46,7 @@ function money_locale($amount,$locale='',$currency_code='') {
     if (!is_numeric($amount))
         $amount=0;
     global $_client_locale;
-    $format="%i";
+    $format=2.0;
     if ($locale) {
         $locale.='.UTF-8';
         setlocale(LC_MONETARY, ($locale));
@@ -58,11 +58,11 @@ function money_locale($amount,$locale='',$currency_code='') {
 
         $client_currency=_trim($locale_info['int_curr_symbol']);
 // print("->".$client_currency."<-");
-        $format="%i";
-        $money=preg_replace("/$client_currency/",$currency_code,money_format($format,$amount));
+        $format=2.0;
+        $money=preg_replace("/$client_currency/",$currency_code,number_format($format,$amount));
 
     } else {
-        $money=money_format($format,$amount);
+        $money=number_format($format,$amount);
     }
 
 
