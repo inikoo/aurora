@@ -1,6 +1,6 @@
 <?php
-$dns_pwd="primediart";
-$dns_db="inikoo";
+$dns_pwd="";
+$dns_db="dw";
 $dns_user="root";
 $dns_host="localhost";
 

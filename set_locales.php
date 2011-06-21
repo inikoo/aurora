@@ -48,8 +48,10 @@ if(!isset($_SESSION['text_locale'])){
 } 
  
 
-
-$lc_messages_locale=setlocale(LC_MESSAGES,$_SESSION['text_locale'] );
+if (defined('LC_MESSAGES'))
+	$lc_messages_locale=setlocale(LC_MESSAGES,$_SESSION['text_locale'] );
+else
+	$lc_messages_locale=setlocale(LC_ALL,$_SESSION['text_locale'] );
 setlocale(LC_TIME, $_SESSION['text_locale']);
 
 
@@ -66,7 +68,11 @@ $other_langs=array();
 //print_r($_SESSION['text_locale']);
 $text_locale=$_SESSION['text_locale'];
 putenv('LC_MESSAGES='.$text_locale);
-setlocale(LC_MESSAGES, $text_locale);
+
+if (defined('LC_MESSAGES'))
+	setlocale(LC_MESSAGES, $text_locale);
+else
+	setlocale(LC_ALL, $text_locale);
 bindtextdomain("inikoo", "./locale");
 textdomain("inikoo");
 
