@@ -5,14 +5,14 @@
 //print_r($za);
 //exit;
 
-switch($_REQUEST['type']){
-case("Family Page"):
-foreach ($_FILES as $fieldName => $file) {
-    $page_key=$_REQUEST['id'];
-    if(!is_numeric($page_key))exit;
+//switch($_REQUEST['type']){
+//case("Family Page"):
+//foreach ($_FILES as $fieldName => $file) {
+    //$page_key=$_REQUEST['id'];
+    //if(!is_numeric($page_key))exit;
     
-    mkdir("./app_files/web_pages/$page_key");
-
+    //mkdir("./app_files/web_pages/$page_key");
+/*
     if(preg_match('/\.zip$/i',basename($file['name']))){
          //   move_uploaded_file($file['tmp_name'], "./app_files/web_pages/".$page_key."/" . strip_tags(basename($file['name'])));
 
@@ -23,13 +23,19 @@ foreach ($_FILES as $fieldName => $file) {
     $za->close(); 
     
     }else{
-        move_uploaded_file($file['tmp_name'], "./app_files/web_pages/".$page_key."/" . strip_tags(basename($file['name'])));
+	*/
+	/*.$page_key."/" . strip_tags(basename($file['name']))*/
+	//$uploads_dir = '/app_files/web_pages/';
+        //move_uploaded_file($file['tmp_name'], "app_files/web_pages/".$file['name']);
+		move_uploaded_file($_FILES["file"]["tmp_name"],
+      "app_files/web_pages/" . $_FILES["file"]["name"]);
+		//print $file['tmp_name'];
 
-    }
+    //}
     
-}
+//}
 
-}
+//}
 
 ?>
  
