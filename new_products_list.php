@@ -52,7 +52,7 @@ $js_files=array(
 
 $_SESSION['state']['products']['list']['where']='';
 $smarty->assign('parent','products');
-$smarty->assign('title', _('Product Lists'));
+$smarty->assign('title', _('Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

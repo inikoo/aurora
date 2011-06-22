@@ -15,7 +15,7 @@ else {
 }
 
 
-$sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$id);
+$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$id);
 
 $res=mysql_query($sql);
 if (!$customer_list_data=mysql_fetch_assoc($res)) {
@@ -23,19 +23,19 @@ if (!$customer_list_data=mysql_fetch_assoc($res)) {
     exit;
 
 }
-$store=new Store($customer_list_data['Customer List Store Key']);
+$store=new Store($customer_list_data['List Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
 
-$customer_list_name=$customer_list_data['Customer List Name'];
+$customer_list_name=$customer_list_data['List Name'];
 $smarty->assign('customer_list_name',$customer_list_name);
-$smarty->assign('customer_list_id',$customer_list_data['Customer List Key']);
+$smarty->assign('customer_list_id',$customer_list_data['List Key']);
 
 
 
 $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
-$general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer_list.php?id='.$id,'label'=>_('Print Address Label'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customer_list_address_label.pdf.php?id='.$id,'label'=>_('Print Address Labels'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 

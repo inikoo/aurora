@@ -107,9 +107,9 @@ function add_customer($data) {
         $customer->update_activity();
         $store->update_customers_data();
 
+       // print_r($data);
+
         
-
-
         foreach($data as $data_key=>$data_value) {
 
             if (preg_match('/^cat\d+$/i',$data_key)) {
@@ -118,11 +118,11 @@ function add_customer($data) {
                 //  print"$category_key\n";
 
                 if(!is_numeric($data_value)){
-                    $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Parent Key=%d and `Category Name`=%s ",
+                    $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Parent Key`=%d and `Category Name`=%s ",
                     $category_key,
                     prepare_mysql($data_value)
                     );
-                    print $sql;
+                    //print $sql;
                     $res=mysql_query($sql);
                     if($row=mysql_fetch_assoc($res)){
                     $data_value=$row['Category Key'];
@@ -429,7 +429,7 @@ function new_imported_csv_customers_list($store_key) {
  
 
 
-    $sql=sprintf('select count(*) as num from `Customer List Dimension` where `Customer List Use Type`="CSV Import" and `Customer List Store Key`=%d ',
+    $sql=sprintf('select count(*) as num from `List Dimension` where `List Use Type`="CSV Import" and `List Store Key`=%d ',
     $store_key
     );
     
@@ -442,7 +442,7 @@ function new_imported_csv_customers_list($store_key) {
 $num++;
 
 
-    $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Use Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%s,%s,%s,NULL,NOW())",
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Use Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NULL,NOW())",
                       $store_key,
                       prepare_mysql(_('CSV Imported')." ".number($num)),
                       prepare_mysql('Static'),

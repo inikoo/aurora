@@ -421,7 +421,7 @@ mysql_query($sql);
                 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
             }
 
-            if ($store_page_data['Product List Layout ']='Yes' ) {
+            if ($store_page_data['List Layout ']='Yes' ) {
                 $product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
             }
 
@@ -523,7 +523,7 @@ $family=new Family($data['Page Parent Key']);
                 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
             }
 
-            if ($store_page_data['Product List Layout ']='Yes' ) {
+            if ($store_page_data['List Layout ']='Yes' ) {
                 $product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
             }
 

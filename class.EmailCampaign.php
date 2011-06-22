@@ -437,11 +437,11 @@ class EmailCampaign extends DB_Table {
 
 
     function add_emails_from_list($list_key,$force_send_to_customer_who_dont_want_to_receive_email=false) {
-        $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$list_key);
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$list_key);
         $res=mysql_query($sql);
         if (!$customer_list_data=mysql_fetch_assoc($res)) {
             $this->error=true;
-            $this->msg='Customer List not found';
+            $this->msg='List not found';
             return;
         }
         $emails_already_in_the_mailing_list=0;
@@ -450,9 +450,9 @@ class EmailCampaign extends DB_Table {
         $customer_dont_want_to_receive_email=0;
         $sent_to_customer_dont_want_to_receive_email=0;
 
-        if ($customer_list_data['Customer List Type']=='Static') {
+        if ($customer_list_data['List Type']=='Static') {
 
-            $sql=sprintf("select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from `Customer List Customer Bridge` B left join `Customer Dimension` C on (B.`Customer Key`=C.`Customer Key`) where `Customer List Key`=%d ",
+            $sql=sprintf("select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from `List Customer Bridge` B left join `Customer Dimension` C on (B.`Customer Key`=C.`Customer Key`) where `List Key`=%d ",
                          $list_key
                         );
 
@@ -464,7 +464,7 @@ class EmailCampaign extends DB_Table {
             $where='where true';
             $table='`Customer Dimension` C ';
 
-            $tmp=preg_replace('/\\\"/','"',$customer_list_data['Customer List Metadata']);
+            $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
             $tmp=preg_replace('/\\\\\"/','"',$tmp);
             $tmp=preg_replace('/\'/',"\'",$tmp);
 

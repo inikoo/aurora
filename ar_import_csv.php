@@ -357,7 +357,7 @@ $imported_records->update(
 
                 }
 
-                $sql=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
+                $sql=sprintf("insert into `List Customer Bridge` (`List Key`,`Customer Key`) values (%d,%d)",
                              $customer_list_key,
                              $response['customer_key']
                             );

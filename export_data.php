@@ -324,18 +324,18 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
     $fields = substr($fields,0,-1);
 
 
-    $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$list_key);
+    $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$list_key);
     $res=mysql_query($sql);
     if (!$customer_list_data=mysql_fetch_assoc($res)) {
         $this->error=true;
-        $this->msg='Customer List not found';
+        $this->msg='List not found';
         return;
     }
 
 
-    if ($customer_list_data['Customer List Type']=='Static') {
+    if ($customer_list_data['List Type']=='Static') {
 
-        $sql=sprintf("select $fields from `Customer List Customer Bridge` B left join `Customer Dimension` C on (B.`Customer Key`=C.`Customer Key`) where `Customer List Key`=%d ",
+        $sql=sprintf("select $fields from `List Customer Bridge` B left join `Customer Dimension` C on (B.`Customer Key`=C.`Customer Key`) where `List Key`=%d ",
                      $list_key
                     );
 
@@ -347,7 +347,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
         $where='where true';
         $table='`Customer Dimension` C ';
 
-        $tmp=preg_replace('/\\\"/','"',$customer_list_data['Customer List Metadata']);
+        $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
         $tmp=preg_replace('/\\\\\"/','"',$tmp);
         $tmp=preg_replace('/\'/',"\'",$tmp);
 
@@ -355,7 +355,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
         list($where,$table)=customers_awhere($raw_data);
 
-        $where.=sprintf(' and `Customer Store Key` in (%s) ',$customer_list_data['Customer List Store Key'] );
+        $where.=sprintf(' and `Customer Store Key` in (%s) ',$customer_list_data['List Store Key'] );
 
 
 
@@ -387,7 +387,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
 
 
-    	$sql1= "SELECT `Customer Key` FROM `Customer List Customer Bridge` WHERE `Customer List Key` = '$static_list_id'";
+    	$sql1= "SELECT `Customer Key` FROM `List Customer Bridge` WHERE `List Key` = '$static_list_id'";
     	$query1=mysql_query($sql1);
     	while($row1=mysql_fetch_assoc($query1)){
     		$id[]=$row1['Customer Key'];

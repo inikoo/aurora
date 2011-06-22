@@ -11141,7 +11141,7 @@ function new_products_list($data) {
     $list_name=$data['list_name'];
     $store_id=$data['store_id'];
 
-    $sql=sprintf("select * from `Product List Dimension`  where `Product List Name`=%s and `Product List Store Key`=%d ",
+    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d ",
                  prepare_mysql($list_name),
                  $store_id
                 );
@@ -11191,7 +11191,7 @@ function new_products_list($data) {
     }//echo "<br>2nd: ".$sql;
     mysql_free_result($res);
 
-    $list_sql=sprintf("insert into `Product List Dimension` (`Product List Store Key`,`Product List Name`,`Product List Type`,`Product List Metadata`,`Product List Creation Date`) values (%d,%s,%s,%s,NOW())",
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Product',%d,%s,%s,%s,NOW())",
                       $store_id,
                       prepare_mysql($list_name),
                       prepare_mysql($list_type),
@@ -11211,7 +11211,7 @@ function new_products_list($data) {
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $product_key=$data['Product ID'];
-            $sql=sprintf("insert into `Product List Product Bridge` (`Product List Key`,`Product Key`) values (%d,%d)",
+            $sql=sprintf("insert into `List Product Bridge` (`List Key`,`Product Key`) values (%d,%d)",
                          $product_list_key,
                          $product_key
                         );
@@ -11463,20 +11463,20 @@ function list_products_list() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     if ($type=='list') {
-        $sql=sprintf("select * from `Product List Dimension` where `Product List Key`=%d",$_REQUEST['list_key']);
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
 
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
             $awhere=false;
-            if ($customer_list_data['Product List Type']=='Static') {
-                $table='`Product List Product Bridge` CB left join `Product Dimension` C  on (CB.`Product Key`=C.`Product ID`)';
-                $where_type=sprintf(' and `Product List Key`=%d ',$_REQUEST['list_key']);
+            if ($customer_list_data['List Type']=='Static') {
+                $table='`List Product Bridge` CB left join `Product Dimension` C  on (CB.`Product Key`=C.`Product ID`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
 
             } else {// Dynamic by DEFAULT
 
 
 
-                $tmp=preg_replace('/\\\"/','"',$customer_list_data['Product List Metadata']);
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
                 $tmp=preg_replace('/\\\\\"/','"',$tmp);
                 $tmp=preg_replace('/\'/',"\'",$tmp);
 

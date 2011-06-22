@@ -4961,7 +4961,7 @@ class Customer extends DB_Table {
         mysql_query($sql);
         $sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d",$this->id);
         mysql_query($sql);
-        $sql=sprintf("delete from `Customer List Customer Bridge` where `Customer Key`=%d",$this->id);
+        $sql=sprintf("delete from `List Customer Bridge` where `Customer Key`=%d",$this->id);
         mysql_query($sql);
         $sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
         mysql_query($sql);

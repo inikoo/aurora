@@ -331,7 +331,7 @@ class Page extends DB_Table {
         }
 
         if (array_key_exists('List',$data['Page Store Product Layouts'])) {
-            $data['Product List Layout']='Yes';
+            $data['List Layout']='Yes';
         }
         if (array_key_exists('Slideshow',$data['Page Store Product Layouts'])) {
             $data['Product Slideshow Layout']='Yes';
@@ -533,7 +533,7 @@ class Page extends DB_Table {
             break;
         case 'list':
         case 'lists':
-            $field="Product List Layout";
+            $field="List Layout";
             break;
         case 'slideshow':
             $field="Product Slideshow Layout";
