@@ -66,7 +66,7 @@ update_page_key_visit_log($page->data['Page Key']);
 $can_view=array();
 $can_view['slideshow']=($page->data['Product Slideshow Layout']=='Yes'?1:0);
 $can_view['manual']=($page->data['Product Manual Layout']=='Yes'?1:0);
-$can_view['list']=($page->data['Product List Layout']=='Yes'?1:0);
+$can_view['list']=($page->data['List Layout']=='Yes'?1:0);
 $can_view['thumbnails']=($page->data['Product Thumbnails Layout']=='Yes'?1:0);
 
 $number_views=0;

@@ -1951,7 +1951,7 @@ switch ($type) {
         break;
         case "list":
         case "lists":
-        if($this->page_data['Product List Layout']=='Yes')
+        if($this->page_data['List Layout']=='Yes')
             return true;
         break;    
          

@@ -3711,15 +3711,15 @@ function edit_company_department() {
 }
 function delete_customer_list($data) {
     global $user;
-    $sql=sprintf("select `Customer List Store Key`,`Customer List Key` from `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-        if (in_array($row['Customer List Store Key'],$user->stores)) {
-            $sql=sprintf("delete from  `Customer List Customer Bridge` where `Customer List Key`=%d",$data['key']);
+        if (in_array($row['List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `List Customer Bridge` where `List Key`=%d",$data['key']);
             mysql_query($sql);
-            $sql=sprintf("delete from  `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
             mysql_query($sql);
             $response=array('state'=>200,'action'=>'deleted');
             echo json_encode($response);
@@ -3787,7 +3787,7 @@ function new_customers_list($data) {
     $list_name=$data['list_name'];
     $store_id=$data['store_id'];
 
-    $sql=sprintf("select * from `Customer List Dimension`  where `Customer List Name`=%s and `Customer List Store Key`=%d ",
+    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d ",
                  prepare_mysql($list_name),
                  $store_id
                 );
@@ -3835,7 +3835,7 @@ function new_customers_list($data) {
     }
     mysql_free_result($res);
 
-    $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%s,%s,%s,NOW())",
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NOW())",
                       $store_id,
                       prepare_mysql($list_name),
                       prepare_mysql($list_type),
@@ -3854,7 +3854,7 @@ function new_customers_list($data) {
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $customer_key=$data['Customer Key'];
-            $sql=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
+            $sql=sprintf("insert into `List Customer Bridge` (`List Key`,`Customer Key`) values (%d,%d)",
                          $customer_list_key,
                          $customer_key
                         );

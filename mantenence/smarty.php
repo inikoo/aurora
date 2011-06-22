@@ -1166,7 +1166,7 @@ gettext("Manually");
 gettext("Import from file");
 
 /* ../templates/customers_list.tpl */
-gettext("Customer List");
+gettext("List");
 
 /* ../templates/customers_list.tpl */
 gettext("Customers List");
@@ -4568,7 +4568,7 @@ gettext("Price per Case");
 gettext("Description");
 
 /* ../templates/edit_supplier.tpl */
-gettext("Suppliers Product List");
+gettext("Suppliers List");
 
 /* ../templates/edit_supplier.tpl */
 gettext("History");
@@ -5132,7 +5132,7 @@ gettext("Recipients");
 gettext("Add manually");
 
 /* ../templates/email_campaign_in_process.tpl */
-gettext("Add from Customer List");
+gettext("Add from List");
 
 /* ../templates/email_campaign_in_process.tpl */
 gettext("Advertising Object");
@@ -6800,7 +6800,7 @@ gettext("Department List");
 gettext("Family List");
 
 /* ../templates/new_customers_lists.tpl */
-gettext("Product List");
+gettext("List");
 
 /* ../templates/new_customers_lists.tpl */
 gettext("Category List");
@@ -7190,7 +7190,7 @@ gettext("Filter options");
 gettext("Close");
 
 /* ../templates/new_products_list.tpl */
-gettext("New Product List");
+gettext("New List");
 
 /* ../templates/new_products_list.tpl */
 gettext("Please specify a name");
@@ -7316,7 +7316,7 @@ gettext("Department List");
 gettext("Family List");
 
 /* ../templates/new_products_list.tpl */
-gettext("Product List");
+gettext("List");
 
 /* ../templates/new_products_list.tpl */
 gettext("Category List");

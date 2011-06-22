@@ -41,8 +41,8 @@ if($mail_list != '')
 
 		
 		
-		//fetch the customer base from Customer List Customer Bridgedata
-		$exeSql = "select `Customer Key` from `Customer List Customer Bridge` where `Customer List Key` = '".$fetchRow['Customer Key']."'";
+		//fetch the customer base from List Customer Bridgedata
+		$exeSql = "select `Customer Key` from `List Customer Bridge` where `List Key` = '".$fetchRow['Customer Key']."'";
 		$exeQuery = mysql_query($exeSql);
 		
 

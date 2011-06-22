@@ -3074,6 +3074,23 @@ CHANGE `Imported Record Finish Date` `Imported Records Finish Date` DATETIME NUL
 CHANGE `Imported Record Scope` `Imported Records Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 CHANGE `Imported Record Scope Key` `Imported Records Scope Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
 
+ALTER TABLE `Customer List Dimension` CHANGE `Customer List Key` `List Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+CHANGE `Customer List Use Type` `List Use Type` ENUM( 'User Defined', 'CSV Import' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'User Defined',
+CHANGE `Customer List Store Key` `List Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ,
+CHANGE `Customer List Name` `List Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Customer List Type` `List Type` ENUM( 'Dynamic', 'Static' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Static',
+CHANGE `Customer List Metadata` `List Metadata` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Customer List Creation Date` `List Creation Date` DATETIME NOT NULL ;
+RENAME TABLE `dw2`.`Customer List Dimension` TO `dw2`.`List Dimension` ;
+ALTER TABLE `List Dimension` ADD `List Scope` ENUM( 'Customer', 'Order', 'Invoice', 'Delivery Note', 'Product', 'Part' ) NOT NULL DEFAULT 'Customer' AFTER `List Key` ;
+ALTER TABLE `Customer List Customer Bridge` CHANGE `Customer List Key` `List Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
+RENAME TABLE `dw2`.`Customer List Customer Bridge` TO `dw2`.`List Customer Bridge` ;
+
+CREATE TABLE `dw2`.`List Product Bridge` (
+`List Key` SMALLINT UNSIGNED NOT NULL ,
+`Product ID` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `List Key` , `Product ID` )
+) ENGINE = MYISAM ;
 
 */
 

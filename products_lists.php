@@ -73,7 +73,7 @@ $smarty->assign('js_files',$js_files);
 $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_customers_list.php?store='.$store_id,'label'=>_('New Customer List'));
+$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_customers_list.php?store='.$store_id,'label'=>_('New List'));
 
   
   
