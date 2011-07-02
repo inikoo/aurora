@@ -87,7 +87,7 @@ function add_customer($data) {
         $company->create($company_data,$address_data,'use contact '.$contact->id);
         $data['Customer Main Contact Key']=$contact->id;
         $data['Customer Company Key']=$company->id;
- unset($company);
+		unset($company);
     }
 
 
@@ -95,7 +95,8 @@ function add_customer($data) {
     $customer=new Customer();
     $customer->editor=$data['editor'];
     $customer->create($data);
-
+	
+	//print_r ($data);
 
 
     if ($customer->new) {

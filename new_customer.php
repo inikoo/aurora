@@ -132,6 +132,16 @@ $js_files[]='edit_contact_email.js.php';
 
 }
 */
+
+$new_subject=array();
+$sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
+$result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+		$new_subject[] = array('custom_field_name'=>$row['Custom Field Name']);
+	}
+$smarty->assign('new_subject',$new_subject);
+
+	
 $categories=array();
 $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
 $res=mysql_query($sql);
