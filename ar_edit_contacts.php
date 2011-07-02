@@ -9,6 +9,7 @@ require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
 include_once('class.CompanyDepartment.php');
 include_once('class.Staff.php');
+include_once('class.CustomField.php');
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -17,6 +18,7 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 $tipo=$_REQUEST['tipo'];
+
 switch ($tipo) {
 case('new_list'):
 
@@ -382,7 +384,17 @@ case('edit_company_area'):
     edit_company_area($data);
     break;
 
+	
+case('create_custom_field'):
+	
+    $data=prepare_values($_REQUEST,array('values'=>array('type'=>'json array'),
+										'parent' =>array('type'=>'string'),
+										'parent_key' =>array('type'=>'key')));
+    create_custom_field($data);
     break;
+	
+	
+    //break;
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -3910,6 +3922,14 @@ function new_customers_list($data) {
               );
     echo json_encode($response);
 
+}
+
+function create_custom_field($data)
+{
+	
+	//print_r ($data['values']);
+	$custom_field = new Customfield('find', $data['values'], 'create');
+	
 }
 
 ?>

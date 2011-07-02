@@ -52,10 +52,18 @@ Please use the Search in customers/orders pages.
 			<div id="content">
 			
 			{foreach from=$splinters key=key item=splinter}
-<div class="pane"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
-{include file=$splinter.tpl index=$splinter.index}
-</div>
-{/foreach}
+			<div class="pane"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+			{if !($valid_sales) && ($key eq 'sales')}
+			<center>{t}No Sales{/t}</center>
+			{elseif !($valid_customers) && ($key eq 'top_customers')}
+			<center>{t}No Customers{/t}</center>
+			{elseif !($valid_products) && ($key eq 'top_products')}
+			<center>{t}No Products{/t}</center>
+			{else}
+			{include file=$splinter.tpl index=$splinter.index}
+			{/if}
+			</div>
+			{/foreach}
 			</div>
 		</div>
 	</div>

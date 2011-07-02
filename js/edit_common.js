@@ -441,8 +441,8 @@ function validate_scope_new(branch) {
             errors=true;
         }
     }
-  
-    if (errors) {
+	
+	if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
         Dom.removeClass('save_new_'+branch,'disabled');
@@ -567,7 +567,7 @@ function client_validation(branch,item,query) {
 
 
 function validate_general_new(branch,item,query) {
-
+	
     var data= validate_scope_data[branch][item];
     if (''!=trim(query.toLowerCase())    ) {
         validate_scope_data[branch][item].changed=true;
@@ -847,9 +847,9 @@ return;
 
     jsonificated_values=YAHOO.lang.JSON.stringify(values);
 
-
+	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-//alert(request)
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
   //alert(o.responseText);

@@ -1247,12 +1247,12 @@ $fields_to_export=$_SESSION['state']['stores']['customers']['csv_export'];
 $fields=array(
 'code'=>array('title'=>_('Code'),'db_name'=>'Store Code'),
 'name'=>array('title'=>_('Store Name'),'db_name'=>'Store Name'),
-'total_customer_contacts'=>array('title'=>_('Total Customer Contacts'),'db_name'=>'Store Total Customer Contacts'),
-'new_customer_contacts'=>array('title'=>_('New Customer Contacts'),'db_name'=>'Store New Customer Contacts'),
-'total_customer'=>array('title'=>_('Store Total Customers'),'db_name'=>'Store Total Customers'),
-'active_customer'=>array('title'=>_('Active Customers'),'db_name'=>'Store Active Customers'),
-'new_customer'=>array('title'=>_('New Customers'),'db_name'=>'Store New Customers'),
-'lost_customer'=>array('title'=>_('Lost Customers'),'db_name'=>'Store Lost Customers'),
+//'total_customer_contacts'=>array('title'=>_('Total Customer Contacts'),'db_name'=>'Store Total Customer Contacts'),
+'new_customer_contacts'=>array('title'=>_('New Customer Contacts'),'db_name'=>'Store New Contacts With Orders'),
+//'total_customer'=>array('title'=>_('Store Total Customers'),'db_name'=>'Store Total Contacts'),
+'active_customer'=>array('title'=>_('Active Customers'),'db_name'=>'Store Active Contacts'),
+'new_customer'=>array('title'=>_('New Customers'),'db_name'=>'Store New Contacts'),
+'lost_customer'=>array('title'=>_('Lost Customers'),'db_name'=>'Store Lost Contacts'),
 
 'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Store Total Invoiced Amount'),
 'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Store Total Profit'),
@@ -1312,7 +1312,7 @@ $fields=array(
 'location'=>array('title'=>_('Location'),'db_name'=>'Customer Main Delivery Address Town'),
 'last_orders'=>array('title'=>_('Last Order'),'db_name'=>'Customer Last Order Date'),
 'orders'=>array('title'=>_('Orders'),'db_name'=>'Customer Orders'),
-'status'=>array('title'=>_('Status'),'db_name'=>'Customer Type by Activity ')
+'status'=>array('title'=>_('Status'),'db_name'=>'Customer Type by Activity')
 /*'new_customer'=>array('title'=>_('New Customers'),'db_name'=>'Store New Customers'),
 'lost_customer'=>array('title'=>_('Lost Customers'),'db_name'=>'Store Lost Customers'),
 
@@ -1344,11 +1344,11 @@ $_data[]=$options['title'];
 $data[]=$_data;
 $sql="select * from `Customer Dimension` where $where $wheref";
 $res=mysql_query($sql);
-
+//Customer Type by Activity
 while($row=mysql_fetch_assoc($res)){
 $_data=array();
 foreach($fields as $key=>$options){
-
+//print $options['db_name'];
 $_data[]=$row[$options['db_name']];
 }
 $data[]=$_data;

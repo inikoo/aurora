@@ -13,6 +13,16 @@ $store_key=$_REQUEST['store_key'];
 print "var scope='$scope';\n";
 print "var store_key='$store_key';\n";
 print "var action_after_create='$action_after_create';\n";
+
+$custom_values_data =  array();
+$sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$custom_values_data[] = array('field_name'=>$row['Custom Field Name'], 'default'=>$row['Default Value']);
+}
+
+//print_r ($custom_values_data);	
+//$custom_values_data=array( array('field_name'=>'mobile4323', 'default'=>''));
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -41,6 +51,10 @@ var subject_data={
     ,"Customer Address Country Third Division":""
     ,"Customer Address Country Forth Division":""
     ,"Customer Address Country Fifth Division":""
+	<?php
+	foreach($custom_values_data as $data_x)
+		echo ",\"".$data_x['field_name']."\":\"".$data_x['default']."\"";
+	?>
     
 };  
 var suggest_country=true;
@@ -84,6 +98,15 @@ function update_category(o){
     subject_data['Cat'+parent_category_key]=category_key;
 }
 
+function get_custom_data(){
+<?php
+	foreach($custom_values_data as $dom_data){
+?>
+	subject_data['<?php echo $dom_data['field_name']?>']=Dom.get('<?php echo $dom_data['field_name']?>').value;
+<?php
+	}
+?>
+}
 
 function save_new_customer(e){
    
@@ -103,8 +126,10 @@ Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
 
 
    var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(subject_data));
+   //alert(json_value);
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
+	//alert(request);
   //alert(request);return;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
