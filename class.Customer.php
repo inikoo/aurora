@@ -1357,6 +1357,30 @@ class Customer extends DB_Table {
             }
         }
     }
+    
+    
+    
+    function update_other_email_label($email_key,$label){
+     if (!array_key_exists($email_key,$this->get_other_emails_data())) {
+            $this->error=true;
+            $this->msg=_('Email not associated with customer');
+            return;
+        }
+        
+        $sql=sprintf('update `Email Bridge` set `Email Description`=%s where `Subject Type`="Customer" and `Email Key`=%d  and `Subject Key`=%d ',
+        prepare_mysql($label),
+        $email_key,
+        $this->id
+        );
+        //print $sql;
+        mysql_query($sql);
+        
+        if(mysql_affected_rows()){
+            $this->new_value=$label;
+            $this->updated=true;
+        }
+    
+    }
 
     function update_other_email($email_key,$value) {
 
@@ -1450,6 +1474,34 @@ class Customer extends DB_Table {
         return $this->update_other_telecom('Telephone',$telecom_key,$value);
     }
 
+
+
+
+
+
+  function update_other_telecom_label($type,$telecom_key,$label){
+     if (!array_key_exists($telecom_key,$this->get_other_telecoms_data($type))) {
+            $this->error=true;
+            $this->msg=_('Telecom not associated with customer');
+            return;
+        }
+        
+        $sql=sprintf('update `Telecom Bridge` set `Telecom Description`=%s where `Subject Type`="Customer" and `Telecom Key`=%d  and `Subject Key`=%d ',
+        prepare_mysql($label),
+        $telecom_key,
+        $this->id
+        );
+        //print $sql;
+        mysql_query($sql);
+        
+        if(mysql_affected_rows()){
+            $this->new_value=$label;
+            $this->updated=true;
+        }
+    
+    }
+
+
     function update_other_telecom($type,$telecom_key,$value) {
 
         if (!array_key_exists($telecom_key,$this->get_other_telecoms_data($type))) {
@@ -1470,6 +1522,10 @@ class Customer extends DB_Table {
 
 
     }
+
+
+
+
 
 
     function add_other_telecom($type='Telephone',$value,$telecom_key_to_replace=0) {
@@ -1830,11 +1886,10 @@ class Customer extends DB_Table {
             }
 
             $history_data=array(
-                              'Indirect Object'=>'Customer Main Contact Name'
-
-                                                ,'History Details'=>$details
-                                                                   ,'History Abstract'=>$note
-                                                                                       ,'Action'=>'edited'
+                              'Indirect Object'=>'Customer Main Contact Name',
+                                                'History Details'=>$details,
+                                                                   'History Abstract'=>$note,
+                                                                                       'Action'=>'edited'
                           );
             $this->add_customer_history($history_data);
 
@@ -3358,75 +3413,7 @@ class Customer extends DB_Table {
 
 
 
-    function export_data() {
-
-        $address=new Address($this->data['Customer Main Address Key']);
-        $address_lines=$address->display('3lines');
-        $export_data=array(
-                         "Public"
-                         ,"David"
-                         ,$this->data['Customer Name']
-                         ,$this->data['Customer Main Contact Name']
-                         ,$address_lines[1]
-                         ,$address_lines[3]
-                         ,$address_lines[2]
-                         ,$this->data['Customer Main Town']
-                         ,$address->display('Country Divisions')
-                         ,$this->data['Customer Main Postal Code']
-                         ,$this->data['Customer Main Country']
-                         ,"Staff"
-                         ,$this->data['Customer Main XHTML Telephone']
-                         ,$this->data['Customer Main XHTML FAX']
-                         ,""
-                         ,"mobile"
-                         ,"26/09/2002","David","","","","03/03/2003","","","","Wholesaler website","","","","","2","","Gold Reward Member","Philip","","","","","900","","","","","","","","","","","","","","","David","Hardy","","","","","","","","","","","Graeme","Ancient Wisdom","","","","1","","","","","","","","","","","","",""
-                         //     ,$this->data['Customer Last Delivery Instructions']
-                         //    ,$this->data['Customer Last Order Instructions']
-                         ,"Yes","","","28/01/2001","05/01/2010",""
-                         ,$this->data['Customer Main Plain Email']
-                         ,""
-                         ,
-                     );
-
-        $export_data=array(
-                         "Public"
-                         ,"David"
-                         ,$this->data['Customer Name']
-                         ,$this->data['Customer Main Contact Name']
-                         ,$address_lines[1]
-                         ,$address_lines[3]
-                         ,$address_lines[2]
-                         ,$this->data['Customer Main Town']
-                         ,$address->display('Country Divisions')
-                         ,$this->data['Customer Main Postal Code']
-                         ,$this->data['Customer Main Country']
-                         ,"Staff"
-                         ,$this->data['Customer Main XHTML Telephone']
-                         ,$this->data['Customer Main XHTML FAX']
-                         ,""
-                         ,"mobile"
-                         ,"26/09/2002"
-                         ,"David"
-                         ,""
-                         ,""
-                         ,""
-                         ,"03/03/2003"
-                         ,""
-                         ,""
-                         ,""
-                         ,"Wholesaler website","","","","","2","","Gold Reward Member"
-                         ,"Hecho"
-                         ,"","","","","900","","","","","","","","","","","","","","","David","Hardy","","","","","","","","","","","Graeme","Ancient Wisdom","","","","1","","","","","","","","","","","","",""
-                         ,''
-                         ,''
-                         ,"Yes","","","28/01/2001","05/01/2010",""
-                         ,$this->data['Customer Main Plain Email']
-                         ,""
-                         ,
-                     );
-
-        return $export_data;
-    }
+  
 
     function get_tax_rate() {
         $rate=0;
@@ -3470,7 +3457,7 @@ class Customer extends DB_Table {
 
     function get_other_telecoms_data($type='Telephone') {
 
-        $sql=sprintf("select B.`Telecom Key` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Customer' and `Subject Key`=%d ",
+        $sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Customer' and `Subject Key`=%d ",
                      prepare_mysql($type),
                      $this->id
                     );
@@ -3484,7 +3471,8 @@ class Customer extends DB_Table {
 
                 $telecom_keys[$row['Telecom Key']]= array(
                                                         'number'=>$telecom->display('plain'),
-                                                        'xhtml'=>$telecom->display('xhtml')
+                                                        'xhtml'=>$telecom->display('xhtml'),
+                                                         'label'=>$row['Telecom Description']
                                                     );
 
             }
@@ -3496,7 +3484,7 @@ class Customer extends DB_Table {
 
     function get_other_emails_data() {
 
-        $sql=sprintf("select B.`Email Key`,`Email` from `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) where  `Subject Type`='Customer' and `Subject Key`=%d "
+        $sql=sprintf("select B.`Email Key`,`Email`,`Email Description` from `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) where  `Subject Type`='Customer' and `Subject Key`=%d "
                      ,$this->id );
 
         $email_keys=array();
@@ -3505,7 +3493,10 @@ class Customer extends DB_Table {
             if ($row['Email Key']!=$this->data['Customer Main Email Key'])
                 $email_keys[$row['Email Key']]= array(
                                                     'email'=>$row['Email'],
-                                                    'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>');
+                                                    'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
+                                                    'label'=>$row['Email Description']
+                                                    
+                                                    );
         }
         return $email_keys;
 
@@ -4094,6 +4085,9 @@ class Customer extends DB_Table {
     }
 
 
+
+
+
     function get_principal_billing_address_key() {
 
         switch ($this->data['Customer Billing Address Link']) {
@@ -4244,7 +4238,7 @@ class Customer extends DB_Table {
 
     }
 
-    function display_delivery_address($tipo) {
+    function display_delivery_address($tipo='xhtml') {
         switch ($tipo) {
 
         case 'xhtml':
@@ -4258,6 +4252,27 @@ class Customer extends DB_Table {
         }
 
     }
+
+ function display_contact_address($tipo='xhtml') {
+        switch ($tipo) {
+ case 'label':
+            $address=new address($this->data['Customer Main Address Key']);
+            return $address->display('label');
+            break;
+        case 'xhtml':
+            $address=new address($this->data['Customer Main Address Key']);
+            return $address->display('xhtml');
+            break;
+        default:
+            $address=new address($this->data['Customer Main Address Key']);
+            return $address->get($tipo);
+            break;
+        }
+
+    }
+
+
+
 
     function get_address_bridge_data($address_key) {
 

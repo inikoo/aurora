@@ -286,7 +286,7 @@
 
 
  {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
-  <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label">{t}Other Email{/t}:</td>
+  <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
@@ -329,7 +329,7 @@
  
  
   {foreach from=$customer->get_other_telephones_data() key=other_telephone_key item=other_telephone }
- <tr class="" id="tr_other_telephone{$other_telephone_key}"><td style="" class="label">{t}Other Telephone{/t}:</td>
+ <tr class="" id="tr_other_telephone{$other_telephone_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',{$other_telephone_key})">  <span id="tr_other_telephone_label{$other_telephone_key}">{if $other_telephone.label==''}{t}Other Telephone{/t}{else}{$other_telephone.label} (Telephone){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Telephone{$other_telephone_key}" value="{$other_telephone.xhtml}" ovalue="{$other_telephone.xhtml}" valid="0">
@@ -374,7 +374,7 @@
  
  
    {foreach from=$customer->get_other_mobiles_data() key=other_mobile_key item=other_mobile }
- <tr class="" id="tr_other_mobile{$other_mobile_key}"><td style="" class="label">{t}Other Mobile{/t}:</td>
+ <tr class="" id="tr_other_mobile{$other_mobile_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'mobile',{$other_mobile_key})">  <span id="tr_other_mobile_label{$other_mobile_key}">{if $other_mobile.label==''}{t}Other Mobile{/t}{else}{$other_mobile.label} (Mobile){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Mobile{$other_mobile_key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0">
@@ -412,7 +412,7 @@
  </tr>
 
  {foreach from=$customer->get_other_faxes_data() key=other_fax_key item=other_fax }
- <tr class="" id="tr_other_fax{$other_fax_key}"><td style="" class="label">{t}Other Fax{/t}:</td>
+ <tr class="" id="tr_other_fax{$other_fax_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'fax',{$other_fax_key})">  <span id="tr_other_fax_label{$other_fax_key}">{if $other_fax.label==''}{t}Other Fax{/t}{else}{$other_fax.label} (Fax){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_FAX{$other_fax_key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0">
@@ -433,6 +433,16 @@
      </div>
    </td>
    <td id="Customer_Other_FAX_msg" class="edit_td_alert"></td>
+ </tr>
+
+
+ <tr id="tr_Customer_Preferred_Contact_Number"   style="{if $customer->get('Customer Main XHTML Mobile')=='' or $customer->get('Customer Main XHTML Telephone')==''   }display:none{/if}" >
+ <td class="label" style="width:200px">{t}Preferred contact number{/t}:</td>
+ <td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <span class="{if $customer->get('Customer Preferred Contact Number')=='Telephone'}selected{/if}" onclick="save_preferred(this,'Telephone')" id="Customer_Preferred_Contact_Number_Telephone">{t}Telephone{/t}</span> <span class="{if $customer->get('Customer Preferred Contact Number')=='Mobile'}selected{/if}" onclick="save_preferred(this,'Mobile')" id="Customer_Preferred_Contact_Number_Mobile">{t}Mobile{/t}</span>
+   </div>
+ </td>
  </tr>
 
 
@@ -494,8 +504,8 @@
 <tr>
 <td>RE:</td>
 <td>
-  <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</span><br/><br/>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+      <span class="{if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</span><br/><br/>
    </div>
 <td>
 </tr>
@@ -650,5 +660,25 @@
         </div>
     </div>
  </div>
+
+
+<div id="dialog_other_field_label">
+  <div id="other_field_label_msg"></div>
+    <input type="hidden" value="" id="other_field_label_scope"/>
+
+  <input type="hidden" value="" id="other_field_label_scope_key"/>
+  <table style="padding:20px;margin:20px 10px 10px 5px" >
+ 
+    <tr><td colspan=2>
+	<input  id="other_field_label" value=""  /> (<span id="other_field_label_scope_name"></span>)
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%;">
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text button"    style="visibility:hidden;" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  style="display:block;margin-top:5px" onclick="save_other_field_label()" id="note_save"  class="unselectable_text button"   >{t}Save{/t}</span></td></tr>
+</table>
+</div>
 
 {include file='footer.tpl'}

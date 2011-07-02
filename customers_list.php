@@ -35,7 +35,7 @@ $smarty->assign('customer_list_id',$customer_list_data['List Key']);
 
 
 $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customer_list_address_label.pdf.php?id='.$id,'label'=>_('Print Address Labels'));
+$general_options_list[]=array('tipo'=>'url','url'=>'customers_address_label.pdf.php?label=l7159&scope=list&id='.$id,'label'=>_('Print Address Labels'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 

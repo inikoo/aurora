@@ -811,9 +811,7 @@ validate_scope_edit(branch)
     });
   
 
-    276091       BEX88DC6
-xxBEX88DC6     
-
+   
 }
 
 
