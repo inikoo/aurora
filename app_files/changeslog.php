@@ -3088,22 +3088,26 @@ ALTER TABLE `Customer Dimension` ADD `Customer Preferred Contact Number` ENUM( '
 
 */
 
-CREATE TABLE `dw`.`Custom Field Dimension` (
-`Custom Field Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`Custom Field Table` VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`Custom Field Name` VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`Customer Field Type` ENUM( 'Mediumint', 'Varchar' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`Custom Field Store Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,
-`Custom Field In New Subject` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',
-`Custom Field In Showcase` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes'
-) ENGINE = MYISAM ;
 
 
-CREATE TABLE `dw`.`Customer Custom Field Dimension` (
+
+CREATE TABLE IF NOT EXISTS `Custom Field Dimension` (
+  `Custom Field Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Custom Field Table` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `Custom Field Name` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `Custom Field Type` enum('Mediumint','Varchar') CHARACTER SET utf8 NOT NULL,
+  `Custom Field Store Key` mediumint(8) unsigned DEFAULT NULL,
+  `Custom Field In New Subject` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Custom Field In Showcase` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Default Value` varchar(30) DEFAULT '',
+  PRIMARY KEY (`Custom Field Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Customer Custom Field Dimension` (
 `Customer Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ,
 PRIMARY KEY ( `Customer Key` )
-) ENGINE = MYISAM ;
+) ENGINE = MYISAM  DEFAULT CHARSET=utf8;
 
-
+ALTER TABLE `Store Dimension` ADD `Store Telecom Format` VARCHAR( 256 ) NOT NULL DEFAULT 'GBR' AFTER `Store Slogan` ;
 ?>
 

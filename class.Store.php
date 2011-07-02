@@ -263,7 +263,8 @@ class Store extends DB_Table {
         case('Lost Contacts With Orders'):
         case('Losing Contacts With Orders'):
             return number($this->data['Store '.$key]);
-
+        case('Potential Customers'):
+                return number($this->data['Store Active Contacts']-$this->data['Store Active Contacts With Orders']);
         case('Total Users'):
             return number($this->data['Store Total Users']);
         case('All To Pay Invoices'):
@@ -291,6 +292,8 @@ class Store extends DB_Table {
         case('Departments'):
             return number($this->data['Store Departments']);
             break;
+        case('Percentage Active Contacts'):
+            return percentage($this->data['Store Active Contacts'],$this->data['Store Contacts']);
         }
         if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
