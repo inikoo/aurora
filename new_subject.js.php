@@ -496,9 +496,11 @@ function get_data(){
     get_address_data();
    
     get_scope_data();
+	get_custom_data();
 }
 
-
+function get_custom_data(){
+}
 
 
 function get_scope_data(){

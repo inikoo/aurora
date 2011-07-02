@@ -253,7 +253,8 @@ hide_buttons=1
 
  <td>
    <div  class="options" style="margin:0">
-   <span class="option selected" onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</span> <span class="option" onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</span>
+   <span class="option selected" onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</span> 
+   <span class="option" onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</span>
    </div>
  </td>
  </tr>
@@ -274,7 +275,23 @@ hide_buttons=1
    </div>
  </td>
  </tr>	
-    
+ 
+ {foreach from=$new_subject item=custom_fields}
+ 	<tr class="first">
+	<td style="width:120px" class="label">{$custom_fields.custom_field_name}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="{$custom_fields.custom_field_name}" value="" ovalue="" valid="0">
+	      <div id="{$custom_fields.custom_field_name}{t}_Container{/t}" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	</tr>
+	{/foreach}	
+	
+
+
+ 
     </table>
       <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
 	<tr>

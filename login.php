@@ -34,7 +34,8 @@ $js_files=array(
 		$yui_path.'button/button.js',
 		'sha256.js.php',
 		'js/aes.js',
-		'login.js.php'
+		'login.js.php',
+		'config.js.php?store_key=1'
 		);
 
 
@@ -92,8 +93,17 @@ $smarty->assign('log_in', _('Log in'));
 
 
 /* $smarty->assign('other_langs', $other_langs); */
+//Check for superuser
+$sql = sprintf("select * from `User Dimension`");
+$result = mysql_query($sql);
 
-$smarty->display('login.tpl');
+
+if(!$row=mysql_fetch_array($result)){
+	$template="config.tpl ";
+}
+else
+	$template="login.tpl";
+$smarty->display($template);
 
 exit();
 

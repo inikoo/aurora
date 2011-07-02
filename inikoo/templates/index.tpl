@@ -1,5 +1,5 @@
 {include file="header.tpl"}
-<div id="home_header" style="background-image:url('images/home_header.jpg');">
+<div id="home_header" style="background-image:url('images/home_header.jpg'); display:none" >
 </div>
 
 <div id="content">

@@ -550,7 +550,7 @@ class Customer extends DB_Table {
         $main_fax_key=false;
         $main_email_key=false;
 
-        //print_r($raw_data);
+        //print_r ($raw_data);
 
         $this->data=$this->base_data();
         foreach($raw_data as $key=>$value) {
@@ -595,7 +595,10 @@ class Customer extends DB_Table {
         $values=preg_replace('/^,/','',$values);
         $keys=preg_replace('/^,/','',$keys);
 
-        $sql="insert into `Customer Dimension` ($keys) values ($values)";
+
+		
+		$sql="insert into `Customer Dimension` ($keys) values ($values)";
+		
         //  print $sql;
 
         if (mysql_query($sql)) {
@@ -786,11 +789,45 @@ class Customer extends DB_Table {
 
 
 
+			
+
         } else {
             print "Error can not create customer $sql\n";
         }
 
+		$sql="select * from `Customer Dimension` order by `Customer Key` DESC limit 0, 1";
+		$res=mysql_query($sql);
+		$row=mysql_fetch_array($res, MYSQL_ASSOC);
+		$id=$row['Customer Key'];
 
+		//Adding Custom Field Data
+					
+		$keys='`Customer Key`';
+		$values=$id;
+		$new_subject=array();
+		$sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_array($result, MYSQL_ASSOC))
+			$new_subject[] = array('custom_field_name'=>$row['Custom Field Name']);
+		
+		//print_r ($raw_data);
+		foreach($raw_data as $key=>$value) {
+			foreach($new_subject as $field){
+				if (strcmp($field['custom_field_name'],$key)==0){
+					$keys.=",`".$key."`";
+					$values.=','.prepare_mysql($value);
+				}
+			}
+		}
+		$sql="insert into `Customer Custom Field Dimension` ($keys) values ($values)";
+		//print $sql;
+		mysql_query($sql);
+		
+		//------------------------
+		
+        $sql=sprintf("insert into `Customer Custom Field Dimension` (`Customer Key`) VALUES (%d)", $id);
+		//print $sql;
+		mysql_query($sql);
 
         $this->update_full_search();
 

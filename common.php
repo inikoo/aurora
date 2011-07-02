@@ -65,6 +65,8 @@ $smarty->template_dir = $myconf['template_dir'];
 $smarty->compile_dir = $myconf['compile_dir'];
 $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
+
+
  
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
  
@@ -201,60 +203,65 @@ if ($row=mysql_fetch_array($res)) {
  
 //print_r($row);
 //exit;
+
+
+//Config Menu
+
+
 $nav_menu=array();
 if ($user->can_view('users'))
-    $nav_menu[] = array(_('Users'), 'users.php','users');
+	$nav_menu[] = array(_('Users'), 'users.php','users');
 else
-    $nav_menu[] = array(_('Profile'), 'user.php','users');
+	$nav_menu[] = array(_('Profile'), 'user.php','users');
  
  
 if ($user->can_view('staff'))
-    $nav_menu[] = array(_('Staff'), 'hr.php','staff');
+	$nav_menu[] = array(_('Staff'), 'hr.php','staff');
  
 if ($user->can_view('reports')) {
-    $nav_menu[] = array(_('Reports'), 'reports.php','reports');
+	$nav_menu[] = array(_('Reports'), 'reports.php','reports');
 }
 if ($user->can_view('suppliers'))
-    $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
+	$nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
 if ($user->can_view('warehouses')) {
-    if ($user->warehouses==1)
-        $nav_menu[] = array(_('Inventory'), 'warehouse.php','warehouses');
+	if ($user->warehouses==1)
+		$nav_menu[] = array(_('Inventory'), 'warehouse.php','warehouses');
  
-    else
-        $nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
+	else
+		$nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
 }
 //if ($user->can_view('marketing')) {
 
   if (count($user->stores)==1) {
-        $nav_menu[] = array(_('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing');
-    } else
-        $nav_menu[] = array(_('Marketing'), 'marketing_server.php','marketing');
+		$nav_menu[] = array(_('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing');
+	} else
+		$nav_menu[] = array(_('Marketing'), 'marketing_server.php','marketing');
 
 //}
  
  
 if ($user->can_view('stores')) {
-    if (count($user->stores)==1) {
-        $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
-    } else
-        $nav_menu[] = array(_('Products'), 'stores.php','products');
+	if (count($user->stores)==1) {
+		$nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
+	} else
+		$nav_menu[] = array(_('Products'), 'stores.php','products');
 }
  
 if ($user->can_view('orders')) {
  
-    if (count($user->stores)==1) {
-        $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0],'orders');
-    } else
-        $nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
+	if (count($user->stores)==1) {
+		$nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0],'orders');
+	} else
+		$nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
  
 }
  
 if ($user->can_view('customers')) {
  
-    if (count($user->stores)==1) {
-        $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0],'customers');
-    } else
-        $nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
+	if (count($user->stores)==1) {
+		$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0],'customers');
+	} else
+		$nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
  
 }
  
@@ -264,19 +271,25 @@ if ($user->can_view('customers')) {
 if ($user->data['User Type']=='Supplier') {
  
  
-    $nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
-    $nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'products');
-    $nav_menu[] = array(_('Dashboard'), 'suppliers_index.php','home');
+	$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
+	$nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'products');
+	$nav_menu[] = array(_('Dashboard'), 'suppliers_index.php','home');
 }
  
  
 else
-    $nav_menu[] = array(_('Dashboard'), 'index.php','home');
- 
+	$nav_menu[] = array(_('Dashboard'), 'index.php','home');
+
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);
 $smarty->assign('my_name',$myconf['name']);
  
+ /*
+if(!$is_root_available){
+    include_once 'config.php';
+	exit;
+}
+*/
 $export_data=array(
                  'xls'=>array('label'=>_('Export as xls'),'title'=>'Excel 2005 (xls)')
                        ,'xlsx'=>array('label'=>_('Export as xlsx'),'title'=>'Excel 2007 (xlsx)')
@@ -285,5 +298,9 @@ $export_data=array(
              );
 
 
- 
+
+
+
+//-------------------
+			 
 ?>
