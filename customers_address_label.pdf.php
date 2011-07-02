@@ -3,14 +3,75 @@ require_once('common.php');
 require_once('class.Customer.php');
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'list';
+$label = isset($_REQUEST['label']) ? $_REQUEST['label'] : 'l7159';
+
+
+
+
+if (!$id) {
+    exit;
+}
+
 
 require_once('external_libs/PDF/config/lang/eng.php');
 require_once('external_libs/PDF/tcpdf.php');
 
 
 
+$labels_data=array(
+                 'l7159'=>array(
+                             'PDF_MARGIN_TOP'=>12.9,
+                             'PDF_MARGIN_LEFT'=>7,
+                             'PDF_MARGIN_RIGHT'=>7,
+                             'PDF_MARGIN_BOTTOM'=>12.9,
+                             'CELL_MARGIN_RIGHT'=>2,
+                             'CELL_MARGIN_LEFT'=>0,
+                             'CELL_MARGIN_TOP'=>0,
+                             'CELL_MARGIN_BOTTOM'=>0,
+                             'CELL_WIDTH'=>64,
+                             'CELL_HEIGHT'=>33.9,
+                             'COLUMNS'=>3,
+                             'ROWS'=>8,
+                             'PAGE_HEIGHT'=>297,
+                             'PAGE_WIDTH'=>   210 ,
+                             'PDF_PAGE_ORIENTATION'=>'P'
+                         ),
+                 '99012'=>array(
+                             'PDF_MARGIN_TOP'=>0,
+                             'PDF_MARGIN_LEFT'=>0,
+                             'PDF_MARGIN_RIGHT'=>0,
+                             'PDF_MARGIN_BOTTOM'=>0,
+                             'CELL_MARGIN_RIGHT'=>0,
+                             'CELL_MARGIN_LEFT'=>0,
+                             'CELL_MARGIN_TOP'=>0,
+                             'CELL_MARGIN_BOTTOM'=>0,
+                             'CELL_WIDTH'=>89,
+                             'CELL_HEIGHT'=>36,
+                             'COLUMNS'=>1,
+                             'ROWS'=>1,
+
+                             'PAGE_HEIGHT'=>36,
+                             'PAGE_WIDTH'=> 89,
+                             'PDF_PAGE_ORIENTATION'=>'L'
+                         )
+             );
+
+if (!array_key_exists($label,$labels_data)) {
+    $label='l7159';
+}
+
+
+$label_data=$labels_data[$label];
+//print_r($label_data);
+
+
 // create new PDF document
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new TCPDF($label_data['PDF_PAGE_ORIENTATION'], PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$resolution= array($label_data['PAGE_WIDTH'],$label_data['PAGE_HEIGHT'] );
+
+
+
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
@@ -24,24 +85,7 @@ $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 
 
-$labels_data=array(
-'l7159'=>array(
-        'PDF_MARGIN_TOP'=>12.9,
-         'PDF_MARGIN_LEFT'=>7,
-         'PDF_MARGIN_RIGHT'=>7,
-           'PDF_MARGIN_BOTTOM'=>12.9,
-         'CELL_MARGIN_RIGHT'=>2,
-          'CELL_MARGIN_LEFT'=>0,
-           'CELL_MARGIN_TOP'=>0,
-            'CELL_MARGIN_BOTTOM'=>0,
-            'CELL_WIDTH'=>64,
-            'CELL_HEIGHT'=>33.9,
-            'COLUMNS'=>3,
-            'ROWS'=>8
-         )
-);
 
-$label_data=$labels_data['l7159'];
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -64,7 +108,7 @@ $pdf->setLanguageArray($l);
 $pdf->SetFont('times', '', 10);
 
 // add a page
-$pdf->AddPage();
+$pdf->AddPage($label_data['PDF_PAGE_ORIENTATION'], $resolution);
 
 // set cell padding
 $pdf->setCellPaddings(1, 1, 1, 1);
@@ -79,52 +123,127 @@ $pdf->SetFillColor(255, 255, 255);
 
 
 
-$sql=mysql_fetch_array(mysql_query("select `List Type` from `List Dimension` where `List Key`=$id"));
-$list_type=$sql[0];
-if($list_type=='Static'){
+if ($type=='list') {
 
-$sql=sprintf("select `Customer Key` from `List Customer Bridge` where `List Key`=%d",$id);
-$res=mysql_query($sql);
-$counter=0;
-$labels_per_page=$label_data['COLUMNS']*$label_data['ROWS'];
-while($row=mysql_fetch_assoc($res)){
-$counter++;
+    $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$id);
+    $res2=mysql_query($sql);
+    if ($row2=mysql_fetch_assoc($res2)) {
 
-$customer=new Customer($row['Customer Key']);
-$pdf->MultiCell(
-                    $label_data['CELL_WIDTH'], 
-                    $label_data['CELL_HEIGHT'], 
+
+
+        if ($row2['List Type']=='Static') {
+
+            $sql=sprintf("select `Customer Key` from `List Customer Bridge` where `List Key`=%d",$id);
+
+            $res=mysql_query($sql);
+            $counter=0;
+            $labels_per_page=$label_data['COLUMNS']*$label_data['ROWS'];
+            while ($row=mysql_fetch_assoc($res)) {
+                $counter++;
+
+                $customer=new Customer($row['Customer Key']);
+                $pdf->MultiCell(
+                    $label_data['CELL_WIDTH'],
+                    $label_data['CELL_HEIGHT'],
                     $customer->display_contact_address('label'),
                     0,
                     'C',
-                    
+
                     0,
                     (fmod($counter,$label_data['COLUMNS'])?0:1),
                     '',
                     '',
                     true,
-                    
+
                     0,
                     false,
                     true,
                     $label_data['CELL_HEIGHT'],
                     'M',
-                    
+
                     true);
 
-//if(!fmod($counter,$labels_per_page)){
-//$pdf->ln(10);
-//}
 
+
+            }
+
+
+
+        } else { //dinamic
+            
+            
+            $tmp=preg_replace('/\\\"/','"',$row2['List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
+
+                $raw_data=json_decode($tmp, true);
+
+                $raw_data['store_key']=$row2['List Store Key'];
+                list($where,$table)=customers_awhere($raw_data);
+            
+                    $sql=sprintf("select `Customer Key` from $table $where");
+
+            $res=mysql_query($sql);
+            $counter=0;
+            $labels_per_page=$label_data['COLUMNS']*$label_data['ROWS'];
+            while ($row=mysql_fetch_assoc($res)) {
+                $counter++;
+
+                $customer=new Customer($row['Customer Key']);
+                $pdf->MultiCell(
+                    $label_data['CELL_WIDTH'],
+                    $label_data['CELL_HEIGHT'],
+                    $customer->display_contact_address('label'),
+                    0,
+                    'C',
+
+                    0,
+                    (fmod($counter,$label_data['COLUMNS'])?0:1),
+                    '',
+                    '',
+                    true,
+
+                    0,
+                    false,
+                    true,
+                    $label_data['CELL_HEIGHT'],
+                    'M',
+
+                    true);
+
+
+
+            }
+            
+            
+            
+        }
+    }
 }
+elseif($type=='customer') {
+    $customer=new Customer($id);
+    $counter=1;
+    $pdf->MultiCell(
+        $label_data['CELL_WIDTH'],
+        $label_data['CELL_HEIGHT'],
+        $customer->display_contact_address('label'),
+        0,
+        'C',
 
+        0,
+        (fmod($counter,$label_data['COLUMNS'])?0:1),
+        '',
+        '',
+        true,
 
+        0,
+        false,
+        true,
+        $label_data['CELL_HEIGHT'],
+        'M',
 
-}else
-{
-
+        true);
 }
-
 
 
 
@@ -143,63 +262,8 @@ $pdf->lastPage();
 //Close and output PDF document
 $pdf->Output('example_005.pdf', 'I');
 
-//============================================================+
-// END OF FILE
-//============================================================+
 
 
 
-/*
-//require_once('pdf_main_customer_list.php');
 
-81czwxxmjb
-
-
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// remove default header/footer
-$pdf->setPrintHeader(false);
-$pdf->setPrintFooter(false);
-
-
-
-//////$pdf->SetAuthor('Inikoo');
-$pdf->SetTitle('Generate Customer Postal Address');
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-$pdf->setLanguageArray($l);
-$pdf->SetFont('helvetica', '', 8);
-$pdf->AddPage();
-//$resolution= array(102, 255);
-//$pdf->AddPage('P', $resolution);
-
-
-$pdf->Write(0, '', '', 0, 'L', true, 0, false, false, 0);
-$pdf->SetFont('helvetica', '', 8);
-ob_clean();
-ob_start();
-
-$sql=mysql_fetch_array(mysql_query("select `List Type` from `List Dimension` where `List Key`=$id"));
-$list_type=$sql[0];
-if($list_type=='Static'){
-include('external_libs/PDF/template_customer_list.php');
-}else
-{
-include('external_libs/PDF/template_customer_list_dynamic.php');
-}
-
-$page1 = ob_get_contents();
-ob_clean();
-$page1 = preg_replace("/\s\s+/", '', $page1);
-$pdf->writeHTML($page1, true, 0, true, 0);
-$pdf_file_name="List Id:".$id.'.pdf';
-$pdf->Output($pdf_file_name, 'I');
-*/
 ?>
