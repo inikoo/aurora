@@ -171,7 +171,7 @@ $splinters_data=array(
            $splinters[$splinter_name]=$splinters_data[$splinter_name];
            }
           //exit; 
- //     print_r($splinters)     ;
+      //print_r($splinters)     ;
 
 foreach($splinters as $splinter_name=>$splinter) {
 
@@ -190,6 +190,29 @@ foreach($splinters as $splinter_name=>$splinter) {
     include_once($splinter['php']);
 }
 
+$valid_sales=true;
+$sql = "select * from `Invoice Dimension`";
+$result = mysql_query($sql);
+if(!$row=mysql_fetch_array($result))
+	$valid_sales=false;
+	
+$smarty->assign('valid_sales',$valid_sales);
+
+$valid_customers=true;
+$sql = "select * from `Product Dimension`";
+$result = mysql_query($sql);
+if(!$row=mysql_fetch_array($result))
+	$valid_customers=false;
+	
+$smarty->assign('valid_customers',$valid_customers);
+
+$valid_products=true;
+$sql = "select * from `Customer Dimension`";
+$result = mysql_query($sql);
+if(!$row=mysql_fetch_array($result))
+	$valid_products=false;
+	
+$smarty->assign('valid_products',$valid_products);
 
 //print_r($_SESSION['state']['home']['splinters']);
 $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
