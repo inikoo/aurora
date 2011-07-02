@@ -71,7 +71,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/search.js',
 	    'js/edit_common.js',
-		'new_customer_custom_field.js.php?store_key='.$store->id
+		'customer_store_configuration.js.php?store_key='.$store->id
 		);
 
 
