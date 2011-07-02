@@ -14,8 +14,8 @@ if (!$id) {
 }
 
 
-require_once('external_libs/PDF/config/lang/eng.php');
-require_once('external_libs/PDF/tcpdf.php');
+require_once('external_libs/pdf/config/lang/eng.php');
+require_once('external_libs/pdf/tcpdf.php');
 
 
 
