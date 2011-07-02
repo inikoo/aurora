@@ -70,8 +70,11 @@ header("Content-Disposition: attachment; filename=\"out.txt\"");
 $address=new Address($customer->data['Customer Billing Address Key']);
 $address_lines=$address->display('3lines');
 
+if($customer->data['Customer Main XHTML Telephone']!='' and $customer->data['Customer Main XHTML Mobile']!=''){
+$tel=$customer->data['Customer Main XHTML '.$customer->data['Customer Preferred Contact Number']];
+}else{
 $tel=($customer->data['Customer Main XHTML Telephone']==''?$customer->data['Customer Main XHTML Mobile']:$customer->data['Customer Main XHTML Telephone']);
-
+}
 $delivery_address=new Address($customer->data['Customer Main Delivery Address Key']);
 $delivery_address_lines=$delivery_address->display('3lines');
 
