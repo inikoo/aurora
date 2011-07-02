@@ -2606,6 +2606,9 @@ function edit_customer_field($customer_key,$key,$value_data) {
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
+    
+    
+    
 
     $other_telephone_deleted=false;
     $other_telephone_added=false;
@@ -2616,7 +2619,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
     $other_mobile_deleted=false;
     $other_mobile_added=false;
 
-
+$other_label=false;
 
 
     global $editor;
@@ -2663,8 +2666,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
                      "ship_region"=>'Main Ship To Country Region',
                      "ship_country"=>'Main Ship To Country',
                      "sticky_note"=>'Customer Sticky Note',
-                     "new_sticky_note"=>'Customer Sticky Note'
-
+                     "new_sticky_note"=>'Customer Sticky Note',
+                     "preferred_contact_number"=>'Customer Preferred Contact Number' 
                  );
 
 
@@ -2692,7 +2695,34 @@ function edit_customer_field($customer_key,$key,$value_data) {
                 $other_email_deleted=true;
             }
 
+        }elseif (preg_match('/^email_label\d+$/i',$key)) {
+            $email_id=preg_replace('/^email_label/','',$key);
+            $customer->update_other_email_label($email_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='email';
+            $other_label_scope_key=$email_id;
+        }elseif (preg_match('/^telephone_label\d+$/i',$key)) {
+            $telecom_id=preg_replace('/^telephone_label/','',$key);
+            $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='telephone';
+            $other_label_scope_key=$telecom_id;
+        }elseif (preg_match('/^mobile_label\d+$/i',$key)) {
+            $telecom_id=preg_replace('/^mobile_label/','',$key);
+            $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='mobile';
+            $other_label_scope_key=$telecom_id;
+        }elseif (preg_match('/^fax_label\d+$/i',$key)) {
+            $telecom_id=preg_replace('/^fax_label/','',$key);
+            $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='fax';
+            $other_label_scope_key=$telecom_id;
         }
+        
+        
+        
         elseif (preg_match('/^telephone\d+$/i',$key)) {
             $telephone_id=preg_replace('/^telephone/','',$key);
             $customer->update_other_telephone($telephone_id,$the_new_value);
@@ -2778,6 +2808,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
         }
         elseif($other_mobile_added) {
             $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+        }elseif($other_label) {
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
         }
         else {
 

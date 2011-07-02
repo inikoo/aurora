@@ -3041,38 +3041,29 @@ ALTER TABLE `Address Dimension` ADD `Address Contact` VARCHAR( 256 ) NULL DEFAUL
 
 kaktus =====================
 
-ALTER TABLE `Customer List Dimension` ADD `Customer List Use Type` ENUM( 'User Defined', 'CSV Import' ) NOT NULL DEFAULT 'User Defined' AFTER `Customer List Key` , ADD INDEX ( `Customer List Use Type` );
 
 ALTER TABLE `Customer Dimension` ADD `Customer Registration Number` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Tax Number` ;
 ALTER TABLE `Contact Dimension` ADD `Contact Identification Number` VARCHAR( 256 ) NOT NULL DEFAULT '' AFTER `Contact Tax Number` ;
+ALTER TABLE `Customer List Dimension` ADD `Customer List Use Type` ENUM( 'User Defined', 'CSV Import' ) NOT NULL DEFAULT 'User Defined' AFTER `Customer List Key` , ADD INDEX ( `Customer List Use Type` );
 
-CREATE TABLE `Imported Record Dimension` (
-`Imported Record Key` MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`Imported Record Creation Date` DATETIME NOT NULL ,
-`Imported Record Start Date` DATETIME NULL DEFAULT NULL ,
-`Imported Record Finish Date` DATETIME NULL DEFAULT NULL ,
-`Imported Record Scope` VARCHAR( 64 ) NOT NULL ,
-`Imported Record Scope Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,
-`Original Records` INT NOT NULL DEFAULT '0',
-`Ignored Records` INT NOT NULL DEFAULT '0',
-`Imported Records` INT NOT NULL DEFAULT '0',
-`Error Records` INT NOT NULL DEFAULT '0',
-`Not Imported Log` LONGTEXT NULL DEFAULT NULL ,
-`Scope List Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL
-) ENGINE = MYISAM ;
+CREATE TABLE `Imported Records Dimension` (
+  `Imported Records Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Imported Records Checksum File` varchar(64) DEFAULT NULL,
+  `Imported Records Creation Date` datetime NOT NULL,
+  `Imported Records Start Date` datetime DEFAULT NULL,
+  `Imported Records Finish Date` datetime DEFAULT NULL,
+  `Imported Records Scope` varchar(64) CHARACTER SET utf8 NOT NULL,
+  `Imported Records Scope Key` mediumint(8) unsigned DEFAULT NULL,
+  `Original Records` int(11) NOT NULL DEFAULT '0',
+  `Ignored Records` int(11) NOT NULL DEFAULT '0',
+  `Imported Records` int(11) NOT NULL DEFAULT '0',
+  `Error Records` int(11) NOT NULL DEFAULT '0',
+  `Not Imported Log` longtext CHARACTER SET utf8,
+  `Scope List Key` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Imported Records Key`)
+) ENGINE=MyISAM ;
 
-ALTER TABLE `Imported Record Dimesion` CHANGE `Imported Record Scope` `Imported Record Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-CHANGE `Not Imported Log` `Not Imported Log` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
-ALTER TABLE `Imported Record Dimesion` ADD `Imported Record Checksum File` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Imported Record Key` ;
-RENAME TABLE `Imported Record Dimension` TO `Imported Records Dimension` ;
 
-ALTER TABLE `Imported Records Dimension` CHANGE `Imported Record Key` `Imported Records Key` MEDIUMINT( 9 ) NOT NULL AUTO_INCREMENT ,
-CHANGE `Imported Record Checksum File` `Imported Records Checksum File` VARCHAR( 64 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
-CHANGE `Imported Record Creation Date` `Imported Records Creation Date` DATETIME NOT NULL ,
-CHANGE `Imported Record Start Date` `Imported Records Start Date` DATETIME NULL DEFAULT NULL ,
-CHANGE `Imported Record Finish Date` `Imported Records Finish Date` DATETIME NULL DEFAULT NULL ,
-CHANGE `Imported Record Scope` `Imported Records Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-CHANGE `Imported Record Scope Key` `Imported Records Scope Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
 
 ALTER TABLE `Customer List Dimension` CHANGE `Customer List Key` `List Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
 CHANGE `Customer List Use Type` `List Use Type` ENUM( 'User Defined', 'CSV Import' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'User Defined',
@@ -3081,16 +3072,19 @@ CHANGE `Customer List Name` `List Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLAT
 CHANGE `Customer List Type` `List Type` ENUM( 'Dynamic', 'Static' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Static',
 CHANGE `Customer List Metadata` `List Metadata` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 CHANGE `Customer List Creation Date` `List Creation Date` DATETIME NOT NULL ;
-RENAME TABLE `dw2`.`Customer List Dimension` TO `dw2`.`List Dimension` ;
+RENAME TABLE `Customer List Dimension` TO `List Dimension` ;
 ALTER TABLE `List Dimension` ADD `List Scope` ENUM( 'Customer', 'Order', 'Invoice', 'Delivery Note', 'Product', 'Part' ) NOT NULL DEFAULT 'Customer' AFTER `List Key` ;
 ALTER TABLE `Customer List Customer Bridge` CHANGE `Customer List Key` `List Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
-RENAME TABLE `dw2`.`Customer List Customer Bridge` TO `dw2`.`List Customer Bridge` ;
+RENAME TABLE `Customer List Customer Bridge` TO `List Customer Bridge` ;
 
-CREATE TABLE `dw2`.`List Product Bridge` (
+CREATE TABLE `List Product Bridge` (
 `List Key` SMALLINT UNSIGNED NOT NULL ,
 `Product ID` MEDIUMINT UNSIGNED NOT NULL ,
 PRIMARY KEY ( `List Key` , `Product ID` )
 ) ENGINE = MYISAM ;
+
+ALTER TABLE `Telecom Bridge` ADD `Telecom Description` VARCHAR( 256 ) NOT NULL DEFAULT '';
+ALTER TABLE `Customer Dimension` ADD `Customer Preferred Contact Number` ENUM( 'Telephone', 'Mobile' ) NOT NULL DEFAULT 'Telephone';
 
 */
 
