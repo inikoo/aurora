@@ -16,7 +16,6 @@ class CustomField extends DB_Table{
   
   
   function CustomField($a1,$a2=false,$a3=false) {
-	
     $this->table_name='Custom Field';
     $this->ignore_fields=array('Custom Field Key');
 
@@ -28,6 +27,7 @@ class CustomField extends DB_Table{
     }else
        $this->get_data($a1,$a2);
   }
+
 
 
   function get_data($key,$tag){
@@ -43,7 +43,6 @@ class CustomField extends DB_Table{
       $this->id=$this->data['Custom Field Key'];
     }
       
-
 
 
   }
@@ -247,6 +246,7 @@ return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
 
 
 }
+
 
 
 

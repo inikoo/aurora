@@ -334,6 +334,48 @@ $correlation_msg='';
             $correlation_msg='<p>'._('Potential duplicated').': '.$msg.'</p>';
 
         }
+
+
+//show case 		
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Customer'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[]=$row['Custom Field Name'];
+}
+
+
+$show_case=Array();
+$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $name){
+		$show_case[$name]=$row[$name];
+	}
+}
+
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[]=$row['Custom Field Name'];
+}
+
+$customer_custom_fields=Array();
+$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $name){
+		$customer_custom_fields[$name]=$row[$name];
+	}
+}
+
+$smarty->assign('show_case',$show_case);	
+$smarty->assign('customer_custom_fields',$customer_custom_fields);	
 $smarty->assign('correlation_msg',$correlation_msg);
 $smarty->assign('hq_country',$myconf['country']);
 
