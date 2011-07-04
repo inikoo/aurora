@@ -1104,6 +1104,14 @@ class Customer extends DB_Table {
         if (is_string($value))
             $value=_trim($value);
 
+		if(preg_match('/^custom_field_/i',$field)) {
+            //$field=preg_replace('/^custom_field_/','',$field);	
+			$this->update_field($field,$value,$options);
+			
+			
+			return;
+		}	
+			
         switch ($field) {
         case('Customer Main XHTML Telephone'):
         case('Customer Main Telephone Key'):
@@ -2958,7 +2966,17 @@ class Customer extends DB_Table {
        Add/Update an telecom to the Customer
     */
 
-
+	function update_custom_fields($id, $value){
+		//print 'update';
+		//$subject=new CustomField($this->data['Customer Key']);
+		//$subject->editor=$this->editor;
+		$this->update(array($id=>$value));
+		
+        //$this->updated=$subject->updated;
+        //$this->msg=$subject->msg;
+        //$this->error=$subject->error;
+        //$this->new_value=$subject->new_value;	
+	}
 
     function update_fiscal_name($value) {
         if ($this->data['Customer Type']=='Person') {
@@ -5197,6 +5215,7 @@ class Customer extends DB_Table {
 
         $this->deleted=true;
     }
+	
 
     function merge($customer_key,$customer_id_prefix='') {
         $this->merged=false;
@@ -5324,7 +5343,7 @@ class Customer extends DB_Table {
         //Customer Key
 
 
-//Email Campaign Mailing List
+	//Email Campaign Mailing List
 
     }
 

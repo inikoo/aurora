@@ -328,6 +328,29 @@ $tax_codes[$row['Tax Category Code']]=array('code'=>$row['Tax Category Code'],'n
 $smarty->assign('tax_codes',$tax_codes);
 $smarty->assign('hq_country',$myconf['country']);
 
+//show case 		
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Customer'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[]=$row['Custom Field Name'];
+}
+
+
+$show_case=Array();
+$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $name){
+		$show_case[$name]=$row[$name];
+	}
+}
+
+$smarty->assign('show_case',$show_case);	
+
+
 $smarty->display('edit_customer.tpl');
 exit();
 

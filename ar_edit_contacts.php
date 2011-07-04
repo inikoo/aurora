@@ -2691,10 +2691,6 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
     $the_new_value=_trim($value_data['value']);
 
-
-
-
-
     if (preg_match('/^email\d+$/i',$key)) {
         $email_id=preg_replace('/^email/','',$key);
         $customer->update_other_email($email_id,$the_new_value);
@@ -2703,39 +2699,31 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_email_deleted=true;
         }
 
-    }
-    elseif (preg_match('/^email_label\d+$/i',$key)) {
+    }elseif (preg_match('/^email_label\d+$/i',$key)) {
         $email_id=preg_replace('/^email_label/','',$key);
         $customer->update_other_email_label($email_id,$the_new_value);
         $other_label=true;
         $other_label_scope='email';
         $other_label_scope_key=$email_id;
-    }
-    elseif (preg_match('/^telephone_label\d+$/i',$key)) {
+    }elseif (preg_match('/^telephone_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^telephone_label/','',$key);
         $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='telephone';
         $other_label_scope_key=$telecom_id;
-    }
-    elseif (preg_match('/^mobile_label\d+$/i',$key)) {
+    }elseif (preg_match('/^mobile_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^mobile_label/','',$key);
         $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='mobile';
         $other_label_scope_key=$telecom_id;
-    }
-    elseif (preg_match('/^fax_label\d+$/i',$key)) {
+    }elseif (preg_match('/^fax_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^fax_label/','',$key);
         $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='fax';
         $other_label_scope_key=$telecom_id;
-    }
-
-
-
-    elseif (preg_match('/^telephone\d+$/i',$key)) {
+    }elseif (preg_match('/^telephone\d+$/i',$key)) {
         $telephone_id=preg_replace('/^telephone/','',$key);
         $customer->update_other_telephone($telephone_id,$the_new_value);
 
@@ -2743,8 +2731,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_telephone_deleted=true;
         }
 
-    }
-    elseif (preg_match('/^fax\d+$/i',$key)) {
+    }elseif (preg_match('/^fax\d+$/i',$key)) {
         $fax_id=preg_replace('/^fax/','',$key);
         $customer->update_other_fax($fax_id,$the_new_value);
 
@@ -2752,8 +2739,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_fax_deleted=true;
         }
 
-    }
-    elseif (preg_match('/^mobile\d+$/i',$key)) {
+    }elseif (preg_match('/^mobile\d+$/i',$key)) {
 
 
         $mobile_id=preg_replace('/^mobile/','',$key);
@@ -2764,17 +2750,17 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
         }
 
-    }
-    elseif ($key=='Customer Fiscal Name') {
+    }elseif ($key=='Customer Fiscal Name') {
         $customer->update_fiscal_name($the_new_value );
-    }
-    elseif ($key=='Customer Tax Number') {
+    }elseif ($key=='Customer Tax Number') {
         $customer->update_tax_number($the_new_value);
-    }
-    elseif ($key=='Customer Registration Number') {
+    }elseif ($key=='Customer Registration Number') {
         $customer->update_registration_number($the_new_value);
-    }
-    else {
+    }elseif (preg_match('/^custom_field_/i',$key)) {
+        $custom_id=preg_replace('/^custom_field_/','',$key);
+        $customer->update_custom_fields($key, $the_new_value);
+
+    }else {
         $customer->update(array($key=>$the_new_value));
     }
 
@@ -2791,52 +2777,50 @@ function edit_customer_field($customer_key,$key,$value_data) {
     elseif($key=='Add Other Mobile') {
         $other_mobile_added=true;
     }
+    
 
 
 
 
 
+if ($customer->updated) {
 
-
-
-    if ($customer->updated) {
-
-        if ($other_email_deleted) {
-            $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
-        }
-        elseif ($other_mobile_deleted) {
-            $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id);
-        }
-        elseif ($other_fax_deleted) {
-            $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id);
-        }
-        elseif ($other_telephone_deleted) {
-            $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id);
-        }
-        elseif($other_email_added) {
-            $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'new_email_key'=>$customer->new_email_key);
-        }
-        elseif($other_telephone_added) {
-            $response= array('state'=>200,'action'=>'other_telephone_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-        }
-        elseif($other_fax_added) {
-            $response= array('state'=>200,'action'=>'other_fax_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-        }
-        elseif($other_mobile_added) {
-            $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-        }
-        elseif($other_label) {
-            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
-        }
-        else {
-
-            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-        }
-    } else {
-
-        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
+    if ($other_email_deleted) {
+        $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
     }
-    return $response;
+    elseif ($other_mobile_deleted) {
+        $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id);
+    }
+    elseif ($other_fax_deleted) {
+        $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id);
+    }
+    elseif ($other_telephone_deleted) {
+        $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id);
+    }
+    elseif($other_email_added) {
+        $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'new_email_key'=>$customer->new_email_key);
+    }
+    elseif($other_telephone_added) {
+        $response= array('state'=>200,'action'=>'other_telephone_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+    }
+    elseif($other_fax_added) {
+        $response= array('state'=>200,'action'=>'other_fax_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+    }
+    elseif($other_mobile_added) {
+        $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+    }
+    elseif($other_label) {
+        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
+    }
+    else {
+
+        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+    }
+} else {
+
+    $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
+}
+return $response;
 
 }
 // --------------------------------------------------------------------------------------------------------------
@@ -3967,13 +3951,12 @@ function add_attachment_to_customer_history($data) {
 
     }
 
-    if ($updated){
+    if ($updated) {
         $response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
 
-}
-else {
-    $response= array('state'=>400,'msg'=>_('Files could not be attached'),'key'=>'attach');
-}
+    } else {
+        $response= array('state'=>400,'msg'=>_('Files could not be attached'),'key'=>'attach');
+    }
 
     echo json_encode($response);
 }
