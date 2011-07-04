@@ -106,7 +106,7 @@ elseif($map_type == 'customers_static_list'){
 	    $static_list_id=$_REQUEST['subject_key'];
 	}
 
-	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Key` = (SELECT `Customer Key` FROM `Customer List Customer Bridge` WHERE `Customer List Key` = '$static_list_id' LIMIT 1 )");
+	$qry = mysql_query("SELECT * FROM `Customer Dimension` WHERE `Customer Key` = (SELECT `Customer Key` FROM `List Customer Bridge` WHERE `List Key` = '$static_list_id' LIMIT 1 )");
 	$list= mysql_fetch_assoc($qry);
 	$smarty->assign('subject_key', $static_list_id);
 	$smarty->assign('prev_path',"customer_list_static.php?id=$static_list_id");
@@ -117,9 +117,9 @@ elseif($map_type == 'customers_dynamic_list'){
 	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
 	    $dynamic_list_id=$_REQUEST['subject_key'];
 	}
-	$qry = mysql_query("SELECT `Customer List Metadata`,`Customer List Store Key` FROM `Customer List Dimension` WHERE `Customer List Key` = '$dynamic_list_id'");
+	$qry = mysql_query("SELECT `List Metadata`,`List Store Key` FROM `List Dimension` WHERE `List Key` = '$dynamic_list_id'");
 	$rows= mysql_fetch_assoc($qry);
-	$metadata = $rows['Customer List Metadata'];
+	$metadata = $rows['List Metadata'];
 	$table='`Customer Dimension` C ';
 	if ($metadata) {
         $metadata=preg_replace('/\\\"/','"',$metadata);
@@ -231,7 +231,7 @@ elseif($map_type == 'customers_dynamic_list'){
     }
     $filter_msg='';
     $wheref='';
-    $store=$rows['Customer List Store Key'];
+    $store=$rows['List Store Key'];
     $currency='';
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);

@@ -32,7 +32,7 @@ success:function(o) {
                 Dom.get('records_ignored_comments').innerHTML=r.data.ignored.comments;  
                 if(r.data.todo.number!=0){
                
-                setTimeout("read_results()",1000);
+                setTimeout("read_results()",100);
                 }
             } else {
                 //Dom.get('message_error').innerHTML=r.msg;

@@ -1882,20 +1882,20 @@ function list_customers() {
         $_SESSION['state']['customers']['type']=$type;
     }
     elseif($type=='list') {
-        $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$_REQUEST['list_key']);
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
 
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
             $awhere=false;
-            if ($customer_list_data['Customer List Type']=='Static') {
-                $table='`Customer List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-                $where_type=sprintf(' and `Customer List Key`=%d ',$_REQUEST['list_key']);
+            if ($customer_list_data['List Type']=='Static') {
+                $table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
 
             } else {// Dynamic by DEFAULT
 
 
 
-                $tmp=preg_replace('/\\\"/','"',$customer_list_data['Customer List Metadata']);
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
                 $tmp=preg_replace('/\\\\\"/','"',$tmp);
                 $tmp=preg_replace('/\'/',"\'",$tmp);
 
@@ -5251,7 +5251,7 @@ function list_customers_lists() {
     $_SESSION['state']['customers']['list']['f_value']=$f_value;
 
     if (is_numeric($store)) {
-        $where=sprintf(' where  `Customer List Store Key`=%d ',$store);
+        $where=sprintf(' where  `List Store Key`=%d ',$store);
 
     } else {
         exit();
@@ -5260,20 +5260,20 @@ function list_customers_lists() {
 
     $where='';
     if (in_array($store,$user->stores)) {
-        $where.=sprintf(' where `Customer List Store Key`=%d  ',$store);
+        $where.=sprintf(' where `List Store Key`=%d  ',$store);
 
     }
 
     $wheref='';
 
-    $sql="select count(distinct `Customer List Key`) as total from `Customer List Dimension`  $where  ";
+    $sql="select count(distinct `List Key`) as total from `List Dimension`  $where  ";
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total_without_filters from `Customer List Dimension` $where $wheref ";
+        $sql="select count(*) as total_without_filters from `List Dimension` $where $wheref ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5309,17 +5309,17 @@ function list_customers_lists() {
 
 
     if ($order=='name')
-        $order='`Customer List Name`';
+        $order='`List Name`';
     elseif($order=='creation_date')
-    $order='`Customer List Creation Date`';
+    $order='`List Creation Date`';
     elseif($order=='customer_list_type')
-    $order='`Customer List Type`';
+    $order='`List Type`';
 
     else
-        $order='`Customer List Key`';
+        $order='`List Key`';
 
 
-    $sql="select  CLD.`Customer List key`,CLD.`Customer List Name`,CLD.`Customer List Store Key`,CLD.`Customer List Creation Date`,CLD.`Customer List Type` from `Customer List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+    $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
     $adata=array();
 
 
@@ -5331,8 +5331,8 @@ function list_customers_lists() {
 
 
 
-        $cusomer_list_name=" <a href='customers_list.php?id=".$data['Customer List key']."'>".$data['Customer List Name'].'</a>';
-        switch ($data['Customer List Type']) {
+        $cusomer_list_name=" <a href='customers_list.php?id=".$data['List key']."'>".$data['List Name'].'</a>';
+        switch ($data['List Type']) {
         case 'Static':
             $customer_list_type=_('Static');
             break;
@@ -5347,9 +5347,9 @@ function list_customers_lists() {
 
                      'customer_list_type'=>$customer_list_type,
                      'name'=>$cusomer_list_name,
-                     'key'=>$data['Customer List key'],
-                     'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Customer List Creation Date']." +00:00")),
-                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['Customer List key'].')">'._('Add List').'</span>',
+                     'key'=>$data['List key'],
+                     'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
                      'delete'=>'<img src="art/icons/cross.png"/>'
 
 

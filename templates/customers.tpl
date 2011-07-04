@@ -2,17 +2,37 @@
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
 
-  <div id="no_details_title"  style="clear:left;xmargin:0 20px;">
+  <div id="no_details_title"  style="margin-bottom:10px;">
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
+</div>
+<div style="margin-bottom:10px;margin-top:20px;background:red">
 
-<p style="width:500px;margin-top:20px;border-top:1px solid black;border-bottom:1px solid black">
+
+<div style="width:400px;float:left">
+<p style="padding:2px 10px;border-top:1px solid black;border-bottom:1px solid black">
 {$overview_text}
 </p>
+</div>
+
+<div style="float:left;font-size:80%;text-align:center">
+<div style="margin-left:20px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+{t}Total Contacts{/t}<div style="font-size:120%;font-weight:800">{$store->get('Contacts')}</div>
+<div style="margin-top:2px;color:#555">
+{t}Live Contacts{/t}<div style="font-size:120%"><span style="font-weight:800">{$store->get('Active Contacts')}</span> <span>({$store->get('Percentage Active Contacts')})</span></div>
+</div>
+</div>
+<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">{t}Potential Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Potential Customers')}</div></div>
+
+<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">{t}Active Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Active Contacts With Orders')}</div></div>
+<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">{t}Lost Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Lost Contacts With Orders')}</div></div>
+
+</div>
+
 
   </div>
 
 
-
+<div style="clear:both"></div>
 
 
 	<!-- added code by kallol for demo only -->
@@ -26,7 +46,7 @@
 	</div>
 	<!-- up to this -->
 
-    <div id="the_table" class="data_table" style="clear:both">
+    <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
       
    <div  style="font-size:90%">

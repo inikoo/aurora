@@ -39,7 +39,7 @@ if(isset($_REQUEST['createCampaign'])){
 	//fetch the number of emails from list
 	//query will be here
 	//select the customer mail from customer dimension
-	/*$QueryString = "select * from `Customer List Customer Bridge` where `Customer List Key` = '".$customer_list_key."'";
+	/*$QueryString = "select * from `List Customer Bridge` where `List Key` = '".$customer_list_key."'";
 	$QueryResult = mysql_query($QueryString);
 	while($row = mysql_fetch_assoc($QueryString))
 	{  	$fetchMailKey = "select `Customer Main Email Key`,`Customer Key` from `Customer Dimension` where `Customer Key` = '".$row['Customer Key']."'";

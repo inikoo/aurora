@@ -81,11 +81,11 @@ function add_emails_to_email_campaign_from_list($data) {
 
     $email_campaign=new EmailCampaign($data['email_campaign_key']);
 
-    $sql=sprintf("select * from `Customer List Dimension` where `Customer List Key`=%d",$data['list_key']);
+    $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$data['list_key']);
 
     $res=mysql_query($sql);
     if (!$customer_list_data=mysql_fetch_assoc($res)) {
-        $response= array('state'=>400,'msg'=>'Customer List not found');
+        $response= array('state'=>400,'msg'=>'List not found');
          echo json_encode($response);
         return;
 
@@ -96,7 +96,7 @@ function add_emails_to_email_campaign_from_list($data) {
     
     
    
-    if (!in_array($customer_list_data['Customer List Store Key'],$user->stores)) {
+    if (!in_array($customer_list_data['List Store Key'],$user->stores)) {
         $response= array('state'=>400,'msg'=>_('Operation forbidden'));
         return;
 

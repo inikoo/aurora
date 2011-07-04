@@ -153,7 +153,7 @@ function create($data){
   
 function append_not_imported_log($value){
 
-$value=$this->data['Not Imported Log'].$value;
+$value=$this->data['Not Imported Log']."\n".$value;
 $this->update_field_switcher('Not Imported Log',$value);
 }
 
@@ -174,6 +174,7 @@ $this->update_field_switcher('Not Imported Log',$value);
       return number($this->data['Imported Records']);
       break;
             case('Error'):
+                  case('Errors'):
       return number($this->data['Error Records']);
       break;
     default:
@@ -204,7 +205,7 @@ $this->update_field_switcher('Not Imported Log',$value);
  
  
  
- return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
+ return sprintf('<a href="records_not_imported_log.php?id=%d" target="_blank">%s</a>',
                         $this->id,
                        _('Error Log'));
  
@@ -221,7 +222,7 @@ if($this->data['Error Records'] or $this->data['Ignored Records']==0){
     return '';
 }
 
-return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
+return sprintf('<a href="records_not_imported_log.php?id=%d" target="_blank">%s</a>',
                         $this->id,
                        _('Ignored Log'));
 
