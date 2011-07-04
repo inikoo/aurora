@@ -125,27 +125,27 @@ class Attachment extends DB_Table {
 
 
     function create ($data,$options='') {
-   //    print_r($data);exit;
+        //    print_r($data);exit;
         $this->data=$this->base_data();
         foreach($data as $key=>$value) {
             if (array_key_exists($key,$this->data))
                 $this->data[$key]=_trim($value);
         }
         $tmp_compresed_file=$data['file'].'.gz';
-     /*
-        if($this->compress){
-        $this->compress($data['file'],$tmp_compresed_file);
-        $fp      = fopen($tmp_compresed_file, 'r');
-        $this->data['Attachment Compressed Data'] = fread($fp, filesize($tmp_compresed_file));
-        unlink($tmp_compresed_file);
-        //$data['file']=$tmp_compresed_file;
-        
-        }
-       */
+        /*
+           if($this->compress){
+           $this->compress($data['file'],$tmp_compresed_file);
+           $fp      = fopen($tmp_compresed_file, 'r');
+           $this->data['Attachment Compressed Data'] = fread($fp, filesize($tmp_compresed_file));
+           unlink($tmp_compresed_file);
+           //$data['file']=$tmp_compresed_file;
 
-$filename= $data['file'];
+           }
+          */
 
-          $this->data['Attachment Compressed Data'] = addslashes(fread(fopen($filename, "r"), filesize($filename)));
+        $filename= $data['file'];
+
+        $this->data['Attachment Compressed Data'] = addslashes(fread(fopen($filename, "r"), filesize($filename)));
 //print_r($this->data);
 
         $keys='(';
@@ -153,19 +153,19 @@ $filename= $data['file'];
         foreach($this->data as $key=>$value) {
 
             $keys.="`$key`,";
-            
-            if($key=='Attachment Compressed Data'){
-              $values.="'".$value."',";
-            }else{
-            
-            $_mode=true;
-            if ($key=='Attachment Caption')
-                $_mode=false;
-            $values.=prepare_mysql($value,$_mode).",";
+
+            if ($key=='Attachment Compressed Data') {
+                $values.="'".$value."',";
+            } else {
+
+                $_mode=true;
+                if ($key=='Attachment Caption')
+                    $_mode=false;
+                $values.=prepare_mysql($value,$_mode).",";
             }
-            
-            
-            
+
+
+
         }
 
         $keys=preg_replace('/,$/',')',$keys);
@@ -202,126 +202,128 @@ $filename= $data['file'];
 
 
         } else {
-        $error=mysql_error();
-        if(preg_match('/max_allowed_packet/i',$error));
-             $this->msg='Unknown error';
-        }else{
-            $this->msg='Unknown error';
-          
+            $error=mysql_error();
+            if (preg_match('/max_allowed_packet/i',$error)) {
+                $this->msg='Unknown error';
+            } else {
+                $this->msg='Unknown error';
+
+            }
+            $this->error=true;
         }
-  $this->error=true;
-    }
-
-    function get_data($key,$tag) {
-
-        if ($key=='id')
-            $sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d",$tag);
-        else if ($key=='code')
-            $sql=sprintf("select  *  from `Attachment Dimension` where `Attachment Code`=%s ",prepare_mysql($tag));
-        else
-            return;
-
-        $result=mysql_query($sql);
-        if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->id=$this->data['Attachment Key'];
+        
         }
 
+        function get_data($key,$tag) {
 
-
-
-    }
-
-
-
-    function get_abstract() {
-        $mime=$this->mime_type_icon($this->data['Attachment MIME Type']);
-        return sprintf('%s <a href="%s">%s</a> (%s) %s'
-                       ,$mime
-                       ,$this->data['Attachment URL']
-                       ,$this->data['Attachment File Original Name']
-
-                       ,formatBytes($this->data['Attachment File Size'])
-                       ,$this->data['Attachment Caption']
-                      );
-    }
-
-    function get_details() {
-        return '';
-    }
-
-
-
-    function load($key='') {
-        switch ($key) {
-        case('locations'):
-
-            break;
-
-        }
-
-
-    }
-
-
-    function get($key,$data=false) {
-        switch ($key) {
-
-        default:
-            if (isset($this->data[$key]))
-                return $this->data[$key];
+            if ($key=='id')
+                $sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d",$tag);
+            else if ($key=='code')
+                $sql=sprintf("select  *  from `Attachment Dimension` where `Attachment Code`=%s ",prepare_mysql($tag));
             else
-                return '';
-        }
-        return '';
-    }
+                return;
+
+            $result=mysql_query($sql);
+            if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $this->id=$this->data['Attachment Key'];
+            }
 
 
 
-
-
-    function find_extension ($filename) {
-        $filename = strtolower($filename) ;
-        $exts = preg_split("/\.[a-z]$/i", $filename) ;
-        $n = count($exts)-1;
-        $exts = $exts[$n];
-        return $exts;
-    }
-
-
-    function uncompress($srcName, $dstName) {
-        $string = implode("", gzfile($srcName));
-        $fp = fopen($dstName, "w");
-        fwrite($fp, $string, strlen($string));
-        fclose($fp);
-    }
-
-    function compress($srcName, $dstName) {
-        $fp = fopen($srcName, "r");
-        $data = fread ($fp, filesize($srcName));
-        fclose($fp);
-
-        $zp = gzopen($dstName, "w9");
-        gzwrite($zp, $data);
-        gzclose($zp);
-    }
-
-
-    function mime_type_icon($mime_type) {
-        if (preg_match('/^image/',$mime_type)) {
-            return '<img src="art/icons/image.png" alt="'.$mime_type.'"/>';
-        }
-        elseif(preg_match('/excel/',$mime_type)) {
-            return '<img src="art/icons/page_excel.png" alt="'.$mime_type.'"/>';
-        }
-        elseif(preg_match('/msword/',$mime_type)) {
-            return '<img src="art/icons/page_word.png" alt="'.$mime_type.'"/>';
 
         }
-        else
-            return $mime_type;
+
+
+
+        function get_abstract() {
+            $mime=$this->mime_type_icon($this->data['Attachment MIME Type']);
+            return sprintf('%s <a href="%s">%s</a> (%s) %s'
+                           ,$mime
+                           ,$this->data['Attachment URL']
+                           ,$this->data['Attachment File Original Name']
+
+                           ,formatBytes($this->data['Attachment File Size'])
+                           ,$this->data['Attachment Caption']
+                          );
+        }
+
+        function get_details() {
+            return '';
+        }
+
+
+
+        function load($key='') {
+            switch ($key) {
+            case('locations'):
+
+                break;
+
+            }
+
+
+        }
+
+
+        function get($key,$data=false) {
+            switch ($key) {
+
+            default:
+                if (isset($this->data[$key]))
+                    return $this->data[$key];
+                else
+                    return '';
+            }
+            return '';
+        }
+
+
+
+
+
+        function find_extension ($filename) {
+            $filename = strtolower($filename) ;
+            $exts = preg_split("/\.[a-z]$/i", $filename) ;
+            $n = count($exts)-1;
+            $exts = $exts[$n];
+            return $exts;
+        }
+
+
+        function uncompress($srcName, $dstName) {
+            $string = implode("", gzfile($srcName));
+            $fp = fopen($dstName, "w");
+            fwrite($fp, $string, strlen($string));
+            fclose($fp);
+        }
+
+        function compress($srcName, $dstName) {
+            $fp = fopen($srcName, "r");
+            $data = fread ($fp, filesize($srcName));
+            fclose($fp);
+
+            $zp = gzopen($dstName, "w9");
+            gzwrite($zp, $data);
+            gzclose($zp);
+        }
+
+
+        function mime_type_icon($mime_type) {
+            if (preg_match('/^image/',$mime_type)) {
+                return '<img src="art/icons/image.png" alt="'.$mime_type.'"/>';
+            }
+            elseif(preg_match('/excel/',$mime_type)) {
+                return '<img src="art/icons/page_excel.png" alt="'.$mime_type.'"/>';
+            }
+            elseif(preg_match('/msword/',$mime_type)) {
+                return '<img src="art/icons/page_word.png" alt="'.$mime_type.'"/>';
+
+            }
+            else
+                return $mime_type;
+        }
+
+
     }
 
-
-}
-
-?>
+    ?>

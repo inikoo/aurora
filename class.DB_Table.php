@@ -66,13 +66,15 @@ abstract class DB_Table {
     }
 
     public function update($data,$options='') {
-
+		
         if (!is_array($data)) {
+			
             $this->error=true;
             return;
         }
 
         if (isset($data['editor'])) {
+		
             foreach($data['editor'] as $key=>$value) {
 
                 if (array_key_exists($key,$this->editor))
@@ -84,6 +86,8 @@ abstract class DB_Table {
 
 
         foreach($data as $key=>$value) {
+		
+		
             if (is_string($value))
                 $value=_trim($value);
             $this->update_field_switcher($key,$value,$options);
@@ -97,8 +101,7 @@ abstract class DB_Table {
 
     protected function update_field_switcher($field,$value,$options='') {
 
-
-
+		
         $base_data=$this->base_data();
 
 
@@ -148,7 +151,8 @@ abstract class DB_Table {
     protected function update_field($field,$value,$options='') {
 
         // print "$field,$value,$options\n";
-
+		//print $field;
+		//print $this->table_name;
 
         $null_if_empty=true;
 
@@ -163,24 +167,39 @@ abstract class DB_Table {
 
 
         $old_value=_('Unknown');
+		$key_field=$this->table_name." Key";
+		
 
-        $key_field=$this->table_name." Key";
+		
+        
         if ($this->table_name=='Supplier Product')
             $key_field='Supplier Product Current Key';
 else if ($this->table_name=='Part')
             $key_field='Part SKU';
 
 
-        $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
+		if(preg_match('/^custom_field_/i',$field)){ 
+			$field1=preg_replace('/^custom_field_/','',$field);
+			$sql=sprintf("select %s as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field1, $this->id);
+		}
+		else
+			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $old_value=$row['value'];
         }
 
+		if(preg_match('/^custom_field_/i',$field)){
+			if(is_string($value))
+				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%s' where `Customer Key`=%d",$field1, $value, $this->id);
+			else
+				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%d' where `Customer Key`=%d",$field1, $value, $this->id);
+		}
+		else
+			$sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
-        $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
-
+		
       //print "$sql\n";
         mysql_query($sql);
         $affected=mysql_affected_rows();

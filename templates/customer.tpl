@@ -66,8 +66,12 @@
                     <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
- 
- </table>
+				{foreach from=$show_case key=name item=value}
+				<tr>
+				<td colspan=2 class="aright">{$name}:</td><td <td colspan=2 class="aright">{$value}</td>
+				</tr>
+				{/foreach}
+		</table>
         </td>
     </tr>
     
@@ -219,6 +223,21 @@
  
   <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
+
+<h2 style="clear:both">{t}custom Fields{/t}</h2>
+
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+
+		  {foreach from=$show_case key=name item=value}
+		  <tr>
+		  <td>{$name}:</td><td>{$value}</td>
+		  </tr>
+		  {/foreach}
+		</table>
+</div>  
+  
+  
 <h2 style="clear:both">{t}Billing Details{/t}</h2>
 
 <div style="float:left;width:450px">
@@ -282,6 +301,7 @@
 		      <td>{t}Contact Fax{/t}:</td><td>{$customer->get('Customer Main XHTML FAX')}</td>
 		    </tr>
 		  
+
 		</table>
 </div>
 

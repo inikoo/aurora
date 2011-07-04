@@ -711,11 +711,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	     alert(request);
+	     //alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-				alert(o.responseText)
+				//alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 
@@ -751,7 +751,7 @@ function save_edit_general_bulk(branch) {
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
 
-//alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
+ //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;
     for (item in validate_scope_data[branch]) {
 
@@ -772,13 +772,13 @@ function save_edit_general_bulk(branch) {
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request);//return;
+//alert(request);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
  // alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
-            
+        
             
             for (x in ra){
                r=ra[x]

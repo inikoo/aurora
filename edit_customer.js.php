@@ -36,7 +36,25 @@ $count++;
 
 print "};";
 
+//show case 		
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Customer'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[]=$row['Custom Field Name'];
+}
 
+
+$show_case=Array();
+$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $name){
+		$show_case[$name]=$row[$name];
+	}
+}
 ?>
 var send_post_status='<?php echo $send_post_status;?>';
 var send_post_type='<?php echo $send_post_type;?>';
@@ -89,6 +107,12 @@ _('Invalid Mobile')
 );
 }
 
+foreach($show_case  as $custom_key=>$custom_value){
+printf(",'custom_field_%s':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_%s'}",
+$custom_key,
+$custom_key
+);
+}
 ?>
 
 
@@ -364,8 +388,20 @@ function validate_customer_mobile(query){
     }
 }
 
+<?php
 
+foreach($show_case  as $custom_key=>$custom_value){
+printf("function validate_customer_%s(query){validate_general('customer','custom_field_%s',unescape(query));if(query==''){validate_scope('customer');Dom.get('Customer_%s_msg').innerHTML='This operation will remove the %s';}}"
 
+, $custom_key
+, $custom_key
+, $custom_key
+, $custom_key
+
+);
+}
+
+?>
 function validate_customer_fax(query){
     validate_general('customer','fax',unescape(query));
     if(query==''){
@@ -1114,7 +1150,23 @@ $mobile_key
 }
 ?>
 
+<?php
 
+foreach($show_case  as $custom_key=>$custom_value){
+printf("var customer_%s_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_%s);\ncustomer_%s_oACDS.queryMatchContains = true;\nvar customer_%s_oAutoComp = new YAHOO.widget.AutoComplete('Customer_%s','Customer_%s_Container', customer_%s_oACDS);\ncustomer_%s_oAutoComp.minQueryLength = 0;\ncustomer_%s_oAutoComp.queryDelay = 0.1;",
+$custom_key,
+$custom_key,
+$custom_key,
+$custom_key,
+$custom_key,
+$custom_key,
+$custom_key,
+$custom_key,
+$custom_key
+);
+}
+
+?>
    var customer_other_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_new_other_email);
     customer_other_email_oACDS.queryMatchContains = true;
     var customer_other_email_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Other_Email","Customer_Other_Email_Container", customer_other_email_oACDS);
