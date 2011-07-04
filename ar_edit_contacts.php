@@ -2599,7 +2599,7 @@ function edit_customer($data) {
 
     }
 
-    
+    //print_r($values);
 
     $responses=array();
     foreach($values as $key=>$values_data) {
@@ -2687,12 +2687,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $key=$key_dic[$key];
 
 
-
-
-
         $the_new_value=_trim($value_data['value']);
-
-
 
 
 
@@ -2704,6 +2699,11 @@ function edit_customer_field($customer_key,$key,$value_data) {
                 $other_email_deleted=true;
             }
 
+        }
+		elseif (preg_match('/^custom_field_/i',$key)) {
+            $custom_id=preg_replace('/^custom_field_/','',$key);
+			$customer->update_custom_fields($key, $the_new_value);
+		
         }
         elseif (preg_match('/^telephone\d+$/i',$key)) {
             $telephone_id=preg_replace('/^telephone/','',$key);
@@ -2745,6 +2745,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
         }
         else {
             $customer->update(array($key=>$the_new_value));
+			
         }
 
 
