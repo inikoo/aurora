@@ -502,29 +502,11 @@
 <div id="dialog_attach">
   <div id="attach_msg"></div>
   
-  {*
-  <table >
-     <tr><td colspan=2>
-
-	  {t}Note{/t}:<br/> <input type="text" id="attach_note"/>
-
-    </td><tr>
-    <tr><td colspan=2>
-	<form action="upload.php" enctype="multipart/form-data" method="post" id="attach_form">
-
-
-	  <input type="file" name="testFile"/>
-
-	</form>
-    </td><tr>
-	
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="state_details" onClick="close_dialog('attach')" >{t}Cancel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('attach')" id="upload_attach"  class="state_details"     xstyle="visibility:hidden;" >{t}Upload{/t}</span></td></tr>
+<input type="hidden" value='customer' id='attachment_scope'>
+<input type="hidden" value='{$customer->id}' id='attachment_scope_key'>
+<table>
+<tr><td>{t}Comment{/t}</td><td><input  value='' id='attachment_caption'></td>
 </table>
-*}
 <div>
 	<div id="fileProgress" style="border: black 1px solid; width:300px; height:40px;float:left">
 		<div id="fileName" style="text-align:center; margin:5px; font-size:15px; width:290px; height:25px; overflow:hidden"></div>

@@ -616,6 +616,10 @@ break;
 
     }
 
+function formated_sku() {
+        return $this->get_sku();
+
+    }
 
     function get_sku() {
         return sprintf("SKU%05d",$this->sku);

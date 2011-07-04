@@ -148,7 +148,7 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 }
 
 
-                exit("debug 124\n");
+                //exit("debug 124\n");
 
             } else {
                 print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";

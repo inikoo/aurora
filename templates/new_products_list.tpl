@@ -13,7 +13,7 @@
 	<form>
 		<tr><td colspan="2"><b>{t}Product Validity...{/t}</b></td></tr>
       <tr>
-        <td>{t}Product valid between{/t}:</td>
+        <td>{t}Product on record between{/t}:</td>
         <td>
             <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_first_validated_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
             <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_first_validated_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
@@ -23,7 +23,7 @@
       </tr>
 <tr><td colspan="2"><b>{t}Some features...{/t}</b></td></tr> 
      <tr>
-        <td>{t}based in{/t}:</td>
+        <td>{t}contained in{/t}:</td>
         <td>
         <input id="geo_constraints" style="width:500px"/> 
         <div class="general_options" >
@@ -86,40 +86,65 @@
     </div>
 
     
-    <div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none" >
-    <span class="clean_table_title">Products List</span>
-{*     <div id="table_type">
-       	 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products" >{t}Export (CSV){/t}</span>
-     </div>
-*}
+    
 
-  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
-      <div id="short_menu" class="nodetails" style="clear:both;width:100%;margin-bottom:0px">
- 
-  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+<div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none">
+    <span class="clean_table_title">{t}Products{/t}</span>
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products" >{t}Export (CSV){/t}</span>
+<a style="float:right;margin-left:20px"  class="table_type state_details"  href="export_xml.php" >{t}Export (XML){/t}</a>
+
+     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+    
+    <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
+    
+    
+    
+    <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+      <tr><td  {if $product_view=='general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
+	{if $view_stock}<td {if $product_view=='stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>{/if}
+	{if $view_sales}<td  {if $product_view=='sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>{/if}
+	<td  {if $product_view=='parts'}class="selected"{/if}  id="product_parts"  >{t}Parts{/t}</td>
+	<td  {if $product_view=='cats'}class="selected"{/if}  id="product_cats"  >{t}Groups{/t}</td>
+      </tr>
+    </table>
+	
+    <table id="product_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+	  <tr>
+	    
+	    <td class="option {if $product_period=='all'}selected{/if}" period="all"  id="product_period_all" >{t}All{/t}</td>
+	    <td class="option {if $product_period=='year'}selected{/if}"  period="year"  id="product_period_year"  >{t}1Yr{/t}</td>
+	    <td class="option {if $product_period=='quarter'}selected{/if}"  period="quarter"  id="product_period_quarter"  >{t}1Qtr{/t}</td>
+	    <td class="option {if $product_period=='month'}selected{/if}"  period="month"  id="product_period_month"  >{t}1M{/t}</td>
+	    <td class="option {if $product_period=='week'}selected{/if}" period="week"  id="product_period_week"  >{t}1W{/t}</td>
+	  </tr>
+      </table>
+
+       <table  id="product_avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
-	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
-	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
-	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
-	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
-
+	  <td class="option {if $product_avg=='totals'}selected{/if}" avg="totals"  id="product_avg_totals" >{t}Totals{/t}</td>
+	  <td class="option {if $product_avg=='month'}selected{/if}"  avg="month"  id="product_avg_month"  >{t}M AVG{/t}</td>
+	  <td class="option {if $product_avg=='week'}selected{/if}"  avg="week"  id="product_avg_week"  >{t}W AVG{/t}</td>
+	  <td class="option {if $product_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff"  id="product_avg_month_eff"  >{t}M EAVG{/t}</td>
+	  <td class="option {if $product_avg=='week_eff'}selected{/if}" style="display:none"  avg="week_eff"  id="product_avg_week_eff"  >{t}W EAVG{/t}</td>
 	</tr>
       </table>
- 
- 
-      
-    </div>
 
 
 
- 
- {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
-     	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable "> </div>
+        {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name2 filter_value=$filter_value0  }
+
+    <div  id="table0"   class="data_table_container dtable btable "> </div>
+  </div>
 
 
-</div>		
+
+
+
+
+
+
+
 
     </div>
 

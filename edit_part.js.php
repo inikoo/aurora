@@ -26,10 +26,10 @@ var Editor_change_part;
 
 var validate_scope_data=
 {
-    'part_description':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
-	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
-    	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'part_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
+    'part_unit':{
+	'description':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Part_Unit_Description','name':'Part_Unit_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Part_Unit_Description')?>'}]}
+//	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
+  //  	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'part_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
 
 }
  //   , 'part_price':{
@@ -51,14 +51,14 @@ var validate_scope_data=
 
     };
 var validate_scope_metadata={
-    'part_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':part_sku}
-    ,'part_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':part_sku}
-    ,'part_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':part_sku}
+    'part_unit':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
+    ,'part_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
+    ,'part_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
 
 };
 
-function validate_part_name(query){
- validate_general('part_description','name',unescape(query));
+function validate_Part_Unit_Description(query){
+ validate_general('part_unit','description',query);
 }
 
 function validate_part_special_characteristic(query){
@@ -141,11 +141,11 @@ function change_block(e){
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-edit&value='+this.id,{} );
 }
 
-function save_edit_description(){
-    save_edit_general('part_description');
+function save_edit_part_unit(){
+    save_edit_general('part_unit');
 }
-function reset_edit_description(){
-    reset_edit_general('part_description')
+function reset_edit_part_unit(){
+    reset_edit_general('part_unit')
 }
 
 function save_edit_price(){
@@ -518,8 +518,6 @@ Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px
     Editor_change_part.render();
     
     
-    
-
 YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
 
@@ -529,11 +527,13 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 
 
 
+   
+
 
    
     
-    Event.addListener('save_edit_part_description', "click", save_edit_description);
-    Event.addListener('reset_edit_part_description', "click", reset_edit_description);
+    Event.addListener('save_edit_part_unit', "click", save_edit_part_unit);
+    Event.addListener('reset_edit_part_unit', "click", reset_edit_part_unit);
     
     Event.addListener('save_edit_part_price', "click", save_edit_price);
     Event.addListener('reset_edit_part_price', "click", reset_edit_price);
@@ -543,20 +543,22 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 
     
     
+     
     
     
+    var part_unit_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Description);
+    part_unit_description_oACDS.queryMatchContains = true;
+    var part_unit_description_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Description","Part_Unit_Description_Container", part_unit_description_oACDS);
+    part_unit_description_oAutoComp.minQueryLength = 0; 
+    part_unit_description_oAutoComp.queryDelay = 0.1;
     
-    var part_name_oACDS = new YAHOO.util.FunctionDataSource(validate_part_name);
-    part_name_oACDS.queryMatchContains = true;
-    var part_name_oAutoComp = new YAHOO.widget.AutoComplete("part_Name","part_Name_Container", part_name_oACDS);
-    part_name_oAutoComp.minQueryLength = 0; 
-    part_name_oAutoComp.queryDelay = 0.1;
+   
 	
-	var part_name_oACDS = new YAHOO.util.FunctionDataSource(validate_part_special_characteristic);
-	part_name_oACDS.queryMatchContains = true;
-	var part_name_oAutoComp = new YAHOO.widget.AutoComplete("part_Special_Characteristic","part_Special_Characteristic_Container", part_name_oACDS);
-	part_name_oAutoComp.minQueryLength = 0; 
-	part_name_oAutoComp.queryDelay = 0.1;
+	var part_gross_weight_oACDS = new YAHOO.util.FunctionDataSource(validate_part_gross_weight);
+	part_gross_weight_oACDS.queryMatchContains = true;
+	var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("part_Part_Gross_Weight","part_Part_Gross_Weight", part_gross_weight_oACDS);
+	part_gross_weight_oAutoComp.minQueryLength = 0; 
+	part_gross_weight_oAutoComp.queryDelay = 0.1;
 
 
 	var part_name_oACDS = new YAHOO.util.FunctionDataSource(validate_part_description);

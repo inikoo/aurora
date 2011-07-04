@@ -25,10 +25,24 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+case('edit_part_unit'):
+$data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                              'okey'=>array('type'=>'string'),
+                              'sku'=>array('type'=>'key'),
+                             ));
+ edit_part($data);
+
+
+break;
+
+
 case('edit_part_list'):
 $data=prepare_values($_REQUEST,array(
-                             'newvalue'=>array('type'=>'json array')
-                             ,'key'=>array('type'=>'key')
+                             'newvalue'=>array('type'=>'json array'),
+                             'key'=>array('type'=>'key')
                              ));
  edit_part_list($data);
 break;
@@ -2888,5 +2902,54 @@ else{
 
 }
 
+
+function edit_part($data){
+
+$part=new Part($data['sku']);
+if(!$part->sku){
+ $response= array('state'=>400,'msg'=>'part not found');
+ echo json_encode($response); 
+ exit;
+}
+
+$key_dic=array(
+'Part_Unit_Description'=>'Part Unit Description'
+);
+
+    if (array_key_exists($data['key'],$key_dic))
+            $key=$key_dic[$data['key']];
+
+        $the_new_value=_trim($data['newvalue']);
+        
+     
+     $part->update(array($key=>$the_new_value));
+     
+     
+        if ($part->updated) {
+
+    
+
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$part->new_value,'key'=>$data['okey']);
+        
+    } else {
+   
+        $response= array('state'=>400,'msg'=>$part->msg,'key'=>$data['okey']);
+    }
+     echo json_encode($response); 
+ exit;
+
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+        
+
+}
 
 ?>

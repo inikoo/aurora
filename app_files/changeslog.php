@@ -3044,6 +3044,9 @@ kaktus =====================
 
 ALTER TABLE `Customer Dimension` ADD `Customer Registration Number` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Tax Number` ;
 ALTER TABLE `Contact Dimension` ADD `Contact Identification Number` VARCHAR( 256 ) NOT NULL DEFAULT '' AFTER `Contact Tax Number` ;
+
+-----------------
+
 ALTER TABLE `Customer List Dimension` ADD `Customer List Use Type` ENUM( 'User Defined', 'CSV Import' ) NOT NULL DEFAULT 'User Defined' AFTER `Customer List Key` , ADD INDEX ( `Customer List Use Type` );
 
 CREATE TABLE `Imported Records Dimension` (
@@ -3086,7 +3089,6 @@ PRIMARY KEY ( `List Key` , `Product ID` )
 ALTER TABLE `Telecom Bridge` ADD `Telecom Description` VARCHAR( 256 ) NOT NULL DEFAULT '';
 ALTER TABLE `Customer Dimension` ADD `Customer Preferred Contact Number` ENUM( 'Telephone', 'Mobile' ) NOT NULL DEFAULT 'Telephone';
 
-*/
 
 
 
@@ -3109,5 +3111,8 @@ PRIMARY KEY ( `Customer Key` )
 ) ENGINE = MYISAM  DEFAULT CHARSET=utf8;
 
 ALTER TABLE `Store Dimension` ADD `Store Telecom Format` VARCHAR( 256 ) NOT NULL DEFAULT 'GBR' AFTER `Store Slogan` ;
+
+*/
+
 ?>
 

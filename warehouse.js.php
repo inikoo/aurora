@@ -228,6 +228,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehou
 
  function init(){
   init_search('locations');
+  
 Event.addListener(['locations','areas','shelfs','map','stats','movements','parts'], "click",change_block);
 
    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

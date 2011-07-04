@@ -690,33 +690,7 @@ function take_order(){
 
 }
 
-var upload_attach = function(e){
-    
-    var uploadHandler = {
-	upload: function(o) {
-	//alert(o.responseText);
-	    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	    if (r.state==200) {
-		close_dialog('attach');
-		var table=tables['table0'];
-		var datasource=tables['dataSource0'];
-		var request='';
-		datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-		
-	    }else
-		Dom.get('attach_msg').innerHTML=r.msg;
-	    
-	    
-	    
-      }
-    }; 
-    
-    YAHOO.util.Connect.setForm('attach_form', true);
-    var note=encodeURIComponent(Dom.get('attach_note').value)
-    var request="ar_edit_contacts.php?tipo=edit_customer&key=Attach&customer_key="+customer_key+"&newvalue="+note;
 
-    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
-}
 
 function change_view(){
 ids=['orders','history','products','details'];
@@ -861,7 +835,6 @@ Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_orde
 
 
 Event.addListener("take_order", "click", take_order , true);
-Event.on('upload_attach', 'click', upload_attach);
 dialog_export.render();
 
  if(Dom.get('sticky_note_content').innerHTML==''){

@@ -215,6 +215,7 @@ $smarty->assign('unit_type_options',$unit_type_options
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('title',_('Editing').' '.$part->formated_sku());
 
 
 //while($row=mysql_fetch_array($res)){

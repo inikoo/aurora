@@ -1,21 +1,37 @@
 <?php
+
+include_once('common.php');
 //print "xx";
 
 
 
-print_r($_FILES);
+//print_r($_FILES);
 foreach ($_FILES as $fieldName => $file) {
-
-$filename="./app_files/uploads/". strip_tags(basename($file['name']));
+$original_filename=strip_tags(basename($file['name']));
+$filename="./app_files/uploads/". $original_filename;
 move_uploaded_file($file['tmp_name'],$filename );
 
 $fp      = fopen($filename, 'r');
-$content = fread($fp, filesize($tmpName));
+$filesize=filesize($filename);
+$content = fread($fp,$filesize );
 $content = addslashes($content);
 fclose($fp);
 
-//$query = sprintf("INSERT INTO `Attachment Dimension` ....";
-//mysql_query($query) 
+$caption='hola';
+$url='xxx';
+$mime_type='mime';
+
+$query = sprintf("INSERT INTO `Attachment Dimension` (`Attachment Caption`,`Attachment URL`,`Attachment Filename`,`Attachment MIME Type`,`Attachment Compressed Data`,`Attachment File Checksum`,`Attachment File Size`,`Attachment File Original Name`) values (%s,%s,%s,%s,'%s',%s,%d,%s) ",
+prepare_mysql($caption),
+prepare_mysql($url),
+prepare_mysql($filename),
+prepare_mysql($mime_type),
+$content,
+prepare_mysql(md5_file($filename)),
+$filesize,
+prepare_mysql($original_filename)
+);
+mysql_query($query); 
 
 
 }

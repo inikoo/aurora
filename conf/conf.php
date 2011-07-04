@@ -751,6 +751,16 @@ $default_state=array(
                                   'parent'=>'none',//store,dement,family,none
                                   'restrictions'=>'forsale',
                                   'avg'=>'totals',
+                                         'list'=>array(
+                                                                 'order'=>'name',
+                                                                 'order_dir'=>'',
+                                                                 'sf'=>0,
+                                                                 'nr'=>25,
+                                                                 'where'=>'',
+                                                                 'f_field'=>'',
+                                                                 'f_value'=>'',
+                                                                 'view'=>'general'
+                                                             ),
                                   'table'=>array(
                                               'order'=>'code',
                                               'order_dir'=>'',
@@ -824,11 +834,11 @@ $default_state=array(
                    'report_pp'=>array(
 
                                    'warehouse_key'=>1,
-                                                   'tipo'=>'y',
-                                                           'y'=>date('Y'),
-                                                                'm'=>date('m'),
-                                                                     'd'=>date('d'),
-                                                                          'w'=>date('W')
+                                   'tipo'=>'y',
+                                   'y'=>date('Y'),
+                                   'm'=>date('m'),
+                                   'd'=>date('d'),
+                                   'w'=>date('W')
                                ),
 
 
@@ -877,13 +887,13 @@ $default_state=array(
 
                                           'continent'=>array('view'=>'countries',
                                                              'map_links'=>'countries'),
-                                          		'wregion'=>array(
-								'view'=>'countries',	
-                                                           'map_links'=>'countries',	
-							   'plot_tipo'=>'plot_all_stores'),
-					  'country'=>array('view'=>'overview',
-							   'plot_tipo'=>'plot_all_stores'),
-                                                        
+                                          'wregion'=>array(
+                                                        'view'=>'countries',
+                                                        'map_links'=>'countries',
+                                                        'plot_tipo'=>'plot_all_stores'),
+                                          'country'=>array('view'=>'overview',
+                                                           'plot_tipo'=>'plot_all_stores'),
+
 
                                           'countries'=>array(
                                                           'display'=>'all',
@@ -1298,71 +1308,71 @@ $default_state=array(
                                                                       'shelfs_no'=>false
                                                                   )
                                                  ),
-                                                  'warehouse_areas'=>array(
-                                                     'order'=>'code',
-                                                     'order_dir'=>'',
-                                                     'sf'=>0,
-                                                     'nr'=>50,
-                                                     'where'=>'where true',
-                                                     'f_field'=>'code',
-                                                     'f_value'=>'','f_show'=>false,
-                                                     'elements'=>array()
-                                                 ),
-                                                    'shelfs'=>array(
-                                            'order'=>'code',
-                                            'order_dir'=>'',
-                                            'sf'=>0,
-                                            'nr'=>25,
-                                            'where'=>'where true',
-                                            'f_field'=>'code',
-                                            'f_value'=>'','f_show'=>false,
-                                            'elements'=>array()
-                                        ),
-                                         'locations'=>array(
-                                               'order'=>'code',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'code',
-                                               'f_value'=>'','f_show'=>false,
-                                               'elements'=>array()
-                                           ), 'avg'=>'totals',
-                               'parts'=>array(
-                                           'order'=>'sku',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>20,
-                                           'where'=>'where true',
-                                           'f_field'=>'used_in',
-                                           'f_value'=>'',
-                                           'csv_export'=>array(
-                                                            'sku'=>true,
-                                                            'used_in'=>true,
-                                                            'description'=>true,
-                                                            'stock'=>true,
-                                                            'stock_cost'=>true,
-                                                            'unit'=>false,
-                                                            'status'=>false,
-                                                            'valid_from'=>false,
-                                                            'valid_to'=>false,
-                                                            'total_lost'=>false,
-                                                            'total_broken'=>false,
-                                                            'total_sold'=>false,
-                                                            'total_given'=>false,
-                                                            'sales_all'=>false,
-                                                            'profit_all'=>false,
-                                                            'sales_1y'=>false,
-                                                            'profit_1y'=>false,
-                                                            'sales_1q'=>false,
-                                                            'profit_1q'=>false,
-                                                            'sales_1m'=>false,
-                                                            'profit_1m'=>false,
-                                                            'sales_1w'=>false,
-                                                            'profit_1w'=>false
-                                                        )
+                                    'warehouse_areas'=>array(
+                                                          'order'=>'code',
+                                                          'order_dir'=>'',
+                                                          'sf'=>0,
+                                                          'nr'=>50,
+                                                          'where'=>'where true',
+                                                          'f_field'=>'code',
+                                                          'f_value'=>'','f_show'=>false,
+                                                          'elements'=>array()
+                                                      ),
+                                    'shelfs'=>array(
+                                                 'order'=>'code',
+                                                 'order_dir'=>'',
+                                                 'sf'=>0,
+                                                 'nr'=>25,
+                                                 'where'=>'where true',
+                                                 'f_field'=>'code',
+                                                 'f_value'=>'','f_show'=>false,
+                                                 'elements'=>array()
+                                             ),
+                                    'locations'=>array(
+                                                    'order'=>'code',
+                                                    'order_dir'=>'',
+                                                    'sf'=>0,
+                                                    'nr'=>25,
+                                                    'where'=>'where true',
+                                                    'f_field'=>'code',
+                                                    'f_value'=>'','f_show'=>false,
+                                                    'elements'=>array()
+                                                ), 'avg'=>'totals',
+                                    'parts'=>array(
+                                                'order'=>'sku',
+                                                'order_dir'=>'',
+                                                'sf'=>0,
+                                                'nr'=>20,
+                                                'where'=>'where true',
+                                                'f_field'=>'used_in',
+                                                'f_value'=>'',
+                                                'csv_export'=>array(
+                                                                 'sku'=>true,
+                                                                 'used_in'=>true,
+                                                                 'description'=>true,
+                                                                 'stock'=>true,
+                                                                 'stock_cost'=>true,
+                                                                 'unit'=>false,
+                                                                 'status'=>false,
+                                                                 'valid_from'=>false,
+                                                                 'valid_to'=>false,
+                                                                 'total_lost'=>false,
+                                                                 'total_broken'=>false,
+                                                                 'total_sold'=>false,
+                                                                 'total_given'=>false,
+                                                                 'sales_all'=>false,
+                                                                 'profit_all'=>false,
+                                                                 'sales_1y'=>false,
+                                                                 'profit_1y'=>false,
+                                                                 'sales_1q'=>false,
+                                                                 'profit_1q'=>false,
+                                                                 'sales_1m'=>false,
+                                                                 'profit_1m'=>false,
+                                                                 'sales_1w'=>false,
+                                                                 'profit_1w'=>false
+                                                             )
 
-                                       )
+                                            )
 
 
 
@@ -1385,26 +1395,26 @@ $default_state=array(
                    'warehouse_area'=>array(
                                         'id'=>1,
                                         'view'=>'locations',
-                                         'locations'=>array(
-                                               'order'=>'code',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'code',
-                                               'f_value'=>'','f_show'=>false,
-                                               'elements'=>array()
-                                           ),
-                                            'parts'=>array(
-                                             'order'=>'sku',
-                                             'order_dir'=>'desc',
-                                             'sf'=>0,
-                                             'nr'=>50,
-                                             'where'=>'where true',
-                                             'f_field'=>'sku',
-                                             'f_value'=>''
-                                         ),
-                                        
+                                        'locations'=>array(
+                                                        'order'=>'code',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'code',
+                                                        'f_value'=>'','f_show'=>false,
+                                                        'elements'=>array()
+                                                    ),
+                                        'parts'=>array(
+                                                    'order'=>'sku',
+                                                    'order_dir'=>'desc',
+                                                    'sf'=>0,
+                                                    'nr'=>50,
+                                                    'where'=>'where true',
+                                                    'f_field'=>'sku',
+                                                    'f_value'=>''
+                                                ),
+
 
                                     ),
                    'shelf_types'=>array(
@@ -3015,7 +3025,7 @@ $default_state=array(
                                                               'description'=>true,
                                                               'stock'=>true,
                                                               'sales'=>true,
-                                                            
+
 
 
                                                           )
@@ -3161,6 +3171,9 @@ $default_state=array(
                                               'to'=>'',
                                               'elements'=>''
                                           ),
+
+
+
                                 'orders'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',
@@ -3746,7 +3759,7 @@ $default_state=array(
 
                    'wregion'=>array(
                                  'code'=>'',
-				
+
                                  'countries'=>array(
                                                  'display'=>'all',
                                                  'order'=>'name',

@@ -3287,12 +3287,15 @@ class Customer extends DB_Table {
     }
 
 
-    function add_attach($file,$data) {
+    function add_attachment($data) {
+    
+    
+    
         $data=array(
-                  'file'=>$file,
-                  'Attachment Caption'=>$data['Caption'],
-                  'Attachment MIME Type'=>$data['Type'],
-                  'Attachment File Original Name'=>$data['Original Name']
+                  'file'=>$data['Filename'],
+                  'Attachment Caption'=>$data['Attachment Caption'],
+                  'Attachment MIME Type'=>$data['Attachment MIME Type'],
+                  'Attachment File Original Name'=>$data['Attachment File Original Name']
               );
         $attach=new Attachment('find',$data,'create');
         if ($attach->new) {

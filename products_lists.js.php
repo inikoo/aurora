@@ -11,13 +11,13 @@ dialog_new_list.hide();
 }
 
 function new_list(store_key){
-    location.href='new_customers_list.php?store_key='+store_key;
+    location.href='new_products_list.php?store_key='+store_key;
 }
 
 
 function show_dialog_new_list(){
 if(Dom.get('direct_store_key').value){
-        location.href='new_customers_list.php?store_key='+Dom.get('direct_store_key').value;
+        location.href='new_products_list.php?store_key='+Dom.get('direct_store_key').value;
 
 }else{
     dialog_new_list.show();
@@ -37,7 +37,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-	    var CustomersColumnDefs = [
+	    var productsColumnDefs = [
 	    
 	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
@@ -48,8 +48,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				 
 				 ];
-	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&store_id="+Dom.get('store_id').value);
+	    //?tipo=products&tid=0"
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products_lists&store_id="+Dom.get('store_id').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -63,16 +63,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		
-		fields: ["name","key","creation_date","customers","customer_list_type","delete"]};
+		fields: ["name","key","creation_date","products","customer_list_type","delete"]};
 		
 
-	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
 								   this.dataSource0
 								 , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['list']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['products']['list']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -85,8 +85,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['customers']['list']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['customers']['list']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['products']['list']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['products']['list']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -104,7 +104,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['products']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['products']['list']['f_value']?>'};
 
 	
 	};
@@ -114,7 +114,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init(){
 
-init_search('customers_store');
+init_search('products_store');
 dialog_new_list = new YAHOO.widget.Dialog("dialog_new_list", {context:["new_customer_list","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_new_list.render();
 

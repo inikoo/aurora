@@ -53,9 +53,7 @@ case('show_posible_customer_matches'):
 case('customers_lists'):
     list_customers_lists();
     break;
-case('customer_list_static'):
-    list_customer_list_static();
-    break;
+
 
 
 case('used_email'):
@@ -5249,18 +5247,15 @@ function list_customers_lists() {
     $_SESSION['state']['customers']['list']['where']=$awhere;
     $_SESSION['state']['customers']['list']['f_field']=$f_field;
     $_SESSION['state']['customers']['list']['f_value']=$f_value;
+    
+    
+     $where=' where `List Scope`="Product"';
+    
 
-    if (is_numeric($store)) {
-        $where=sprintf(' where  `List Store Key`=%d ',$store);
 
-    } else {
-        exit();
 
-    }
-
-    $where='';
     if (in_array($store,$user->stores)) {
-        $where.=sprintf(' where `List Store Key`=%d  ',$store);
+        $where.=sprintf(' and `List Store Key`=%d  ',$store);
 
     }
 
