@@ -266,7 +266,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-$table_title=_('Product List');
+$table_title=_('List');
 $smarty->assign('table_title',$table_title);
 
 $info_period_menu=array(

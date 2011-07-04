@@ -65,10 +65,10 @@ $js_files=array(
 		'external_libs/ckeditor/ckeditor.js'
 		);
 		//fetch the customer list name
-		$queryString = "select `Customer List Name`,`Customer List Key` from `Customer List Dimension` order by `Customer List Key` desc";
+		$queryString = "select `List Name`,`List Key` from `List Dimension` order by `List Key` desc";
 		$resultSet = mysql_query($queryString);		
-		$n = 'Customer List Name';
-		$k = 'Customer List Key';
+		$n = 'List Name';
+		$k = 'List Key';
 		$customer = array();
 		while($row = mysql_fetch_assoc($resultSet))
 		{

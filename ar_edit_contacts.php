@@ -2618,6 +2618,9 @@ function edit_customer_field($customer_key,$key,$value_data) {
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
+    
+    
+    
 
     $other_telephone_deleted=false;
     $other_telephone_added=false;
@@ -2628,7 +2631,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
     $other_mobile_deleted=false;
     $other_mobile_added=false;
 
-
+$other_label=false;
 
 
     global $editor;
@@ -2675,8 +2678,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
                      "ship_region"=>'Main Ship To Country Region',
                      "ship_country"=>'Main Ship To Country',
                      "sticky_note"=>'Customer Sticky Note',
-                     "new_sticky_note"=>'Customer Sticky Note'
-
+                     "new_sticky_note"=>'Customer Sticky Note',
+                     "preferred_contact_number"=>'Customer Preferred Contact Number' 
                  );
 
 
@@ -2699,12 +2702,42 @@ function edit_customer_field($customer_key,$key,$value_data) {
                 $other_email_deleted=true;
             }
 
+        }elseif (preg_match('/^email_label\d+$/i',$key)) {
+            $email_id=preg_replace('/^email_label/','',$key);
+            $customer->update_other_email_label($email_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='email';
+            $other_label_scope_key=$email_id;
+        }elseif (preg_match('/^telephone_label\d+$/i',$key)) {
+            $telecom_id=preg_replace('/^telephone_label/','',$key);
+            $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='telephone';
+            $other_label_scope_key=$telecom_id;
+        }elseif (preg_match('/^mobile_label\d+$/i',$key)) {
+            $telecom_id=preg_replace('/^mobile_label/','',$key);
+            $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='mobile';
+            $other_label_scope_key=$telecom_id;
+        }elseif (preg_match('/^fax_label\d+$/i',$key)) {
+            $telecom_id=preg_replace('/^fax_label/','',$key);
+            $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
+            $other_label=true;
+            $other_label_scope='fax';
+            $other_label_scope_key=$telecom_id;
         }
+<<<<<<< HEAD
 		elseif (preg_match('/^custom_field_/i',$key)) {
             $custom_id=preg_replace('/^custom_field_/','',$key);
 			$customer->update_custom_fields($key, $the_new_value);
 		
         }
+=======
+        
+        
+        
+>>>>>>> 406cf9fedfefcc7cbb31c9782931850736efb9e8
         elseif (preg_match('/^telephone\d+$/i',$key)) {
             $telephone_id=preg_replace('/^telephone/','',$key);
             $customer->update_other_telephone($telephone_id,$the_new_value);
@@ -2791,6 +2824,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
         }
         elseif($other_mobile_added) {
             $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+        }elseif($other_label) {
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
         }
         else {
 
@@ -3724,15 +3759,15 @@ function edit_company_department() {
 }
 function delete_customer_list($data) {
     global $user;
-    $sql=sprintf("select `Customer List Store Key`,`Customer List Key` from `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-        if (in_array($row['Customer List Store Key'],$user->stores)) {
-            $sql=sprintf("delete from  `Customer List Customer Bridge` where `Customer List Key`=%d",$data['key']);
+        if (in_array($row['List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `List Customer Bridge` where `List Key`=%d",$data['key']);
             mysql_query($sql);
-            $sql=sprintf("delete from  `Customer List Dimension` where `Customer List Key`=%d",$data['key']);
+            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
             mysql_query($sql);
             $response=array('state'=>200,'action'=>'deleted');
             echo json_encode($response);
@@ -3800,7 +3835,7 @@ function new_customers_list($data) {
     $list_name=$data['list_name'];
     $store_id=$data['store_id'];
 
-    $sql=sprintf("select * from `Customer List Dimension`  where `Customer List Name`=%s and `Customer List Store Key`=%d ",
+    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d ",
                  prepare_mysql($list_name),
                  $store_id
                 );
@@ -3848,7 +3883,7 @@ function new_customers_list($data) {
     }
     mysql_free_result($res);
 
-    $list_sql=sprintf("insert into `Customer List Dimension` (`Customer List Store Key`,`Customer List Name`,`Customer List Type`,`Customer List Metadata`,`Customer List Creation Date`) values (%d,%s,%s,%s,NOW())",
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NOW())",
                       $store_id,
                       prepare_mysql($list_name),
                       prepare_mysql($list_type),
@@ -3867,7 +3902,7 @@ function new_customers_list($data) {
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $customer_key=$data['Customer Key'];
-            $sql=sprintf("insert into `Customer List Customer Bridge` (`Customer List Key`,`Customer Key`) values (%d,%d)",
+            $sql=sprintf("insert into `List Customer Bridge` (`List Key`,`Customer Key`) values (%d,%d)",
                          $customer_list_key,
                          $customer_key
                         );
