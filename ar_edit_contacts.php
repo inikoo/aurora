@@ -20,6 +20,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+
+case('add_attachment'):
+    $data=prepare_values($_REQUEST,array(
+                             'files_data'=>array('type'=>'json array'),
+                             'scope_key'=>array('type'=>'key'),
+                             'scope'=>array('type'=>'string'),
+                             'caption'=>array('type'=>'string')
+
+                         ));
+    add_attachment($data);
+    break;
 case('new_list'):
 
 
@@ -384,16 +396,16 @@ case('edit_company_area'):
     edit_company_area($data);
     break;
 
-	
+
 case('create_custom_field'):
-	
+
     $data=prepare_values($_REQUEST,array('values'=>array('type'=>'json array'),
-										'parent' =>array('type'=>'string'),
-										'parent_key' =>array('type'=>'key')));
+                                         'parent' =>array('type'=>'string'),
+                                         'parent_key' =>array('type'=>'key')));
     create_custom_field($data);
     break;
-	
-	
+
+
     //break;
 default:
 
@@ -2414,7 +2426,7 @@ function clone_customer($data) {
 
 
 function new_customer($data) {
-include_once('edit_customers_functions.php');
+    include_once('edit_customers_functions.php');
 
     //Timer::timing_milestone('begin');
     global $editor,$user;
@@ -2438,7 +2450,7 @@ include_once('edit_customers_functions.php');
 
 
 
-$response=add_customer($data['values']) ;
+    $response=add_customer($data['values']) ;
 
     echo json_encode($response);
 
@@ -2599,7 +2611,7 @@ function edit_customer($data) {
 
     }
 
-    
+
 
     $responses=array();
     foreach($values as $key=>$values_data) {
@@ -2618,9 +2630,9 @@ function edit_customer_field($customer_key,$key,$value_data) {
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
-    
-    
-    
+
+
+
 
     $other_telephone_deleted=false;
     $other_telephone_added=false;
@@ -2631,170 +2643,159 @@ function edit_customer_field($customer_key,$key,$value_data) {
     $other_mobile_deleted=false;
     $other_mobile_added=false;
 
-$other_label=false;
+    $other_label=false;
 
 
     global $editor;
     $customer->editor=$editor;
 
-    if ($key=='Attach') {
-        // print_r($_FILES);
-        $note=stripslashes(urldecode($value_data['value']));
-        $target_path = "app_files/uploads/".'attach_'.date('U');
-        $original_name=$_FILES['testFile']['name'];
-        $type=$_FILES['testFile']['type'];
-        $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
 
-        if (move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
-            $customer->add_attach($target_path,$data);
 
+
+
+    $key_dic=array(
+                 'fiscal_name'=>'Customer Fiscal Name',
+                 'registration_number'=>'Customer Registration Number',
+                 'name'=>'Customer Name',
+                 'email'=>'Customer Main Plain Email',
+                 'other_email'=>'Add Other Email',
+                 'other_telephone'=>'Add Other Telephone',
+                 'other_fax'=>'Add Other FAX',
+                 'other_mobile'=>'Add Other Mobile',
+                 'telephone'=>'Customer Main Plain Telephone',
+                 'mobile'=>'Customer Main Plain Mobile',
+                 'fax'=>'Customer Main Plain FAX',
+                 'contact'=>'Customer Main Contact Name',
+                 "address"=>'Address',
+                 "town"=>'Main Address Town',
+                 "tax_number"=>'Customer Tax Number',
+                 "postcode"=>'Main Address Town',
+                 "region"=>'Main Address Town',
+                 "country"=>'Main Address Country',
+                 "ship_address"=>'Main Ship To',
+                 "ship_town"=>'Main Ship To Town',
+                 "ship_postcode"=>'Main Ship To Postal Code',
+                 "ship_region"=>'Main Ship To Country Region',
+                 "ship_country"=>'Main Ship To Country',
+                 "sticky_note"=>'Customer Sticky Note',
+                 "new_sticky_note"=>'Customer Sticky Note',
+                 "preferred_contact_number"=>'Customer Preferred Contact Number'
+             );
+
+
+
+
+
+    if (array_key_exists($key,$key_dic))
+        $key=$key_dic[$key];
+
+    $the_new_value=_trim($value_data['value']);
+
+
+
+
+
+    if (preg_match('/^email\d+$/i',$key)) {
+        $email_id=preg_replace('/^email/','',$key);
+        $customer->update_other_email($email_id,$the_new_value);
+
+        if ($the_new_value=='') {
+            $other_email_deleted=true;
         }
-    } else {
-
-
-
-        $key_dic=array(
-                     'fiscal_name'=>'Customer Fiscal Name',
-                     'registration_number'=>'Customer Registration Number',
-                     'name'=>'Customer Name',
-                     'email'=>'Customer Main Plain Email',
-                     'other_email'=>'Add Other Email',
-                     'other_telephone'=>'Add Other Telephone',
-                     'other_fax'=>'Add Other FAX',
-                     'other_mobile'=>'Add Other Mobile',
-                     'telephone'=>'Customer Main Plain Telephone',
-                     'mobile'=>'Customer Main Plain Mobile',
-                     'fax'=>'Customer Main Plain FAX',
-                     'contact'=>'Customer Main Contact Name',
-                     "address"=>'Address',
-                     "town"=>'Main Address Town',
-                     "tax_number"=>'Customer Tax Number',
-                     "postcode"=>'Main Address Town',
-                     "region"=>'Main Address Town',
-                     "country"=>'Main Address Country',
-                     "ship_address"=>'Main Ship To',
-                     "ship_town"=>'Main Ship To Town',
-                     "ship_postcode"=>'Main Ship To Postal Code',
-                     "ship_region"=>'Main Ship To Country Region',
-                     "ship_country"=>'Main Ship To Country',
-                     "sticky_note"=>'Customer Sticky Note',
-                     "new_sticky_note"=>'Customer Sticky Note',
-                     "preferred_contact_number"=>'Customer Preferred Contact Number' 
-                 );
-
-
-
-
-
-        if (array_key_exists($key,$key_dic))
-            $key=$key_dic[$key];
-
-
-
-
-
-        $the_new_value=_trim($value_data['value']);
-
-
-
-
-
-        if (preg_match('/^email\d+$/i',$key)) {
-            $email_id=preg_replace('/^email/','',$key);
-            $customer->update_other_email($email_id,$the_new_value);
-
-            if ($the_new_value=='') {
-                $other_email_deleted=true;
-            }
-
-        }elseif (preg_match('/^email_label\d+$/i',$key)) {
-            $email_id=preg_replace('/^email_label/','',$key);
-            $customer->update_other_email_label($email_id,$the_new_value);
-            $other_label=true;
-            $other_label_scope='email';
-            $other_label_scope_key=$email_id;
-        }elseif (preg_match('/^telephone_label\d+$/i',$key)) {
-            $telecom_id=preg_replace('/^telephone_label/','',$key);
-            $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
-            $other_label=true;
-            $other_label_scope='telephone';
-            $other_label_scope_key=$telecom_id;
-        }elseif (preg_match('/^mobile_label\d+$/i',$key)) {
-            $telecom_id=preg_replace('/^mobile_label/','',$key);
-            $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
-            $other_label=true;
-            $other_label_scope='mobile';
-            $other_label_scope_key=$telecom_id;
-        }elseif (preg_match('/^fax_label\d+$/i',$key)) {
-            $telecom_id=preg_replace('/^fax_label/','',$key);
-            $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
-            $other_label=true;
-            $other_label_scope='fax';
-            $other_label_scope_key=$telecom_id;
-        }
-        
-        
-        
-        elseif (preg_match('/^telephone\d+$/i',$key)) {
-            $telephone_id=preg_replace('/^telephone/','',$key);
-            $customer->update_other_telephone($telephone_id,$the_new_value);
-
-            if ($the_new_value=='') {
-                $other_telephone_deleted=true;
-            }
-
-        }
-        elseif (preg_match('/^fax\d+$/i',$key)) {
-            $fax_id=preg_replace('/^fax/','',$key);
-            $customer->update_other_fax($fax_id,$the_new_value);
-
-            if ($the_new_value=='') {
-                $other_fax_deleted=true;
-            }
-
-        }
-        elseif (preg_match('/^mobile\d+$/i',$key)) {
-        
-        
-            $mobile_id=preg_replace('/^mobile/','',$key);
-            $customer->update_other_mobile($mobile_id,$the_new_value);
-
-            if ($the_new_value=='') {
-                $other_mobile_deleted=true;
-                   
-            }
-
-        }
-        elseif ($key=='Customer Fiscal Name') {
-            $customer->update_fiscal_name($the_new_value );
-        }
-        elseif ($key=='Customer Tax Number') {
-            $customer->update_tax_number($the_new_value);
-        }elseif ($key=='Customer Registration Number') {
-            $customer->update_registration_number($the_new_value);
-        }
-        else {
-            $customer->update(array($key=>$the_new_value));
-        }
-
-
-        if ($key=='Add Other Email') {
-            $other_email_added=true;
-        }
-        elseif($key=='Add Other Telephone') {
-            $other_telephone_added=true;
-        }
-        elseif($key=='Add Other FAX') {
-            $other_fax_added=true;
-        }
-        elseif($key=='Add Other Mobile') {
-            $other_mobile_added=true;
-        }
-
-
-
 
     }
+    elseif (preg_match('/^email_label\d+$/i',$key)) {
+        $email_id=preg_replace('/^email_label/','',$key);
+        $customer->update_other_email_label($email_id,$the_new_value);
+        $other_label=true;
+        $other_label_scope='email';
+        $other_label_scope_key=$email_id;
+    }
+    elseif (preg_match('/^telephone_label\d+$/i',$key)) {
+        $telecom_id=preg_replace('/^telephone_label/','',$key);
+        $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
+        $other_label=true;
+        $other_label_scope='telephone';
+        $other_label_scope_key=$telecom_id;
+    }
+    elseif (preg_match('/^mobile_label\d+$/i',$key)) {
+        $telecom_id=preg_replace('/^mobile_label/','',$key);
+        $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
+        $other_label=true;
+        $other_label_scope='mobile';
+        $other_label_scope_key=$telecom_id;
+    }
+    elseif (preg_match('/^fax_label\d+$/i',$key)) {
+        $telecom_id=preg_replace('/^fax_label/','',$key);
+        $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
+        $other_label=true;
+        $other_label_scope='fax';
+        $other_label_scope_key=$telecom_id;
+    }
+
+
+
+    elseif (preg_match('/^telephone\d+$/i',$key)) {
+        $telephone_id=preg_replace('/^telephone/','',$key);
+        $customer->update_other_telephone($telephone_id,$the_new_value);
+
+        if ($the_new_value=='') {
+            $other_telephone_deleted=true;
+        }
+
+    }
+    elseif (preg_match('/^fax\d+$/i',$key)) {
+        $fax_id=preg_replace('/^fax/','',$key);
+        $customer->update_other_fax($fax_id,$the_new_value);
+
+        if ($the_new_value=='') {
+            $other_fax_deleted=true;
+        }
+
+    }
+    elseif (preg_match('/^mobile\d+$/i',$key)) {
+
+
+        $mobile_id=preg_replace('/^mobile/','',$key);
+        $customer->update_other_mobile($mobile_id,$the_new_value);
+
+        if ($the_new_value=='') {
+            $other_mobile_deleted=true;
+
+        }
+
+    }
+    elseif ($key=='Customer Fiscal Name') {
+        $customer->update_fiscal_name($the_new_value );
+    }
+    elseif ($key=='Customer Tax Number') {
+        $customer->update_tax_number($the_new_value);
+    }
+    elseif ($key=='Customer Registration Number') {
+        $customer->update_registration_number($the_new_value);
+    }
+    else {
+        $customer->update(array($key=>$the_new_value));
+    }
+
+
+    if ($key=='Add Other Email') {
+        $other_email_added=true;
+    }
+    elseif($key=='Add Other Telephone') {
+        $other_telephone_added=true;
+    }
+    elseif($key=='Add Other FAX') {
+        $other_fax_added=true;
+    }
+    elseif($key=='Add Other Mobile') {
+        $other_mobile_added=true;
+    }
+
+
+
+
+
 
 
 
@@ -2802,11 +2803,14 @@ $other_label=false;
 
         if ($other_email_deleted) {
             $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
-        }elseif ($other_mobile_deleted) {
+        }
+        elseif ($other_mobile_deleted) {
             $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id);
-        }elseif ($other_fax_deleted) {
+        }
+        elseif ($other_fax_deleted) {
             $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id);
-        }elseif ($other_telephone_deleted) {
+        }
+        elseif ($other_telephone_deleted) {
             $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id);
         }
         elseif($other_email_added) {
@@ -2820,7 +2824,8 @@ $other_label=false;
         }
         elseif($other_mobile_added) {
             $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-        }elseif($other_label) {
+        }
+        elseif($other_label) {
             $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
         }
         else {
@@ -2828,7 +2833,7 @@ $other_label=false;
             $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
         }
     } else {
-   
+
         $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
     }
     return $response;
@@ -3924,12 +3929,54 @@ function new_customers_list($data) {
 
 }
 
-function create_custom_field($data)
-{
-	
-	//print_r ($data['values']);
-	$custom_field = new Customfield('find', $data['values'], 'create');
-	
+function create_custom_field($data) {
+
+    //print_r ($data['values']);
+    $custom_field = new Customfield('find', $data['values'], 'create');
+
 }
+
+
+function add_attachment($data) {
+
+    if ($data['scope']=='customer') {
+        return add_attachment_to_customer_history($data);
+    }
+
+}
+
+function add_attachment_to_customer_history($data) {
+    global $editor;
+    $customer=new Customer($data['scope_key']);
+    $customer->editor=$editor;
+
+    $updated=false;
+    foreach($data['files_data'] as $file_data) {
+        $_data=array(
+                   'Filename'=>$file_data['filename_with_path'],
+                   'Attachment Caption'=>$data['caption'],
+                   'Attachment MIME Type'=>$file_data['type'],
+                   'Attachment File Original Name'=>$file_data['original_filename']
+               );
+        $customer->add_attachment($_data);
+        if ($customer->updated) {
+            $updated=$customer->updated;
+        }
+
+
+
+    }
+
+    if ($updated){
+        $response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
+
+}
+else {
+    $response= array('state'=>400,'msg'=>_('Files could not be attached'),'key'=>'attach');
+}
+
+    echo json_encode($response);
+}
+
 
 ?>

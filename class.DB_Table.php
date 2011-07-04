@@ -167,11 +167,11 @@ abstract class DB_Table {
         $key_field=$this->table_name." Key";
         if ($this->table_name=='Supplier Product')
             $key_field='Supplier Product Current Key';
-
+else if ($this->table_name=='Part')
+            $key_field='Part SKU';
 
 
         $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
-
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

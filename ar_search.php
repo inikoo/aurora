@@ -1020,7 +1020,16 @@ function search_locations($data) {
     }
 
 
-    $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part XHTML Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code` from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) left join `Product Part List` PPL on (PPL.`Part SKU`=P.`Part SKU`) left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Product Part Most Recent`="Yes" and `Location Warehouse Key` in (%s) and PD.`Product Code` like "%s%%" group by PL.`Location Key`',$warehouses,addslashes($q));
+    $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part XHTML Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code` 
+    from `Part Location Dimension` PL 
+    left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) 
+    left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) 
+    left join `Product Part List` PPL on (PPL.`Part SKU`=P.`Part SKU`) 
+    left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) 
+    left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) 
+    left join `Store Dimension` on (`Product Store Key`=`Store Key`) 
+    left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) 
+    where `Product Part Most Recent`="Yes" and `Location Warehouse Key` in (%s) and PD.`Product Code` like "%s%%" group by PL.`Location Key`',$warehouses,addslashes($q));
 
 //print $sql;
     $res=mysql_query($sql);

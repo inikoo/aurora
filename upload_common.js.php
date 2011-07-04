@@ -5,9 +5,10 @@ var uploader
 
    	
    function upload() {
+   
 	if (fileID != null) {
 	
-		uploader.upload(fileID, "http://localhost/dw/upload_files.php");
+		uploader.upload(fileID, "../../../../../../prepare_uploaded_files.php");
 		fileID = null;
 	}
 	}
@@ -126,10 +127,56 @@ function init(){
 	
 	// Do something when data is received back from the server.
 	function onUploadResponse(event) {
-		for (x in event){
-		alert(x+' '+event[x])
-		break;
-		}
+	
+	var r =  YAHOO.lang.JSON.parse(event['data']);
+	//alert(event['data'])
+	
+	
+	ar_file='ar_edit_contacts.php';
+	
+	 jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(r.files_data));
+	 var request=ar_file+'?tipo=add_attachment&files_data='+jsonificated_values+'&scope='+Dom.get('attachment_scope').value+'&scope_key='+Dom.get('attachment_scope_key').value+'&caption='+Dom.get('attachment_caption').value
+	alert(request);
+		  
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+		alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				  
+	            var table=tables['table0'];
+		        var datasource=tables['dataSource0'];
+		        var request='';
+		        datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    			
+dialog_attach.hide();
+
+				}else{
+				  
+				    
+				}
+				
+			    }
+			    
+			});
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		//for (x in event){
+		//alert(x+' '+event[x])
+		//break;
+	//	}
 	}
 
 }

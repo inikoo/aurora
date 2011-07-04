@@ -98,7 +98,6 @@ class Attachment extends DB_Table {
                      ,prepare_mysql($data['Attachment File Checksum'])
                     );
 
-        // print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->found=true;
@@ -126,14 +125,14 @@ class Attachment extends DB_Table {
 
 
     function create ($data,$options='') {
-       
+   //    print_r($data);exit;
         $this->data=$this->base_data();
         foreach($data as $key=>$value) {
             if (array_key_exists($key,$this->data))
                 $this->data[$key]=_trim($value);
         }
         $tmp_compresed_file=$data['file'].'.gz';
-     
+     /*
         if($this->compress){
         $this->compress($data['file'],$tmp_compresed_file);
         $fp      = fopen($tmp_compresed_file, 'r');
@@ -142,21 +141,31 @@ class Attachment extends DB_Table {
         //$data['file']=$tmp_compresed_file;
         
         }
-        //unlink($tmp_compresed_file);
+       */
 
+$filename= $data['file'];
 
-        //$this->data['Attachment Filename']=$data['file'];
-
+          $this->data['Attachment Compressed Data'] = addslashes(fread(fopen($filename, "r"), filesize($filename)));
+//print_r($this->data);
 
         $keys='(';
         $values='values(';
         foreach($this->data as $key=>$value) {
 
             $keys.="`$key`,";
+            
+            if($key=='Attachment Compressed Data'){
+              $values.="'".$value."',";
+            }else{
+            
             $_mode=true;
             if ($key=='Attachment Caption')
                 $_mode=false;
             $values.=prepare_mysql($value,$_mode).",";
+            }
+            
+            
+            
         }
 
         $keys=preg_replace('/,$/',')',$keys);
@@ -193,9 +202,14 @@ class Attachment extends DB_Table {
 
 
         } else {
-            exit($sql);
+        $error=mysql_error();
+        if(preg_match('/max_allowed_packet/i',$error));
+             $this->msg='Unknown error';
+        }else{
+            $this->msg='Unknown error';
+          
         }
-
+  $this->error=true;
     }
 
     function get_data($key,$tag) {

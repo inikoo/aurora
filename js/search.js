@@ -188,17 +188,20 @@ function search_users(query) {
     search(query,'users','');
 }
 function search_locations(query) {
-    search(query,'all','locations');
-}
-
-function search_staff(query) {
-    search(query,'staff','staff');
+    search(query,'locations','all');
 }
 
 function search_locations_in_warehouse(query) {
     search(query,'locations','warehouse');
 
 }
+
+
+function search_staff(query) {
+    search(query,'staff','staff');
+}
+
+
 
 
 

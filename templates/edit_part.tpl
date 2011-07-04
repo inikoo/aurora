@@ -134,13 +134,13 @@
 
 <div class="general_options" style="float:right">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_unit" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_unit" class="state_details">{t}Reset{/t}</span>
 	
       </div>
 
-<table class="edit"  style="width:700px">
- <tr class="title"><td colspan=5>{t}Units{/t}</td></tr>
+<table class="edit"  style="width:800px">
+ <tr class="title"><td colspan=5>{t}Unit{/t}</td></tr>
 
 <tr><td style="width:120px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
@@ -160,11 +160,11 @@
 <tr class="first"><td style="" class="label">{t}Unit Description{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Part_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0">
-       <div id="Part_Description_Container" style="" ></div>
+       <input style="text-align:left;width:540px" id="Part_Unit_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0">
+       <div id="Part_Unit_Description_Container" style="" ></div>
      </div>
    </td>
-   <td style="width:200px" id="Part_Description_msg" class="edit_td_alert"></td>
+   <td style="width:200px" id="Part_Unit_Description_msg" class="edit_td_alert"></td>
  </tr>
  
  <tr><td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>

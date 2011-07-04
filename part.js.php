@@ -252,8 +252,8 @@ var change_snapshot_granularity=function(e){
      var datasource=tables.dataSource1;
      Dom.removeClass(Dom.getElementsByClassName('transaction_type','span' , 'transaction_chooser'),'selected');;
      Dom.addClass(this,'selected');     
-     var request='&type='+this.getAttribute('table_type');
-     alert(request);
+     var request='&view='+this.getAttribute('table_type');
+  
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
 
