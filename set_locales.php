@@ -86,4 +86,6 @@ $regex['dimension3']=str_replace('.','\.','/^\d*'.$default_locale_data['decimal_
 $regex['key_filter_number']=str_replace('.','\.','/[\d\b'.$default_locale_data['decimal_point'].$default_locale_data['thosusand_sep'].']/i');
 $regex['key_filter_dimension']=str_replace('.','\.','/[x\d\b'.$default_locale_data['decimal_point'].$default_locale_data['thosusand_sep'].']/i');
 
+
+
 ?>
