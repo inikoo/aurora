@@ -139,21 +139,41 @@ function create($data){
 	
    switch($base_data['Custom Field Table']){
 	case 'Customer':
-	if($base_data['Custom Field Type'] == 'Mediumint'){
-		if($base_data['Default Value'] == '')
-			$base_data['Default Value'] = 0;
-		$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(8) default '%s'", 
-		$base_data['Custom Field Name'], 
-		$base_data['Custom Field Type'],
-		$base_data['Default Value']);
+		if($base_data['Custom Field Type'] == 'Mediumint'){
+			if($base_data['Default Value'] == '')
+				$base_data['Default Value'] = 0;
+			$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(8) default '%s'", 
+			$base_data['Custom Field Name'], 
+			$base_data['Custom Field Type'],
+			$base_data['Default Value']);
+			
+		}
+		elseif($base_data['Custom Field Type'] == 'varchar'){
+			$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(256) default '%s'", 
+			$base_data['Custom Field Name'], 
+			$base_data['Custom Field Type'],
+			$base_data['Default Value']);
+		}
+		mysql_query($sql);
+		print $sql;
+		break;
 		
-	}
-	elseif($base_data['Custom Field Type'] == 'varchar'){
-		$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(256) default '%s'", 
-		$base_data['Custom Field Name'], 
-		$base_data['Custom Field Type'],
-		$base_data['Default Value']);
-	}
+	case 'Part':
+		if($base_data['Custom Field Type'] == 'Mediumint'){
+			if($base_data['Default Value'] == '')
+				$base_data['Default Value'] = 0;
+			$sql = sprintf("ALTER TABLE `Part Custom Field Dimension` ADD `%s` %s(8) default '%s'", 
+			$base_data['Custom Field Name'], 
+			$base_data['Custom Field Type'],
+			$base_data['Default Value']);
+			
+		}
+		elseif($base_data['Custom Field Type'] == 'varchar'){
+			$sql = sprintf("ALTER TABLE `Part Custom Field Dimension` ADD `%s` %s(256) default '%s'", 
+			$base_data['Custom Field Name'], 
+			$base_data['Custom Field Type'],
+			$base_data['Default Value']);
+		}
 		mysql_query($sql);
 		print $sql;
 		break;

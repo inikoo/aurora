@@ -147,11 +147,11 @@
 
 <select>
 {foreach from=$unit_type_options key=value item=label}
-   <option label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
+   <option id="Part_Units_Type" label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
 
 {/foreach}
 </select>
-
+ <div id="Part_Units_Type_Container" style="" ></div>
 
    </td>
    <td id="Part_Units_Type_msg" class="edit_td_alert"></td>
@@ -164,7 +164,7 @@
        <div id="Part_Unit_Description_Container" style="" ></div>
      </div>
    </td>
-   <td style="width:200px" id="Part_Unit_Description_msg" class="edit_td_alert"></td>
+   <td id="Part_Unit_Description_msg" class="edit_td_alert"></td>
  </tr>
  
  <tr><td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>
@@ -182,21 +182,21 @@
   <tr><td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0">
-       <div id="Part_Gross_Weight_Container" style="" ></div>
+       <input style="text-align:left;width:18em" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0">
+       <div id="Part_Package_Volume_Container" style="" ></div>
      </div>
    </td>
-   <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
+   <td id="Part_Package_Volume_msg" class="edit_td_alert"></td>
  </tr>
  
    <tr><td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0">
-       <div id="Part_Gross_Weight_Container" style="" ></div>
+       <input style="text-align:left;width:18em" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0">
+       <div id="Part_Package_MOV_Container" style="" ></div>
      </div>
    </td>
-   <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
+   <td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
  </tr>
  
 </table>
@@ -205,8 +205,8 @@
 
 <div class="general_options" style="float:right">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_description" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_description" class="state_details">{t}Reset{/t}</span>
 	
       </div>
 
@@ -220,23 +220,23 @@
 <tr><td style="width:200px" class="label">{t}General Description{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:25em;position:" >
-    <textarea id="Product_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Product Description')}"  ovalue="{$part->get('Product Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Product Description')}</textarea>
-       <div id="Product_Description_Container" style="" ></div>
+    <textarea id="Part_General_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Part General Description')}"  ovalue="{$part->get('Part General Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Part General Description')}</textarea>
+       <div id="Part_General_Description_Container" style="" ></div>
      </div>
    </td>
-   <td id="Product_Description_msg" class="edit_td_alert"></td>
+   <td id="Part_General_Description_msg" class="edit_td_alert"></td>
  </tr>
 
 <tr>
 <td style="width:200px" class="label">{t}Health & Safety{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:25em;" >
-    <textarea id="Product_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Product Description')}"  ovalue="{$part->get('Product Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Product Description')}</textarea>
-       <div id="Product_Description_Container" style="" ></div>
+    <textarea id="Part_Health_And_Safety"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Part Health And Safety')}"  ovalue="{$part->get('Part Health And Safety')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Part Health And Safety')}</textarea>
+       <div id="Part_Health_And_Safety_Container" style="" ></div>
      </div>
    </td>
-   <td id="Product_Description_msg" class="edit_td_alert"></td>
- </tr>
+   <td id="Part_Health_And_Safety_msg" class="edit_td_alert"></td>
+ </tr>	
 
 </table>
 
