@@ -813,7 +813,7 @@ dialog_new_sticky_note.render();
 dialog_sticky_note = new YAHOO.widget.Dialog("dialog_sticky_note", {context:["sticky_note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_sticky_note.render();
 
-dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_attach.render();
 
 dialog_link = new YAHOO.widget.Dialog("dialog_link", {context:["link","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
