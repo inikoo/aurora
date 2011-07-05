@@ -3112,6 +3112,8 @@ PRIMARY KEY ( `Customer Key` )
 
 ALTER TABLE `Store Dimension` ADD `Store Telecom Format` VARCHAR( 256 ) NOT NULL DEFAULT 'GBR' AFTER `Store Slogan` ;
 
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
+
 */
 
 ?>

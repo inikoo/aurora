@@ -38,7 +38,17 @@ $data=prepare_values($_REQUEST,array(
 
 break;
 
+case('edit_part_description'):
+$data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                              'okey'=>array('type'=>'string'),
+                              'sku'=>array('type'=>'key'),
+                             ));
+ edit_part($data);
 
+
+break;
 case('edit_part_list'):
 $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'json array'),
@@ -2913,7 +2923,13 @@ if(!$part->sku){
 }
 
 $key_dic=array(
-'Part_Unit_Description'=>'Part Unit Description'
+'Part_Unit_Description'=>'Part Unit Description',
+'Part_Gross_Weight'=>'Part Gross Weight',
+'Part_Package_Volume'=>'Part Package Volume',
+'Part_Package_Minimun_Orthogonal_Volume'=>'Part Package Minimun Orthogonal Volume',
+'Part_Unit'=>'Part Unit',
+'Part_General_Description'=>'Part General Description',
+'Part_Health_And_Safety'=>'Part Health And Safety'
 );
 
     if (array_key_exists($data['key'],$key_dic))

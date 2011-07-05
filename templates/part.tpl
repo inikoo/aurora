@@ -35,6 +35,10 @@
       <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From Datetime')}</td></tr>
 	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
 	<tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
+	
+	{foreach from=$show_case key=name item=value}
+	<tr><td>{$name}:</td><td>{$value}</td></tr>
+	{/foreach}
     </table>
     <table   {if !$details}style="display:none"{/if} class="show_info_product">
       <tr >
@@ -252,7 +256,63 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
- <div id="block_description" class="data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
+ <div id="block_description" class="data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+ 
+ <h2 style="clear:both">{t}Unit Details{/t}</h2>
+
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+
+	<tr>
+		<td>{t}Unit Type{/t}:</td><td>{$part->get('Units Type')}</td>
+	</tr>
+	<tr>
+		<td>{t}Unit Description{/t}:</td><td>{$part->get('Part Unit Description')}</td>
+	</tr>
+	<tr>
+		<td>{t}Gross Weight{/t}:</td><td>{$part->get('Part Gross Weight')}</td>
+	</tr>
+	<tr>
+		<td>{t}Package Volume{/t}:</td><td>{$part->get('Part Package Volume')}</td>
+	</tr>
+	<tr>
+		<td>{t}Package MOV{/t}:</td><td>{$part->get('Part Package Minimun Orthogonal Volume')}</td>
+	</tr>
+</table>
+</div>
+ 
+ <h2 style="clear:both">{t}Description{/t}</h2>
+
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+
+	<tr>
+		<td>{t}General Description{/t}:</td><td>{$part->get('Part General Description')}</td>
+	</tr>
+	<tr>
+		<td>{t}Health & Safety{/t}:</td><td>{$part->get('Part Health And Safety')}</td>
+	</tr>
+
+</table>
+
+
+<h2 style="clear:both">{t}Custom Fields{/t}</h2>
+
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+
+		  {foreach from=$part_custom_fields key=name item=value}
+		  <tr>
+		  <td>{$name}:</td><td>{$value}</td>
+		  </tr>
+		  {/foreach}
+		</table>
+</div>  
+  
+</div> 
+ 
+ 
+ </div>
  <div id="block_sales" class="data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
   
   <div   style="margin-top:20px;width:900px">
