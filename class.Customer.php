@@ -1406,7 +1406,7 @@ class Customer extends DB_Table {
     
     
     function update_other_email_label($email_key,$label){
-     if (!array_key_exists($email_key,$this->get_other_emails_data())) {
+     if (!array_key_exists($email_key,$this->get_email_keys())) {
             $this->error=true;
             $this->msg=_('Email not associated with customer');
             return;
@@ -1525,7 +1525,7 @@ class Customer extends DB_Table {
 
 
   function update_other_telecom_label($type,$telecom_key,$label){
-     if (!array_key_exists($telecom_key,$this->get_other_telecoms_data($type))) {
+     if (!array_key_exists($telecom_key,$this->get_telecom_keys($type))) {
             $this->error=true;
             $this->msg=_('Telecom not associated with customer');
             return;
@@ -1536,7 +1536,7 @@ class Customer extends DB_Table {
         $telecom_key,
         $this->id
         );
-        //print $sql;
+       // print $sql;
         mysql_query($sql);
         
         if(mysql_affected_rows()){
@@ -3326,7 +3326,7 @@ class Customer extends DB_Table {
                               'Indirect Object'=>'Customer',
                               'Indirect Object Key'=>$this->id
                           );
-            $this->add_customer_history($history_data);
+            $this->add_customer_history($history_data,true,'No','Attachments');
             $this->updated=true;
             $this->new_value='';
         }
@@ -3513,6 +3513,28 @@ class Customer extends DB_Table {
         return $this->get_other_telecoms_data('Telephone');
     }
 
+
+
+function get_principal_telecom_comment($type) {
+    $comment='';
+    if ($this->data['Customer Main '.$type.' Key']) {
+
+        $sql=sprintf("select `Telecom Description` from `Telecom Bridge` B where `Telecom Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
+                     $this->data['Customer Main '.$type.' Key'],
+                     $this->id
+                    );
+        $result=mysql_query($sql);
+//print $sql;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $comment=$row['Telecom Description'];
+        }
+    }
+
+    return $comment;
+}
+
+
+
     function get_other_telecoms_data($type='Telephone') {
 
         $sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Customer' and `Subject Key`=%d ",
@@ -3538,6 +3560,25 @@ class Customer extends DB_Table {
         return $telecom_keys;
 
     }
+
+
+function get_principal_email_comment() {
+    $comment='';
+    if ($this->data['Customer Main Email Key']) {
+
+        $sql=sprintf("select `Email Description` from `Email Bridge` B where `Email Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
+                     $this->data['Customer Main Email Key'],
+                     $this->id
+                    );
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $comment=$row['Email Description'];
+        }
+    }
+
+    return $comment;
+}
 
 
     function get_other_emails_data() {
@@ -4313,9 +4354,9 @@ class Customer extends DB_Table {
 
  function display_contact_address($tipo='xhtml') {
         switch ($tipo) {
- case 'label':
+        case 'label':
             $address=new address($this->data['Customer Main Address Key']);
-            return $address->display('label');
+            return $this->data['Customer Name']."\n".($this->data['Customer Type']=='Company'?$this->data['Customer Main Contact Name']."\n":'').$address->display('label');
             break;
         case 'xhtml':
             $address=new address($this->data['Customer Main Address Key']);

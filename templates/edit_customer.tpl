@@ -270,7 +270,7 @@
  </tr>
 
 
- <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
+ <tr class=""><td style="" class="label"><img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
@@ -313,7 +313,7 @@
 
 
 
- <tr class=""><td style="" class="label">{t}Contact Telephone{/t}:</td>
+ <tr class=""><td style="" class="label"><img  id="comment_icon_telephone" src="{if $customer->get_principal_telecom_comment('Telephone')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Telephone Key')==''}display:none{/if}" onClick="change_comment(this,'telephone',{$customer->get('Customer Main Telephone Key')})"> {t}Contact Telephone{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
@@ -355,7 +355,7 @@
  
  
  
-  <tr class=""><td style="" class="label">{t}Contact Mobile{/t}:</td>
+  <tr class=""><td style="" class="label"><img  id="comment_icon_mobile" src="{if $customer->get_principal_telecom_comment('Mobile')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Mobile Key')==''}display:none{/if}" onClick="change_comment(this,'mobile',{$customer->get('Customer Main Mobile Key')})"> {t}Contact Mobile{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
@@ -398,7 +398,7 @@
  </tr>
  
  
-<tr class=""><td style="" class="label">{t}Contact Fax{/t}:</td>
+<tr class=""><td style="" class="label"><img  id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onClick="change_comment(this,'fax',{$customer->get('Customer Main FAX Key')})"> {t}Contact Fax{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
@@ -694,6 +694,33 @@
     <span  class="unselectable_text button"    style="visibility:hidden;" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
     <span  style="display:block;margin-top:5px" onclick="save_other_field_label()" id="note_save"  class="unselectable_text button"   >{t}Save{/t}</span></td></tr>
+</table>
+</div>
+
+
+<div id="dialog_comment">
+  <div id="comment_msg"></div>
+    <input type="hidden" value="" id="comment_scope"/>
+
+  <input type="hidden" value="" id="comment_scope_key"/>
+  
+  
+    <input type="hidden" value="{$customer->get_principal_telecom_comment('Telephone')}" id="comment_telephone"/>
+        <input type="hidden" value="{$customer->get_principal_telecom_comment('FAX')}" id="comment_fax"/>
+    <input type="hidden" value="{$customer->get_principal_telecom_comment('Mobile')}" id="comment_mobile"/>
+    <input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email"/>
+
+  <table style="padding:20px;margin:20px 10px 10px 5px" >
+ <tr><td>{t}Comment{/t}:</td></tr>
+    <tr><td colspan=2>
+	<input  id="comment" value=""  /> 
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%;">
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text button"    style="visibility:hidden;" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  style="display:block;margin-top:5px" onclick="save_comment()" id="comment_save"  class="unselectable_text button"   >{t}Save{/t}</span></td></tr>
 </table>
 </div>
 
