@@ -111,13 +111,13 @@ class Attachment extends DB_Table {
 
 
         if ($create) {
-            if ($this->found) {
-                $this->update($raw_data,$options);
-            } else {
+           // if ($this->found) {
+            //    $this->update($raw_data,$options);
+          //  } else {
 
                 $this->create($data,$options);
 
-            }
+        //    }
 
 
         }
@@ -204,7 +204,7 @@ class Attachment extends DB_Table {
         } else {
             $error=mysql_error();
             if (preg_match('/max_allowed_packet/i',$error)) {
-                $this->msg='Unknown error';
+                $this->msg="Got a packet bigger than 'max_allowed_packet' bytes ";
             } else {
                 $this->msg='Unknown error';
 

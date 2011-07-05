@@ -136,11 +136,11 @@ function init(){
 	
 	 jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(r.files_data));
 	 var request=ar_file+'?tipo=add_attachment&files_data='+jsonificated_values+'&scope='+Dom.get('attachment_scope').value+'&scope_key='+Dom.get('attachment_scope_key').value+'&caption='+Dom.get('attachment_caption').value
-	alert(request);
+	//alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-		alert(o.responseText);
+	//	alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				  
@@ -151,7 +151,7 @@ function init(){
 dialog_attach.hide();
 
 				}else{
-				  
+				  Dom.get('attach_msg').innerHTML=r.msg;
 				    
 				}
 				
