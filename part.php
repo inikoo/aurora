@@ -108,6 +108,47 @@ $subject_id=$part->id;
 $warehouse_key=0;
 
 
+//show case 		
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Part'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[]=$row['Custom Field Name'];
+}
+
+
+$show_case=Array();
+$sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $name){
+		$show_case[$name]=$row[$name];
+	}
+}
+
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[]=$row['Custom Field Name'];
+}
+
+$part_custom_fields=Array();
+$sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $name){
+		$part_custom_fields[$name]=$row[$name];
+	}
+}
+
+$smarty->assign('show_case',$show_case);	
+$smarty->assign('part_custom_fields',$part_custom_fields);	
+
 
 
 $general_options_list=array();

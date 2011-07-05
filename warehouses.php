@@ -3,9 +3,6 @@ include_once('common.php');
 include_once('class.Warehouse.php');
 include_once('location_header_functions.php');
 
-
-
-
 if (!($user->can_view('warehouses')  ) ) {
     header('Location: index.php');
     exit;
@@ -23,6 +20,8 @@ $general_options_list=array();
 if ($modify) {
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouses'));
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Add Warehouse'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'part_configuration.php','label'=>_('Part Configuration'));
+
 }
 
 $smarty->assign('general_options_list',$general_options_list);

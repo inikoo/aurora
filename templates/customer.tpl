@@ -224,12 +224,12 @@
   <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
 
-<h2 style="clear:both">{t}custom Fields{/t}</h2>
+<h2 style="clear:both">{t}Custom Fields{/t}</h2>
 
 <div style="float:left;width:450px">
 <table    class="show_info_product">
 
-		  {foreach from=$show_case key=name item=value}
+		  {foreach from=$customer_custom_fields key=name item=value}
 		  <tr>
 		  <td>{$name}:</td><td>{$value}</td>
 		  </tr>

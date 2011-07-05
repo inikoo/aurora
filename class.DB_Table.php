@@ -104,7 +104,7 @@ abstract class DB_Table {
 		
         $base_data=$this->base_data();
 
-
+	
         if (preg_match('/^Address.*Data$/',$field))
             $this->update_field($field,$value,$options);
         elseif(array_key_exists($field,$base_data)) {
@@ -114,6 +114,7 @@ abstract class DB_Table {
                 $this->update_field($field,$value,$options);
             }
         }
+
 
 
 
