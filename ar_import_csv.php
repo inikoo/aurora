@@ -304,7 +304,7 @@ function insert_customers_from_csv() {
         else
             $customer_data['Customer Name']=$customer_data['Customer Main Contact Name'];
 
-
+   
 
 
         if ($customer_data['Customer Address Country 2 Alpha Code']!='') {
@@ -328,8 +328,8 @@ function insert_customers_from_csv() {
 
 //exit;
 
-
-
+   
+ 
         $customer=new Customer('find complete',$customer_data);
 
         // print_r($customer_data);

@@ -25,6 +25,7 @@ $general_options_list=array();
 if($modify or true)
 
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'part_configuration.php','label'=>_('Part Configuration'));
 
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
