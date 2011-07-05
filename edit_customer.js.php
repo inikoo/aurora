@@ -61,6 +61,7 @@ var send_post_type='<?php echo $send_post_type;?>';
 var Dom   = YAHOO.util.Dom;
 var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 var dialog_other_field_label;
+var dialog_comment;
 
 //  	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
 
@@ -822,11 +823,43 @@ reset_address(false,'billing_')
 }
 
 
+//change_comment
+
+
+function change_comment(o,type,key){
+
+ var pos = Dom.getXY(o);
+ 
+
+ Dom.get('comment_scope_key').value=key;
+ Dom.get('comment_scope').value=type;
+
+
+
+
+ if(type=='email'){
+
+
+    Dom.get('comment').value=Dom.get('comment_email').value;
+ }else if(type=='telephone'){
+    Dom.get('comment').value=Dom.get('comment_telephone').value;
+ }else if(type=='mobile'){
+    Dom.get('comment').value=Dom.get('comment_mobile').value;
+ }else if(type=='fax'){
+    Dom.get('comment').value=Dom.get('comment_fax').value;
+ }
+
+  dialog_comment.show();
+  Dom.setXY('dialog_comment', pos);
+  Dom.get("comment").focus();
+}
+
+
 function change_other_field_label(o,type,key){
 
  var pos = Dom.getXY(o);
  
- Dom.setXY('Editor_audit', pos);
+
 
  Dom.get('other_field_label_scope_key').value=key;
  Dom.get('other_field_label_scope').value=type;
@@ -886,6 +919,68 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 		}
 	    });        
 }
+
+function save_comment(){
+
+
+
+var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').value;
+
+ var data_to_update=new Object;
+ data_to_update[tipo]={'okey':tipo,'value':Dom.get("comment").value}
+
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+
+var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
+
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+	//	alert(o.responseText)
+		    var ra =  YAHOO.lang.JSON.parse(o.responseText);
+		      for (x in ra){
+               r=ra[x]
+		    
+		    if (r.state==200) {
+		    
+			
+			dialog_comment.hide()
+
+
+  
+  
+
+ if(r.scope=='email'){
+Dom.get('comment_email').value=r.newvalue;
+                }else if(r.scope=='telephone'){
+Dom.get('comment_telephone').value=r.newvalue;
+                }else if(r.scope=='mobile'){
+Dom.get('comment_mobile').value=r.newvalue;
+                }else if(r.scope=='fax'){
+Dom.get('comment_fax').value=r.newvalue;
+                }
+
+
+
+            if(r.newvalue==''){
+              
+Dom.get('comment_icon_'+r.scope).src='art/icons/comment.gif';
+            }else{
+                 
+           Dom.get('comment_icon_'+r.scope).src='art/icons/comment_filled.gif';
+
+            }
+   
+			
+		    }else
+			Dom.get('comment_msg').innerHTML=r.msg;
+		}
+		}
+	    });        
+	
+
+}
+
 
 function save_other_field_label(){
 
@@ -956,9 +1051,6 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 }
 
-
-
-
 function post_item_updated_actions(branch,r){
 key=r.key;
 newvalue=r.newvalue;
@@ -1008,6 +1100,9 @@ function init(){
 dialog_other_field_label = new YAHOO.widget.Dialog("dialog_other_field_label", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_other_field_label.render();
 
+
+dialog_comment = new YAHOO.widget.Dialog("dialog_comment", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_comment.render();
 
     Event.addListener("display_add_other_email", "click", display_add_other_email , true);
 
