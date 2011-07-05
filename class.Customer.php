@@ -599,8 +599,8 @@ class Customer extends DB_Table {
 		
 		$sql="insert into `Customer Dimension` ($keys) values ($values)";
 		
-        //  print $sql;
-
+      //   print $sql;
+//exit;
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();

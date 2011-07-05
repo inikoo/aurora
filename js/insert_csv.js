@@ -51,8 +51,8 @@ success:function(o) {
 function init(){
 
 
-//read_results();
-//insert_data();
+read_results();
+insert_data();
 }
 
 YAHOO.util.Event.onDOMReady(init);
