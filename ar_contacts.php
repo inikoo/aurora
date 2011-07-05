@@ -5249,7 +5249,7 @@ function list_customers_lists() {
     $_SESSION['state']['customers']['list']['f_value']=$f_value;
     
     
-     $where=' where `List Scope`="Product"';
+     $where=' where `List Scope`="Customer"';
     
 
 
@@ -5315,7 +5315,9 @@ function list_customers_lists() {
 
 
     $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
-    $adata=array();
+   
+   
+   $adata=array();
 
 
 

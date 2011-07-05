@@ -4313,9 +4313,9 @@ class Customer extends DB_Table {
 
  function display_contact_address($tipo='xhtml') {
         switch ($tipo) {
- case 'label':
+        case 'label':
             $address=new address($this->data['Customer Main Address Key']);
-            return $address->display('label');
+            return $this->data['Customer Name']."\n".($this->data['Customer Type']=='Company'?$this->data['Customer Main Contact Name']."\n":'').$address->display('label');
             break;
         case 'xhtml':
             $address=new address($this->data['Customer Main Address Key']);
