@@ -111,7 +111,7 @@ $pdf->SetFont('times', '', 10);
 $pdf->AddPage($label_data['PDF_PAGE_ORIENTATION'], $resolution);
 
 // set cell padding
-$pdf->setCellPaddings(1, 1, 1, 1);
+$pdf->setCellPaddings(2, 4, 1, 2);
 
 // set cell margins
 $pdf->setCellMargins($label_data['CELL_MARGIN_LEFT'], $label_data['CELL_MARGIN_TOP'], $label_data['CELL_MARGIN_RIGHT'], $label_data['CELL_MARGIN_BOTTOM']);
@@ -146,7 +146,7 @@ if ($type=='list') {
                     $label_data['CELL_WIDTH'],
                     $label_data['CELL_HEIGHT'],
                     $customer->display_contact_address('label'),
-                    0,
+                    1,
                     'C',
 
                     0,

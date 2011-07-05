@@ -4,6 +4,10 @@ var Event = YAHOO.util.Event;
 function insert_data(){
    var ar_file='ar_import_csv.php';
     var request=ar_file+'?tipo=insert_data'; 
+    
+    
+    
+    
     YAHOO.util.Connect.asyncRequest('POST',request ,{});
 }
 
@@ -47,8 +51,8 @@ success:function(o) {
 function init(){
 
 
-read_results();
-insert_data();
+//read_results();
+//insert_data();
 }
 
 YAHOO.util.Event.onDOMReady(init);
