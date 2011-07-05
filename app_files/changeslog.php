@@ -3114,6 +3114,14 @@ ALTER TABLE `Store Dimension` ADD `Store Telecom Format` VARCHAR( 256 ) NOT NULL
 
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 
+
+alter table `Part Dimension` add column `Part General Description` varchar(255) after `Part Unit Description`;
+alter table `Part Dimension` add column `Part Health And Safety` varchar(255) after `Part General Description`;
+ALTER TABLE `Part Dimension` CHANGE `Part General Description` `Part General Description` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Part Health And Safety` `Part Health And Safety` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+CREATE TABLE `Part Custom Field Dimension` (`Part SKU` MEDIUMINT UNSIGNED NOT NULL) ENGINE = MYISAM ;
+ALTER TABLE `Part Custom Field Dimension` ADD INDEX ( `Part SKU` ) ;
+
+
 */
 
 ?>
