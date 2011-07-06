@@ -194,7 +194,24 @@ DB: `Site Dimension`
 	   <td id="url_msg" class="edit_td_alert" ></td>
 	  </tr>
 	
-	
+	<tr><td class="label">{t}Store Address{/t}:</td><td>
+	  <div>
+	   <textarea id="address"  changed=0 olength="{$store->get('Store Address')}"  value="{$store->get('Store Address')}"  ovalue="{$store->get('Store Address')}"  ohash="{$store->get('Product Description MD5 Hash')}" rows="6" cols="42">{$store->get('Store Address')}</textarea>
+	   <div id="address_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="address_msg" class="edit_td_alert" ></td>
+	 </tr>
+	 
+	 <tr><td class="label">{t}Short Marketing Description{/t}:</td><td>
+	  <div  >
+	   <input  id="marketing_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="{$store->get('Short Marketing Description')}" ovalue="{$store->get('Short Marketing Description')}" />
+	   <div id="marketing_description_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="marketing_description_msg" class="edit_td_alert" ></td>
+	 </tr>
 	
 	</table>
       </div>
