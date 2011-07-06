@@ -45,8 +45,8 @@ function add_customer($data) {
         $data['Customer Main Contact Key']=$contact->id;
         unset($contact);
 
-    } else 
-    {
+    } 
+    else {//Company
         $data['Customer Company Name']=$data['Customer Name'];
 
         $contact=new Contact();
@@ -54,6 +54,10 @@ function add_customer($data) {
 
         $contact_data=array();
         foreach($data as $key=>$val) {
+        
+         if ($key=='Customer Name') {
+             continue;
+            } 
             if ($key=='Customer Main Contact Name') {
                 $_key='Contact Name';
             } else {
@@ -63,8 +67,10 @@ function add_customer($data) {
             if (preg_match('/telephone|fax/i',$key)) {
                 $val='';
             }
+        
             $contact_data[$_key]=$val;
         }
+        
         $contact->create($contact_data);
         $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
 
