@@ -258,6 +258,10 @@ class EmailCampaign extends DB_Table {
         return $subjects;
     }
 
+function get_contents_array() {
+return unserialize($this->get_contents_serialized_array());
+
+}
     function get_contents_serialized_array() {
         $content_keys=$this->get_content_data_keys();
         $email_contents_array=array();
