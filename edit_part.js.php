@@ -15,7 +15,25 @@ include_once('common.php');
 //$_parts=preg_replace("/\,$/","",$_parts);
 //print "\nvar part_list={ $_parts };";
 
+//show case 		
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+}
 
+
+$show_case=Array();
+$sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $_REQUEST['sku']);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $key=>$value){
+		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
+	}
+}
 
 
  ?>
@@ -60,13 +78,30 @@ var validate_scope_data=
 	,'has_description':{'changed':false,'validated':true,'required':true,'group':2,'type':'item','dbname':'Part_Health_And_Safety','name':'Part_Health_And_Safety','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}	
 
 	}
+	
+	 , 'part_custom_field':{
+<?php
+$i=0;
+foreach($show_case as $custom_key=>$custom_value){
+if($i)print ",";
+printf("'custom_field_part_%s':{'changed':false,'validated':true,'required':true,'group':3,'type':'item','name':'Part_%s', 'dbname':'%s','ar':false, 'validation':[{'regexp':\"[a-z\\d]+\",'invalid_msg':'Invalid %s'}]}\n",
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_key
+);
+$i++;
+}
 
+?>	
+}	
     };
 var validate_scope_metadata={
     'part_unit':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
     ,'part_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
     ,'part_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
     ,'part_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
+	,'part_custom_field':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'sku','key':part_sku}
 };
 
 function validate_Part_Unit_Description(query){
@@ -96,6 +131,18 @@ function validate_Part_General_Description(query){
 function validate_Part_HAS_Description(query){
  validate_general('part_description','has_description',query);
 }
+
+<?php
+
+foreach($show_case  as $custom_key=>$custom_value){
+
+printf("function validate_part_%s(query){validate_general('part_custom_field','custom_field_part_%s',query);}"
+, $custom_value['lable']
+, $custom_value['lable']
+);
+}
+
+?>
 
 /*
 function validate_part_special_characteristic(query){
@@ -192,6 +239,14 @@ function save_edit_part_description(){
 }
 function reset_edit_part_description(){
     reset_edit_general('part_description')
+}
+
+
+function save_edit_custom_field(){
+    save_edit_general('part_custom_field');
+}
+function reset_edit_custom_field(){
+    reset_edit_general('part_custom_field')
 }
 
 
@@ -579,6 +634,9 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 	Event.addListener('save_edit_part_description', "click", save_edit_part_description);
     Event.addListener('reset_edit_part_description', "click", reset_edit_part_description);
 	
+	Event.addListener('save_edit_part_custom_field', "click", save_edit_custom_field);
+    Event.addListener('reset_edit_part_custom_field', "click", reset_edit_custom_field);
+	
    // Event.addListener('save_edit_part_price', "click", save_edit_price);
     //Event.addListener('reset_edit_part_price', "click", reset_edit_price);
 
@@ -632,6 +690,25 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 	var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Health_And_Safety","Part_Health_And_Safety_Container", part_has_description_oACDS);
 	part_gross_weight_oAutoComp.minQueryLength = 0; 
 	part_gross_weight_oAutoComp.queryDelay = 0.1;
+	
+<?php
+
+foreach($show_case as $custom_key=>$custom_value){
+printf("var part_%s_oACDS = new YAHOO.util.FunctionDataSource(validate_part_%s);\npart_%s_oACDS.queryMatchContains = true;\nvar part_%s_oAutoComp = new YAHOO.widget.AutoComplete('Part_%s','Part_%s_Container', part_%s_oACDS);\npart_%s_oAutoComp.minQueryLength = 0;\npart_%s_oAutoComp.queryDelay = 0.1;",
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable']
+);
+}
+
+?>
+	
 	
 /*
 	var part_name_oACDS = new YAHOO.util.FunctionDataSource(validate_part_description);

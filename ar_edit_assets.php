@@ -49,6 +49,18 @@ $data=prepare_values($_REQUEST,array(
 
 
 break;
+case('edit_part_custom_field'):
+$data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                              'okey'=>array('type'=>'string'),
+                              'sku'=>array('type'=>'key'),
+                             ));
+ edit_part($data);
+
+
+break;
+
 case('edit_part_list'):
 $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'json array'),
@@ -2929,19 +2941,30 @@ $key_dic=array(
 'Part_Package_Minimun_Orthogonal_Volume'=>'Part Package Minimun Orthogonal Volume',
 'Part_Unit'=>'Part Unit',
 'Part_General_Description'=>'Part General Description',
+'Part_Health_And_Safety'=>'Part Health And Safety',
+'Part_Health_And_Safety'=>'Part Health And Safety',
 'Part_Health_And_Safety'=>'Part Health And Safety'
 );
 
+
+		
     if (array_key_exists($data['key'],$key_dic))
             $key=$key_dic[$data['key']];
-
-        $the_new_value=_trim($data['newvalue']);
+	else
+		    $key=$data['okey'];
+	
+    $the_new_value=_trim($data['newvalue']);
         
+     if (preg_match('/^custom_field_part/i',$key)) {
+        $custom_id=preg_replace('/^custom_field_/','',$key);
+        $part->update_custom_fields($key, $the_new_value);
+	}
+	else{
+		$part->update(array($key=>$the_new_value));
+	}
      
-     $part->update(array($key=>$the_new_value));
      
-     
-        if ($part->updated) {
+    if ($part->updated) {
 
     
 
@@ -2953,19 +2976,9 @@ $key_dic=array(
     }
      echo json_encode($response); 
  exit;
-
      
-     
-     
-     
-     
-     
-     
-     
-     
-     
-        
 
 }
+
 
 ?>

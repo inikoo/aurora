@@ -354,7 +354,7 @@ if($row=mysql_fetch_array($res)){
 		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
 	}
 }
-print_r($show_case);
+//print_r($show_case);
 $smarty->assign('show_case',$show_case);	
 
 
