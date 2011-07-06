@@ -348,26 +348,27 @@ $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Show
 $res = mysql_query($sql);
 while($row=mysql_fetch_array($res))
 {
-	$custom_field[]=$row['Custom Field Name'];
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
-
 
 $show_case=Array();
 $sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
 
-	foreach($custom_field as $name){
-		$show_case[$name]=$row[$name];
+	foreach($custom_field as $key=>$value){
+		$show_case[$value]=$row[$key];
 	}
 }
+
+
 
 $custom_field=Array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer'");
 $res = mysql_query($sql);
 while($row=mysql_fetch_array($res))
 {
-	$custom_field[]=$row['Custom Field Name'];
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
 $customer_custom_fields=Array();
@@ -375,8 +376,8 @@ $sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Ke
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
 
-	foreach($custom_field as $name){
-		$customer_custom_fields[$name]=$row[$name];
+	foreach($custom_field as $key=>$value){
+		$customer_custom_fields[$value]=$row[$key];
 	}
 }
 

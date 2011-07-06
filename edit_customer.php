@@ -337,11 +337,11 @@ $smarty->assign('hq_country',$myconf['country']);
 
 //show case 		
 $custom_field=Array();
-$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Customer'");
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer'");
 $res = mysql_query($sql);
 while($row=mysql_fetch_array($res))
 {
-	$custom_field[]=$row['Custom Field Name'];
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
 
@@ -350,11 +350,11 @@ $sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Ke
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
 
-	foreach($custom_field as $name){
-		$show_case[$name]=$row[$name];
+	foreach($custom_field as $key=>$value){
+		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
 	}
 }
-
+print_r($show_case);
 $smarty->assign('show_case',$show_case);	
 
 

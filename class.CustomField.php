@@ -132,6 +132,11 @@ function create($data){
     
 	//print $sql;
     if(mysql_query($sql)){
+		$sql=sprintf("select `Custom Field Key` from `Custom Field Dimension` order by `Custom Field Key` DESC");
+		$res=mysql_query($sql);
+		$row=mysql_fetch_array($res);
+		$custom_id=$row['Custom Field Key'];
+		
       $this->id = mysql_insert_id();
       $this->msg=_("Custom Field");
       $this->get_data('id',$this->id);
@@ -143,14 +148,14 @@ function create($data){
 			if($base_data['Default Value'] == '')
 				$base_data['Default Value'] = 0;
 			$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(8) default '%s'", 
-			$base_data['Custom Field Name'], 
+			$custom_id, 
 			$base_data['Custom Field Type'],
 			$base_data['Default Value']);
 			
 		}
 		elseif($base_data['Custom Field Type'] == 'varchar'){
-			$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(256) default '%s'", 
-			$base_data['Custom Field Name'], 
+			$sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(255) default '%s'", 
+			$custom_id, 
 			$base_data['Custom Field Type'],
 			$base_data['Default Value']);
 		}
@@ -163,14 +168,14 @@ function create($data){
 			if($base_data['Default Value'] == '')
 				$base_data['Default Value'] = 0;
 			$sql = sprintf("ALTER TABLE `Part Custom Field Dimension` ADD `%s` %s(8) default '%s'", 
-			$base_data['Custom Field Name'], 
+			$custom_id, 
 			$base_data['Custom Field Type'],
 			$base_data['Default Value']);
 			
 		}
 		elseif($base_data['Custom Field Type'] == 'varchar'){
-			$sql = sprintf("ALTER TABLE `Part Custom Field Dimension` ADD `%s` %s(256) default '%s'", 
-			$base_data['Custom Field Name'], 
+			$sql = sprintf("ALTER TABLE `Part Custom Field Dimension` ADD `%s` %s(255) default '%s'", 
+			$custom_id, 
 			$base_data['Custom Field Type'],
 			$base_data['Default Value']);
 		}
