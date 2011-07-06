@@ -2756,7 +2756,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
         $customer->update_tax_number($the_new_value);
     }elseif ($key=='Customer Registration Number') {
         $customer->update_registration_number($the_new_value);
-    }elseif (preg_match('/^custom_field_/i',$key)) {
+    }elseif (preg_match('/^custom_field_customer/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
 		//print $key;
         $customer->update_custom_fields($key, $the_new_value);

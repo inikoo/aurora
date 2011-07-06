@@ -109,7 +109,7 @@ _('Invalid Mobile')
 }
 
 foreach($show_case  as $custom_key=>$custom_value){
-printf(",'custom_field_%s':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_%s'}",
+printf(",'custom_field_customer_%s':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_%s'}",
 $custom_value['lable'],
 $custom_value['lable']
 );
@@ -392,7 +392,7 @@ function validate_customer_mobile(query){
 <?php
 
 foreach($show_case  as $custom_key=>$custom_value){
-printf("function validate_customer_%s(query){\nvalidate_general('customer','custom_field_%s',unescape(query));\nif(query=='')\n{validate_scope('customer');\nDom.get('Customer_%s_msg').innerHTML='This operation will remove the %s';\n}}\n"
+printf("function validate_customer_%s(query){\nvalidate_general('customer','custom_field_customer_%s',unescape(query));\nif(query=='')\n{validate_scope('customer');\nDom.get('Customer_%s_msg').innerHTML='This operation will remove the %s';\n}}\n"
 
 , $custom_value['lable']
 , $custom_value['lable']

@@ -123,6 +123,9 @@ class part extends DB_Table {
     }
 
 
+	function update_custom_fields($id, $value){
+		$this->update(array($id=>$value));	
+	}
 
 
     function load($data_to_be_read,$args='') {

@@ -231,6 +231,28 @@ $smarty->assign('title',_('Editing').' '.$part->formated_sku());
 //$smarty->assign('cat_theme',$cat_theme);
 
 
+//show case 		
+$custom_field=Array();
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
+$res = mysql_query($sql);
+while($row=mysql_fetch_array($res))
+{
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+}
+
+
+$show_case=Array();
+$sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+
+	foreach($custom_field as $key=>$value){
+		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
+	}
+}
+//print_r($show_case);
+$smarty->assign('show_case',$show_case);
+
 $smarty->display('edit_part.tpl');
 
 
