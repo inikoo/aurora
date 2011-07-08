@@ -1,0 +1,148 @@
+/* CSS Document */
+
+a:link, a:visited {
+	color: #84409e;
+}
+
+#logo {
+	background: #a745c8 url(../images/skins/orchid/logo-bg.gif) repeat-x 0 bottom;
+	border-right: 1px solid #1a0326;
+	border-bottom: 3px solid #1a0326;
+	border-left: 1px solid #1a0326;
+}
+
+#headline-callout h1, #headline-callout h2 {
+	color: #59216D;
+}
+
+#main-nav a:hover {
+	color: #84409e;
+}
+
+#main-nav #nav-selected {
+	background: #a745c8 url(../images/skins/orchid/nav-btn-selected.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #1a0326;				
+}
+
+#main-nav #nav-selected:hover {
+	background: #c25ce4 url(../images/skins/orchid/nav-btn-selected-roll.gif) repeat-x 0 bottom;
+}
+
+#main-nav #nav-selected:active {
+	border-bottom-width: 1px; 
+}
+
+.large-primary-btn, .small-primary-btn {
+	border-bottom: 2px solid #1a0326; 
+}
+
+.large-primary-btn, .large-secondary-btn, .small-primary-btn, 
+.small-secondary-btn {
+	color: #fff !important;
+}
+
+.large-primary-btn {
+	background: #a745c8 url(../images/skins/orchid/large-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn span {
+	background-color: #652189; 
+}
+
+.large-primary-btn:hover span {
+	background-color: #792CA3; 
+}
+
+.large-primary-btn:hover {
+	background: #c25ce4 url(../images/skins/orchid/large-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn:active, .small-primary-btn:active {
+	border-bottom-width: 1px; 
+}
+
+.small-primary-btn {
+	background: #a745c8 url(../images/skins/orchid/small-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.small-primary-btn:hover {
+	background: #c25ce4 url(../images/skins/orchid/small-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.arrow-list li a {
+	background: url(../images/skins/orchid/arrow.gif) no-repeat 0 6px;
+}
+
+.bullet-list li {
+	background: url(../images/skins/orchid/bullet.png) no-repeat 0 5px;
+}
+
+.anythingSlider .forward a {
+	background: url(../images/skins/orchid/slider-arrow-next.png) no-repeat center center;
+}
+
+.anythingSlider .forward a:hover {
+	background: url(../images/skins/orchid/slider-arrow-next-roll.png) no-repeat center center;
+}
+
+.anythingSlider .back a {
+	background: url(../images/skins/orchid/slider-arrow-back.png) no-repeat center center;
+}
+
+.anythingSlider .back a:hover {
+	background: url(../images/skins/orchid/slider-arrow-back-roll.png) no-repeat center center;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	background: url(../images/skins/orchid/bullet.png) no-repeat 0 6px;
+}
+
+#pagination a#current {
+	background: #a745c8 url(../images/skins/orchid/small-primary-btn.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #1a0326; 	
+}
+
+#pagination a#current:hover {
+	background: #c25ce4 url(../images/skins/orchid/small-primary-btn-roll.gif) repeat-x 0 bottom;	
+	border-bottom: 2px solid #1a0326; 	
+}
+
+.widget h3 {
+	background: #a745c8 url("../images/skins/orchid/large-primary-btn.gif") repeat-x 0 bottom; 
+	border-bottom: 2px solid #1a0326;	
+}
+
+.quote div {
+	background: url(../images/skins/orchid/quote-mark.png) no-repeat 0 0;
+}
+
+blockquote {		
+	border-left: 2px solid #a745c8;
+}
+
+.pullquote-left, .pullquote-right {
+	background: url(../images/skins/orchid/quote-mark.png) no-repeat 0 0;
+}
+
+.table-feature {
+	background: #c25ce4 url(../images/skins/orchid/table-feature.gif) repeat-x 0 bottom;
+	border-bottom: 3px solid #160320;
+	border-left: 1px solid #160320;
+	border-right: 1px solid #160320;
+}
+
+.table-feature div {
+	background-color: #611787;
+}
+
+.tweet {
+	color: #48424b;
+}
+
+.tweet a {
+    color: #623971;
+}
+
+.tweet_avatar img {
+	border: 3px solid #707070;
+}
