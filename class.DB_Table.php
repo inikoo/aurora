@@ -262,7 +262,7 @@ abstract class DB_Table {
 
                 $history_key=$this->add_history($history_data);
                 if ($this->table_name=='Customer') {
-                    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Changes')",$this->id,$history_key);
+                    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Changes')",$this->id,$history_key);
                     mysql_query($sql);
 
                 }
