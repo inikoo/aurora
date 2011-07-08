@@ -3122,6 +3122,10 @@ CREATE TABLE `Part Custom Field Dimension` (`Part SKU` MEDIUMINT UNSIGNED NOT NU
 ALTER TABLE `Part Custom Field Dimension` ADD INDEX ( `Part SKU` ) ;
 
 
+ALTER TABLE `Email Content Dimension` ADD `Email Content Header Image Source` VARCHAR( 256 ) NULL DEFAULT 'templates/emails/img/logo_header.jpg';
+ALTER TABLE `Customer History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ;
+alter table `Store Dimension` add column `Store Address` varchar(255) after `Store Slogan`
+alter table `Store Dimension` add column `Short Marketing Description` varchar(255) after `Store Address`
 */
 
 ?>

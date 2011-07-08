@@ -21,6 +21,18 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case('strikethrough_customer_history'):
+ $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+                         ));
+    strikethrough_customer_history($data);
+break;
+case('unstrikethrough_customer_history'):
+ $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+                         ));
+    unstrikethrough_customer_history($data);
+break;
 
 case('add_attachment'):
     $data=prepare_values($_REQUEST,array(
@@ -33,9 +45,6 @@ case('add_attachment'):
     add_attachment($data);
     break;
 case('new_list'):
-
-
-
     if (!$user->can_view('customers'))
         exit();
 
@@ -409,7 +418,7 @@ case('create_custom_field'):
     //break;
 default:
 
-    $response=array('state'=>404,'resp'=>_('Operation not found'));
+    $response=array('state'=>404,'resp'=>'Operation not found '.$tipo);
     echo json_encode($response);
 }
 
@@ -1962,6 +1971,25 @@ function delete_customer_history($data) {
     echo json_encode($response);
 }
 
+
+function strikethrough_customer_history($data) {
+    $history_key=$data['key'];
+    $sql=sprintf("update `Customer History Bridge` set  `Strikethrough`='Yes'   where `History Key`=%d ",$history_key);
+    mysql_query($sql);
+  //  print $sql;
+    $response=array('state'=>200,'strikethrough'=>'Yes','delete'=>'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />');
+    echo json_encode($response);
+}
+function unstrikethrough_customer_history($data) {
+    $history_key=$data['key'];
+    $sql=sprintf("update `Customer History Bridge` set  `Strikethrough`='No'  where `History Key`=%d ",$history_key);
+    mysql_query($sql);
+    $response=array('state'=>200,'strikethrough'=>'No','delete'=>'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />');
+    echo json_encode($response);
+}
+
+
+
 function delete_mobile() {
     global $editor;
     if ( !isset($_REQUEST['value'])  ) {
@@ -2756,10 +2784,11 @@ function edit_customer_field($customer_key,$key,$value_data) {
         $customer->update_tax_number($the_new_value);
     }elseif ($key=='Customer Registration Number') {
         $customer->update_registration_number($the_new_value);
-    }elseif (preg_match('/^custom_field_/i',$key)) {
+    }elseif (preg_match('/^custom_field_customer/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
+		//print $key;
         $customer->update_custom_fields($key, $the_new_value);
-
+		
     }else {
         $customer->update(array($key=>$the_new_value));
     }

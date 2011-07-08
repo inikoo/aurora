@@ -1,0 +1,60 @@
+/* CSS Document */
+
+#main-nav {
+	position: relative;
+	z-index: 9000; 
+}
+
+#main-nav ul li .dropdown-wrap li a:hover {
+	min-height: 1%;
+}
+
+.large-primary-btn, .large-secondary-btn {
+	padding: 9px 15px 12px 21px;	
+}
+
+.large-primary-btn span, .large-secondary-btn span {
+	display: inline-block;
+}
+
+#headline-callout a {
+	margin-top: 12px;
+}
+
+.arrow-link {
+	background-position: right 7px;
+}
+
+.thumbs-gallery {
+	padding: 15px 20px 0;
+}
+
+.input-btn {
+	overflow: visible;  
+	border: 0;
+}
+
+table {
+	border-collapse: collapse;	
+}
+
+#plans .table-feature {
+	position: relative;  
+}
+
+#table-rows li {
+	padding-bottom: 32px;
+}
+
+.comment-details  {
+	padding: 3px 8px;
+	display: inline;
+}
+
+.team-detail h3 {
+    float: left;
+}
+
+.team-detail p {
+	clear: both;
+}

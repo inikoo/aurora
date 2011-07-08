@@ -1,0 +1,149 @@
+/* CSS Document */
+
+a:link, a:visited {
+	color: #448804;
+}
+
+#logo {
+	background: #5db012 url(../images/skins/jungle/logo-bg.gif) repeat-x 0 bottom;
+	border-right: 1px solid #2b5303;
+	border-bottom: 3px solid #1C3503;
+	border-left: 1px solid #2b5303;
+}
+
+#headline-callout h1, #headline-callout h2 {
+	color: #2E540A;
+}
+
+#main-nav a:hover {
+	color: #3c7803;
+}
+
+#main-nav #nav-selected {
+	background: #5db012 url(../images/skins/jungle/nav-btn-selected.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #1C3503;				
+}
+
+#main-nav #nav-selected:hover {
+	background: #75c92b url(../images/skins/jungle/nav-btn-selected-roll.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #1C3503;					
+}
+
+#main-nav #nav-selected:active {
+	border-bottom-width: 1px; 
+}
+
+.large-primary-btn, .small-primary-btn {
+	border-bottom: 2px solid #1C3503; 
+}
+
+.large-primary-btn, .large-secondary-btn, .small-primary-btn, 
+.small-secondary-btn {
+	color: #fff !important;
+}
+
+.large-primary-btn {
+	background: #5db012 url(../images/skins/jungle/large-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn span {
+	background-color: #3A680C; 
+}
+
+.large-primary-btn:hover span {
+	background-color: #43770F;
+}
+
+.large-primary-btn:hover {
+	background: #75c92b url(../images/skins/jungle/large-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn:active, .small-primary-btn:active {
+	border-bottom-width: 1px; 
+}
+
+.small-primary-btn {
+	background: #5db012 url(../images/skins/jungle/small-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.small-primary-btn:hover {
+	background: #75c92b url(../images/skins/jungle/small-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.arrow-list li a {
+	background: url(../images/skins/jungle/arrow.gif) no-repeat 0 6px;
+}
+
+.bullet-list li {
+	background: url(../images/skins/jungle/bullet.png) no-repeat 0 5px;
+}
+
+.anythingSlider .forward a {
+	background: url(../images/skins/jungle/slider-arrow-next.png) no-repeat center center;
+}
+
+.anythingSlider .forward a:hover {
+	background: url(../images/skins/jungle/slider-arrow-next-roll.png) no-repeat center center;
+}
+
+.anythingSlider .back a {
+	background: url(../images/skins/jungle/slider-arrow-back.png) no-repeat center center;
+}
+
+.anythingSlider .back a:hover {
+	background: url(../images/skins/jungle/slider-arrow-back-roll.png) no-repeat center center;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	background: url(../images/skins/jungle/bullet.png) no-repeat 0 6px;
+}
+
+#pagination a#current {
+	background: #5db012 url(../images/skins/jungle/small-primary-btn.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #1C3503; 
+}
+
+#pagination a#current:hover {
+	background: #75c92b url(../images/skins/jungle/small-primary-btn-roll.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #1C3503; 		
+}
+
+.widget h3 {
+	background: #5db012 url("../images/skins/jungle/large-primary-btn.gif") repeat-x 0 bottom; 
+	border-bottom: 2px solid #1C3503;	
+}
+
+.quote div {
+	background: url(../images/skins/jungle/quote-mark.png) no-repeat 0 0;
+}
+
+blockquote {		
+	border-left: 2px solid #46830a;
+}
+
+.pullquote-left, .pullquote-right {
+	background: url(../images/skins/jungle/quote-mark.png) no-repeat 0 0;
+}
+
+.table-feature {
+	background: #75c92b url(../images/skins/jungle/table-feature.gif) repeat-x 0 bottom;
+	border-bottom: 3px solid #1C3503;
+	border-left: 1px solid #214200;
+	border-right: 1px solid #214200;
+}
+
+.table-feature div {
+	background-color: #386b06;
+}
+
+.tweet {
+	color: #1f3807;
+}
+
+.tweet a {
+    color: #356706;
+}
+
+.tweet_avatar img {
+	border: 3px solid #799262;
+}

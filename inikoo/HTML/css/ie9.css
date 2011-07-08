@@ -1,0 +1,21 @@
+/* CSS Document */
+
+.nav-item, #main-nav #nav-selected {
+    padding: 6px 16px;
+}
+
+.nav-item:hover, .dropdown:hover .nav-item {
+	padding: 6px 15px;
+}
+
+#main-nav .dropdown:hover #nav-selected, .dropdown:hover .nav-item {
+	padding-bottom: 8px;
+}
+
+#main-nav .dropdown:hover #nav-selected, .dropdown:hover .nav-item {
+	padding-bottom: 13px;
+}
+
+.small-primary-btn, .small-secondary-btn {
+	padding: 8px 14px;	
+}

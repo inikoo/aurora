@@ -1,0 +1,149 @@
+/* CSS Document */
+
+a:link, a:visited {
+	color: #c41111;
+}
+
+#logo {
+	background: #d41313 url(../images/skins/fire/logo-bg.gif) repeat-x 0 bottom;
+	border-right: 1px solid #3f0404;
+	border-bottom: 3px solid #160202;
+	border-left: 1px solid #3f0404;
+}
+
+#headline-callout h1, #headline-callout h2 {
+	color: #A51313;
+}
+
+#main-nav a:hover {
+	color: #bd1b1b;
+}
+
+#main-nav #nav-selected {
+	background: #d41313 url(../images/skins/fire/nav-btn-selected.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #160202;				
+}
+
+#main-nav #nav-selected:hover {
+	background: #ec2020 url(../images/skins/fire/nav-btn-selected-roll.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #160202;		
+}
+
+#main-nav #nav-selected:active {
+	border-bottom-width: 1px; 
+}
+
+.large-primary-btn, .small-primary-btn {
+	border-bottom: 2px solid #160202; 
+}
+
+.large-primary-btn, .large-secondary-btn, .small-primary-btn, 
+.small-secondary-btn {
+	color: #fff !important;
+}
+
+.large-primary-btn {
+	background: #d41313 url(../images/skins/fire/large-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn span {
+	background-color: #5B0C0C; 
+}
+
+.large-primary-btn:hover span {
+	background-color: #701111; 
+}
+
+.large-primary-btn:hover {
+	background: #ec2020 url(../images/skins/fire/large-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn:active, .small-primary-btn:active {
+	border-bottom-width: 1px; 
+}
+
+.small-primary-btn {
+	background: #d41313 url(../images/skins/fire/small-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.small-primary-btn:hover {
+	background: #ec2020 url(../images/skins/fire/small-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.arrow-list li a {
+	background: url(../images/skins/fire/arrow.gif) no-repeat 0 6px;
+}
+
+.bullet-list li {
+	background: url(../images/skins/fire/bullet.png) no-repeat 0 5px;
+}
+
+.anythingSlider .forward a {
+	background: url(../images/skins/fire/slider-arrow-next.png) no-repeat center center;
+}
+
+.anythingSlider .forward a:hover {
+	background: url(../images/skins/fire/slider-arrow-next-roll.png) no-repeat center center;
+}
+
+.anythingSlider .back a {
+	background: url(../images/skins/fire/slider-arrow-back.png) no-repeat center center;
+}
+
+.anythingSlider .back a:hover {
+	background: url(../images/skins/fire/slider-arrow-back-roll.png) no-repeat center center;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	background: url(../images/skins/fire/bullet.png) no-repeat 0 6px;
+}
+
+#pagination a#current {
+	background: #d41313 url(../images/skins/fire/small-primary-btn.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #160202; 	
+}
+
+#pagination a#current:hover {
+	background: #ec2020 url(../images/skins/fire/small-primary-btn-roll.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #160202; 	
+}
+
+.widget h3 {
+	background: #d41313 url("../images/skins/fire/large-primary-btn.gif") repeat-x 0 bottom; 
+	border-bottom: 2px solid #160202;	
+}
+
+.quote div {
+	background: url(../images/skins/fire/quote-mark.png) no-repeat 0 0;
+}
+
+blockquote {		
+	border-left: 2px solid #d41313;
+}
+
+.pullquote-left, .pullquote-right {
+	background: url(../images/skins/fire/quote-mark.png) no-repeat 0 0;
+}
+
+.table-feature {
+	background: #ec2020 url(../images/skins/fire/table-feature.gif) repeat-x 0 bottom;
+	border-bottom: 3px solid #160202;
+	border-left: 1px solid #2d0404;
+	border-right: 1px solid #2d0404;
+}
+
+.table-feature div {
+	background-color: #6e0606;
+}
+
+.tweet {
+	color: #414141;
+}
+
+.tweet a {
+    color: #a62727;
+}
+
+.tweet_avatar img {
+	border: 3px solid #707070;
+}

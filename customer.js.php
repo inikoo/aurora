@@ -40,18 +40,15 @@ dialog_edit_note.show();
     case 'delete':
         if (record.getData('delete')!='') {
 
+            if(record.getData('can_delete')){
+
             var delete_type=record.getData('delete_type');
-
-
-
-
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
                
 
 
 
-  //         	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
-//return;
+  
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
@@ -83,6 +80,46 @@ scope:this
                 }
                 );
             }
+            }else{
+            
+            
+        
+               
+            
+            if(record.getData('strikethrough')=='Yes')
+            var action='unstrikethrough_';
+            else
+             var action='strikethrough_';
+
+        
+        
+            YAHOO.util.Connect.asyncRequest(
+                    'GET',
+                ar_file+'?tipo='+action+column.object + myBuildUrl(this,record), {
+                success: function (o) {
+                  //   alert(o.responseText);
+                        var r = YAHOO.lang.JSON.parse(o.responseText);
+                        
+                          var data = record.getData();
+                            data['strikethrough']=r.strikethrough;
+                    data['delete']=r.delete;
+                    
+                    //data['delete_type']=r.delete_type;
+                            this.updateRow(recordIndex,data);
+                        
+                    
+                    },
+failure: function (o) {
+                        alert(o.statusText);
+                    },
+scope:this
+                }
+                );
+            
+            }
+            
+            
+            
         }
         break;
 
@@ -275,7 +312,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
                 Dom.setStyle('new_sticky_note_tr','display','none');
             }
 
-var table=tables['table0'];
+            var table=tables['table0'];
 			var datasource=tables['dataSource0'];
 			var request='';
 			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
@@ -459,14 +496,24 @@ Event.addListener(window, "load", function() {
     return true;
 }; 
 		    
+		    
+  this.prepare_note = function(elLiner, oRecord, oColumn, oData) {
+          
+            if(oRecord.getData("strikethrough")=="Yes") { 
+            Dom.setStyle(elLiner,'text-decoration','line-through');
+            Dom.setStyle(elLiner,'color','#777');
+
+            }
+            elLiner.innerHTML=oData
+        };
+        		    
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:520}
-                                            ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_history'}
-
+				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
+                      ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_history'}
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'customer_history'}
 
 					   ];
@@ -487,7 +534,7 @@ Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key","edit","type"]};
+                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key","edit","type","strikethrough"]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
