@@ -1,3 +1,4 @@
+
   var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_edit_paragraph;
@@ -77,12 +78,12 @@ var table=tables['table0'];
 }
 
 function init(){
-//dialog_edit_paragraph
-//alert(Dom.get('email_campaign_keyz').value);
-//alert(Dom.get('email_campaign_keyz').getAttribute('hola'));
+
 
 dialog_edit_paragraph = new YAHOO.widget.Dialog("dialog_edit_paragraph", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_paragraph.render();
 
+
+
 }
-//YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onDOMReady(init);
