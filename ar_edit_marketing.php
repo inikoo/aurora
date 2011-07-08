@@ -256,7 +256,7 @@ function edit_email_campaign($data) {
 function edit_email_paragraph($data){
 
 
-print_r($data['values']);
+
 
 $email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
 $paragrahp_data=array(

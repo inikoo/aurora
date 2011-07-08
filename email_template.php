@@ -45,11 +45,11 @@ $js_files=array(
              // 'js/search.js',
              'js/edit_common.js',
              
-           //    'edit_email_template.php.js',
+             'edit_email_template.php.js',
                'upload_common.js.php',
           );
 $smarty->assign('css_files',$css_files);
-//$smarty->assign('js_files',$js_files);
+$smarty->assign('js_files',$js_files);
 
 
 
@@ -75,7 +75,7 @@ $smarty->assign('header_src',$email_content_data[$email_campaign->id]['header_sr
 
 
 $metadata=unserialize($email_content_data[$email_campaign->id]['metadata']);
-//$smarty->assign('paragraphs',$metadata['p']);
+$smarty->assign('paragraphs',$metadata['p']);
 
 
 $smarty->assign('store',$store);
