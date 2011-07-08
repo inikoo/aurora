@@ -631,7 +631,9 @@ return unserialize($this->get_contents_serialized_array());
 function update_paragraph($paragraph_key,$data){
 $email_content_data=$this->get_contents_array();
 $metadata=unserialize($email_content_data[$this->id]['metadata']);
-
+print_r($data);
+print_r($metadata);
+//$metadata[]
 
 }
 

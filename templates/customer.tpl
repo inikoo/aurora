@@ -8,7 +8,10 @@
 <div style="padding:0px 20px;">
 
   {include file='contacts_navigation.tpl'}
-
+<div style="clear:left;"> 
+ <span class="branch" ><a  href="customers.php">{t}Customers{/t}</a>&rarr; <a  href="customers.php?store={$store->id}">{$store->get('Store Name')}</a></span>
+ </div>
+ 
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1 style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
      

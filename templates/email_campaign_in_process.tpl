@@ -102,7 +102,7 @@
 <td colspan=2 ><div style="margin-top:2px;font-size:100%">
 <span  style="margin-right:10px;"  id="select_text_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" >{t}Text Email{/t}</span>
 <span style="margin-right:10px;" id="select_html_from_template_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" >{t}Template Email{/t}</span>
-<span style="" id="select_html_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" >{t}HTML Email{/t}</span>
+<span style="" id="select_html_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML'}selected{/if}" >{t}HTML Email{/t}</span>
 
 </div>
 
@@ -147,7 +147,7 @@
 <td></td>
 <td>
 
-<iframe src="email_template.php?id={$email_campaign->id}" frameborder=0 width='700' height='800'>
+<iframe src="email_template.php?id={$email_campaign->id}" frameborder=0 width='700' height='1000'>
 <p>Your browser does not support iframes.</p>
 </iframe>
 
