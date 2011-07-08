@@ -230,3 +230,19 @@ version: 2.5.0
     background-image: url(split-button-arrow-disabled.png);
     
 }
+
+.unselectable_text{
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   user-select: none;
+}
+
+
+.inbox_form tr.buttons,.inbox tr.buttons,.edit tr.buttons { border:none ;height:30px}
+.inbox_form tr.buttons,.inbox tr.buttons td, .edit tr.buttons td{ vertical-align:bottom }
+
+span.save,span.reset,span.undo,span.multiple,span.new,span.button ,span.small_button {margin-left:5px;border:1px solid #aaa;color:#aaa;text-align:center;padding:1px 6px 1px 6px;cursor:pointer;font-weight:800}
+span.button:hover{color:#777;} 
+
+span.small_button {;padding:0px 3px 0px 3px;font-weight:200;font-size:80%;color:#333;}
+span.small_button.selected{background:#7296e1;border:2px solid #7296e1;color:#f6f6f6}

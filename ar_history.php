@@ -301,7 +301,7 @@ function list_customer_history() {
 
 
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-    $sql="select `Type`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)  left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
+    $sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)  left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
 
 //  print $sql;
@@ -328,11 +328,12 @@ function list_customer_history() {
                     'objeto'=>$objeto,
                     'note'=>$note,
                     'handle'=>$author,
-                    'delete'=>($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':''),
+                    'delete'=>($row['Type']=='Notes'?($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':($row['Strikethrough']=='Yes'?'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />':'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />')):''),
                     'edit'=>(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':''),
                     'can_delete'=>($row['Deletable']=='Yes'?1:0),
                     'delete_type'=>_('delete'),
-                    'type'=>$row['Type']
+                    'type'=>$row['Type'],
+                    'strikethrough'=>$row['Strikethrough']
                 );
     }
     mysql_free_result($result);

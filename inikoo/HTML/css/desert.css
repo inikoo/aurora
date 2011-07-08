@@ -1,0 +1,143 @@
+/* CSS Document */
+
+a:link, a:visited {
+	color: #806034;
+}
+
+#logo {
+	background: #b89368 url(../images/skins/desert/logo-bg.gif) repeat-x 0 bottom;
+	border-right: 1px solid #38270e;
+	border-bottom: 3px solid #38270e;
+	border-left: 1px solid #38270e;
+}
+
+#headline-callout h1, #headline-callout h2 {
+	color: #684F33;
+}
+
+#main-nav a:hover {
+	color: #806034;
+}
+
+#main-nav #nav-selected {
+	background: #b89368 url(../images/skins/desert/nav-btn-selected.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #38270e;			
+}
+
+#main-nav #nav-selected:hover {
+	background: #d2aa7d url(../images/skins/desert/nav-btn-selected-roll.gif) repeat-x 0 bottom;
+}
+
+#main-nav #nav-selected:active {
+	border-bottom-width: 1px; 
+}
+
+.large-primary-btn, .small-primary-btn {
+	border-bottom: 2px solid #38270e; 	
+}
+
+.large-primary-btn, .large-secondary-btn, .small-primary-btn, 
+.small-secondary-btn {
+	color: #fff !important;
+}
+
+.large-primary-btn {
+	background: #b89368 url(../images/skins/desert/large-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn span {
+	background-color: #6B502A; 
+}
+
+.large-primary-btn:hover span {
+	background-color: #846436; 
+}
+
+.large-primary-btn:hover {
+	background: #d2aa7d url(../images/skins/desert/large-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn:active, .small-primary-btn:active {
+	border-bottom-width: 1px; 
+}
+
+.small-primary-btn {
+	background: #b89368 url(../images/skins/desert/small-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.small-primary-btn:hover {
+	background: #d2aa7d url(../images/skins/desert/small-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.arrow-list li a {
+	background: url(../images/skins/desert/arrow.gif) no-repeat 0 6px;
+}
+
+.bullet-list li {
+	background: url(../images/skins/desert/bullet.png) no-repeat 0 5px;
+}
+
+.anythingSlider .forward a {
+	background: url(../images/skins/desert/slider-arrow-next.png) no-repeat center center;
+}
+
+.anythingSlider .forward a:hover {
+	background: url(../images/skins/desert/slider-arrow-next-roll.png) no-repeat center center;
+}
+
+.anythingSlider .back a {
+	background: url(../images/skins/desert/slider-arrow-back.png) no-repeat center center;
+}
+
+.anythingSlider .back a:hover {
+	background: url(../images/skins/desert/slider-arrow-back-roll.png) no-repeat center center;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	background: url(../images/skins/desert/bullet.png) no-repeat 0 6px;
+}
+
+#pagination a#current {
+	background: #b89368 url(../images/skins/desert/small-primary-btn.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #38270e; 	
+}
+
+#pagination a#current:hover {
+	background: #d2aa7d url(../images/skins/desert/small-primary-btn-roll.gif) repeat-x 0 bottom;	
+}
+
+.widget h3 {
+	background: #b89368 url("../images/skins/desert/large-primary-btn.gif") repeat-x 0 bottom; 
+	border-bottom: 2px solid #38270e;	
+}
+
+.quote div {
+	background: url(../images/skins/desert/quote-mark.png) no-repeat 0 0;
+}
+
+blockquote {		
+	border-left: 2px solid #b89368;
+}
+
+.pullquote-left, .pullquote-right {
+	background: url(../images/skins/desert/quote-mark.png) no-repeat 0 0;
+}
+
+.table-feature {
+	background: #c25ce4 url(../images/skins/desert/table-feature.gif) repeat-x 0 bottom;
+	border-bottom: 3px solid #38270e;
+	border-left: 1px solid #38270e;
+	border-right: 1px solid #38270e;
+}
+
+.table-feature div {
+	background-color: #7c6135;
+}
+
+.tweet {
+	color: #535252;
+}
+
+.tweet_avatar img {
+	border: 3px solid #707070;
+}

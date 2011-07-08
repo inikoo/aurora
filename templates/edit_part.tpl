@@ -261,6 +261,34 @@
 
 </table>
 
+<div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_custom_field" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_custom_field" class="state_details">{t}Reset{/t}</span>
+	
+</div>
+	  
+<table class="edit">
+ <tr class="title"><td colspan=5>{t}Custom Fields{/t}</td></tr>
+ {*Edit custom fields*}
+ 
+ {foreach from=$show_case key=custom_field_key item=custom_field_value }
+ <tr class="" id="tr_{$custom_field_value.lable}"><td style="" class="label">{$custom_field_key}:</td>
+   <td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Part_{$custom_field_value.lable}" value="{$custom_field_value.value}" ovalue="{$custom_field_value.value}" valid="0">
+       <div id="Part_{$custom_field_value.lable}_Container" style="" ></div>
+     </div>
+   </td>
+   <td>
+   <span id="Part_{$custom_field_value.lable}_msg" class="edit_td_alert"></span>
+   </td>
+ </tr>
+{/foreach}
+
+
+</table>
+
  
 </div>
 

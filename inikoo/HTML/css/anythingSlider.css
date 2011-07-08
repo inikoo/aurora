@@ -1,0 +1,97 @@
+/*
+    anythingSlider v1.2
+    
+    By Chris Coyier: http://css-tricks.com
+    with major improvements by Doug Neiner: http://pixelgraphics.us/
+    based on work by Remy Sharp: http://jqueryfordesigners.com/
+*/
+
+
+.anythingSlider .wrapper ul .bullet-list {
+	margin: 0 0 15px 15px;
+	height: auto;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	padding-left: 20px;
+}
+
+.anythingSlider { 
+	width: 940px;
+	height: 335px;
+	position: relative; 
+}
+
+.anythingSlider .wrapper {
+	width: 940px; 
+	height: 338px; 		
+	overflow: auto; 
+	position: absolute;
+	top: 0;
+	left: 0; 	
+}
+                                  
+.anythingSlider .wrapper ul { 
+	width: 32700px;  /* Width is max for Opera */
+	height: 310px;
+	position: absolute; 
+	margin: 0; 
+}
+
+.anythingSlider .wrapper ul li { 
+	display: block; 
+	float: left; 
+	width: 940px; 	
+	height: 335px; 
+	margin: 0; 
+}
+	
+.anythingSlider .arrow { 
+	text-indent: -9999px; 
+	position: absolute; 
+}
+
+.anythingSlider .arrow a { 
+	display: block; 
+	height: 46px; 
+	width: 30px; 	
+}
+
+.anythingSlider .forward { 
+	right: -50px; 
+}
+
+.anythingSlider .back { 
+	left: -50px; 	 	
+}
+
+.thumbNav { 
+	position: relative; 
+	top: 144px; 
+	text-align: center; }
+	
+.thumbNav li { 
+	display: inline; 
+}
+ 
+.start-stop {
+	display: none; 
+}
+
+/*
+  Prevents
+*/
+.anythingSlider .wrapper ul ul { 
+	position: static; 
+	margin: 0; 
+	overflow: visible; 
+	width: auto; 
+	border: 0; 
+}
+
+.anythingSlider .wrapper ul ul li { 
+	float: none; 
+	height: auto; 
+	width: auto; 
+	background: none; 
+}

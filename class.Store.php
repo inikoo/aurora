@@ -485,6 +485,12 @@ class Store extends DB_Table {
         case('fax'):
             $this->update_field('Store Fax',$a1);
             break;
+		case('address'):
+            $this->update_field('Store Address',$a1);
+            break;
+		case('marketing_description'):
+            $this->update_field('Short Marketing Description',$a1);
+            break;
         case('name'):
 
             if (_trim($a1)==$this->data['Store Name']) {
