@@ -122,6 +122,7 @@ $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
  $store=new Store($customer->data['Customer Store Key']);
+$smarty->assign('store', $store);
 
 if (isset($_REQUEST['p'])) {
 
