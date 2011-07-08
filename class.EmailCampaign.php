@@ -628,12 +628,17 @@ return unserialize($this->get_contents_serialized_array());
     }
 
 
-function update_paragraph($paragraph_key,$data){
+function update_paragraph($email_content_key,$paragraph_key,$data){
 $email_content_data=$this->get_contents_array();
 $metadata=unserialize($email_content_data[$this->id]['metadata']);
-print_r($data);
-print_r($metadata);
-//$metadata[]
+$metadata['p'][$paragraph_key]=$data;
+
+$sql=sprintf("update `Email Content Dimension` set `Email Content Metadata`=%s where `Email Content Key`=%d ",prepare_mysql(serialize($metadata)),$email_content_key);
+mysql_query($sql);
+
+if(mysql_affected_rows()){
+$this->updated=true;
+}
 
 }
 

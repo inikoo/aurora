@@ -443,7 +443,7 @@ class Order extends DB_Table {
                                   'History Details'=>$note
                               );
                 $history_key=$this->add_history($history_data);
-                $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$customer->id,$history_key);
+                $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$customer->id,$history_key);
                 mysql_query($sql);
 
             }
