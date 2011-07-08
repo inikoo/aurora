@@ -67,9 +67,11 @@
                 {/foreach}
 
 				{foreach from=$show_case key=name item=value}
+				{if $value!=''}
 				<tr>
 				<td colspan=2 class="aright">{$value}</td><td <td colspan=2 class="aleft" style="color:#777;font-size:80%">{$name}</td>
 				</tr>
+				{/if}
 				{/foreach}
 		</table>
         </td>

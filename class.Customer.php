@@ -3293,7 +3293,7 @@ class Customer extends DB_Table {
 
     function add_customer_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
         $history_key=$this->add_history($history_data,$force_save=true);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s,%s)",
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,%s,'No',%s)",
                      $this->id,
                      $history_key,
                      prepare_mysql($deleteable),
@@ -3315,8 +3315,11 @@ class Customer extends DB_Table {
                   'Attachment MIME Type'=>$data['Attachment MIME Type'],
                   'Attachment File Original Name'=>$data['Attachment File Original Name']
               );
+            
         $attach=new Attachment('find',$data,'create');
         if ($attach->new) {
+            
+           
             $history_data=array(
                               'History Abstract'=>$attach->get_abstract(),
                               'History Details'=>$attach->get_details(),
