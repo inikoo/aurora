@@ -4496,7 +4496,7 @@ function get_principal_email_comment() {
                       );
 
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
 
         mysql_query($sql);
 
@@ -4563,7 +4563,7 @@ function get_principal_email_comment() {
                     );
         mysql_query($sql);
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -4644,7 +4644,7 @@ function get_principal_email_comment() {
                     );
         mysql_query($sql);
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -4708,7 +4708,7 @@ function get_principal_email_comment() {
         //   print_r($history_data);
 
         $history_key=$dn->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
 
@@ -4807,7 +4807,7 @@ function get_principal_email_comment() {
                           'Metadata'=>'Process'
                       );
         $history_key=$order->add_history($history_data);
-        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','Orders')",$this->id,$history_key);
+        $sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
         mysql_query($sql);
 
     }
