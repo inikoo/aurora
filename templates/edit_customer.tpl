@@ -438,15 +438,15 @@
  {*Edit custom fields*}
  
  {foreach from=$show_case key=custom_field_key item=custom_field_value }
- <tr class="" id="tr_{$custom_field_key}"><td style="" class="label">{$custom_field_key}:</td>
+ <tr class="" id="tr_{$custom_field_value.lable}"><td style="" class="label">{$custom_field_key}:</td>
    <td  style="text-align:left">
-     <div   >
-       <input style="text-align:left;width:100%" id="Customer_{$custom_field_key}" value="{$custom_field_value}" ovalue="{$custom_field_value}" valid="0">
-       <div id="Customer_{$custom_field_key}_Container" style="" ></div>
+     <div>
+       <input style="text-align:left;width:100%" id="Customer_{$custom_field_value.lable}" value="{$custom_field_value.value}" ovalue="{$custom_field_value.value}" valid="0">
+       <div id="Customer_{$custom_field_value.lable}_Container" style="" ></div>
      </div>
    </td>
    <td>
-   <span id="Customer_{$custom_field_key}_msg" class="edit_td_alert"></span>
+   <span id="Customer_{$custom_field_value.lable}_msg" class="edit_td_alert"></span>
    </td>
  </tr>
 {/foreach}
