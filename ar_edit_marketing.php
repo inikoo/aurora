@@ -1,6 +1,7 @@
 <?php
 require_once 'common.php';
 require_once 'ar_edit_common.php';
+require_once 'class.EMailCampaign.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
@@ -10,12 +11,21 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('edit_email_paragraph'):
+ $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+                          
+
+                         ));
+    edit_email_paragraph($data);
+break;
 case('edit_email_campaign'):
     $data=prepare_values($_REQUEST,array(
                              'email_campaign_key'=>array('type'=>'key'),
                              'okey'=>array('type'=>'string'),
                              'key'=>array('type'=>'string'),
-                             'newvalue'=>array('type'=>'estring')
+                             'newvalue'=>array('type'=>'string')
 
                          ));
     edit_email_campaign($data);
@@ -240,6 +250,24 @@ function edit_email_campaign($data) {
     }
  echo json_encode($response);
     
+
+}
+
+function edit_email_paragraph($data){
+
+
+print_r($data['values']);
+
+$email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
+$paragrahp_data=array(
+'title'=>$data['values']['title'],
+'subtitle'=>$data['values']['subtitle'],
+'content'=>$data['values']['content'],
+
+);
+
+
+$email_campaign->update_paragraph($data['values']['paragraph_key'],$paragrahp_data);
 
 }
 

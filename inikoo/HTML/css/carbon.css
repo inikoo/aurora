@@ -1,0 +1,149 @@
+/* CSS Document */
+
+a:link, a:visited {
+	color: #006bd1;
+}
+
+#logo {
+	background: #5d5d5d url(../images/skins/carbon/logo-bg.gif) repeat-x 0 bottom;
+	border-right: 1px solid #000;
+	border-bottom: 3px solid #000;
+	border-left: 1px solid #000;
+}
+
+#headline-callout h1, #headline-callout h2 {
+	color: #000;
+}
+
+#main-nav a:hover {
+	color: #006bc9;		
+}
+
+#main-nav #nav-selected {
+	background: #5c5c5c url(../images/skins/carbon/nav-btn-selected.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #000;		
+}
+
+#main-nav #nav-selected:hover {
+	background: #757575 url(../images/skins/carbon/nav-btn-selected-roll.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #000;			
+}
+
+#main-nav #nav-selected:active {
+	border-bottom-width: 1px; 
+}
+
+.large-primary-btn, .small-primary-btn {
+	border-bottom: 2px solid #000;
+}
+
+.large-primary-btn, .large-secondary-btn, .small-primary-btn, 
+.small-secondary-btn {
+	color: #fff !important;
+}
+
+.large-primary-btn {
+	background: #5c5c5c url(../images/skins/carbon/large-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn span {
+	background-color: #3D3D3D; 
+}
+
+.large-primary-btn:hover span {
+	background-color: #3D3D3D; 
+}
+
+.large-primary-btn:hover {
+	background: #757575 url(../images/skins/carbon/large-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn:active, .small-primary-btn:active {
+	border-bottom-width: 1px; 
+}
+
+.small-primary-btn {
+	background: #5c5c5c url(../images/skins/carbon/small-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.small-primary-btn:hover {
+	background: #757575 url(../images/skins/carbon/small-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.arrow-list li a {
+	background: url(../images/skins/carbon/arrow.gif) no-repeat 0 6px;
+}
+
+.bullet-list li {
+	background: url(../images/skins/carbon/bullet.png) no-repeat 0 5px;
+}
+
+.anythingSlider .forward a {
+	background: url(../images/skins/carbon/slider-arrow-next.png) no-repeat center center;
+}
+
+.anythingSlider .forward a:hover {
+	background: url(../images/skins/carbon/slider-arrow-next-roll.png) no-repeat center center;
+}
+
+.anythingSlider .back a {
+	background: url(../images/skins/carbon/slider-arrow-back.png) no-repeat center center;
+}
+
+.anythingSlider .back a:hover {
+	background: url(../images/skins/carbon/slider-arrow-back-roll.png) no-repeat center center;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	background: url(../images/skins/carbon/bullet.png) no-repeat 0 6px;
+}
+
+#pagination a#current {
+	background: #5c5c5c url(../images/skins/carbon/small-primary-btn.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #000;			
+}
+
+#pagination a#current:hover {
+	background: #757575 url(../images/skins/carbon/small-primary-btn-roll.gif) repeat-x 0 bottom;	 
+	border-bottom: 2px solid #000; 		
+}
+
+.widget h3 {
+	background: #5c5c5c url("../images/skins/carbon/large-primary-btn.gif") repeat-x 0 bottom;
+	border-bottom: 2px solid #000;	
+}
+
+.quote div {
+	background: url(../images/skins/carbon/quote-mark.png) no-repeat 0 0;
+}
+
+blockquote {		
+	border-left: 2px solid #232323;
+}
+
+.pullquote-left, .pullquote-right {
+	background: url(../images/skins/carbon/quote-mark.png) no-repeat 0 0;
+}
+
+.table-feature {
+	background: #757575 url(../images/skins/carbon/table-feature.gif) repeat-x 0 bottom;
+	border-bottom: 3px solid #000;
+	border-left: 1px solid #000;
+	border-right: 1px solid #000;
+}
+
+.table-feature div {
+	background-color: #191919;
+}
+
+.tweet {
+	color: #222222;
+}
+
+.tweet a {
+    color: #0a5ba9;
+}
+
+.tweet_avatar img {
+	border: 3px solid #808080;
+}

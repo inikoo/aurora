@@ -266,13 +266,13 @@ return unserialize($this->get_contents_serialized_array());
         $content_keys=$this->get_content_data_keys();
         $email_contents_array=array();
         if (count($content_keys)==1) {
-            $sql=sprintf("select `Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $sql=sprintf("select `Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Source`,`Email Content Metadata` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
             $res=mysql_query($sql);
             if ($row=mysql_fetch_assoc($res)) {
                 if($row['Email Content Type']=='Plain'){
                     $email_contents_array[$row['Email Content Key']]=$row['Email Content Text'];
                 }else{
-                    $email_contents_array[$row['Email Content Key']]=array('Plain'=>$row['Email Content Text'],'HTML Template'=>$row['Email Content HTML']);
+                    $email_contents_array[$row['Email Content Key']]=array('plain'=>$row['Email Content Text'],'html'=>$row['Email Content HTML'],'metadata'=>$row['Email Content Metadata'],'header_src'=>$row['Email Content Header Image Source']);
 
                 }
 
@@ -626,6 +626,14 @@ return unserialize($this->get_contents_serialized_array());
         }
 
     }
+
+
+function update_paragraph($paragraph_key,$data){
+$email_content_data=$this->get_contents_array();
+$metadata=unserialize($email_content_data[$this->id]['metadata']);
+
+
+}
 
 }
 ?>

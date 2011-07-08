@@ -1,0 +1,63 @@
+/* CSS Document */
+
+#main-nav {
+	position: relative;
+	z-index: 9999;			
+}
+
+.arrow-link {
+	background-position: right 7px;
+}
+
+a.large-primary-btn, a.large-secondary-btn, a.small-primary-btn, a.small-secondary-btn {
+	color: #fff !important;
+}
+
+.input-btn {
+	overflow: visible;  /* Removes excess padding IE gives to input buttons */
+}
+
+.dropdown-wrap {
+	top: 29px;
+}
+
+#main-nav ul li .dropdown-wrap li a {
+	display: inline-block;
+	width: 100%;
+}
+
+.nav-flyout ul {
+	left: 230px; /*Sub-Nav Menu Position*/
+}
+
+.quote {
+	width: 290px;
+}
+
+table {
+	border-collapse: collapse;	
+}
+
+#plans .table-feature {
+	position: relative;  
+}
+
+#table-rows li {
+	padding-bottom: 32px;
+}
+
+.thumbs-gallery {
+	width: 470px;
+}
+
+#sidebar {
+	margin-left: 15px;
+}
+
+.anythingSlider .wrapper {
+	height: 340px;
+}
+
+.footer-col ul li a {
+	color: #000 !important;	
+}

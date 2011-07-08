@@ -1,0 +1,143 @@
+/* CSS Document */
+
+a:link, a:visited {
+	color: #385683;
+}
+
+#logo {
+	background: #5881ba url(../images/skins/denim/logo-bg.gif) repeat-x 0 bottom;
+	border-right: 1px solid #04080e;
+	border-bottom: 3px solid #04080e;
+	border-left: 1px solid #04080e;
+}
+
+#headline-callout h1, #headline-callout h2 {
+	color: #244166;
+}
+
+#main-nav a:hover {
+	color: #385683;
+}
+
+#main-nav #nav-selected {
+	background: #5881ba url(../images/skins/denim/nav-btn-selected.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #04080e;			
+}
+
+#main-nav #nav-selected:hover {
+	background: #6996d5 url(../images/skins/denim/nav-btn-selected-roll.gif) repeat-x 0 bottom;
+}
+
+#main-nav #nav-selected:active {
+	border-bottom-width: 1px; 
+}
+
+.large-primary-btn, .small-primary-btn {
+	border-bottom: 2px solid #04080e; 
+}
+
+.large-primary-btn, .large-secondary-btn, .small-primary-btn, 
+.small-secondary-btn {
+	color: #fff !important;
+}
+
+.large-primary-btn {
+	background: #5881ba url(../images/skins/denim/large-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn span {
+	background-color: #1E3F70; 
+}
+
+.large-primary-btn:hover span {
+	background-color: #234C84; 
+}
+
+.large-primary-btn:hover {
+	background: #6996d5 url(../images/skins/denim/large-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.large-primary-btn:active, .small-primary-btn:active {
+	border-bottom-width: 1px; 
+}
+
+.small-primary-btn {
+	background: #5881ba url(../images/skins/denim/small-primary-btn.gif) repeat-x 0 bottom;
+}
+
+.small-primary-btn:hover {
+	background: #6996d5 url(../images/skins/denim/small-primary-btn-roll.gif) repeat-x 0 bottom;
+}
+
+.arrow-list li a {
+	background: url(../images/skins/denim/arrow.gif) no-repeat 0 6px;
+}
+
+.bullet-list li {
+	background: url(../images/skins/denim/bullet.png) no-repeat 0 5px;
+}
+
+.anythingSlider .forward a {
+	background: url(../images/skins/denim/slider-arrow-next.png) no-repeat center center;
+}
+
+.anythingSlider .forward a:hover {
+	background: url(../images/skins/denim/slider-arrow-next-roll.png) no-repeat center center;
+}
+
+.anythingSlider .back a {
+	background: url(../images/skins/denim/slider-arrow-back.png) no-repeat center center;
+}
+
+.anythingSlider .back a:hover {
+	background: url(../images/skins/denim/slider-arrow-back-roll.png) no-repeat center center;
+}
+
+.anythingSlider .wrapper ul .bullet-list li {
+	background: url(../images/skins/denim/bullet.png) no-repeat 0 6px;
+}
+
+#pagination a#current {
+	background: #5881ba url(../images/skins/denim/small-primary-btn.gif) repeat-x 0 bottom;
+	border-bottom: 2px solid #04080e; 
+}
+
+#pagination a#current:hover {
+	background: #6996d5 url(../images/skins/denim/small-primary-btn-roll.gif) repeat-x 0 bottom;	 
+}
+
+.widget h3 {
+	background: #5881ba url("../images/skins/denim/large-primary-btn.gif") repeat-x 0 bottom; 
+	border-bottom: 2px solid #04080e;
+}
+
+.quote div {
+	background: url(../images/skins/denim/quote-mark.png) no-repeat 0 0;
+}
+
+blockquote {		
+	border-left: 2px solid #5881ba;
+}
+
+.pullquote-left, .pullquote-right {
+	background: url(../images/skins/denim/quote-mark.png) no-repeat 0 0;
+}
+
+.table-feature {
+	background: #6996d5 url(../images/skins/denim/table-feature.gif) repeat-x 0 bottom;
+	border-bottom: 3px solid #04080e;
+	border-left: 1px solid #04080e;
+	border-right: 1px solid #04080e;
+}
+
+.table-feature div {
+	background-color: #274167;
+}
+
+.tweet {
+	color: #535252;
+}
+
+.tweet_avatar img {
+	border: 3px solid #707070;
+}
