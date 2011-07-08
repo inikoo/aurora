@@ -1,4 +1,4 @@
-	{include file='header.tpl'}
+{include file='header.tpl'}
 <input type="hidden" id="Custom_Field_Store_Key" value="{$store_key}">
 <input type="hidden" id="Custom_Field_Table" value="Part">
 

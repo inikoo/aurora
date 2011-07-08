@@ -38,11 +38,11 @@ print "};";
 
 //show case 		
 $custom_field=Array();
-$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Customer'");
+$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer'");
 $res = mysql_query($sql);
 while($row=mysql_fetch_array($res))
 {
-	$custom_field[]=$row['Custom Field Name'];
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
 
@@ -51,8 +51,8 @@ $sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Ke
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
 
-	foreach($custom_field as $name){
-		$show_case[$name]=$row[$name];
+	foreach($custom_field as $key=>$value){
+		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
 	}
 }
 ?>
@@ -109,9 +109,9 @@ _('Invalid Mobile')
 }
 
 foreach($show_case  as $custom_key=>$custom_value){
-printf(",'custom_field_%s':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_%s'}",
-$custom_key,
-$custom_key
+printf(",'custom_field_customer_%s':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_%s'}",
+$custom_value['lable'],
+$custom_value['lable']
 );
 }
 ?>
@@ -392,11 +392,11 @@ function validate_customer_mobile(query){
 <?php
 
 foreach($show_case  as $custom_key=>$custom_value){
-printf("function validate_customer_%s(query){validate_general('customer','custom_field_%s',unescape(query));if(query==''){validate_scope('customer');Dom.get('Customer_%s_msg').innerHTML='This operation will remove the %s';}}"
+printf("function validate_customer_%s(query){\nvalidate_general('customer','custom_field_customer_%s',unescape(query));\nif(query=='')\n{validate_scope('customer');\nDom.get('Customer_%s_msg').innerHTML='This operation will remove the %s';\n}}\n"
 
-, $custom_key
-, $custom_key
-, $custom_key
+, $custom_value['lable']
+, $custom_value['lable']
+, $custom_value['lable']
 , $custom_key
 
 );
@@ -1249,15 +1249,15 @@ $mobile_key
 
 foreach($show_case  as $custom_key=>$custom_value){
 printf("var customer_%s_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_%s);\ncustomer_%s_oACDS.queryMatchContains = true;\nvar customer_%s_oAutoComp = new YAHOO.widget.AutoComplete('Customer_%s','Customer_%s_Container', customer_%s_oACDS);\ncustomer_%s_oAutoComp.minQueryLength = 0;\ncustomer_%s_oAutoComp.queryDelay = 0.1;",
-$custom_key,
-$custom_key,
-$custom_key,
-$custom_key,
-$custom_key,
-$custom_key,
-$custom_key,
-$custom_key,
-$custom_key
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable'],
+$custom_value['lable']
 );
 }
 

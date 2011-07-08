@@ -46,7 +46,13 @@ var validate_scope_data={
 	     ,'name':'url','ar':false}        
 	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
-	     ,'name':'fax','ar':false}           
+	     ,'name':'fax','ar':false}   
+	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Address')?>'}]
+	     ,'name':'address','ar':false} 
+	,'marketing_description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
+	     ,'name':'marketing_description','ar':false} 
    }
 };
 
@@ -65,6 +71,8 @@ function validate_email(query){validate_general('store','email',unescape(query))
 function validate_telephone(query){validate_general('store','telephone',unescape(query));}
 function validate_url(query){validate_general('store','url',unescape(query));}
 function validate_fax(query){validate_general('store','fax',unescape(query));}
+function validate_address(query){validate_general('store','address',unescape(query));}
+function validate_marketing_description(query){validate_general('store','marketing_description',unescape(query));}
 
 
 function reset_edit_store(){
@@ -690,8 +698,17 @@ function init(){
     store_name_oAutoComp.minQueryLength = 0; 
     store_name_oAutoComp.queryDelay = 0.1;    
     
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_address);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("address","address_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;      
     
-    
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_marketing_description);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("marketing_description","marketing_description_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;   
 
 }
 
