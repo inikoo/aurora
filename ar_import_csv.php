@@ -18,6 +18,8 @@ require_once 'class.ImportedRecords.php';
 require_once 'ar_edit_common.php';
 require_once 'common_import.php';
 
+
+
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
@@ -26,7 +28,27 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case 'change_map':
+    $data=prepare_values($_REQUEST,array(
+                             'index'=>array('type'=>'numeric'),
+                             'scope'=>array('type'=>'string'),
+							 'map_key'=>array('type'=>'string')
+                         ));
+	change_map($data);
+	break;
+case 'save_map':
+	save_map();
+	break;
+case 'browse_maps':
+/*
+    $data=prepare_values($_REQUEST,array(
+                             'scope'=>array('type'=>'string'),
+                             'scope_key'=>array('type'=>'key')
+                         ));
+	*/
+$data='';	
+	browse_maps($data);
+	break;
 case('import_customer_csv_status'):
     import_customer_csv_status();
     break;
@@ -105,6 +127,7 @@ function get_record_data($data) {
 
     //extracting the HEADERS
     $headers = $csv->getHeaders();
+	//print_r($_SESSION['state']['import']['options_labels']);
     $number_of_records = $csv->countRows();
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
     $raw = $csv->getrawArray();
@@ -126,17 +149,18 @@ function get_record_data($data) {
     $result.=sprintf('<span style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</span>',($ignore_record?'':'display:none'),$index,_('Read Record'));
     $result.='</th></tr>';
 
+	$i=0;
     foreach($headers as $key=>$value) {
 
-        $select='<select onChange="option_changed(this.options[this.selectedIndex].value,this.selectedIndex)">';
-
+        $select='<select id="select'.$i.'" onChange="option_changed(this.options[this.selectedIndex].value,this.selectedIndex)">';
+$i++;
         foreach($_SESSION['state']['import']['options_labels'] as $option_key=>$option_label) {
 
             $selected='';
             if ($_SESSION['state']['import']['map'][$key]==$option_key)
                 $selected='selected="selected"';
 
-            $select.=sprintf('<option %s value="%d"  >%s</option>',$selected,$key,$option_label);
+            $select.=sprintf('<option %s value="%d"   >%s</option>',$selected,$key,$option_label);
 
         }
         $select.='</select>';
@@ -148,6 +172,8 @@ function get_record_data($data) {
 
     $result.='</table>';
 
+	//print $result;
+	
     $response=array('state'=>200,'result'=>$result);
     echo json_encode($response);
     exit;
@@ -436,8 +462,239 @@ function import_customer_csv_status() {
     echo json_encode($response);
 }
 
+function save_map(){
+	$map_name=$_REQUEST['name'];
+	$scope=$_REQUEST['scope'];
+	$scope_key=$_REQUEST['scope_key'];
+	$meta_data=$_REQUEST['meta_data'];
+	/*
+	print $map_name;
+	print $scope;
+	print $scope_key;
+	print $meta_data;
+	*/
+	
+	$sql=sprintf("select `Map Name` from `Import CSV Map` where `Map Name`='%s'", $map_name);
+	$result=mysql_query($sql);
+	if(!mysql_fetch_array($result)){
+		$sql=sprintf("insert into `Import CSV Map` (`Store Key`,`Scope`,`Map Name`,`Meta Data`) values ('%d','%s','%s','%s')", $scope_key, $scope, $map_name, $meta_data);
+		//print $sql;
+		mysql_query($sql);
+	}
+	else{
+		print 'blah';
+	}
+	
+	
+	$response= array('state'=>200,'data'=>'hello');
+    echo json_encode($response);
+}
+
+function browse_maps($data){
+
+/*
+	$map_data='<table style="margin:10px">';
+	$sql=sprintf("select * from `Import CSV Map` where `Store Key`=%d and `Scope`='%s'", $data['scope_key'], $data['scope']);
+	
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_array($result)){
+		$map_data.='<tr><td><span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer()" value="'.$row['Meta Data'].'" >'.$row['Map Name'].'</span></td></tr>';
+	}
+	
+	$map_data.="</table>";
+	
+	//print $map_data;
+	
+    $response=array('state'=>200,'map_data'=>$map_data);
+    echo json_encode($response);
+    exit;
+		
+*/
+    global $user;
+    if (isset( $_REQUEST['scope']))$scope=$_REQUEST['scope'];
+    else $scope='customers_store';
+    if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+
+    if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+    else$store_key='';
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+
+    if (!in_array($store_key,$user->stores)) {
+        $where=sprintf('where false ');
+    } else {
+        $where=sprintf('where `Store Key`=%d',$store_key);
+    }
 
 
 
 
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
+
+
+    $sql="select count(DISTINCT `Map Name`) as total from `Import CSV Map` $where $wheref  ";
+
+	//print $sql;
+	
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Map Name`) as total from `Import CSV Map`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Map','Maps',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any maps with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('maps with code like')." <b>$f_value</b>)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any map with name")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('maps with name like')." <b>$f_value</b>)";
+        break;
+
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='name')
+        $order='`Map Key`';
+    else
+        $order='`Map Key`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  `Map Name`,`Meta Data` from `Import CSV Map` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+	//print $sql;
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+		unset($data);
+		$data=explode(",", $row['Meta Data']);
+		$map='';
+		foreach($data as $key=>$val){
+		//print_r($_SESSION['state']['import']['options_labels'][$val]);
+		$map.=$_SESSION['state']['import']['options_labels'][$val].' ';
+		}
+        $adata[]=array(
+
+                     'name'=>$map,
+                     'code'=>$row['Map Name'],
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+		
+	
+}
+
+function change_map($data){
+	//print $data['map_key'];
+
+	$sql=sprintf("select `Meta Data` from `Import CSV Map` where `Map Name`='%s'", $data['map_key']);
+	$result=mysql_query($sql);
+	$row=mysql_fetch_array($result);
+	
+	$meta_data=explode(",", $row['Meta Data']);
+	//print_r($meta_data);
+	$changed_options=array();
+	$i=0;
+	foreach($meta_data as $key=>$value){
+		if($_SESSION['state']['import']['map'][$key]!=$value){
+		$_SESSION['state']['import']['map'][$key]=$value;
+		$changed_options[$i]=$value;
+		}
+	$i++;
+	}
+	
+	//print_r($_SESSION['state']['import']['map']);
+	//$response=array('state'=>200,'changes'=>$changed_options);
+	//   echo json_encode($response);
+	get_record_data($data);
+}
 ?>
