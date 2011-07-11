@@ -1,7 +1,9 @@
 <?php
 require_once 'common.php';
 require_once 'ar_edit_common.php';
-require_once 'class.EMailCampaign.php';
+require_once 'class.EmailCampaign.php';
+
+
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
@@ -11,13 +13,16 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('move_email_paragraph'):
+ $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+                            ));
+    move_email_paragraph($data);
+break;
 case('edit_email_paragraph'):
  $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array')
-                          
-
-                         ));
+                            ));
     edit_email_paragraph($data);
 break;
 case('edit_email_campaign'):
@@ -87,7 +92,7 @@ default:
 
 function add_emails_to_email_campaign_from_list($data) {
     global $user;
-    require_once 'class.EmailCampaign.php';
+    
 
     $email_campaign=new EmailCampaign($data['email_campaign_key']);
 
@@ -134,7 +139,7 @@ function add_emails_to_email_campaign_from_list($data) {
 
 
 function delete_email_campaign($data) {
-    require_once 'class.EmailCampaign.php';
+    
 
     $email_campaign=new EmailCampaign($data['email_campaign_key']);
     $email_campaign->delete();
@@ -150,7 +155,7 @@ function delete_email_campaign($data) {
 }
 
 function add_email_address_manually($data) {
-    require_once 'class.EmailCampaign.php';
+    
 
     $email_campaign=new EmailCampaign($data['parent_key']);
     $email_campaign->add_email_address_manually($data['values']);
@@ -170,7 +175,7 @@ function add_email_address_manually($data) {
 }
 
 function create_email_campaign($data) {
-    require_once 'class.EmailCampaign.php';
+    
 
     $email_campaign_data=array(
                              'Email Campaign Store Key'=>$data['parent_key'],
@@ -206,7 +211,7 @@ function create_email_campaign($data) {
 }
 
 function edit_email_campaign($data) {
-    require_once 'class.EmailCampaign.php';
+    
 
     $email_campaign=new EmailCampaign($data['email_campaign_key']);
     if (!$email_campaign->id) {
@@ -257,7 +262,6 @@ function edit_email_paragraph($data){
 
 
 
-
 $email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
 $paragrahp_data=array(
 'title'=>$data['values']['title'],
@@ -267,8 +271,39 @@ $paragrahp_data=array(
 );
 
 
-$email_campaign->update_paragraph($data['values']['paragraph_key'],$paragrahp_data);
+$email_campaign->update_paragraph($data['values']['email_content_key'],$data['values']['paragraph_key'],$paragrahp_data);
+if($email_campaign->updated){
+        $response= array('state'=>200);
+
+}else{
+        $response= array('state'=>400,'msg'=>$email_campaign->msg);
 
 }
+echo json_encode($response);
+}
+
+
+function move_email_paragraph($data){
+//print_r($data['values']);
+
+$email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
+
+if(preg_match('/\d+$/',$data['values']['paragraph_key'],$match)){
+$paragrahp_key=$match[0];
+}else{
+$response= array('state'=>400,'msg'=>'invalid paragraph');echo json_encode($response);return;
+}
+if(preg_match('/\d+$/',$data['values']['target'],$match)){
+$target_paragraph_key=$match[0];
+}else{
+$response= array('state'=>400,'msg'=>'invalid target');echo json_encode($response);return;
+}
+
+$email_campaign->move_paragraph_before_target($data['values']['email_content_key'],$paragrahp_key,$target_paragraph_key);
+
+ $response= array('state'=>200);
+echo json_encode($response);
+}
+
 
 ?>
