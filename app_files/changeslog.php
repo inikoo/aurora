@@ -3141,6 +3141,15 @@ INDEX ( `Email Content Key` )
 ALTER TABLE `Email Campaign Dimension` DROP `Email Campaign Subjects` ,DROP `Email Campaign Contents` ;
 ALTER TABLE `Email Content Dimension` CHANGE `Email Content Type` `Email Content Type` ENUM( 'Plain', 'HTML Template', 'HTML' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
+
+CREATE TABLE `Import CSV Map` (
+`Map Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Store Key` MEDIUMINT( 8 ) NOT NULL ,
+`Map Name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Meta Data` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+) ENGINE = MYISAM;
+ALTER TABLE `Import CSV Map` ADD `Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Store Key` ,ADD INDEX ( `Scope` ) ;
+
 */
 
 ?>

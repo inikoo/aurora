@@ -83,7 +83,7 @@ scope:this
             }else{
             
             
-        
+      
                
             
             if(record.getData('strikethrough')=='Yes')
