@@ -111,6 +111,7 @@ if (isset($_POST['submit'])) {
 
 
                     $number_of_records = $csv->countRows()+1;
+
                     $imported_records->update(array(
                                                   'Original Records'=>$number_of_records
                                                                      ,'Ignored Records'=>0
