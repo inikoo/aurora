@@ -66,15 +66,15 @@ abstract class DB_Table {
     }
 
     public function update($data,$options='') {
-	
+
         if (!is_array($data)) {
-			
+
             $this->error=true;
             return;
         }
 
         if (isset($data['editor'])) {
-		
+
             foreach($data['editor'] as $key=>$value) {
 
                 if (array_key_exists($key,$this->editor))
@@ -86,8 +86,8 @@ abstract class DB_Table {
 
 
         foreach($data as $key=>$value) {
-		
-		
+
+
             if (is_string($value))
                 $value=_trim($value);
             $this->update_field_switcher($key,$value,$options);
@@ -100,27 +100,26 @@ abstract class DB_Table {
     }
 
     protected function update_field_switcher($field,$value,$options='') {
-
+        print "$field,$value<br>";
 
         $base_data=$this->base_data();
 
 
-        if (preg_match('/^Address.*Data$/',$field)){
+        if (preg_match('/^Address.*Data$/',$field)) {
             $this->update_field($field,$value,$options);
 
-			}
-        elseif(array_key_exists($field,$base_data)) {
+        }elseif(array_key_exists($field,$base_data)) {
 
             if ($value!=$this->data[$field]) {
+                    $this->update_field($field,$value,$options);
 
-                
             }
         }
-		elseif(preg_match('/^custom_field_part/i',$field)){
-			$this->update_field($field,$value,$options);
-		}
+        elseif(preg_match('/^custom_field_part/i',$field)) {
+            $this->update_field($field,$value,$options);
+        }
 
-						
+
 
 
 
@@ -156,10 +155,10 @@ abstract class DB_Table {
 
     protected function update_field($field,$value,$options='') {
 
-        // print "$field,$value,$options\n";
-		//print $field;
-		//print $this->table_name;
-			
+        print "$field,$value,$options\n";
+        //print $field;
+        //print $this->table_name;
+
         $null_if_empty=true;
 
         if ($options=='no_null') {
@@ -173,50 +172,50 @@ abstract class DB_Table {
 
 
         $old_value=_('Unknown');
-		$key_field=$this->table_name." Key";
-		
+        $key_field=$this->table_name." Key";
 
-		
-        
+
+
+
         if ($this->table_name=='Supplier Product')
             $key_field='Supplier Product Current Key';
-		else if ($this->table_name=='Part')
+        else if ($this->table_name=='Part')
             $key_field='Part SKU';
 
-		if(preg_match('/^custom_field_part/i',$field)){ 
-			$field1=preg_replace('/^custom_field_part_/','',$field);
-			$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $this->id);
-		}
-		elseif(preg_match('/^custom_field_customer/i',$field)){ 
-			$field1=preg_replace('/^custom_field_customer_/','',$field);
-			$sql=sprintf("select %s as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field1, $this->id);
-		}
-		else
-			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
+        if (preg_match('/^custom_field_part/i',$field)) {
+            $field1=preg_replace('/^custom_field_part_/','',$field);
+            $sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $this->id);
+        }
+        elseif(preg_match('/^custom_field_customer/i',$field)) {
+            $field1=preg_replace('/^custom_field_customer_/','',$field);
+            $sql=sprintf("select %s as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field1, $this->id);
+        }
+        else
+            $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
-		//print $sql;
+        //print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $old_value=$row['value'];
         }
 
-		if(preg_match('/^custom_field_part/i',$field)){
-			if(is_string($value))
-				$sql=sprintf("update `Part Custom Field Dimension` set `%s`='%s' where `Part SKU`=%d",$field1, $value, $this->id);
-			else
-				$sql=sprintf("update `Part Custom Field Dimension` set `%s`='%d' where `Part SKU`=%d",$field1, $value, $this->id);
-		}
-		elseif(preg_match('/^custom_field_customer/i',$field)){
-			if(is_string($value))
-				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%s' where `Customer Key`=%d",$field1, $value, $this->id);
-			else
-				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%d' where `Customer Key`=%d",$field1, $value, $this->id);
-		}
-		else
-			$sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+        if (preg_match('/^custom_field_part/i',$field)) {
+            if (is_string($value))
+                $sql=sprintf("update `Part Custom Field Dimension` set `%s`='%s' where `Part SKU`=%d",$field1, $value, $this->id);
+            else
+                $sql=sprintf("update `Part Custom Field Dimension` set `%s`='%d' where `Part SKU`=%d",$field1, $value, $this->id);
+        }
+        elseif(preg_match('/^custom_field_customer/i',$field)) {
+            if (is_string($value))
+                $sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%s' where `Customer Key`=%d",$field1, $value, $this->id);
+            else
+                $sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%d' where `Customer Key`=%d",$field1, $value, $this->id);
+        }
+        else
+            $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
-		
-      //print "$sql\n";
+
+        //print "$sql\n";
         mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {

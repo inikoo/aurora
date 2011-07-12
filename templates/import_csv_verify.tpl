@@ -1,10 +1,9 @@
 ﻿{include file='header.tpl'}
+
+<div id="bd">
 {include file='contacts_navigation.tpl'}
 <input type="hidden" id="scope" value="{$scope}">
 <input type="hidden" id="scope_key" value="{$scope_key}">
-
-
-<div id="bd">
 <div id="no_details_title" style="clear:left;">
     <h1>{t}Import Contacts From CSV File{/t}</h1>
 </div>
@@ -19,11 +18,11 @@
 
 
 
-<div id="dialog_map">
-  <div id="map_msg"></div>
-  <table style="padding:10px;margin:20px" >
- 
-  <tr><td colspan=2>{t}Please write the map name{/t}</td></tr>
+<div id="dialog_map" style="width:180px">
+  <div id="map_msg" style="width:100%;text-align:center;margin:0;padding:5px 20px;;display:none;"></div>
+  <table id="map_form_table" style="padding:10px;margin:20px" >
+   <tr id="map_error_used_map_name"  style="display:none"><td colspan=2  id="map_form_text"  >{t}Map name already taken, please use another name{/t}</td></tr>
+  <tr id="map_form_text_tr"><td colspan=2  id="map_form_text"  >{t}Please write the map name{/t}</td></tr>
     <tr><td colspan=2>
 	<input  id="map_name" />
       </td>
