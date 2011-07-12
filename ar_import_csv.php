@@ -78,6 +78,15 @@ case('get_record_data'):
                          ));
     get_record_data($data);
     break;
+case('get_external_data'):
+
+
+    $data=prepare_values($_REQUEST,array(
+                             'index'=>array('type'=>'numeric'),
+                             'scope'=>array('type'=>'string')
+                         ));
+    get_external_data($data);
+    break;
 case('ignore_record'):
     $data=prepare_values($_REQUEST,array('index'=>array('type'=>'numeric')));
     ignore_record($data);
@@ -139,6 +148,8 @@ function get_record_data($data) {
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
     $raw = $csv->getrawArray();
 
+	//print_r($raw);
+	
     $options=$_SESSION['state']['import']['todo']=$number_of_records+1;
 
 
@@ -446,7 +457,7 @@ function insert_customers_from_csv() {
             $imported_records->append_not_imported_log($cvs_line);
 
     //print_r($imported_records);
-        exit("");
+    
 
         }
         unset($customer);
@@ -722,6 +733,99 @@ function delete_map($data) {
     mysql_query($sql);
     $response= array('state'=>200,'msg'=>'');
     echo json_encode($response);
+}
+
+
+
+function get_external_data($data) {
+    $index=$data['index'];
+
+    $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
+
+    //require_once 'csvparser.php';
+    //$csv = new CSV_PARSER;
+
+   // if (isset($_SESSION['state']['import']['file_path'])) {
+    //    $csv->load($_SESSION['state']['import']['file_path']);
+    //}
+
+    //extracting the HEADERS
+	$sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+	//print $sql;
+
+	$result=mysql_query($sql);
+
+	$row = mysql_fetch_array($result);
+
+
+	$headers = explode('#', $row[0]);
+	
+    //$headers = $csv->getHeaders();
+	//print_r($_SESSION['state']['import']['options_labels']);
+    $number_of_records = mysql_num_rows($result);
+    $ignore_record = array_key_exists($index,$records_ignored_by_user);
+    
+	$raw=array();
+	
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_array($result)){
+		$data = explode('#', $row[0]);
+		foreach($data as $key=>$value)
+			$temp[$key]=preg_replace('/"/', '', $value);
+			
+		$raw[]=$temp;
+		unset($temp);
+	}
+	
+	//print_r($raw);
+
+
+    $options=$_SESSION['state']['import']['todo']=$number_of_records;
+
+
+    $result="<table class='recordList' border=0  >
+            <tr>
+            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Assigned Field')."</th>
+            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>'."
+            <th style='width:100px'>";
+    $result.="<span style='cursor:pointer;".($index > 0?'':'visibility:hidden')."' class='subtext' id='prev' onclick='get_record_data(".($index-1).")'>"._('Previous')."</span>";
+
+    $result.="<span class='subtext' style=".($index > 0?'':'visibility:hidden')."> | </span>";
+    $result.="<span  style='cursor:pointer;".($index < $number_of_records?'':'visibility:hidden')."'  class='subtext' id='next' onclick='get_record_data(".($index+1).")'>"._('Next')."</span>";
+    $result.="</th><th style='width:100px'>";
+    $result.=sprintf('<span style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</span>',(!$ignore_record?'':'display:none'),$index,_('Ignore Record'));
+    $result.=sprintf('<span style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</span>',($ignore_record?'':'display:none'),$index,_('Read Record'));
+    $result.='</th></tr>';
+
+	$i=0;
+    foreach($headers as $key=>$value) {
+
+        $select='<select id="select'.$i.'" onChange="option_changed(this.options[this.selectedIndex].value,this.selectedIndex)">';
+$i++;
+        foreach($_SESSION['state']['import']['options_labels'] as $option_key=>$option_label) {
+
+            $selected='';
+            if ($_SESSION['state']['import']['map'][$key]==$option_key)
+                $selected='selected="selected"';
+
+            $select.=sprintf('<option %s value="%d"   >%s</option>',$selected,$key,$option_label);
+
+        }
+        $select.='</select>';
+        $text= $raw[$index][$key];
+        $newtext = wordwrap($text, 50, "<br />\n");
+        $result.=sprintf('<tr style="height:20px;border-top:1px solid #ccc"><td>%s</td><td colspan="3" >%s</td></tr>',$select,$newtext);
+    }
+
+
+    $result.='</table>';
+
+	//print $result;
+	
+    $response=array('state'=>200,'result'=>$result);
+    echo json_encode($response);
+    exit;
+
 }
 
 ?>
