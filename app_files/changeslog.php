@@ -3150,6 +3150,19 @@ CREATE TABLE `Import CSV Map` (
 ) ENGINE = MYISAM;
 ALTER TABLE `Import CSV Map` ADD `Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Store Key` ,ADD INDEX ( `Scope` ) ;
 
+
+CREATE TABLE `External Records` (
+`External Record Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
+`Read Status` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Date Time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+`Record` VARCHAR( 500 ) NOT NULL ,
+PRIMARY KEY ( `External Record Key` )
+) ENGINE = MYISAM;
+
+alter table `External Records` add column `Store Key` Mediumint(8) after `External Record Key`;
+alter table `External Records` add column `Scope` varchar(255) after `Store Key`;
+alter table `External Records` add column `IP` varchar(20) after `Read Status`;
+
 */
 
 ?>
