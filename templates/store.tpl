@@ -4,6 +4,7 @@
 <div style="padding:0 20px">
 
 {include file='assets_navigation.tpl'}
+
  <h1>Store: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
 </div> 
  

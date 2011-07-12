@@ -66,9 +66,6 @@ var dialog_edit_paragraph;
 var myEditor;
 
 function edit_paragraph(o,paragraph_key){
-
-
-
 Dom.get('paragraph_title').value=Dom.get('paragraph_title'+paragraph_key).innerHTML;
 Dom.get('paragraph_subtitle').value=Dom.get('paragraph_subtitle'+paragraph_key).innerHTML;
 Dom.get('paragraph_content').value=Dom.get('paragraph_content'+paragraph_key).innerHTML.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
@@ -76,11 +73,16 @@ Dom.get('paragraph_key').value=paragraph_key;
 myEditor.setEditorHTML(Dom.get('paragraph_content').value);
 
 dialog_edit_paragraph.show();
+}
 
-//var pos = YAHOO.util.Dom.getXY(o);
-//Dom.setXY('dialog_edit_paragraph', pos);
+function new_paragraph(){
+Dom.get('paragraph_title').value='';
+Dom.get('paragraph_subtitle').value='';
+Dom.get('paragraph_content').value='';
+Dom.get('paragraph_key').value=0;
+myEditor.setEditorHTML(Dom.get('paragraph_content').value);
 
-
+dialog_edit_paragraph.show();
 
 }
 
@@ -116,6 +118,30 @@ var request='ar_edit_marketing.php?tipo=edit_email_paragraph&values='+ jsonifica
 	
 
 
+}
+
+
+
+function delete_paragraph(paragraph_key){
+data_to_update={
+ 'paragraph_key':paragraph_key,
+ 'email_campaign_key':Dom.get('email_campaign_key').value,
+ 'email_content_key':Dom.get('email_content_key').value,
+ }
+
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+var request='ar_edit_marketing.php?tipo=delete_email_paragraph&values='+ jsonificated_values
+
+
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+	//	alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		     location.reload();
+		    
+		}
+	    });        
 }
 
 function init(){

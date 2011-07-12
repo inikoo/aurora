@@ -721,55 +721,42 @@ class EmailCampaign extends DB_Table {
         $sql=sprintf("select `Email Paragraph Key`,`Paragraph Order` from `Email Content Paragraph Dimension` where `Email Content Key`=%d order by `Paragraph Order`",$email_content_key);
         $res=mysql_query($sql);
         $current_order=array();
-        $i=1;$j=1;
-     //   $paragraph_key_found=false;
-   //     $paragraph_target_found=false;
-   $new_order=array();
+        $i=1;
+        $j=1;
+
+        $new_order=array();
         while ($row=mysql_fetch_assoc($res)) {
-          $current_order[$row['Email Paragraph Key']]=$j++;
-        if ($row['Email Paragraph Key']==$paragraph_key){
-            continue;
-        }
-            if($row['Email Paragraph Key']==$target_key){
+            $current_order[$row['Email Paragraph Key']]=$j++;
+            if ($row['Email Paragraph Key']==$paragraph_key) {
+                continue;
+            }
+            if ($row['Email Paragraph Key']==$target_key) {
                 $new_order[$paragraph_key]=$i++;
             }
-        $new_order[$row['Email Paragraph Key']]=$i++;
-          
-            
-        //     if ($row['Email Paragraph Key']==$target_key and  !$paragraph_key_found){
-       //         $paragraph_target_found=true;
-         //       continue;
-       //     }
-            
-            
-         //   if ($row['Email Paragraph Key']==$paragraph_key and !paragraph_target_found){
-      //          $paragraph_key_found=true;
-     //           continue;
-     //       }
-            
-            
-            
-        //    if($paragraph_key_found){
-      //      if ($row['Email Paragraph Key']==$target_key) {
-      //          $new_order[$email_content_key]=$i++;
-     //       }$new_order[$row['Email Paragraph Key']]=$i++;
-    //        }
+            $new_order[$row['Email Paragraph Key']]=$i++;
+
 
         }
-        //print "$paragraph_key,$target_key";
-       // print_r($current_order);
-        //print_r($new_order);
-
         foreach($new_order as $_paragraph_key=>$paragraph_order) {
             $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Order`=%d where `Email Paragraph Key`=%d ",$paragraph_order,$_paragraph_key);
             mysql_query($sql);
-        
+
         }
 
-        
+
 
     }
 
+
+    function delete_paragraph($email_content_key,$paragraph_key){
+        $sql=sprintf("delete from  `Email Content Paragraph Dimension` where `Email Paragraph Key`=%d ",$paragraph_key);
+            mysql_query($sql);
+           // print "$sql";
+        if(mysql_affected_rows()){
+            $this->updated=true;
+        }
+            
+    }
 
 }
 ?>
