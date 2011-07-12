@@ -104,6 +104,15 @@ else
 {
 	$showerror = '';
 }
+
+$sql=sprintf("select COUNT(*) from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $scope_args, $scope);
+//print $sql;
+
+$result=mysql_query($sql);
+$row=mysql_fetch_array($result);
+	$records=$row['COUNT(*)'];
+	
+$smarty->assign('records',$records);
 $smarty->assign('subject',$scope);
 $smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);
