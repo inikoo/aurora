@@ -3128,7 +3128,7 @@ alter table `Store Dimension` add column `Store Address` varchar(255) after `Sto
 alter table `Store Dimension` add column `Short Marketing Description` varchar(255) after `Store Address`;
 ALTER TABLE `Email Content Dimension` CHANGE `Email Content Metadata` `Email Content Metadata` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
 
-CREATE TABLE Email Content Paragraph Dimension` (
+CREATE TABLE `Email Content Paragraph Dimension` (
 `Email Paragraph Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `Email Content Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Paragraph Order` SMALLINT NOT NULL ,
