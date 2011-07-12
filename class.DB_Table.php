@@ -100,7 +100,7 @@ abstract class DB_Table {
     }
 
     protected function update_field_switcher($field,$value,$options='') {
-        print "$field,$value<br>";
+   
 
         $base_data=$this->base_data();
 
@@ -155,7 +155,7 @@ abstract class DB_Table {
 
     protected function update_field($field,$value,$options='') {
 
-        print "$field,$value,$options\n";
+      
         //print $field;
         //print $this->table_name;
 

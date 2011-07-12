@@ -457,7 +457,7 @@ function insert_customers_from_csv() {
             $imported_records->append_not_imported_log($cvs_line);
 
     //print_r($imported_records);
-        exit("");
+    
 
         }
         unset($customer);
