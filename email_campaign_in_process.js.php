@@ -338,12 +338,53 @@ switch ( branch ) {
 
 }
 
+function changeHeight(iframe)
+      {
+        try
+        {
+        
+            
+          var innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;
+          
+        
+          if (innerDoc.body.offsetHeight) //ns6 syntax
+          {
+
+            Dom.setStyle(iframe,'height',innerDoc.body.offsetHeight + 32  +'px');
+             //iframe.height = innerDoc.body.offsetHeight + 32  +'px'; //Extra height FireFox
+          }
+          else if (iframe.Document && iframe.Document.body.scrollHeight) //ie5+ syntax
+          {
+                  Dom.setStyle(iframe,'height',iframe.Document.body.scrollHeight + 32  +'px');
+
+          }else{
+         
+          Dom.setStyle(iframe,'height','700px');
+            
+          }
+        }
+        catch(err)
+        {
+          alert(err.message);
+        }
+      }
+
+
+function resizeFrame(f) {
+//f f.contentWindow.document.body.scrollHeight + "px";
+alert(Dom.get('template_email_iframe').contentDocument.offsetHeight)
+
+}
+
 
 function preview_email_campaign(){
 dialog_preview_text_email.show()
 }
 
 function init(){
+//changeHeight(Dom.get('template_email_iframe'))
+//resizeFrame()
+
  validate_scope_data={
  'email_campaign':{
 	'name':{'dbname':'Email Campaign Name',

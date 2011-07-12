@@ -3126,6 +3126,30 @@ ALTER TABLE `Email Content Dimension` ADD `Email Content Header Image Source` VA
 ALTER TABLE `Customer History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ;
 alter table `Store Dimension` add column `Store Address` varchar(255) after `Store Slogan`;
 alter table `Store Dimension` add column `Short Marketing Description` varchar(255) after `Store Address`;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Metadata` `Email Content Metadata` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+
+CREATE TABLE Email Content Paragraph Dimension` (
+`Email Paragraph Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Content Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Paragraph Order` SMALLINT NOT NULL ,
+`Paragraph Type` ENUM( 'Main', 'Side' ) NOT NULL DEFAULT 'Main',
+`Paragraph Title` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Paragraph Subtitle` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Paragraph Content` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+INDEX ( `Email Content Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Campaign Dimension` DROP `Email Campaign Subjects` ,DROP `Email Campaign Contents` ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Type` `Email Content Type` ENUM( 'Plain', 'HTML Template', 'HTML' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+
+CREATE TABLE `Import CSV Map` (
+`Map Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Store Key` MEDIUMINT( 8 ) NOT NULL ,
+`Map Name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Meta Data` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+) ENGINE = MYISAM;
+ALTER TABLE `Import CSV Map` ADD `Scope` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Store Key` ,ADD INDEX ( `Scope` ) ;
+
 */
 
 ?>

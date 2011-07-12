@@ -147,7 +147,7 @@
 <td></td>
 <td>
 
-<iframe src="email_template.php?id={$email_campaign->id}" frameborder=0 width='700' height='1000'>
+<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 width=700 >
 <p>Your browser does not support iframes.</p>
 </iframe>
 

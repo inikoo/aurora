@@ -40,14 +40,17 @@ $js_files=array(
               'js/php.default.min.js',
               'js/common.js',
               'js/table_common.js',
-              'js/import_csv_data.js',
+              'import_csv_data.js.php',
               'js/dropdown.js'
           );
 
 
 $_SESSION['state']['import']['records_ignored_by_user']=array();
 
+$general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_map','label'=>_('Add'));
+$general_options_list[]=array('tipo'=>'js','id'=>'browse_maps','label'=>_('Pick a Map'));
 
+$smarty->assign('general_options_list',$general_options_list);
 
 if (!isset($_REQUEST['subject'])) {
     exit("to do a page where the user can choose the correct options");
@@ -71,7 +74,7 @@ if (isset($_POST['submit'])) {
         header("location:import_csv.php?subject=$scope&subject_key=$scope_args");
         exit();
     } else {
-        if (  ($_FILES["fileUpload"]["type"] == "text/plain") || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")) {
+        if (  ($_FILES["fileUpload"]["type"] == "text/plain") || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
             if ($_FILES["fileUpload"]["error"] > 0) {
                 echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
             } else {
@@ -87,7 +90,10 @@ if (isset($_POST['submit'])) {
                     $csv->load($target_path);
 
                     $headers = $csv->getHeaders();
-                    $map=array();
+					
+					
+					          
+					$map=array();
                     foreach($headers as $header_key=>$header_value) {
                         $map[$header_key]=0;
                     }
@@ -116,6 +122,7 @@ if (isset($_POST['submit'])) {
                     $_SESSION['state']['import']['scope']=$scope;
                     $_SESSION['state']['import']['scope_key']=$scope_key;
                     $_SESSION['state']['import']['map']=$map;
+					//print_r($map);
                     list($_SESSION['state']['import']['options_db_fields'],$_SESSION['state']['import']['options_labels'])=get_options($scope,$scope_key);
                     $_SESSION['state']['import']['file_path'] = $target_path;
                     //$r = $csv->connect();
@@ -137,8 +144,9 @@ $index = 0;
 $smarty->assign('index',$index);
 $smarty->assign('scope',$scope);
 
+
 //$smarty->assign('subject',$scope);
-//$smarty->assign('subject_key',$scope_args);
+$smarty->assign('scope_key',$scope_key);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->display('import_csv_verify.tpl');

@@ -34,8 +34,8 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 $hostname = '{imap.gmail.com:993/imap/ssl/novalidate-cert}';
-$username = 'mail@ancientwisdom.biz';
-$password = '8gZW5aI!Erco';
+$username = '';
+$password = '';
 
 
 $mbox = imap_open($hostname,$username,$password) or die('Cannot connect to email server: ' . imap_last_error());
