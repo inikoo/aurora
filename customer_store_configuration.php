@@ -76,6 +76,15 @@ $js_files=array(
 
 
 
+    $view=$_SESSION['state']['customer_store_configuration']['view'];
+
+
+//print $view;
+$smarty->assign('view',$view);
+$_SESSION['state']['customer']['view']=$view;
+
+		
+		
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');

@@ -414,7 +414,13 @@ case('create_custom_field'):
     create_custom_field($data);
     break;
 
+case('create_email_field'):
 
+    $data=prepare_values($_REQUEST,array('values'=>array('type'=>'json array'),
+                                         'parent' =>array('type'=>'string'),
+                                         'parent_key' =>array('type'=>'key')));
+    create_email_field($data);
+    break;
     //break;
 default:
 
@@ -3947,6 +3953,44 @@ function create_custom_field($data) {
     //print_r ($data['values']);
     $custom_field = new Customfield('find', $data['values'], 'create');
 
+}
+
+function create_email_field($data){
+	$info=$data['values'];
+	//print_r($info);
+	$sql=sprintf("select * from `Email Credentials` where `Store Key`=%d and `Email Address`='%s'", $data['parent_key'], $info['Email Address']);
+	//print $sql;
+	$result=mysql_query($sql);
+	if(mysql_fetch_array($result)){
+		$response=array(
+		  'state'=>450,
+		  'msg'=>'Email Exist'
+
+		);
+	}
+	else{
+		$sql=sprintf("insert into `Email Credentials` (`Store Key`,`Store Scope`,`Email Address`,`Password`,`Incoming Mail Server`,`Outgoing Mail Sever`) values (%d, '%s', '%s', '%s', '%s', '%s')"
+		,$data['parent_key']
+		,$data['parent']
+		,$info['Email Address']
+		,$info['Password']
+		,$info['Incoming Mail Server']
+		,$info['Outgoing Mail Server']
+		);
+		
+		if(mysql_query($sql)){
+		    $response=array(
+                  'state'=>200,
+                  'msg'=>'Email Added'
+              );
+    
+			
+		}
+		//print $sql;
+		
+	}
+	echo json_encode($response);
+	
 }
 
 

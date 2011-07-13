@@ -1675,6 +1675,9 @@ $default_state=array(
 
 
                                ),
+					'customer_store_configuration'=>array(
+								'view'=>'new_custom_fields'
+							  ),		   
 
                    'customer'=>array(
                                   'id'=>1,

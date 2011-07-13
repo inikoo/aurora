@@ -1,35 +1,42 @@
 	{include file='header.tpl'}
 <input type="hidden" id="Custom_Field_Store_Key" value="{$store_key}">
 <input type="hidden" id="Custom_Field_Table" value="Customer">
+<div id="bd" style="padding:0px">
 
-
-<div id="bd" style="padding:0 20px">
+<div style="padding:0 20px">
 <h1>{t}Customer Store Configuration{/t}</h1>
 
-
-
-<h3>Adding new custom field</h3>
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-    {if $options.tipo=="url"}
-    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-    {else}
-    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-    {/if}
-    {/foreach}
-  </div>
 </div>
 
-<div id="yui-main" >
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='new_custom_fields'}selected{/if}"  id="new_custom_fields">  <span> {t}Adding New custom Fields{/t}</span></span></li>
+    <li> <span class="item {if $view=='custom_form'}selected{/if}"  id="custom_form">  <span> {t}Custom Form{/t}</span></span></li>
+	<li> <span class="item {if $view=='email_config'}selected{/if}"  id="email_config">  <span> {t}Email Configuration{/t}</span></span></li>
+</ul>
+
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
+
+  <div id="block_new_custom_fields"  style="{if $view!='new_custom_fields'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+  
+<h3>Adding new custom field</h3>
+	<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
+	  <div class="general_options">
+		{foreach from=$general_options_list item=options }
+		{if $options.tipo=="url"}
+		<span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+		{else}
+		<span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+		{/if}
+		{/foreach}
+	  </div>
+	</div>
+
+
     
     
-    
- 
-  <div class="search_box" ></div>
-  <div   id="contact_messages_div" >
-      <span id="contact_messages"></span>
-    </div>
+
   <div >
      <div id="results" style="margin-top:0px;float:right;width:390px;"></div>
       
@@ -137,65 +144,136 @@
 	  <td  id="cancel_add_custom_field">{t}Cancel{/t}</td>
 	</tr>
       </table>
-      <div id="Customer_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-	{t}Another contact has been found with the similar details{/t}.
-	<table style="margin:10px 0">
-	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit the Customer found{/t} (<span id="founded_name"></span>)</span></td></tr>
-	  <tr><td><span style="color:red">{t}Creating this customer is likely to produce duplicate contacts.{/t}</span></br<span  style="cursor:pointer;text-decoration:underline;color:red"  id="save_when_founded" >{t}Create customer anyway{/t}</span></td></tr>
 
-	</table>
-      </div>
-      <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-	<b>{t}Another contact has the same email{/t}</b>.
-	<table style="margin:10px 0">
-	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the Customer found{/t} (<span id="email_founded_name"></span>)</td></tr>
-	  <tr><td><span style="color:red">{t}Creating this customer will produce duplicate contacts. The email will not be added.{/t}</span></br><span  style="cursor:pointer;text-decoration:underline;color:red" id="force_new">{t}Create customer anyway{/t}</span></td></tr>
-	</table>
-      </div>
-      
-          <div id="email_found_other_store_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-	<b>{t}A Customer has the same email in another store{/t}</b>.
-	<table style="margin:10px 0">
-	<input type="hidden" value="" id="found_email_other_store_customer_key">
-	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="clone_founded()">{t}Use contact data to create new customer in this store{/t}</td></tr>
-	</table>
-      </div>
-      
-      
-      <div style="clear:both;padding:10px;" id="validation">
 
-	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_Customer_found">{t}Company has been found{/t}</div>
-	
-      </div>
+      
+      
 
       </div>
       
       
       <div style="clear:both;height:40px"></div>
 	</div>
+  </div>
+		
+		
     
-	<hr/>
-	
-	
-<h3>Adding new custom field</h3>
-	<div  style="float:left;width:1500px;" >
-	<table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
-	<tr>
-	<td>Source Code: </td>
-	<td>
-	
-	<div style="font-family:courier ;  color: black"> 
-		&lt;IFRAME SRC="external_form.php" WIDTH=600 HEIGHT=500&gt;
-	</div> </td>
-	</tr>
-	</table>
-	</div>
 
-    </div>
+
+		<div id="block_custom_form"  style="{if $view!='custom_form'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
+		<h3>Adding new custom field</h3>
+		<div  style="float:left;width:1500px;" >
+			<table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
+			<tr>
+			<td>Source Code: </td>
+			<td>
+
+			<div style="font-family:courier ;  color: black"> 
+			&lt;IFRAME SRC="external_form.php" WIDTH=600 HEIGHT=500&gt;
+			</div> </td>
+			</tr>
+			</table>
+		</div>
+		</div>
+
+		
+		
+	<div id="block_email_config"  style="{if $view!='email_config'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
+	<div >
+
+      
+      <div  style="float:left;width:540px;" >
+      
+      
+      <table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
+      <input type="hidden" value="{$store_key}" id="Store_Key"/>
+      <input type="hidden" value="customers_store" id="Customer_Type"/>
+	  
+	  
+	<tbody id="company_section">
+    
+  	<tr class="first">
+	<td style="width:120px" class="label">{t}Email{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Email" value="" ovalue="" valid="0">
+	      <div id="Email_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+	<tr>
+		<td style="width:120px" class="label">{t}Password{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" type="password" id="Password" value="" ovalue="" valid="0">
+	      <div id="Password_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
 	
+	<tr>
+		<td style="width:120px" class="label">{t}Confirm Password{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" type="password" id="Confirm_Password" value="" ovalue="" valid="0">
+	      <div id="Confirm_Password_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
 	
+	<tr>
+		<td style="width:120px" class="label">{t}Incoming Mail Server{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Incoming_Mail_Server" value="" ovalue="" valid="0">
+	      <div id="Incoming_Mail_Server_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+	
+	<tr>
+		<td style="width:1200px" class="label">{t}Outgoing Mail Server{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Outgoing_Mail_Server" value="" ovalue="" valid="0">
+	      <div id="Outgoing_Mail_Server_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+
+	 </tbody>
+  
+    </table>
+    <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
+	<tr>
+	  <td   id="new_email_field_dialog_msg" style="border:none;display:none"></td>
+	  <td  {*class="disabled"*} id="save_new_email">{t}Save{/t}</td>
+	  <td  id="cancel_add_email">{t}Cancel{/t}</td>
+	</tr>
+    </table>
+ 
+      </div>
+      
+      
+      <div style="clear:both;height:40px"></div>
+	</div>
+		
+		</div>	
+	</div>
 </div>
-</div>
+
 {include file='footer.tpl'}
 
 
