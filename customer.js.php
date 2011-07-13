@@ -1,4 +1,5 @@
 <?php
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');

@@ -18,16 +18,22 @@ switch($tipo){
    $keys=preg_split('/-/',$_REQUEST['keys']);
    switch(count($keys)){
    case 1:
+	 
      $value=$_REQUEST['value'];
      $_SESSION['state'][$keys[0]]=$value;
+	 //print $keys[0];
      echo $keys[0]."=".$value;
      break;
    case 2:
      $value=$_REQUEST['value'];
      //print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
+	 //print $keys[0];
+	 //print $keys[1];
+	 //print $value;
      $_SESSION['state'][$keys[0]][$keys[1]]=$value;
-     //print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
+     print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
    //  $data=$session->read(session_id( ));
+
      break;
    case 3:
      $value=$_REQUEST['value'];
