@@ -18,10 +18,6 @@
 <span style="margin-right:20px;visibility:hidden" id="save_edit_email_campaign" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_email_campaign" class="state_details">{t}Reset{/t}</span>
 </div>
-
-<table class="edit" style="clear:both;width:100%" border=0  >
-<input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
-<input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 <span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
 <span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
 <span style="display:none" id="invalid_email_campaign_recipients">{t}Please add recipients{/t}</span>
@@ -29,31 +25,39 @@
 <span style="display:none" id="invalid_email_campaign_subjects">{t}Please add email subject{/t}</span>
 <span style="display:none" id="invalid_email_campaign_contents">{t}Email content is empty{/t}</span>
 
-<tr class="top">
-<td class="label">{t}Store:{/t}</td>
-<td>
-{$store->get('Store Name')}
+<table class="edit" style="clear:both;width:890px" border=0  >
+<input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
+<input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 
+<tr class="top">
+<td style="width:130px" class="label">{t}Store:{/t}</td>
+<td  >
+{$store->get('Store Name')}
+</td>
+<td  style="width:290px">
 </td>
 </tr>
+
 <input id="email_campaign_number_recipients" type='hidden' value="{$email_campaign->get('Number of Emails')}" ovalue="{$email_campaign->get('Number of Emails')}"/>
 <input id="email_campaign_subjects" type='hidden' value='{$email_campaign->get('Email Campaign Subjects')|escape}' ovalue='{$email_campaign->get('Email Campaign Subjects')|escape}'/>
 <input id="email_campaign_contents" type='hidden' value='{$email_campaign->get('Email Campaign Contents')|escape}' ovalue='{$email_campaign->get('Email Campaign Contents')|escape}'/>
 
-<tr class=""><td style=";width:160px" class="label" >{t}Campaign Name{/t}:</td>
+<tr class="">
+<td class="label" >{t}Campaign Name{/t}:</td>
    <td  style="text-align:left;">
-     <div  style="position:relative;top:00px" >
-       <input style="text-align:left;width:420px" id="email_campaign_name" value="{$email_campaign->get('Email Campaign Name')|escape}" ovalue="{$email_campaign->get('Email Campaign Name')|escape}" >
+     <div  style="" >
+       <input style="text-align:left;width:100%" id="email_campaign_name" value="{$email_campaign->get('Email Campaign Name')|escape}" ovalue="{$email_campaign->get('Email Campaign Name')|escape}" >
        <div id="email_campaign_name_Container" style="" ></div>
      </div>
    </td>
-   <td style="width:300px"id="email_campaign_name_msg" class="edit_td_alert"></td>
+   <td id="email_campaign_name_msg" class="edit_td_alert"></td>
  </tr>
+<tbody style="">
 
 <tr class="last"><td style="" class="label" >{t}Campaign Objetive{/t}:</td>
    <td  style="text-align:left;">
-     <div  style="position:relative;top:00px" >
-       <input style="text-align:left;width:420px" id="email_campaign_objetive" value="{$email_campaign->get('Email Campaign Objective')|escape}" ovalue="{$email_campaign->get('Email Campaign Objective')|escape}" >
+     <div  style="" >
+       <input style="text-align:left;width:100%" id="email_campaign_objetive" value="{$email_campaign->get('Email Campaign Objective')|escape}" ovalue="{$email_campaign->get('Email Campaign Objective')|escape}" >
        <div id="email_campaign_objetive_Container" style="" ></div>
      </div>
    </td>
@@ -70,7 +74,7 @@
 	    </div>
     <div id="recipients_preview_msg" style="visibility:hidden;position:relative;left:-10px;padding:5px 0 0 0;border:1px solid #ccc;font-size:80%">
     
-    <div>
+    </div>
 
 </td>
 </tr>
@@ -78,29 +82,48 @@
 <td style="" class="label" >{t}Advertising Object{/t}:</td>
 <td >
 
-     <div  style="position:relative;top:00px" >
-       <input style="text-align:left;;width:420px" id="email_campaign_scope" value="{$email_campaign->get('Email Campaign Scope')|escape}" ovalue="{$email_campaign->get('Email Campaign Scope')|escape}" >
+     <div  style="" >
+       <input style="text-align:left;width:100%" id="email_campaign_scope" value="{$email_campaign->get('Email Campaign Scope')|escape}" ovalue="{$email_campaign->get('Email Campaign Scope')|escape}" >
        <div id="email_campaign_scope_Container" style="" ></div>
      </div>
  
-   <div style="width:300px"id="email_campaign_scope_msg" class="edit_td_alert"></div
+   <div id="email_campaign_scope_msg" class="edit_td_alert"></div>
 </td>
 <td>
 <div class="general_options" >
 	
-	<span  style="margin-left:0px;;float:none"   id="save_edit_email_campaign" class="state_details">{t}Department{/t}</span>
-	<span style="margin-left:20px;float:none" id="reset_edit_email_campaign" class="state_details">{t}Family{/t}</span>
-		<span style="margin-left:20px;float:none" id="reset_edit_email_campaign" class="state_details">{t}Product{/t}</span>
-	<span style="margin-left:20px;float:none" id="reset_edit_email_campaign" class="state_details">{t}Offer{/t}</span>
+	<span  style="margin-left:0px;;float:none"   id="department" class="state_details">{t}Department{/t}</span>
+	<span style="margin-left:20px;float:none" id="family" class="state_details">{t}Family{/t}</span>
+		<span style="margin-left:20px;float:none" id="product" class="state_details">{t}Product{/t}</span>
+	<span style="margin-left:20px;float:none" id="offer" class="state_details">{t}Offer{/t}</span>
 
       </div>
 
 </td>
 </tr>
+
+
+{foreach from=$email_campaign->get_content_data_keys() item=content_data key=content_data_key name=foo} 
+<tr class=""  >
+<input type="hidden" value="{$content_data_key}" id="current_email_contact_key">
+
+<td style="" class="label" >{t}Subject{/t}:</td>
+   <td  style="text-align:left;">
+     <div  style="" >
+       <input style="text-align:left;width:100%" id="email_campaign_subject" value='{$email_campaign->get_subject($content_data_key)|escape}' ovalue="{$email_campaign->get_subject($content_data_key)|escape}" >
+       <div id="email_campaign_subject_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="email_campaign_subject_msg" class="edit_td_alert"></td>
+ </tr>
+
+<tr>
+{/foreach}
+
 <tr class="" style="height:40px">
 <td style="" class="label" >{t}Type of Email{/t}:</td>
-<td colspan=2 ><div style="margin-top:2px;font-size:100%">
-<span  style="margin-right:10px;"  id="select_text_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" >{t}Text Email{/t}</span>
+<td colspan=2 ><div style="margin-top:7px;font-size:100%">
+<span  style="margin-right:10px;margin-left:0"  id="select_text_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" >{t}Text Email{/t}</span>
 <span style="margin-right:10px;" id="select_html_from_template_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" >{t}Template Email{/t}</span>
 <span style="" id="select_html_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML'}selected{/if}" >{t}HTML Email{/t}</span>
 
@@ -108,46 +131,47 @@
 
 </td>
 </tr>
+</tbody>
+
 
 <tbody id="text_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='Plain'}display:none{/if}">
-<tr class=""  >
 
-<td style="" class="label" >{t}Subject{/t}:</td>
-   <td  style="text-align:left;">
-     <div  style="position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="email_campaign_subject" value='{$email_campaign->get_subject()|escape}' ovalue="{$email_campaign->get_subject()|escape}" >
-       <div id="email_campaign_subject_Container" style="" ></div>
-     </div>
-   </td>
-   <td id="email_campaign_subject_msg" class="edit_td_alert"></td>
- </tr>
+
+
+
+
+
+{foreach from=$email_campaign->get_content_data_keys() item=content_data key=content_data_key } 
 <tr>
-<td style="" class="label" >{t}Content{/t}:</td>
-   <td  colspan=2 style="text-align:left;">
-   <div  style="position:relative;top:00px" >                                                     
-   <textarea style="width:600px;height:250px;background-image:url(art/text_email_guide.png);" id="email_campaign_content_text" ovalue="{$email_campaign->get_content_text()|escape}">{$email_campaign->get_content_text()|escape}</textarea>
+<td class="label" >{t}Content{/t}:</td>
+   <td  colspan=2 style="text-align:">
+   <div  style="top:00px;width:600px;margin:0px" >                                                     
+   <textarea style="width:100%;height:250px;background-image:url(art/text_email_guide.png);" id="email_campaign_content_text" ovalue="{$email_campaign->get_content_text($content_data_key)|escape}">{$email_campaign->get_content_text($content_data_key)|escape}</textarea>
+    <br>
     <div id="email_campaign_content_text_Container" style="" ></div>
      </div>
     <div id="email_campaign_content_text_msg" class="edit_td_alert"></div>
    </td>
- 
- </tr>
+</tr>
+{/foreach}
+
 </tbody>
-<tbody id="html_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML Template'}display:none{/if}">
+<tbody id="html_email_from_template_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML Template'}display:none{/if}">
 
-<tr><td>{t}Template{/t}</td><td>
+<tr>
+<td>{t}Template{/t}</td>
+<td colspan=2>
 <div class="general_options" >
-
-<span style="float:none;margin:0px">{t}Choose Template{/t}</span>
+<span    style="float:none;margin:0px">{t}Choose Template{/t}</span>
 </div>
 </td>
 </tr>
 
 <tr>
 <td></td>
-<td>
+<td colspan="2">
 
-<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 width=700 >
+<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 style="width:700px;height:100px" >
 <p>Your browser does not support iframes.</p>
 </iframe>
 
@@ -157,6 +181,9 @@
 
 
 </tbody>
+<tbody id="html_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML'}display:none{/if}">
+</tbody>
+
 </table>
 
 
@@ -268,3 +295,45 @@
  </div>
 
  
+  <div id="dialog_department_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Department List{/t}</span>
+            {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
+            <div  id="table5"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+
+ 
+ 
+ <div id="dialog_family_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Family List{/t}</span>
+            {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6}
+            <div  id="table6"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_product_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Product List{/t}</span>
+            {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
+            <div  id="table7"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_offer_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Offer List{/t}</span>
+            {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8}
+            <div  id="table8"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>

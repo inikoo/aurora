@@ -41,12 +41,24 @@ case('edit_email_campaign'):
                          ));
     edit_email_campaign($data);
     break;
-case('select_html_email_campaign'):
+case('select_html_email_from_template_campaign'):    
     $data=prepare_values($_REQUEST,array(
                              'email_campaign_key'=>array('type'=>'key')
 
                          ));
     $data['newvalue']='HTML Template';
+    $data['key']='Email Campaign Content Type';
+    $data['okey']='email_campaign_content_type';
+    edit_email_campaign($data);
+    break;
+    
+    break;
+case('select_html_email_campaign'):
+    $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key')
+
+                         ));
+    $data['newvalue']='HTML';
     $data['key']='Email Campaign Content Type';
     $data['okey']='email_campaign_content_type';
     edit_email_campaign($data);
@@ -271,17 +283,29 @@ function edit_email_paragraph($data) {
 
     $email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
     $paragraph_data=array(
-                        'title'=>$data['values']['title'],
-                        'subtitle'=>$data['values']['subtitle'],
-                        'content'=>$data['values']['content'],
-
+                        'title'=>_trim($data['values']['title']),
+                        'subtitle'=>_trim($data['values']['subtitle']),
+                        'content'=>_trim($data['values']['content']),
+                        'type'=>$data['values']['type'],
                     );
 
     if(!$data['values']['paragraph_key']){
+    
+        if($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']==''){
+          $response= array('state'=>400,'msg'=>_('All fields are empty!'));    echo json_encode($response);return;
+        }
+    
     $email_campaign->add_paragraph($data['values']['email_content_key'],$paragraph_data);
     }else{
+    
+     if($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']==''){
+          delete_email_paragraph($data);
+          return; 
+     }else{
+    
     $email_campaign->update_paragraph($data['values']['email_content_key'],$data['values']['paragraph_key'],$paragraph_data);
-    }
+   }
+   }
     if ($email_campaign->updated) {
         $response= array('state'=>200);
 

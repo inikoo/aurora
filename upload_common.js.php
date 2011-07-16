@@ -2,29 +2,30 @@
  // Variable for holding the selected file ID.
 	var fileID;
 var uploader
-
+var Event = YAHOO.util.Event;
    	
    function upload() {
    
+
 	if (fileID != null) {
-	
-		uploader.upload(fileID, "../../../../../../prepare_uploaded_files.php");
+
+uploader.upload(fileID, "../../../../../../prepare_uploaded_files.php");
+			 
 		fileID = null;
 	}
 	}
 
 function init(){
-    
+     
+
     // Instantiate the uploader and write it to its placeholder div.
 	
 	YAHOO.widget.Uploader.SWFURL = "external_libs/yui/2.9/build/uploader/assets/uploader.swf"
 	
 	 uploader = new YAHOO.widget.Uploader( "uploaderUI", "art/selectFileButton.png" );
-	
 	// Add event listeners to various events on the uploader.
 	// Methods on the uploader should only be called once the 
 	// contentReady event has fired.
-	
 	uploader.addListener('contentReady', handleContentReady);
 	uploader.addListener('fileSelect',onFileSelect)
 	uploader.addListener('uploadStart',onUploadStart);
@@ -33,7 +34,7 @@ function init(){
 	uploader.addListener('uploadComplete',onUploadComplete);
 	uploader.addListener('uploadCompleteData',onUploadResponse);
 	uploader.addListener('uploadError', onUploadError);
- 
+
 	
 	function handleClearFiles() {
 	uploader.clearFileList();
@@ -49,8 +50,10 @@ function init(){
 		
 	// When contentReady event is fired, you can call methods on the uploader.
 	function handleContentReady () {
-	    // Allows the uploader to send log messages to trace, as well as to YAHOO.log
-		uploader.setAllowLogging(true);
+	
+
+	// Allows the uploader to send log messages to trace, as well as to YAHOO.log
+	//	uploader.setAllowLogging(true);
 		
 		// Restrict selection to a single file (that's what it is by default,
 		// just demonstrating how).
@@ -62,6 +65,9 @@ function init(){
 		                   
 		// Apply new set of file filters to the uploader.
 		uploader.setFileFilters(ff);
+	
+	
+	
 	}
 
 	// Initiate the file upload. Since there's only one file, 
@@ -72,19 +78,28 @@ function init(){
 	// Fired when the user selects files in the "Browse" dialog
 	// and clicks "Ok".
 	function onFileSelect(event) {
+	
+
+	
 		for (var item in event.fileList) {
 		    if(YAHOO.lang.hasOwnProperty(event.fileList, item)) {
-				YAHOO.log(event.fileList[item].id);
+			
 				fileID = event.fileList[item].id;
 			}
 		}
+	
+	
 		uploader.disable();
 		
+	
 		var filename = document.getElementById("fileName");
 		filename.innerHTML = event.fileList[fileID].name;
-		
+			
 		var progressbar = document.getElementById("progressBar");
 		progressbar.innerHTML = "";
+		
+		
+		
 	}
 
     // Do something on each file's upload start.

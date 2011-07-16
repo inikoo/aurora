@@ -414,7 +414,13 @@ case('create_custom_field'):
     create_custom_field($data);
     break;
 
+case('create_email_field'):
 
+    $data=prepare_values($_REQUEST,array('values'=>array('type'=>'json array'),
+                                         'parent' =>array('type'=>'string'),
+                                         'parent_key' =>array('type'=>'key')));
+    create_email_field($data);
+    break;
     //break;
 default:
 
@@ -3949,6 +3955,44 @@ function create_custom_field($data) {
 
 }
 
+function create_email_field($data){
+	$info=$data['values'];
+	//print_r($info);
+	$sql=sprintf("select * from `Email Credentials` where `Store Key`=%d and `Email Address`='%s'", $data['parent_key'], $info['Email Address']);
+	//print $sql;
+	$result=mysql_query($sql);
+	if(mysql_fetch_array($result)){
+		$response=array(
+		  'state'=>450,
+		  'msg'=>'Email Exist'
+
+		);
+	}
+	else{
+		$sql=sprintf("insert into `Email Credentials` (`Store Key`,`Store Scope`,`Email Address`,`Password`,`Incoming Mail Server`,`Outgoing Mail Sever`) values (%d, '%s', '%s', '%s', '%s', '%s')"
+		,$data['parent_key']
+		,$data['parent']
+		,$info['Email Address']
+		,$info['Password']
+		,$info['Incoming Mail Server']
+		,$info['Outgoing Mail Server']
+		);
+		
+		if(mysql_query($sql)){
+		    $response=array(
+                  'state'=>200,
+                  'msg'=>'Email Added'
+              );
+    
+			
+		}
+		//print $sql;
+		
+	}
+	echo json_encode($response);
+	
+}
+
 
 function add_attachment($data) {
 
@@ -3962,7 +4006,7 @@ function add_attachment_to_customer_history($data) {
     global $editor;
     $customer=new Customer($data['scope_key']);
     $customer->editor=$editor;
-
+    $msg=
     $updated=false;
     foreach($data['files_data'] as $file_data) {
         $_data=array(
@@ -3974,6 +4018,8 @@ function add_attachment_to_customer_history($data) {
         $customer->add_attachment($_data);
         if ($customer->updated) {
             $updated=$customer->updated;
+        }else{
+            $msg=$customer->msg;
         }
 
 
@@ -3984,7 +4030,7 @@ function add_attachment_to_customer_history($data) {
         $response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
 
     } else {
-        $response= array('state'=>400,'msg'=>_('Files could not be attached'),'key'=>'attach');
+        $response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
     }
 
     echo json_encode($response);

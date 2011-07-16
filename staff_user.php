@@ -15,6 +15,9 @@
 include_once('common.php');
 include_once('class.User.php');
 
+
+$modify=true;
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -41,7 +44,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
-		
+         'staff_user.js.php'   		
 		);
 
 
@@ -51,6 +54,25 @@ $id=$_REQUEST['id'];
 
 $user_staff=new User($id);
 // print($user_staff->data['User Type']);  //User Type is not selected
+
+
+    $_SESSION['state']['user']['id']=$user_staff->id;
+
+$block_view=$_SESSION['state']['user']['block_view'];
+$smarty->assign('block_view',$block_view);
+
+if ($modify) {
+	$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'change_user_theme.php?id='.$user_staff->id,'label'=>_('Change Theme'));
+    $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'change_password','label'=>_('Change Password'));
+}
+
+
+$smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
+
+
+
 
 $title=_('Staff User');
 $smarty->assign('user_class',$user_staff);

@@ -22,19 +22,27 @@ $css_files=array(
               //'common.css',
                'button.css',
                'container.css',
-            //   'table.css',
-               
+              'table.css',
+                 'css/upload.css'
 
            );
 $js_files=array(
+
+
+       
+
+
+
+
+
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
                 $yui_path.'dragdrop/dragdrop-min',
               
-    //          $yui_path.'paginator/paginator-min.js',
-      //        $yui_path.'datasource/datasource-min.js',
-        //      $yui_path.'autocomplete/autocomplete-min.js',
-          //    $yui_path.'datatable/datatable-min.js',
+            $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+            $yui_path.'datatable/datatable-min.js',
               $yui_path.'container/container-min.js',
               $yui_path.'editor/editor-min.js',
               $yui_path.'menu/menu-min.js',
@@ -42,7 +50,7 @@ $js_files=array(
               $yui_path.'uploader/uploader-min.js',
 
               'js/common.js',
-              //'js/table_common.js',
+              'js/table_common.js',
              // 'js/search.js',
              'js/edit_common.js',
              
@@ -63,6 +71,8 @@ if(!$email_campaign->id){
 }
 $email_content_key=$_REQUEST['email_content_key'];
 $email_content_data=$email_campaign->get_content($email_content_key);
+
+
 if(!$email_content_data){
     exit('error no content found');
 }
@@ -109,7 +119,7 @@ array('title'=>'Pellentesque sed sapien','subtitle'=>'Aliquam urna dui','content
 //print serialize($data);
 //exit;
 
-$smarty->display('emails/basic.tpl');
+$smarty->display('email_basic.tpl');
 
 
 ?>

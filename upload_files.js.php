@@ -28,6 +28,7 @@ include_once('common.php');
 	
 	// When contentReady event is fired, you can call methods on the uploader.
 	function handleContentReady () {
+	
 	    // Allows the uploader to send log messages to trace, as well as to YAHOO.log
 		//uploader.setAllowLogging(true);
 		
@@ -58,6 +59,7 @@ include_once('common.php');
 	
 	
 	function upload() {
+	
 	if (fileID != null) {
 		uploader.upload(fileID, "http://www.yswfblog.com/upload/upload_simple.php");
 		fileID = null;

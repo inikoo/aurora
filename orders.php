@@ -26,8 +26,9 @@ $_SESSION['state']['orders']['store']=$store_id;
 $q='';
 
 $general_options_list=array();
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_orders.php','label'=>_('Warehouse Operations'));
 
-
+$general_options_list[]=array('tipo'=>'url','url'=>'orders_lists.php?store='.$store->id,'label'=>_('Lists'));
 
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Orders'));
@@ -53,7 +54,7 @@ if(isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatch
 $_SESSION['state']['orders']['table']['dispatch']=$_REQUEST['dispatch'];
 }
 
-$smarty->assign('view',$_SESSION['state']['orders']['view']);
+$smarty->assign('block_view',$_SESSION['state']['orders']['view']);
 $smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
 $smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
 $smarty->assign('dn_state_type',$_SESSION['state']['orders']['dn']['dn_state_type']);
