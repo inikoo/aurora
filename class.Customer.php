@@ -3332,6 +3332,9 @@ class Customer extends DB_Table {
             $this->add_customer_history($history_data,true,'No','Attachments');
             $this->updated=true;
             $this->new_value='';
+        }else{
+            $this->error;
+            $this->msg=$attach->msg;
         }
 
     }

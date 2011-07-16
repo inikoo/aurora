@@ -1,12 +1,24 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd"  style="padding:0px">
+<div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
 
- <div style="clear:left;">
+ 
     <h1>{t}Orders Corporate Overview{/t}</h1>
-  </div>
-  
-  <div  id="orders_table" class="data_table" style="clear:both;{if $view!='orders'}display:none{/if}">
+</div> 
+ 
+ <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='dn'}selected{/if}"  id="dn">  <span> {t}Delivery Notes{/t}</span></span></li>
+ 
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
+ 
+
+  <div id="block_orders"   style="padding-top:20px;clear:both;{if $block_view!='orders'}display:none{/if}">
 
 
     <span class="clean_table_title">{t}Orders Per Store{/t}</span>
@@ -17,7 +29,7 @@
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  no_filter=1} 
     <div  id="table0"   class="data_table_container dtable btable with_total "> </div>
   </div>
-  <div  id="invoices_table" class="data_table" style="clear:both;{if $view!='invoices'}display:none{/if}">
+  <div  id="block_invoices"  style="padding-top:20px;clear:both;{if $block_view!='invoices'}display:none{/if}">
     <span class="clean_table_title">{t}Invoices Per Store{/t}</span>
 <span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices_per_store" >{t}Export (CSV){/t}</span>
 
@@ -26,7 +38,7 @@
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  no_filter=1} 
     <div  id="table1"   class="data_table_container dtable btable with_total "> </div>
   </div>  
-  <div  id="dn_table" class="data_table" style="clear:both;{if $view!='dn'}display:none{/if}">
+  <div  id="block_dn"  style="padding-top:20px;clear:both;{if $block_view!='dn'}display:none{/if}">
     <span class="clean_table_title">{t}Delivery Notes Per Store{/t}</span>
 <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="delivery_notes_per_store" >{t}Export (CSV){/t}</span>
 
@@ -39,8 +51,9 @@
     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  no_filter=1} 
     <div  id="table2"   class="data_table_container dtable btable with_total "> </div>
   </div>   
+  
 </div>
-
+</div>
 <div id="filtermenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">

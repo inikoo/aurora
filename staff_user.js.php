@@ -32,10 +32,10 @@ print $s;
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
-			       {key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"ip", label:"<?php echo _('IP Address')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
+			      // {key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      {key:"ip", label:"<?php echo _('IP Address')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
 			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_loginhistory&tableid=0");
@@ -97,10 +97,21 @@ print $s;
     });
 
 
-
+function change_block(){
+ids=['login_history','access','email'];
+block_ids=['block_login_history','block_access','block_email'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=user-block_view&value='+this.id ,{});
+}
 
  function init(){
 
+
+ ids=['login_history','access','email'];
+ YAHOO.util.Event.addListener(ids, "click",change_block)
 
  init_search('users');
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);

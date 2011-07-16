@@ -82,8 +82,8 @@ $css_files=array(
                'button.css',
                'container.css',
                'table.css',
-               'css/customer.css'
-
+               'css/customer.css',
+                 'css/upload.css'
            );
 include_once('Theme.php');
 $js_files=array(
@@ -105,9 +105,13 @@ $js_files=array(
               'js/search.js',
               'js/edit_common.js',
              
-              'customer.js.php',
+             
                'upload_common.js.php',
+                'customer.js.php',
           );
+          
+          
+          
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

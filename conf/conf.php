@@ -470,6 +470,61 @@ $default_state=array(
 
 
                             ),
+                'orders_lists'=>array(
+                              
+                                'store'=>'',
+                                'view'=>'orders',
+                               
+                                'orders'=>array(
+                                            'order'=>'name',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'where'=>'where true',
+                                            'f_field'=>'name',
+                                            'f_value'=>'','f_show'=>false,
+                                            'from'=>'',
+                                            'to'=>'',
+                                         
+
+                                          
+
+
+
+
+                                        ),
+                                'invoices'=>array(
+                                               'order'=>'name',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                             
+                                               'where'=>'where true',
+                                               'f_field'=>'name',
+                                               'f_value'=>'','f_show'=>false,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>array(),
+                                             
+                                           ),
+                                'dn'=>array(
+                                         'order'=>'name',
+                                         'order_dir'=>'',
+                                         'sf'=>0,
+                                         'nr'=>25,
+                                         'where'=>'where true',
+                                         'f_field'=>'name',
+                                         'f_value'=>'','f_show'=>false,
+                                         'from'=>'',
+                                         'to'=>'',
+                                         'dn_state_type'=>'all',
+                                         'elements'=>array(),
+                                    
+                                     )
+                                    
+
+
+                            ),
 //--------------------------------------------------------------------------------------------------------------------
 
                    'porder'=>array(
@@ -1675,6 +1730,9 @@ $default_state=array(
 
 
                                ),
+					'customer_store_configuration'=>array(
+								'view'=>'new_custom_fields'
+							  ),		   
 
                    'customer'=>array(
                                   'id'=>1,
@@ -2030,6 +2088,13 @@ $default_state=array(
                                                             'f_value'=>''
                                                         )
                         ),
+                        
+                    'user'=>array(
+                    'id',
+                    'block_view'=>'login_history'
+                    ),    
+                        
+                        
                    'users'=>array(
                                'staff'=>array(
                                            'display'=>'active',

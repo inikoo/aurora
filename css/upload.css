@@ -1,0 +1,35 @@
+
+
+.uploadButton span,.uploadButton a, .clearButton a {
+		display:block;
+		width:70px;
+		height:16px;
+		text-decoration: none;
+		margin-left:5px;
+	}
+	
+	.uploadButton a {
+		background: url("../art/uploadFileButton.png") 0 0 no-repeat;
+	}
+	
+		.uploadButton span {
+		background: url("../art/uploadFileButton.png") 0 0 no-repeat;
+	}
+	
+	.clearButton a {
+		background: url("../art/clearListButton.png") 0 0 no-repeat;
+	}
+	
+    .uploadButton a:visited, .clearButton a:visited {
+		background-position: 0 0;
+	}
+	
+    .uploadButton a:hover, .clearButton a:hover {	
+		background-position: 0 -16px;
+	}
+	
+    .uploadButton a:active, .clearButton a:active {
+		background-position: 0 -32px;
+	}
+	
+	.rolloverButton.disabled{background-position: 0 -48px;}

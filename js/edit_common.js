@@ -684,7 +684,8 @@ function post_item_updated_actions(branch,r) {
 }
 
 function save_edit_general(branch) {
-    operation='edit';
+  
+  operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
@@ -711,7 +712,7 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	     //alert(request);
+	     alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {

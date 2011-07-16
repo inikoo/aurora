@@ -51,34 +51,30 @@ print "paragraph_index={ $paragraph_index };";
 }
 ?>
 
-
-
-// paragraph_index={8:['target0','target10'],9:['target8','target0'],10:['target9','target8']};
-//targets=[0,8,9,10]
-
-
-
-
-
-  var Dom   = YAHOO.util.Dom;
+var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_edit_paragraph;
+var dialog_change_header_image;
 var myEditor;
 
 function edit_paragraph(o,paragraph_key){
 Dom.get('paragraph_title').value=Dom.get('paragraph_title'+paragraph_key).innerHTML;
 Dom.get('paragraph_subtitle').value=Dom.get('paragraph_subtitle'+paragraph_key).innerHTML;
 Dom.get('paragraph_content').value=Dom.get('paragraph_content'+paragraph_key).innerHTML.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+Dom.get('paragraph_type').value=Dom.get('paragraph_type'+paragraph_key).value;
+
 Dom.get('paragraph_key').value=paragraph_key;
 myEditor.setEditorHTML(Dom.get('paragraph_content').value);
-
+Dom.setStyle('dialog_edit_paragraph','display','');
 dialog_edit_paragraph.show();
 }
 
-function new_paragraph(){
+function new_paragraph(type){
 Dom.get('paragraph_title').value='';
 Dom.get('paragraph_subtitle').value='';
 Dom.get('paragraph_content').value='';
+Dom.get('paragraph_type').value=type;
+
 Dom.get('paragraph_key').value=0;
 myEditor.setEditorHTML(Dom.get('paragraph_content').value);
 
@@ -97,6 +93,7 @@ function save_paragraph(){
 'title':Dom.get('paragraph_title').value,
 'subtitle':Dom.get('paragraph_subtitle').value,
 'content':Dom.get('paragraph_content').value,
+'type':Dom.get('paragraph_type').value,
  }
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
@@ -144,7 +141,18 @@ var request='ar_edit_marketing.php?tipo=delete_email_paragraph&values='+ jsonifi
 	    });        
 }
 
+
+
+function change_header_image(){
+
+dialog_change_header_image.show()
+}
+
 function init(){
+
+ YAHOO.util.Event.addListener('editableImg1', "click",change_header_image)
+
+
 var dd  = new Object
 var ddt  = new Object
 
@@ -213,30 +221,14 @@ new YAHOO.util.DDTarget("target"+targets[x]);
 
 
 
-  
-    /*
-   
-    dd.x.onInvalidDrop = function() { 
-        Dom.setStyle('paragraph8', 'top', ''); 
-	    Dom.setStyle('paragraph8', 'left', ''); 
-    }
-
-    dd.x.onDragDrop = function() { 
-        Dom.setStyle('paragraph8', 'display', 'none'); 
-        window.location.reload()
-    }
-    */
-//}
-
-/*
-
-
-//var dd2 = new YAHOO.util.DD("paragraph9","group1");
-
- 
-*/
 dialog_edit_paragraph = new YAHOO.widget.Dialog("dialog_edit_paragraph", {fixedcenter : true, visible : false,close:true,underlay: "none",draggable:true});
 dialog_edit_paragraph.render();
+
+dialog_change_header_image = new YAHOO.widget.Dialog("dialog_change_header_image", {fixedcenter : true, visible : false,close:true,underlay: "none",draggable:true});
+dialog_change_header_image.render();
+
+
+
   var myConfig = {
             height: '400px',
             width: '460px',
