@@ -167,7 +167,7 @@ function get_tipo_order($ltipo,$header){
     $header['notes']=preg_replace('/^follow on order$/i','',$header['notes2']);
 
 
-  }elseif(preg_match('/^REMBOURSEMENT/i',$ltipo)){
+  }elseif(preg_match('/^REMBOURSEMENT|refund/i',$ltipo)){
     $tipo=9;
     $header['notes']=preg_replace('/^refund$/i','',$header['notes']);
     $header['notes2']=preg_replace('/^refund$/i','',$header['notes2']);
