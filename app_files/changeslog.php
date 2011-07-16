@@ -3163,6 +3163,22 @@ alter table `External Records` add column `Store Key` Mediumint(8) after `Extern
 alter table `External Records` add column `Scope` varchar(255) after `Store Key`;
 alter table `External Records` add column `IP` varchar(20) after `Read Status`;
 
+ALTER TABLE `Store Dimension` ADD `Store Email Campaigns` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store Newsletters` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
+
+CREATE TABLE `Email Credentials Dimension` (
+`Email Credentials Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
+`Store Key` MEDIUMINT( 8 ) NOT NULL ,
+`Scope` VARCHAR( 255 ) NOT NULL ,
+`Email Address` VARCHAR( 255 ) NOT NULL ,
+`Password` VARCHAR( 255 ) NOT NULL ,
+`Incoming Mail Server` VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` )
+) ENGINE = MYISAM;
+alter table `Email Credentials Dimension` add column `Outgoing Mail Sever` varchar (255);
+ALTER TABLE `Email Credentials Dimension` CHANGE `Store Key` `Store Key` MEDIUMINT( 8 ) NULL DEFAULT NULL ;
+ALTER TABLE `Email Credentials Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Store Key` ;
 */
 
 ?>

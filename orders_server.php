@@ -79,10 +79,9 @@ $js_files=array(
 $q='';
 
 $general_options_list=array();
-
-
-
+ $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_orders.php','label'=>_('Warehouse Operations'));
 $smarty->assign('general_options_list',$general_options_list);
+
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 
@@ -91,7 +90,7 @@ if(isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['v
 $_SESSION['state']['stores']['orders_view']=$_REQUEST['view'];
 }
 
-$smarty->assign('view',$_SESSION['state']['stores']['orders_view']);
+$smarty->assign('block_view',$_SESSION['state']['stores']['orders_view']);
 $smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']);
 
 

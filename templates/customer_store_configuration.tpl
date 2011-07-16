@@ -181,20 +181,46 @@
 		
 	<div id="block_email_config"  style="{if $view!='email_config'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
-	<div >
-
+	
+ <input type="hidden" value="{$store_key}" id="Store_Key"/>
+      <input type="hidden" value="customers_store" id="Customer_Type"/>
       
-      <div  style="float:left;width:540px;" >
+      
+      
+      
+        <div  style="float:left;width:400px;display:none;"  id="edit_default_email"  >
       
       
       <table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
-      <input type="hidden" value="{$store_key}" id="Store_Key"/>
-      <input type="hidden" value="customers_store" id="Customer_Type"/>
+     
 	  
 	  
-	<tbody id="company_section">
+	<tbody >
     
-  	<tr class="first">
+    
+    
+    <tr>
+<td></td>
+<td >
+
+
+</td>
+</tr>
+<tr>
+
+<td>
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_email_field" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_email_field" class="state_details">{t}Reset{/t}</span>
+      </div>
+</td>
+</tr>
+    
+    <tr class="label first">
+    <td colspan=2>Default Contact Email</td>
+    </tr>
+    
+  	<tr class="top">
 	<td style="width:120px" class="label">{t}Email{/t}:</td>
 	  <td  style="text-align:left;width:350px">
 	    <div  style="" >
@@ -217,18 +243,7 @@
 	  
 	</tr>
 	
-	<tr>
-		<td style="width:120px" class="label">{t}Confirm Password{/t}:</td>
-	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
-	      <input style="text-align:left;" type="password" id="Confirm_Password" value="" ovalue="" valid="0">
-	      <div id="Confirm_Password_Container" style="" ></div>
-	    </div>
-	  </td>
-	  <td style="width:70px"></td>
-	  
-	</tr>
-	
+
 	<tr>
 		<td style="width:120px" class="label">{t}Incoming Mail Server{/t}:</td>
 	  <td  style="text-align:left;width:350px">
@@ -256,19 +271,104 @@
 	 </tbody>
   
     </table>
-    <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
-	<tr>
-	  <td   id="new_email_field_dialog_msg" style="border:none;display:none"></td>
-	  <td  {*class="disabled"*} id="save_new_email">{t}Save{/t}</td>
-	  <td  id="cancel_add_email">{t}Cancel{/t}</td>
+   
+ 
+      </div>
+      
+      
+      
+      
+      
+      <div  style="float:left;width:400px;display:none;"  id="edit_default_email"  >
+      
+      
+      <table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
+     
+	  
+	  
+	<tbody >
+    
+    
+    
+    <tr>
+<td></td>
+<td >
+
+
+</td>
+</tr>
+<tr>
+
+<td>
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_email_field" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_email_field" class="state_details">{t}Reset{/t}</span>
+      </div>
+</td>
+</tr>
+    
+    <tr class="label first">
+    <td colspan=2>Default Contact Email</td>
+    </tr>
+    
+  	<tr class="top">
+	<td style="width:120px" class="label">{t}Email{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Email" value="" ovalue="" valid="0">
+	      <div id="Email_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
 	</tr>
+	<tr>
+		<td style="width:120px" class="label">{t}Password{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" type="password" id="Password" value="" ovalue="" valid="0">
+	      <div id="Password_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+	
+
+	<tr>
+		<td style="width:120px" class="label">{t}Incoming Mail Server{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Incoming_Mail_Server" value="" ovalue="" valid="0">
+	      <div id="Incoming_Mail_Server_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+	
+	<tr>
+		<td style="width:1200px" class="label">{t}Outgoing Mail Server{/t}:</td>
+	  <td  style="text-align:left;width:350px">
+	    <div  style="" >
+	      <input style="text-align:left;" id="Outgoing_Mail_Server" value="" ovalue="" valid="0">
+	      <div id="Outgoing_Mail_Server_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+
+	 </tbody>
+  
     </table>
+   
  
       </div>
       
       
       <div style="clear:both;height:40px"></div>
-	</div>
+	
 		
 		</div>	
 	</div>

@@ -4006,7 +4006,7 @@ function add_attachment_to_customer_history($data) {
     global $editor;
     $customer=new Customer($data['scope_key']);
     $customer->editor=$editor;
-
+    $msg=
     $updated=false;
     foreach($data['files_data'] as $file_data) {
         $_data=array(
@@ -4018,6 +4018,8 @@ function add_attachment_to_customer_history($data) {
         $customer->add_attachment($_data);
         if ($customer->updated) {
             $updated=$customer->updated;
+        }else{
+            $msg=$customer->msg;
         }
 
 
@@ -4028,7 +4030,7 @@ function add_attachment_to_customer_history($data) {
         $response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
 
     } else {
-        $response= array('state'=>400,'msg'=>_('Files could not be attached'),'key'=>'attach');
+        $response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
     }
 
     echo json_encode($response);
