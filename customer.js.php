@@ -1,5 +1,4 @@
 <?php
-<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
@@ -801,7 +800,6 @@ request=request+'&'+ids[i]+'=0'
 }
 
 function init(){
-
 
 Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments'], "click",change_elements);
 

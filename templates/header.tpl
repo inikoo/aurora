@@ -11,7 +11,7 @@
     {foreach from=$js_files item=i }
     <script type="text/javascript" src="{$i}"></script>
     {/foreach}
-    <script type="text/javascript">{$script}</script>
+    {if $script}<script type="text/javascript">{$script}</script>{/if}
         
   </head>
 

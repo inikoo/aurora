@@ -1,10 +1,15 @@
 {include file='header.tpl'}
-<div id="bd" >
-<div id="no_details_title" style="clear:right;">
-    <h1>{t}Staff User{/t}</h1>
+<div id="bd" style="padding:0" >
+
+<div style="padding:0 20px">
+{include file='users_navigation.tpl'}
+
+<div id="no_details_title" style="clear:left;">
+    <h1>{t}Staff User{/t}: {$user_class->get('User Alias')}</h1>
 </div>
 
-<div style="width:230px;margin-top:20px;float:left">
+<div style="clear:both"></div>
+<div style="width:230px;margin-top:0px;float:left">
 	<table    class="show_info_product">
 		  <td class="aright">
 		    
@@ -19,7 +24,7 @@
 		</table>
 		
 </div>
-<div style="width:310px;margin-top:20px;float:left;margin-left:20px">
+<div style="width:310px;margin-top:0px;float:left;margin-left:20px">
 	<table    class="show_info_product">
 		  <td class="aright">
 		    
@@ -34,7 +39,7 @@
 		</table>
 		
 </div>
-<div style="width:310px;margin-top:20px;float:left;margin-left:20px">
+<div style="width:310px;margin-top:0px;float:left;margin-left:20px">
 	<table    class="show_info_product">
 		  <td class="aright">
 		    
@@ -50,24 +55,37 @@
 		
 </div>  
 	
-		<div style="padding-top:200px;"> <img src="art/icons/theme.png"/> &nbsp; <a href="change_user_theme.php">Theme Manager</a> (Change your theme)&nbsp;
-		&nbsp;&nbsp;&nbsp;
-<a href="#" onclick="change_passwd(this)">Change Your Password</a>
-</div>
+		</div>
+		
+		
+		
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='login_history'}selected{/if}"  id="login_history">  <span> {t}Login History{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='departments'}selected{/if}"  id="access">  <span> {t}System Permissions{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='families'}selected{/if}"  id="email">  <span> {t}Email Account{/t}</span></span></li>
   
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
+		
+		
 
 	
- <div id="yui-main">
-    <div class="data_table" style="margin-top:25px">
-      <span class="clean_table_title">{t}Login History : {$user_class->get('User Alias')}{/t}</span>
+ <div id="block_login_history" style="{if $block_view!='login_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
+    <div class="data_table" style="margin-top:15px">
+      <span class="clean_table_title">{t}Login History{/t}</span>
          {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>    
   </div>
-
-
+ <div id="block_access" style="{if $block_view!='access'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 </div>
-
+ <div id="block_email" style="{if $block_view!='email'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+</div>
+</div>
+</div>
 {include file='footer.tpl'}
 
 
