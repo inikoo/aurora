@@ -2091,12 +2091,14 @@ $default_state=array(
                         
                     'user'=>array(
                     'id',
-                    'block_view'=>'login_history'
+                    '{}{}sssss'=>'login_history'
                     ),    
                         
                         
                    'users'=>array(
                                'staff'=>array(
+                               
+                                           'block_view'=>'users',
                                            'display'=>'active',
                                            'order'=>'alias',
                                            'order_dir'=>'',
@@ -2104,7 +2106,8 @@ $default_state=array(
                                            'nr'=>50,
                                            'where'=>'where true',
                                            'f_field'=>'alias',
-                                           'f_value'=>''
+                                           'f_value'=>'',
+                                           'view'=>'login_history'
                                        ),
                                'supplier'=>array(
                                               'display'=>'all',

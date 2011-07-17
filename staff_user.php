@@ -76,6 +76,7 @@ $smarty->assign('search_scope','customers');
 
 $title=_('Staff User');
 $smarty->assign('user_class',$user_staff);
+$smarty->assign('staff_user',$user);
 
 
 $smarty->assign('title', $title);

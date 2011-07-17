@@ -611,7 +611,7 @@ function list_supplier_products() {
 
     }
 
-    $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
+    $rtext=$total_records." ".ngettext('product','products',$total_records);
     if ($total_records>$number_results)
         $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
     $filter_msg='';
