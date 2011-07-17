@@ -16,11 +16,11 @@ $avialable_locales=array(
 			       'Flag'=>'cn',
 			       'Language Code'=>'zh'
 			       )
-			 ,array('Locale'=>'es_ES.UTF-8@euro',
+			 ,array('Locale'=>'es_ES.UTF-8',
 			       'Flag'=>'es',
 			       'Language Code'=>'es'
 			       )
-			  ,array('Locale'=>'de_DE.UTF-8@euro',
+			  ,array('Locale'=>'de_DE.UTF-8',
 			       'Flag'=>'de',
 			       'Language Code'=>'de'
 			       )
