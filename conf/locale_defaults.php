@@ -20,7 +20,10 @@ $avialable_locales=array(
 			       'Flag'=>'es',
 			       'Language Code'=>'es'
 			       )
-			 
+			  ,array('Locale'=>'de_DE.UTF-8@euro',
+			       'Flag'=>'de',
+			       'Language Code'=>'de'
+			       )
 
 			 );	
 ?>
