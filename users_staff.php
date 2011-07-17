@@ -132,6 +132,9 @@ $smarty->assign('newuser_groups',$newuser_groups);
 /* $smarty->assign('suppliers',$supplier); */
 /* $smarty->assign('supplier_cols',$num_cols); */
 
+$block_view=$_SESSION['state']['users']['staff']['block_view'];
+$smarty->assign('block_view',$block_view);
+$smarty->assign('users_view',$_SESSION['state']['users']['staff']['view']);
 
 
 $tipo_filter=$_SESSION['state']['users']['staff']['f_field'];

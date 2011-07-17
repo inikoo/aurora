@@ -16,7 +16,9 @@ function select_department(oArgs){
     product_ordered_or=product_ordered_or+'d('+tables.table5.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
     Dom.get('email_campaign_scope').value=product_ordered_or;
     dialog_department_list.hide();
-    hide_filter(true,5)
+    hide_filter(true,5);
+     validate_general('email_campaign','scope', Dom.get('email_campaign_scope').value);
+
 }
 
 function select_family(oArgs){
@@ -742,7 +744,7 @@ function init(){
 	            'group':1,
 	            'type':'item',
 	            'name':'email_campaign_scope',
-	            'validation':[{'regexp':"^([a-z0-9\\-]+|(d|f|c)\\([a-z0-9\\-]+\\))(,([0-9a-z\\-]+|(d|f|c)\\([a-z0-9\\-]+\\)))*$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
+	            'validation':[{'regexp':"^([a-z0-9\\-]+|(d|f|c)\\([a-z0-9\\-]+\\))(,([0-9a-z\\-]+|(d|f|c|o)\\([a-z0-9\\-\\_]+\\)))*$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
 	            },  
 	  'subject':{
 	            'dbname':'Email Campaign Subject',
@@ -819,7 +821,7 @@ function init(){
 
 
  validate_scope_metadata={
-'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value,'secondary_key':false}
+'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value,'dynamic_second_key':'current_email_contact_key','second_key_name':'email_content_key'}
 ,'add_email_address_manually':{'type':'new','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'full_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'preview_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
