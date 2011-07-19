@@ -53,9 +53,15 @@
 		<!-- Start Main Content -->	
 		<div id="main-content">
 				<h3>What We Do</h3>
-			<p>Aliquam odio neque, porttitor ut aliquam eu, aliquam quis purus. Mauris nunc sapien, sodales eu adipiscing in, lobortis eu justo. Curabitur in mollis erat. Phasellus vel elit non dolor fermentum volutpat ut quis enim.</p>
-			<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula.</p>
-			<div class="section">				
+				<p>
+				Inikoo is a comprehensive database system which enables businesses of all sizes and specialisations to keep track of their stock levels, 
+receipt of deliveries, sales levels, outstanding orders as well as to input customer data, product data, supplier data and much more. 
+</p>
+<p>
+Important data can be accessed easily and quickly giving the user an instant overview of the relevant information.
+				</p>
+				
+						<div class="section">				
 				<div class="three-col">
 					<div class="highlight-box">
 						<img class="large-icon ie6fix" alt="" src="images/checked-paper.png" />

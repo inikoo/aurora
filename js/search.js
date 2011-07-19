@@ -130,7 +130,7 @@ var data={tipo:
         return;
 
     var request='ar_search.php?tipo='+data.tipo+'&q='+my_encodeURIComponent(q);
-
+	//alert(request);
 
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
@@ -221,12 +221,12 @@ function search(query,subject,search_scope) {
         request=request+'&'+search_scope+'_id='+Dom.get(search_scope+'_id').value;
     }
 
-//alert(request);return;
+alert('ar_search.php?'+request);//return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-           // alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 //  alert(subject+'_search_results')
