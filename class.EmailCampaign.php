@@ -339,26 +339,19 @@ class EmailCampaign extends DB_Table {
         return $content_text;
     }
 
-    function update_subject($value) {
+    function update_subject($value,$email_content_key) {
 
-        $content_keys=$this->get_content_data_keys();
-        if (count($content_keys)==1) {
+   
             $sql=sprintf("update `Email Content Dimension` set `Email Content Subject`=%s where `Email Content Key`=%d",
                          prepare_mysql($value),
-                         array_pop($content_keys)
+                        $email_content_key
                         );
             mysql_query($sql);
-        }
-        $old_value=$this->data['Email Campaign Subjects'];
-        $this->data['Email Campaign Subjects']=$this->get_subjects_serialized_array();
-        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Subjects`=%s where `Email Campaign Key`=%d",
-                     prepare_mysql($this->data['Email Campaign Subjects']),
-                     $this->id
-                    );
-        mysql_query($sql);
+       
+    
         if (mysql_affected_rows()>0) {
             $this->updated=true;
-            $this->new_value=$this->get_subject();
+            $this->new_value=$value;
         }
     }
 

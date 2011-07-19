@@ -36,7 +36,8 @@ case('edit_email_campaign'):
                              'email_campaign_key'=>array('type'=>'key'),
                              'okey'=>array('type'=>'string'),
                              'key'=>array('type'=>'string'),
-                             'newvalue'=>array('type'=>'string')
+                             'newvalue'=>array('type'=>'string'),
+                             'email_content_key'=>array('type'=>'string')
 
                          ));
     edit_email_campaign($data);
@@ -239,9 +240,14 @@ function edit_email_campaign($data) {
     }
 
 
+    if($data['key']=='Email Campaign Subject'){
+     $email_campaign->update_subject($data['newvalue'],$data['email_content_key']);
+    } elseif($data['key']=='Email Campaign Content Text'){
+     $email_campaign->update_content_text($data['newvalue'],$data['email_content_key']);
+    }else{
 
     $email_campaign->update(array($data['key']=>$data['newvalue']));
-
+}
     if ($email_campaign->updated) {
 
         $response= array(

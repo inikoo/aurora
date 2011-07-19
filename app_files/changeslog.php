@@ -3179,6 +3179,42 @@ PRIMARY KEY ( `Email Credentials Key` )
 alter table `Email Credentials Dimension` add column `Outgoing Mail Sever` varchar (255);
 ALTER TABLE `Email Credentials Dimension` CHANGE `Store Key` `Store Key` MEDIUMINT( 8 ) NULL DEFAULT NULL ;
 ALTER TABLE `Email Credentials Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Store Key` ;
+
+ALTER TABLE `Email Credentials Dimension` DROP `Scope` ;
+ALTER TABLE `Email Credentials Dimension` ADD `Customer Communication` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Customer Communication` ) ;
+ALTER TABLE `Email Credentials Dimension` ADD `Login` VARCHAR( 256 ) NOT NULL AFTER `Email Address` ;
+ALTER TABLE `Email Credentials Dimension`  DROP `Store Key`,  DROP `User Key`;
+CREATE TABLE `Email Credentials Store Bridge` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Store Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `Store Key` )
+) ENGINE = MYISAM ;
+CREATE TABLE `Email Credentials User Bridge` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`User Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `User Key` )
+) ENGINE = MYISAM ;
+CREATE TABLE `Email Credentials Scope Bridge` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Scope` ENUM( 'Customer Communications' ) NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `Scope` )
+) ENGINE = MYISAM ;
+
+
+CREATE TABLE `Email Read Dimension` (
+`Email Read Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Uid` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Customer Communications` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+PRIMARY KEY ( `Email Read Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Read Dimension` ADD INDEX ( `Email Credentials Key` ) ;
+ALTER TABLE `Email Read Dimension` ADD INDEX ( `Email Uid` ) ;
+
+ALTER TABLE `Customer Dimension` CHANGE `Customer Has More  Invoices Than` `Customer Has More Invoices Than` MEDIUMINT( 9 ) NULL DEFAULT NULL ;
+
+
+
 */
 
 ?>
