@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-17 17:19+0100\n"
-"PO-Revision-Date: 2011-07-19 18:37+0100\n"
+"PO-Revision-Date: 2011-07-19 18:44+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -3086,11 +3086,10 @@ msgstr "No se puede obtener detalles de la historia"
 #: ar_history.php:512
 #: ar_history.php:806
 #: ar_history.php:1048
-#, fuzzy
 msgid "record"
 msgid_plural "records"
 msgstr[0] "registro"
-msgstr[1] "registro"
+msgstr[1] "registros"
 
 #: ar_history.php:266
 #: ar_history.php:528
@@ -3117,11 +3116,10 @@ msgstr "No hay ninguna orden de más de"
 #: ar_history.php:280
 #: ar_history.php:534
 #: ar_history.php:540
-#, fuzzy
 msgid "day"
 msgid_plural "days"
 msgstr[0] "día"
-msgstr[1] "día"
+msgstr[1] "días"
 
 #: ar_history.php:274
 #: ar_history.php:536
