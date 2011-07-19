@@ -159,7 +159,7 @@ function email_campaigns() {
     if($total_records>$number_results)
       $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-      $rtext_rpp=sprintf("Showing all campaigns");
+      $rtext_rpp=_("Showing all campaigns");
 
 
 
