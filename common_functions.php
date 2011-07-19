@@ -962,8 +962,18 @@ function customers_awhere($awhere) {
                     'have'=>array(),
                     'allow'=>array(),
                     'dont_allow'=>array(),
+					'customers_which'=>array(),
+					'not_customers_which'=>array(),
                     'categories'=>'',
-                   'store_key'=>false
+					'lost_customer_from'=>'',
+					'lost_customer_to'=>'',
+					'invoice_option'=>array(),
+					'number_of_invoices_upper'=>'',
+					'number_of_invoices_lower'=>'',
+					'sales_lower'=>'',
+					'sales_upper'=>'',
+					'sales_option'=>array(),
+					'store_key'=>false
                 );
 
     //  $awhere=json_decode($awhere,TRUE);
@@ -1051,7 +1061,11 @@ function customers_awhere($awhere) {
 
     }
 
+	$date_interval_lost_customer=prepare_mysql_dates($where_data['lost_customer_from'],$where_data['lost_customer_to'],'`Customer Lost Date`','only_dates');
 
+	if($where_data['sales_lower']!='')
+		$use_otf=true;
+		
     if ($use_otf) {
         $table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
     }
@@ -1070,7 +1084,7 @@ function customers_awhere($awhere) {
 
 
 
-    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].") $where_categories $where_geo_constraints";
+    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints";
 
     foreach($where_data['dont_have'] as $dont_have) {
         switch ($dont_have) {
@@ -1151,10 +1165,98 @@ function customers_awhere($awhere) {
     }
 
 
+	$customers_which_where='';
+   foreach($where_data['customers_which'] as $customers_which) {
+        switch ($customers_which) {
+        case 'active':
+            $customers_which_where.=sprintf(" or `Customer Active`='Yes' ");
+            break;
+        case 'losing':
+            $customers_which_where.=sprintf(" or `Customer Type by Activity`='Losing'  ");
+            break;
+        case 'lost':
+            $customers_which_where.=sprintf(" or `Customer Active`='No'  ");
+            break;
+        }            
+    }
+    $customers_which_where=preg_replace('/^\s*or/','',$customers_which_where);
+    if($customers_which_where!=''){
+    $where.="and ($customers_which_where)";
+    }
+	
+	$invoice_option_where='';
+   foreach($where_data['invoice_option'] as $invoice_option) {
+        switch ($invoice_option) {
+        case 'less':
+            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`<'%d' ",$where_data['number_of_invoices_lower']);
+            break;
+        case 'equal':
+            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`='%d'  ",$where_data['number_of_invoices_lower']);
+            break;
+        case 'more':
+            $invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  ",$where_data['number_of_invoices_lower']);
+            break;
+        
+		case 'between':
+			$invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  and `Customer Has More Invoices Than`<'%d'", $where_data['number_of_invoices_lower'], $where_data['number_of_invoices_upper']);
+			break;
+		}
+    }
+    $invoice_option_where=preg_replace('/^\s*and/','',$invoice_option_where);
+	
+    if($invoice_option_where!=''){
+    $where.="and ($invoice_option_where)";
+    }
+	
+	$sales_option_where='';
+   foreach($where_data['sales_option'] as $sales_option) {
+        switch ($sales_option) {
+        case 'sales_less':
+            $sales_option_where.=sprintf(" and `Invoice Transaction Gross Amount`<'%s' ",$where_data['sales_lower']);
+            break;
+        case 'sales_equal':
+            $sales_option_where.=sprintf(" and `Invoice Transaction Gross Amount`='%s'  ",$where_data['sales_lower']);
+            break;
+        case 'sales_more':
+            $sales_option_where.=sprintf(" and  `Invoice Transaction Gross Amount`>'%s'  ",$where_data['sales_lower']);
+            break;
+        
+		case 'sales_between':
+			$sales_option_where.=sprintf(" and  `Invoice Transaction Gross Amount`>'%s'  and `Invoice Transaction Gross Amount`<'%s'", $where_data['sales_lower'], $where_data['sales_upper']);
+			break;
+		}
+    }
+    $sales_option_where=preg_replace('/^\s*and/','',$sales_option_where);
+	
+    if($sales_option_where!=''){
+    $where.="and ($sales_option_where)";
+    }
 
-
+	
+	/*
+	$not_customers_which_where='';
+   foreach($where_data['not_customers_which'] as $not_customers_which) {
+        switch ($not_customers_which) {
+        case 'active':
+            $not_customers_which_where.=sprintf(" or `Customer Active`='No' ");
+            break;
+        case 'losing':
+            $not_customers_which_where.=sprintf(" or `Customer Type by Activity`='Active'  ");
+            break;
+        case 'lost':
+            $not_customers_which_where.=sprintf(" or  `Customer Active`='Yes'  ");
+            break;
+        }            
+    }
+	
+    $not_customers_which_where=preg_replace('/^\s*or/','',$not_customers_which_where);
+    if($not_customers_which_where!=''){
+    $where.="and ($not_customers_which_where)";
+    }
+*///print $table;print $where;
 
     return array($where,$table);
+	
 
 }
 

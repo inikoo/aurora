@@ -22,7 +22,7 @@ $warehouse=new warehouse($warehouse_id);
 
 
 $general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php','label'=>_('Exit Edit'));
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Exit Edit'));
 $general_options_list[]=array('tipo'=>'url','url'=>'new_warehouse_area.php?warehouse_id='.$warehouse_id,'label'=>_('Add Area'));
 $general_options_list[]=array('tipo'=>'url','url'=>'new_location.php?warehouse_id='.$warehouse_id,'label'=>_('Add Location'));
 

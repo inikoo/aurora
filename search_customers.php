@@ -58,7 +58,8 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
-		 'search_customers.js.php'
+		'js/edit_common.js',
+		'search_customers.js.php'
 	
 		);
 		

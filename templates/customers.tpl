@@ -21,10 +21,10 @@
 {t}Live Contacts{/t}<div style="font-size:120%"><span style="font-weight:800">{$store->get('Active Contacts')}</span> <span>({$store->get('Percentage Active Contacts')})</span></div>
 </div>
 </div>
-<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">{t}Potential Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Potential Customers')}</div></div>
+<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px"><a href="new_customers_list.php?store={$store->get('Store Key')}&potential=1&auto=1">{t}Potential Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Potential Customers')}</div></a></div>
 
-<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">{t}Active Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Active Contacts With Orders')}</div></div>
-<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">{t}Lost Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Lost Contacts With Orders')}</div></div>
+<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px"><a href="new_customers_list.php?store={$store->get('Store Key')}&active=1&auto=1">{t}Active Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Active Contacts With Orders')}</div></a></div>
+<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px"><a href="new_customers_list.php?store={$store->get('Store Key')}&lost=1&auto=1">{t}Lost Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Lost Contacts With Orders')}</div></a></div>
 
 </div>
 
