@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-17 17:19+0100\n"
-"PO-Revision-Date: 2011-07-19 18:44+0100\n"
+"PO-Revision-Date: 2011-07-19 18:47+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -2393,9 +2393,8 @@ msgid "Total Customers"
 msgstr "Los clientes totales"
 
 #: customers_server.js.php:34
-#, fuzzy
 msgid "Losing Customers"
-msgstr "Clientes Perdidos"
+msgstr "Clientes Perdiéndose"
 
 #: location.php:51
 msgid "Edit Location"
@@ -3145,9 +3144,8 @@ msgstr[1] "récord en los últimos"
 
 #: ar_history.php:280
 #: ar_history.php:542
-#, fuzzy
 msgid "Show All"
-msgstr "Show también"
+msgstr "Mostrar todos"
 
 #: ar_history.php:331
 #: ar_history.php:334

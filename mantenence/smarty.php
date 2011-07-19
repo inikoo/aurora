@@ -7078,6 +7078,9 @@ gettext("Building");
 /* ../templates/search_customers.tpl */
 gettext("Internal");
 
+/* ../templates/search_customers.tpl */
+gettext("Search");
+
 /* ../templates/porder_in_process.tpl */
 gettext("Supplier Page");
 
@@ -7868,6 +7871,33 @@ gettext("and did't receive this product(s)");
 gettext("during this period");
 
 /* ../templates/new_customers_lists.tpl */
+gettext("Customer Stats");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("customers which are");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("not customers which are");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Lost Customers");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Register between");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Customers with Invoice");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Number of Invoices");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Customer Sales");
+
+/* ../templates/new_customers_lists.tpl */
+gettext("Sales");
+
+/* ../templates/new_customers_lists.tpl */
 gettext("Enter list name");
 
 /* ../templates/new_customers_lists.tpl */
@@ -8247,6 +8277,9 @@ gettext("Staff Notes");
 
 /* ../templates/customer.tpl */
 gettext("Attachments");
+
+/* ../templates/customer.tpl */
+gettext("Emails");
 
 /* ../templates/customer.tpl */
 gettext("Product Families Ordered");
