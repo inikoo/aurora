@@ -2037,7 +2037,7 @@ function list_customers() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all customers");
+        $rtext_rpp=_("Showing all customers");
 
 
 
@@ -2420,7 +2420,7 @@ function list_customers_send_post() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all customers");
+        $rtext_rpp=_("Showing all customers");
 
 
 
@@ -5308,7 +5308,7 @@ function list_customers_lists() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all Lists");
+        $rtext_rpp=_("Showing all Lists");
 
 
 
@@ -5558,7 +5558,7 @@ function list_customers_correlations() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all correlations");
+        $rtext_rpp=_("Showing all correlations");
 
 
 

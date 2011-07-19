@@ -1156,7 +1156,7 @@ function ready_to_pick_orders() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all delivery notes");
+        $rtext_rpp=_("Showing all delivery notes");
 
     $filter_msg='';
 
