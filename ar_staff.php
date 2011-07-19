@@ -184,7 +184,7 @@ foreach (array('view'=>$view,'order'=>$order,'order_dir'=>$order_direction,'nr'=
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all records");
+        $rtext_rpp=_("Showing all records");
 
     switch ($f_field) {
     case('name'):

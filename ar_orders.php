@@ -652,7 +652,7 @@ if(isset( $_REQUEST['where']))
   if($total_records>$number_results)
     $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
   else
-    $rtext_rpp=sprintf("Showing all orders");
+    $rtext_rpp=_("Showing all orders");
 
   $filter_msg='';
 
@@ -1793,7 +1793,7 @@ default:
   if($total_records>$number_results)
     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
    else
-    $rtext_rpp=sprintf("Showing all delivery notes");
+    $rtext_rpp=_("Showing all delivery notes");
 
   $filter_msg='';
 
@@ -2131,7 +2131,7 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
   if($total_records>$number_results)
     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
    else
-    $rtext_rpp=sprintf("Showing all invoices");
+    $rtext_rpp=_("Showing all invoices");
 
   $filter_msg='';
 
@@ -2976,7 +2976,7 @@ $translate_list_scope=array(
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all Lists");
+        $rtext_rpp=_("Showing all Lists");
 
 
 
