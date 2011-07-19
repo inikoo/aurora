@@ -3213,6 +3213,9 @@ ALTER TABLE `Email Read Dimension` ADD INDEX ( `Email Uid` ) ;
 
 ALTER TABLE `Customer Dimension` CHANGE `Customer Has More  Invoices Than` `Customer Has More Invoices Than` MEDIUMINT( 9 ) NULL DEFAULT NULL ;
 
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Email' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
+ALTER TABLE `Email Read Dimension` ADD `Scope Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 
 
 */

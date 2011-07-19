@@ -758,7 +758,7 @@ var oMenu;
 
 function change_elements(){
 
-ids=['elements_changes','elements_orders','elements_notes','elements_attachments'];
+ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'];
 
 
 if(Dom.hasClass(this,'selected')){
@@ -801,7 +801,7 @@ request=request+'&'+ids[i]+'=0'
 
 function init(){
 
-Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments'], "click",change_elements);
+Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'], "click",change_elements);
 
 
   init_search('customers_store');

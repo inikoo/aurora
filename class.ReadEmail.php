@@ -16,20 +16,36 @@ class ReadEmail extends DB_Table {
 
     var $emails=array();
 
-    function ReadEmail($ServerName, $UserName,$PassWord) {
-        $this->ServerName=$ServerName;
-        $this->UserName=$UserName;
-        $this->PassWord=$PassWord;
+    function ReadEmail() {
+
 
     }
-    
-    function read_customer_communications($store_key){
-    
-        $sql=sprintf("select `Email Address`,`Email Credentials Key`,`Login`,`Password`,`Incoming Mail Server` E from `Email Credentials Dimension` EC left join `Email Credentials Scope Bridge` SB on (SB.`Email Credentials Key`=) ");
-    
+
+    function read_customer_communications($store_key) {
+        $this->store_key=$store_key;
+        $sql=sprintf("select `Email Address`,E.`Email Credentials Key`,`Login`,`Password`,`Incoming Mail Server`  from `Email Credentials Dimension` E left join `Email Credentials Scope Bridge` SB on (SB.`Email Credentials Key`=E.`Email Credentials Key`) left join `Email Credentials Store Bridge` SoB on (SoB.`Email Credentials Key`=E.`Email Credentials Key`) where `Scope`=%s and `Store Key`=%d  ",
+                     "'Customer Communications'",
+                     $store_key
+
+                    );
+
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $this->account_email_addresses[]=$row['Email Address'];
+            $account_data[]=array('server'=>$row['Incoming Mail Server'],'login'=>$row['Login'],'password'=>$row['Password'],'email_credentials_key'=>$row['Email Credentials Key']);
+
+
+        }
+
+        foreach($account_data as $account) {
+            $this->read_mailbox('customer_communication','',$account['server'],$account['login'],$account['password'],$account['email_credentials_key']);
+
+        }
+
+
     }
-    
-    
+
+
     function getdecodevalue($message,$coding) {
         if ($coding == 0) {
             $message = imap_8bit($message);
@@ -118,10 +134,10 @@ class ReadEmail extends DB_Table {
 
 
 
-    function process_customer_communication($mbox,$message_number,$overview) {
+    function process_customer_communication($mbox,$message_number,$overview,$email_credentials_key) {
 
 
-        print_r($overview);
+        // print_r($overview);
 
         $from=false;
         if (property_exists($overview, 'from')) {
@@ -134,10 +150,10 @@ class ReadEmail extends DB_Table {
             else {
                 print "error can not read ".$overview->from."\n";
                 exit();
-           }
+            }
         }
 
-       $to=false;
+        $to=false;
         if (property_exists($overview, 'to')) {
             if (preg_match('/\<.+\@.+\>/',$overview->to,$match)) {
                 $to=preg_replace('/\<|\>/','',$match[0]);
@@ -148,45 +164,82 @@ class ReadEmail extends DB_Table {
             else {
                 print "error can not read ".$overview->to."\n";
                 exit();
-           }
+            }
         }
 
 
         $date=date("Y-m-d H:i:s",$overview->udate);
 
-       // print "from: $from\nto: $to\ndate:$date";
+        // print "from: $from\nto: $to\ndate:$date";
 
         //exit;
         $done=false;
-        
-        if(!in_array($from,$this->account_email_addresses)){
-        
-        $sql=sprintf("select `Customer Key` from    `Email Bridge` B left join `Email Dimension` E on (B.`Email Key`=E.`Email Key`) left join `Customer Dimension` C on (`Customer Key`=B.`Subject Key`) where `Subject`='Customer' and E.`Email`=%s and `Customer Store Key`=%d",
-        prepare_mysql($from),
-        $store_key
-        
-        );
 
-        $res=mysql_query($sql);
-        while($row=mysql_fetch_assoc($res)){
-            
+        if (!in_array($from,$this->account_email_addresses)) {
+
+            $sql=sprintf("select `Customer Key` from    `Email Bridge` B left join `Email Dimension` E on (B.`Email Key`=E.`Email Key`) left join `Customer Dimension` C on (`Customer Key`=B.`Subject Key`) where `Subject Type`='Customer' and E.`Email`=%s and `Customer Store Key`=%d",
+
+                         prepare_mysql($from),
+                         $this->store_key
+
+                        );
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_assoc($res)) {
+
+                $customer=new Customer($row['Customer Key']);
+                list($message,$has_attachements)=$this->get_email_message_body($mbox,$message_number);
+
+                // print_r($overview);
+                 //print $message;
+                 
+                 if($has_attachements)
+                 $img_src='art/icons/email_attach.png';
+
+                 else
+                 $img_src='art/icons/email.png';
+                 
+                 
+                 $subject='<img src="'.$img_src.'"/> '.$overview->subject;
+
+
+                $header="<table>";
+                                $header.="<tr><td><b>"._('Subject')."</b>:</td><td>".$overview->subject."</td></tr>";
+
+                $header.="<tr style='border:none'><td ><b>"._('From')."</b>:</td><td>".$overview->from."</td></tr>";
+                $header.="<tr style='border:none'><td><b>"._('To').":</b></td><td>".$overview->to."</td></tr>";
+                                $header.="<tr  style='border:none'><td><b>"._('Date')."</b>:</td><td>".$overview->date."</td></tr>";
+
+               
+               $header.= "</table><br/><div  style='clear:both;width:100%;border-bottom:1px solid #ccc'></div>";
+                $customer->add_note($subject,$header.$message,$date,'No','Emails','Customer') ;
+
+                $sql=sprintf("insert into `Email Read Dimension` (`Email Credentials Key`,`Email Uid`,`Customer Communications`,`Scope Key`) values (%d,%s,'Yes',%d)",
+                             $email_credentials_key,
+                             prepare_mysql($overview->message_id),
+                             $customer->new_value
+                            );
+                mysql_query($sql);
+               // print "$sql\n";
+                exit;
+                
+            }
+
         }
 
+        if (!$done   and !in_array($to,$this->account_email_addresses)  ) {
+            $sql=sprintf("select `Customer Key` from    `Email Bridge` B left join `Email Dimension` E on (B.`Email Key`=E.`Email Key`) left join `Customer Dimension` C on (`Customer Key`=B.`Subject Key`) where `Subject Type`='Customer' and E.`Email`=%s ",
+                         prepare_mysql($to));
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_assoc($res)) {
+
+            }
         }
 
-        if(!$done   and !in_array($to,$this->account_email_addresses)  ){
-        $sql=sprintf("select `Customer Key` from    `Email Bridge` B left join `Email Dimension` E on (B.`Email Key`=E.`Email Key`) left join `Customer Dimension` C on (`Customer Key`=B.`Subject Key`) where `Subject`='Customer' and E.`Email`=%s ",
-        prepare_mysql($to));
 
-        $res=mysql_query($sql);
-        while($row=mysql_fetch_assoc($res)){
-        
-        }
-        }
-   
-        
 
-        $message=$this->get_email_message_body($mbox,$message_number);
+        // $message=$this->get_email_message_body($mbox,$message_number);
 
 
 
@@ -253,23 +306,34 @@ class ReadEmail extends DB_Table {
             }
 
         }
-
-        foreach($selectBoxDisplay  as $attchment) {
-
+        
+        $attachment='';
+          $has_attachements=false;
+        if(count($selectBoxDisplay)>0){
+            $has_attachements=true;
+            $_attachments='';
+             foreach($selectBoxDisplay  as $attchment) {
+                    $_attachments=', <a href="file.php?id=0">'. $attchment.'</a>';
+            
+                }
+            $_attachments=preg_replace('/^,/','',$attachments);
+            $attachment="<div>$_attachments</div>";
         }
 
 
-        return $msgBody;
+        $msgBody=$attachment.$msgBody;
+
+        return array($msgBody,$has_attachements);
 
     }
 
 
 
-    function read_mailbox($process_type,$mail_box='') {
-        $mbox = imap_open($this->ServerName.$mail_box, $this->UserName,$this->PassWord);
+    function read_mailbox($process_type,$mail_box='',$ServerName, $UserName,$PassWord,$email_credentials_key) {
+        $mbox = imap_open($ServerName.$mail_box, $UserName,$PassWord);
 
 
-        $list = imap_list($mbox,$this->ServerName, "*");
+        $list = imap_list($mbox,$ServerName, "*");
 
 
 
@@ -297,7 +361,7 @@ class ReadEmail extends DB_Table {
 
             switch ($process_type) {
             case 'customer_communication':
-                $this->process_customer_communication($mbox,$i,$overview[$i]);
+                $this->process_customer_communication($mbox,$i,$overview[$i],$email_credentials_key);
                 break;
             default:
                 break(2);

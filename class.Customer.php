@@ -3255,7 +3255,7 @@ class Customer extends DB_Table {
 
     }
 
-    function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes') {
+    function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes',$author=false) {
 
 
         list($ok,$note,$details)=$this->prepare_note($note,$details);
@@ -3274,6 +3274,11 @@ class Customer extends DB_Table {
 
 
                       );
+                      
+                 if($author){
+            $history_data['Author Name']=$author;
+        }        
+                      
         if ($date!='')
             $history_data['Date']=$date;
 
@@ -3338,6 +3343,12 @@ class Customer extends DB_Table {
         }
 
     }
+
+
+
+
+
+ 
 
 
     function delivery_address_xhtml() {
