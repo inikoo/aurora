@@ -219,10 +219,17 @@ default:
 }
 function list_customer_orders() {
     $conf=$_SESSION['state']['customer']['orders'];
-    if (isset( $_REQUEST['id']))
-        $customer_id=$_REQUEST['id'];
-    else
+    
+    
+       if (isset( $_REQUEST['customer_key'])){
+        $customer_id=$_REQUEST['customer_key'];
+        $_SESSION['state']['customer']['id']=$customer_id;
+    }else
         $customer_id=$_SESSION['state']['customer']['id'];
+
+    
+    
+ 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -491,10 +498,19 @@ function list_customer_orders() {
 
 function list_assets_dispatched_to_customer() {
     $conf=$_SESSION['state']['customer']['assets'];
-    if (isset( $_REQUEST['id']))
-        $customer_id=$_REQUEST['id'];
-    else
+    
+    
+    
+    
+          if (isset( $_REQUEST['customer_key'])){
+        $customer_id=$_REQUEST['customer_key'];
+        $_SESSION['state']['customer']['id']=$customer_id;
+    }else
         $customer_id=$_SESSION['state']['customer']['id'];
+    
+    
+    
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else

@@ -192,6 +192,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
+        
+
+
         //print_r($header_data);
 
         if (preg_match('/^FR\d{4,5}sh$/i',$filename_number)) {
@@ -215,7 +218,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         }
 
-
+        if(!$tipo_order){
+             $sql="update fr_orders_data.orders set last_transcribed=NULL where id=".$order_data_id;
+           mysql_query($sql);
+            continue;
+        }
 
         //if($tipo_order==2 or $tipo_order==1){
         //  print "\n";

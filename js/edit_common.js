@@ -684,7 +684,8 @@ function post_item_updated_actions(branch,r) {
 }
 
 function save_edit_general(branch) {
-    operation='edit';
+  
+  operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
@@ -711,7 +712,19 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	     //alert(request);
+	   
+	   
+	   if(validate_scope_metadata[branch]['dynamic_second_key']!= undefined){
+	     second_key=validate_scope_metadata[branch]['dynamic_second_key'];
+	    second_name_name='second_key';
+	     if(validate_scope_metadata[branch]['second_key_name']!= undefined){
+	         second_name_name=validate_scope_metadata[branch]['second_key_name']
+	     }
+	    
+	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
+	   }
+	   
+	   alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {

@@ -101,7 +101,7 @@ $image=new Image('find',$data,'create');
       //print_r($product);
       // print $product->msg."\n";
       $product->update_main_image();
-      // unlink($tmp_file);
+       unlink($tmp_file);
 
 //exit;
 

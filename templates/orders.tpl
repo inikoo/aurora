@@ -1,12 +1,23 @@
-{include file='header.tpl'}
-<div id="bd" >
+{include file='header.tpl' }
+<div id="bd" style="padding:0px" >
+<div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
+  <h1>Orders {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
+
+</div>
+ <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='dn'}selected{/if}"  id="dn">  <span> {t}Delivery Notes{/t}</span></span></li>
+ 
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px;padding-bottom:30px">
 
 
-
-
-  <div  id="orders_table" class="data_table" style="{if $view!='orders'}display:none{/if};clear:both">
-    <span class="clean_table_title">{t}Order List{/t}</span>
+  <div  id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;padding-top:15px;">
+    <span class="clean_table_title">{t}Orders{/t}</span>
     
     <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="dispatch_chooser" style="display:{if $view!='orders'}none{/if}">
@@ -56,7 +67,7 @@
   </div>
   
   
-   <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
+   <div  id="block_invoices"   class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Invoice List{/t}</span>
      <div id="table_type" class="table_type">
 
@@ -104,7 +115,7 @@
  
 </div>
 
- <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:both">
+ <div   id="block_dn"  class="data_table" style="{if $block_view!='dn'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Delivery Note List{/t}</span>
     
         <div style="font-size:90%"  id="dn_table_type" class="table_type">
@@ -162,6 +173,10 @@
   
   
 </div>
+
+
+</div>
+
 
 </div>
 <div id="filtermenu0" class="yuimenu">
