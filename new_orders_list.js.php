@@ -14,6 +14,9 @@ var dialog_product_list;
 var dialog_category_list;
 
 var searched=false;
+
+var current_geo_constrain='billing';
+
 function save_search_list(){
 
 
@@ -158,37 +161,58 @@ if(    Dom.hasClass(o,'selected')){
  
  
 function select_country(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value=geo_constraints;
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+    Dom.get(geo_constrain).value=billing_geo_constraints;
     dialog_country_list.hide();
     hide_filter(true,2)
 }
 
 function select_postal_code(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+'pc('+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+'pc('+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
+    Dom.get(geo_constrain).value=billing_geo_constraints;
     dialog_postal_code_list.hide();
     hide_filter(true,3)
 }
 
 function select_wregion(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+'wr('+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
+
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+'wr('+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
+    Dom.get(geo_constrain).value=billing_geo_constraints;
     dialog_wregion_list.hide();
     hide_filter(true,1)
 }
 
 function select_city(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+'t('+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+'t('+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '')+')';
+    Dom.get(geo_constrain).value=billing_geo_constraints;
     dialog_city_list.hide();
     hide_filter(true,4)
 }
@@ -263,7 +287,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.table_id=tableid;
 
@@ -881,19 +905,20 @@ dont_allow=Dom.getElementsByClassName('selected', 'span', 'dont_allow_options');
     dont_have:dont_have_array,
     have:have_array,
     allow:allow_array,
-      dont_allow:dont_allow_array,
-	geo_constraints:Dom.get('geo_constraints').value,
-
+    dont_allow:dont_allow_array,
+	billing_geo_constraints:Dom.get('billing_geo_constraints').value,
+	delivery_geo_constraints:Dom.get('delivery_geo_constraints').value,
 	product_ordered1:Dom.get('product_ordered_or').value,
 	//	product_ordered2: Dom.get('product_ordered2').value,
 	product_not_ordered1: Dom.get('product_not_ordered1').value,
 	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
 	product_not_received1: Dom.get('product_not_received1').value,
 	//	product_not_received2: Dom.get('product_not_received2').value,
-	ordered_from:Dom.get('v_calpop1').value,
-	ordered_to:Dom.get('v_calpop2').value,
-customer_created_from:Dom.get('v_calpop3').value,
-	customer_created_to:Dom.get('v_calpop4').value,
+	product_ordered_or_from:Dom.get('v_calpop1').value,
+	product_ordered_or_to:Dom.get('v_calpop2').value,
+	order_created_from:Dom.get('v_calpop3').value,
+	order_created_to:Dom.get('v_calpop4').value,
+	product_ordered_or:Dom.get('product_ordered_or').value,
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -922,7 +947,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -937,10 +962,32 @@ var submit_search_on_enter=function(e,tipo){
 	 submit_search(e,tipo);
 };
 
+function show_wregion_list(e,geo_constrain){
 
+current_geo_constrain=geo_constrain;
+dialog_wregion_list.show();
+}
+
+function show_country_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_country_list.show();
+}
+
+function show_city_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_city_list.show();
+}
+
+function show_postal_code_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_postal_code_list.show();
+}
 
 function init(){
-
+/*
 
   init_search('customers_store');
 var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -1002,23 +1049,26 @@ YAHOO.util.Event.addListener('clean_table_filter_show6', "click",show_filter,6);
 YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
  YAHOO.util.Event.addListener('clean_table_filter_hide7', "click",hide_filter,7);
  
- 
+ */
     dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {context:["country","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_country_list.render();
-    Event.addListener("country", "click", dialog_country_list.show,dialog_country_list , true);
-
+    Event.addListener("country", "click", show_country_list, 'billing');
+	Event.addListener("country2", "click", show_country_list, 'delivery');
+	
     dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {context:["wregion","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_wregion_list.render();
-    Event.addListener("wregion", "click", dialog_wregion_list.show,dialog_wregion_list , true);
-
+    Event.addListener("wregion", "click", show_wregion_list, 'billing');
+	Event.addListener("wregion2", "click", show_wregion_list, 'delivery' );
+	
     dialog_city_list = new YAHOO.widget.Dialog("dialog_city_list", {context:["city","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_city_list.render();
-    Event.addListener("city", "click", dialog_city_list.show,dialog_city_list , true);
-
+    Event.addListener("city", "click", show_city_list, 'billing');
+	Event.addListener("city2", "click", show_city_list, 'delivery');
 
     dialog_postal_code_list = new YAHOO.widget.Dialog("dialog_postal_code_list", {context:["postal_code","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_postal_code_list.render();
-    Event.addListener("postal_code", "click", dialog_postal_code_list.show,dialog_postal_code_list , true);
+    Event.addListener("postal_code", "click", show_postal_code_list, 'billing');
+	Event.addListener("postal_code2", "click", show_postal_code_list, 'delivery');
 
     dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_department_list.render();
@@ -1032,9 +1082,9 @@ YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
     dialog_product_list.render();
     Event.addListener("product", "click", dialog_product_list.show,dialog_product_list , true);
 
-    dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {context:["category","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {context:["product_category","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_category_list.render();
-    Event.addListener("category", "click", dialog_category_list.show,dialog_category_list , true);
+    Event.addListener("product_category", "click", dialog_category_list.show,dialog_category_list , true);
 
 YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
 YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
@@ -1061,14 +1111,14 @@ cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_f
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
 
-cal3 = new YAHOO.widget.Calendar("customer_first_contacted_from","customer_first_contacted_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+cal3 = new YAHOO.widget.Calendar("order_created_from","order_created_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal3.update=updateCal;
  cal3.id='3';
  cal3.render();
  cal3.update();
 cal3.selectEvent.subscribe(handleSelect, cal3, true); 
 
-cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to","customer_first_contacted_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
+cal4 = new YAHOO.widget.Calendar("order_created_to","order_created_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
  cal4.update=updateCal;
  cal4.id='4';
  cal4.render();
@@ -1076,18 +1126,18 @@ cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to","customer_first_c
 cal4.selectEvent.subscribe(handleSelect, cal4, true); 
 
 
-
+/*
 
 
 //cal2.cfg.setProperty("iframe", true);
 //cal2.cfg.setProperty("zIndex", 10);
 
-
+*/
 
 YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
 YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
-YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
-YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
+YAHOO.util.Event.addListener("order_created_from", "click", cal3.show, cal3, true);
+YAHOO.util.Event.addListener("order_created_to", "click", cal4.show, cal4, true);
 
 }
 
