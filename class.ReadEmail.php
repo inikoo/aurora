@@ -22,6 +22,14 @@ class ReadEmail extends DB_Table {
         $this->PassWord=$PassWord;
 
     }
+    
+    function read_customer_communications($store_key){
+    
+        $sql=sprintf("select `Email Address`,`Email Credentials Key`,`Login`,`Password`,`Incoming Mail Server` E from `Email Credentials Dimension` EC left join `Email Credentials Scope Bridge` SB on (SB.`Email Credentials Key`=) ");
+    
+    }
+    
+    
     function getdecodevalue($message,$coding) {
         if ($coding == 0) {
             $message = imap_8bit($message);
@@ -107,9 +115,83 @@ class ReadEmail extends DB_Table {
         }
         return false;
     }
-    function process_customer_communication($mbox,$message_number) {
 
-        $this->get_email_message_body($mbox,$message_number);
+
+
+    function process_customer_communication($mbox,$message_number,$overview) {
+
+
+        print_r($overview);
+
+        $from=false;
+        if (property_exists($overview, 'from')) {
+            if (preg_match('/\<.+\@.+\>/',$overview->from,$match)) {
+                $from=preg_replace('/\<|\>/','',$match[0]);
+            }
+            elseif(preg_match('/^\s*[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})\s*$/i',$overview->from,$match)) {
+                $from=$match[0];
+            }
+            else {
+                print "error can not read ".$overview->from."\n";
+                exit();
+           }
+        }
+
+       $to=false;
+        if (property_exists($overview, 'to')) {
+            if (preg_match('/\<.+\@.+\>/',$overview->to,$match)) {
+                $to=preg_replace('/\<|\>/','',$match[0]);
+            }
+            elseif(preg_match('/^\s*[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})\s*$/i',$overview->to,$match)) {
+                $to=$match[0];
+            }
+            else {
+                print "error can not read ".$overview->to."\n";
+                exit();
+           }
+        }
+
+
+        $date=date("Y-m-d H:i:s",$overview->udate);
+
+       // print "from: $from\nto: $to\ndate:$date";
+
+        //exit;
+        $done=false;
+        
+        if(!in_array($from,$this->account_email_addresses)){
+        
+        $sql=sprintf("select `Customer Key` from    `Email Bridge` B left join `Email Dimension` E on (B.`Email Key`=E.`Email Key`) left join `Customer Dimension` C on (`Customer Key`=B.`Subject Key`) where `Subject`='Customer' and E.`Email`=%s and `Customer Store Key`=%d",
+        prepare_mysql($from),
+        $store_key
+        
+        );
+
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_assoc($res)){
+            
+        }
+
+        }
+
+        if(!$done   and !in_array($to,$this->account_email_addresses)  ){
+        $sql=sprintf("select `Customer Key` from    `Email Bridge` B left join `Email Dimension` E on (B.`Email Key`=E.`Email Key`) left join `Customer Dimension` C on (`Customer Key`=B.`Subject Key`) where `Subject`='Customer' and E.`Email`=%s ",
+        prepare_mysql($to));
+
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_assoc($res)){
+        
+        }
+        }
+   
+        
+
+        $message=$this->get_email_message_body($mbox,$message_number);
+
+
+
+
+
     }
     function get_email_message_body($mbox,$msgno) {
 
@@ -151,8 +233,8 @@ class ReadEmail extends DB_Table {
 
 
             if ($message_mime_type=='MULTIPART/ALTERNATIVE' and $contentParts==2) {
-                
-            }elseif ($contentParts >= 2) {
+
+            } elseif ($contentParts >= 2) {
                 for ($i=2; $i<=$contentParts; $i++) {
                     $att[$i-2] = imap_bodystruct($mbox,$msgno,$i);
                 }
@@ -171,36 +253,38 @@ class ReadEmail extends DB_Table {
             }
 
         }
-       
-       foreach($selectBoxDisplay  as $attchment){
-       
-       }
+
+        foreach($selectBoxDisplay  as $attchment) {
+
+        }
+
+
+        return $msgBody;
 
     }
-    
-    
-    
+
+
+
     function read_mailbox($process_type,$mail_box='') {
         $mbox = imap_open($this->ServerName.$mail_box, $this->UserName,$this->PassWord);
 
 
-       $list = imap_list($mbox,$this->ServerName, "*");
+        $list = imap_list($mbox,$this->ServerName, "*");
 
-print_r($list);
 
-  
+
         if ($hdr = imap_check($mbox)) {
 
             $msgCount = $hdr->Nmsgs;
         } else {
             return 0;
         }
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         $MN=$msgCount;
         $overview=imap_fetch_overview($mbox,"1:$MN",0);
         $size=sizeof($overview);
@@ -208,12 +292,12 @@ print_r($list);
 
 
         for ($i=$size-1; $i>=0; $i--) {
-        
-            print_r($overview[$i]);
-        
+
+
+
             switch ($process_type) {
             case 'customer_communication':
-                $this->process_customer_communication($mbox,$i);
+                $this->process_customer_communication($mbox,$i,$overview[$i]);
                 break;
             default:
                 break(2);

@@ -10,7 +10,7 @@
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
        </div>
        <div style="margin-top:5px">
-       <span id="add_new_delivery_address" class="state_details">Add New Delivery Address</span>
+       <span id="add_new_delivery_address" class="state_details">{t}Add New Delivery Address{/t}</span>
        </div>
        <table id="new_delivery_address_table" border=0 style="width:540px;display:none">
        {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' show_tel=true show_contact=true  address_function='Shipping'  hide_type=true hide_description=true show_form=false  show_components=false }

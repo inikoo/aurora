@@ -1798,7 +1798,7 @@ if(count($tax_categories)==0){
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all invoices");
+        $rtext_rpp=_("Showing all invoices");
 
     $filter_msg='';
 
@@ -2434,7 +2434,7 @@ if(count($tax_categories)==0){
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all customers");
+        $rtext_rpp=_("Showing all customers");
 
     $filter_msg='';
 
