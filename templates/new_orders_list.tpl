@@ -43,10 +43,10 @@
         <td>
         <input id="delivery_geo_constraints" style="width:500px"/> 
         <div class="general_options" >
-                <span id="postal_code" class="state_details">{t}Postal Code{/t}</span>
-                <span id="city" class="state_details">{t}City{/t}</span>
-                <span id="country" class="state_details">{t}Country{/t}</span>
-                <span id="wregion" class="state_details">{t}World Region{/t}</span>
+                <span id="postal_code2" class="state_details">{t}Postal Code{/t}</span>
+                <span id="city2" class="state_details">{t}City{/t}</span>
+                <span id="country2" class="state_details">{t}Country{/t}</span>
+                <span id="wregion2" class="state_details">{t}World Region{/t}</span>
 
         </div>
         </td>

@@ -143,6 +143,10 @@ case('customers'):
     list_customers();
     break;
 
+	
+
+
+	
 case('customers_send_post'):
     if (!$user->can_view('customers'))
         exit();
