@@ -284,9 +284,9 @@ function create($data){
 	else
 	  $this->email_data['To Greatings']='Sehr geehrte/r '.$this->email_data['To Greatings'];
 
-	$this->email_data['Subject']="Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company'];
+	$this->email_data['Subject']="Vielen Dank f√ºr Ihre Registrierung bei ".$this->email_data['Our Company'];
 	$this->email_data['Content'][]=array(
-				     'title'=>"Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company']."!"
+				     'title'=>"Vielen Dank f√ºr Ihre Registrierung bei ".$this->email_data['Our Company']."!"
 				     ,'content'=>"Sehen Sie nun unsere Preise und bestellen Sie aus einer Vielzahl toller Produkte.<br/><br/>"
 				     );
 	
@@ -421,9 +421,9 @@ $encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key,256)
 	else
 	  $this->email_data['To Greatings']='Sehr geehrte/r '.$this->email_data['To Greatings'];
 
-	$this->email_data['Subject']="Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company'];
+	$this->email_data['Subject']="Vielen Dank f√ºr Ihre Registrierung bei ".$this->email_data['Our Company'];
 	$this->email_data['Content'][]=array(
-				     'title'=>"Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company']."!"
+				     'title'=>"Vielen Dank f√ºr Ihre Registrierung bei ".$this->email_data['Our Company']."!"
 				     ,'content'=>"Sehen Sie nun unsere Preise und bestellen Sie aus einer Vielzahl toller Produkte.<br/><br/>"
 				     );
 	

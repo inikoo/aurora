@@ -10,7 +10,7 @@ var dialog_new_sticky_note;
 var dialog_sticky_note;
 var dialog_export;
 var dialog_link;
-var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
+var customer_key=<?php echo $_REQUEST['customer_key']  ?>;
 var dialog_edit_note;
 
 var onCellClick = function(oArgs) {
@@ -518,7 +518,7 @@ Event.addListener(window, "load", function() {
 
 					   ];
 		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&sf=0&tid="+tableid);
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&customer_key="+customer_key+"&sf=0&tid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -603,7 +603,7 @@ Event.addListener(window, "load", function() {
 
 					   ];
 		
-		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispatched_to_customer&tid="+tableid);
+		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispatched_to_customer&customer_key="+customer_key+"&tid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.table_id=tableid;
@@ -671,7 +671,7 @@ Event.addListener(window, "load", function() {
 					
 					 ];
 		
-		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&tid="+tableid);
+		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&tid="+tableid);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.table_id=tableid;

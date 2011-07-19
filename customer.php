@@ -107,7 +107,7 @@ $js_files=array(
              
              
                'upload_common.js.php',
-                'customer.js.php',
+                'customer.js.php?customer_key='.$customer->id,
           );
           
           
