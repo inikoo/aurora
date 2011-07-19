@@ -30,12 +30,18 @@ var validate_scope_data=
 					,'Password':{'inputed':false,'validated':false,'regexp':"[^\\d]+",'required':false,'group':0,'type':'item', 'name':'Password', 'dbname':'Password'}
 					,'Incoming_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Incoming_Mail_Server', 'dbname':'Incoming Mail Server'}
 					,'Outgoing_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Outgoing_Mail_Server', 'dbname':'Outgoing Mail Server'}
+	},'new_email_field':{'Email':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item', 'name':'newEmail', 'dbname':'Email Address'}
+					,'Password':{'inputed':false,'validated':false,'regexp':"[^\\d]+",'required':false,'group':0,'type':'item', 'name':'newPassword', 'dbname':'Password'}
+					,'Incoming_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'newIncoming_Mail_Server', 'dbname':'Incoming Mail Server'}
+					,'Outgoing_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'newOutgoing_Mail_Server', 'dbname':'Outgoing Mail Server'}
 	}
 }
 
 var validate_scope_metadata={
  'custom_field':{'type':'new','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
-,'email_field':{'type':'new','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
+,'email_field':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
+,'new_email_field':{'type':'new','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
+
 };
 
 function validate_Email_Field (query) {

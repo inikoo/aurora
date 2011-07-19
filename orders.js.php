@@ -498,20 +498,23 @@ Event.addListener(ids, "click", change_invoice_type);
 var ids =Array("restrictions_dn_all","restrictions_dn_returned","restrictions_dn_send","restrictions_dn_ready","restrictions_dn_packing","restrictions_dn_picking","restrictions_dn_ready_to_pick","restrictions_dn_shortages","restrictions_dn_replacements","restrictions_dn_donations","restrictions_dn_samples","restrictions_dn_orders") ;
 Event.addListener(ids, "click", change_dn_type);
 
- var change_view = function (e){
-	    new_view=this.id
-	    if(new_view!=view){
-	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-orders_view&value='+escape(new_view),{});
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+escape(new_view),{});
-		this.className='selected';
-		Dom.get(view).className='';
-		Dom.get(view+'_table').style.display='none';
-		Dom.get(new_view+'_table').style.display='';
-		view=new_view;
-	    }
-	 }
+
+ var change_block_view = function (e){
+	   
+	   ids=['orders','invoices','dn'];
+block_ids=['block_orders','block_invoices','block_dn'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+this.id ,{});
+	   
+	}   
+
+
 	var ids=['orders','invoices','dn'];
-	Event.addListener(ids, "click", change_view);
+	Event.addListener(ids, "click", change_block_view);
 }
 
 Event.onDOMReady(init);

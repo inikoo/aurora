@@ -61,6 +61,10 @@ $overview_text=sprintf("We have had %s  contacts so far, %s of them still active
 		       )
 ;
  $smarty->assign('overview_text',$overview_text);
+ 
+ 
+ 
+ 
 
 
 

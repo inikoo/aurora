@@ -71,9 +71,10 @@ function list_customer_history() {
 
     $conf=$_SESSION['state']['customer']['table'];
 
-    if (isset( $_REQUEST['id']))
-        $customer_id=$_REQUEST['id'];
-    else
+    if (isset( $_REQUEST['customer_key'])){
+        $customer_id=$_REQUEST['customer_key'];
+        $_SESSION['state']['customer']['id']=$customer_id;
+    }else
         $customer_id=$_SESSION['state']['customer']['id'];
 
 

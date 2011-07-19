@@ -390,10 +390,10 @@ function insert_customers_from_csv() {
         if (!$customer->found) {
 
 
-            print_r($customer_data);
+           // print_r($customer_data);
 
             $response=add_customer($customer_data) ;
-               print_r($response);
+             //  print_r($response);
 
 
             if ($response['state']==200 and $response['action']=='created') {
