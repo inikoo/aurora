@@ -138,10 +138,12 @@ function list_customer_history() {
     if (isset( $_REQUEST['elements_notes'])) {
         $elements['Notes']=$_REQUEST['elements_notes'];
     }
- if (isset( $_REQUEST['elements_attachments'])) {
+     if (isset( $_REQUEST['elements_attachments'])) {
         $elements['Attachments']=$_REQUEST['elements_attachments'];
     }
-
+   if (isset( $_REQUEST['elements_emails'])) {
+        $elements['Emails']=$_REQUEST['elements_emails'];
+    }
     if (isset( $_REQUEST['tableid']))
         $tableid=$_REQUEST['tableid'];
     else
