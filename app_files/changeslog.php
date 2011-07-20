@@ -3126,7 +3126,7 @@ ALTER TABLE `Email Content Dimension` ADD `Email Content Header Image Source` VA
 ALTER TABLE `Customer History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ;
 alter table `Store Dimension` add column `Store Address` varchar(255) after `Store Slogan`;
 alter table `Store Dimension` add column `Short Marketing Description` varchar(255) after `Store Address`;
-ALTER TABLE `Email Content Dimension` CHANGE `Email Content Metadata` `Email Content Metadata` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Metadata` `Email Content Metadata` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
 CREATE TABLE `Email Content Paragraph Dimension` (
 `Email Paragraph Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
