@@ -302,7 +302,7 @@ abstract class DB_Table {
 
 
     protected function add_history($raw_data,$force=false) {
-print_r($raw_data);
+//print_r($raw_data);
 
         $editor_data=$this->get_editor_data();
         if ($this->no_history)
@@ -442,7 +442,7 @@ print_r($raw_data);
                      ,prepare_mysql($data['Metadata'])
                     );
 
-           print $sql;
+          // print $sql;
         // print_r($raw_data);
         //dsdfdffd();
         mysql_query($sql);

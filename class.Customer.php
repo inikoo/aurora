@@ -3558,7 +3558,7 @@ function get_principal_telecom_comment($type) {
                      prepare_mysql($type),
                      $this->id
                     );
-
+print $sql;
         $telecom_keys=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
