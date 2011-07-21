@@ -6,7 +6,7 @@
 
 <div id="bd">
 <div id="no_details_title" style="clear:left;">
-    <h1>{t}Import Contacts From CSV File{/t}</h1>
+    <h1>{t}Import Contacts From External Web Site{/t}</h1>
 </div>
 <div class="left3Quarters" style="text-align:right">
     <input type="hidden" name="form" value="form" />

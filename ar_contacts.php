@@ -1834,9 +1834,6 @@ function list_customers() {
 
 
     if (isset( $_REQUEST['where']))
-
-
-
         $awhere=$_REQUEST['where'];
     else
         $awhere=$conf['where'];
@@ -2129,61 +2126,61 @@ function list_customers() {
     if ($order=='name')
         $order='`Customer File As`';
     elseif($order=='id')
-    $order='C.`Customer Key`';
+		$order='C.`Customer Key`';
     elseif($order=='location')
-    $order='`Customer Main Location`';
+		$order='`Customer Main Location`';
     elseif($order=='orders')
-    $order='`Customer Orders`';
+		$order='`Customer Orders`';
     elseif($order=='email')
-    $order='`Customer Main Plain Email`';
+		$order='`Customer Main Plain Email`';
     elseif($order=='telephone')
-    $order='`Customer Main Plain Telephone`';
+		$order='`Customer Main Plain Telephone`';
     elseif($order=='last_order')
-    $order='`Customer Last Order Date`';
+		$order='`Customer Last Order Date`';
     elseif($order=='contact_name')
-    $order='`Customer Main Contact Name`';
+		$order='`Customer Main Contact Name`';
     elseif($order=='address')
-    $order='`Customer Main Location`';
+		$order='`Customer Main Location`';
     elseif($order=='town')
-    $order='`Customer Main Town`';
+		$order='`Customer Main Town`';
     elseif($order=='postcode')
-    $order='`Customer Main Postal Code`';
+		$order='`Customer Main Postal Code`';
     elseif($order=='region')
-    $order='`Customer Main Country First Division`';
-    elseif($order=='country')
-    $order='`Customer Main Country`';
+		$order='`Customer Main Country First Division`';
+	elseif($order=='country')
+		$order='`Customer Main Country`';
     //  elseif($order=='ship_address')
     //  $order='`customer main ship to header`';
     elseif($order=='ship_town')
-    $order='`Customer Main Delivery Address Town`';
+		$order='`Customer Main Delivery Address Town`';
     elseif($order=='ship_postcode')
-    $order='`Customer Main Delivery Address Postal Code`';
+		$order='`Customer Main Delivery Address Postal Code`';
     elseif($order=='ship_region')
-    $order='`Customer Main Delivery Address Country Region`';
+		$order='`Customer Main Delivery Address Country Region`';
     elseif($order=='ship_country')
-    $order='`Customer Main Delivery Address Country`';
+		$order='`Customer Main Delivery Address Country`';
     elseif($order=='net_balance')
-    $order='`Customer Net Balance`';
+		$order='`Customer Net Balance`';
     elseif($order=='balance')
-    $order='`Customer Outstanding Net Balance`';
+		$order='`Customer Outstanding Net Balance`';
     elseif($order=='total_profit')
-    $order='`Customer Profit`';
+		$order='`Customer Profit`';
     elseif($order=='total_payments')
-    $order='`Customer Net Payments`';
+		$order='`Customer Net Payments`';
     elseif($order=='top_profits')
-    $order='`Customer Profits Top Percentage`';
+		$order='`Customer Profits Top Percentage`';
     elseif($order=='top_balance')
-    $order='`Customer Balance Top Percentage`';
-    elseif($order=='top_orders')
-    $order='``Customer Orders Top Percentage`';
+		$order='`Customer Balance Top Percentage`';
+	elseif($order=='top_orders')
+		$order='``Customer Orders Top Percentage`';
     elseif($order=='top_invoices')
-    $order='``Customer Invoices Top Percentage`';
+		$order='``Customer Invoices Top Percentage`';
     elseif($order=='total_refunds')
-    $order='`Customer Total Refunds`';
+		$order='`Customer Total Refunds`';
     elseif($order=='contact_since')
-    $order='`Customer First Contacted Date`';
+		$order='`Customer First Contacted Date`';
     elseif($order=='activity')
-    $order='`Customer Type by Activity`';
+		$order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";

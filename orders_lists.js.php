@@ -22,9 +22,10 @@ Event.addListener(window, "load", function() {
                                 ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                 ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
+				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
 					 ];
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
+		//alert("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -66,6 +67,9 @@ Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+		this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+		this.table0.subscribe("cellClickEvent", onCellClick);   
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['orders_lists']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['orders_lists']['orders']['f_value']?>'};
 
 	    
@@ -77,7 +81,7 @@ Event.addListener(window, "load", function() {
                                 ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                 ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
+				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
 					 ];
 
 	    	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=invoices&tableid=1');
@@ -135,7 +139,7 @@ Event.addListener(window, "load", function() {
                                 ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                 ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
+				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
 
 
 					 ];

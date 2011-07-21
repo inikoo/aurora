@@ -15,9 +15,9 @@ function insert_data(){
 function read_results(){
     var request='ar_import_csv.php?tipo=import_customer_csv_status';
     
+
     
-    
-  //  alert(request);
+    //alert(request);
  YAHOO.util.Connect.asyncRequest('POST',request , {
   
   
@@ -50,7 +50,7 @@ success:function(o) {
 
 function init(){
 
-
+//alert('sdfsd');
 read_results();
 insert_data();
 }

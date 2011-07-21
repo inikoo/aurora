@@ -221,8 +221,8 @@ scope:this
 };
 var onCellClick = function(oArgs) {
     var target = oArgs.target,
-                 column = this.getColumn(target),
-                          record = this.getRecord(target);
+    column = this.getColumn(target),
+    record = this.getRecord(target);
 
     var recordIndex = this.getRecordIndex(record);
 
@@ -251,13 +251,14 @@ var onCellClick = function(oArgs) {
      		        ar_file='ar_edit_staff.php';
 		        else if (column.object=='subcategory')
      		         ar_file='ar_edit_categories.php';
-               
+                else if (column.object=='order_list')
+     		         ar_file='ar_edit_orders.php';
      		   else
                     ar_file='ar_edit_assets.php';
 
 
 
-  //        	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+          	//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 //return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',

@@ -506,7 +506,7 @@ class Customer extends DB_Table {
         else
             return false;
         $result=mysql_query($sql);
-        
+
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $this->id=$this->data['Customer Key'];
         }
@@ -596,10 +596,10 @@ class Customer extends DB_Table {
         $keys=preg_replace('/^,/','',$keys);
 
 
-		
-		$sql="insert into `Customer Dimension` ($keys) values ($values)";
-		
-      //   print $sql;
+
+        $sql="insert into `Customer Dimension` ($keys) values ($values)";
+
+        //   print $sql;
 //exit;
         if (mysql_query($sql)) {
 
@@ -789,45 +789,45 @@ class Customer extends DB_Table {
 
 
 
-			
+
 
         } else {
             print "Error can not create customer $sql\n";
         }
 
-		$sql="select * from `Customer Dimension` order by `Customer Key` DESC limit 0, 1";
-		$res=mysql_query($sql);
-		$row=mysql_fetch_array($res, MYSQL_ASSOC);
-		$id=$row['Customer Key'];
+        $sql="select * from `Customer Dimension` order by `Customer Key` DESC limit 0, 1";
+        $res=mysql_query($sql);
+        $row=mysql_fetch_array($res, MYSQL_ASSOC);
+        $id=$row['Customer Key'];
 
-		//Adding Custom Field Data
-					
-		$keys='`Customer Key`';
-		$values=$id;
-		$new_subject=array();
-		$sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result, MYSQL_ASSOC))
-			$new_subject[] = array('custom_field_name'=>$row['Custom Field Name']);
-		
-		//print_r ($raw_data);
-		foreach($raw_data as $key=>$value) {
-			foreach($new_subject as $field){
-				if (strcmp($field['custom_field_name'],$key)==0){
-					$keys.=",`".$key."`";
-					$values.=','.prepare_mysql($value);
-				}
-			}
-		}
-		$sql="insert into `Customer Custom Field Dimension` ($keys) values ($values)";
-		//print $sql;
-		mysql_query($sql);
-		
-		//------------------------
-		
+        //Adding Custom Field Data
+
+        $keys='`Customer Key`';
+        $values=$id;
+        $new_subject=array();
+        $sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC))
+            $new_subject[] = array('custom_field_name'=>$row['Custom Field Name']);
+
+        //print_r ($raw_data);
+        foreach($raw_data as $key=>$value) {
+            foreach($new_subject as $field) {
+                if (strcmp($field['custom_field_name'],$key)==0) {
+                    $keys.=",`".$key."`";
+                    $values.=','.prepare_mysql($value);
+                }
+            }
+        }
+        $sql="insert into `Customer Custom Field Dimension` ($keys) values ($values)";
+        //print $sql;
+        mysql_query($sql);
+
+        //------------------------
+
         $sql=sprintf("insert into `Customer Custom Field Dimension` (`Customer Key`) VALUES (%d)", $id);
-		//print $sql;
-		mysql_query($sql);
+        //print $sql;
+        mysql_query($sql);
 
         $this->update_full_search();
 
@@ -1104,14 +1104,14 @@ class Customer extends DB_Table {
         if (is_string($value))
             $value=_trim($value);
 
-		if(preg_match('/^custom_field_/i',$field)) {
-            //$field=preg_replace('/^custom_field_/','',$field);	
-			$this->update_field($field,$value,$options);
-			
-			
-			return;
-		}	
-			
+        if (preg_match('/^custom_field_/i',$field)) {
+            //$field=preg_replace('/^custom_field_/','',$field);
+            $this->update_field($field,$value,$options);
+
+
+            return;
+        }
+
         switch ($field) {
         case('Customer Main XHTML Telephone'):
         case('Customer Main Telephone Key'):
@@ -1215,9 +1215,9 @@ class Customer extends DB_Table {
             $this->new_value=$contact->new_value;
             break;
 
-         case('Add Other Mobile'):
+        case('Add Other Mobile'):
             $this->add_other_telecom('Mobile',$value);
-            break;    
+            break;
 
         case('Add Other FAX'):
             $this->add_other_telecom('FAX',$value);
@@ -1402,29 +1402,29 @@ class Customer extends DB_Table {
             }
         }
     }
-    
-    
-    
-    function update_other_email_label($email_key,$label){
-     if (!array_key_exists($email_key,$this->get_email_keys())) {
+
+
+
+    function update_other_email_label($email_key,$label) {
+        if (!array_key_exists($email_key,$this->get_email_keys())) {
             $this->error=true;
             $this->msg=_('Email not associated with customer');
             return;
         }
-        
+
         $sql=sprintf('update `Email Bridge` set `Email Description`=%s where `Subject Type`="Customer" and `Email Key`=%d  and `Subject Key`=%d ',
-        prepare_mysql($label),
-        $email_key,
-        $this->id
-        );
+                     prepare_mysql($label),
+                     $email_key,
+                     $this->id
+                    );
         //print $sql;
         mysql_query($sql);
-        
-        if(mysql_affected_rows()){
+
+        if (mysql_affected_rows()) {
             $this->new_value=$label;
             $this->updated=true;
         }
-    
+
     }
 
     function update_other_email($email_key,$value) {
@@ -1512,7 +1512,7 @@ class Customer extends DB_Table {
     function update_other_fax($telecom_key,$value) {
         return $this->update_other_telecom('FAX',$telecom_key,$value);
     }
-       function update_other_mobile($telecom_key,$value) {
+    function update_other_mobile($telecom_key,$value) {
         return $this->update_other_telecom('Mobile',$telecom_key,$value);
     }
     function update_other_telephone($telecom_key,$value) {
@@ -1524,26 +1524,26 @@ class Customer extends DB_Table {
 
 
 
-  function update_other_telecom_label($type,$telecom_key,$label){
-     if (!array_key_exists($telecom_key,$this->get_telecom_keys($type))) {
+    function update_other_telecom_label($type,$telecom_key,$label) {
+        if (!array_key_exists($telecom_key,$this->get_telecom_keys($type))) {
             $this->error=true;
             $this->msg=_('Telecom not associated with customer');
             return;
         }
-        
+
         $sql=sprintf('update `Telecom Bridge` set `Telecom Description`=%s where `Subject Type`="Customer" and `Telecom Key`=%d  and `Subject Key`=%d ',
-        prepare_mysql($label),
-        $telecom_key,
-        $this->id
-        );
-       // print $sql;
+                     prepare_mysql($label),
+                     $telecom_key,
+                     $this->id
+                    );
+        // print $sql;
         mysql_query($sql);
-        
-        if(mysql_affected_rows()){
+
+        if (mysql_affected_rows()) {
             $this->new_value=$label;
             $this->updated=true;
         }
-    
+
     }
 
 
@@ -1619,43 +1619,43 @@ class Customer extends DB_Table {
 
 
         $this->remove_telecom($type,$telecom_key_to_replace);
-        
-        if($type=='Mobile'){
-        $contact=new Contact($this->data['Customer Main Contact Key']);
-        $contact->update_field_switcher('Add Other Mobile',$value);
-        $this->updated=$contact->updated;
-        $this->msg=$contact->msg;
-        $this->new_value=$contact->new_value;
 
-        if ($telecom_key=$contact->other_mobile_key) {
+        if ($type=='Mobile') {
+            $contact=new Contact($this->data['Customer Main Contact Key']);
+            $contact->update_field_switcher('Add Other Mobile',$value);
+            $this->updated=$contact->updated;
+            $this->msg=$contact->msg;
+            $this->new_value=$contact->new_value;
 
-            
-            $contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,false);
-           // $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+            if ($telecom_key=$contact->other_mobile_key) {
 
-        }
-        }else{
-        
-        $address=new Address($this->data['Customer Main Address Key']);
-        $address->update_field_switcher('Add Other '.$type,$value);
-        $this->updated=$address->updated;
-        $this->msg=$address->msg;
-        $this->new_value=$address->new_value;
 
-        if ($telecom_key=$address->other_telecom_key) {
+                $contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,false);
+                // $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
 
-            if ($this->data['Customer Company Key']) {
-                $address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telecom_key,false);
             }
-            $address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,false);
-            $address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+        } else {
 
-        }
+            $address=new Address($this->data['Customer Main Address Key']);
+            $address->update_field_switcher('Add Other '.$type,$value);
+            $this->updated=$address->updated;
+            $this->msg=$address->msg;
+            $this->new_value=$address->new_value;
+
+            if ($telecom_key=$address->other_telecom_key) {
+
+                if ($this->data['Customer Company Key']) {
+                    $address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telecom_key,false);
+                }
+                $address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,false);
+                $address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+
+            }
         }
         if ($type=='Telephone')
             $this->new_telephone_key=$telecom_key;
-         elseif ($type=='Mobile')
-            $this->new_mobile_key=$telecom_key;    
+        elseif ($type=='Mobile')
+        $this->new_mobile_key=$telecom_key;
         else
             $this->new_fax_key=$telecom_key;
 
@@ -1932,9 +1932,9 @@ class Customer extends DB_Table {
 
             $history_data=array(
                               'Indirect Object'=>'Customer Main Contact Name',
-                                                'History Details'=>$details,
-                                                                   'History Abstract'=>$note,
-                                                                                       'Action'=>'edited'
+                              'History Details'=>$details,
+                              'History Abstract'=>$note,
+                              'Action'=>'edited'
                           );
             $this->add_customer_history($history_data);
 
@@ -2966,17 +2966,17 @@ class Customer extends DB_Table {
        Add/Update an telecom to the Customer
     */
 
-	function update_custom_fields($id, $value){
-		//print 'update';
-		//$subject=new CustomField($this->data['Customer Key']);
-		//$subject->editor=$this->editor;
-		$this->update(array($id=>$value));
-		
+    function update_custom_fields($id, $value) {
+        //print 'update';
+        //$subject=new CustomField($this->data['Customer Key']);
+        //$subject->editor=$this->editor;
+        $this->update(array($id=>$value));
+
         //$this->updated=$subject->updated;
         //$this->msg=$subject->msg;
         //$this->error=$subject->error;
-        //$this->new_value=$subject->new_value;	
-	}
+        //$this->new_value=$subject->new_value;
+    }
 
     function update_fiscal_name($value) {
         if ($this->data['Customer Type']=='Person') {
@@ -3016,7 +3016,7 @@ class Customer extends DB_Table {
     }
 
 
- function update_registration_number($value) {
+    function update_registration_number($value) {
         if ($this->data['Customer Type']=='Person') {
             $subject=new Contact($this->data['Customer Main Contact Key']);
             $subject->editor=$this->editor;
@@ -3255,7 +3255,7 @@ class Customer extends DB_Table {
 
     }
 
-    function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes',$author=false) {
+    function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes',$author=false,$subject=false,$subject_key=false) {
 
 
         list($ok,$note,$details)=$this->prepare_note($note,$details);
@@ -3274,11 +3274,15 @@ class Customer extends DB_Table {
 
 
                       );
-                      
-                 if($author){
+
+        if ($author) {
             $history_data['Author Name']=$author;
-        }        
-                      
+        }
+        if ($subject) {
+            $history_data['Subject']=$subject;
+            $history_data['Subject Key']=$subject_key;
+        }
+     
         if ($date!='')
             $history_data['Date']=$date;
 
@@ -3310,21 +3314,21 @@ class Customer extends DB_Table {
     }
 
 
-    function add_attachment($data) {
-    
-    
-    
+    function add_attachment($raw_data) {
+
+
+
         $data=array(
-                  'file'=>$data['Filename'],
-                  'Attachment Caption'=>$data['Attachment Caption'],
-                  'Attachment MIME Type'=>$data['Attachment MIME Type'],
-                  'Attachment File Original Name'=>$data['Attachment File Original Name']
+                  'file'=>$raw_data['Filename'],
+                  'Attachment Caption'=>$raw_data['Attachment Caption'],
+                  'Attachment MIME Type'=>$raw_data['Attachment MIME Type'],
+                  'Attachment File Original Name'=>$raw_data['Attachment File Original Name']
               );
-            
+
         $attach=new Attachment('find',$data,'create');
         if ($attach->new) {
-            
-           
+
+
             $history_data=array(
                               'History Abstract'=>$attach->get_abstract(),
                               'History Details'=>$attach->get_details(),
@@ -3337,7 +3341,7 @@ class Customer extends DB_Table {
             $this->add_customer_history($history_data,true,'No','Attachments');
             $this->updated=true;
             $this->new_value='';
-        }else{
+        } else {
             $this->error;
             $this->msg=$attach->msg;
         }
@@ -3348,7 +3352,7 @@ class Customer extends DB_Table {
 
 
 
- 
+
 
 
     function delivery_address_xhtml() {
@@ -3488,7 +3492,7 @@ class Customer extends DB_Table {
 
 
 
-  
+
 
     function get_tax_rate() {
         $rate=0;
@@ -3532,23 +3536,23 @@ class Customer extends DB_Table {
 
 
 
-function get_principal_telecom_comment($type) {
-    $comment='';
-    if ($this->data['Customer Main '.$type.' Key']) {
+    function get_principal_telecom_comment($type) {
+        $comment='';
+        if ($this->data['Customer Main '.$type.' Key']) {
 
-        $sql=sprintf("select `Telecom Description` from `Telecom Bridge` B where `Telecom Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
-                     $this->data['Customer Main '.$type.' Key'],
-                     $this->id
-                    );
-        $result=mysql_query($sql);
+            $sql=sprintf("select `Telecom Description` from `Telecom Bridge` B where `Telecom Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
+                         $this->data['Customer Main '.$type.' Key'],
+                         $this->id
+                        );
+            $result=mysql_query($sql);
 //print $sql;
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $comment=$row['Telecom Description'];
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $comment=$row['Telecom Description'];
+            }
         }
-    }
 
-    return $comment;
-}
+        return $comment;
+    }
 
 
 
@@ -3569,7 +3573,7 @@ print $sql;
                 $telecom_keys[$row['Telecom Key']]= array(
                                                         'number'=>$telecom->display('plain'),
                                                         'xhtml'=>$telecom->display('xhtml'),
-                                                         'label'=>$row['Telecom Description']
+                                                        'label'=>$row['Telecom Description']
                                                     );
 
             }
@@ -3579,23 +3583,23 @@ print $sql;
     }
 
 
-function get_principal_email_comment() {
-    $comment='';
-    if ($this->data['Customer Main Email Key']) {
+    function get_principal_email_comment() {
+        $comment='';
+        if ($this->data['Customer Main Email Key']) {
 
-        $sql=sprintf("select `Email Description` from `Email Bridge` B where `Email Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
-                     $this->data['Customer Main Email Key'],
-                     $this->id
-                    );
-        $result=mysql_query($sql);
+            $sql=sprintf("select `Email Description` from `Email Bridge` B where `Email Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
+                         $this->data['Customer Main Email Key'],
+                         $this->id
+                        );
+            $result=mysql_query($sql);
 
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $comment=$row['Email Description'];
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $comment=$row['Email Description'];
+            }
         }
-    }
 
-    return $comment;
-}
+        return $comment;
+    }
 
 
     function get_other_emails_data() {
@@ -3611,8 +3615,8 @@ function get_principal_email_comment() {
                                                     'email'=>$row['Email'],
                                                     'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
                                                     'label'=>$row['Email Description']
-                                                    
-                                                    );
+
+                                                );
         }
         return $email_keys;
 
@@ -4369,7 +4373,7 @@ function get_principal_email_comment() {
 
     }
 
- function display_contact_address($tipo='xhtml') {
+    function display_contact_address($tipo='xhtml') {
         switch ($tipo) {
         case 'label':
             $address=new address($this->data['Customer Main Address Key']);
@@ -5024,8 +5028,8 @@ function get_principal_email_comment() {
             $this->msg=_('Telecom Removed from Customer');;
             $this->new_value='';
             return;
-        }else{
-        $telecom->delete();
+        } else {
+            $telecom->delete();
         }
 
         $this->updated=true;
@@ -5273,7 +5277,7 @@ function get_principal_email_comment() {
 
         $this->deleted=true;
     }
-	
+
 
     function merge($customer_key,$customer_id_prefix='') {
         $this->merged=false;
@@ -5401,7 +5405,7 @@ function get_principal_email_comment() {
         //Customer Key
 
 
-	//Email Campaign Mailing List
+        //Email Campaign Mailing List
 
     }
 
