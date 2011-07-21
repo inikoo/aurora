@@ -3562,7 +3562,7 @@ class Customer extends DB_Table {
                      prepare_mysql($type),
                      $this->id
                     );
-print $sql;
+//print $sql;
         $telecom_keys=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
