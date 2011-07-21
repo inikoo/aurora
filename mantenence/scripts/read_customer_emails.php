@@ -11,7 +11,7 @@ include_once('../../class.Part.php');
 include_once('../../class.Category.php');
 include_once('../../class.Node.php');
 include_once('../../class.Customer.php');
-
+include_once('../../class.Attachment.php');
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
@@ -30,10 +30,11 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';      
 
 require_once("../../class.ReadEmail.php");
-$host="{imap.gmail.com:993/imap/ssl/novalidate-cert}"; 
-$login="raul@ancientwisdom.biz"; 
-$password="ajolote11"; 
-$savedirpath="" ; // attachement will save in same directory where scripts run othrwise give abs path
+
+
+chdir('../../');
+
+
 $jk=new ReadEmail(); // Creating instance of class####
 //$jk->read_mailbox('customer_communication','Sent Messages'); // calling member function
 

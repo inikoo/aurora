@@ -191,28 +191,28 @@ class ReadEmail extends DB_Table {
                 list($message,$has_attachements)=$this->get_email_message_body($mbox,$message_number);
 
                 // print_r($overview);
-                 //print $message;
-                 
-                 if($has_attachements)
-                 $img_src='art/icons/email_attach.png';
+                //print $message;
 
-                 else
-                 $img_src='art/icons/email.png';
-                 
-                 
-                 $subject='<img src="'.$img_src.'"/> '.$overview->subject;
+                if ($has_attachements)
+                    $img_src='art/icons/email_attach.png';
+
+                else
+                    $img_src='art/icons/email.png';
+
+
+                $subject='&rarr;<img src="'.$img_src.'"/> '.$overview->subject;
 
 
                 $header="<table>";
-                                $header.="<tr><td><b>"._('Subject')."</b>:</td><td>".$overview->subject."</td></tr>";
+                $header.="<tr><td><b>"._('Subject')."</b>:</td><td>".$overview->subject."</td></tr>";
 
                 $header.="<tr style='border:none'><td ><b>"._('From')."</b>:</td><td>".$overview->from."</td></tr>";
                 $header.="<tr style='border:none'><td><b>"._('To').":</b></td><td>".$overview->to."</td></tr>";
-                                $header.="<tr  style='border:none'><td><b>"._('Date')."</b>:</td><td>".$overview->date."</td></tr>";
+                $header.="<tr  style='border:none'><td><b>"._('Date')."</b>:</td><td>".$overview->date."</td></tr>";
 
-               
-               $header.= "</table><br/><div  style='clear:both;width:100%;border-bottom:1px solid #ccc'></div>";
-                $customer->add_note($subject,$header.$message,$date,'No','Emails','Customer') ;
+
+                $header.= "</table><br/><div  style='clear:both;width:100%;border-bottom:1px solid #ccc'></div>";
+                $customer->add_note($subject,$header.$message,$date,'No','Emails','Customer','Customer',$customer->id) ;
 
                 $sql=sprintf("insert into `Email Read Dimension` (`Email Credentials Key`,`Email Uid`,`Customer Communications`,`Scope Key`) values (%d,%s,'Yes',%d)",
                              $email_credentials_key,
@@ -220,9 +220,9 @@ class ReadEmail extends DB_Table {
                              $customer->new_value
                             );
                 mysql_query($sql);
-               // print "$sql\n";
-                exit;
-                
+                // print "$sql\n";
+                //  exit;
+
             }
 
         }
@@ -268,7 +268,7 @@ class ReadEmail extends DB_Table {
 //print "$msgBody\n\n";
 
         $struct = imap_fetchstructure($mbox,$msgno);
-        $selectBoxDisplay=array();
+        $attachment_data_array=array();
 
 
 
@@ -294,32 +294,98 @@ class ReadEmail extends DB_Table {
                 for ($k=0; $k<sizeof($att); $k++) {
                     if ($att[$k]->parameters[0]->value == "us-ascii" || $att[$k]->parameters[0]->value    == "US-ASCII") {
                         if (    isset($att[$k]->parameters[1])    and   $att[$k]->parameters[1]->value != "") {
-                            $selectBoxDisplay[$k] = $att[$k]->parameters[1]->value;
+                            $attachment_data_array[$k] = array('name'=>$att[$k]->parameters[1]->value,'part'=>$att[$k]);
 
 
                         }
                     }
                     elseif ($att[$k]->parameters[0]->value != "iso-8859-1" &&    $att[$k]->parameters[0]->value != "ISO-8859-1") {
-                        $selectBoxDisplay[$k] = $att[$k]->parameters[0]->value;
+                        $attachment_data_array[$k] = array('name'=>$att[$k]->parameters[0]->value,'part'=>$att[$k]);
                     }
                 }
             }
 
         }
-        
-        $attachment='';
-          $has_attachements=false;
-        if(count($selectBoxDisplay)>0){
-            $has_attachements=true;
-            $_attachments='';
-             foreach($selectBoxDisplay  as $attchment) {
-                    $_attachments=', <a href="file.php?id=0">'. $attchment.'</a>';
-            
-                }
-            $_attachments=preg_replace('/^,/','',$attachments);
-            $attachment="<div>$_attachments</div>";
-        }
 
+
+        $attachment='';
+        $has_attachements=false;
+
+      
+
+              
+
+        
+
+     
+
+
+
+            if (count($attachment_data_array)>0) {
+            
+           // print_r($struct);
+            
+                $has_attachements=true;
+                $_attachments='';
+                foreach($attachment_data_array  as $attachment_key=>$attachment) {
+                
+                
+                
+                                    $data="";
+                    $attachment_data = imap_fetchbody($mbox,$msgno,$attachment_key+2);  
+                                    $filename="app_files/tmp/email_attachmen".date('U')."t$msgno".$attachment['name'];
+                                    
+                                    
+                                    $fp=fopen($filename,'w');
+                                    $data=$this->getdecodevalue($attachment_data,$attachment['part']->type);    
+                                    fputs($fp,$data);
+                                    fclose($fp);
+                                    
+                                    print_r($attachment);
+                                   
+                                    
+                  $data=array(
+                          'file'=>$filename,
+                          'Attachment Caption'=>'',
+                        
+                          'Attachment File Original Name'=>$attachment['name']
+                      );
+
+                $attach=new Attachment('find',$data,'create');
+                if ($attach->new) {
+                  $_attachments.=', <a href="file.php?id='.$attach->id.'">'. $attachment['name'].'</a>';
+                  
+                  
+                   if ($message_mime_type=='MULTIPART/RELATED'){
+                
+                        $_id=preg_replace('/^\<|\>$/','',$attachment['part']->id);
+                $msgBody=preg_replace('/src\=\"cid\:'.$_id.'\"/','src="file.php?id='.$attach->id.'"',$msgBody);
+                
+                    }
+                  
+                  
+                }else{
+                    exit("Error no attach");
+                }
+                
+                
+                  
+                  
+
+                }
+              
+                $_attachments=preg_replace('/^,/','',$_attachments);
+                $attachment="<div style='padding:10px;border:1px solid #ccc' >$_attachments</div>";
+                //print "--> $attachment\n";
+                //print $msgBody;
+               // print_r($struct);
+                
+             
+                
+                //exit;
+
+            }
+        
 
         $msgBody=$attachment.$msgBody;
 
