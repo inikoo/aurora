@@ -29,14 +29,39 @@ exit("unknown operation 2");
 //print_r($adata);
 //exit;
 
+
+
+
+
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"".$filename."\"");
-$out = fopen('php://output', 'w');
-foreach ($adata as $data) {
-    fputcsv($out, $data);
-}
+//$out = fopen('php://output', 'w');
 
-fclose($out);
+$outstream = fopen("php://temp", 'r+');
+  //      fputcsv($outstream, $data, ',', '"');
+   //     rewind($outstream);
+    //    $csv = fgets($outstream);
+     //   fclose($outstream);
+      //  return $csv;
+
+
+foreach ($adata as $data) {
+    fputcsv($outstream, $data,"\t");
+}
+ rewind($outstream);
+$csv='';
+  while ( ($line = fgets($outstream)) !== false) {
+  $csv.=$line;
+}
+  
+  
+fclose($outstream);
+
+$unicode_str_for_Excel = chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-16LE', 'UTF-8');
+
+print $unicode_str_for_Excel;
+
+
 
 function get_data($tipo){
 $filename='';
@@ -162,7 +187,7 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('invoices_per_store').'.csv';
 	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
-        $data=get_invoices_data($wheref);
+        $data=get_invoices_per_store_data($wheref);
         break; 
    case 'delivery_notes_per_store':
         $filename=_('delivery_notes_per_store').'.csv';
@@ -193,7 +218,40 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('invoices').'.csv';
         $where=sprintf(' `Invoice Store Key`=%d ',$_SESSION['state']['store']['id']);
-        $data=get_orders_invoices_data($wheref,$where);
+         $type=$_SESSION['state']['orders']['invoices'];
+         $to=$_SESSION['state']['orders']['to'];
+          $from=$_SESSION['state']['orders']['from'];
+           $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    
+     if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+     }else{
+       $_SESSION['state']['orders']['from']=$date_interval['from'];
+       $_SESSION['state']['orders']['to']=$date_interval['to'];
+     }
+        
+        
+        $where.=$date_interval['mysql'];
+        
+        
+        switch ($type) {
+    case 'paid':
+        $where.=' and `Invoice Paid`="Yes"';
+        break;
+    case 'to_pay':
+        $where.=' and `Invoice Paid`!="Yes"';
+        break;
+    case 'invoices':
+        $where.=' and `Invoice Title`="Invoice"';
+        break;        
+    case 'refunds':
+        $where.=' and `Invoice Title`="Refund"';
+        break;
+    default:
+        
+        }
+        
+        $data=get_invoices_data($wheref,$where);
         break;
    case 'ready_to_pick_orders':
         $filename=_('warehouse_orders').'.csv';
@@ -868,7 +926,7 @@ return $data;
 
 }
 
-function get_invoices_data($wheref,$where='true'){
+function get_invoices_per_store_data($wheref,$where='true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
@@ -876,6 +934,9 @@ $fields_to_export=$data['fields'];
 }else{
 $fields_to_export=$_SESSION['state']['stores']['invoices']['csv_export'];
 }
+
+
+
 
 
 $fields=array(
@@ -962,6 +1023,9 @@ $fields=array(
 'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Store 1 Week Acc Invoiced Amount'),
 'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Store 1 Week Acc Profit'),
 );
+
+
+
 
 
 foreach($fields as $key=>$value){
@@ -1064,7 +1128,7 @@ $data[]=$_data;
 return $data;
 
 }
-function get_orders_invoices_data($wheref,$where='true'){
+function get_invoices_data($wheref,$where='true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
@@ -1074,48 +1138,56 @@ $fields_to_export=$_SESSION['state']['orders']['invoices']['csv_export'];
 }
 
 
-$fields=array(
-'code'=>array('title'=>_('Code'),'db_name'=>'Invoice Public ID'),
-'date'=>array('title'=>_('date'),'db_name'=>'Invoice Date'),
-'name'=>array('title'=>_('Customer'),'db_name'=>'Invoice Customer Name'),
+$field=array('code','date','customer','customer_key','net','tax_S1','tax_S2');
 
-'paymentmethod'=>array('title'=>_('Payment Method'),'db_name'=>'Invoice Main Payment Method'),
-'invoicefor'=>array('title'=>_('Invoice For'),'db_name'=>'Invoice For'),
-'invoicepaid'=>array('title'=>_('Invoice Paid'),'db_name'=>'Invoice Paid'),
+//$fields=array(
+//'code'=>array('title'=>_('Code'),'db_name'=>'Invoice Public ID'),
+//'date'=>array('title'=>_('date'),'db_name'=>'Invoice Date'),
+//'customer'=>array('title'=>_('Customer'),'db_name'=>'Invoice Customer Name'),
+//'customer_key'=>array('title'=>_('Customer Id'),'db_name'=>'Invoice Customer Key'),
 
-'invoice_total_amount'=>array('title'=>_('Invoice Total Amount'),'db_name'=>'Invoice Total Amount'),
-'invoice_total_profit'=>array('title'=>_('Invoice Total Profit'),'db_name'=>'Invoice Total Profit'),
-'invoice_total_tax_amount'=>array('title'=>_('Invoice Total Tax Amount'),'db_name'=>'Invoice Total Tax Amount'),
-'invoice_total_tax_adjust_amount'=>array('title'=>_('Invoice Total Tax Adjust Amount'),'db_name'=>'Invoice Total Tax Adjust Amount'),
-'invoice_total_adjust_amount'=>array('title'=>_('Invoice Total Adjust Amount'),'db_name'=>'Invoice Total Adjust Amount')
-);
+//'paymentmethod'=>array('title'=>_('Payment Method'),'db_name'=>'Invoice Main Payment Method'),
+//'invoicefor'=>array('title'=>_('Invoice For'),'db_name'=>'Invoice For'),
+//'invoicepaid'=>array('title'=>_('Invoice Paid'),'db_name'=>'Invoice Paid'),
 
-
-foreach($fields as $key=>$value){
-if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
-unset($fields[$key]);
-}
+//'invoice_total_amount'=>array('title'=>_('Invoice Total Amount'),'db_name'=>'Invoice Total Amount'),
+//'invoice_total_profit'=>array('title'=>_('Invoice Total Profit'),'db_name'=>'Invoice Total Profit'),
+//'invoice_total_tax_amount'=>array('title'=>_('Invoice Total Tax Amount'),'db_name'=>'Invoice Total Tax Amount'),
+//'invoice_total_tax_adjust_amount'=>array('title'=>_('Invoice Total Tax Adjust Amount'),'db_name'=>'Invoice Total Tax Adjust Amount'),
+//'invoice_total_adjust_amount'=>array('title'=>_('Invoice Total Adjust Amount'),'db_name'=>'Invoice Total Adjust Amount')
+//);
+//foreach($fields as $key=>$value){
+//if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+//unset($fields[$key]);
+//}
 
 
 
 $data=array();
-$_data=array();
-foreach($fields as $key=>$options){
-$_data[]=$options['title'];
-}
-$data[]=$_data;
-$sql="select * from `Invoice Dimension` where $where $wheref";
+//$_data=array();
+//foreach($fields as $key=>$options){
+//$_data[]=$options['title'];
+//}
+$data[]=array(_('Invoice Number'),_('Date'),_('Customer'),_('Customer ID'),_('Tax Code'),_('Net'),_('Tax'));
+
+
+$sql="select `Invoice Public ID`,`Invoice Date`,`Invoice Customer Name`,`Invoice Customer Key`,`Invoice Tax Code`,`Invoice Total Net Amount`,`Invoice Total Tax Amount` from `Invoice Dimension` I where $where $wheref";
 $res=mysql_query($sql);
-
+//print $sql;
 while($row=mysql_fetch_assoc($res)){
-$_data=array();
-foreach($fields as $key=>$options){
 
-$_data[]=$row[$options['db_name']];
+$data[]=array($row['Invoice Public ID'],
+strftime("%Y-%m-%d", strtotime($row['Invoice Date']." +00:00")),
+$row['Invoice Customer Name'],
+$row['Invoice Customer Key'],
+$row['Invoice Tax Code'],
+$row['Invoice Total Net Amount'],
+$row['Invoice Total Tax Amount'],
+
+
+);
 }
-$data[]=$_data;
-}
-//print_r($data);exit;
+
 
 return $data;
 

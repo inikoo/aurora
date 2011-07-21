@@ -58,6 +58,7 @@
     </div>
     
     
+    
    
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
@@ -68,10 +69,9 @@
   
   
    <div  id="block_invoices"   class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
-    <span class="clean_table_title">{t}Invoice List{/t}</span>
+    <span class="clean_table_title">{t}Invoices{/t} <img id="export_csv1"   tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
      <div id="table_type" class="table_type">
 
-<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" >{t}Export (CSV){/t}</span>
         <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
            
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} ({$store->get('Total Invoices')})</span>
