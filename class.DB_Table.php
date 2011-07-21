@@ -302,7 +302,7 @@ abstract class DB_Table {
 
 
     protected function add_history($raw_data,$force=false) {
-//print_r($raw_data);
+
 
         $editor_data=$this->get_editor_data();
         if ($this->no_history)
@@ -333,11 +333,14 @@ abstract class DB_Table {
 
 
         $data=$this->base_history_data();
+        
+       
+        
         foreach($raw_data as $key=>$value) {
             $data[$key]=$value;
         }
 
-
+ 
 
         if ($data['Subject']=='' or  !$data['Subject Key']) {
             include_once('class.User.php');
@@ -354,6 +357,7 @@ abstract class DB_Table {
             }
 
         }
+
 
 
 
@@ -375,10 +379,12 @@ abstract class DB_Table {
 
 
 
-
-        if (!array_key_exists('Author name', $data)) {
+        if (!array_key_exists('Author Name', $data)) {
             $data['Author Name']='';
         }
+
+
+
 
         if ($data['Author Name']=='') {
 

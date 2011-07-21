@@ -189,7 +189,7 @@ class Attachment extends DB_Table {
             copy($data['file'], $attach_filename);
 
 
-            unlink($data['file']);
+          //  unlink($data['file']);
 
             $sql=sprintf("update `Attachment Dimension` set `Attachment URL`=%s ,`Attachment Filename`=%s where `Attachment Key`=%d"
                          ,prepare_mysql($attach_url)

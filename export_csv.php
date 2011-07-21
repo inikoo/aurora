@@ -212,22 +212,31 @@ switch ($tipo) {
         $data=get_orders_data($wheref,$where);
         break;  
    case 'invoices':
+   case 'report_sales_week_invoices':
+   
+   
+   if($tipo=='report_sales_week_invoices'){
+    $conf=$_SESSION['state']['report_sales_week'];
+   }else{
+    $conf=$_SESSION['state']['orders'];
+   }
+   
         $filename=_('invoices').'.csv';
-        $f_field=$_SESSION['state']['orders']['invoices']['f_field'];
-        $f_value=$_SESSION['state']['orders']['invoices']['f_value'];
+        $f_field=$conf['invoices']['f_field'];
+        $f_value=$conf['invoices']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('invoices').'.csv';
         $where=sprintf(' `Invoice Store Key`=%d ',$_SESSION['state']['store']['id']);
-         $type=$_SESSION['state']['orders']['invoices'];
-         $to=$_SESSION['state']['orders']['to'];
-          $from=$_SESSION['state']['orders']['from'];
+         $type=$conf['invoices'];
+         $to=$conf['to'];
+          $from=$conf['from'];
            $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     
      if($date_interval['error']){
-       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+       $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
      }else{
-       $_SESSION['state']['orders']['from']=$date_interval['from'];
-       $_SESSION['state']['orders']['to']=$date_interval['to'];
+       $conf['from']=$date_interval['from'];
+       $conf['to']=$date_interval['to'];
      }
         
         
