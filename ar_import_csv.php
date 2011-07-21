@@ -210,13 +210,6 @@ function insert_data() {
 
 
 
-
-
-
-
-
-
-
 function insert_customers_from_csv() {
     global $editor;
 
@@ -242,20 +235,45 @@ function insert_customers_from_csv() {
     $map = $_SESSION['state']['import']['map'];
 //   $options = $_SESSION['state']['import']['options'];
     require_once 'csvparser.php';
-    $csv = new CSV_PARSER;
-    
-  
-    
-    if (isset($_SESSION['state']['import']['file_path'])) {
-        $csv->load($_SESSION['state']['import']['file_path']);
-    }
-    $headers = $csv->getHeaders();
-    $number_of_records = $csv->countRows();
+	$data_to_import=array();
+	if($_SESSION['state']['import']['type']){
+		$sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+		//print $sql;
 
-    $data_to_import=array();
+		$result=mysql_query($sql);
 
-    $raw = $csv->getrawArray();
+		$row = mysql_fetch_array($result);
+		//$record_id=$row[1];	
+		//print $record_id;exit;
+		$headers = explode('#', $row[0]);
+		$number_of_records = mysql_num_rows($result);
+		
+		$raw=array();
+		
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_array($result)){
+			$data = explode('#', $row[0]);
+			foreach($data as $key=>$value)
+				$temp[$key]=preg_replace('/"/', '', $value);
+				
+			$raw[]=$temp;
+			unset($temp);
+		}
+		
+	}
+	else{
+		$csv = new CSV_PARSER;
+		
+		if (isset($_SESSION['state']['import']['file_path'])) {
+			$csv->load($_SESSION['state']['import']['file_path']);
+		}
+		$headers = $csv->getHeaders();
+		$number_of_records = $csv->countRows();
 
+		
+
+		$raw = $csv->getrawArray();
+	}
 
 
     foreach($raw as $record_key=>$record_data) {
@@ -293,6 +311,14 @@ function insert_customers_from_csv() {
 
     foreach($data_to_import as $_customer_data) {
 
+	
+		$sql=sprintf("select `External Record Key` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+		//print $sql;
+
+		$result=mysql_query($sql);
+
+		$row = mysql_fetch_array($result);
+		$record_id=$row[0];	
 
         $customer_data=array(
                            'Customer Company Name'=>'',
@@ -329,8 +355,15 @@ function insert_customers_from_csv() {
                     'Error Records'=>( (float) $imported_records->data['Error Records']+1),
                 ));
 
-
-            $_record_data=$csv->getRow($_customer_data['csv_key']-1);
+			
+			if($_SESSION['state']['import']['type']){
+				$_record_data=$raw[0];
+			}
+			else{
+				$_record_data=$csv->getRow($_customer_data['csv_key']-1);
+			}
+            //$_record_data=$csv->getRow($_customer_data['csv_key']-1);
+			
             $_record_data[]='No Company/Contact name';
 
 
@@ -420,8 +453,13 @@ function insert_customers_from_csv() {
                         'Imported Records'=>( (float) $imported_records->data['Imported Records']+1),
                     ));
 
-
-
+				//Update Read Status
+				
+				$sql=sprintf("update `External Records` set `Read Status`='Yes' where `External Record Key`=%d", $record_id);
+				//print $sql;
+				mysql_query($sql);
+				
+				
             } else {
 
                 $imported_records->update(
@@ -449,8 +487,13 @@ function insert_customers_from_csv() {
                     'Error Records'=>( (float) $imported_records->data['Error Records']+1),
                 ));
 
-        
-            $_record_data=$csv->getRow($_customer_data['csv_key']-1);
+			if($_SESSION['state']['import']['type']){
+				$_record_data=$raw[0];
+			}
+			else{
+				$_record_data=$csv->getRow($_customer_data['csv_key']-1);
+			}
+			//print_r( $_record_data);exit;
             $_record_data[]='Already in DB';;
 
             $cvs_line=array_to_CSV($_record_data);

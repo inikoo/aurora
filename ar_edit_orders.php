@@ -16,6 +16,31 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('delete_order_list'):
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+
+
+                         ));
+    delete_order_list($data);
+    break;
+case('new_list'):
+    if (!$user->can_view('orders'))
+        exit();
+
+    $data=prepare_values($_REQUEST,array(
+                             'awhere'=>array('type'=>'json array'),
+                             'store_id'=>array('type'=>'key'),
+                             'list_name'=>array('type'=>'string'),
+                             'list_type'=>array('type'=>'enum',
+                                                'valid values regex'=>'/static|Dynamic/i'
+                                               )
+                         ));
+
+
+    new_orders_list($data);
+    break;
+	
 case('update_no_dispatched'):
     $data=prepare_values($_REQUEST,array(
                              'dn_key'=>  array('type'=>'key'),
@@ -1726,3 +1751,139 @@ function update_no_dispatched($data) {
     echo json_encode($response);
 
 }
+
+function new_orders_list($data) {
+
+    $list_name=$data['list_name'];
+    $store_id=$data['store_id'];
+
+    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d and `List Scope`='Order'",
+                 prepare_mysql($list_name),
+                 $store_id
+                );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $response=array('resultset'=>
+                                    array(
+                                        'state'=>400,
+                                        'msg'=>_('Another list has the same name')
+                                    )
+                       );
+        echo json_encode($response);
+        return;
+    }
+
+    $list_type=$data['list_type'];
+
+    $awhere=$data['awhere'];
+    $table='`Order Dimension` O ';
+
+
+//   $where=customers_awhere($awhere);
+    list($where,$table)=orders_awhere($awhere);
+
+    $where.=sprintf(' and `Order Store Key`=%d ',$store_id);
+
+    $sql="select count(Distinct O.`Order Key`) as total from $table  $where";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        if ($row['total']==0) {
+            $response=array('resultset'=>
+                                        array(
+                                            'state'=>400,
+                                            'msg'=>_('No order match this criteria')
+                                        )
+                           );
+            echo json_encode($response);
+            return;
+
+        }
+
+
+    }
+    mysql_free_result($res);
+
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Order',%d,%s,%s,%s,NOW())",
+                      $store_id,
+                      prepare_mysql($list_name),
+                      prepare_mysql($list_type),
+                      prepare_mysql(json_encode($data['awhere']))
+
+                     );
+    mysql_query($list_sql);
+    $order_list_key=mysql_insert_id();
+    if ($list_type=='Static') {
+
+
+        $sql="select O.`Order Key` from $table  $where group by O.`Order Key`";
+        //   print $sql;
+        $result=mysql_query($sql);
+        while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $order_key=$data['Order Key'];
+            $sql=sprintf("insert into `List Order Bridge` (`List Key`,`Order Key`) values (%d,%d)",
+                         $order_list_key,
+                         $order_key
+                        );
+            mysql_query($sql);
+
+        }
+        mysql_free_result($result);
+
+
+
+
+    }
+
+
+
+
+    $response=array(
+                  'state'=>200,
+                  'customer_list_key'=>$order_list_key
+
+              );
+    echo json_encode($response);
+	exit;
+}
+
+function delete_order_list($data) {
+    global $user;
+    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+        if (in_array($row['List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `List Order Bridge` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $response=array('state'=>200,'action'=>'deleted');
+            echo json_encode($response);
+            return;
+
+
+
+        } else {
+            $response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+            echo json_encode($response);
+            return;
+        }
+
+
+
+    } else {
+        $response=array('state'=>400,'msg'=>'Error no customer list');
+        echo json_encode($response);
+        return;
+
+    }
+
+
+
+}
+?>
