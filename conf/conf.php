@@ -334,11 +334,12 @@ $default_state=array(
 
                    'orders'=>array(
                                 'details'=>false,
-                                'store'=>'',
+                                'store'=>'1',
                                 'view'=>'orders',
                                 'only'=>'',
                                 'from'=>'',
                                 'to'=>'',
+								'type'=>'all_orders',
 
                                 'table'=>array(
                                             'order'=>'last_date',

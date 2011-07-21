@@ -1264,11 +1264,11 @@ function customers_awhere($awhere) {
 
 function orders_awhere($awhere) {
     // $awhere=preg_replace('/\\\"/','"',$awhere);
-//        print $awhere;exit;
+
 
 
     $where_data=array(
-                    'product_ordered1'=>'∀',
+                    //'product_ordered1'=>'∀',
                     'geo_constraints'=>'',
                     'product_not_ordered1'=>'',
                     'product_not_received1'=>'',
@@ -1294,14 +1294,13 @@ function orders_awhere($awhere) {
         $where_data[$key]=$item;
     }
 
-//print_r($where_data);exit;
     $where='where true';
-    $table='`Customer Dimension` C ';
+    $table='`Order Dimension` O ';
 
     $use_product=false;
-    $use_categories =false;
+    //$use_categories =false;
     $use_otf =false;
-
+/*
     $where_categories='';
     if ($where_data['categories']!='') {
 
@@ -1319,20 +1318,25 @@ function orders_awhere($awhere) {
 
 
     }
-
-    $where_geo_constraints='';
+*/
+    $where_billing_geo_constraints='';
     if ($where_data['billing_geo_constraints']!='') {
-        $where_geo_constraints=extract_customer_geo_groups($where_data['billing_geo_constraints']);
+        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
     }
 
-    if ($where_data['product_ordered1']=='')
-        $where_data['product_ordered1']='∀';
+	$where_delivery_geo_constraints='';
+    if ($where_data['delivery_geo_constraints']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+    }
+	
+    if ($where_data['product_ordered_or']=='')
+        $where_data['product_ordered_or']='∀';
 
-
-    if ($where_data['product_ordered1']!='') {
-        if ($where_data['product_ordered1']!='∀') {
+    if ($where_data['product_ordered_or']!='') {
+        if ($where_data['product_ordered_or']!='∀') {
             $use_otf=true;
-            list($where_product_ordered1,$use_product)=extract_product_groups($where_data['product_ordered1'],$where_data['store_key']);
+			$where_product_ordered1=true;
+            //list($where_product_ordered1,$use_product)=extract_product_groups($where_data['product_ordered_or'],$where_data['store_key']);
         } else
             $where_product_ordered1='true';
     } else {
@@ -1340,7 +1344,10 @@ function orders_awhere($awhere) {
     }
 		//print $where_product_ordered1;
 
-
+		
+	$date_interval_order_created=prepare_mysql_dates($where_data['order_created_from'],$where_data['order_created_to'],'`Order Date`','only_dates');
+	
+/*
     $date_interval_when_customer_created=prepare_mysql_dates($where_data['customer_created_from'],$where_data['customer_created_to'],'`Customer First Contacted Date`','only_dates');
     if ($date_interval_when_ordered['mysql']) {
         $use_otf=true;
@@ -1367,12 +1374,14 @@ function orders_awhere($awhere) {
         $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
     }
 
+*/
 
 
+  //  $where='where (  '.$where_product_ordered1.$date_interval_when_customer_created['mysql'].") $where_billing_geo_constraints where_delivery_geo_constraints";
 
-
-    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints";
-
+    $where='where (  '.$where_product_ordered1.$date_interval_order_created['mysql'].") $where_billing_geo_constraints $where_delivery_geo_constraints";
+//print $where;exit;
+/*
     foreach($where_data['dont_have'] as $dont_have) {
         switch ($dont_have) {
         case 'tel':
@@ -1405,7 +1414,8 @@ function orders_awhere($awhere) {
             break;
         }
     }
-
+*/
+/*
     $allow_where='';
    foreach($where_data['allow'] as $allow) {
         switch ($allow) {
@@ -1519,7 +1529,7 @@ function orders_awhere($awhere) {
     $where.="and ($sales_option_where)";
     }
 
-	
+*/	
 	/*
 	$not_customers_which_where='';
    foreach($where_data['not_customers_which'] as $not_customers_which) {
@@ -1541,7 +1551,9 @@ function orders_awhere($awhere) {
     $where.="and ($not_customers_which_where)";
     }
 *///print $table;print $where;
-
+	//print $table; 
+	//print '|';
+	//print $where; exit;
     return array($where,$table);
 	
 
@@ -1781,7 +1793,6 @@ function extract_customer_geo_groups($str,$q_country_code='C.`Customer Main Coun
     $where=preg_replace('/^\s*or\s*/i','',$where_wr.$where_c.$where_pc.$where_t);
     if ($where!='')
         $where=' and '.$where;
-	//print $where;	
     return $where;
 
 }

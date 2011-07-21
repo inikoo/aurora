@@ -441,7 +441,7 @@ var clear_interval = function(e,suffix){
             var table=tables.table0;
      var datasource=tables.dataSource0;
      var request='&sf=0&from=' +from+'&to='+to;
-
+alert(request);
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
        var table=tables.table1;
      var datasource=tables.dataSource1;
@@ -463,6 +463,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('dispatch','span' , 'dispatch_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&dispatch='+this.getAttribute('table_type');
+	 alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_invoice_type=function(e){
