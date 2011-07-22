@@ -920,7 +920,26 @@ $default_state=array(
                                       'plot_data'=>array(
                                                   ),
                                   ),
-
+                    'report_sales_week'=>array(
+                    'store'=>'',
+                            'invoices'=> array(
+                                                         'days'=>array(1,2,3,4,5,6,7),
+                                                         'order'=>'date',
+                                                         'order_dir'=>'asc',
+                                                         'sf'=>0,
+                                                         'nr'=>200,
+                                                         'where'=>'where true',
+                                                         'f_field'=>'public_id',
+                                                         'f_value'=>'',
+                                                         'from'=>'',
+                                                         'to'=>'',
+                                                         'store'=>'',
+                                                         'view'=>'',
+                                                         'invoice_type'=>''
+                                                         
+                                                         )
+                    
+                    ),    
                    'report_geo_sales'=>array(
                                           'store_keys'=>'all',
                                           'tipo'=>'m',

@@ -217,7 +217,7 @@ function save(tipo){
                     'GET',
                 ar_file+'?tipo=customer_edit_note&customer_key='+customer_key+'&note_key='+Dom.get('edit_note_history_key').value+'&note='+my_encodeURIComponent(Dom.get('edit_note_input').value)+'&date='+Dom.get('edit_note_date').getAttribute('value')+'&record_index='+Dom.get('record_index').value, {
                 success: function (o) {
-              //  alert(o.responseText)
+               // alert(o.responseText)
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                           
                           if(r.state==200){

@@ -2093,8 +2093,13 @@ function list_invoices(){
  
     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
       $conf=$_SESSION['state']['report']['sales'];
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales_week')
+      $conf=$_SESSION['state']['report_sales_week']['invoices'];  
     else
       $conf=$_SESSION['state']['orders']['invoices'];
+      
+      
+      
     if(isset( $_REQUEST['sf']))
       $start_from=$_REQUEST['sf'];
     else
@@ -2136,7 +2141,7 @@ if(isset( $_REQUEST['where']))
  if(isset( $_REQUEST['from']))
     $from=$_REQUEST['from'];
  else{
-   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+   if(isset($_REQUEST['saveto'])    )
      $from=$conf['from'];
    else
      $from=$_SESSION['state']['orders']['from'];
@@ -2145,7 +2150,7 @@ if(isset( $_REQUEST['where']))
   if(isset( $_REQUEST['to']))
     $to=$_REQUEST['to'];
   else{
-    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+    if(isset($_REQUEST['saveto']))
       $to=$conf['to'];
     else
       $to=$_SESSION['state']['orders']['to'];
@@ -2154,7 +2159,7 @@ if(isset( $_REQUEST['where']))
    if(isset( $_REQUEST['view']))
     $view=$_REQUEST['view'];
    else{
-     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+     if(isset($_REQUEST['saveto']))
        $view=$conf['view'];
      else
        $view=$_SESSION['state']['orders']['view'];
@@ -2189,7 +2194,29 @@ $store=$_SESSION['state']['report']['sales']['store'];
 
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     
-   }else{
+   }
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales_week'){
+     
+     $_SESSION['state']['report_sales_week']['invoices']['order']=$order;
+     $_SESSION['state']['report_sales_week']['invoices']['order_dir']=$order_direction;
+     $_SESSION['state']['report_sales_week']['invoices']['nr']=$number_results;
+     $_SESSION['state']['report_sales_week']['invoices']['sf']=$start_from;
+     $_SESSION['state']['report_sales_week']['invoices']['where']=$where;
+     $_SESSION['state']['report_sales_week']['invoices']['f_field']=$f_field;
+     $_SESSION['state']['report_sales_week']['invoices']['f_value']=$f_value;
+     $_SESSION['state']['report_sales_week']['invoices']['to']=$to;
+     $_SESSION['state']['report_sales_week']['invoices']['from']=$from;
+
+if(isset($_REQUEST['store_key'])){
+$store=$_REQUEST['store_key'];
+$_SESSION['state']['report_sales_week']['store']=$store;
+}else
+$store=$_SESSION['state']['report_sales_week']['store'];
+
+    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    
+   }
+   else{
       if(isset( $_REQUEST['store_id'])    ){
      $store=$_REQUEST['store_id'];
      $_SESSION['state']['orders']['store']=$store;
@@ -2220,6 +2247,8 @@ $store=$_SESSION['state']['report']['sales']['store'];
        $_SESSION['state']['orders']['from']=$date_interval['from'];
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
+   
+   
    }
 
    
@@ -2273,7 +2302,7 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
 
    
   $sql="select count(*) as total from `Invoice Dimension`   $where $wheref ";
-  //  print $sql ;
+  // print $sql ;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $total=$row['total'];
@@ -2350,13 +2379,21 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
      $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
    else if($order=='total_amount')
      $order='`Invoice Total Amount`';
+     
+     else if($order=='items')
+     $order='`Invoice Items Net Amount`';
+     else if($order=='shipping')
+     $order='`Invoice Shipping Net Amount`';
+  
+      else if($order=='day_of_week')
+     $order='  `Invoice Date`';
 else if($order=='customer')
      $order='`Invoice Customer Name`';
  else if($order=='state')
    $order='`Invoice Has Been Paid In Full`';
 else if($order=='net')
      $order='`Invoice Total Net Amount`';
-  $sql="select `Invoice Currency`,`Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Invoice Items Net Amount`,`Invoice Shipping Net Amount`,`Invoice Currency`,`Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   // print $sql;
 
    $data=array();
@@ -2376,8 +2413,11 @@ else if($order=='net')
 		   'id'=>$order_id
 		   ,'customer'=>$customer
 		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
-		   ,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
+            ,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date']))
+        		   ,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
 		   ,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
+		   ,'shipping'=>money($row['Invoice Shipping Net Amount'],$row['Invoice Currency'])
+		   ,'items'=>money($row['Invoice Items Net Amount'],$row['Invoice Currency'])
 
 		   ,'state'=>$state
 		   ,'orders'=>$row['Invoice XHTML Orders']
