@@ -1755,7 +1755,7 @@ $default_state=array(
 							  ),		   
 
                    'customer'=>array(
-                                  'id'=>1,
+                                  'id'=>0,
                                   'action_after_create'=>'continue',
                                   'edit'=>'details',
                                   'details'=>false,

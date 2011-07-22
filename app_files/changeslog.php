@@ -3218,6 +3218,8 @@ ALTER TABLE `Email Read Dimension` ADD `Scope Key` MEDIUMINT UNSIGNED NULL DEFAU
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 
 
+CREATE TABLE `List Order Bridge` (`List Key` SMALLINT( 5 ) NOT NULL ,`Order Key` MEDIUMINT( 8 ) NOT NULL) ENGINE = MYISAM;
+ALTER TABLE `Telecom Bridge` ADD `Telecom Description` VARCHAR( 256 ) NOT NULL ;
 */
 
 ?>

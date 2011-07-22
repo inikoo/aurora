@@ -16,7 +16,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	
 		    var CustomersColumnDefs = [ 
-				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"id", label:"<?php echo _('Order ID')?>",width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 					   {key:"last_date", label:"<?php echo _('Last Updated')?>", <?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:115,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"customer",label:"<?php echo _('Customer')?>", <?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"state", label:"<?php echo _('Status')?>", <?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
@@ -48,7 +48,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	//alert("ar_contacts.php?tipo=customers&type=list&store_id="+store_id+"&where=&list_key=<?php echo $static_list_id;?>")
 	    // alert("ar_contacts.php?tipo=customers&type=list&store_id="+store_id+"&where=&list_key=<?php echo $static_list_id;?>")
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>");
-	  //alert("ar_orders.php?tipo=orders&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>");
+	 //alert("ar_orders.php?tipo=orders&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>")
 	  
 	  this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

@@ -132,7 +132,7 @@ scope:this
 
 function make_order(){
 
-    var customer_id=Dom.get('make_order_customer_id').value;
+  
     
     var data={
 	'courier':Dom.get('make_order_courier').value,
@@ -151,7 +151,7 @@ function make_order(){
 
 //alert('customer_csv.php?id='+customer_id+'&data='+json_value);
   //return;
-	  window.open('customer_csv.php?id='+customer_id+'&data='+json_value,'Download');
+	  window.open('customer_csv.php?id='+customer_key+'&data='+json_value,'Download');
     close_dialog('make_order');
 
 }
@@ -732,7 +732,7 @@ Event.addListener(window, "load", function() {
 
 
 function take_order(){
-    location.href='order.php?new=1&customer_key=<?php echo $_SESSION['state']['customer']['id']?>'; 
+    location.href='order.php?new=1&customer_key='+customer_key; 
 
 
 }

@@ -77,6 +77,8 @@ function list_customer_history() {
     }else
         $customer_id=$_SESSION['state']['customer']['id'];
 
+    if(!$customer_id)return;
+
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -307,7 +309,7 @@ function list_customer_history() {
     $sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)  left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
 
-//  print $sql;
+// print $sql;
     $result=mysql_query($sql);
     $data=array();
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

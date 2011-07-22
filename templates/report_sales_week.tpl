@@ -6,7 +6,7 @@
  <span id="last_week"  class="state_details {if  $quick_period=='last_week'}selected{/if}" style="margin-left:10px">{t}Last week{/t}</span>
 
  <span id="this_week"  class="state_details {if  $quick_period=='this_week'}selected{/if}" style="margin-left:10px">{t}This week{/t}</span>
- <span id="other_date"  class="state_details {if  $quick_period=='other'}selected{/if}" style="margin-left:10px">{t}Other{/t}</span>
+ <span id="other_date"  class="state_details {if  $quick_period=='other'}selected{/if}" style="margin-left:10px">{t}Other Dates{/t}</span>
 
 
 
