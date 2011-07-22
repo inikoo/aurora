@@ -17,8 +17,10 @@
 
 
   <div  id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;padding-top:15px;">
+
     <span class="clean_table_title">{t}Orders{/t}</span>
     
+	
     <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="dispatch_chooser" style="display:{if $view!='orders'}none{/if}">
             <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders" >{t}Export (CSV){/t}</span> 

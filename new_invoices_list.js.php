@@ -14,6 +14,11 @@ var dialog_product_list;
 var dialog_category_list;
 
 var searched=false;
+
+
+
+var current_geo_constrain='billing';
+
 function save_search_list(){
 
 
@@ -73,9 +78,9 @@ var data_returned=function(){
     }
     
 
-function show_dont_wish_to_receive(){
-Dom.setStyle('show_dont_wish_to_receive','display','none')
-Dom.setStyle('tr_dont_wish_to_receive','display','')
+function show_not_paid_status(){
+Dom.setStyle('show_not_paid_status','display','none')
+Dom.setStyle('tr_not_paid_status','display','')
 }
 
 function show_dont_have(){
@@ -84,77 +89,225 @@ Dom.setStyle('tr_dont_have','display','')
 }    
     
     
-function checkbox_changed_allow(o){
+function checkbox_changed_paid_status_condition(o){
 
-cat=Dom.get(o).getAttribute('cat');
+	cat=Dom.get(o).getAttribute('cat');
 
-if(cat=='all'){
+	if(cat=='no'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'paid_status_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'not_paid_status_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else{
+		Dom.removeClass('paid_status_condition_no','selected');
 
-if(    Dom.hasClass(o,'selected')){
-return;
-}else{
-Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'),'selected');
-Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'),'selected');
-Dom.addClass(o,'selected');
-
-}
-
-
-
-}else{
-Dom.removeClass('allow_all','selected');
-
-
-
-cat=Dom.get(o).getAttribute('cat');
-this_parent=Dom.get(o).getAttribute('parent');
-if(this_parent=='allow_'){
-    other_parent='dont_allow_';
-}else{
-    other_parent='allow_';
-}    
-if(    Dom.hasClass(o,'selected')){
-    Dom.removeClass(o,'selected');
-}else{
-    Dom.addClass(o,'selected');
-    Dom.removeClass(other_parent+cat,'selected');
-}
-
-
-
-
-//if(Dom.hasClass(o,'selected')){
-//    Dom.removeClass(o,'selected');
-//}else{
-//    Dom.addClass(o,'selected');
-//}
-
-
-
+		cat=Dom.get(o).getAttribute('cat');
+		this_parent=Dom.get(o).getAttribute('parent');
+		if(this_parent=='paid_status_condition_'){
+			other_parent='not_paid_status_condition_';
+		}else{
+			other_parent='paid_status_condition_';
+		}    
+		if(    Dom.hasClass(o,'selected')){
+			Dom.removeClass(o,'selected');
+		}else{
+			Dom.addClass(o,'selected');
+			Dom.removeClass(other_parent+cat,'selected');
+		}
+	}
 
 }
 
+function hide_invoice(){
+		Dom.setStyle('total_net_amount_upper','display','none')
+		Dom.setStyle('a','display','none')
+		Dom.get('total_net_amount_upper').value=''
 }
  
-function checkbox_changed_have(o){
+function checkbox_changed_net_amount_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
 
-cat=Dom.get(o).getAttribute('cat');
-this_parent=Dom.get(o).getAttribute('parent');
-if(this_parent=='have_'){
-    other_parent='dont_have_';
-}else{
-    other_parent='have_';
-}    
-if(    Dom.hasClass(o,'selected')){
-    Dom.removeClass(o,'selected');
-}else{
-    Dom.addClass(o,'selected');
-    Dom.removeClass(other_parent+cat,'selected');
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_net_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_net_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_net_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('total_net_amount_upper','display','')
+		Dom.setStyle('a','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_net_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+} 
+
+
+ function hide_tax(){
+		Dom.setStyle('total_tax_amount_upper','display','none')
+		Dom.setStyle('b','display','none')
+		Dom.get('total_tax_amount_upper').value=''
 }
+ 
+function checkbox_changed_tax_amount_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_tax();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_tax_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_tax();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_tax_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_tax();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_tax_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('total_tax_amount_upper','display','')
+		Dom.setStyle('b','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_tax_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+} 
 
 
-
+ function hide_profit(){
+		Dom.setStyle('total_profit_upper','display','none')
+		Dom.setStyle('c','display','none')
+		Dom.get('total_profit_upper').value=''
 }
+ 
+function checkbox_changed_total_profit_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_profit();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_profit_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_profit();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_profit_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_profit();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_profit_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('total_profit_upper','display','')
+		Dom.setStyle('c','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_profit_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+} 
+
+
+ function hide_amount(){
+		Dom.setStyle('total_amount_upper','display','none')
+		Dom.setStyle('d','display','none')
+		Dom.get('total_amount_upper').value=''
+}
+ 
+function checkbox_changed_total_amount_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_amount();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_amount();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_amount();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('total_amount_upper','display','')
+		Dom.setStyle('d','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'total_amount_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+} 
+
  
  
 function select_country(oArgs){
@@ -787,8 +940,7 @@ var tableid=1;
 		this.dataSource7 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=product_list&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource7.connXhrMode = "queueRequests";
-	    	    this.dataSource7.table_id=tableid;
-
+	    this.dataSource7.table_id=tableid;
 	    this.dataSource7.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
@@ -855,45 +1007,66 @@ var tableid=1;
 
 
 function get_awhere(){
-  dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
-    dont_have_array= new Array();
-    for(x in dont_have){
-        dont_have_array[x]=dont_have[x].getAttribute('cat');
-    }
-have=Dom.getElementsByClassName('selected', 'span', 'have_options');
-    have_array= new Array();
-    for(x in have){
-        have_array[x]=have[x].getAttribute('cat');
+
+
+	paid_status=Dom.getElementsByClassName('selected', 'span', 'paid_status_option');
+    paid_status_array= new Array();
+    for(x in paid_status){
+        paid_status_array[x]=paid_status[x].getAttribute('cat');
     }
 
-allow=Dom.getElementsByClassName('selected', 'span', 'allow_options');
-    allow_array= new Array();
-    for(x in allow){
-        allow_array[x]=allow[x].getAttribute('cat');
+	not_paid_status=Dom.getElementsByClassName('selected', 'span', 'not_paid_status_option');
+    not_paid_status_array= new Array();
+    for(x in not_paid_status){
+        not_paid_status_array[x]=not_paid_status[x].getAttribute('cat');
     }
-
-dont_allow=Dom.getElementsByClassName('selected', 'span', 'dont_allow_options');
-    dont_allow_array= new Array();
-    for(x in dont_allow){
-        dont_allow_array[x]=dont_allow[x].getAttribute('cat');
+	
+	total_net_amount=Dom.getElementsByClassName('selected', 'span', 'total_net_amount_option');
+    total_net_amount_array= new Array();
+    for(x in total_net_amount){
+        total_net_amount_array[x]=total_net_amount[x].getAttribute('cat');
     }
+	
+	total_tax_amount=Dom.getElementsByClassName('selected', 'span', 'total_tax_amount_option');
+    total_tax_amount_array= new Array();
+    for(x in total_tax_amount){
+        total_tax_amount_array[x]=total_tax_amount[x].getAttribute('cat');
+    }
+	
+	total_profit=Dom.getElementsByClassName('selected', 'span', 'total_profit_option');
+    total_profit_array= new Array();
+    for(x in total_profit){
+        total_profit_array[x]=total_profit[x].getAttribute('cat');
+    }
+	
+	total_amount=Dom.getElementsByClassName('selected', 'span', 'total_amount_option');
+	total_amount_array= new Array();
+    for(x in total_amount){
+        total_amount_array[x]=total_amount[x].getAttribute('cat');
+    }
+		
     var data={ 
-    dont_have:dont_have_array,
-    have:have_array,
-    allow:allow_array,
-      dont_allow:dont_allow_array,
-	geo_constraints:Dom.get('geo_constraints').value,
-
-	product_ordered1:Dom.get('product_ordered_or').value,
-	//	product_ordered2: Dom.get('product_ordered2').value,
-	product_not_ordered1: Dom.get('product_not_ordered1').value,
-	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
-	product_not_received1: Dom.get('product_not_received1').value,
-	//	product_not_received2: Dom.get('product_not_received2').value,
-	ordered_from:Dom.get('v_calpop1').value,
-	ordered_to:Dom.get('v_calpop2').value,
-customer_created_from:Dom.get('v_calpop3').value,
-	customer_created_to:Dom.get('v_calpop4').value,
+    paid_status:paid_status_array,
+	not_paid_status:not_paid_status_array,
+	total_net_amount:total_net_amount_array,
+	total_tax_amount:total_tax_amount_array,
+	total_profit:total_profit_array,
+	total_amount:total_amount_array,
+	invoice_date_from:Dom.get('v_calpop1').value,
+	invoice_date_to:Dom.get('v_calpop2').value,
+	invoice_paid_date_from:Dom.get('v_calpop3').value,
+	invoice_paid_date_to:Dom.get('v_calpop4').value,
+	billing_geo_constraints:Dom.get('billing_geo_constraints').value,
+	delivery_geo_constraints:Dom.get('delivery_geo_constraints').value,
+	total_net_amount_lower:Dom.get('total_net_amount_lower').value,
+	total_net_amount_upper:Dom.get('total_net_amount_upper').value,
+	total_tax_amount_lower:Dom.get('total_tax_amount_lower').value,
+	total_tax_amount_upper:Dom.get('total_tax_amount_upper').value,
+	total_profit_lower:Dom.get('total_profit_lower').value,
+	total_profit_upper:Dom.get('total_profit_upper').value,
+	total_amount_lower:Dom.get('total_amount_lower').value,
+	total_amount_upper:Dom.get('total_amount_upper').value,
+	tax_code:Dom.get('tax_code').value
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -922,7 +1095,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -937,138 +1110,141 @@ var submit_search_on_enter=function(e,tipo){
 	 submit_search(e,tipo);
 };
 
+function select_country(oArgs){
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+    Dom.get(geo_constrain).value=billing_geo_constraints;
+    dialog_country_list.hide();
+    hide_filter(true,2)
+}
 
+function select_postal_code(oArgs){
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+'pc('+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
+    Dom.get(geo_constrain).value=billing_geo_constraints;
+    dialog_postal_code_list.hide();
+    hide_filter(true,3)
+}
 
+function select_wregion(oArgs){
+
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+'wr('+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
+    Dom.get(geo_constrain).value=billing_geo_constraints;
+    dialog_wregion_list.hide();
+    hide_filter(true,1)
+}
+
+function select_city(oArgs){
+	if(current_geo_constrain=='billing'){
+		geo_constrain='billing_geo_constraints'
+	}else{
+		geo_constrain='delivery_geo_constraints'
+	}
+    var billing_geo_constraints=Dom.get(geo_constrain).value;
+    if(billing_geo_constraints!=''){billing_geo_constraints=billing_geo_constraints+','}
+    billing_geo_constraints=billing_geo_constraints+'t('+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '')+')';
+    Dom.get(geo_constrain).value=billing_geo_constraints;
+    dialog_city_list.hide();
+    hide_filter(true,4)
+}
+function show_wregion_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_wregion_list.show();
+}
+
+function show_country_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_country_list.show();
+}
+
+function show_city_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_city_list.show();
+}
+
+function show_postal_code_list(e,geo_constrain){
+
+current_geo_constrain=geo_constrain;
+dialog_postal_code_list.show();
+}
 function init(){
 
-
-  init_search('customers_store');
-var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
- oACDS1.table_id=1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
- 
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
- oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
- 
- var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS3.queryMatchContains = true;
- oACDS3.table_id=3;
- var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3","f_container3", oACDS3);
- oAutoComp3.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show3', "click",show_filter,3);
- YAHOO.util.Event.addListener('clean_table_filter_hide3', "click",hide_filter,3);
- 
- var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS4.queryMatchContains = true;
- oACDS4.table_id=4;
- var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4","f_container4", oACDS4);
- oAutoComp4.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show4', "click",show_filter,4);
- YAHOO.util.Event.addListener('clean_table_filter_hide4', "click",hide_filter,4);
- 
-
-
-
-var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS5.queryMatchContains = true;
- oACDS5.table_id=5;
- var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5","f_container5", oACDS5);
- oAutoComp5.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show5', "click",show_filter,5);
- YAHOO.util.Event.addListener('clean_table_filter_hide5', "click",hide_filter,5);
- 
- var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS6.queryMatchContains = true;
- oACDS6.table_id=6;
- var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6","f_container6", oACDS6);
- oAutoComp6.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show6', "click",show_filter,6);
- YAHOO.util.Event.addListener('clean_table_filter_hide6', "click",hide_filter,6);
- 
- var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS7.queryMatchContains = true;
- oACDS7.table_id=7;
- var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7","f_container7", oACDS7);
- oAutoComp7.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
- YAHOO.util.Event.addListener('clean_table_filter_hide7', "click",hide_filter,7);
- 
- 
     dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {context:["country","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_country_list.render();
-    Event.addListener("country", "click", dialog_country_list.show,dialog_country_list , true);
-
+    Event.addListener("country", "click", show_country_list, 'billing');
+	Event.addListener("country2", "click", show_country_list, 'delivery');
+	
     dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {context:["wregion","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_wregion_list.render();
-    Event.addListener("wregion", "click", dialog_wregion_list.show,dialog_wregion_list , true);
-
+    Event.addListener("wregion", "click", show_wregion_list, 'billing');
+	Event.addListener("wregion2", "click", show_wregion_list, 'delivery' );
+	
     dialog_city_list = new YAHOO.widget.Dialog("dialog_city_list", {context:["city","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_city_list.render();
-    Event.addListener("city", "click", dialog_city_list.show,dialog_city_list , true);
-
+    Event.addListener("city", "click", show_city_list, 'billing');
+	Event.addListener("city2", "click", show_city_list, 'delivery');
 
     dialog_postal_code_list = new YAHOO.widget.Dialog("dialog_postal_code_list", {context:["postal_code","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_postal_code_list.render();
-    Event.addListener("postal_code", "click", dialog_postal_code_list.show,dialog_postal_code_list , true);
+    Event.addListener("postal_code", "click", show_postal_code_list, 'billing');
+	Event.addListener("postal_code2", "click", show_postal_code_list, 'delivery');
 
-    dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_department_list.render();
-    Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);
 
-    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_family_list.render();
-    Event.addListener("family", "click", dialog_family_list.show,dialog_family_list , true);
+	YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
+	YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
+	YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
 
-    dialog_product_list = new YAHOO.widget.Dialog("dialog_product_list", {context:["product","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_product_list.render();
-    Event.addListener("product", "click", dialog_product_list.show,dialog_product_list , true);
-
-    dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {context:["category","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_category_list.render();
-    Event.addListener("category", "click", dialog_category_list.show,dialog_category_list , true);
-
-YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
-YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
-YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
-
-YAHOO.util.Event.addListener(['show_dont_wish_to_receive'], "click",show_dont_wish_to_receive);
-YAHOO.util.Event.addListener(['show_dont_have'], "click",show_dont_have);
+	YAHOO.util.Event.addListener(['show_not_paid_status'], "click",show_not_paid_status);
+	YAHOO.util.Event.addListener(['show_dont_have'], "click",show_dont_have);
 
 
 //var ids=['general','contact'];
 //YAHOO.util.Event.addListener(ids, "click",change_view);
 
-cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+cal1 = new YAHOO.widget.Calendar("invoice_date_from","invoice_date_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal1.update=updateCal;
  cal1.id='1';
  cal1.render();
  cal1.update();
  cal1.selectEvent.subscribe(handleSelect, cal1, true); 
 
- cal2 = new YAHOO.widget.Calendar("product_ordered_or_to","product_ordered_or_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
+ cal2 = new YAHOO.widget.Calendar("invoice_date_to","invoice_date_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
  cal2.update=updateCal;
  cal2.id='2';
  cal2.render();
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
 
-cal3 = new YAHOO.widget.Calendar("customer_first_contacted_from","customer_first_contacted_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+cal3 = new YAHOO.widget.Calendar("invoice_paid_date_from","invoice_paid_date_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal3.update=updateCal;
  cal3.id='3';
  cal3.render();
  cal3.update();
 cal3.selectEvent.subscribe(handleSelect, cal3, true); 
 
-cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to","customer_first_contacted_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
+cal4 = new YAHOO.widget.Calendar("invoice_paid_date_to","invoice_paid_date_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
  cal4.update=updateCal;
  cal4.id='4';
  cal4.render();
@@ -1084,10 +1260,10 @@ cal4.selectEvent.subscribe(handleSelect, cal4, true);
 
 
 
-YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
-YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
-YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
-YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
+	YAHOO.util.Event.addListener("invoice_date_from", "click", cal1.show, cal1, true);
+	YAHOO.util.Event.addListener("invoice_date_to", "click", cal2.show, cal2, true);
+	YAHOO.util.Event.addListener("invoice_paid_date_from", "click", cal3.show, cal3, true);
+	YAHOO.util.Event.addListener("invoice_paid_date_to", "click", cal4.show, cal4, true);
 
 }
 
