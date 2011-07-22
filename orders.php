@@ -30,6 +30,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_orders.php','label
 
 $general_options_list[]=array('tipo'=>'url','url'=>'orders_lists.php?store='.$store->id,'label'=>_('Lists'));
 
+
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');

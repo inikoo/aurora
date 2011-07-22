@@ -49,7 +49,7 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'common_customers.js.php',
-              'new_customers_list.js.php',
+              'new_invoices_list.js.php',
               'js/edit_common.js',
           );
 
@@ -57,11 +57,24 @@ $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
 
+$condition=array(
+                       'less'=>array('name'=>_('Less than')),
+                       'equal'=>array('name'=>_('Equal')),
+                       'more'=>array('name'=>_('More than')),
+					   'between'=>array('name'=>_('Between'))
+                   );
+$smarty->assign('condition',$condition);
 
+$paid_status=array(
+                       'yes'=>array('name'=>_('Yes')),
+                       'partially'=>array('name'=>_('Partially')),
+					   'no'=>array('name'=>_('No')) 
+                   );
+$smarty->assign('paid_status',$paid_status);
 
 $_SESSION['state']['customers']['list']['where']='';
-$smarty->assign('parent','customers');
-$smarty->assign('title', _('Customers Lists'));
+$smarty->assign('parent','orders');
+$smarty->assign('title', _('Invoices Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -198,5 +211,5 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('options_box_width','550px');
 
 
-$smarty->display('new_customers_lists.tpl');
+$smarty->display('new_invoices_list.tpl');
 ?>
