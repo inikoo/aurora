@@ -1294,8 +1294,10 @@ function get_tax_code($type,$header_data) {
 function ci_get_tax_code($header_data) {
 
 
-    $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04,'EX'=>0);
-    $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX"=>"Not Tax");
+//print_r($header_data);
+
+    $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04,'EX'=>0,"S4"=>.18,"S5"=>.22);
+    $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX"=>"Not Tax","S4"=>'IVA',"S5"=>"IVA+I");
 
     $tax_code='UNK';
     $tax_description='No Tax';
@@ -1315,6 +1317,8 @@ function ci_get_tax_code($header_data) {
             // print "$_tax_code => $_tax_rate $tax_rate\n ";
             $upper=1.1*$_tax_rate;
             $lower=0.9*$_tax_rate;
+            
+           // print " $_tax_rate  $lower $tax_rate $upper\n";
             if ($tax_rate>=$lower and $tax_rate<=$upper) {
                 $tax_code=$_tax_code;
                 $tax_description=$tax_names[$tax_code];
@@ -1331,7 +1335,7 @@ function ci_get_tax_code($header_data) {
            );
 
 
-    //  print_r($data);
+ // print_r($data);
 
     return $data;
 
