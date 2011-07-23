@@ -3220,6 +3220,49 @@ ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Order
 
 CREATE TABLE `List Order Bridge` (`List Key` SMALLINT( 5 ) NOT NULL ,`Order Key` MEDIUMINT( 8 ) NOT NULL) ENGINE = MYISAM;
 ALTER TABLE `Telecom Bridge` ADD `Telecom Description` VARCHAR( 256 ) NOT NULL ;
+
+ALTER TABLE `Tax Category Dimension` ADD `Tax Category Type` VARCHAR( 64 ) NOT NULL AFTER `Tax Category Key` ,ADD INDEX ( `Tax Category Type` ) ;
+ALTER TABLE `Tax Category Dimension` ADD `Composite` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Composite` ) ;
+ALTER TABLE `Tax Category Dimension` ADD `Composite Metadata` VARCHAR( 256 ) NULL DEFAULT NULL;
+ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Type` `Tax Category Type Name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+CREATE TABLE `Invoice Tax Dimension` (
+`Invoice Key` MEDIUMINT UNSIGNED NOT NULL ,
+`UNK` FLOAT NULL DEFAULT NULL ,
+INDEX ( `Invoice Key` )
+) ENGINE = MYISAM ;
+
+
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'Excluded' WHERE `Tax Category Dimension`.`Tax Category Key` =1;
+
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA' WHERE `Tax Category Dimension`.`Tax Category Key` =2;
+
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'RE' WHERE `Tax Category Dimension`.`Tax Category Key` =3;
+
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA+RE' WHERE `Tax Category Dimension`.`Tax Category Key` =4;
+
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'UNK' WHERE `Tax Category Dimension`.`Tax Category Key` =5;
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA+RE' WHERE `Tax Category Dimension`.`Tax Category Key` =7;
+UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA' WHERE `Tax Category Dimension`.`Tax Category Key` =6;
+UPDATE `costadw`.`Tax Category Dimension` SET `Composite` = 'Yes',
+`Composite Metadata` = '2,3' WHERE `Tax Category Dimension`.`Tax Category Key` =4;
+
+UPDATE `costadw`.`Tax Category Dimension` SET `Composite` = 'Yes',
+`Composite Metadata` = '6,3' WHERE `Tax Category Dimension`.`Tax Category Key` =7;
+
+CREATE TABLE `costadw`.`Invoice Tax Dimension` (
+`Invoice Key` MEDIUMINT UNSIGNED NOT NULL ,
+`UNK` FLOAT NULL DEFAULT NULL ,
+`EX` FLOAT NULL DEFAULT NULL ,
+`S1` FLOAT NULL DEFAULT NULL ,
+`S2` FLOAT NULL DEFAULT NULL ,
+`S4` FLOAT NULL DEFAULT NULL ,
+INDEX ( `Invoice Key` )
+) ENGINE = MYISAM ;
+
+
+
+
 */
 
 ?>

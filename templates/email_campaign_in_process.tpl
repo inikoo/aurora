@@ -9,8 +9,8 @@
 <div  style="padding:10px;float:left" id="edit_email_campaign_msg">
 </div>
 <div class="general_options" style="padding:10px;float:right">
-	<span  style="margin-right:10px;" class="disabled"  id="send_email_campaign" class="state_details">{t}Send{/t}</span>
-		<span  style="margin-right:10px;" class="disabled"  id="preview_email_campaign" class="state_details">{t}Preview{/t}</span>
+	<span  style="margin-right:10px;" class="{if !$email_campaign->ready_to_send()}disabled{/if}"  id="send_email_campaign" class="state_details">{t}Send{/t}</span>
+		<span  style="margin-right:10px;" class="{if !$email_campaign->ready_to_send()}disabled{/if}"   id="preview_email_campaign" class="state_details">{t}Preview{/t}</span>
 	
 	<span style="margin-right:10px;" id="save_and_exit_edit_email_campaign" class="state_details">{t}Continue Later{/t}</span>
 		<span style="margin-right:10px;" id="delete_email_campaign" class="state_details">{t}Delete{/t}</span>
@@ -102,15 +102,14 @@
 </td>
 </tr>
 
+<input type="hidden" value="{$current_content_key}" id="current_email_contact_key">
 
-{foreach from=$email_campaign->get_content_data_keys() item=content_data key=content_data_key name=foo} 
 <tr class=""  >
-<input type="hidden" value="{$content_data_key}" id="current_email_contact_key">
 
-<td style="" class="label" >{t}Subject{/t}:</td>
+<td  class="label" >{t}Subject{/t}:</td>
    <td  style="text-align:left;">
      <div  style="" >
-       <input style="text-align:left;width:100%" id="email_campaign_subject" value='{$email_campaign->get_subject($content_data_key)|escape}' ovalue="{$email_campaign->get_subject($content_data_key)|escape}" >
+       <input style="text-align:left;width:100%" id="email_campaign_subject" value='{$email_campaign->get_subject($current_content_key)|escape}' ovalue="{$email_campaign->get_subject($current_content_key)|escape}" >
        <div id="email_campaign_subject_Container" style="" ></div>
      </div>
    </td>
@@ -118,7 +117,7 @@
  </tr>
 
 <tr>
-{/foreach}
+
 
 <tr class="" style="height:40px">
 <td style="" class="label" >{t}Type of Email{/t}:</td>
@@ -141,19 +140,18 @@
 
 
 
-{foreach from=$email_campaign->get_content_data_keys() item=content_data key=content_data_key } 
-<tr>
+<tr id="tr_content" style="{if $current_content_key!=$current_content_key}display:none{/if}">
 <td class="label" >{t}Content{/t}:</td>
    <td  colspan=2 style="text-align:">
    <div  style="top:00px;width:600px;margin:0px" >                                                     
-   <textarea style="width:100%;height:250px;background-image:url(art/text_email_guide.png);" id="email_campaign_content_text" ovalue="{$email_campaign->get_content_text($content_data_key)|escape}">{$email_campaign->get_content_text($content_data_key)|escape}</textarea>
+   <textarea style="width:100%;height:250px;background-image:url(art/text_email_guide.png);" id="email_campaign_content_text" ovalue="{$email_campaign->get_content_text($current_content_key)|escape}">{$email_campaign->get_content_text($current_content_key)|escape}</textarea>
     <br>
     <div id="email_campaign_content_text_Container" style="" ></div>
      </div>
     <div id="email_campaign_content_text_msg" class="edit_td_alert"></div>
    </td>
 </tr>
-{/foreach}
+
 
 </tbody>
 <tbody id="html_email_from_template_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML Template'}display:none{/if}">

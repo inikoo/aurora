@@ -298,6 +298,9 @@ function delete_old_data() {
 	
 	$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$row_test['Invoice Key']);
 	 mysql_query($sql);
+	 
+	 $sql=sprintf("delete from `Invoice Tax Dimension` where `Invoice Key`=%d",$row_test['Invoice Key']);
+	 mysql_query($sql);
 
         $sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Invoice Key`=%d   ",$row_test['Invoice Key']);
         mysql_query($sql)  ;

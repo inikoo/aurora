@@ -89,7 +89,8 @@ class TaxCategory extends DB_Table{
     if($data['Tax Category Name']=='')
       $data['Tax Category Name']=$data['Tax Category Code'];
     
-
+ if($data['Tax Category Type']=='')
+      $data['Tax Category Type']=$data['Tax Category Code'];
     $sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Code`=%s  "
 		 ,prepare_mysql($data['Tax Category Code'])
 		 ); 

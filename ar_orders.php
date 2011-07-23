@@ -693,7 +693,7 @@ if(isset( $_REQUEST['where']))
 
 
 
-//print "yyyy $where_type";
+//print "yddyyy $where_type";
 
 //exit;
 

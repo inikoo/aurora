@@ -372,8 +372,16 @@ function pickers_report() {
         $order='`Staff Alias`';
 
 
+        $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`)  left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s   ",$date_interval['mysql']);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total_orders=$row['orders'];
+$total_units=$row['units'];
+$total_weight=$row['weight'];
+}
+//print $sql;
 
-    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 // print $sql;
     $result=mysql_query($sql);
     $data=array();
@@ -394,6 +402,11 @@ function pickers_report() {
                     'orders'=>number($row['orders']),
                     'units'=>number($row['units'],0) ,
                     'weight'=>number($row['weight'],0)." "._('Kg'),
+                      'p_orders'=>percentage($row['orders'],$total_orders),
+                    'p_units'=>percentage($row['units'],$total_units),
+                    'p_weight'=>percentage($row['weight'],$total_weight),
+                     
+                    
                     //'errors'=>number($row['errors']),
                     //'epo'=>number(100*$row['epo']+0.00001,1)."%",
                     //'hours'=>$hours,
@@ -511,7 +524,13 @@ function packers_report() {
     else
         $order='`Staff Alias`';
 
-
+  $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`)  left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s   ",$date_interval['mysql']);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total_orders=$row['orders'];
+$total_units=$row['units'];
+$total_weight=$row['weight'];
+}
 
     $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
     // print $sql;
@@ -534,6 +553,9 @@ function packers_report() {
                     'orders'=>number($row['orders']),
                     'units'=>number($row['units'],0) ,
                     'weight'=>number($row['weight'],0)." "._('Kg'),
+                      'p_orders'=>percentage($row['orders'],$total_orders),
+                    'p_units'=>percentage($row['units'],$total_units),
+                    'p_weight'=>percentage($row['weight'],$total_weight),
                     //'errors'=>number($row['errors']),
                     //'epo'=>number(100*$row['epo']+0.00001,1)."%",
                     //'hours'=>$hours,

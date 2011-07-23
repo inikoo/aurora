@@ -508,30 +508,95 @@ $this->data ['Invoice Total Profit']=0;
 }
 
 function update_tax(){
-  
+ // print "===\n";
   $sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$this->id);
   mysql_query($sql);
   
+  
+  $invoice_tax_fields=array();
+  $result = mysql_query("SHOW COLUMNS FROM `Invoice Tax Dimension`");
+if (mysql_num_rows($result) > 0) {
+    while ($row = mysql_fetch_assoc($result)) {
+        if($row['Field']!='Invoice Key'){
+            $invoice_tax_fields[]=$row['Field'];
+        }
+    }
+}
+  
+  
+  $_sql='';
+  foreach($invoice_tax_fields as $invoice_tax_field){
+    $_sql.=", `".$invoice_tax_field."`=NULL ";
+  }
+  $_sql=preg_replace('/^,/','',$_sql);
+  $sql='update `Invoice Tax Dimension` set '.$_sql.sprintf(' where `Invoice Key`=%d',$this->id);
+  
   $tax_sum_by_code=array();
 
-  $sql=sprintf("select `Transaction Tax Code`,sum(`Invoice Transaction Item Tax Amount`) as amount from `Order Transaction Fact`  where `Invoice Key`=%d  group by `Transaction Tax Code`",$this->id);
+  $sql=sprintf("select IFNULL(`Transaction Tax Code`,'UNK') as tax_code,sum(`Invoice Transaction Item Tax Amount`) as amount from `Order Transaction Fact`  where `Invoice Key`=%d  group by `Transaction Tax Code`",$this->id);
+//print "$sql\n";
   $result = mysql_query ( $sql );
   while ( $row = mysql_fetch_array ( $result, MYSQL_ASSOC ) ) {
-    $tax_sum_by_code[$row['Transaction Tax Code']]=$row['amount'];
+    $tax_sum_by_code[$row['tax_code']]=$row['amount'];
   }
   
-   $sql=sprintf("select `Tax Category Code`,sum(`Transaction Invoice Tax Amount`) as amount from `Order No Product Transaction Fact` where `Invoice Key`=%d   group by `Tax Category Code`",$this->id);
+ 
+   $sql=sprintf("select IFNULL(`Tax Category Code`,'UNK') as tax_code,sum(`Transaction Invoice Tax Amount`) as amount from `Order No Product Transaction Fact` where `Invoice Key`=%d and `Transaction Type`!='Adjust'  group by `Tax Category Code`",$this->id);
+// print "$sql\n";
   $result = mysql_query ( $sql );
   while ( $row = mysql_fetch_array ( $result, MYSQL_ASSOC ) ) {
-    if(array_key_exists($row['Tax Category Code'],$tax_sum_by_code))
-    $tax_sum_by_code[$row['Tax Category Code']]+=$row['amount'];
-
+    if(array_key_exists($row['tax_code'],$tax_sum_by_code))
+    $tax_sum_by_code[$row['tax_code']]+=$row['amount'];
       else
-    $tax_sum_by_code[$row['Tax Category Code']]=$row['amount'];
+    $tax_sum_by_code[$row['tax_code']]=$row['amount'];
   } 
 
+ // print_r($tax_sum_by_code);
+  
+  
+ foreach($tax_sum_by_code as $tax_code=>$amount ){
+  $tax_category=new TaxCategory($tax_code); 
+  if($tax_category->data['Composite']=='Yes'){
+  
+  $sql=sprintf("select `Tax Category Rate`,`Tax Category Code` from `Tax Category Dimension` where `Tax Category Key` in (%s) ",$tax_category->data['Composite Metadata']);
+  $res=mysql_query($sql);
+  
+  if($tax_category->data['Tax Category Rate']==0){
+    contunue;
+  }
+  $x=$amount/$tax_category->data['Tax Category Rate'];
+  
+   
+   if($tax_sum_by_code[$tax_code]==$amount){
+   unset($tax_sum_by_code[$tax_code]);
+   }else{
+    $tax_sum_by_code[$tax_code]=$tax_sum_by_code[$tax_code]-$amount;
+   }
+   
+   
+  while($row=mysql_fetch_assoc($res)){
+       
+        
+          if(array_key_exists($row['Tax Category Code'],$tax_sum_by_code))
+    $tax_sum_by_code[$row['Tax Category Code']]+=$x*$row['Tax Category Rate'];
+      else
+    $tax_sum_by_code[$row['Tax Category Code']]=$x*$row['Tax Category Rate'];
+  }
+        
+        
+  
+  }  
+
+
+ }
  
+ 
+ 
+ 
+// print_r($tax_sum_by_code);
+// exit;
   foreach($tax_sum_by_code as $tax_code=>$amount ){
+    
     $this->add_tax_item($tax_code,$amount);
   }
   
@@ -1002,7 +1067,10 @@ function create_header() {
     $this->data ['Invoice Key'] = mysql_insert_id ();
     
     $this->id=$this->data ['Invoice Key'];
-  
+ $sql = sprintf("INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->data ['Invoice Key']);
+
+	mysql_query($sql);
+
  
  } else {
     
@@ -1477,13 +1545,21 @@ function add_refund_no_product_transaction($refund_transaction_data) {
  }
  
  function add_tax_item($code='UNK',$amount=0,$is_base='Yes'){
- $sql=sprintf("insert into `Invoice Tax Bridge` values (%d,%s,%.2f,%s)"
+ 
+ 
+$sql=sprintf("update `Invoice Tax Dimension` set `%s`=%.2f where `Invoice Key`=%d",addslashes($code),$amount,$this->id );
+mysql_query($sql);
+// print "$sql\n";
+ $sql=sprintf("insert into `Invoice Tax Bridge` values (%d,%s,%.2f,%s) on duplicate key update `Tax Amount`=%.2f, `Tax Base`=%s"
     ,$this->id
     ,prepare_mysql($code)
     ,$amount
     ,prepare_mysql($is_base)
+      ,$amount
+          ,prepare_mysql($is_base)
+
     );
-   // print "$sql\n";
+// print "$sql\n";
  mysql_query($sql);
  }
  
