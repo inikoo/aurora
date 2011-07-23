@@ -221,7 +221,7 @@ function search(query,subject,search_scope) {
         request=request+'&'+search_scope+'_id='+Dom.get(search_scope+'_id').value;
     }
 
-alert('ar_search.php?'+request);//return;
+//alert('ar_search.php?'+request);//return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {

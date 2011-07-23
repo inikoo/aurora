@@ -1,5 +1,12 @@
 <?php
 include_once('common.php');
+//include_once('class.EmailCampaign.php');
+
+
+//$email_campaign_key=$_REQUEST['email_campaign_key'];
+
+ //$email_campaign=new EmailCampaign($email_campaign_key);
+
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -462,7 +469,19 @@ switch ( branch ) {
 		Dom.get('recipients_preview').innerHTML=r.recipients_preview;
 		Dom.get('email_campaign_number_recipients').value=r.number_recipients;
 		validate_general('full_email_campaign','email_recipients',r.number_recipients);
-		check_if_ready_to_send();
+		
+		if(r.ready_to_send){
+		Dom.removeClass('preview_email_campaign','disabled');
+				Dom.removeClass('send_email_campaign','disabled');
+
+		}else{
+			Dom.addClass('preview_email_campaign','disabled');
+				Dom.addClass('send_email_campaign','disabled');
+		
+		}
+		
+		
+		//check_if_ready_to_send();
 		close_dialog_add_email_address();
 		break;
 	
@@ -473,21 +492,6 @@ switch ( branch ) {
 }
 }
 
-function check_if_can_preview(){
-    if(is_valid_scope('preview_email_campaign')){
-        Dom.removeClass('preview_email_campaign','disabled');
-    }else{
-        Dom.addClass('preview_email_campaign','disabled');
-    }
-}
-
-function check_if_ready_to_send(){
-if(is_valid_scope('full_email_campaign')){
-Dom.removeClass('send_email_campaign','disabled');
-}else{
-Dom.addClass('send_email_campaign','disabled');
-}
-}
 
 function close_dialog_add_email_address(){
 cancel_new_general('add_email_address_manually')
@@ -894,10 +898,7 @@ function init(){
 
     Event.addListener('reset_edit_email_campaign', "click", reset_edit_email_campaign);
     Event.addListener('save_edit_email_campaign', "click", save_edit_email_campaign);
-    check_if_ready_to_send();
-   check_if_can_preview();
-
-
+ 
      dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_department_list.render();
     Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);
