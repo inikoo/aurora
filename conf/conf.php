@@ -1172,6 +1172,11 @@ $default_state=array(
                                                             'tax_category'=>array(),
                                                             'regions'=>array('GBIM'=>1,'EU'=>1,'NOEU'=>1)
                                                         ),
+                                                   'ESP'=>array(
+                                                            'tax_category'=>array(),
+                                                            'regions'=>array('ES'=>1,'EU'=>1,'NOEU'=>1)
+                                                        ),     
+                                                        
                                                   'overview'=>array(
                                                                  'order'=>'date',
                                                                  'order_dir'=>'',

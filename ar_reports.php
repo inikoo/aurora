@@ -19,16 +19,16 @@ switch ($tipo) {
 case('tax_overview'):
 
 
-switch($corporate_country_code){
-case'GBR':
-case'ESP':
-    tax_overview_europe($corporate_country_code);
+switch($corporate_country_2alpha_code){
+case'GB':
+case'ES':
+    tax_overview_europe($corporate_country_2alpha_code);
     break;
 DEFAULT:
-tax_overview($corporate_country_code);
+tax_overview($corporate_country_2alpha_code);
 break;
 }
-
+break;
 case('store_sales'):
     list_store_sales();
     break;
@@ -2007,7 +2007,7 @@ if(count($tax_categories)==0){
     echo json_encode($response);
 }
 
-function tax_overview_europe($country_code,$country) {
+function tax_overview_europe($country) {
 
 
     $conf=$_SESSION['state']['report_sales_with_no_tax']['overview'];
@@ -2171,7 +2171,7 @@ function tax_overview_europe($country_code,$country) {
    if($country=='GB'){
     $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
     }else{
-     $where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code``!=%s',prepare_mysql($country));
+     $where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
     }
 
 
@@ -2200,7 +2200,7 @@ function tax_overview_europe($country_code,$country) {
    $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
 
     }else{
-     $where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code``!=%s',prepare_mysql($country));
+     $where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
     }
 
 
