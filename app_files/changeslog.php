@@ -3231,34 +3231,9 @@ CREATE TABLE `Invoice Tax Dimension` (
 `UNK` FLOAT NULL DEFAULT NULL ,
 INDEX ( `Invoice Key` )
 ) ENGINE = MYISAM ;
+ALTER TABLE `HQ Dimension` ADD `HQ Country Code` VARCHAR( 3 ) NOT NULL AFTER `HQ Name` ;
+ALTER TABLE `HQ Dimension` ADD `HQ Country 2 Alpha Code` VARCHAR( 2 ) NOT NULL AFTER `HQ Country Code` ;
 
-
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'Excluded' WHERE `Tax Category Dimension`.`Tax Category Key` =1;
-
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA' WHERE `Tax Category Dimension`.`Tax Category Key` =2;
-
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'RE' WHERE `Tax Category Dimension`.`Tax Category Key` =3;
-
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA+RE' WHERE `Tax Category Dimension`.`Tax Category Key` =4;
-
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'UNK' WHERE `Tax Category Dimension`.`Tax Category Key` =5;
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA+RE' WHERE `Tax Category Dimension`.`Tax Category Key` =7;
-UPDATE `costadw`.`Tax Category Dimension` SET `Tax Category Type` = 'IVA' WHERE `Tax Category Dimension`.`Tax Category Key` =6;
-UPDATE `costadw`.`Tax Category Dimension` SET `Composite` = 'Yes',
-`Composite Metadata` = '2,3' WHERE `Tax Category Dimension`.`Tax Category Key` =4;
-
-UPDATE `costadw`.`Tax Category Dimension` SET `Composite` = 'Yes',
-`Composite Metadata` = '6,3' WHERE `Tax Category Dimension`.`Tax Category Key` =7;
-
-CREATE TABLE `costadw`.`Invoice Tax Dimension` (
-`Invoice Key` MEDIUMINT UNSIGNED NOT NULL ,
-`UNK` FLOAT NULL DEFAULT NULL ,
-`EX` FLOAT NULL DEFAULT NULL ,
-`S1` FLOAT NULL DEFAULT NULL ,
-`S2` FLOAT NULL DEFAULT NULL ,
-`S4` FLOAT NULL DEFAULT NULL ,
-INDEX ( `Invoice Key` )
-) ENGINE = MYISAM ;
 
 
 

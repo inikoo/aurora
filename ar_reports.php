@@ -17,8 +17,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('tax_overview'):
-    tax_overview_gb();
+
+
+switch($corporate_country_code){
+case'GBR':
+case'ESP':
+    tax_overview_europe($corporate_country_code);
     break;
+DEFAULT:
+tax_overview($corporate_country_code);
+break;
+}
 
 case('store_sales'):
     list_store_sales();
@@ -1998,7 +2007,7 @@ if(count($tax_categories)==0){
     echo json_encode($response);
 }
 
-function tax_overview_gb() {
+function tax_overview_europe($country_code,$country) {
 
 
     $conf=$_SESSION['state']['report_sales_with_no_tax']['overview'];
@@ -2114,12 +2123,10 @@ function tax_overview_gb() {
     $rtext_rpp='';
 
 
-    $corporate_currency='GBP';
-    $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $corporate_currency=$row['HQ Currency'];
-    }
+    global $corporate_currency;
+
+
+    
 
     $sum_net=0;
     $sum_tax=0;
@@ -2129,7 +2136,15 @@ function tax_overview_gb() {
 
 //   $sql="select `Invoice Tax Code`,`Invoice Currency`,sum(`Invoice Total Amount`*`Invoice Currency Exchange` as `Invoice Total Amount Corporate`) ,  sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`,sum( `Invoice Total Net Amount`) as net,sum(`Invoice Total Amount`) as total  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
-    $where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
+    if($country=='GB'){
+    $country_label='GB+IM';
+        $where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
+    }else{
+     $where_extra=sprintf(' and `Invoice Billing Country 2 Alpha Code`=%s',prepare_mysql($country));
+      $country_label=$country;
+    }
+
+
     $sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
 
@@ -2143,7 +2158,7 @@ function tax_overview_gb() {
   $sum_invoices+=$row['invoices'];
         $data[]=array(
                     'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
-                    'category'=>'GB+IM',
+                    'category'=>$country_label,
                     'net'=>money($row['net_hq'],$corporate_currency),
                     'tax'=>money($row['tax_hq'],$corporate_currency),
                     'total'=>money($row['total_hq'],$corporate_currency),
@@ -2152,7 +2167,14 @@ function tax_overview_gb() {
     }
     mysql_free_result($res);
 
+
+   if($country=='GB'){
     $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
+    }else{
+     $where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code``!=%s',prepare_mysql($country));
+    }
+
+
     $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
   
     $res=mysql_query($sql);
@@ -2165,7 +2187,7 @@ function tax_overview_gb() {
 
         $data[]=array(
                     'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
-                    'category'=>'EU (no GB)',
+                    'category'=>'EU (no '.$country.')',
                     'net'=>money($row['net_hq'],$corporate_currency),
                     'tax'=>money($row['tax_hq'],$corporate_currency),
                     'total'=>money($row['total_hq'],$corporate_currency),
@@ -2174,8 +2196,15 @@ function tax_overview_gb() {
     }
     mysql_free_result($res);
 
-
+   if($country=='GB'){
    $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
+
+    }else{
+     $where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code``!=%s',prepare_mysql($country));
+    }
+
+
+
     $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
   
     $res=mysql_query($sql);
