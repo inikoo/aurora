@@ -472,6 +472,7 @@ alert(request);
      Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&invoice_type='+this.getAttribute('table_type');
+	 //alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_dn_type=function(e){
