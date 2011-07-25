@@ -96,8 +96,11 @@ case 'Creating':
 $general_options_list=array();
     $css_files[]='css/edit.css';
     $js_files[]='js/edit_common.js';
-    $js_files[]='email_campaign_in_process.js.php';
+    $js_files[]='email_campaign_in_process.js.php?email_campaign_key='.$email_campaign->id;
     $tpl_file='email_campaign_in_process.tpl';
+    
+    $smarty->assign('current_content_key',$email_campaign->get_first_content_key());
+
     break;
 
 }
