@@ -1168,11 +1168,11 @@ $default_state=array(
                                                   'currency_type'=>'original',
                                                   'view'=>'overview',
                                                   'country'=>'GBR',
-                                                  'GBR'=>array(
+                                                  'GB'=>array(
                                                             'tax_category'=>array(),
                                                             'regions'=>array('GBIM'=>1,'EU'=>1,'NOEU'=>1)
                                                         ),
-                                                   'ESP'=>array(
+                                                   'ES'=>array(
                                                             'tax_category'=>array(),
                                                             'regions'=>array('ES'=>1,'EU'=>1,'NOEU'=>1)
                                                         ),     

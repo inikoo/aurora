@@ -45,11 +45,11 @@
  <div xid="table_type" class="table_type" style="margin:0;padding:0px;float:right;xborder:1px solid black;width:720px">
          <div  style="padding:0px;margin:0;font-size:90%;clear:both;text-align:right"   xid="transaction_chooser" >
         
-             {if $corporate_country_code=='GBR'}
+             {if $corporate_country_code=='GB'}
             <span style="margin-left:20px;" class=" table_type transaction_type state_details {if $regions_selected.GBIM}selected{/if} label_region_GBIM"  id="elements_region_GBIM" table_type="GBIM"   >GB+IM</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.EU}selected{/if} label_region_EU"  id="elements_region_EU" table_type="EU"   >EU (no GB,IM)</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.NOEU}selected{/if} label_region_NOEU"  id="elements_region_NOEU" table_type="NOEU"   >No EU</span>
-        {elseif $corporate_country_code=='ESP'}
+        {elseif $corporate_country_code=='ES'}
                     <span style="margin-left:20px;" class=" table_type transaction_type state_details {if $regions_selected.ES}selected{/if} label_region_ES"  id="elements_region_ES" table_type="ES"   >ES</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.EU}selected{/if} label_region_EU"  id="elements_region_EU" table_type="EU"   >EU (no ES)</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.NOEU}selected{/if} label_region_NOEU"  id="elements_region_NOEU" table_type="NOEU"   >No EU</span>
@@ -87,11 +87,11 @@
    
  <div xid="table_type" class="table_type" style="margin:0;padding:0px;float:right;xborder:1px solid black;width:720px">
          <div  style="padding:0px;margin:0;font-size:90%;clear:both;text-align:right"   xid="transaction_chooser" >
-          {if $corporate_country_code=='GBR'}
+          {if $corporate_country_code=='GB'}
             <span style="margin-left:20px;" class=" table_type transaction_type state_details {if $regions_selected.GBIM}selected{/if} label_region_GBIM"  id="elements_region_GBIM_bis" table_type="GBIM"   >GB+IM</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.EU}selected{/if} label_region_EU"  id="elements_region_EU_bis" table_type="EU"   >EU (no GB,IM)</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.NOEU}selected{/if} label_region_NOEU"  id="elements_region_NOEU_bis" table_type="NOEU"   >No EU</span>
-        {elseif $corporate_country_code=='ESP'}
+        {elseif $corporate_country_code=='ES'}
                     <span style="margin-left:20px;" class=" table_type transaction_type state_details {if $regions_selected.ES}selected{/if} label_region_ES"  id="elements_region_ES_bis" table_type="ES"   >ES</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.EU}selected{/if} label_region_EU"  id="elements_region_EU_bis" table_type="EU"   >EU (no ES)</span>
             <span style="margin-left:20px" class=" table_type transaction_type state_details {if $regions_selected.NOEU}selected{/if} label_region_NOEU"  id="elements_region_NOEU_bis" table_type="NOEU"   >No EU</span>
