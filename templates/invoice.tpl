@@ -37,16 +37,20 @@
   {if $invoice->get('Invoice Total Net Adjust Amount')!=0}
   <tr style="color:red"><td  class="aright" >{t}Adjust Net{/t}</td><td width=100 class="aright">{$invoice->get('Total Net Adjust Amount')}</td></tr>
   {/if}
+  
  {if $invoice->get('Invoice Shipping Net Amount')!=0}
   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$invoice->get('Shipping Net Amount')}</td></tr>	
  {/if}
-  <tr  style="border-top:1px solid #777"     ><td    class="aright" >{t}Total Net{/t}</td><td width=100 class="aright">{$invoice->get('Total Net Amount')}</td></tr>
+  <tr  style="border-top:1px solid #777;border-bottom:1px solid #777"     ><td    class="aright" >{t}Total Net{/t}</td><td width=100 class="aright">{$invoice->get('Total Net Amount')}</td></tr>
   
-  {if $invoice->get('Invoice Total Tax Adjust Amount')!=0}
+ 
+  {foreach from=$tax_data item=tax } 
+  <tr ><td  class="aright" >{t}{$tax.name}{/t}</td><td width=100 class="aright">{$tax.amount}</td></tr>
+  {/foreach}
+   {if $invoice->get('Invoice Total Tax Adjust Amount')!=0}
   <tr  style="color:red"><td  class="aright" >{t}Adjust Tax{/t}</td><td width=100 class="aright">{$invoice->get('Total Tax Adjust Amount')}</td></tr>
   {/if}
-  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Tax{/t}</td><td width=100 class="aright">{$invoice->get('Total Tax Amount')}</td></tr>
-  <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright"><b>{$invoice->get('Total Amount')}</b></td></tr>
+  <tr style="border-top:1px solid #777"><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright"><b>{$invoice->get('Total Amount')}</b></td></tr>
 
 	</table>
       </div>

@@ -265,14 +265,16 @@ function report_data($int){
 					 );
 
     
-    $sql=sprintf("select  count(DISTINCT `Invoice Customer Key`) as customers, `Invoice Category`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where `Invoice Store Key`=%d %s group by `Invoice Category`"
+    $sql=sprintf("select  count(DISTINCT `Invoice Customer Key`) as customers, `Category Label`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from  `Category Dimension` C left join `Category Bridge` CB on (C.`Category Key`=CB.`Category Key`) left join      `Invoice Dimension` I   on (CB.`Subject Key`=I.`Invoice Key`)  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where CB.`Subject`='Invoice' and  `Invoice Store Key`=%d %s group by C.`Category Key`"
 		 ,$row['Store Key'],$int[0]);
+   
+  // print $sql;
     $result2=mysql_query($sql);
     if(mysql_num_rows($result2) >1 ){
       while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	$store_data[$row['Store Key'].'.'.$row2['Invoice Category']]=array(
+	$store_data[$row['Store Key'].'.'.$row2['Category Label']]=array(
 									   'store'=>''
-									   ,'substore'=>sprintf("%s",$row2['Invoice Category'])
+									   ,'substore'=>sprintf("%s",$row2['Category Label'])
 									 ,'invoices'=>number($row2['invoices'])
 									 ,'customers'=>number($row2['customers'])
 									 ,'net'=>money($row2['net'],$row['Store Currency Code'])

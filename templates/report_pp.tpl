@@ -3,11 +3,11 @@
 {include file='reports_navigation.tpl'}
 {include file='calendar_splinter.tpl'}
 
-<h1 style="clear:left">{$root_title}</h1>
+<h1 style="clear:left">{$title}</h1>
 
 
  <div class="data_table" style="clear:both;">
-	<span id="table_title" class="clean_table_title">{t}Pickers Report{/t}</span>
+	<span id="table_title" class="clean_table_title">{t}Pickers{/t}</span>
 	<div  class="clean_table_caption"  style="clear:both;">
 	  <div style="float:left;"><div id="table_info0" class="clean_table_info"> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 
@@ -17,7 +17,7 @@
   </div>
 
 <div class="data_table" style="clear:both;">
-	<span id="table_title" class="clean_table_title">{t}Packers Report{/t}</span>
+	<span id="table_title" class="clean_table_title">{t}Packers{/t}</span>
 	<div  class="clean_table_caption"  style="clear:both;">
 	  <div style="float:left;"><div id="table_info1" class="clean_table_info"> <span class="filter_msg"  id="filter_msg1"></span></div></div>
 

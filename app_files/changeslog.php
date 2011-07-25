@@ -3218,6 +3218,26 @@ ALTER TABLE `Email Read Dimension` ADD `Scope Key` MEDIUMINT UNSIGNED NULL DEFAU
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 
 
+CREATE TABLE `List Order Bridge` (`List Key` SMALLINT( 5 ) NOT NULL ,`Order Key` MEDIUMINT( 8 ) NOT NULL) ENGINE = MYISAM;
+ALTER TABLE `Telecom Bridge` ADD `Telecom Description` VARCHAR( 256 ) NOT NULL ;
+
+ALTER TABLE `Tax Category Dimension` ADD `Tax Category Type` VARCHAR( 64 ) NOT NULL AFTER `Tax Category Key` ,ADD INDEX ( `Tax Category Type` ) ;
+ALTER TABLE `Tax Category Dimension` ADD `Composite` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Composite` ) ;
+ALTER TABLE `Tax Category Dimension` ADD `Composite Metadata` VARCHAR( 256 ) NULL DEFAULT NULL;
+ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Type` `Tax Category Type Name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+CREATE TABLE `Invoice Tax Dimension` (
+`Invoice Key` MEDIUMINT UNSIGNED NOT NULL ,
+`UNK` FLOAT NULL DEFAULT NULL ,
+INDEX ( `Invoice Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `HQ Dimension` ADD `HQ Country Code` VARCHAR( 3 ) NOT NULL AFTER `HQ Name` ;
+ALTER TABLE `HQ Dimension` ADD `HQ Country 2 Alpha Code` VARCHAR( 2 ) NOT NULL AFTER `HQ Country Code` ;
+
+
+
+
+
 */
 
 ?>
