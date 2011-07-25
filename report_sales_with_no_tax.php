@@ -131,19 +131,19 @@ $smarty->assign('title',$title);
 $smarty->assign('tipo',$tipo);
  $smarty->assign('quick_period',$quick_period);
  
-   $smarty->assign('corporate_country_code',$corporate_country_code);
-
- if(count($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_code]['tax_category'])==0){
+   $smarty->assign('corporate_country_code',$corporate_country_2alpha_code);
+$_SESSION['state']['report_sales_with_no_tax']['country']=$corporate_country_2alpha_code;
+ if(count($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'])==0){
  
  $sql=sprintf("select `Tax Category Key`,`Tax Category Code`,`Tax Category Name` from `Tax Category Dimension`");
  $res=mysql_query($sql);
  while($row=mysql_fetch_assoc($res)){
-  $_SESSION['state']['report_sales_with_no_tax'][$corporate_country_code]['tax_category'][$row['Tax Category Code']]=1;
+  $_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'][$row['Tax Category Code']]=1;
  }
  }
  
  
-  $smarty->assign('regions_selected',$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_code]['regions']);
+  $smarty->assign('regions_selected',$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions']);
 
  
  $tax_categories=array();
