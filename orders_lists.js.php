@@ -25,7 +25,7 @@ Event.addListener(window, "load", function() {
 				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
 					 ];
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
-		//alert("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
+		alert("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -81,10 +81,10 @@ Event.addListener(window, "load", function() {
                                 ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                 ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
+				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'invoice_list'}
 					 ];
 
-	    	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=invoices&tableid=1');
+	    	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices_lists&store="+Dom.get('store_id').value+'&block_view=invoices&tableid=1');
 
 	     this.dataSource1.table_id=tableid;
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -130,6 +130,9 @@ Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
+		this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+		this.table1.subscribe("cellClickEvent", onCellClick);  		
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['orders_lists']['invoices']['f_field']?>',value:'<?php echo$_SESSION['state']['orders_lists']['invoices']['f_value']?>'};
 
  var tableid=2; // Change if you have more the 1 table
@@ -139,12 +142,12 @@ Event.addListener(window, "load", function() {
                                 ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                 ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
+				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'dn_list'}
 
 
 					 ];
 
-	    	    	    this.dataSource2 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=dn&tableid=2');
+	    	    	    this.dataSource2 = new YAHOO.util.DataSource("ar_orders.php?tipo=dn_lists&store="+Dom.get('store_id').value+'&block_view=dn&tableid=2');
 
 	    this.dataSource2.table_id=tableid;
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -189,6 +192,9 @@ Event.addListener(window, "load", function() {
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
+		this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+		this.table2.subscribe("cellClickEvent", onCellClick);  
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['orders_lists']['dn']['f_field']?>',value:'<?php echo$_SESSION['state']['orders_lists']['dn']['f_value']?>'};
 
 	};
