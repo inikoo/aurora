@@ -1261,6 +1261,447 @@ function customers_awhere($awhere) {
 
 }
 
+function invoices_awhere($awhere) {
+    // $awhere=preg_replace('/\\\"/','"',$awhere);
+
+
+
+    $where_data=array(
+                    //'product_ordered1'=>'∀',
+                    'invoice_date_from'=>'',
+                    'invoice_date_to'=>'',
+                    'invoice_paid_date_from'=>'',
+                    'invoice_paid_date_to'=>'',
+                    'billing_geo_constraints'=>'',
+					'delivery_geo_constraints'=>'',
+					'total_net_amount_lower'=>'',
+					'total_net_amount_upper'=>'',
+					'total_tax_amount_lower'=>'',
+					'total_tax_amount_upper'=>'',
+					'total_profit_lower'=>'',
+					'total_profit_upper'=>'',
+					'total_amount_lower'=>'',
+					'total_amount_upper'=>'',
+					'tax_code'=>'',
+                    'paid_status'=>array(),
+                    'not_paid_status'=>array(),
+                    'total_net_amount'=>array(),
+                    'total_tax_amount'=>array(),
+					'total_profit'=>array(),
+					'total_amount'=>array(),
+					'store_key'=>false
+                );
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key=>$item) {
+        $where_data[$key]=$item;
+    }
+
+    $where='where true';
+    $table='`Invoice Dimension` I ';
+
+    $use_product=false;
+    //$use_categories =false;
+    $use_otf =false;
+
+    $where_billing_geo_constraints='';
+    if ($where_data['billing_geo_constraints']!='') {
+        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+    }
+
+	$where_delivery_geo_constraints='';
+    if ($where_data['delivery_geo_constraints']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+    }
+	
+	$where_tax_code='';
+	if ($where_data['tax_code']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Invoice Tax Code`='%s'",$where_data['tax_code']);
+    }
+	
+	
+	$date_interval_invoice_created=prepare_mysql_dates($where_data['invoice_date_from'],$where_data['invoice_date_to'],'`Invoice Date`','only_dates');
+	$date_interval_invoice_paid=prepare_mysql_dates($where_data['invoice_paid_date_from'],$where_data['invoice_paid_date_to'],'`Invoice Paid Date`','only_dates');
+
+	
+    $where='where ( true '.$date_interval_invoice_created['mysql'].$date_interval_invoice_paid['mysql'].") $where_billing_geo_constraints $where_delivery_geo_constraints $where_tax_code";
+//print $where;exit;
+
+
+    $paid_status_where='';
+   foreach($where_data['paid_status'] as $paid_status) {
+        switch ($paid_status) {
+        case 'partially':
+            $paid_status_where.=sprintf(" or `Invoice Paid`='Partially' ");
+            break;
+        case 'yes':
+            $paid_status_where.=sprintf(" or `Invoice Paid`='Yes'  ");
+            break;
+        case 'no':
+            $paid_status_where.=sprintf(" or  `Invoice Paid`='No'  ");
+            break;
+       
+        }
+        
+        
+        
+    }
+    $paid_status_where=preg_replace('/^\s*or/','',$paid_status_where);
+    if($paid_status_where!=''){
+    $where.="and ($paid_status_where)";
+    }
+
+    $not_paid_status_where='';
+   foreach($where_data['not_paid_status'] as $not_paid_status) {
+        switch ($not_paid_status) {
+        case 'partially':
+            $not_paid_status_where.=sprintf(" or `Invoice Paid`!='Partially' ");
+            break;
+        case 'yes':
+            $not_paid_status_where.=sprintf(" or `Invoice Paid`!='Yes'  ");
+            break;
+        case 'no':
+            $not_paid_status_where.=sprintf(" or  `Invoice Paid`!='No'  ");
+            break;
+        }
+        
+        
+        
+    }
+    $not_paid_status_where=preg_replace('/^\s*or/','',$not_paid_status_where);
+    if($not_paid_status_where!=''){
+    $where.="and ($not_paid_status_where)";
+    }
+
+	
+   $total_net_amount_where='';
+   foreach($where_data['total_net_amount'] as $total_net_amount) {
+        switch ($total_net_amount) {
+        case 'less':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`<'%s' ",$where_data['total_net_amount_lower']);
+            break;
+        case 'equal':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`='%s'  ",$where_data['total_net_amount_lower']);
+            break;
+        case 'more':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`>'%s'  ",$where_data['total_net_amount_upper']);
+            break;
+		case 'between':
+			$total_net_amount_where.=sprintf(" and  `Invoice Total Net Amount`>'%s'  and `Invoice Total Net Amount`<'%s'", $where_data['total_net_amount_lower'], $where_data['total_net_amount_upper']);
+			break;
+		}
+    }
+    $total_net_amount_where=preg_replace('/^\s*and/','',$total_net_amount_where);
+	
+    if($total_net_amount_where!=''){
+		$where.="and ($total_net_amount_where)";
+    }
+
+	
+   $total_tax_amount_where='';
+   foreach($where_data['total_tax_amount'] as $total_tax_amount) {
+        switch ($total_tax_amount) {
+        case 'less':
+            $total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`<'%s' ",$where_data['total_tax_amount_lower']);
+            break;
+        case 'equal':
+            $total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`='%s'  ",$where_data['total_tax_amount_lower']);
+            break;
+        case 'more':
+            $total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`>'%s'  ",$where_data['total_tax_amount_upper']);
+            break;
+		case 'between':
+			$total_tax_amount_where.=sprintf(" and  `Invoice Total Tax Amount`>'%s'  and `Invoice Total Tax Amount`<'%s'", $where_data['total_tax_amount_lower'], $where_data['total_tax_amount_upper']);
+			break;
+		}
+    }
+    $total_tax_amount_where=preg_replace('/^\s*and/','',$total_tax_amount_where);
+	
+    if($total_tax_amount_where!=''){
+		$where.="and ($total_tax_amount_where)";
+    }
+	
+   $total_profit_where='';
+   foreach($where_data['total_profit'] as $total_profit) {
+        switch ($total_profit) {
+        case 'less':
+            $total_profit_where.=sprintf(" and `Invoice Total Profit`<'%s' ",$where_data['total_profit_lower']);
+            break;
+        case 'equal':
+            $total_profit_where.=sprintf(" and `Invoice Total Profit`='%s'  ",$where_data['total_profit_lower']);
+            break;
+        case 'more':
+            $total_profit_where.=sprintf(" and `Invoice Total Profit`>'%s'  ",$where_data['total_profit_upper']);
+            break;
+		case 'between':
+			$total_profit_where.=sprintf(" and  `Invoice Total Profit`>'%s'  and `Invoice Total Profit`<'%s'", $where_data['total_profit_lower'], $where_data['total_profit_upper']);
+			break;
+		}
+    }
+    $total_profit_where=preg_replace('/^\s*and/','',$total_profit_where);
+	
+    if($total_profit_where!=''){
+		$where.="and ($total_profit_where)";
+    }
+
+   $total_amount_where='';
+   foreach($where_data['total_amount'] as $total_amount) {
+        switch ($total_amount) {
+        case 'less':
+            $total_amount_where.=sprintf(" and `Invoice Total Amount`<'%s' ",$where_data['total_amount_lower']);
+            break;
+        case 'equal':
+            $total_amount_where.=sprintf(" and `Invoice Total Amount`='%s'  ",$where_data['total_amount_lower']);
+            break;
+        case 'more':
+            $total_amount_where.=sprintf(" and `Invoice Total Amount`>'%s'  ",$where_data['total_amount_upper']);
+            break;
+		case 'between':
+			$total_amount_where.=sprintf(" and  `Invoice Total Amount`>'%s'  and `Invoice Total Amount`<'%s'", $where_data['total_amount_lower'], $where_data['total_amount_upper']);
+			break;
+		}
+    }
+    $total_amount_where=preg_replace('/^\s*and/','',$total_amount_where);
+	
+    if($total_amount_where!=''){
+		$where.="and ($total_amount_where)";
+    }
+	
+	//print $table. $where; exit;
+    return array($where,$table);
+	
+
+}
+
+
+
+function dn_awhere($awhere){
+
+
+    $where_data=array(
+                    //'product_ordered1'=>'∀',
+					'weight'=>array(),
+					'state'=>array(),
+					'note_type'=>array(),
+					'dispatch_method'=>array(),
+					'parcel_type'=>array(),
+					'created_date_from'=>'',
+					'created_date_to'=>'',
+					'start_picking_date_from'=>'',
+					'start_picking_date_to'=>'',
+					'finish_picking_date_from'=>'',
+					'finish_picking_date_to'=>'',
+					'start_packing_date_from'=>'',
+					'start_packing_date_to'=>'',
+					'finish_packing_date_from'=>'',
+					'finish_packing_date_to'=>'',
+					'dispatched_approved_date_from'=>'',
+					'dispatched_approved_date_to'=>'',
+					'delivery_note_date_from'=>'',
+					'delivery_note_date_to'=>'',
+					'billing_geo_constraints'=>'',
+					'weight_lower'=>'',
+					'weight_upper'=>''
+                );
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key=>$item) {
+        $where_data[$key]=$item;
+    }
+
+
+    $where='where true';
+    $table='`Delivery Note Dimension` D ';
+
+    $use_product=false;
+    //$use_categories =false;
+    $use_otf =false;
+
+
+
+	
+	$weight_where='';
+    foreach($where_data['weight'] as $weight) {
+        switch ($weight) {
+        case 'less':
+            $weight_where.=sprintf(" and `Delivery Note Weight`<'%s' ",$where_data['weight_lower']);
+            break;
+        case 'equal':
+            $weight_where.=sprintf(" and `Delivery Note Weight`='%s'  ",$where_data['weight_lower']);
+            break;
+        case 'more':
+            $weight_where.=sprintf(" and `Delivery Note Weight`>'%s'  ",$where_data['weight_upper']);
+            break;
+		case 'between':
+			$weight_where.=sprintf(" and  `Delivery Note Weight`>'%s'  and `Delivery Note Weight`<'%s'", $where_data['weight_lower'], $where_data['weight_upper']);
+			break;
+		}
+    }
+    $weight_where=preg_replace('/^\s*and/','',$weight_where);
+	
+    if($weight_where!=''){
+		$where.=" and ($weight_where)";
+    }
+	
+	$state_where='';
+    foreach($where_data['state'] as $state) {
+        switch ($state) {
+        case 'picking_and_packing':
+            $state_where.=sprintf(" or `Delivery Note State`='Picking & Packing' ");
+            break;
+        case 'packer_assigned':
+            $state_where.=sprintf(" or `Delivery Note State`='Packer Assigned'  ");
+            break;
+        case 'ready_to_be_picked':
+            $state_where.=sprintf(" or  `Delivery Note State`='Ready to be Picked'  ");
+            break;
+		case 'picker_assigned':
+            $state_where.=sprintf(" or  `Delivery Note State`='Picker Assigned'  ");
+            break;
+		case 'picking':
+            $state_where.=sprintf(" or  `Delivery Note State`='Picking' ");
+            break;
+		case 'picked':
+            $state_where.=sprintf(" or  `Delivery Note State`='Picked'  ");
+            break;
+		case 'packing':
+            $state_where.=sprintf(" or  `Delivery Note State`='Packing'  ");
+            break;
+		case 'packed':
+            $state_where.=sprintf(" or  `Delivery Note State`='Packed'  ");
+            break;
+		case 'approved':
+            $state_where.=sprintf(" or  `Delivery Note State`='Approved'  ");
+            break;
+		case 'dispatched':
+            $state_where.=sprintf(" or  `Delivery Note State`='Dispatched'  ");
+            break;
+		case 'cancelled':
+            $state_where.=sprintf(" or  `Delivery Note State`='Cancelled'  ");
+            break;
+		case 'cancelled_to_restock':
+            $state_where.=sprintf(" or  `Delivery Note State`='Cancelled to Restock'  ");
+            break;
+       
+        }
+    }
+    $state_where=preg_replace('/^\s*or/','',$state_where);
+    if($state_where!=''){
+    $where.=" and ($state_where)";
+    }
+	
+	$note_type_where='';
+    foreach($where_data['note_type'] as $note_type) {
+        switch ($note_type) {
+        case 'replacement_and_shortages':
+            $note_type_where.=sprintf(" or `Delivery Note Type`='Replacement & Shortages' ");
+            break;
+        case 'order':
+            $note_type_where.=sprintf(" or `Delivery Note Type`='Order'  ");
+            break;
+        case 'replacement':
+            $note_type_where.=sprintf(" or  `Delivery Note Type`='Replacement'  ");
+            break;
+		case 'shortages':
+            $note_type_where.=sprintf(" or  `Delivery Note Type`='Shortages'  ");
+            break;
+		case 'sample':
+            $note_type_where.=sprintf(" or  `Delivery Note Type`='Sample' ");
+            break;
+		case 'donation':
+            $note_type_where.=sprintf(" or  `Delivery Note Type`='Donation'  ");
+            break;
+	
+        }
+    }
+    $note_type_where=preg_replace('/^\s*or/','',$note_type_where);
+    if($note_type_where!=''){
+    $where.=" and ($note_type_where)";
+    }	
+	
+	
+	
+	$dispatch_method_where='';
+    foreach($where_data['dispatch_method'] as $dispatch_method) {
+        switch ($dispatch_method) {
+        case 'dispatch':
+            $dispatch_method_where.=sprintf(" or `Delivery Note Dispatch Method`='Dispatch' ");
+            break;
+        case 'collection':
+            $dispatch_method_where.=sprintf(" or `Delivery Note Dispatch Method`='Collection'  ");
+            break;
+        case 'unknown':
+            $dispatch_method_where.=sprintf(" or  `Delivery Note Dispatch Method`='Unknown'  ");
+            break;
+		case 'na':
+            $dispatch_method_where.=sprintf(" or  `Delivery Note Dispatch Method`='NA'  ");
+            break;
+	
+        }
+    }
+    $dispatch_method_where=preg_replace('/^\s*or/','',$dispatch_method_where);
+    if($dispatch_method_where!=''){
+    $where.=" and ($dispatch_method_where)";
+    }	
+	
+	
+	
+	$parcel_type_where='';
+    foreach($where_data['parcel_type'] as $parcel_type) {
+        switch ($parcel_type) {
+        case 'box':
+            $parcel_type_where.=sprintf(" or `Delivery Note Parcel Type`='Box' ");
+            break;
+        case 'pallet':
+            $parcel_type_where.=sprintf(" or `Delivery Note Parcel Type`='Pallet'  ");
+            break;
+        case 'envelope':
+            $parcel_type_where.=sprintf(" or  `Delivery Note Parcel Type`='Envelope'  ");
+            break;
+
+        }
+    }
+    $parcel_type_where=preg_replace('/^\s*or/','',$parcel_type_where);
+    if($parcel_type_where!=''){
+    $where.=" and ($parcel_type_where)";
+    }	
+
+				
+	$date_interval_created=prepare_mysql_dates($where_data['created_date_from'],$where_data['created_date_to'],'`Delivery Note Date Created`','only_dates');
+	$date_interval_start_picking=prepare_mysql_dates($where_data['start_picking_date_from'],$where_data['start_picking_date_to'],'`Delivery Note Date Start Picking`','only_dates');
+	$date_interval_finish_picking=prepare_mysql_dates($where_data['finish_picking_date_from'],$where_data['finish_picking_date_to'],'`Delivery Note Date Finish Picking`','only_dates');
+	$date_interval_start_packing=prepare_mysql_dates($where_data['start_packing_date_from'],$where_data['start_packing_date_to'],'`Delivery Note Date Start Packing`','only_dates');
+	$date_interval_finish_packing=prepare_mysql_dates($where_data['finish_packing_date_from'],$where_data['finish_packing_date_to'],'`Delivery Note Date Finish Packing`','only_dates');
+	$date_interval_dispatched_approved=prepare_mysql_dates($where_data['dispatched_approved_date_from'],$where_data['dispatched_approved_date_to'],'`Delivery Note Date Dispatched Approved`','only_dates');
+	$date_interval_delivery_note=prepare_mysql_dates($where_data['delivery_note_date_from'],$where_data['delivery_note_date_to'],'`Delivery Note Date`','only_dates');
+
+	
+	
+	$where.=$date_interval_created['mysql'].$date_interval_start_picking['mysql'].$date_interval_finish_picking['mysql'].$date_interval_start_packing['mysql'].$date_interval_finish_packing['mysql'].$date_interval_dispatched_approved['mysql'].$date_interval_delivery_note['mysql'];
+	
+	
+	
+/*
+    $where_billing_geo_constraints='';
+    if ($where_data['billing_geo_constraints']!='') {
+        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+    }
+
+	$where_delivery_geo_constraints='';
+    if ($where_data['delivery_geo_constraints']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+    }
+*/		
+	
+
+	//print $table. $where; exit;
+
+    return array($where,$table);
+}
 
 function orders_awhere($awhere) {
     // $awhere=preg_replace('/\\\"/','"',$awhere);

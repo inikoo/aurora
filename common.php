@@ -194,6 +194,8 @@ if ($user->data['User Type']=='Supplier') {
  
  
 $sql=sprintf("select `HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
+//print $sql;
+
 $res=mysql_query($sql);
 
 if ($row=mysql_fetch_array($res)) {

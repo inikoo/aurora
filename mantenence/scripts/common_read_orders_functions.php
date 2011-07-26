@@ -736,10 +736,7 @@ function send_order($data,$data_dn_transactions) {
             }
 
 
-
-
-            $invoice->update(array
-                             (
+$_invoice_data=  array(
                                  'Invoice Metadata'=>$store_code.$order_data_id,
                                  'Invoice Shipping Net Amount'=>array(
                                                                    'Amount'=>$shipping_net,
@@ -751,7 +748,9 @@ function send_order($data,$data_dn_transactions) {
                                                               )
 
 
-                             ));
+                             );
+
+            $invoice->update($_invoice_data);
 
 
 
@@ -1299,12 +1298,22 @@ function ci_get_tax_code($header_data) {
 
 //print_r($header_data);
 
-    $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04,'EX'=>0,"S4"=>.18,"S5"=>.22);
-    $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX"=>"Not Tax","S4"=>'IVA',"S5"=>"IVA+I");
+ $tax_rates=array();
+    $tax_names=array();
+$sql=sprintf("select * from `Tax Category Dimension` ");
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+ $tax_rates[$row['Tax Category Code']]=$row['Tax Category Rate'];
+    $tax_names[$row['Tax Category Code']]=$row['Tax Category Name'];
+}
 
+  
     $tax_code='UNK';
-    $tax_description='No Tax';
+    $tax_description='Unknown';
     $tax_rate=0;
+    
+    
+    
     if ($header_data['total_net']==0) {
         $tax_code='EX';
         $tax_description='';
@@ -1317,11 +1326,11 @@ function ci_get_tax_code($header_data) {
     else {
         $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
         foreach($tax_rates as $_tax_code=>$_tax_rate) {
-            // print "$_tax_code => $_tax_rate $tax_rate\n ";
-            $upper=1.1*$_tax_rate;
-            $lower=0.9*$_tax_rate;
+            ///print "$_tax_code => $_tax_rate --->$tax_rate\n ";
+            $upper=1.02*$_tax_rate;
+            $lower=0.98*$_tax_rate;
             
-           // print " $_tax_rate  $lower $tax_rate $upper\n";
+            //print " $_tax_rate  low($lower) $tax_rate up($upper)\n";
             if ($tax_rate>=$lower and $tax_rate<=$upper) {
                 $tax_code=$_tax_code;
                 $tax_description=$tax_names[$tax_code];
@@ -1338,7 +1347,7 @@ function ci_get_tax_code($header_data) {
            );
 
 
- // print_r($data);
+// print_r($data);
 
     return $data;
 
@@ -1347,10 +1356,17 @@ function ci_get_tax_code($header_data) {
 }
 
 function uk_get_tax_code($header_data) {
-    $tax_rates=array("S1"=>.175,"S2"=>.20,"S3"=>.15,'EX'=>0);
-    $tax_names=array("S1"=>"VAT 17.5%","S2"=>"VAT 20%","S3"=>"VAT 15%","EX"=>"Not Tax");
+ 
+ $tax_rates=array();
+    $tax_names=array();
+$sql=sprintf("select * from `Tax Category Dimension` ");
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+ $tax_rates[$row['Tax Category Code']]=$row['Tax Category Rate'];
+    $tax_names[$row['Tax Category Code']]=$row['Tax Category Name'];
+}
 
-    $tax_code='UNK';
+     $tax_code='UNK';
     $tax_description='No Tax';
     $tax_rate=0;
     if ($header_data['total_net']==0) {
@@ -1368,8 +1384,8 @@ function uk_get_tax_code($header_data) {
         $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
         foreach($tax_rates as $_tax_code=>$_tax_rate) {
             // print "$_tax_code => $_tax_rate $tax_rate\n ";
-            $upper=1.1*$_tax_rate;
-            $lower=0.9*$_tax_rate;
+            $upper=1.02*$_tax_rate;
+            $lower=0.98*$_tax_rate;
             if ($tax_rate>=$lower and $tax_rate<=$upper) {
                 $tax_code=$_tax_code;
                 $tax_description=$tax_names[$tax_code];
