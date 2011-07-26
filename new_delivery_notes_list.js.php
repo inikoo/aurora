@@ -41,7 +41,7 @@ function save_search_list(){
 	
 	var awhere=get_awhere();
 	
-	var request="ar_edit_orders.php?tipo=new__invoice_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
+	var request="ar_edit_orders.php?tipo=new_dn_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
 	//alert(request);return;
 	
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
