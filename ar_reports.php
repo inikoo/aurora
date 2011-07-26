@@ -19,16 +19,16 @@ switch ($tipo) {
 case('tax_overview'):
 
 
-switch($corporate_country_code){
-case'GBR':
-case'ESP':
-    tax_overview_europe($corporate_country_code);
+switch($corporate_country_2alpha_code){
+case'GB':
+case'ES':
+    tax_overview_europe($corporate_country_2alpha_code);
     break;
 DEFAULT:
-tax_overview($corporate_country_code);
+tax_overview($corporate_country_2alpha_code);
 break;
 }
-
+break;
 case('store_sales'):
     list_store_sales();
     break;
@@ -74,7 +74,18 @@ case('customers_with_no_tax'):
     if (!$user->can_view('orders'))
         exit("E");
 
-    list_customers_with_no_tax();
+switch($corporate_country_2alpha_code){
+case'GB':
+case'ES':
+    list_customers_by_tax_europe($corporate_country_2alpha_code);
+    break;
+DEFAULT:
+list_customers_by_tax($corporate_country_2alpha_code);
+break;
+}
+
+
+   
 
     break;
 case('pickers_report'):
@@ -2007,7 +2018,7 @@ if(count($tax_categories)==0){
     echo json_encode($response);
 }
 
-function tax_overview_europe($country_code,$country) {
+function tax_overview_europe($country) {
 
 
     $conf=$_SESSION['state']['report_sales_with_no_tax']['overview'];
@@ -2171,7 +2182,7 @@ function tax_overview_europe($country_code,$country) {
    if($country=='GB'){
     $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
     }else{
-     $where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code``!=%s',prepare_mysql($country));
+     $where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
     }
 
 
@@ -2200,7 +2211,7 @@ function tax_overview_europe($country_code,$country) {
    $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
 
     }else{
-     $where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code``!=%s',prepare_mysql($country));
+     $where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
     }
 
 
@@ -2260,9 +2271,9 @@ function tax_overview_europe($country_code,$country) {
 
 
 
-function list_customers_with_no_tax() {
+function list_customers_by_tax_europe($country) {
 
-
+global $corporate_currency;
     $conf=$_SESSION['state']['report_sales_with_no_tax']['customers'];
 
 
@@ -2330,19 +2341,21 @@ function list_customers_with_no_tax() {
 
     }
 
-$country='GBR';
+
 
 
     $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-    if (isset( $_REQUEST['elements_region_GBIM'])){
-        $elements_region['GBIM']=$_REQUEST['elements_region_GBIM'];
+//print_r($elements_region);
+foreach($elements_region as $element_region=>$value){
+
+
+ if (isset( $_REQUEST['elements_region_'.$element_region])){
+        $elements_region[$element_region]=$_REQUEST['elements_region_'.$element_region];
     }
-    if (isset( $_REQUEST['elements_region_EU'])){
-        $elements_region['EU']=$_REQUEST['elements_region_EU'];
-        }
-    if (isset( $_REQUEST['elements_region_NOEU'])){
-        $elements_region['NOEU']=$_REQUEST['elements_region_NOEU'];
-  }
+
+}
+
+  
   $_SESSION['state']['report_sales_with_no_tax'][$country]['regions']=$elements_region;
 
 
@@ -2424,6 +2437,8 @@ if(count($tax_categories)==0){
 
 
     $where_elements_region='';
+  
+  if($country=='GB'){
     if($elements_region['GBIM']){
        $where_elements_region.=' or `Invoice Billing Country 2 Alpha Code` in ("GB","IM")  ';
     }
@@ -2433,6 +2448,22 @@ if(count($tax_categories)==0){
     if($elements_region['NOEU']){
        $where_elements_region.=' or (`Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No")  ';
     }
+  }else{
+  
+     if($elements_region[$country]){
+       $where_elements_region.=sprintf(' or `Invoice Billing Country 2 Alpha Code` =%s  ',prepare_mysql($country));
+    }
+    if($elements_region['EU']){
+       $where_elements_region.=sprintf(' or ( `Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="Yes" ) ',prepare_mysql($country));
+    }
+    if($elements_region['NOEU']){
+       $where_elements_region.=sprintf(' or (`Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="No")  ',prepare_mysql($country));
+    }
+  
+  }  
+    
+  
+  
   $where_elements_region=preg_replace('/^\s*or\s*/','',$where_elements_region);
   if( $where_elements_region=='')
     $where_elements_region=' false ';
@@ -2462,7 +2493,7 @@ if(count($tax_categories)==0){
 
 
     $sql="select  count(Distinct `Invoice Customer Key`) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref  ";
-   // print $sql ;
+  // print $sql ;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -2550,17 +2581,10 @@ if(count($tax_categories)==0){
     else
         $order='`Customer Name`';
 
-    $corporate_currency='GBP';
-    $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $corporate_currency=$row['HQ Currency'];
-    }
+ 
 
 
-
-
-    $sql="select sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq, sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq, sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
 //print $sql;
 
     $data=array();

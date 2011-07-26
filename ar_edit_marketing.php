@@ -147,7 +147,7 @@ function add_emails_to_email_campaign_from_list($data) {
                          'number_recipients'=>$email_campaign->data['Number of Emails'],
                          'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],
                          'msg'=>$email_campaign->msg,
-                          'ready_to_send'=>$email_campaign->ready_to_send();
+                          'ready_to_send'=>$email_campaign->ready_to_send()
                         );
     } else {
         $response= array('state'=>400,'msg'=>$email_campaign->msg);
@@ -186,7 +186,7 @@ function add_email_address_manually($data) {
                          'action'=>'created',
                          'number_recipients'=>$email_campaign->data['Number of Emails'],
                          'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],
-                         'ready_to_send'=>$email_campaign->ready_to_send();
+                         'ready_to_send'=>$email_campaign->ready_to_send()
                         );
     } else {
         $response= array('state'=>400,'msg'=>$email_campaign->msg);
