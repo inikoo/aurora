@@ -49,9 +49,18 @@ $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 $modify=$user->can_edit('customers');
 
+if(preg_match('/es_es/i',  $lc_messages_locale)){
 
-$overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base."
-			 ,$store->get('Contacts')
+$overview_text=sprintf("Tenemos %s contactos de los cuales %s son contactos activos. La semana pasada adquirimos %s nuevos clientes. Ellos representan un %s de todos los contactos activos."
+ ,$store->get('Contacts')
+			 ,$store->get('Active Contacts')
+			 ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
+			  ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
+);
+}else{
+
+$overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base.",
+			 $store->get('Contacts')
 			 ,$store->get('Active Contacts')
 			 ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
 
@@ -60,7 +69,13 @@ $overview_text=sprintf("We have had %s  contacts so far, %s of them still active
 		       ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
 		       )
 ;
+}
+
  $smarty->assign('overview_text',$overview_text);
+ 
+ 
+ 
+
 
 
 

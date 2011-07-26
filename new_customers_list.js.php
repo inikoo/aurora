@@ -82,58 +82,57 @@ function show_dont_have(){
 Dom.setStyle('show_dont_have','display','none')
 Dom.setStyle('tr_dont_have','display','')
 }    
-    
-    
+ 
+function show_lost_customer(){
+Dom.setStyle('lost_customer_title','display','')
+Dom.setStyle('lost_customer','display','')
+}   
+ 
+function hide_lost_customer(){
+Dom.setStyle('lost_customer_title','display','none')
+Dom.setStyle('lost_customer','display','none')
+Dom.get('v_calpop5').value=''
+Dom.get('v_calpop6').value=''
+
+
+}   
+ 
+
+function set_values(){
+	v_calpop==Dom.getElementsByClassName('v_calpop');
+	for(x in v_calpop){
+		alert(v_calpop);
+	}
+} 
+ 
 function checkbox_changed_allow(o){
 
-cat=Dom.get(o).getAttribute('cat');
+	cat=Dom.get(o).getAttribute('cat');
 
-if(cat=='all'){
-
-if(    Dom.hasClass(o,'selected')){
-return;
-}else{
-Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'),'selected');
-Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'),'selected');
-Dom.addClass(o,'selected');
-
-}
-
-
-
-}else{
-Dom.removeClass('allow_all','selected');
-
-
-
-cat=Dom.get(o).getAttribute('cat');
-this_parent=Dom.get(o).getAttribute('parent');
-if(this_parent=='allow_'){
-    other_parent='dont_allow_';
-}else{
-    other_parent='allow_';
-}    
-if(    Dom.hasClass(o,'selected')){
-    Dom.removeClass(o,'selected');
-}else{
-    Dom.addClass(o,'selected');
-    Dom.removeClass(other_parent+cat,'selected');
-}
-
-
-
-
-//if(Dom.hasClass(o,'selected')){
-//    Dom.removeClass(o,'selected');
-//}else{
-//    Dom.addClass(o,'selected');
-//}
-
-
-
-
-}
-
+	if(cat=='all'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else{
+		Dom.removeClass('allow_all','selected');
+		cat=Dom.get(o).getAttribute('cat');
+		this_parent=Dom.get(o).getAttribute('parent');
+		if(this_parent=='allow_'){
+			other_parent='dont_allow_';
+		}else{
+			other_parent='allow_';
+		}    
+		if(Dom.hasClass(o,'selected')){
+			Dom.removeClass(o,'selected');
+		}else{
+			Dom.addClass(o,'selected');
+			Dom.removeClass(other_parent+cat,'selected');
+		}
+	}
 }
  
 function checkbox_changed_have(o){
@@ -155,8 +154,133 @@ if(    Dom.hasClass(o,'selected')){
 
 
 }
+
+ function checkbox_changed_customers_which(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='lost'){
+		show_lost_customer();
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'customers_which_options'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else{
+		hide_lost_customer();
+		Dom.removeClass('customers_which_lost','selected');
+		cat=Dom.get(o).getAttribute('cat');
+		this_parent=Dom.get(o).getAttribute('parent');
+		if(this_parent=='customers_which_'){
+			other_parent='not_customers_which_';
+		}else{
+			other_parent='customers_which_';
+		}    
+		if(Dom.hasClass(o,'selected')){
+			Dom.removeClass(o,'selected');
+		}else{
+			Dom.addClass(o,'selected');
+			Dom.removeClass(other_parent+cat,'selected');
+		}
+	}
+}
  
- 
+function hide_invoice(){
+		Dom.setStyle('number_of_invoices_upper','display','none')
+		Dom.setStyle('a','display','none')
+		Dom.get('number_of_invoices_upper').value=''
+}
+
+function hide_sales(){
+		Dom.setStyle('sales_upper','display','none')
+		Dom.setStyle('b','display','none')
+		Dom.get('sales_upper').value=''
+}
+
+function checkbox_changed_invoice_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('number_of_invoices_upper','display','')
+		Dom.setStyle('a','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+}
+
+
+
+function checkbox_changed_sales_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='sales_less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_sales();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='sales_equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_sales();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='sales_more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_sales();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='sales_between'){
+		Dom.setStyle('sales_upper','display','')
+		Dom.setStyle('b','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+}
+
+
 function select_country(oArgs){
     var geo_constraints=Dom.get('geo_constraints').value;
     if(geo_constraints!=''){geo_constraints=geo_constraints+','}
@@ -263,7 +387,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
+					    var awhere=get_awhere();
+	
+	store_id=Dom.get('store_id').value;
+    //var request='&sf=0&store_id='+store_id+'&where=' +awhere;
+					 
+					 
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&sf=0&store_id="+store_id+'&where=' +awhere);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.table_id=tableid;
 
@@ -877,11 +1007,41 @@ dont_allow=Dom.getElementsByClassName('selected', 'span', 'dont_allow_options');
     for(x in dont_allow){
         dont_allow_array[x]=dont_allow[x].getAttribute('cat');
     }
+/*
+not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customers_which_options');
+    not_customers_which_array= new Array();
+    for(x in not_customers_which){
+        not_customers_which_array[x]=not_customers_which[x].getAttribute('cat');
+    }
+	*/
+	customers_which=Dom.getElementsByClassName('selected', 'span', 'customers_which_options');
+    customers_which_array= new Array();
+    for(x in customers_which){
+        customers_which_array[x]=customers_which[x].getAttribute('cat');
+    }
+	
+	invoice_option=Dom.getElementsByClassName('selected', 'span', 'invoice_condition_option');
+    invoice_condition_option_array= new Array();
+    for(x in invoice_option){
+        invoice_condition_option_array[x]=invoice_option[x].getAttribute('cat');
+    }
+	
+	sales_option=Dom.getElementsByClassName('selected', 'span', 'sales_option');
+    sales_option_array= new Array();
+    for(x in sales_option){
+        sales_option_array[x]=sales_option[x].getAttribute('cat');
+    }
+	
+
     var data={ 
     dont_have:dont_have_array,
     have:have_array,
     allow:allow_array,
-      dont_allow:dont_allow_array,
+    dont_allow:dont_allow_array,
+	customers_which:customers_which_array,
+	invoice_option:invoice_condition_option_array,
+	sales_option:sales_option_array,
+	//not_customers_which:not_customers_which_array,
 	geo_constraints:Dom.get('geo_constraints').value,
 
 	product_ordered1:Dom.get('product_ordered_or').value,
@@ -892,8 +1052,14 @@ dont_allow=Dom.getElementsByClassName('selected', 'span', 'dont_allow_options');
 	//	product_not_received2: Dom.get('product_not_received2').value,
 	ordered_from:Dom.get('v_calpop1').value,
 	ordered_to:Dom.get('v_calpop2').value,
-customer_created_from:Dom.get('v_calpop3').value,
+	customer_created_from:Dom.get('v_calpop3').value,
 	customer_created_to:Dom.get('v_calpop4').value,
+	lost_customer_from:Dom.get('v_calpop5').value,
+	lost_customer_to:Dom.get('v_calpop6').value,
+	number_of_invoices_upper:Dom.get('number_of_invoices_upper').value,
+	number_of_invoices_lower:Dom.get('number_of_invoices_lower').value,
+	sales_lower:Dom.get('sales_lower').value,
+	sales_upper:Dom.get('sales_upper').value
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -912,7 +1078,7 @@ searched=true;
 
   
    var awhere=get_awhere();
-
+	//alert(awhere);
 	//alert(jsonStr);
     var table=tables.table0;
     var datasource=tables.dataSource0;
@@ -1075,8 +1241,19 @@ cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to","customer_first_c
  cal4.update();
 cal4.selectEvent.subscribe(handleSelect, cal4, true); 
 
+cal5 = new YAHOO.widget.Calendar("lost_customer_from","lost_customer_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+ cal5.update=updateCal;
+ cal5.id='5';
+ cal5.render();
+ cal5.update();
+cal5.selectEvent.subscribe(handleSelect, cal5, true); 
 
-
+cal6 = new YAHOO.widget.Calendar("lost_customer_to","lost_customer_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
+ cal6.update=updateCal;
+ cal6.id='6';
+ cal6.render();
+ cal6.update();
+cal6.selectEvent.subscribe(handleSelect, cal6, true); 
 
 
 //cal2.cfg.setProperty("iframe", true);
@@ -1088,7 +1265,17 @@ YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1
 YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
 YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
 YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
+YAHOO.util.Event.addListener("lost_customer_from", "click", cal5.show, cal5, true);
+YAHOO.util.Event.addListener("lost_customer_to", "click", cal6.show, cal6, true);
 
+if(Dom.get('auto').value=='1'){
+	Dom.setStyle('save_dialog','visibility','visible');
+	Dom.setStyle('save_list','display','');
+	Dom.setStyle('modify_search','display','');
+	Dom.setStyle('submit_search','display','none');
+}
+
+set_values();
 }
 
 YAHOO.util.Event.onDOMReady(init);

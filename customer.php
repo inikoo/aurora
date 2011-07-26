@@ -107,7 +107,7 @@ $js_files=array(
              
              
                'upload_common.js.php',
-                'customer.js.php',
+                'customer.js.php?customer_key='.$customer->id,
           );
           
           
@@ -306,12 +306,13 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
-$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0);
+$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
 $sql=sprintf("select count(*) as num , `Type` from  `Customer History Bridge` where `Customer Key`=%d group by `Type`",$customer->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $elements_number[$row['Type']]=$row['num'];
 }
+
 
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);

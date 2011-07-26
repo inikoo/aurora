@@ -10,7 +10,7 @@ var dialog_new_sticky_note;
 var dialog_sticky_note;
 var dialog_export;
 var dialog_link;
-var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
+var customer_key=<?php echo $_REQUEST['customer_key']  ?>;
 var dialog_edit_note;
 
 var onCellClick = function(oArgs) {
@@ -132,7 +132,7 @@ scope:this
 
 function make_order(){
 
-    var customer_id=Dom.get('make_order_customer_id').value;
+  
     
     var data={
 	'courier':Dom.get('make_order_courier').value,
@@ -151,7 +151,7 @@ function make_order(){
 
 //alert('customer_csv.php?id='+customer_id+'&data='+json_value);
   //return;
-	  window.open('customer_csv.php?id='+customer_id+'&data='+json_value,'Download');
+	  window.open('customer_csv.php?id='+customer_key+'&data='+json_value,'Download');
     close_dialog('make_order');
 
 }
@@ -217,7 +217,7 @@ function save(tipo){
                     'GET',
                 ar_file+'?tipo=customer_edit_note&customer_key='+customer_key+'&note_key='+Dom.get('edit_note_history_key').value+'&note='+my_encodeURIComponent(Dom.get('edit_note_input').value)+'&date='+Dom.get('edit_note_date').getAttribute('value')+'&record_index='+Dom.get('record_index').value, {
                 success: function (o) {
-              //  alert(o.responseText)
+               // alert(o.responseText)
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                           
                           if(r.state==200){
@@ -518,7 +518,7 @@ Event.addListener(window, "load", function() {
 
 					   ];
 		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&sf=0&tid="+tableid);
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&customer_key="+customer_key+"&sf=0&tid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -603,7 +603,7 @@ Event.addListener(window, "load", function() {
 
 					   ];
 		
-		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispatched_to_customer&tid="+tableid);
+		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispatched_to_customer&customer_key="+customer_key+"&tid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.table_id=tableid;
@@ -671,7 +671,7 @@ Event.addListener(window, "load", function() {
 					
 					 ];
 		
-		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&tid="+tableid);
+		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&tid="+tableid);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.table_id=tableid;
@@ -732,7 +732,7 @@ Event.addListener(window, "load", function() {
 
 
 function take_order(){
-    location.href='order.php?new=1&customer_key=<?php echo $_SESSION['state']['customer']['id']?>'; 
+    location.href='order.php?new=1&customer_key='+customer_key; 
 
 
 }
@@ -758,7 +758,7 @@ var oMenu;
 
 function change_elements(){
 
-ids=['elements_changes','elements_orders','elements_notes','elements_attachments'];
+ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'];
 
 
 if(Dom.hasClass(this,'selected')){
@@ -801,7 +801,7 @@ request=request+'&'+ids[i]+'=0'
 
 function init(){
 
-Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments'], "click",change_elements);
+Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'], "click",change_elements);
 
 
   init_search('customers_store');

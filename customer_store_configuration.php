@@ -23,6 +23,7 @@ if(!$modify or!$create){
 
 
 
+
 $store_key=$_SESSION['state']['customers']['store'];
 $smarty->assign('store_key',$store_key);
 $store=new Store($store_key);

@@ -962,8 +962,18 @@ function customers_awhere($awhere) {
                     'have'=>array(),
                     'allow'=>array(),
                     'dont_allow'=>array(),
+					'customers_which'=>array(),
+					'not_customers_which'=>array(),
                     'categories'=>'',
-                   'store_key'=>false
+					'lost_customer_from'=>'',
+					'lost_customer_to'=>'',
+					'invoice_option'=>array(),
+					'number_of_invoices_upper'=>'',
+					'number_of_invoices_lower'=>'',
+					'sales_lower'=>'',
+					'sales_upper'=>'',
+					'sales_option'=>array(),
+					'store_key'=>false
                 );
 
     //  $awhere=json_decode($awhere,TRUE);
@@ -1019,6 +1029,7 @@ function customers_awhere($awhere) {
     } else {
         $where_product_ordered1='false';
     }
+
 /*
     if ($where_data['product_not_ordered1']!='') {
         if ($where_data['product_not_ordered1']!='ALL') {
@@ -1051,7 +1062,11 @@ function customers_awhere($awhere) {
 
     }
 
+	$date_interval_lost_customer=prepare_mysql_dates($where_data['lost_customer_from'],$where_data['lost_customer_to'],'`Customer Lost Date`','only_dates');
 
+	if($where_data['sales_lower']!='')
+		$use_otf=true;
+		
     if ($use_otf) {
         $table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
     }
@@ -1070,7 +1085,7 @@ function customers_awhere($awhere) {
 
 
 
-    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].") $where_categories $where_geo_constraints";
+    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints";
 
     foreach($where_data['dont_have'] as $dont_have) {
         switch ($dont_have) {
@@ -1151,10 +1166,609 @@ function customers_awhere($awhere) {
     }
 
 
+	$customers_which_where='';
+   foreach($where_data['customers_which'] as $customers_which) {
+        switch ($customers_which) {
+        case 'active':
+            $customers_which_where.=sprintf(" or `Customer Active`='Yes' ");
+            break;
+        case 'losing':
+            $customers_which_where.=sprintf(" or `Customer Type by Activity`='Losing'  ");
+            break;
+        case 'lost':
+            $customers_which_where.=sprintf(" or `Customer Active`='No'  ");
+            break;
+        }            
+    }
+    $customers_which_where=preg_replace('/^\s*or/','',$customers_which_where);
+    if($customers_which_where!=''){
+    $where.="and ($customers_which_where)";
+    }
+	
+	$invoice_option_where='';
+   foreach($where_data['invoice_option'] as $invoice_option) {
+        switch ($invoice_option) {
+        case 'less':
+            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`<'%d' ",$where_data['number_of_invoices_lower']);
+            break;
+        case 'equal':
+            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`='%d'  ",$where_data['number_of_invoices_lower']);
+            break;
+        case 'more':
+            $invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  ",$where_data['number_of_invoices_lower']);
+            break;
+        
+		case 'between':
+			$invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  and `Customer Has More Invoices Than`<'%d'", $where_data['number_of_invoices_lower'], $where_data['number_of_invoices_upper']);
+			break;
+		}
+    }
+    $invoice_option_where=preg_replace('/^\s*and/','',$invoice_option_where);
+	
+    if($invoice_option_where!=''){
+    $where.="and ($invoice_option_where)";
+    }
+	
+	$sales_option_where='';
+   foreach($where_data['sales_option'] as $sales_option) {
+        switch ($sales_option) {
+        case 'sales_less':
+            $sales_option_where.=sprintf(" and `Invoice Transaction Gross Amount`<'%s' ",$where_data['sales_lower']);
+            break;
+        case 'sales_equal':
+            $sales_option_where.=sprintf(" and `Invoice Transaction Gross Amount`='%s'  ",$where_data['sales_lower']);
+            break;
+        case 'sales_more':
+            $sales_option_where.=sprintf(" and  `Invoice Transaction Gross Amount`>'%s'  ",$where_data['sales_lower']);
+            break;
+        
+		case 'sales_between':
+			$sales_option_where.=sprintf(" and  `Invoice Transaction Gross Amount`>'%s'  and `Invoice Transaction Gross Amount`<'%s'", $where_data['sales_lower'], $where_data['sales_upper']);
+			break;
+		}
+    }
+    $sales_option_where=preg_replace('/^\s*and/','',$sales_option_where);
+	
+    if($sales_option_where!=''){
+    $where.="and ($sales_option_where)";
+    }
 
-
+	
+	/*
+	$not_customers_which_where='';
+   foreach($where_data['not_customers_which'] as $not_customers_which) {
+        switch ($not_customers_which) {
+        case 'active':
+            $not_customers_which_where.=sprintf(" or `Customer Active`='No' ");
+            break;
+        case 'losing':
+            $not_customers_which_where.=sprintf(" or `Customer Type by Activity`='Active'  ");
+            break;
+        case 'lost':
+            $not_customers_which_where.=sprintf(" or  `Customer Active`='Yes'  ");
+            break;
+        }            
+    }
+	
+    $not_customers_which_where=preg_replace('/^\s*or/','',$not_customers_which_where);
+    if($not_customers_which_where!=''){
+    $where.="and ($not_customers_which_where)";
+    }
+*///print $table;print $where;
 
     return array($where,$table);
+	
+
+}
+
+function invoices_awhere($awhere) {
+    // $awhere=preg_replace('/\\\"/','"',$awhere);
+
+
+
+    $where_data=array(
+                    //'product_ordered1'=>'∀',
+                    'invoice_date_from'=>'',
+                    'invoice_date_to'=>'',
+                    'invoice_paid_date_from'=>'',
+                    'invoice_paid_date_to'=>'',
+                    'billing_geo_constraints'=>'',
+					'delivery_geo_constraints'=>'',
+					'total_net_amount_lower'=>'',
+					'total_net_amount_upper'=>'',
+					'total_tax_amount_lower'=>'',
+					'total_tax_amount_upper'=>'',
+					'total_profit_lower'=>'',
+					'total_profit_upper'=>'',
+					'total_amount_lower'=>'',
+					'total_amount_upper'=>'',
+					'tax_code'=>'',
+                    'paid_status'=>array(),
+                    'not_paid_status'=>array(),
+                    'total_net_amount'=>array(),
+                    'total_tax_amount'=>array(),
+					'total_profit'=>array(),
+					'total_amount'=>array(),
+					'store_key'=>false
+                );
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key=>$item) {
+        $where_data[$key]=$item;
+    }
+
+    $where='where true';
+    $table='`Invoice Dimension` I ';
+
+    $use_product=false;
+    //$use_categories =false;
+    $use_otf =false;
+
+    $where_billing_geo_constraints='';
+    if ($where_data['billing_geo_constraints']!='') {
+        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+    }
+
+	$where_delivery_geo_constraints='';
+    if ($where_data['delivery_geo_constraints']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+    }
+	
+	$where_tax_code='';
+	if ($where_data['tax_code']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Invoice Tax Code`='%s'",$where_data['tax_code']);
+    }
+	
+	
+	$date_interval_invoice_created=prepare_mysql_dates($where_data['invoice_date_from'],$where_data['invoice_date_to'],'`Invoice Date`','only_dates');
+	$date_interval_invoice_paid=prepare_mysql_dates($where_data['invoice_paid_date_from'],$where_data['invoice_paid_date_to'],'`Invoice Paid Date`','only_dates');
+
+	
+    $where='where ( true '.$date_interval_invoice_created['mysql'].$date_interval_invoice_paid['mysql'].") $where_billing_geo_constraints $where_delivery_geo_constraints $where_tax_code";
+//print $where;exit;
+
+
+    $paid_status_where='';
+   foreach($where_data['paid_status'] as $paid_status) {
+        switch ($paid_status) {
+        case 'partially':
+            $paid_status_where.=sprintf(" or `Invoice Paid`='Partially' ");
+            break;
+        case 'yes':
+            $paid_status_where.=sprintf(" or `Invoice Paid`='Yes'  ");
+            break;
+        case 'no':
+            $paid_status_where.=sprintf(" or  `Invoice Paid`='No'  ");
+            break;
+       
+        }
+        
+        
+        
+    }
+    $paid_status_where=preg_replace('/^\s*or/','',$paid_status_where);
+    if($paid_status_where!=''){
+    $where.="and ($paid_status_where)";
+    }
+
+    $not_paid_status_where='';
+   foreach($where_data['not_paid_status'] as $not_paid_status) {
+        switch ($not_paid_status) {
+        case 'partially':
+            $not_paid_status_where.=sprintf(" or `Invoice Paid`!='Partially' ");
+            break;
+        case 'yes':
+            $not_paid_status_where.=sprintf(" or `Invoice Paid`!='Yes'  ");
+            break;
+        case 'no':
+            $not_paid_status_where.=sprintf(" or  `Invoice Paid`!='No'  ");
+            break;
+        }
+        
+        
+        
+    }
+    $not_paid_status_where=preg_replace('/^\s*or/','',$not_paid_status_where);
+    if($not_paid_status_where!=''){
+    $where.="and ($not_paid_status_where)";
+    }
+
+	
+   $total_net_amount_where='';
+   foreach($where_data['total_net_amount'] as $total_net_amount) {
+        switch ($total_net_amount) {
+        case 'less':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`<'%s' ",$where_data['total_net_amount_lower']);
+            break;
+        case 'equal':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`='%s'  ",$where_data['total_net_amount_lower']);
+            break;
+        case 'more':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`>'%s'  ",$where_data['total_net_amount_upper']);
+            break;
+		case 'between':
+			$total_net_amount_where.=sprintf(" and  `Invoice Total Net Amount`>'%s'  and `Invoice Total Net Amount`<'%s'", $where_data['total_net_amount_lower'], $where_data['total_net_amount_upper']);
+			break;
+		}
+    }
+    $total_net_amount_where=preg_replace('/^\s*and/','',$total_net_amount_where);
+	
+    if($total_net_amount_where!=''){
+		$where.="and ($total_net_amount_where)";
+    }
+
+	
+   $total_tax_amount_where='';
+   foreach($where_data['total_tax_amount'] as $total_tax_amount) {
+        switch ($total_tax_amount) {
+        case 'less':
+            $total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`<'%s' ",$where_data['total_tax_amount_lower']);
+            break;
+        case 'equal':
+            $total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`='%s'  ",$where_data['total_tax_amount_lower']);
+            break;
+        case 'more':
+            $total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`>'%s'  ",$where_data['total_tax_amount_upper']);
+            break;
+		case 'between':
+			$total_tax_amount_where.=sprintf(" and  `Invoice Total Tax Amount`>'%s'  and `Invoice Total Tax Amount`<'%s'", $where_data['total_tax_amount_lower'], $where_data['total_tax_amount_upper']);
+			break;
+		}
+    }
+    $total_tax_amount_where=preg_replace('/^\s*and/','',$total_tax_amount_where);
+	
+    if($total_tax_amount_where!=''){
+		$where.="and ($total_tax_amount_where)";
+    }
+	
+   $total_profit_where='';
+   foreach($where_data['total_profit'] as $total_profit) {
+        switch ($total_profit) {
+        case 'less':
+            $total_profit_where.=sprintf(" and `Invoice Total Profit`<'%s' ",$where_data['total_profit_lower']);
+            break;
+        case 'equal':
+            $total_profit_where.=sprintf(" and `Invoice Total Profit`='%s'  ",$where_data['total_profit_lower']);
+            break;
+        case 'more':
+            $total_profit_where.=sprintf(" and `Invoice Total Profit`>'%s'  ",$where_data['total_profit_upper']);
+            break;
+		case 'between':
+			$total_profit_where.=sprintf(" and  `Invoice Total Profit`>'%s'  and `Invoice Total Profit`<'%s'", $where_data['total_profit_lower'], $where_data['total_profit_upper']);
+			break;
+		}
+    }
+    $total_profit_where=preg_replace('/^\s*and/','',$total_profit_where);
+	
+    if($total_profit_where!=''){
+		$where.="and ($total_profit_where)";
+    }
+
+   $total_amount_where='';
+   foreach($where_data['total_amount'] as $total_amount) {
+        switch ($total_amount) {
+        case 'less':
+            $total_amount_where.=sprintf(" and `Invoice Total Amount`<'%s' ",$where_data['total_amount_lower']);
+            break;
+        case 'equal':
+            $total_amount_where.=sprintf(" and `Invoice Total Amount`='%s'  ",$where_data['total_amount_lower']);
+            break;
+        case 'more':
+            $total_amount_where.=sprintf(" and `Invoice Total Amount`>'%s'  ",$where_data['total_amount_upper']);
+            break;
+		case 'between':
+			$total_amount_where.=sprintf(" and  `Invoice Total Amount`>'%s'  and `Invoice Total Amount`<'%s'", $where_data['total_amount_lower'], $where_data['total_amount_upper']);
+			break;
+		}
+    }
+    $total_amount_where=preg_replace('/^\s*and/','',$total_amount_where);
+	
+    if($total_amount_where!=''){
+		$where.="and ($total_amount_where)";
+    }
+	
+	//print $table. $where; exit;
+    return array($where,$table);
+	
+
+}
+
+function orders_awhere($awhere) {
+    // $awhere=preg_replace('/\\\"/','"',$awhere);
+
+
+
+    $where_data=array(
+                    //'product_ordered1'=>'∀',
+                    'geo_constraints'=>'',
+                    'product_not_ordered1'=>'',
+                    'product_not_received1'=>'',
+                    'billing_geo_constraints'=>'',
+                    'delivery_geo_constraints'=>'',
+                    'dont_have'=>array(),
+                    'have'=>array(),
+                    'allow'=>array(),
+                    'dont_allow'=>array(),
+                    'categories'=>'',
+					'product_ordered_or_from'=>'',
+					'product_ordered_or_to'=>'',
+					'order_created_from'=>'',
+					'order_created_to'=>'',
+					'product_ordered_or'=>'',
+					'store_key'=>false
+                );
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key=>$item) {
+        $where_data[$key]=$item;
+    }
+
+    $where='where true';
+    $table='`Order Dimension` O ';
+
+    $use_product=false;
+    //$use_categories =false;
+    $use_otf =false;
+/*
+    $where_categories='';
+    if ($where_data['categories']!='') {
+
+        $categories_keys=preg_split('/,/',$where_data['categories']);
+        $valid_categories_keys=array();
+        foreach ($categories_keys as $item) {
+            if (is_numeric($item))
+                $valid_categories_keys[]=$item;
+        }
+        $categories_keys=join($valid_categories_keys,',');
+        if ($categories_keys) {
+            $use_categories =true;
+            $where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
+        }
+
+
+    }
+*/
+    $where_billing_geo_constraints='';
+    if ($where_data['billing_geo_constraints']!='') {
+        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+    }
+
+	$where_delivery_geo_constraints='';
+    if ($where_data['delivery_geo_constraints']!='') {
+        $where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+    }
+	
+    if ($where_data['product_ordered_or']=='')
+        $where_data['product_ordered_or']='∀';
+
+    if ($where_data['product_ordered_or']!='') {
+        if ($where_data['product_ordered_or']!='∀') {
+            $use_otf=true;
+			$where_product_ordered1=true;
+            //list($where_product_ordered1,$use_product)=extract_product_groups($where_data['product_ordered_or'],$where_data['store_key']);
+        } else
+            $where_product_ordered1='true';
+    } else {
+        $where_product_ordered1='false';
+    }
+		//print $where_product_ordered1;
+
+		
+	$date_interval_order_created=prepare_mysql_dates($where_data['order_created_from'],$where_data['order_created_to'],'`Order Date`','only_dates');
+	
+/*
+    $date_interval_when_customer_created=prepare_mysql_dates($where_data['customer_created_from'],$where_data['customer_created_to'],'`Customer First Contacted Date`','only_dates');
+    if ($date_interval_when_ordered['mysql']) {
+        $use_otf=true;
+    }
+	
+	$date_interval_when_ordered=prepare_mysql_dates($where_data['product_ordered_or_from'],$where_data['product_ordered_or_to'],'`Order Date`','only_dates');
+    if ($date_interval_when_customer_created['mysql']) {
+
+    }
+
+	$date_interval_lost_customer=prepare_mysql_dates($where_data['lost_customer_from'],$where_data['lost_customer_to'],'`Customer Lost Date`','only_dates');
+		
+    if ($use_otf) {
+        $table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+    }
+    if ($use_product) {
+        $table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`) left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  ';
+    }
+
+
+
+    if ($use_categories) {
+
+        $table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
+    }
+
+*/
+
+
+  //  $where='where (  '.$where_product_ordered1.$date_interval_when_customer_created['mysql'].") $where_billing_geo_constraints where_delivery_geo_constraints";
+
+    $where='where (  '.$where_product_ordered1.$date_interval_order_created['mysql'].") $where_billing_geo_constraints $where_delivery_geo_constraints";
+//print $where;exit;
+/*
+    foreach($where_data['dont_have'] as $dont_have) {
+        switch ($dont_have) {
+        case 'tel':
+            $where.=sprintf(" and `Customer Main Telephone Key` IS NULL ");
+            break;
+        case 'email':
+            $where.=sprintf(" and `Customer Main Email Key` IS NULL ");
+            break;
+        case 'fax':
+            $where.=sprintf(" and `Customer Main Fax Key` IS NULL ");
+            break;
+        case 'address':
+            $where.=sprintf(" and `Customer Main Address Incomplete`='Yes' ");
+            break;
+        }
+    }
+    foreach($where_data['have'] as $dont_have) {
+        switch ($dont_have) {
+        case 'tel':
+            $where.=sprintf(" and `Customer Main Telephone Key` IS NOT NULL ");
+            break;
+        case 'email':
+            $where.=sprintf(" and `Customer Main Email Key` IS NOT NULL ");
+            break;
+        case 'fax':
+            $where.=sprintf(" and `Customer Main Fax Key` IS NOT NULL ");
+            break;
+        case 'address':
+            $where.=sprintf(" and `Customer Main Address Incomplete`='No' ");
+            break;
+        }
+    }
+*/
+/*
+    $allow_where='';
+   foreach($where_data['allow'] as $allow) {
+        switch ($allow) {
+        case 'newsletter':
+            $allow_where.=sprintf(" or `Customer Send Newsletter`='Yes' ");
+            break;
+        case 'marketing_email':
+            $allow_where.=sprintf(" or `Customer Send Email Marketing`='Yes'  ");
+            break;
+        case 'marketing_post':
+            $allow_where.=sprintf(" or  `Customer Send Postal Marketing`='Yes'  ");
+            break;
+       
+        }
+        
+        
+        
+    }
+    $allow_where=preg_replace('/^\s*or/','',$allow_where);
+    if($allow_where!=''){
+    $where.="and ($allow_where)";
+    }
+
+    $dont_allow_where='';
+   foreach($where_data['dont_allow'] as $dont_allow) {
+        switch ($dont_allow) {
+        case 'newsletter':
+            $dont_allow_where.=sprintf(" or `Customer Send Newsletter`='No' ");
+            break;
+        case 'marketing_email':
+            $dont_allow_where.=sprintf(" or `Customer Send Email Marketing`='No'  ");
+            break;
+        case 'marketing_post':
+            $dont_allow_where.=sprintf(" or  `Customer Send Postal Marketing`='No'  ");
+            break;
+        }
+        
+        
+        
+    }
+    $dont_allow_where=preg_replace('/^\s*or/','',$dont_allow_where);
+    if($dont_allow_where!=''){
+    $where.="and ($dont_allow_where)";
+    }
+
+
+	$customers_which_where='';
+   foreach($where_data['customers_which'] as $customers_which) {
+        switch ($customers_which) {
+        case 'active':
+            $customers_which_where.=sprintf(" or `Customer Active`='Yes' ");
+            break;
+        case 'losing':
+            $customers_which_where.=sprintf(" or `Customer Type by Activity`='Losing'  ");
+            break;
+        case 'lost':
+            $customers_which_where.=sprintf(" or `Customer Active`='No'  ");
+            break;
+        }            
+    }
+    $customers_which_where=preg_replace('/^\s*or/','',$customers_which_where);
+    if($customers_which_where!=''){
+    $where.="and ($customers_which_where)";
+    }
+	
+	$invoice_option_where='';
+   foreach($where_data['invoice_option'] as $invoice_option) {
+        switch ($invoice_option) {
+        case 'less':
+            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`<'%d' ",$where_data['number_of_invoices_lower']);
+            break;
+        case 'equal':
+            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`='%d'  ",$where_data['number_of_invoices_lower']);
+            break;
+        case 'more':
+            $invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  ",$where_data['number_of_invoices_lower']);
+            break;
+        
+		case 'between':
+			$invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  and `Customer Has More Invoices Than`<'%d'", $where_data['number_of_invoices_lower'], $where_data['number_of_invoices_upper']);
+			break;
+		}
+    }
+    $invoice_option_where=preg_replace('/^\s*and/','',$invoice_option_where);
+	
+    if($invoice_option_where!=''){
+    $where.="and ($invoice_option_where)";
+    }
+	
+	$sales_option_where='';
+   foreach($where_data['sales_option'] as $sales_option) {
+        switch ($sales_option) {
+        case 'sales_less':
+            $sales_option_where.=sprintf(" and `Invoice Transaction Gross Amount`<'%s' ",$where_data['sales_lower']);
+            break;
+        case 'sales_equal':
+            $sales_option_where.=sprintf(" and `Invoice Transaction Gross Amount`='%s'  ",$where_data['sales_lower']);
+            break;
+        case 'sales_more':
+            $sales_option_where.=sprintf(" and  `Invoice Transaction Gross Amount`>'%s'  ",$where_data['sales_lower']);
+            break;
+        
+		case 'sales_between':
+			$sales_option_where.=sprintf(" and  `Invoice Transaction Gross Amount`>'%s'  and `Invoice Transaction Gross Amount`<'%s'", $where_data['sales_lower'], $where_data['sales_upper']);
+			break;
+		}
+    }
+    $sales_option_where=preg_replace('/^\s*and/','',$sales_option_where);
+	
+    if($sales_option_where!=''){
+    $where.="and ($sales_option_where)";
+    }
+
+*/	
+	/*
+	$not_customers_which_where='';
+   foreach($where_data['not_customers_which'] as $not_customers_which) {
+        switch ($not_customers_which) {
+        case 'active':
+            $not_customers_which_where.=sprintf(" or `Customer Active`='No' ");
+            break;
+        case 'losing':
+            $not_customers_which_where.=sprintf(" or `Customer Type by Activity`='Active'  ");
+            break;
+        case 'lost':
+            $not_customers_which_where.=sprintf(" or  `Customer Active`='Yes'  ");
+            break;
+        }            
+    }
+	
+    $not_customers_which_where=preg_replace('/^\s*or/','',$not_customers_which_where);
+    if($not_customers_which_where!=''){
+    $where.="and ($not_customers_which_where)";
+    }
+*///print $table;print $where;
+	//print $table; 
+	//print '|';
+	//print $where; exit;
+    return array($where,$table);
+	
 
 }
 

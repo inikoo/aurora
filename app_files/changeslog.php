@@ -3126,7 +3126,7 @@ ALTER TABLE `Email Content Dimension` ADD `Email Content Header Image Source` VA
 ALTER TABLE `Customer History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ;
 alter table `Store Dimension` add column `Store Address` varchar(255) after `Store Slogan`;
 alter table `Store Dimension` add column `Short Marketing Description` varchar(255) after `Store Address`;
-ALTER TABLE `Email Content Dimension` CHANGE `Email Content Metadata` `Email Content Metadata` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Metadata` `Email Content Metadata` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
 CREATE TABLE `Email Content Paragraph Dimension` (
 `Email Paragraph Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -3179,6 +3179,65 @@ PRIMARY KEY ( `Email Credentials Key` )
 alter table `Email Credentials Dimension` add column `Outgoing Mail Sever` varchar (255);
 ALTER TABLE `Email Credentials Dimension` CHANGE `Store Key` `Store Key` MEDIUMINT( 8 ) NULL DEFAULT NULL ;
 ALTER TABLE `Email Credentials Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Store Key` ;
+
+ALTER TABLE `Email Credentials Dimension` DROP `Scope` ;
+ALTER TABLE `Email Credentials Dimension` ADD `Customer Communication` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Customer Communication` ) ;
+ALTER TABLE `Email Credentials Dimension` ADD `Login` VARCHAR( 256 ) NOT NULL AFTER `Email Address` ;
+ALTER TABLE `Email Credentials Dimension`  DROP `Store Key`,  DROP `User Key`;
+CREATE TABLE `Email Credentials Store Bridge` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Store Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `Store Key` )
+) ENGINE = MYISAM ;
+CREATE TABLE `Email Credentials User Bridge` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`User Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `User Key` )
+) ENGINE = MYISAM ;
+CREATE TABLE `Email Credentials Scope Bridge` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Scope` ENUM( 'Customer Communications' ) NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `Scope` )
+) ENGINE = MYISAM ;
+
+
+CREATE TABLE `Email Read Dimension` (
+`Email Read Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Uid` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Customer Communications` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+PRIMARY KEY ( `Email Read Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Read Dimension` ADD INDEX ( `Email Credentials Key` ) ;
+ALTER TABLE `Email Read Dimension` ADD INDEX ( `Email Uid` ) ;
+
+ALTER TABLE `Customer Dimension` CHANGE `Customer Has More  Invoices Than` `Customer Has More Invoices Than` MEDIUMINT( 9 ) NULL DEFAULT NULL ;
+
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Email' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
+ALTER TABLE `Email Read Dimension` ADD `Scope Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
+
+
+CREATE TABLE `List Order Bridge` (`List Key` SMALLINT( 5 ) NOT NULL ,`Order Key` MEDIUMINT( 8 ) NOT NULL) ENGINE = MYISAM;
+ALTER TABLE `Telecom Bridge` ADD `Telecom Description` VARCHAR( 256 ) NOT NULL ;
+
+ALTER TABLE `Tax Category Dimension` ADD `Tax Category Type` VARCHAR( 64 ) NOT NULL AFTER `Tax Category Key` ,ADD INDEX ( `Tax Category Type` ) ;
+ALTER TABLE `Tax Category Dimension` ADD `Composite` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Composite` ) ;
+ALTER TABLE `Tax Category Dimension` ADD `Composite Metadata` VARCHAR( 256 ) NULL DEFAULT NULL;
+ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Type` `Tax Category Type Name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+CREATE TABLE `Invoice Tax Dimension` (
+`Invoice Key` MEDIUMINT UNSIGNED NOT NULL ,
+`UNK` FLOAT NULL DEFAULT NULL ,
+INDEX ( `Invoice Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `HQ Dimension` ADD `HQ Country Code` VARCHAR( 3 ) NOT NULL AFTER `HQ Name` ;
+ALTER TABLE `HQ Dimension` ADD `HQ Country 2 Alpha Code` VARCHAR( 2 ) NOT NULL AFTER `HQ Country Code` ;
+
+
+
+
+
 */
 
 ?>

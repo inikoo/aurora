@@ -99,7 +99,7 @@ if (isset($_REQUEST['view'])) {
 }
 $smarty->assign('view',$_SESSION['state']['marketing']['view']);
 
-$smarty->assign('parent','home');
+$smarty->assign('parent','marketing');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

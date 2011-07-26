@@ -70,6 +70,57 @@ class EmailCampaign extends DB_Table {
 
 
     }
+    
+    
+    
+    function ready_to_send(){
+    $ready_to_send=true;
+    
+        
+    
+     if(!$this->data['Number of Emails']){
+    
+    return false;
+    }
+    
+    if(!count($this->content_keys)){
+    
+    return false;
+    }
+    
+    foreach($this->content_data as $content_data) {
+        if($content_data['subject']==''){
+             $ready_to_send=false;
+        }
+        
+        if($content_data['type']=='Plain'){
+          if($content_data['plain']==''){
+             $ready_to_send=false;
+            }    
+        }elseif($content_data['type']=='HTML'){
+        if($content_data['html']==''){
+             $ready_to_send=false;
+        }
+        }else{
+         if(!count($content_data['paragraphs'])){
+         $ready_to_send=false;
+         }
+        }
+        }
+        
+        
+        
+        
+        return $ready_to_send;
+        
+        }
+        
+    
+        
+    
+    
+    
+   
 
     function get_first_content_key() {
         $tmp=$this->content_keys;
@@ -202,7 +253,9 @@ class EmailCampaign extends DB_Table {
             $sql=sprintf("insert into `Email Campaign Content Bridge`  values (%d,%d)",$this->id,$email_content_key);
             mysql_query($sql);
             $email_content_key=mysql_insert_id();
-
+            $this->get_data('id',$this->id);
+            $store=new Store($this->data['Email Campaign Store Key']);
+            $store->update_email_campaign_data();
 
         } else {
             $this->error=true;
@@ -289,7 +342,7 @@ class EmailCampaign extends DB_Table {
         $content_keys=$this->get_content_data_keys();
         $email_contents_array=array();
         if (count($content_keys)==1) {
-            $sql=sprintf("select `Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Source`,`Email Content Metadata` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $sql=sprintf("select `Email Content Type`,`Email Content Subject`,`Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Source`,`Email Content Metadata` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
             $res=mysql_query($sql);
             if ($row=mysql_fetch_assoc($res)) {
            
@@ -307,7 +360,7 @@ class EmailCampaign extends DB_Table {
                                 );
                     }
 
-                    $email_contents_array[$row['Email Content Key']]=array('plain'=>$row['Email Content Text'],'html'=>$row['Email Content HTML'],'paragraphs'=>$paragraph_data,'header_src'=>$row['Email Content Header Image Source']);
+                    $email_contents_array[$row['Email Content Key']]=array('type'=>$row['Email Content Type'],  'subject'=>$row['Email Content Subject'],'plain'=>$row['Email Content Text'],'html'=>$row['Email Content HTML'],'paragraphs'=>$paragraph_data,'header_src'=>$row['Email Content Header Image Source']);
 
                 
 
@@ -339,26 +392,19 @@ class EmailCampaign extends DB_Table {
         return $content_text;
     }
 
-    function update_subject($value) {
+    function update_subject($value,$email_content_key) {
 
-        $content_keys=$this->get_content_data_keys();
-        if (count($content_keys)==1) {
+   
             $sql=sprintf("update `Email Content Dimension` set `Email Content Subject`=%s where `Email Content Key`=%d",
                          prepare_mysql($value),
-                         array_pop($content_keys)
+                        $email_content_key
                         );
             mysql_query($sql);
-        }
-        $old_value=$this->data['Email Campaign Subjects'];
-        $this->data['Email Campaign Subjects']=$this->get_subjects_serialized_array();
-        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Subjects`=%s where `Email Campaign Key`=%d",
-                     prepare_mysql($this->data['Email Campaign Subjects']),
-                     $this->id
-                    );
-        mysql_query($sql);
+       
+    
         if (mysql_affected_rows()>0) {
             $this->updated=true;
-            $this->new_value=$this->get_subject();
+            $this->new_value=$value;
         }
     }
 

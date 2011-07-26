@@ -3,12 +3,16 @@
 {include file='contacts_navigation.tpl'}
 
 
-   
+
       <h2 style="clear:left">{t}New Customers List{/t} ({$store->get('Store Code')})</h2>
       
       
 <div style="clear:both;border:1px solid #ccc;padding:20px;width:870px">
 <input type="hidden" id="store_id" value="{$store->id}">
+<input type="hidden" id="auto" value="{if $auto==1}1{else}0{/if}">
+{foreach from=$v_calpop key=key item=item}
+<input type="hidden" id="v_calpop" cat={$key} value={$item}>
+{/foreach}
 
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
       <table >
@@ -94,10 +98,11 @@
                
 
         </div>
-      </td><tr>
+      </td></tr>
     
 	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>
-      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" />
+      <tr><td>{t}any of this product(s){/t}</td>
+	  <td><input id="product_ordered_or" value="" style="width:500px" />
       <div class="general_options" >
                 <span id="product_category" class="state_details">{t}Product Categories{/t}</span>
                 <span id="product" class="state_details">{t}Product{/t}</span>
@@ -105,10 +110,10 @@
                 <span id="department" class="state_details">{t}Department{/t}</span>
 
         </div>
-      </td><tr>
+      </td></tr>
 
-      <tr style="display:none"><td>{t}but didn't order this product(s){/t}</td><td><input id="product_not_ordered1" value="" style="width:400px" /></td><tr>
-      <tr style="display:none"><td>{t}and did't receive this product(s){/t}</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
+      <tr style="display:none"><td>{t}but didn't order this product(s){/t}</td><td><input id="product_not_ordered1" value="" style="width:400px" /></td></tr>
+      <tr style="display:none"><td>{t}and did't receive this product(s){/t}</td><td><input id="product_not_received1" value="" size="40" /></td></tr>
       <tr>
         <td>{t}during this period{/t}:</td>
         <td>
@@ -119,6 +124,74 @@
         </td>
       </tr>
      
+	 <br/>
+	 <tr><td colspan="2"><b>{t}Customer Stats{/t}</b></td></tr>
+	 
+	<tr>
+		<td>{t}customers which are{/t}:
+		<td>
+			<div id="customers_which_options" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$customer_stat item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_customers_which(this)" id="customers_which_{$cat_key}"  parent="customers_which_" cat="{$cat_key}"  >{$cat3.name}</span>
+			{/foreach}
+			</div>
+		</td>
+	</tr>
+{*
+	<tr style="display:none" id='tr_not_customers_which'>
+		<td>{t}not customers which are{/t}:</td>
+		<td>
+			<div id="not_customers_which_options" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$customer_stat item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_customers_which(this)" id="not_customers_which_{$cat_key}" parent="not_customers_which_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>    
+		</td>
+	</tr>
+  *}  
+  	  <tr id="lost_customer_title" style="display:none"><td colspan="2"><b>{t}Lost Customers{/t}</b></td></tr>
+      <tr id="lost_customer"style="display:none">
+        <td>{t}Register between{/t}:</td>
+        <td>
+            <input id="v_calpop5" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="lost_customer_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><span class="calpop">&rarr;</span> 
+			<input id="v_calpop6" type="text" class="calpop" size="11" maxlength="10" name="to" value=""/><img   id="lost_customer_to" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="lost_customer_from_Container" style="position:absolute;display:none; z-index:2"></div>
+			<div id="lost_customer_to_Container" style="position:absolute;display:none; z-index:2"></div>
+        </td>        
+      </tr>
+	  
+	  
+	  <tr><td colspan="2"><b>{t}Customers with Invoice{/t}</b></td></tr>
+      <tr>
+        <td>{t}Number of Invoices{/t}:</td>
+		<td>
+            <input id="number_of_invoices_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="a" style="display:none">&rarr;</span> 
+			<input style="display:none" id="number_of_invoices_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
+			<div id="invoice_condition_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_invoice_condition(this)" id="invoice_condition_{$cat_key}" parent="invoice_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
+	  
+	  <tr><td colspan="2"><b>{t}Customer Sales{/t}</b></td></tr>
+      <tr>
+        <td>{t}Sales{/t}:</td>
+		<td>
+            <input id="sales_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="b" style="display:none">&rarr;</span> 
+			<input style="display:none" id="sales_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
+			<div id="sales_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_sales_condition(this)" id="sales_condition_{$cat_key}" parent="sales_condition_"  cat="sales_{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
       </table>
       </form>
        </table>
@@ -145,7 +218,7 @@
     </div>
 
     
-    <div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none" >
+    <div id="the_table" class="data_table" style="margin-top:20px;clear:both;{if $auto==0}display:none{/if}" >
     <span class="clean_table_title">Customers List</span>
  <div id="table_type">
          <a  style="float:right"  class="table_type state_details"  href="customers_lists_csv.php" >{t}Export (CSV){/t}</a>

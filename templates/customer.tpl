@@ -342,6 +342,7 @@
             <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders"  id="elements_orders" table_type="orders"   >{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span>
             <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes"  id="elements_notes" table_type="notes"   >{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span>
             <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments"  id="elements_attachments" table_type="attachments"   >{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails"  id="elements_emails" table_type="emails"   >{t}Emails{/t} (<span id="elements_notes_number">{$elements_number.Emails}</span>)</span>
 
         </div>
      </div>

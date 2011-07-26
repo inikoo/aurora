@@ -23,10 +23,10 @@ Event.addListener(window, "load", function() {
 				       {key:"last_date", label:"<?php echo _('Last Updated')?>", width:115,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"customer",label:"<?php echo _('Customer')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"state", label:"<?php echo _('Status')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"total_amount", label:"<?php echo _('Total')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"total_amount", label:"<?php echo _('Total Balance')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&where=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -441,7 +441,7 @@ var clear_interval = function(e,suffix){
             var table=tables.table0;
      var datasource=tables.dataSource0;
      var request='&sf=0&from=' +from+'&to='+to;
-
+//alert(request);
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
        var table=tables.table1;
      var datasource=tables.dataSource1;
@@ -463,6 +463,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('dispatch','span' , 'dispatch_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&dispatch='+this.getAttribute('table_type');
+	 //alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_invoice_type=function(e){
@@ -471,6 +472,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&invoice_type='+this.getAttribute('table_type');
+	 //alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_dn_type=function(e){

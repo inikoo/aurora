@@ -5,7 +5,7 @@ include_once('common.php');
 
 print "var tax_categories=[";
 $tmp='';
- foreach($_SESSION['state']['report_sales_with_no_tax']['GBR']['tax_category'] as $key=>$value){
+ foreach($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value){
  $tmp.=",'elements_tax_category_$key'";
  }
  $tmp=preg_replace('/^,/','',$tmp);
@@ -14,7 +14,7 @@ print "$tmp];";
 
 print "var tax_categories_bis=[";
 $tmp='';
- foreach($_SESSION['state']['report_sales_with_no_tax']['GBR']['tax_category'] as $key=>$value){
+ foreach($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value){
  $tmp.=",'elements_tax_category_$key"."_bis'";
  }
  $tmp=preg_replace('/^,/','',$tmp);
@@ -297,7 +297,26 @@ var x_id=this.id+'_bis';
 
 
 if(type=='region')
-ids=['elements_region_GBIM','elements_region_EU','elements_region_NOEU'];
+
+
+
+
+
+<?php 
+ $country=$_SESSION['state']['report_sales_with_no_tax']['country'];
+   $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+//print_r($elements_region);
+$_region='';
+foreach($elements_region as $element_region=>$value){
+
+$_region.=",'elements_region_".$element_region."'";
+
+}
+$_region=preg_replace('/^,/','',$_region);
+print "var ids=[".$_region."];";
+ ?>
+
+
 else
 ids=tax_categories;
 
@@ -358,7 +377,22 @@ id=this.id;
 var x_id=id.replace("_bis", "");
 
 if(type=='region')
-ids=['elements_region_GBIM_bis','elements_region_EU_bis','elements_region_NOEU_bis'];
+
+<?php 
+ $country=$_SESSION['state']['report_sales_with_no_tax']['country'];
+   $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+//print_r($elements_region);
+$_region='';
+foreach($elements_region as $element_region=>$value){
+
+$_region.=",'elements_region_".$element_region."_bis'";
+
+}
+$_region=preg_replace('/^,/','',$_region);
+print "var ids=[".$_region."];";
+ ?>
+
+
 else
 ids=tax_categories_bis;
 
@@ -420,8 +454,26 @@ request=request+'&'+x+'=0'
 
  function init(){
  
- Event.addListener(['elements_region_GBIM','elements_region_EU','elements_region_NOEU'], "click",change_elements,'region');
-  Event.addListener(['elements_region_GBIM_bis','elements_region_EU_bis','elements_region_NOEU_bis'], "click",change_elements_bis,'region');
+ <?php 
+ $country=$_SESSION['state']['report_sales_with_no_tax']['country'];
+   $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+//print_r($elements_region);
+$_region='';
+$_region_bis='';
+foreach($elements_region as $element_region=>$value){
+
+$_region.=",'elements_region_".$element_region."'";
+$_region_bis.=",'elements_region_".$element_region."_bis'";
+
+}
+$_region=preg_replace('/^,/','',$_region);
+$_region_bis=preg_replace('/^,/','',$_region_bis);
+print "var regions=[".$_region."];";
+print "var regions_bis=[".$_region_bis."];";
+ ?>
+ 
+ Event.addListener(regions, "click",change_elements,'region');
+  Event.addListener(regions_bis, "click",change_elements_bis,'region');
 
 Event.addListener(tax_categories, "click",change_elements,'tax_codes');
 Event.addListener(tax_categories_bis, "click",change_elements_bis,'tax_codes');

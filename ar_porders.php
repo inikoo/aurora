@@ -178,7 +178,7 @@ function list_purchase_orders_with_product(){
   if($total_records>$number_results)
     $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
   else
-    $rtext_rpp=sprintf("Showing all orders");
+    $rtext_rpp=_("Showing all orders");
 
 
 
@@ -434,7 +434,7 @@ function list_purchase_orders(){
   if($total_records>$number_results)
     $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
   else
-    $rtext_rpp=sprintf("Showing all orders");
+    $rtext_rpp=_("Showing all orders");
 
 
 
@@ -674,7 +674,7 @@ function list_delivery_notes(){
   if($total_records>$number_results)
     $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
   else
-    $rtext_rpp=sprintf("Showing all orders");
+    $rtext_rpp=_("Showing all orders");
 
 
 
@@ -910,7 +910,7 @@ function list_invoices(){
   if($total_records>$number_results)
     $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
   else
-    $rtext_rpp=sprintf("Showing all orders");
+    $rtext_rpp=_("Showing all orders");
 
 
 

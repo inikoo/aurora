@@ -44,7 +44,7 @@ $js_files=array(
               'js/dropdown.js'
           );
 
-
+$_SESSION['state']['import']['type']=0;
 $_SESSION['state']['import']['records_ignored_by_user']=array();
 
 $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_map','label'=>_('Add'));

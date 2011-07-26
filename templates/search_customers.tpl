@@ -9,7 +9,7 @@
  
 <div>
       <span id="contact_messages"></span>
-    </div>
+</div>
     
     <div >
     <div style="margin-top:0px;float:right;width:500px;xheight:800px">
@@ -25,7 +25,7 @@
       
 	
 <input type="hidden" value="{$store->id}" id="Store_Key"/>
-
+<input type="hidden" value="store" id="Scope"/>
 	
 	
 	<tr class="first"><td style="" class="label">{t}Company Name{/t}:</td>
@@ -246,7 +246,11 @@
 	  </tr>
 	  
       </table>
-
+    <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
+	<tr>
+	  <td id="advanced_search">{t}Search{/t}</td>
+	</tr>
+    </table>
 
 
 
@@ -256,7 +260,8 @@
     
 <div class="star_rating" id="star_rating_template" style="display:none"><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /></div>
 
-  
+            {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
+            <div  id="table5"   class="data_table_container dtable btable "> </div>
 
       
 

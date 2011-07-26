@@ -334,11 +334,12 @@ $default_state=array(
 
                    'orders'=>array(
                                 'details'=>false,
-                                'store'=>'',
+                                'store'=>'1',
                                 'view'=>'orders',
                                 'only'=>'',
                                 'from'=>'',
                                 'to'=>'',
+								'type'=>'all_orders',
 
                                 'table'=>array(
                                             'order'=>'last_date',
@@ -919,7 +920,26 @@ $default_state=array(
                                       'plot_data'=>array(
                                                   ),
                                   ),
-
+                    'report_sales_week'=>array(
+                    'store'=>'',
+                            'invoices'=> array(
+                                                         'days'=>array(1,2,3,4,5,6,7),
+                                                         'order'=>'date',
+                                                         'order_dir'=>'asc',
+                                                         'sf'=>0,
+                                                         'nr'=>200,
+                                                         'where'=>'where true',
+                                                         'f_field'=>'public_id',
+                                                         'f_value'=>'',
+                                                         'from'=>'',
+                                                         'to'=>'',
+                                                         'store'=>'',
+                                                         'view'=>'',
+                                                         'invoice_type'=>''
+                                                         
+                                                         )
+                    
+                    ),    
                    'report_geo_sales'=>array(
                                           'store_keys'=>'all',
                                           'tipo'=>'m',
@@ -1148,10 +1168,15 @@ $default_state=array(
                                                   'currency_type'=>'original',
                                                   'view'=>'overview',
                                                   'country'=>'GBR',
-                                                  'GBR'=>array(
+                                                  'GB'=>array(
                                                             'tax_category'=>array(),
                                                             'regions'=>array('GBIM'=>1,'EU'=>1,'NOEU'=>1)
                                                         ),
+                                                   'ES'=>array(
+                                                            'tax_category'=>array(),
+                                                            'regions'=>array('ES'=>1,'EU'=>1,'NOEU'=>1)
+                                                        ),     
+                                                        
                                                   'overview'=>array(
                                                                  'order'=>'date',
                                                                  'order_dir'=>'',
@@ -1735,7 +1760,7 @@ $default_state=array(
 							  ),		   
 
                    'customer'=>array(
-                                  'id'=>1,
+                                  'id'=>0,
                                   'action_after_create'=>'continue',
                                   'edit'=>'details',
                                   'details'=>false,
@@ -1777,7 +1802,7 @@ $default_state=array(
                                               'from'=>'',
                                               'to'=>'',
                                               'details'=>0,
-                                              'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1)
+                                              'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1)
                                           )
                               ),
 // ------------------------------ history for staff.php starts here ---------------------------------------------------------
@@ -2091,12 +2116,14 @@ $default_state=array(
                         
                     'user'=>array(
                     'id',
-                    'block_view'=>'login_history'
+                    '{}{}sssss'=>'login_history'
                     ),    
                         
                         
                    'users'=>array(
                                'staff'=>array(
+                               
+                                           'block_view'=>'users',
                                            'display'=>'active',
                                            'order'=>'alias',
                                            'order_dir'=>'',
@@ -2104,7 +2131,8 @@ $default_state=array(
                                            'nr'=>50,
                                            'where'=>'where true',
                                            'f_field'=>'alias',
-                                           'f_value'=>''
+                                           'f_value'=>'',
+                                           'view'=>'login_history'
                                        ),
                                'supplier'=>array(
                                               'display'=>'all',
