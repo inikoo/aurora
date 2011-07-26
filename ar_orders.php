@@ -40,7 +40,28 @@ $data=prepare_values($_REQUEST,array(
                                      ));
 orders_lists($data);
 break;
-
+case('invoices_lists'):
+$data=prepare_values($_REQUEST,array(
+                            'store'=>array('type'=>'key'),
+                                    
+                                        'block_view'=>array('type'=>'enum',
+                                                'valid values regex'=>'/orders|invoices|dn/i'
+                                               )
+                                     
+                                     ));
+invoices_lists($data);
+break;
+case('dn_lists'):
+$data=prepare_values($_REQUEST,array(
+                            'store'=>array('type'=>'key'),
+                                    
+                                        'block_view'=>array('type'=>'enum',
+                                                'valid values regex'=>'/orders|invoices|dn/i'
+                                               )
+                                     
+                                     ));
+dn_lists($data);
+break;
 case('transactions_dipatched'):
 transactions_dipatched();
 break;
@@ -650,6 +671,9 @@ if(isset( $_REQUEST['where']))
     
     
     if($list_key) {
+	  $where_type='';
+  $where_interval='';
+
         $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
 
         $res=mysql_query($sql);
@@ -657,8 +681,8 @@ if(isset( $_REQUEST['where']))
             $awhere=false;
             if ($customer_list_data['List Type']=='Static') {
                 $table='`List Order Bridge` OB left join `Order Dimension` O  on (OB.`Order Key`=O.`Order Key`)';
-                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
-
+                //$where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+				
             } else {// Dynamic by DEFAULT
 
 
@@ -898,7 +922,7 @@ if(isset( $_REQUEST['where']))
     $sql="select   * from  $table   $where $wheref  $where_type $where_interval  order by $order $order_direction limit $start_from,$number_results";
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
 $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` O  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-
+//print $where;exit;
  //  print $sql;
     $adata=array();
 
@@ -3793,7 +3817,411 @@ $translate_list_scope=array(
     echo json_encode($response);
 }
 
+function invoices_lists($data) {
 
+    global $user;
+
+    $conf=$_SESSION['state']['orders_lists'][$data['block_view']];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+
+
+
+        $awhere=$_REQUEST['where'];
+    else
+        $awhere=$conf['where'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['orders_lists']['store']=$store;
+    } else
+        $store=$_SESSION['state']['orders_lists']['store'];
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['customers']['list']['order']=$order;
+    $_SESSION['state']['customers']['list']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['list']['nr']=$number_results;
+    $_SESSION['state']['customers']['list']['sf']=$start_from;
+    $_SESSION['state']['customers']['list']['where']=$awhere;
+    $_SESSION['state']['customers']['list']['f_field']=$f_field;
+    $_SESSION['state']['customers']['list']['f_value']=$f_value;
+    
+
+
+$translate_list_scope=array(
+'orders'=>'Order',
+'invoices'=>'Invoice',
+'dn'=>'Delivery Note',
+
+);
+
+    
+     $where=' where `List Scope`="'.addslashes($translate_list_scope[$data['block_view']]).'"';
+    
+
+
+
+    if (in_array($store,$user->stores)) {
+        $where.=sprintf(' and `List Store Key`=%d  ',$store);
+
+    }
+
+    $wheref='';
+
+    $sql="select count(distinct `List Key`) as total from `List Dimension`  $where  ";
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `List Dimension` $where $wheref ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('List','Lists',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_("Showing all Lists");
+
+
+
+
+    $filter_msg='';
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='name')
+        $order='`List Name`';
+    elseif($order=='creation_date')
+    $order='`List Creation Date`';
+    elseif($order=='list_type')
+    $order='`List Type`';
+
+    else
+        $order='`List Key`';
+
+
+    $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+   
+   
+   $adata=array();
+
+
+
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+
+
+        $cusomer_list_name=" <a href='invoices_list.php?id=".$data['List key']."'>".$data['List Name'].'</a>';
+        switch ($data['List Type']) {
+        case 'Static':
+            $customer_list_type=_('Static');
+            break;
+        default:
+            $customer_list_type=_('Dynamic');
+            break;
+
+        }
+
+        $adata[]=array(
+
+
+                     'list_type'=>$customer_list_type,
+                     'name'=>$cusomer_list_name,
+                     'key'=>$data['List key'],
+                     'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                     'delete'=>'<img src="art/icons/cross.png"/>'
+
+
+                 );
+
+    }
+    mysql_free_result($result);
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+function dn_lists($data) {
+
+    global $user;
+
+    $conf=$_SESSION['state']['orders_lists'][$data['block_view']];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+
+
+
+        $awhere=$_REQUEST['where'];
+    else
+        $awhere=$conf['where'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['orders_lists']['store']=$store;
+    } else
+        $store=$_SESSION['state']['orders_lists']['store'];
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['customers']['list']['order']=$order;
+    $_SESSION['state']['customers']['list']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['list']['nr']=$number_results;
+    $_SESSION['state']['customers']['list']['sf']=$start_from;
+    $_SESSION['state']['customers']['list']['where']=$awhere;
+    $_SESSION['state']['customers']['list']['f_field']=$f_field;
+    $_SESSION['state']['customers']['list']['f_value']=$f_value;
+    
+
+
+$translate_list_scope=array(
+'orders'=>'Order',
+'invoices'=>'Invoice',
+'dn'=>'Delivery Note',
+
+);
+
+    
+     $where=' where `List Scope`="'.addslashes($translate_list_scope[$data['block_view']]).'"';
+    
+
+
+
+    if (in_array($store,$user->stores)) {
+        $where.=sprintf(' and `List Store Key`=%d  ',$store);
+
+    }
+
+    $wheref='';
+
+    $sql="select count(distinct `List Key`) as total from `List Dimension`  $where  ";
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `List Dimension` $where $wheref ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('List','Lists',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_("Showing all Lists");
+
+
+
+
+    $filter_msg='';
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='name')
+        $order='`List Name`';
+    elseif($order=='creation_date')
+    $order='`List Creation Date`';
+    elseif($order=='list_type')
+    $order='`List Type`';
+
+    else
+        $order='`List Key`';
+
+
+    $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+   
+   
+   $adata=array();
+
+
+
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+
+
+        $cusomer_list_name=" <a href='dn_list.php?id=".$data['List key']."'>".$data['List Name'].'</a>';
+        switch ($data['List Type']) {
+        case 'Static':
+            $customer_list_type=_('Static');
+            break;
+        default:
+            $customer_list_type=_('Dynamic');
+            break;
+
+        }
+
+        $adata[]=array(
+
+
+                     'list_type'=>$customer_list_type,
+                     'name'=>$cusomer_list_name,
+                     'key'=>$data['List key'],
+                     'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                     'delete'=>'<img src="art/icons/cross.png"/>'
+
+
+                 );
+
+    }
+    mysql_free_result($result);
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
 
 
 ?>

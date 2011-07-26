@@ -24,6 +24,24 @@ case('delete_order_list'):
                          ));
     delete_order_list($data);
     break;
+	
+case('delete_invoice_list'):
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+
+
+                         ));
+    delete_invoice_list($data);
+    break;
+	
+case('delete_dn_list'):
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+
+
+                         ));
+    delete_dn_list($data);
+    break;
 case('new_list'):
     if (!$user->can_view('orders'))
         exit();
@@ -2109,7 +2127,81 @@ function delete_order_list($data) {
 
 
     } else {
-        $response=array('state'=>400,'msg'=>'Error no customer list');
+        $response=array('state'=>400,'msg'=>'Error no order list');
+        echo json_encode($response);
+        return;
+
+    }
+
+
+
+}
+
+function delete_invoice_list($data) {
+    global $user;
+    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+        if (in_array($row['List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `List Invoice Bridge` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $response=array('state'=>200,'action'=>'deleted');
+            echo json_encode($response);
+            return;
+
+
+
+        } else {
+            $response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+            echo json_encode($response);
+            return;
+        }
+
+
+
+    } else {
+        $response=array('state'=>400,'msg'=>'Error no invoice list');
+        echo json_encode($response);
+        return;
+
+    }
+
+
+
+}
+
+function delete_dn_list($data) {
+    global $user;
+    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+        if (in_array($row['List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `List Delivery Note Bridge` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $response=array('state'=>200,'action'=>'deleted');
+            echo json_encode($response);
+            return;
+
+
+
+        } else {
+            $response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+            echo json_encode($response);
+            return;
+        }
+
+
+
+    } else {
+        $response=array('state'=>400,'msg'=>'Error no delivery note list');
         echo json_encode($response);
         return;
 
