@@ -1756,7 +1756,39 @@ function orders_awhere($awhere) {
 
     }
 */
+	$wr=array();
+	$country=array();
+	$city=array();
+	$postal_code=array();
+	
+	
     $where_billing_geo_constraints='';
+	print $where_data['billing_geo_constraints'];
+	$pattern_wr = array("/^wr\(/", "/\)/");
+	$pattern_city = array("/^t\(/", "/\)/");
+	$pattern_pc = array("/^pc\(/", "/\)/");
+	$pattern_country = '';
+	
+	$temp=explode(",",$where_data['billing_geo_constraints']);
+	foreach($temp as $key=>$value){
+		if(preg_match('/^wr\(/', $value))
+			$wr[]=preg_replace($pattern_wr,'',$value);
+		else if(preg_match('/^t\(/', $value))
+			$city[]=preg_replace($pattern_city,'',$value);
+		else if(preg_match('/^pc\(/', $value))
+			$postal_code[]=preg_replace($pattern_pc,'',$value);	
+		else
+			$country[]=$value;	
+	}
+	print 'wr';
+	print_r($wr);
+	print 'country';
+	print_r($country);
+	print 'city';
+	print_r($city);
+	print 'pc';
+	print_r($postal_code);
+	exit;
     if ($where_data['billing_geo_constraints']!='') {
         $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
     }
