@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-{include file='contacts_navigation.tpl'}
+{include file='orders_navigation.tpl'}
 
 
    

@@ -49,7 +49,7 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'common_customers.js.php',
-              'new_customers_list.js.php',
+              'new_delivery_notes_list.js.php',
               'js/edit_common.js',
           );
 
@@ -57,11 +57,63 @@ $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
 
+$state=array(
+                       'picking_and_packing'=>array('name'=>_('Picking & Packing')),
+                       'packer_assigned'=>array('name'=>_('Packer Assigned')),
+                       'ready_to_be_picked'=>array('name'=>_('Ready to be Picked')),
+					   'picker_assigned'=>array('name'=>_('Picker Assigned')),
+					   'picking'=>array('name'=>_('Picking')),
+					   'picked'=>array('name'=>_('Picked')),
+					   'packing'=>array('name'=>_('Packing')),
+					   'packed'=>array('name'=>_('Packed')),
+					   'approved'=>array('name'=>_('Approved')),
+					   'dispatched'=>array('name'=>_('Dispatched')),
+					   'cancelled'=>array('name'=>_('Cancelled')),
+					   'cancelled_to_restock'=>array('name'=>_('Cancelled to Restock'))					   
+                   );
+$smarty->assign('state',$state);
+
+
+$condition=array(
+                       'less'=>array('name'=>_('Less than')),
+                       'equal'=>array('name'=>_('Equal')),
+                       'more'=>array('name'=>_('More than')),
+					   'between'=>array('name'=>_('Between'))
+                   );
+$smarty->assign('condition',$condition);
+
+$note_type=array(
+                       'replacement_and_shortages'=>array('name'=>_('Replacement & Shortages')),
+                       'order'=>array('name'=>_('Order')),
+                       'replacement'=>array('name'=>_('Replacement')),
+					   'shortages'=>array('name'=>_('Shortages')),
+					   'sample'=>array('name'=>_('Sample')),
+					   'donation'=>array('name'=>_('Donation'))
+                   );
+$smarty->assign('note_type',$note_type);
+
+
+$dispatch_method=array(
+                       'dispatch'=>array('name'=>_('Dispatch')),
+                       'collection'=>array('name'=>_('Collection')),
+                       'unknown'=>array('name'=>_('Unknown')),
+					   'na'=>array('name'=>_('NA'))
+                   );
+$smarty->assign('dispatch_method',$dispatch_method);
+
+
+$parcel_type=array(
+                       'box'=>array('name'=>_('Box')),
+                       'pallet'=>array('name'=>_('Pallet')),
+                       'envelope'=>array('name'=>_('Envelope'))
+                   );
+$smarty->assign('parcel_type',$parcel_type);
+
 
 
 $_SESSION['state']['customers']['list']['where']='';
-$smarty->assign('parent','customers');
-$smarty->assign('title', _('Customers Lists'));
+$smarty->assign('parent','orders');
+$smarty->assign('title', _('Invoices Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -198,5 +250,5 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('options_box_width','550px');
 
 
-$smarty->display('new_customers_lists.tpl');
+$smarty->display('new_delivery_notes_list.tpl');
 ?>

@@ -449,7 +449,8 @@ if (isset( $_REQUEST['list_key']))
     else
         $awhere=$conf['where'];
       
-
+print 'xxxxx';
+print $awhere;
 
     global $myconf,$user;
 
@@ -495,7 +496,8 @@ if(isset( $_REQUEST['where']))
    else
      $from=$_SESSION['state']['orders']['from'];
  }
-
+print 'xxxxx';
+print $where;
   if(isset( $_REQUEST['to']))
     $to=$_REQUEST['to'];
   else{
@@ -1775,8 +1777,14 @@ if($order=='dispatched')
 		   );
    echo json_encode($response);
 }
+
+
 function list_delivery_notes(){
-   
+  global $myconf,$user;
+if (isset( $_REQUEST['list_key']))
+        $list_key=$_REQUEST['list_key'];
+    else
+        $list_key=false;
     $conf=$_SESSION['state']['orders']['dn'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1804,9 +1812,9 @@ function list_delivery_notes(){
    else
      $f_value=$conf['f_value'];
 if(isset( $_REQUEST['where']))
-     $where=$_REQUEST['where'];
+     $awhere=$_REQUEST['where'];
    else
-     $where=$conf['where'];
+     $awhere=$conf['where'];
      
      
      if(isset( $_REQUEST['dn_state_type']))
@@ -1859,7 +1867,7 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['report']['sales']['order_dir']=$order_direction;
      $_SESSION['state']['report']['sales']['nr']=$number_results;
      $_SESSION['state']['report']['sales']['sf']=$start_from;
-     $_SESSION['state']['report']['sales']['where']=$where;
+     $_SESSION['state']['report']['sales']['where']=$awhere;
      $_SESSION['state']['report']['sales']['f_field']=$f_field;
      $_SESSION['state']['report']['sales']['f_value']=$f_value;
      $_SESSION['state']['report']['sales']['to']=$to;
@@ -1870,18 +1878,18 @@ if(isset( $_REQUEST['where']))
      if(isset( $_REQUEST['store_id'])    ){
      $store=$_REQUEST['store_id'];
      $_SESSION['state']['orders']['store']=$store;
-   }else
-     $store=$_SESSION['state']['orders']['store'];
+	}else
+		$store=$_SESSION['state']['orders']['store'];
 
 
     // $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
- $_SESSION['state']['orders']['dn']['dn_state_type']=$state;
+	$_SESSION['state']['orders']['dn']['dn_state_type']=$state;
     $_SESSION['state']['orders']['dn']['order']=$order;
     $_SESSION['state']['orders']['dn']['order_dir']=$order_direction;
     $_SESSION['state']['orders']['dn']['nr']=$number_results;
     $_SESSION['state']['orders']['dn']['sf']=$start_from;
-    $_SESSION['state']['orders']['dn']['where']=$where;
+    $_SESSION['state']['orders']['dn']['where']=$awhere;
     $_SESSION['state']['orders']['dn']['f_field']=$f_field;
     $_SESSION['state']['orders']['dn']['f_value']=$f_value;
 
@@ -1895,54 +1903,123 @@ if(isset( $_REQUEST['where']))
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
    }
- if(is_numeric($store)){
-     $where.=sprintf(' and `Delivery Note Store Key`=%d ',$store);
-   }
-
-   $where.=$date_interval['mysql'];
    
+    $where='where true';
+    $table='`Delivery Note Dimension` D ';
+    $where_type='';
+	$where_interval=''; 
+   
+	$where_interval=$date_interval['mysql'];
+	
+
+
+	
  
+	if ($awhere) {
+		$tmp=preg_replace('/\\\"/','"',$awhere);
+		$tmp=preg_replace('/\\\\\"/','"',$tmp);
+		$tmp=preg_replace('/\'/',"\'",$tmp);
+
+		$raw_data=json_decode($tmp, true);
+		$raw_data['store_key']=$store;
+		list($where,$table)=dn_awhere($raw_data);
+
+		$where_type='';
+		$where_interval='';
+	}
+    
+    if($list_key) {
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+
+        $res=mysql_query($sql);
+        if ($customer_list_data=mysql_fetch_assoc($res)) {
+            $awhere=false;
+            if ($customer_list_data['List Type']=='Static') {
+                $table='`List Delivery Note Bridge` DB left join `Delivery Note Dimension` D  on (DB.`Delivery Note Key`=D.`Delivery Note Key`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+
+            } else {// Dynamic by DEFAULT
+
+
+
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
+
+                $raw_data=json_decode($tmp, true);
+
+                $raw_data['store_key']=$store;
+                list($where,$table)=dn_awhere($raw_data);
+
+
+
+
+            }
+
+        } else {
+            exit("error");
+        }
+    }
+  
+	if(is_numeric($store) and in_array($store,$user->stores)){
+		$where_stores=sprintf(' and `Delivery Note Store Key`=%d ',$store);
+        $store=new Store($store);
+        $currency=$store->data['Store Currency Code'];
+    } else {
+     
+        $currency='';
+	}
+
+     if(isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  ){
+    	$where_stores=sprintf('and `Order Store Key` in (%s)  ',join(',',$user->stores));      			       
+    }
+
+    $where.=$where_stores;
+
+      $where.=$where_interval;
+	  
+	  
 switch ($state) {
 case 'shortages':
-    $where.=' and `Delivery Note Type` in ("Shortages","Replacement & Shortages")';
+    $where_type.=' and `Delivery Note Type` in ("Shortages","Replacement & Shortages")';
     break;
 case 'replacements':
-    $where.=' and `Delivery Note Type` in ("Replacement","Replacement & Shortages")';
+    $where_type.=' and `Delivery Note Type` in ("Replacement","Replacement & Shortages")';
     break;
 case 'donations':
-    $where.=' and `Delivery Note Type`="Donation"';
+    $where_type.=' and `Delivery Note Type`="Donation"';
     break;
 case 'samples':
-    $where.=' and `Delivery Note Type`="Sample"';
+    $where_type.=' and `Delivery Note Type`="Sample"';
     break;
 case 'orders':
-    $where.=' and `Delivery Note Type`="Order"';
+    $where_type.=' and `Delivery Note Type`="Order"';
     break;
 case 'returned':
-    $where.=' and `Delivery Note State`="Cancelled to Restock"';
+    $where_type.=' and `Delivery Note State`="Cancelled to Restock"';
     break;
 case 'send':
-    $where.=' and `Delivery Note State`="Dispatched"';
+    $where_type.=' and `Delivery Note State`="Dispatched"';
     break;
 case 'ready':
-    $where.=' and `Delivery Note State` in ("Packed","Approved")';
+    $where_type.=' and `Delivery Note State` in ("Packed","Approved")';
     break;
 case 'packing':
-    $where.=" and `Delivery Note State` in ('Picking & Packing','Packer Assigned','Picked','Packing')";
+    $where_type.=" and `Delivery Note State` in ('Picking & Packing','Packer Assigned','Picked','Packing')";
     break;
 case 'picking':
-    $where.=' and `Delivery Note State` in ("Picking & Packing","Picking")';
+    $where_type.=' and `Delivery Note State` in ("Picking & Packing","Picking")';
     break;
 
 case 'ready_to_pick':
-    $where.=' and `Delivery Note State` in ("Ready to be Picked","Picker Assigned")';
+    $where_type.=' and `Delivery Note State` in ("Ready to be Picked","Picker Assigned")';
     break;
 default:
 
     break;
 }
    
-   
+    $where.=$where_type;
    
    $wheref='';
 

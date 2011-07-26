@@ -1,10 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
-{include file='contacts_navigation.tpl'}
+{include file='orders_navigation.tpl'}
 
 
    
-      <h2 style="clear:left">{t}New Customers List{/t} ({$store->get('Store Code')})</h2>
+      <h2 style="clear:left">{t}New Delivery Notes List{/t} ({$store->get('Store Code')})</h2>
       
       
 <div style="clear:both;border:1px solid #ccc;padding:20px;width:870px">
@@ -13,112 +13,155 @@
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
       <table >
 	<form>
-		<tr><td colspan="2"><b>{t}Contacts who...{/t}</b></td></tr>
+		<tr><td colspan="2"><b>{t}Delivery Notes which...{/t}</b></td></tr>
       <tr>
-        <td>{t}Register between{/t}:</td>
+        <td>{t}Created Date{/t}:</td>
         <td>
-            <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="customer_first_contacted_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
-            <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="customer_first_contacted_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
-            <div id="customer_first_contacted_from_Container" style="position:absolute;display:none; z-index:2"></div>
-            <div id="customer_first_contacted_to_Container" style="display:none; z-index:2;position:absolute"></div>
+            <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="created_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop2" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="created_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="created_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="created_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
         </td>        
       </tr>
      <tr>
-        <td>{t}based in (location){/t}:</td>
+        <td>{t}Start Picking Date{/t}:</td>
         <td>
-        <input id="geo_constraints" style="width:500px"/> 
-        <div class="general_options" >
-                <span id="postal_code" class="state_details">{t}Postal Code{/t}</span>
-                <span id="city" class="state_details">{t}City{/t}</span>
-                <span id="country" class="state_details">{t}Country{/t}</span>
-                <span id="wregion" class="state_details">{t}World Region{/t}</span>
-
-        </div>
-        </td>
+            <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="start_picking_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="start_picking_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="start_picking_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="start_picking_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>    
         
-    </tr>  
-      
-      
+    </tr>      
     <tr>
-        <td>{t}have{/t}: <span style="cursor:pointer" id="show_dont_have">&#8623;</span></td>
+		<td>{t}Finish Picking Date{/t}:</td>
         <td>
-   <div id="have_options" default_cat=""   class="options" style="margin:5px 0">
-     {foreach from=$have_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="have_{$cat_key}"  parent="have_" cat="{$cat_key}"  >{$cat3.name}</span>
-     {/foreach}
-    </div>
-        </td>
+            <input id="v_calpop5" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="finish_picking_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop6" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="finish_picking_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="finish_picking_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="finish_picking_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>    
         
-    </tr>
-   
-     <tr style="display:none" id='tr_dont_have'>
-        <td>{t}don't have{/t}:</td>
+    </tr> 
+    <tr>
+		<td>{t}Start Packing Date{/t}:</td>
         <td>
-         <div id="dont_have_options" default_cat=""   class="options" style="margin:5px 0">
-     {foreach from=$have_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="dont_have_{$cat_key}" parent="dont_have_"  cat="{$cat_key}" >{$cat3.name}</span>
-     {/foreach}
-    </div>    
-        </td>
+            <input id="v_calpop7" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="start_packing_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop8" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="start_packing_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="start_packing_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="start_packing_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>    
         
-    </tr>
-    
-    
-     <tr>
-        <td>{t}wish to receive{/t}: <span style="cursor:pointer" id="show_dont_wish_to_receive">&#8623;</span></td>
+    </tr> 
+	<tr>
+		<td>{t}Finish Packing Date{/t}:</td>
         <td>
-         <div id="allow_options" default_cat=""   class="options" style="margin:5px 0">
-     {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}margin-left:20px{/if}"onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_"  cat="{$cat_key}" >{$cat3.name}</span>
-     {/foreach}
-    </div>    
-        </td>
-    </tr>
-    
-        <tr style="display:none"  id="tr_dont_wish_to_receive">
-        <td>{t}don't wish to receive{/t}:</td>
+            <input id="v_calpop9" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="finish_packing_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop10" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="finish_packing_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="finish_packing_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="finish_packing_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>    
+        
+    </tr> 
+	<tr>
+		<td>{t}Dispatched Approved Date{/t}:</td>
         <td>
-         <div id="dont_allow_options" default_cat=""   class="options" style="margin:5px 0">
-     {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}display:none{/if}" onclick="checkbox_changed_allow(this)" id="dont_allow_{$cat_key}" parent="dont_allow_"  cat="{$cat_key}" >{$cat3.name}</span>
-     {/foreach}
-    </div>    
-        </td>
-    </tr>
-    
+            <input id="v_calpop11" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="dispatched_approved_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop12" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="dispatched_approved_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="dispatched_approved_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="dispatched_approved_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>    
+        
+    </tr> 
+	<tr>
+		<td>{t}Delivery Note Date{/t}:</td>
+        <td>
+            <input id="v_calpop13" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="delivery_note_date_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop14" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="delivery_note_date_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="delivery_note_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="delivery_note_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>    
+        
+    </tr> 
+	
+	
+	
+	<tr>
+		<td>{t}Delivery Note Country{/t}:</td>
+		<td>
+		<input id="billing_geo_constraints" style="width:400px"/> 
+		<div class="general_options" >
+			<span id="postal_code" class="state_details">{t}Postal Code{/t}</span>
+			<span id="city" class="state_details">{t}City{/t}</span>
+			<span id="country" class="state_details">{t}Country{/t}</span>
+			<span id="wregion" class="state_details">{t}World Region{/t}</span>
+		</div>
+		</td>      
+    </tr>  
 
-     <tr><td>{t}Categories{/t}</td><td><input id="customer_categories" value="" style="width:500px" />
-      <div class="general_options" >
-                <span id="customer_category" class="state_details">{t}Other Categories{/t}</span>
-                <span id="category_business_type" class="state_details" style="{if !$business_type}display:none{/if}">{t}Type of Business{/t}</span>
-               
-
-        </div>
-      </td><tr>
-    
-	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>
-      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" />
-      <div class="general_options" >
-                <span id="product_category" class="state_details">{t}Product Categories{/t}</span>
-                <span id="product" class="state_details">{t}Product{/t}</span>
-                <span id="family" class="state_details">{t}Family{/t}</span>
-                <span id="department" class="state_details">{t}Department{/t}</span>
-
-        </div>
-      </td><tr>
-
-      <tr style="display:none"><td>{t}but didn't order this product(s){/t}</td><td><input id="product_not_ordered1" value="" style="width:400px" /></td><tr>
-      <tr style="display:none"><td>{t}and did't receive this product(s){/t}</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
+	  
       <tr>
-        <td>{t}during this period{/t}:</td>
-        <td>
-            <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_ordered_or_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
-            <input id="v_calpop2" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_ordered_or_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
-            <div id="product_ordered_or_from_Container" style="position:absolute;display:none; z-index:2"></div>
-            <div id="product_ordered_or_to_Container" style="display:none; z-index:2;position:absolute"></div>
-        </td>
-      </tr>
+        <td>{t}Weight{/t}:</td>
+		<td>
+            <input id="weight_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="a" style="display:none">&rarr;</span> 
+			<input style="display:none" id="weight_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
+			<div id="weight_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_weight_condition(this)" id="weight_condition_{$cat_key}" parent="weight_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
      
+      </tr>
+	  <tr><td colspan="2"><b>{t}Delivery Notes type...{/t}</b></td></tr>
+	  <tr>
+        <td>{t}State{/t}:</td>
+		<td>
+			<div id="state_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$state item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_state_condition(this)" id="state_condition_{$cat_key}" parent="state_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
+	  <tr>
+        <td>{t}Note Type{/t}:</td>
+		<td>
+			<div id="note_type_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$note_type item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_note_type_condition(this)" id="note_type_condition_{$cat_key}" parent="note_type_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
+	  <tr>
+        <td>{t}Dispatch Method{/t}:</td>
+		<td>
+			<div id="dispatch_method_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$dispatch_method item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_dispatch_method_condition(this)" id="dispatch_method_condition_{$cat_key}" parent="dispatch_method_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
+	  <tr>
+        <td>{t}Parcel Type{/t}:</td>
+		<td>
+			<div id="parcel_type_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$parcel_type item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_parcel_type_condition(this)" id="parcel_type_condition_{$cat_key}" parent="parcel_type_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
       </table>
       </form>
        </table>
@@ -146,7 +189,7 @@
 
     
     <div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none" >
-    <span class="clean_table_title">Customers List</span>
+    <span class="clean_table_title">Delivery Notes List</span>
  <div id="table_type">
          <a  style="float:right"  class="table_type state_details"  href="customers_lists_csv.php" >{t}Export (CSV){/t}</a>
 
@@ -241,49 +284,7 @@
     </div>
  </div> 
  
- <div id="dialog_department_list">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-        <div id="the_table" class="data_table" >
-            <span class="clean_table_title">{t}Department List{/t}</span>
-            {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
-            <div  id="table5"   class="data_table_container dtable btable "> </div>
-        </div>
-    </div>
- </div>
- 
 
- 
- 
- <div id="dialog_family_list">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-        <div id="the_table" class="data_table" >
-            <span class="clean_table_title">{t}Family List{/t}</span>
-            {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6}
-            <div  id="table6"   class="data_table_container dtable btable "> </div>
-        </div>
-    </div>
- </div>
- 
- <div id="dialog_product_list">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-        <div id="the_table" class="data_table" >
-            <span class="clean_table_title">{t}Product List{/t}</span>
-            {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
-            <div  id="table7"   class="data_table_container dtable btable "> </div>
-        </div>
-    </div>
- </div>
- 
- <div id="dialog_category_list">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-        <div id="the_table" class="data_table" >
-            <span class="clean_table_title">{t}Category List{/t}</span>
-            {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8}
-            <div  id="table8"   class="data_table_container dtable btable "> </div>
-        </div>
-    </div>
- </div>
- 
  
    <div id="filtermenu3" class="yuimenu">
   <div class="bd">
