@@ -449,8 +449,7 @@ if (isset( $_REQUEST['list_key']))
     else
         $awhere=$conf['where'];
       
-print 'xxxxx';
-print $awhere;
+
 
     global $myconf,$user;
 
@@ -496,8 +495,7 @@ if(isset( $_REQUEST['where']))
    else
      $from=$_SESSION['state']['orders']['from'];
  }
-print 'xxxxx';
-print $where;
+
   if(isset( $_REQUEST['to']))
     $to=$_REQUEST['to'];
   else{
