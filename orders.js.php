@@ -482,6 +482,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('dn_view','span' , 'dn_table_type'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&dn_state_type='+this.getAttribute('table_type');
+	 alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  } 
  
