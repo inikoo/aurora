@@ -933,8 +933,8 @@ $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-        $id="<a href='order.php?p=cs&id=".$data['Order Key']."'>".$myconf['order_id_prefix'].sprintf("%05d",$data['Order Public ID']).'</a>';
-	
+        $id="<a href='order.php?p=cs&id=".$data['Order Key']."'>".$myconf['order_id_prefix'].sprintf("%05s",$data['Order Public ID']).'</a>';
+		
         $name=" <a href='customer.php?p=cs&id=".$data['Order Key']."'>".($data['Order Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Order Customer Name']).'</a>';
 
 
