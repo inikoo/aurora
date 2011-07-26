@@ -1685,17 +1685,13 @@ function dn_awhere($awhere){
 	
 	
 	
-/*
+
     $where_billing_geo_constraints='';
     if ($where_data['billing_geo_constraints']!='') {
         $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
     }
 
-	$where_delivery_geo_constraints='';
-    if ($where_data['delivery_geo_constraints']!='') {
-        $where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
-    }
-*/		
+
 	
 
 	//print $table. $where; exit;
