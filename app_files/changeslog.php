@@ -3234,9 +3234,18 @@ INDEX ( `Invoice Key` )
 ALTER TABLE `HQ Dimension` ADD `HQ Country Code` VARCHAR( 3 ) NOT NULL AFTER `HQ Name` ;
 ALTER TABLE `HQ Dimension` ADD `HQ Country 2 Alpha Code` VARCHAR( 2 ) NOT NULL AFTER `HQ Country Code` ;
 
+CREATE TABLE `List Order Bridge` (
+`List Key` SMALLINT( 5 ) NOT NULL ,
+`Order Key` MEDIUMINT( 8 ) NOT NULL
+) ENGINE = MYISAM;
 
 
+CREATE TABLE `List Invoice Bridge` (
+`List Key` SMALLINT( 5 ) NOT NULL ,
+`Invoice Key` MEDIUMINT( 8 ) NOT NULL
+) ENGINE = MYISAM;
 
+ALTER TABLE `Invoice Tax Dimension` CHANGE `UNK` `UNK` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
 
 */
 
