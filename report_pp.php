@@ -49,6 +49,9 @@ if(isset($_REQUEST['tipo'])){
 
 
 $root_title=_('Pickers & Packers Report');
+
+
+
 include_once('report_dates.php');
 
 

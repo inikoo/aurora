@@ -1,5 +1,5 @@
 function download_csv(e,tipo){
-   alert('export_csv.php?tipo='+tipo)
+   //alert('export_csv.php?tipo='+tipo)
    window.location.href='export_csv.php?tipo='+tipo;
 }
 
@@ -10,6 +10,6 @@ var fields_to_export=new Object;
 for(x in fields_to_export_data){
 fields_to_export[fields_to_export_data[x].getAttribute('name')]=1;
 }
-alert('export_csv.php?tipo='+args.tipo+'&fields='+YAHOO.lang.JSON.stringify(fields_to_export));
+//alert('export_csv.php?tipo='+args.tipo+'&fields='+YAHOO.lang.JSON.stringify(fields_to_export));
    window.location.href='export_csv.php?tipo='+args.tipo+'&fields='+YAHOO.lang.JSON.stringify(fields_to_export);
 }

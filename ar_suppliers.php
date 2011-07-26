@@ -1659,7 +1659,7 @@ function list_supplier_products() {
     if($total_records>$number_results)
       $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-      $rtext_rpp=sprintf("Showing all products");
+      $rtext_rpp=_("Showing all products");
 
 
 

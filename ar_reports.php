@@ -17,9 +17,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('tax_overview'):
-    tax_overview_gb();
-    break;
 
+
+switch($corporate_country_2alpha_code){
+case'GB':
+case'ES':
+    tax_overview_europe($corporate_country_2alpha_code);
+    break;
+DEFAULT:
+tax_overview($corporate_country_2alpha_code);
+break;
+}
+break;
 case('store_sales'):
     list_store_sales();
     break;
@@ -65,7 +74,18 @@ case('customers_with_no_tax'):
     if (!$user->can_view('orders'))
         exit("E");
 
-    list_customers_with_no_tax();
+switch($corporate_country_2alpha_code){
+case'GB':
+case'ES':
+    list_customers_by_tax_europe($corporate_country_2alpha_code);
+    break;
+DEFAULT:
+list_customers_by_tax($corporate_country_2alpha_code);
+break;
+}
+
+
+   
 
     break;
 case('pickers_report'):
@@ -372,8 +392,16 @@ function pickers_report() {
         $order='`Staff Alias`';
 
 
+        $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`)  left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s   ",$date_interval['mysql']);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total_orders=$row['orders'];
+$total_units=$row['units'];
+$total_weight=$row['weight'];
+}
+//print $sql;
 
-    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 // print $sql;
     $result=mysql_query($sql);
     $data=array();
@@ -394,6 +422,11 @@ function pickers_report() {
                     'orders'=>number($row['orders']),
                     'units'=>number($row['units'],0) ,
                     'weight'=>number($row['weight'],0)." "._('Kg'),
+                      'p_orders'=>percentage($row['orders'],$total_orders),
+                    'p_units'=>percentage($row['units'],$total_units),
+                    'p_weight'=>percentage($row['weight'],$total_weight),
+                     
+                    
                     //'errors'=>number($row['errors']),
                     //'epo'=>number(100*$row['epo']+0.00001,1)."%",
                     //'hours'=>$hours,
@@ -511,7 +544,13 @@ function packers_report() {
     else
         $order='`Staff Alias`';
 
-
+  $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`)  left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s   ",$date_interval['mysql']);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total_orders=$row['orders'];
+$total_units=$row['units'];
+$total_weight=$row['weight'];
+}
 
     $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
     // print $sql;
@@ -534,6 +573,9 @@ function packers_report() {
                     'orders'=>number($row['orders']),
                     'units'=>number($row['units'],0) ,
                     'weight'=>number($row['weight'],0)." "._('Kg'),
+                      'p_orders'=>percentage($row['orders'],$total_orders),
+                    'p_units'=>percentage($row['units'],$total_units),
+                    'p_weight'=>percentage($row['weight'],$total_weight),
                     //'errors'=>number($row['errors']),
                     //'epo'=>number(100*$row['epo']+0.00001,1)."%",
                     //'hours'=>$hours,
@@ -1798,7 +1840,7 @@ if(count($tax_categories)==0){
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all invoices");
+        $rtext_rpp=_("Showing all invoices");
 
     $filter_msg='';
 
@@ -1976,7 +2018,7 @@ if(count($tax_categories)==0){
     echo json_encode($response);
 }
 
-function tax_overview_gb() {
+function tax_overview_europe($country) {
 
 
     $conf=$_SESSION['state']['report_sales_with_no_tax']['overview'];
@@ -2092,12 +2134,10 @@ function tax_overview_gb() {
     $rtext_rpp='';
 
 
-    $corporate_currency='GBP';
-    $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $corporate_currency=$row['HQ Currency'];
-    }
+    global $corporate_currency;
+
+
+    
 
     $sum_net=0;
     $sum_tax=0;
@@ -2107,7 +2147,15 @@ function tax_overview_gb() {
 
 //   $sql="select `Invoice Tax Code`,`Invoice Currency`,sum(`Invoice Total Amount`*`Invoice Currency Exchange` as `Invoice Total Amount Corporate`) ,  sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`,sum( `Invoice Total Net Amount`) as net,sum(`Invoice Total Amount`) as total  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
-    $where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
+    if($country=='GB'){
+    $country_label='GB+IM';
+        $where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
+    }else{
+     $where_extra=sprintf(' and `Invoice Billing Country 2 Alpha Code`=%s',prepare_mysql($country));
+      $country_label=$country;
+    }
+
+
     $sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
 
@@ -2121,7 +2169,7 @@ function tax_overview_gb() {
   $sum_invoices+=$row['invoices'];
         $data[]=array(
                     'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
-                    'category'=>'GB+IM',
+                    'category'=>$country_label,
                     'net'=>money($row['net_hq'],$corporate_currency),
                     'tax'=>money($row['tax_hq'],$corporate_currency),
                     'total'=>money($row['total_hq'],$corporate_currency),
@@ -2130,7 +2178,14 @@ function tax_overview_gb() {
     }
     mysql_free_result($res);
 
+
+   if($country=='GB'){
     $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
+    }else{
+     $where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
+    }
+
+
     $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
   
     $res=mysql_query($sql);
@@ -2143,7 +2198,7 @@ function tax_overview_gb() {
 
         $data[]=array(
                     'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
-                    'category'=>'EU (no GB)',
+                    'category'=>'EU (no '.$country.')',
                     'net'=>money($row['net_hq'],$corporate_currency),
                     'tax'=>money($row['tax_hq'],$corporate_currency),
                     'total'=>money($row['total_hq'],$corporate_currency),
@@ -2152,8 +2207,15 @@ function tax_overview_gb() {
     }
     mysql_free_result($res);
 
-
+   if($country=='GB'){
    $where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
+
+    }else{
+     $where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
+    }
+
+
+
     $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
   
     $res=mysql_query($sql);
@@ -2209,9 +2271,9 @@ function tax_overview_gb() {
 
 
 
-function list_customers_with_no_tax() {
+function list_customers_by_tax_europe($country) {
 
-
+global $corporate_currency;
     $conf=$_SESSION['state']['report_sales_with_no_tax']['customers'];
 
 
@@ -2279,19 +2341,21 @@ function list_customers_with_no_tax() {
 
     }
 
-$country='GBR';
+
 
 
     $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-    if (isset( $_REQUEST['elements_region_GBIM'])){
-        $elements_region['GBIM']=$_REQUEST['elements_region_GBIM'];
+//print_r($elements_region);
+foreach($elements_region as $element_region=>$value){
+
+
+ if (isset( $_REQUEST['elements_region_'.$element_region])){
+        $elements_region[$element_region]=$_REQUEST['elements_region_'.$element_region];
     }
-    if (isset( $_REQUEST['elements_region_EU'])){
-        $elements_region['EU']=$_REQUEST['elements_region_EU'];
-        }
-    if (isset( $_REQUEST['elements_region_NOEU'])){
-        $elements_region['NOEU']=$_REQUEST['elements_region_NOEU'];
-  }
+
+}
+
+  
   $_SESSION['state']['report_sales_with_no_tax'][$country]['regions']=$elements_region;
 
 
@@ -2373,6 +2437,8 @@ if(count($tax_categories)==0){
 
 
     $where_elements_region='';
+  
+  if($country=='GB'){
     if($elements_region['GBIM']){
        $where_elements_region.=' or `Invoice Billing Country 2 Alpha Code` in ("GB","IM")  ';
     }
@@ -2382,6 +2448,22 @@ if(count($tax_categories)==0){
     if($elements_region['NOEU']){
        $where_elements_region.=' or (`Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No")  ';
     }
+  }else{
+  
+     if($elements_region[$country]){
+       $where_elements_region.=sprintf(' or `Invoice Billing Country 2 Alpha Code` =%s  ',prepare_mysql($country));
+    }
+    if($elements_region['EU']){
+       $where_elements_region.=sprintf(' or ( `Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="Yes" ) ',prepare_mysql($country));
+    }
+    if($elements_region['NOEU']){
+       $where_elements_region.=sprintf(' or (`Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="No")  ',prepare_mysql($country));
+    }
+  
+  }  
+    
+  
+  
   $where_elements_region=preg_replace('/^\s*or\s*/','',$where_elements_region);
   if( $where_elements_region=='')
     $where_elements_region=' false ';
@@ -2411,7 +2493,7 @@ if(count($tax_categories)==0){
 
 
     $sql="select  count(Distinct `Invoice Customer Key`) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref  ";
-   // print $sql ;
+  // print $sql ;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -2434,7 +2516,7 @@ if(count($tax_categories)==0){
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=sprintf("Showing all customers");
+        $rtext_rpp=_("Showing all customers");
 
     $filter_msg='';
 
@@ -2499,17 +2581,10 @@ if(count($tax_categories)==0){
     else
         $order='`Customer Name`';
 
-    $corporate_currency='GBP';
-    $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $corporate_currency=$row['HQ Currency'];
-    }
+ 
 
 
-
-
-    $sql="select sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq, sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq, sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
 //print $sql;
 
     $data=array();

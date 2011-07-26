@@ -221,8 +221,8 @@ scope:this
 };
 var onCellClick = function(oArgs) {
     var target = oArgs.target,
-                 column = this.getColumn(target),
-                          record = this.getRecord(target);
+    column = this.getColumn(target),
+    record = this.getRecord(target);
 
     var recordIndex = this.getRecordIndex(record);
 
@@ -251,13 +251,14 @@ var onCellClick = function(oArgs) {
      		        ar_file='ar_edit_staff.php';
 		        else if (column.object=='subcategory')
      		         ar_file='ar_edit_categories.php';
-               
+                else if (column.object=='order_list')
+     		         ar_file='ar_edit_orders.php';
      		   else
                     ar_file='ar_edit_assets.php';
 
 
 
-  //        	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+          	//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 //return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
@@ -381,7 +382,7 @@ function validate_scope(branch) {
 function is_valid_scope(branch){
  var valid=true;
   for (item in validate_scope_data[branch]) {
- // alert(branch +' '+item+' '+validate_scope_data[branch][item].name+' '+validate_scope_data[branch][item].validated) 
+  //alert(branch +' '+item+' '+validate_scope_data[branch][item].name+' '+validate_scope_data[branch][item].validated) 
         if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  ){
             valid=false;
             break;
@@ -712,7 +713,19 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-	     alert(request);
+	   
+	   
+	   if(validate_scope_metadata[branch]['dynamic_second_key']!= undefined){
+	     second_key=validate_scope_metadata[branch]['dynamic_second_key'];
+	    second_name_name='second_key';
+	     if(validate_scope_metadata[branch]['second_key_name']!= undefined){
+	         second_name_name=validate_scope_metadata[branch]['second_key_name']
+	     }
+	    
+	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
+	   }
+	   
+	  // alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
@@ -848,10 +861,10 @@ return;
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	alert(request);
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-  alert(o.responseText);
+ // alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if(r.msg!=undefined){

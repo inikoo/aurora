@@ -187,6 +187,12 @@ window.location.href='insert_csv.php';
 
 function new_map(){
 dialog_map.show();
+Dom.setStyle('map_msg','display','none');
+	 Dom.setStyle('map_form_table','display','');
+		Dom.setStyle('map_form_text','color','#000');
+Dom.setStyle('map_error_used_map_name','display','none');
+				Dom.setStyle('map_form_text_tr','display','');
+
 Dom.get('map_name').value='';
 }
 
@@ -217,43 +223,87 @@ dialog_map_select.show();
 }
 
 function save_map(){
-	alert('save');
+	//alert('save');
 	
 	var ar_file='ar_import_csv.php';
     var request=ar_file+"?tipo=save_map&scope="+Dom.get('scope').value+"&scope_key="+Dom.get('scope_key').value+"&meta_data="+temp_map+"&name="+Dom.get('map_name').value;
-	alert(request);
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	
 	  success:function(o) {
-	//alert(o.responseText)
+//alert(o.responseText)
 	  
 	//Dom.get('call_table').innerHTML=o.responseText;
 		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
-		  
-		  //Dom.get('call_table').innerHTML=r.result
+            		 
+            		 Dom.setStyle('map_form_table','display','none');
+            		                         		 Dom.setStyle('map_msg','display','');
+
+
+            		 Dom.get('map_msg').innerHTML=r.msg;
+            		 
+            		 setTimeout("dialog_map.hide()", 750);
+            		  var table=tables['table5'];
+			var datasource=tables['dataSource5'];
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+            	
 		}else{
-		    //alert(r.msg);
+		
+		if(r.type=='no_name'){
+		Dom.setStyle('map_form_text','color','red');
+		
+		}else if(r.type=='used_name'){
+		Dom.setStyle('map_error_used_map_name','display','');
+	    Dom.setStyle('map_form_text_tr','display','none');
+
+		}else{
+		alert(r.msg)
+		  
+		    }
+		    
 		}
 	    }
 	});
-    dialog_map.hide();
+   
 }
 
 function select_map(oArgs){
+
+
+ var target = oArgs.target,
+                 column = this.getColumn(target),
+                          record = this.getRecord(target);
+
+    var recordIndex = this.getRecordIndex(record);
+    
+    
+    
+    ar_file='ar_import_csv.php';
+    
+   switch (column.action) {
+    case('select'):
+
 	var ar_file='ar_import_csv.php';
-	var request=ar_file+"?tipo=change_map&index=0&scope="+Dom.get('scope').value+"&map_key="+tables.table5.getRecord(oArgs.target).getData('code'); 
-	alert(request);
+	var request=ar_file+"?tipo=change_map&scope="+Dom.get('scope').value+"&map_key="+tables.table5.getRecord(oArgs.target).getData('map_key'); 
+	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	 success:function(o) {
-	//alert(o.responseText)
+//	alert(o.responseText)
 	  
 	//Dom.get('call_table').innerHTML=o.responseText;
 		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
-		 Dom.get('call_table').innerHTML=r.result
+		
+		    for(x in r.changes){
+		        select=Dom.get('select'+x);
+		        select[r.changes[x]].selected=1;
+		    }
+		
+		
 		}else{
 		    //alert(r.msg);
 		}
@@ -270,6 +320,39 @@ function select_map(oArgs){
 	*/
     dialog_map_select.hide();
     hide_filter(true,5)
+    
+    break;
+    case('delete'):
+       
+       var request=ar_file+"?tipo=delete_map&map_key="+  record.getData('map_key'); 
+	
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+	 success:function(o) {
+	//alert(o.responseText)
+	  
+	//Dom.get('call_table').innerHTML=o.responseText;
+		
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		 var table=tables['table5'];
+			var datasource=tables['dataSource5'];
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+		}else{
+		    alert(r.msg);
+		}
+	    }
+	
+	
+	});
+       
+       
+    break;
+    }
+    
+    
+    
+    
 }
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -283,14 +366,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
 			
-                    {key:"code", label:"<?php echo _('Name')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                   ,{key:"name", label:"<?php echo _('Map')?>",width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                    {key:"name", label:"<?php echo _('Name')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},action:'select'}
+                   ,{key:"map", label:"<?php echo _('Map')?>",width:260,action:'select'}
+                    ,{key:"delete", label:"",width:16,className:"aleft",action:'delete',object:'csv_import_map'}
 				];
 			       
-	    //this.dataSource5 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=department_list&store_key=1&tableid=5&nr=20&sf=0");
+	   
 		this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    
-		//alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0")
+		//alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		
 		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource5.connXhrMode = "queueRequests";
 	    	    this.dataSource5.table_id=tableid;
@@ -310,7 +395,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "code","name"
+			 "map","name","delete","map_key"
 			 ]};
 
 
@@ -329,7 +414,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "code",
+									 key: "name",
 									 dir: ""
 								     },
 								     dynamicData : true
@@ -348,8 +433,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  this.table5.subscribe("rowMouseoverEvent", this.table5.onEventHighlightRow);
        this.table5.subscribe("rowMouseoutEvent", this.table5.onEventUnhighlightRow);
-      this.table5.subscribe("rowClickEvent", select_map);
-           
+   //   this.table5.subscribe("rowClickEvent", select_map);
+           	        this.table5.subscribe("cellClickEvent", select_map);            
+
            this.table5.table_id=tableid;
            this.table5.subscribe("renderEvent", myrenderEvent);
 

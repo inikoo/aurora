@@ -44,7 +44,7 @@ $js_files=array(
               'js/dropdown.js'
           );
 
-
+$_SESSION['state']['import']['type']=1;
 $_SESSION['state']['import']['records_ignored_by_user']=array();
 
 $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_map','label'=>_('Add'));
@@ -132,5 +132,5 @@ $smarty->assign('scope',$scope);
 $smarty->assign('scope_key',$scope_key);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->display('import_csv_verify.tpl');
+$smarty->display('external_csv_verify.tpl');
 ?>

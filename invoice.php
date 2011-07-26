@@ -77,6 +77,8 @@ $js_files=array(
 
 
 
+
+
 $smarty->assign('parent','orders');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -84,8 +86,15 @@ $smarty->assign('js_files',$js_files);
 
 $smarty->assign('customer_id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 
+$tax_data=array();
+$sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  `Invoice Tax Bridge` B  left join `Tax Category Dimension` T on (T.`Tax Category Code`=B.`Tax Code`)  where B.`Invoice Key`=%d ",$invoice->id);
 
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+    $tax_data[]=array('name'=>$row['Tax Category Name'],'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
+}
 
-
+$smarty->assign('tax_data',$tax_data);
+//print_r($tax_data);
 $smarty->display($template);
 ?>

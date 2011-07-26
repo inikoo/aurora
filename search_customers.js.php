@@ -44,7 +44,130 @@ var subject_found_key=0;
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
+
+
+var validate_scope_data=
+{
+    'search_field':{'Company_Name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Company_Name', 'dbname':'Company Name'}
+					,'Contact_Name':{'inputed':false,'validated':false,'regexp':"[^\\d]+",'required':false,'group':0,'type':'item', 'name':'Contact_Name', 'dbname':'Contact Name'}
+					,'Email':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Email', 'dbname':'Email'}
+					,'Telephone':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Telephone', 'dbname':'Telephone'}
+	}
+}
+
+var validate_scope_metadata={
+ 'search_field':{'type':'new','ar_file':'ar_search.php','key_name':'store_key','key':'1'}
+};
  
+YAHOO.util.Event.addListener(window, "load", draw_table);
+
+function draw_table(){
+	search_result();
+}
+ 
+function search_result(request) {
+
+    tables = new function() {
+
+
+	var store_key='1';
+
+	var tableid=5; 
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [
+			
+                    {key:"store", label:"<?php echo _('store')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},action:'select'}
+                   ,{key:"key", label:"<?php echo _('key')?>",width:260,action:'select'}
+				   ,{key:"name", label:"<?php echo _('name')?>",width:260,action:'select'}
+				   ,{key:"address", label:"<?php echo _('address')?>",width:260,action:'select'}
+				   
+                   
+				];
+			       
+	    //this.dataSource5 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=department_list&store_key=1&tableid=5&nr=20&sf=0");
+
+		if(request)
+			this.dataSource5 = new YAHOO.util.DataSource(request);
+		else
+			this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=search_field&scope=customers_store&store_key=0&tableid="+tableid+"&nr=20&sf=0");
+	
+		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource5.connXhrMode = "queueRequests";
+	    	    this.dataSource5.table_id=tableid;
+
+	    this.dataSource5.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "store","key","name","address"
+			 ]};
+
+
+	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource5
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator5', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "name",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	  
+	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+
+
+
+
+ this.table5.subscribe("rowMouseoverEvent", this.table5.onEventHighlightRow);
+       this.table5.subscribe("rowMouseoutEvent", this.table5.onEventUnhighlightRow);
+   //   this.table5.subscribe("rowClickEvent", select_map);
+           	        this.table5.subscribe("cellClickEvent", select_map);            
+
+           this.table5.table_id=tableid;
+           this.table5.subscribe("renderEvent", myrenderEvent);
+
+
+
+	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table5.filter={key:'code',value:''};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+// --------------------------------------Department table ends here----------------------------------------------------------
+
+
+/*
+
+	*/
+	};
+
+    } 
  
 function find_subject(){
    
@@ -574,11 +697,44 @@ if(scope=='customer'){
 
 }
 
+function select_map(){
+}
 
+
+function advanced_search(){
+	//alert('search');
+
+    var values=new Object();
+
+    for (item in validate_scope_data['search_field']) {
+        //
+        var item_input=Dom.get(validate_scope_data['search_field'][item].name);
+
+		values[validate_scope_data['search_field'][item].dbname]=item_input.value;
+    }
+
+    scope_edit_ar_file=validate_scope_metadata['search_field']['ar_file'];
+    parent_key=validate_scope_metadata['search_field']['key'];
+    parent=validate_scope_metadata['search_field']['key_name'];
+    jsonificated_values=YAHOO.lang.JSON.stringify(values);
+
+    var request=scope_edit_ar_file+'?tipo=search_field'+'&scope='+scope+'&store_id=' + store_key+ '&values=' + 	jsonificated_values+"&tableid=5";
+	alert(request);
+    //YAHOO.util.Connect.asyncRequest('POST',request , {});
+	search_result(request);
+
+
+}
 
 function init(){
+
+
+
    store_key=Dom.get('Store_Key').value;
- 
+   scope=Dom.get('Scope').value;
+
+
+
 	YAHOO.util.Event.addListener('Telephone', "blur",telephone_inputed);
 
 	YAHOO.util.Event.addListener('Email', "blur",email_inputed);
@@ -699,46 +855,16 @@ function init(){
 	}
  
 
-var company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_name);
-	company_name_oACDS.queryMatchContains = true;
-	var company_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Name","Company_Name_Container", company_name_oACDS);
-	company_name_oAutoComp.minQueryLength = 0; 
-	company_name_oAutoComp.queryDelay = 0.75;
-
-
-	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_contact_name);
-	contact_name_oACDS.queryMatchContains = true;
-	var contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Contact_Name","Contact_Name_Container", contact_name_oACDS);
-	contact_name_oAutoComp.minQueryLength = 0; 
-	contact_name_oAutoComp.queryDelay = 0.75;
-
-	var email_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_address);
-	email_name_oACDS.queryMatchContains = true;
-	var email_name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", email_name_oACDS);
-	email_name_oAutoComp.minQueryLength = 0; 
-	email_name_oAutoComp.queryDelay = 0.75;
-
 	
 
-	
-	var telephone_name_oACDS = new YAHOO.util.FunctionDataSource(validate_telephone);
-	telephone_name_oACDS.queryMatchContains = true;
-	var telephone_name_oAutoComp = new YAHOO.widget.AutoComplete("Telephone","Telephone_Container", telephone_name_oACDS);
-	telephone_name_oAutoComp.minQueryLength = 0; 
-	contact_name_oAutoComp.queryDelay = 0.55;
+
+ 	YAHOO.util.Event.addListener("advanced_search", "click", advanced_search);
 
 
-	var town_name_oACDS = new YAHOO.util.FunctionDataSource(address_changed);
-	town_name_oACDS.queryMatchContains = true;
-	var town_name_oAutoComp = new YAHOO.widget.AutoComplete("address_town","address_town_container", town_name_oACDS);
-	town_name_oAutoComp.minQueryLength = 0; 
-	contact_name_oAutoComp.queryDelay = 0.55;
 
-	var postal_code_name_oACDS = new YAHOO.util.FunctionDataSource(validate_postal_code);
-	postal_code_name_oACDS.queryMatchContains = true;
-	var postal_code_name_oAutoComp = new YAHOO.widget.AutoComplete("address_postal_code","address_postal_code_container", postal_code_name_oACDS);
-	postal_code_name_oAutoComp.minQueryLength = 0; 
-	contact_name_oAutoComp.queryDelay = 0.55;
+
+
+
  
     } 
 YAHOO.util.Event.onDOMReady(init);

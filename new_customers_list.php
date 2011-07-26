@@ -71,7 +71,57 @@ $have_options=array(
                   'fax'=>array('name'=>_('Fax')),
                   'address'=>array('name'=>_('Address')),
               );
+			  
+
 $smarty->assign('have_options',$have_options);
+
+
+
+$customer_stat=array();
+$customer_stat=array('losing'=>array('name'=>_('Losing')));
+
+if(isset($_REQUEST['active']) && $_REQUEST['active']==1)
+	  $customer_stat['active']=array('name'=>_('Active'),'selected'=>true);
+else
+	  $customer_stat['active']=array('name'=>_('Active'));
+	  
+if(isset($_REQUEST['lost']) && $_REQUEST['lost']==1)  
+		$customer_stat['lost']=array('name'=>_('Lost'),'selected'=>true);
+else
+		$customer_stat['lost']=array('name'=>_('Lost'));
+
+
+$smarty->assign('customer_stat',$customer_stat);
+
+/*
+Parameter		Function
+auto			auto reload
+lost			enable lost
+active			enable active
+datei			set dates {0<i<n}
+
+*/
+$v_calpop=array();
+for($i=1; $i<=6; $i++){
+if(isset($_REQUEST['v_calpop'.$i]))
+	$v_calpop['v_calpop'.$i]=$_REQUEST['v_calpop'.$i];
+else
+	$v_calpop['v_calpop'.$i]='';
+}
+
+$smarty->assign('v_calpop',$v_calpop);	
+
+
+
+if(isset($_REQUEST['auto']) && $_REQUEST['auto']==1)
+	$auto=1;
+else
+	$auto=0;
+	
+$smarty->assign('auto',$auto);	
+
+
+
 
 $dont_have_options=array(
                        'email'=>array('name'=>_('Email')),
@@ -81,7 +131,13 @@ $dont_have_options=array(
                    );
 $smarty->assign('dont_have_options',$dont_have_options);
 
-
+$condition=array(
+                       'less'=>array('name'=>_('Less than')),
+                       'equal'=>array('name'=>_('Equal')),
+                       'more'=>array('name'=>_('More than')),
+					   'between'=>array('name'=>_('Between'))
+                   );
+$smarty->assign('condition',$condition);
 
 $allow_options=array(
                       

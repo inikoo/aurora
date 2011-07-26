@@ -36,7 +36,8 @@ case('edit_email_campaign'):
                              'email_campaign_key'=>array('type'=>'key'),
                              'okey'=>array('type'=>'string'),
                              'key'=>array('type'=>'string'),
-                             'newvalue'=>array('type'=>'string')
+                             'newvalue'=>array('type'=>'string'),
+                             'email_content_key'=>array('type'=>'string')
 
                          ));
     edit_email_campaign($data);
@@ -145,7 +146,8 @@ function add_emails_to_email_campaign_from_list($data) {
                          'action'=>'created',
                          'number_recipients'=>$email_campaign->data['Number of Emails'],
                          'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],
-                         'msg'=>$email_campaign->msg
+                         'msg'=>$email_campaign->msg,
+                          'ready_to_send'=>$email_campaign->ready_to_send()
                         );
     } else {
         $response= array('state'=>400,'msg'=>$email_campaign->msg);
@@ -183,7 +185,8 @@ function add_email_address_manually($data) {
         $response= array('state'=>200,
                          'action'=>'created',
                          'number_recipients'=>$email_campaign->data['Number of Emails'],
-                         'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview']
+                         'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],
+                         'ready_to_send'=>$email_campaign->ready_to_send()
                         );
     } else {
         $response= array('state'=>400,'msg'=>$email_campaign->msg);
@@ -239,9 +242,14 @@ function edit_email_campaign($data) {
     }
 
 
+    if($data['key']=='Email Campaign Subject'){
+     $email_campaign->update_subject($data['newvalue'],$data['email_content_key']);
+    } elseif($data['key']=='Email Campaign Content Text'){
+     $email_campaign->update_content_text($data['newvalue'],$data['email_content_key']);
+    }else{
 
     $email_campaign->update(array($data['key']=>$data['newvalue']));
-
+}
     if ($email_campaign->updated) {
 
         $response= array(

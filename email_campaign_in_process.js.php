@@ -1,5 +1,12 @@
 <?php
 include_once('common.php');
+//include_once('class.EmailCampaign.php');
+
+
+//$email_campaign_key=$_REQUEST['email_campaign_key'];
+
+ //$email_campaign=new EmailCampaign($email_campaign_key);
+
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -16,7 +23,9 @@ function select_department(oArgs){
     product_ordered_or=product_ordered_or+'d('+tables.table5.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
     Dom.get('email_campaign_scope').value=product_ordered_or;
     dialog_department_list.hide();
-    hide_filter(true,5)
+    hide_filter(true,5);
+     validate_general('email_campaign','scope', Dom.get('email_campaign_scope').value);
+
 }
 
 function select_family(oArgs){
@@ -460,7 +469,19 @@ switch ( branch ) {
 		Dom.get('recipients_preview').innerHTML=r.recipients_preview;
 		Dom.get('email_campaign_number_recipients').value=r.number_recipients;
 		validate_general('full_email_campaign','email_recipients',r.number_recipients);
-		check_if_ready_to_send();
+		
+		if(r.ready_to_send){
+		Dom.removeClass('preview_email_campaign','disabled');
+				Dom.removeClass('send_email_campaign','disabled');
+
+		}else{
+			Dom.addClass('preview_email_campaign','disabled');
+				Dom.addClass('send_email_campaign','disabled');
+		
+		}
+		
+		
+		//check_if_ready_to_send();
 		close_dialog_add_email_address();
 		break;
 	
@@ -471,21 +492,6 @@ switch ( branch ) {
 }
 }
 
-function check_if_can_preview(){
-    if(is_valid_scope('preview_email_campaign')){
-        Dom.removeClass('preview_email_campaign','disabled');
-    }else{
-        Dom.addClass('preview_email_campaign','disabled');
-    }
-}
-
-function check_if_ready_to_send(){
-if(is_valid_scope('full_email_campaign')){
-Dom.removeClass('send_email_campaign','disabled');
-}else{
-Dom.addClass('send_email_campaign','disabled');
-}
-}
 
 function close_dialog_add_email_address(){
 cancel_new_general('add_email_address_manually')
@@ -742,7 +748,7 @@ function init(){
 	            'group':1,
 	            'type':'item',
 	            'name':'email_campaign_scope',
-	            'validation':[{'regexp':"^([a-z0-9\\-]+|(d|f|c)\\([a-z0-9\\-]+\\))(,([0-9a-z\\-]+|(d|f|c)\\([a-z0-9\\-]+\\)))*$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
+	            'validation':[{'regexp':"^([a-z0-9\\-]+|(d|f|c)\\([a-z0-9\\-]+\\))(,([0-9a-z\\-]+|(d|f|c|o)\\([a-z0-9\\-\\_]+\\)))*$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
 	            },  
 	  'subject':{
 	            'dbname':'Email Campaign Subject',
@@ -819,7 +825,7 @@ function init(){
 
 
  validate_scope_metadata={
-'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value,'secondary_key':false}
+'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value,'dynamic_second_key':'current_email_contact_key','second_key_name':'email_content_key'}
 ,'add_email_address_manually':{'type':'new','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'full_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'preview_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
@@ -892,10 +898,7 @@ function init(){
 
     Event.addListener('reset_edit_email_campaign', "click", reset_edit_email_campaign);
     Event.addListener('save_edit_email_campaign', "click", save_edit_email_campaign);
-    check_if_ready_to_send();
-   check_if_can_preview();
-
-
+ 
      dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_department_list.render();
     Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);

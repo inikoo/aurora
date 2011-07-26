@@ -371,10 +371,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
                     ,{key:"delete", label:"",width:16,className:"aleft",action:'delete',object:'csv_import_map'}
 				];
 			       
-	    //this.dataSource5 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=department_list&store_key=1&tableid=5&nr=20&sf=0");
+	   
 		this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    
-		//alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0")
+		//alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		
 		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource5.connXhrMode = "queueRequests";
 	    	    this.dataSource5.table_id=tableid;

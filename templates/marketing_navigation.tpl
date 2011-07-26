@@ -1,9 +1,3 @@
-<span class="nav2 onleft"><a href="#">{t}Create List{/t}</a></span>
-
-<span class="nav2 onleft"><a href="customers_lists.php">{t}View List{/t}</a></span>
-<span class="nav2 onleft"><a href="new_campaign.php">{t}Create Campaign{/t}</a></span>
-<span class="nav2 onleft"><a href="campaign_builder.php">{t}View Campaign{/t}</a></span>
-
 
 
 
