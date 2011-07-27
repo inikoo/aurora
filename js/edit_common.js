@@ -251,7 +251,7 @@ var onCellClick = function(oArgs) {
      		        ar_file='ar_edit_staff.php';
 		        else if (column.object=='subcategory')
      		         ar_file='ar_edit_categories.php';
-                else if (column.object=='order_list')
+                else if (column.object=='order_list' || column.object=='invoice_list'|| column.object=='dn_list')
      		         ar_file='ar_edit_orders.php';
      		   else
                     ar_file='ar_edit_assets.php';
