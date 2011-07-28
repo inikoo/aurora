@@ -180,6 +180,16 @@
 
 </tbody>
 <tbody id="html_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML'}display:none{/if}">
+
+<tr>
+<td></td>
+<td colspan=2>
+<textarea id="html_email_editor" name="html_email_editor" rows="20" cols="75">
+This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>
+</textarea>
+</td>
+</tr>
+
 </tbody>
 
 </table>

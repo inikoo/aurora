@@ -60,6 +60,7 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
+
                'common.css',
                'button.css',
                'container.css',
@@ -76,6 +77,7 @@ $js_files=array(
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
+                 $yui_path.'editor/editor-min.js',
               'js/common.js',
               'js/table_common.js',
               'js/search.js',

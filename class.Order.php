@@ -1236,12 +1236,11 @@ class Order extends DB_Table {
 		`Order Main Country 2 Alpha Code`,
 		`Order Main World Region Code`,
 		`Order Main Country Code`,
-		`Order Main City Code`,
+		`Order Main Town`,
 		`Order Main Postal Code`,
-		`Order Ship To World Region Code`,
-		`Order Ship To City Code`,
-		`Order Ship To Postal Code`,
-		`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`) values (%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s)",
+		
+		`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`) values 
+		(%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s)",
                          $this->data ['Order Customer Order Number'],
 			 // $this->data ['Order Ship To Key To Deliver'],
                          prepare_mysql ($this->data ['Order Tax Code'] ),
@@ -1250,11 +1249,10 @@ class Order extends DB_Table {
                          prepare_mysql ( $this->data ['Order Main Country 2 Alpha Code'] ),
                          prepare_mysql ( $this->data ['Order Main World Region Code'] ),
 						 prepare_mysql ( $this->data ['Order Main Country Code'] ),
-						 prepare_mysql ( $this->data ['Order Main City Code'] ),
+						 prepare_mysql ( $this->data ['Order Main Town'] ),
 					     prepare_mysql ( $this->data ['Order Main Postal Code'] ),
-						 prepare_mysql ( $this->data ['Order Ship To World Region Code'] ),
-						 prepare_mysql ( $this->data ['Order Ship To City Code'] ),
-						 prepare_mysql ( $this->data ['Order Ship To Postal Code'] ),
+					     
+				
 						
                          prepare_mysql ( $this->data ['Order Customer Contact Name'],false ),
                          prepare_mysql ( $this->data ['Order For'] ),
@@ -2659,17 +2657,24 @@ where `Order Key`=%d",
         $this->data ['Order Main Country 2 Alpha Code'] = ($customer->data ['Customer Main Country 2 Alpha Code']==''?'XX':$customer->data ['Customer Main Country 2 Alpha Code']);
 		$this->data ['Order Main Country Code'] = ($customer->data ['Customer Main Country Code']==''?'UNK':$customer->data ['Customer Main Country Code']);
 		$this->data ['Order Main Postal Code'] = ($customer->data ['Customer Main Postal Code']==''?'':$customer->data ['Customer Main Postal Code']);
-		$this->data ['Order Main City Code'] = ($customer->data ['Customer Main Town']==''?'':$customer->data ['Customer Main Town']);
+		$this->data ['Order Main Town'] = ($customer->data ['Customer Main Town']==''?'':$customer->data ['Customer Main Town']);
 		
-		$sql=sprintf("select `World Region Code` from kbase.`Country Dimension` where `Country Code`=%s",$this->data ['Order Main Country Code']);
+		$sql=sprintf("select `World Region Code` from kbase.`Country Dimension` where `Country Code`=%s",prepare_mysql($this->data ['Order Main Country Code']));
 		$result=mysql_query($sql);
 		if($row=mysql_fetch_array($result))
-			$this->data ['Order Main World Region Code'] = ($row['World Region Code']==''?'':$row['World Region Code']);
+			$this->data ['Order Main World Region Code'] = ($row['World Region Code']==''?'UNKN':$row['World Region Code']);
+		else
+		    $this->data ['Order Main World Region Code'] = 'UNKN';
 		
 		
-		$this->data ['Order Ship To World Region Code'] = ($customer->data ['Customer Main Delivery Address Region']==''?'':$customer->data ['Customer Main Delivery Address Region']);
-		$this->data ['Order Ship To City Code'] = ($customer->data ['Customer Main Delivery Address Town']==''?'':$customer->data ['Customer Main Delivery Address Town']);
-		$this->data ['Order Ship To Postal Code'] = ($customer->data ['Customer Main Delivery Address Postal Code']==''?'':$customer->data ['Customer Main Delivery Address Postal Code']);
+				$sql=sprintf("select `World Region Code` from kbase.`Country Dimension` where `Country Code`=%s",prepare_mysql($this->data ['Order Main Country Code']));
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result))
+			$this->data ['Order Main World Region Code'] = ($row['World Region Code']==''?'UNKN':$row['World Region Code']);
+		else
+		    $this->data ['Order Main World Region Code'] = 'UNKN';
+		
+		
 		
         $this->data ['Order Customer Order Number']=$customer->get_number_of_orders()+1;
   if (!isset($this->data ['Order Tax Code'])) {
@@ -3357,8 +3362,14 @@ where `Order Key`=%d",
 					
                 } else {
                     $store_country_code='XX';
+                    $store_main_country_code='UNK';
+					$store_main_city_code='';
+					$store_main_region_code='UNKN';
+					$store_main_postal_code='';
+                    
+                    
                 }
-                $sql=sprintf("update `Order Dimension` set `Order For Collection`='Yes' ,`Order Ship To Country Code`='', `Order Main Country 2 Alpha Code`=%s, `Order Main World Region Code`=%s, `Order Main Country Code`=%s,`Order Main City Code`=%s,`Order Main Postal Code`=%s,`Order XHTML Ship Tos`='',`Order Ship To Keys`='' where `Order Key`=%d"
+                $sql=sprintf("update `Order Dimension` set `Order For Collection`='Yes' ,`Order Ship To Country Code`='', `Order Main Country 2 Alpha Code`=%s, `Order Main World Region Code`=%s, `Order Main Country Code`=%s,`Order Main Town`=%s,`Order Main Postal Code`=%s,`Order XHTML Ship Tos`='',`Order Ship To Keys`='' where `Order Key`=%d"
                              ,prepare_mysql($store_country_code)
 							 ,prepare_mysql($store_main_region_code)
 							 ,prepare_mysql($store_main_country_code)
@@ -3377,12 +3388,14 @@ where `Order Key`=%d",
 
 
 
-                $sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  where `Order Key`=%d"
+                $sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  ,`Order Ship To World Region Code`=%s,`Order Ship To Town`=%s,`Order Ship To Postal Code`=%s      where `Order Key`=%d"
                              ,prepare_mysql($ship_to->data['Ship To Country Code'])
 
                              ,prepare_mysql($ship_to->data['Ship To XHTML Address'])
                              ,prepare_mysql($ship_to->id)
-
+                             ,prepare_mysql($ship_to->get('World Region Code'))
+                             ,prepare_mysql($ship_to->data['Ship To Town'])
+                             ,prepare_mysql($ship_to->data['Ship To Postal Code'])
                              ,$this->id
                             );
                 mysql_query($sql);
@@ -3413,11 +3426,18 @@ where `Order Key`=%d",
                          //prepare_mysql ( $this->data ['Order Ship To Keys'],false),
 
 			 // prepare_mysql ( $this->data ['Order Ship To Country Code'],false ),
-        $sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Key To Deliver`=%d,  `Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  where `Order Key`=%d"
+			 
+			 
+			 
+        $sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Key To Deliver`=%d,  `Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  ,`Order Ship To World Region Code`=%s,`Order Ship To Town`=%s,`Order Ship To Postal Code`=%s   where `Order Key`=%d"
 		     ,$ship_to->id
                      ,prepare_mysql($ship_to->data['Ship To Country Code'])
                      ,prepare_mysql($ship_to->data['Ship To XHTML Address'])
                      ,prepare_mysql($ship_to->id)
+                        ,prepare_mysql($ship_to->get('World Region Code'))
+                             ,prepare_mysql($ship_to->data['Ship To Town'])
+                             ,prepare_mysql($ship_to->data['Ship To Postal Code'])
+                     
                      ,$this->id
                     );
         mysql_query($sql);
@@ -3441,6 +3461,9 @@ where `Order Key`=%d",
                 $this->data ['Order Ship To Keys']=$ship_to_key;
                 $this->data ['Order XHTML Ship Tos']='<div>'.$ship_to->display('xhtml').'</div>';
                 $this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];
+                $this->data ['Order Ship To World Region Code']=$ship_to->get('World Region Code');
+                $this->data ['Order Ship To Town']=$ship_to->data['Ship To Town'];
+                $this->data ['Order Ship To Postal  Code']=$ship_to->data['Ship To Postal Code'];
             } else {
                 $this->data ['Order Ship To Keys'].=','.$ship_to_key;
                 $this->data ['Order XHTML Ship Tos'].='<div>'.$ship_to->display('xhtml').'</div>';

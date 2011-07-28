@@ -27,12 +27,15 @@ $css_files=array(
                //'http://yui.yahooapis.com/combo?2.8.0r4/build/paginator/assets/skins/sam/paginator.css&2.8.0r4/build/datatable/assets/skins/sam/datatable.css',
                'css/table.css',
                'css/thumbnail.css',
+               'css/family.css',
 
            );
 
 
 $js_files=array(
               //'http://yui.yahooapis.com/combo?2.8.0r4/build/utilities/utilities.js&2.8.0r4/build/paginator/paginator-min.js&2.8.0r4/build/datasource/datasource-min.js&2.8.0r4/build/datatable/datatable-min.js&2.8.0r4/build/json/json-min.js',
+             
+               
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-debug.js',
               $yui_path.'paginator/paginator-min.js',
@@ -66,7 +69,7 @@ update_page_key_visit_log($page->data['Page Key']);
 $can_view=array();
 $can_view['slideshow']=($page->data['Product Slideshow Layout']=='Yes'?1:0);
 $can_view['manual']=($page->data['Product Manual Layout']=='Yes'?1:0);
-$can_view['list']=($page->data['List Layout']=='Yes'?1:0);
+$can_view['list']=($page->data['Product List Layout']=='Yes'?1:0);
 $can_view['thumbnails']=($page->data['Product Thumbnails Layout']=='Yes'?1:0);
 
 $number_views=0;
@@ -106,6 +109,7 @@ $smarty->assign('left_menu_template',"../templates/left_menu.".$store->data['Sto
 $order_by='`Product Code';
 
 $sql=sprintf("select `Product Currency`,`Product Price`,`Product Current Key`,`Product Code`,`Product Web State`,`Product Name`,`Product Units Per Case`,`Product Main Image` from `Product Dimension` where `Product Family Key`=%d and `Product Sales Type`='Public Sale' and `Product Web State` not in ('Offline')  order by %s ",$family->id,$order_by);
+
 $res=mysql_query($sql);
 $products=array();
 while ($row=mysql_fetch_array($res)) {
@@ -120,6 +124,9 @@ while ($row=mysql_fetch_array($res)) {
                 );
 }
 
+
+$smarty->assign('number_products',count($products));
+
 $smarty->assign('products',$products);
 $smarty->assign('family',$family);
 
@@ -128,7 +135,7 @@ $smarty->assign('js_files',$js_files);
 
 $_SESSION['prev_page_key']=$page->data['Page Key'];
 
-$smarty->display("../templates/family.".$store->data['Store Locale'].".tpl");
+//$smarty->display("../templates/family.".$store->data['Store Locale'].".tpl");
 
 
 

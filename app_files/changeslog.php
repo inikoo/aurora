@@ -3247,6 +3247,78 @@ CREATE TABLE `List Invoice Bridge` (
 
 ALTER TABLE `Invoice Tax Dimension` CHANGE `UNK` `UNK` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
 
+
+alter table `Order Dimension` add `Order Main World Region Code` char(4) NULL DEFAULT NULL ,
+add `Order Main Country Code` char(4) NULL DEFAULT NULL ,
+add `Order Main City Code` char(4) NULL DEFAULT NULL ,
+add `Order Main Postal Code` char(4) NULL DEFAULT NULL, 
+add `Order Ship To World Region Code` char(4) NULL DEFAULT NULL ,
+add `Order Ship To City Code` char(4) NULL DEFAULT NULL ,
+add `Order Ship To Postal Code` char(4) NULL DEFAULT NULL;
+
+alter table `Delivery Note Dimension` add `Delivery Note World Region Code` char(4) NULL DEFAULT NULL ,
+add `Delivery Note Country Code` char(4) NULL DEFAULT NULL ,
+add `Delivery Note City Code` char(4) NULL DEFAULT NULL ,
+add `Delivery Note Postal Code` char(4) NULL DEFAULT NULL;
+
+
+alter table `Invoice Dimension` add `Invoice Delivery World Region Code` char(4) NULL DEFAULT NULL ,
+add `Invoice Delivery Country Code` char(4) NULL DEFAULT NULL ,
+add `Invoice Delivery City Code` char(4) NULL DEFAULT NULL ,
+add `Invoice Delivery Postal Code` char(4) NULL DEFAULT NULL;
+
+alter table `Invoice Dimension` add `Invoice Billing World Region Code` char(4) NULL DEFAULT NULL ,
+add `Invoice Billing Country Code` char(4) NULL DEFAULT NULL ,
+add `Invoice Billing City Code` char(4) NULL DEFAULT NULL ,
+add `Invoice Billing Postal Code` char(4) NULL DEFAULT NULL;
+
+CREATE TABLE `List Delivery Note Bridge` (
+` List Key` SMALLINT( 5 ) NOT NULL ,
+`Delivery Note Key` MEDIUMINT( 8 ) NOT NULL
+) ENGINE = MYISAM;
+
+CREATE TABLE `Attachment Bridge` (
+`Attachment Key` MEDIUMINT UNSIGNED ZEROFILL NOT NULL ,
+`Subject` ENUM( 'Customer Communications', 'Customer History Attachment' ) NOT NULL ,
+`Subject Key` MEDIUMINT UNSIGNED ZEROFILL NOT NULL ,
+PRIMARY KEY ( `Attachment Key` , `Subject` , `Subject Key` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Attachment Bridge` ADD INDEX ( `Attachment Key` ) ;
+ALTER TABLE `Attachment Bridge` ADD INDEX ( `Subject` , `Subject Key` ); 
+ALTER TABLE `Attachment Dimension` CHANGE `Attachment Compressed Data` `Attachment Data` LONGBLOB NOT NULL ;
+ALTER TABLE `Attachment Dimension` DROP `Attachment Filename` ;
+
+CREATE TABLE `Email Credentials Scope Mailbox` (
+`Email Credentials Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Scope` ENUM( 'Customer Communications' ) NOT NULL ,
+`Mailbox` VARCHAR( 256 ) NOT NULL ,
+PRIMARY KEY ( `Email Credentials Key` , `Scope` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Credentials Scope Mailbox` DROP PRIMARY KEY ;
+
+
+ALTER TABLE `Invoice Dimension` 
+CHANGE `Invoice Delivery World Region Code` `Invoice Delivery World Region Code` CHAR(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, 
+CHANGE `Invoice Delivery Country Code` `Invoice Delivery Country Code` CHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, 
+CHANGE `Invoice Delivery City Code` `Invoice Delivery Town` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+ CHANGE `Invoice Delivery Postal Code` `Invoice Delivery Postal Code` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, 
+ CHANGE `Invoice Billing World Region Code` `Invoice Billing World Region Code` CHAR(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, 
+ CHANGE `Invoice Billing Country Code` `Invoice Billing Country Code` CHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, 
+CHANGE `Invoice Billing City Code` `Invoice Billing Town` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+ CHANGE `Invoice Billing Postal Code` `Invoice Billing Postal Code` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ 
+ ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note Country Code` `Delivery Note Country Code` CHAR( 4 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Delivery Note City Code` `Delivery Note Town` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Delivery Note Postal Code` `Delivery Note Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+ALTER TABLE `Order Dimension` CHANGE `Order Main Country Code` `Order Main Country Code` CHAR( 3 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Order Main City Code` `Order Main Town` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Order Main Postal Code` `Order Main Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+ALTER TABLE `Order Dimension` CHANGE `Order Ship To City Code` `Order Ship To Town` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
 */
 
 ?>

@@ -1,9 +1,10 @@
 <?php
-$sql="select `Page Parent Category`,`Page Short Title`,`Page URL`,`Image URL` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) left join `Image Dimension` IM on (IM.`Image Key`=`Page Thumbnail Image Key`) where `Page Type`='Internal' and `Page Section`='Reports'";
+$sql="select `Page Parent Category`,`Page Short Title`,`Page URL`,`Page Thumbnail Image Key` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`)  where `Page Type`='Internal' and `Page Section`='Reports'";
 //print $sql;
 $res=mysql_query($sql);
 $current_category='';
 $report_index=array();
+
 while($row=mysql_fetch_array($res)){
   if($current_category!=$row['Page Parent Category']){
     switch($row['Page Parent Category']){
@@ -22,7 +23,7 @@ while($row=mysql_fetch_array($res)){
   }
   $title=$row['Page Short Title'];
   
-  $report_index[$row['Page Parent Category']]['reports'][$title]=array('title'=>$title,'url'=>$row['Page URL'],'snapshot'=>$row['Image URL']);
+  $report_index[$row['Page Parent Category']]['reports'][$title]=array('title'=>$title,'url'=>$row['Page URL'],'snapshot'=>'image.php?id='.$row['Page Thumbnail Image Key']);
     
 
 }

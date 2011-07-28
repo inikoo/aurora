@@ -994,23 +994,62 @@ function create_header() {
   $this->data ['Invoice Gross Amount'] = 0;
   $this->data ['Invoice Discount Amount'] = 0;
   
+   if(!isset($this->data ['Invoice Delivery Town'])){
+  $this->data ['Invoice Delivery Town']='';
+  }
+    if(!isset($this->data ['Invoice Delivery Postal Code'])){
+  $this->data ['Invoice Delivery Postal Code']='';
+  }
+    if(!isset($this->data ['Invoice Billing Town'])){
+  $this->data ['Invoice Billing Town']='';
+  }
+    if(!isset($this->data ['Invoice Billing Postal Code'])){
+  $this->data ['Invoice Billing Postal Code']='';
+  }
   
-  if(!isset($this->data ['Invoice Billing Country 2 Alpha Code']))
+  if(!isset($this->data ['Invoice Billing Country 2 Alpha Code'])){
     $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
-  if(!isset($this->data ['Invoice Delivery Country 2 Alpha Code']))
+    $this->data ['Invoice Billing Country Code']='UNK';
+    $this->data ['Invoice Billing World Region Code']='UNKN';
+  
+    }
+  if(!isset($this->data ['Invoice Delivery Country 2 Alpha Code'])){
     $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
+     $this->data ['Invoice Delivery World Region Code']='UNKN';
+    $this->data ['Invoice Delivery Country Code']='UNK';    
+  
+  }
   
   $sql = sprintf ( "insert into `Invoice Dimension` (
 `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
   `Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`
- ,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values 
+ ,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,
+ `Invoice Billing Country 2 Alpha Code`,
+  `Invoice Billing Country Code`,
+ `Invoice Billing World Region Code`,
+ `Invoice Billing Town`,
+ `Invoice Billing Postal Code`,
+ 
+ `Invoice Delivery Country 2 Alpha Code`,
+   `Invoice Delivery Country Code`,
+ `Invoice Delivery World Region Code`,
+ `Invoice Delivery Town`,
+ `Invoice Delivery Postal Code`,
+ 
+ `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values 
   (%s,%s,%s, 
   %f,
   %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
   %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f, 
  %s,%s, %s, %s,%s,%s,%s,
  %.2f,
- %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+ %s,%s,%s,%s,
+ 
+ %s, %s, %s, %s,%s,
+ 
+ %s, %s, %s, %s,%s,
+ 
+ %s,%s,%s,%s)"
 		
 		   , prepare_mysql ( $this->data ['Invoice Tax Charges Code'] )
 		   , prepare_mysql ( $this->data ['Invoice Customer Contact Name'],false)
@@ -1053,7 +1092,18 @@ function create_header() {
 		   , prepare_mysql ( $this->data ['Invoice Processed By Key'] )
 		   , prepare_mysql ( $this->data ['Invoice Charged By Key'] ) 
 		   , prepare_mysql ( $this->data ['Invoice Billing Country 2 Alpha Code'] ) 
+		   , prepare_mysql ( $this->data ['Invoice Billing Country Code'] ) 
+		   , prepare_mysql ( $this->data ['Invoice Billing World Region Code'] ) 
+		   , prepare_mysql ( $this->data ['Invoice Billing Town'] ) 
+            , prepare_mysql ( $this->data ['Invoice Billing Postal Code'] ) 
+
+		   
 		   , prepare_mysql ( $this->data ['Invoice Delivery Country 2 Alpha Code'] ) 
+		     , prepare_mysql ( $this->data ['Invoice Delivery Country Code'] ) 
+		   , prepare_mysql ( $this->data ['Invoice Delivery World Region Code'] ) 
+		   , prepare_mysql ( $this->data ['Invoice Delivery Town'] ) 
+            , prepare_mysql ( $this->data ['Invoice Delivery Postal Code'] ) 
+		   
 		   , prepare_mysql ( $this->data ['Invoice Dispatching Lag'] ) 
 		   , prepare_mysql ( $this->data ['Invoice Taxable'] ) 
 		   , prepare_mysql ( $this->data ['Invoice Tax Code'] ) 
@@ -1129,8 +1179,26 @@ while($row=mysql_fetch_assoc($res)) {
 
 function update_delivery_note_data($data){
 $this->data['Invoice Delivery Country 2 Alpha Code']=$data['Invoice Delivery Country 2 Alpha Code'];
- $sql=sprintf("update `Invoice Dimension` set `Invoice Delivery Country 2 Alpha Code`=%s where `Invoice Key`=%d "
+$this->data['Invoice Delivery Country Code']=$data['Invoice Delivery Country Code'];
+$this->data['Invoice Delivery World Region Code']=$data['Invoice Delivery World Region Code'];
+$this->data['Invoice Delivery Town']=$data['Invoice Delivery Town'];
+$this->data['Invoice Delivery Postal Code']=$data['Invoice Delivery Postal Code'];
+
+
+ $sql=sprintf("update `Invoice Dimension` set 
+ `Invoice Delivery Country 2 Alpha Code`=%s ,
+ `Invoice Delivery Country Code`=%s,
+ `Invoice Delivery World Region Code`=%s,
+ `Invoice Delivery Town`=%s,
+ `Invoice Delivery Postal Code`=%s
+ 
+ 
+  where `Invoice Key`=%d "
                  ,prepare_mysql($this->data['Invoice Delivery Country 2 Alpha Code'])
+                 ,prepare_mysql($this->data['Invoice Delivery Country Code'])
+                 ,prepare_mysql($this->data['Invoice Delivery World Region Code'])
+                 ,prepare_mysql($this->data['Invoice Delivery Town'])
+                 ,prepare_mysql($this->data['Invoice Delivery Postal Code'])
                  ,$this->id
                 );
     mysql_query($sql);
@@ -1585,12 +1653,22 @@ mysql_query($sql);
 	    if($billing_address->id){            
             $this->data['Invoice XHTML Address']=$billing_address->display('xhtml');
             $this->data['Invoice Billing Country 2 Alpha Code']=$billing_address->get('Address Country 2 Alpha Code');
+            
+            $this->data ['Invoice Billing Country Code']=$billing_address->get('Address Country Code');
+            $this->data ['Invoice Billing World Region Code']=$billing_address->get('Address World Region');
+            $this->data ['Invoice Billing Town']=$billing_address->get('Address Town');
+            $this->data ['Invoice Billing Postal Code']=$billing_address->get('Address Postal Code');       
+            
+            
+            
            }else{
- $this->data['Invoice XHTML Address']='???';
+            $this->data['Invoice XHTML Address']='???';
             $this->data['Invoice Billing Country 2 Alpha Code']='XX';
-
-
-}
+            $this->data ['Invoice Billing Country Code']='UNK';
+            $this->data ['Invoice Billing World Region Code']='UNKN';
+            $this->data ['Invoice Billing Town']='';
+            $this->data ['Invoice Billing Postal Code']='';
+           }
 
 
             $this->data['Invoice For Partner']=$customer->get('Customer Is Partner');

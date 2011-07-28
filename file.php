@@ -10,7 +10,12 @@ $result = mysql_query($sql);
 if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   header('Content-Type: '.$row['Attachment MIME Type']);
   header('Content-Disposition: inline; filename='.$row['Attachment File Original Name']);
-  readfile($row['Attachment Filename']);
+  //readfile($row['Attachment Filename']);
+  
+  
+  echo $row['Attachment Data'];
+  
+  
 }else{
   
 $css_files=array(

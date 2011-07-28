@@ -168,9 +168,10 @@ function invoice_categories_sales_overview() {
         $fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales " );
     }
 
-    $sql=sprintf("select  IC.`Category Key`,`Category Label`, `Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",$fields);
+    $sql=sprintf("select  IC.`Category Key`,`Category Label`, `Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
+    $fields);
     $adata=array();
-//    print $sql;
+    //  print $sql;
     $position=1;
     $result=mysql_query($sql);
     $sum_invoices=0;
