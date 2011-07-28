@@ -39,17 +39,17 @@ function save_search_list(){
 	}
 	
 	var awhere=get_awhere();
-	//alert(awhere);
+
 	var request="ar_assets.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
-	//alert(request);
+	alert(request);//return;
 	
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		  // alert(o.responseText);
+		   //alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
-			location.href='products_list.php?id='+r.product_list_key;
+			location.href='products_list.php?id='+r.customer_list_key;
 
 		    }else
 			Dom.get('save_list_msg').innerHTML=r.msg;
@@ -197,6 +197,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			       ];
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=store&tableid=0");
+
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -459,34 +460,45 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function get_awhere(){
-/*  
- dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
-    dont_have_array= new Array();
-    for(x in dont_have){
-        dont_have_array[x]=dont_have[x].getAttribute('cat');
+
+	price=Dom.getElementsByClassName('selected', 'span', 'price_option');
+    price_array= new Array();
+    for(x in price){
+        price_array[x]=price[x].getAttribute('cat');
     }
-have=Dom.getElementsByClassName('selected', 'span', 'have_options');
-    have_array= new Array();
-    for(x in have){
-        have_array[x]=have[x].getAttribute('cat');
+	invoice=Dom.getElementsByClassName('selected', 'span', 'invoice_option');
+    invoice_array= new Array();
+    for(x in invoice){
+        invoice_array[x]=invoice[x].getAttribute('cat');
+    }	
+	
+	web_state=Dom.getElementsByClassName('selected', 'span', 'web_state_option');
+    web_state_array= new Array();
+    for(x in web_state){
+        web_state_array[x]=web_state[x].getAttribute('cat');
     }
-*/
+	
+	availability_state=Dom.getElementsByClassName('selected', 'span', 'availability_state_option');
+    availability_state_array= new Array();
+    for(x in availability_state){
+        availability_state_array[x]=availability_state[x].getAttribute('cat');
+    }
+	
     var data={ 
-    //dont_have:dont_have_array,
-   // have:have_array,
-
+	price:price_array,
+	invoice:invoice_array,
+	web_state:web_state_array,
+	availability_state:availability_state_array,
 	geo_constraints:Dom.get('geo_constraints').value,
-
 	product_ordered1:Dom.get('product_ordered_or').value,
-	//	product_ordered2: Dom.get('product_ordered2').value,
 	product_not_ordered1: Dom.get('product_not_ordered1').value,
-	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
 	product_not_received1: Dom.get('product_not_received1').value,
-	//	product_not_received2: Dom.get('product_not_received2').value,
-//////	ordered_from:Dom.get('v_calpop1').value,
-//////	ordered_to:Dom.get('v_calpop2').value,
-product_valid_from:Dom.get('v_calpop3').value,
+	product_valid_from:Dom.get('v_calpop3').value,
 	product_valid_to:Dom.get('v_calpop4').value,
+	price_lower:Dom.get('price_lower').value,
+	price_upper:Dom.get('price_upper').value,
+	invoice_lower:Dom.get('invoice_lower').value,
+	invoice_upper:Dom.get('invoice_upper').value,
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -510,12 +522,12 @@ searched=true;
     var table=tables.table0;
     var datasource=tables.dataSource0;
 	store_id=Dom.get('store_id').value;
-    var request='&sf=0&parent=store&where=' +awhere;
+    var request='&sf=0&parent=store&where=' +awhere+'&store_id='+store_id;
     Dom.setStyle('the_table','display','none');
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-	
+	alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -531,6 +543,195 @@ var submit_search_on_enter=function(e,tipo){
 };
 
 
+function hide_price(){
+		Dom.setStyle('price_upper','display','none')
+		Dom.setStyle('a','display','none')
+		Dom.get('price_upper').value=''
+}
+ 
+function checkbox_changed_price_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_price();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'price_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_price();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'price_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_price();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'price_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('price_upper','display','')
+		Dom.setStyle('a','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'price_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+} 
+
+
+function hide_invoice(){
+		Dom.setStyle('invoice_upper','display','none')
+		Dom.setStyle('b','display','none')
+		Dom.get('invoice_upper').value=''
+}
+ 
+function checkbox_changed_invoice_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_invoice();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('invoice_upper','display','')
+		Dom.setStyle('b','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+} 
+
+
+function checkbox_changed_web_state_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='online_force_out_of_stock'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'web_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='online_auto'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'web_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='offline'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'web_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='unknown'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'web_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='online_force_for_sale'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'web_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+}
+
+function checkbox_changed_availability_state_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='optimal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='low'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='critical'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='surplus'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='out_of_stock'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='unknown'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='no_applicable'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'availability_state_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+}
 
 function init(){
 
