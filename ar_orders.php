@@ -1982,6 +1982,8 @@ if(isset( $_REQUEST['where']))
             exit("error");
         }
     }
+	else
+		$where_type='';
   
 	if(is_numeric($store) and in_array($store,$user->stores)){
 		$where_stores=sprintf(' and `Delivery Note Store Key`=%d ',$store);
