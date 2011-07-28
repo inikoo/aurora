@@ -54,10 +54,15 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 </table>
 
 
+
 <table width="550" cellpadding="20" cellspacing="0" bgcolor="#FFFFFF">
+
+
 <tr>
 <td bgcolor="#FFFFFF" valign="top" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
-
+<div>
+Dear {$customer->get('Customer Main Contact Name')}{if $customer->get('Customer Type')=='Company'}, {$customer->get('Customer Name')}{/if}
+</div>
 
 {foreach from=$paragraphs item=paragraph key=paragraph_key name=foo}
 {if $paragraph.type=='Main'}
@@ -145,6 +150,7 @@ Copyright (C) {$smarty.now|date_format:'%Y'} {$store->get('Store Name')} All rig
   <input type="hidden" id="paragraph_key" value="">
     <input type="hidden" id="email_content_key" value="">
  
+    <input type="hidden" id="paragraph_type" value="">
 
   <table style="padding:0px 10px;margin:5px 10px 5px 10px ;font-size:80%;width:490px" >
  

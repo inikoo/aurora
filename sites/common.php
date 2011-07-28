@@ -29,7 +29,7 @@ date_default_timezone_set(TIMEZONE) ;
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
 
-$yui_path="external_libs/yui/2.8.1/build/";
+$yui_path="external_libs/yui/2.9/build/";
 $pics_path='http://tunder/';
 
 $max_session_time=36000;
@@ -40,7 +40,9 @@ $smarty = new Smarty();
 
 $site=new Site($myconf['site_key']);
 if(!$site->id){
-exit ("Site data found (".$myconf['site_key'].')<br/> click <a href="../mantenence/scripts/create_sites.php">here to create one</a> ');
+
+print_r($site);
+exit ("Site data not found (".$myconf['site_key'].')<br/> click <a href="../mantenence/scripts/create_sites.php">here to create one</a> ');
 }
 $page_data=$site->get_data_for_smarty();
 

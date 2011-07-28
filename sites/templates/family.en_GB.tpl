@@ -19,7 +19,13 @@
 	  <div style="clear:both"></div>
 	</div>
 	
-	{if !$logged_in}
+	
+	{if !$number_products}
+	<div class="no_products_for_sale" >Sorry, There is no products for sale in this family</div>
+	
+	{/if}
+	
+	{if !$logged_in and $number_products}
 	<div id="register_banner" style="font-size:12px">
 	  <div style="text-align:center;font-size:10px;float:right;width:180px;height:120px;margin-right:60px;margin-top:40px">
 	    Registered customers login here.
@@ -43,12 +49,38 @@
 
 
 	</div>	 
+	
+	
+	
+		<div>
+ 
+	  {foreach from=$products item=product}
+	  {if $product.image!='art/nopic.png'}
+	  <div style="float:left;margin-top:15px">
+	    <img src="{$product.image}" alt="{$product.code}" height="200" style="margin:3px;5px;margin-bottom:7px" />
+	    <div style="font-size:10px;text-align:center;border:1px solid #ccc;width:110px;padding:5px;margin:8px;margin-left:20px">
+	    <span><b>{$product.code}</b></span><br>
+	    <span>{$product.name}</span>
+
+	    </div>
+	  </div>
+	  {/if}
+	  {/foreach}
+	</div>
+	
+	
+	
+	
 	{/if}
 	{ if file_exists("splinters/presentation/$page_key.tpl") }
 	<div style="font-size:10px;;margin-top:10px;padding:10px">
 	  {include file="splinters/presentation/$page_key.tpl"}
 	  <div style="clear:both"></div>
 	</div>	 
+	
+	
+	
+	
 	{/if}
 	{if $logged_in}
 	

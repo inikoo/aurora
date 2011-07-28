@@ -61,6 +61,7 @@ function edit_paragraph(o,paragraph_key){
 Dom.get('paragraph_title').value=Dom.get('paragraph_title'+paragraph_key).innerHTML;
 Dom.get('paragraph_subtitle').value=Dom.get('paragraph_subtitle'+paragraph_key).innerHTML;
 Dom.get('paragraph_content').value=Dom.get('paragraph_content'+paragraph_key).innerHTML.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+
 Dom.get('paragraph_type').value=Dom.get('paragraph_type'+paragraph_key).value;
 
 Dom.get('paragraph_key').value=paragraph_key;
@@ -267,6 +268,22 @@ dialog_change_header_image.render();
         };
   myEditor = new YAHOO.widget.Editor('paragraph_content', myConfig); 
     myEditor.render(); 
+    
+    var myConfig = {
+        height: '300px',
+        width: '600px',
+        animate: true,
+        dompath: true,
+   //     focusAtStart: true
+    };
+    
+    
+      var EmailHTMLEditor = new YAHOO.widget.Editor('html_email_editor', myConfig);
+      
+      
+     
+  
+    EmailHTMLEditor.render();
 
 }
 YAHOO.util.Event.onDOMReady(init);
