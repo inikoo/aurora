@@ -398,7 +398,7 @@ function validate_scope_edit(branch) {
 
     for (item in validate_scope_data[branch]) {
     
-       // alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
+ //      alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
         if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][item].changed==true)

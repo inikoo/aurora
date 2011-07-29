@@ -184,8 +184,7 @@
 <tr>
 <td></td>
 <td colspan=2>
-<textarea id="html_email_editor" name="html_email_editor" rows="20" cols="75">
-This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>This is some more test text.<br>
+<textarea id="html_email_editor" rows="20" cols="75">
 </textarea>
 </td>
 </tr>
@@ -295,8 +294,10 @@ This is some more test text.<br>This is some more test text.<br>This is some mor
  <div id="dialog_preview_text_email" style="padding:10px 20px">
 
 <table border=0 style="width:600px">
-<tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span style=";margin-left:5px"><b>{t}Subject{/t}:</b></span></td><td>{$email_campaign->get_subject()}</td></tr>
-<tr><td colspan=2><div style="min-height: 200px;border:1px solid #ccc;padding:5px">{$email_campaign->get_content_text()}</div></td></tr>
+
+<tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span style=";margin-left:5px"><b>{t}Subject{/t}:</b></span></td><td>{$email_campaign->get_subject($current_content_key)}</td></tr>
+<tr><td colspan=2><div style="min-height: 200px;border:1px solid #ccc;padding:5px">{$email_campaign->get_message_body($current_content_key)}</div></td></tr>
+
 </table>
 
 
