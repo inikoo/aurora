@@ -381,6 +381,77 @@ class EmailCampaign extends DB_Table {
     return $subject;
     }
 
+
+
+    function get_first_mailing_list_key(){
+    
+     $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where  `Email Campaign Key`=%d limit 1",
+
+        $this->id
+        );
+        $res=mysql_query($sql);
+        if($row=mysql_fetch_assoc($res)){
+         return $row['Email Campaign Mailing List Key'];
+        
+        }else{
+            return 0;
+        
+        }
+        
+        
+    }
+
+    function get_message_body($email_content_key,$email_mailing_list_key=false){
+        
+        $this->get_data('id',$this->id);
+        
+        if(!$email_mailing_list_key)
+            $email_mailing_list_key=$this->get_first_mailing_list_key();
+        include_once('class.LightCustomer.php');
+        
+        $sql=sprintf("select * from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
+        $email_mailing_list_key,
+        $this->id
+        );
+        $res=mysql_query($sql);
+        if($row=mysql_fetch_assoc($res)){
+            
+            $customer=new LightCustomer($row['Customer Key']);
+            if(!$customer->id){
+                $customer->data['Customer Main Contact Name']=$row['Email Contact Name'];
+            
+            }
+            
+            switch ($this->content_data[$email_content_key]['type']) {
+                case 'Plain':
+                    $message=   nl2br($this->content_data[$email_content_key]['plain']);                     
+                    
+                
+                    
+                    break;
+                default:
+                    
+                    break;
+            }
+           
+            if(preg_match('/\%[a-z]+\%/',$message,$matches)){
+            
+                foreach($matches as $match){
+                    $message=preg_replace($match,'/'.$match.'/',$message);
+                }
+                
+            }
+            
+           
+        }else{
+            $message= 'Error recipient not associated with mailing list';
+        
+        }    
+    
+        return $message;
+    }
+
+
     function get_content_text($email_content_key) {
         $content_text='';
         $sql=sprintf("select `Email Content Text` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
