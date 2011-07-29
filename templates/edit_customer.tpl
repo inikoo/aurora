@@ -498,8 +498,8 @@
  </tr>
        
        
-	 {if $customer->get('Customer Type')=='Company'}
-     <tr><td class="lavel">{t}Fiscal Name{/t}:</td>
+	
+     <tr  style="{if $customer->get('Customer Type')!='Company'}display:none{/if}"><td class="lavel">{t}Fiscal Name{/t}:</td>
         <td style="text-align:left;">
      <div   >
        <input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
@@ -514,7 +514,7 @@
   
      
      </tr>
-{/if}
+
 
 {if $hq_country=='ES'}
 <tr>
