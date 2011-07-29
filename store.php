@@ -77,7 +77,7 @@ $general_options_list=array();
 if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'edit_store.php?id='.$store->id,'label'=>_('Edit Store'));
     $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
- $general_options_list[]=array('tipo'=>'url','url'=>'products_lists.php','label'=>_('Products Lists'));
+ $general_options_list[]=array('tipo'=>'url','url'=>'products_lists.php?store='.$store->id,'label'=>_('Products Lists'));
 
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));

@@ -837,9 +837,13 @@ function edit_address_main_telephone($number,$address_key) {
 
     $address=new Address($address_key);
     if (!$address->id) {
-        $response=array('state'=>400,'msg'=>"Address not found $address_key");
-        echo json_encode($response);
-        exit;
+       return -2;
+        //$response=array('state'=>400,'msg'=>"Address not found $address_key");
+        //echo json_encode($response);
+        //exit;
+        
+        
+        
     }
     $telecom_key=$address->get_principal_telecom_key('Telephone');
 
@@ -855,9 +859,11 @@ function edit_address_main_telephone($number,$address_key) {
     $telephone_data['Telecom Type']='Telephone';
     $proposed_telephone=new Telecom("find complete country code ".$address->data['Address Country Code'],$telephone_data);
     if ($proposed_telephone->found) {
-        $response=array('state'=>400,'msg'=>'Telephone found in another address');
-        echo json_encode($response);
-        exit;
+        
+        return -1;
+       // $response=array('state'=>400,'msg'=>'Telephone found in another address');
+       // echo json_encode($response);
+       // exit;
     }
     if (!$telecom_key) {
         $telephone=new Telecom("find complete create country code ".$address->data['Address Country Code'],$telephone_data);

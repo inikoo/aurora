@@ -38,12 +38,13 @@ case('products_lists'):
     break;
 
 case('new_list'):
+
     $data=prepare_values($_REQUEST,array(
                              'awhere'=>array('type'=>'json array'),
                              'store_id'=>array('type'=>'key'),
                              'list_name'=>array('type'=>'string'),
                              'list_type'=>array('type'=>'enum',
-                                                'valid values regex'=>'/static|Dynamic/i'
+							 'valid values regex'=>'/static|Dynamic/i'
                                                )
                          ));
 
@@ -3042,7 +3043,10 @@ function list_products() {
     global $user;
     $display_total=false;
 
-
+if (isset( $_REQUEST['list_key']))
+        $list_key=$_REQUEST['list_key'];
+    else
+        $list_key=false;
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
@@ -3108,11 +3112,13 @@ function list_products() {
 
 
     if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
+        $awhere=addslashes($_REQUEST['where']);
     else
-        $where=$conf['where'];
+        $awhere=$conf['where'];
 
 
+		
+		
     if (isset( $_REQUEST['f_field']))
         $f_field=$_REQUEST['f_field'];
     else
@@ -3156,7 +3162,7 @@ function list_products() {
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else {
-        $parent=$conf['parent'];
+        $parent='store';//$conf['parent'];
     }
     if (isset( $_REQUEST['mode']))
         $mode=$_REQUEST['mode'];
@@ -3168,7 +3174,11 @@ function list_products() {
     else
         $restrictions=$conf['restrictions'];
 
-
+	if(isset( $_REQUEST['store_id'])    ){
+		$store=$_REQUEST['store_id'];     
+		$_SESSION['state']['products']['store']=$store;
+	}else
+		$store=$_SESSION['state']['products']['store'];
 
 
     //$_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
@@ -3178,7 +3188,7 @@ function list_products() {
     $_SESSION['state'][$conf_table]['products']['order_dir']=$order_dir;
     $_SESSION['state'][$conf_table]['products']['nr']=$number_results;
     $_SESSION['state'][$conf_table]['products']['sf']=$start_from;
-    $_SESSION['state'][$conf_table]['products']['where']=$where;
+    $_SESSION['state'][$conf_table]['products']['where']=$awhere;
     $_SESSION['state'][$conf_table]['products']['f_field']=$f_field;
     $_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
     $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
@@ -3194,18 +3204,68 @@ function list_products() {
     //$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
     // $_SESSION['state'][$conf_table]['parent']=$parent;
 
-    $db_table='`Product Dimension`';
+    $table='`Product Dimension`';
+	$where_type='';
+	$where_interval='';
+	$where='where true';
+	
+	/*
+	if(count($user->stores)==0)
+	$where="where false";
+	else{
+		$where.=sprintf(" and `Product Store Key` in (%s) ",join(',',$user->stores));
+	}
+*/
+	if ($awhere) {
 
- if(count($user->stores)==0)
-    $where="where false";
-    else{
-    $where=sprintf("where `Product Store Key` in (%s) ",join(',',$user->stores));
+		$tmp=preg_replace('/\\\"/','"',$awhere);
+		$tmp=preg_replace('/\\\\\"/','"',$tmp);
+		$tmp=preg_replace('/\'/',"\'",$tmp);
+
+		$raw_data=json_decode($tmp, true);
+		$raw_data['store_key']=$store;
+		list($where,$table)=product_awhere($raw_data);
+
+		$where_type='';
+		$where_interval='';
+	}
+
+    if($list_key) {
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+
+        $res=mysql_query($sql);
+        if ($customer_list_data=mysql_fetch_assoc($res)) {
+            $awhere=false;
+            if ($customer_list_data['List Type']=='Static') {
+				
+                $table='`List Product Bridge` PB left join `Product Dimension` P  on (PB.`Product ID`=P.`Product ID`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+
+            } else {// Dynamic by DEFAULT
+
+
+
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
+
+                $raw_data=json_decode($tmp, true);
+
+                $raw_data['store_key']=$store;
+                list($where,$table)=product_awhere($raw_data);
+				
+
+
+            }
+
+        } else {
+            exit("error");
+        }
     }
+	$where.=$where_type;
     switch ($parent) {
     case('store'):
-
-
-        $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['store']['id']);
+        $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['products']['store']);
         break;
     case('department'):
         $where.=sprintf('  and `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
@@ -3222,6 +3282,8 @@ function list_products() {
 
 
     }
+	
+
     $group='';
     /*    switch($mode){ */
     /*    case('same_code'): */
@@ -3273,8 +3335,8 @@ function list_products() {
     elseif($f_field=='description' and $f_value!='')
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from `Product Dimension`  $where $wheref";
-    // print $sql;
+    $sql="select count(*) as total from $table  $where $wheref";
+     //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3610,8 +3672,16 @@ function list_products() {
 
     }
 
-    $sql="select  * from `Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-    // print $sql;
+	if($list_key){}
+		//$table='';
+	else
+		$table="`Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+   
+    $sql="select  * from  $table $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+
+
+	
+     //print $sql;exit;
     $res = mysql_query($sql);
     $adata=array();
 
@@ -3642,8 +3712,8 @@ function list_products() {
 
 
         $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
-
+        //$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
+		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Product Store Key']);
 
         if ($percentages) {
             if ($period=='all') {
@@ -11145,12 +11215,6 @@ function part_stock_history() {
 }
 
 function new_products_list($data) {
-
-
-
-
-
-
     $list_name=$data['list_name'];
     $store_id=$data['store_id'];
 
@@ -11159,6 +11223,7 @@ function new_products_list($data) {
                  $store_id
                 );
     $res=mysql_query($sql);
+	
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $response=array('resultset'=>
                                     array(
@@ -11173,17 +11238,17 @@ function new_products_list($data) {
     $list_type=$data['list_type'];
 
     $awhere=$data['awhere'];
-    $table='`Product Dimension` C ';
-    echo "<br>*".$table;
-//print_r($awhere);
+    $table='`Product Dimension` P ';
 
-//  $where=customers_awhere($awhere);print_r($where);
-    list($where,$table)=products_awhere($awhere);
+
+//   $where=customers_awhere($awhere);
+    list($where,$table)=product_awhere($awhere);
 
     $where.=sprintf(' and `Product Store Key`=%d ',$store_id);
 
-    $sql="select count(Distinct C.`Product ID`) as total from $table  $where";
-    echo "<br>1st Query: ".$sql;
+
+    $sql="select count(Distinct P.`Product ID`) as total from $table  $where";
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -11192,7 +11257,7 @@ function new_products_list($data) {
             $response=array('resultset'=>
                                         array(
                                             'state'=>400,
-                                            'msg'=>_('No product match this criteria')
+                                            'msg'=>_('No products match this criteria')
                                         )
                            );
             echo json_encode($response);
@@ -11201,7 +11266,7 @@ function new_products_list($data) {
         }
 
 
-    }//echo "<br>2nd: ".$sql;
+    }
     mysql_free_result($res);
 
     $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Product',%d,%s,%s,%s,NOW())",
@@ -11217,16 +11282,15 @@ function new_products_list($data) {
     if ($list_type=='Static') {
 
 
-        $sql="select C.`Product ID` from $table  $where group by C.`Product ID`";
-//echo "<br>3nd: ".$sql;
+        $sql="select P.`Product ID` from $table  $where group by P.`Product ID`";
         //   print $sql;
         $result=mysql_query($sql);
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-            $product_key=$data['Product ID'];
-            $sql=sprintf("insert into `List Product Bridge` (`List Key`,`Product Key`) values (%d,%d)",
-                         $product_list_key,
-                         $product_key
+            $customer_key=$data['Product ID'];
+            $sql=sprintf("insert into `List Product Bridge` (`List Key`,`Product ID`) values (%d,%d)",
+                         $customer_list_key,
+                         $customer_key
                         );
             mysql_query($sql);
 
@@ -11243,7 +11307,7 @@ function new_products_list($data) {
 
     $response=array(
                   'state'=>200,
-                  'product_list_key'=>$customer_list_key
+                  'customer_list_key'=>$customer_list_key
 
               );
     echo json_encode($response);
@@ -11381,6 +11445,7 @@ function list_products_lists() {
 
 
     $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+
     $adata=array();
 
 
@@ -11417,6 +11482,8 @@ function list_products_lists() {
                  );
 
     }
+
+
     mysql_free_result($result);
 
 

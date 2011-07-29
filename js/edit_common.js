@@ -251,7 +251,7 @@ var onCellClick = function(oArgs) {
      		        ar_file='ar_edit_staff.php';
 		        else if (column.object=='subcategory')
      		         ar_file='ar_edit_categories.php';
-                else if (column.object=='order_list')
+                else if (column.object=='order_list' || column.object=='invoice_list'|| column.object=='dn_list')
      		         ar_file='ar_edit_orders.php';
      		   else
                     ar_file='ar_edit_assets.php';
@@ -398,7 +398,7 @@ function validate_scope_edit(branch) {
 
     for (item in validate_scope_data[branch]) {
     
-       // alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
+ //      alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
         if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][item].changed==true)

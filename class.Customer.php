@@ -3329,6 +3329,8 @@ class Customer extends DB_Table {
         if ($attach->new) {
 
 
+
+
             $history_data=array(
                               'History Abstract'=>$attach->get_abstract(),
                               'History Details'=>$attach->get_details(),
@@ -3338,7 +3340,15 @@ class Customer extends DB_Table {
                               'Indirect Object'=>'Customer',
                               'Indirect Object Key'=>$this->id
                           );
-            $this->add_customer_history($history_data,true,'No','Attachments');
+            $history_key=$this->add_customer_history($history_data,true,'No','Attachments');
+            
+             $sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`) values (%d,'Customer History Attachment',%d)",
+                        $attach->id,
+                        $history_key
+                    );
+                     mysql_query($sql);
+             //   print $sql;    
+            
             $this->updated=true;
             $this->new_value='';
         } else {

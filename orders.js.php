@@ -25,7 +25,7 @@ Event.addListener(window, "load", function() {
 				       {key:"state", label:"<?php echo _('Status')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"total_amount", label:"<?php echo _('Total Balance')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-
+		//alert("ar_orders.php?tipo=orders&where=");
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&where=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -482,6 +482,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('dn_view','span' , 'dn_table_type'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&dn_state_type='+this.getAttribute('table_type');
+	 alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  } 
  

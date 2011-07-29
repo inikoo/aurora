@@ -21,6 +21,7 @@ if (! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
+$smarty->assign('store_id',$store_id);
 $smarty->assign('store',$store);
 
 $css_files=array(
@@ -71,6 +72,35 @@ $dont_have_options=array(
                        'address'=>array('name'=>_('Address')),
                    );
 $smarty->assign('dont_have_options',$dont_have_options);
+
+$condition=array(
+                       'less'=>array('name'=>_('Less than')),
+                       'equal'=>array('name'=>_('Equal')),
+                       'more'=>array('name'=>_('More than')),
+					   'between'=>array('name'=>_('Between'))
+                   );
+$smarty->assign('condition',$condition);
+
+$web_state=array(
+                       'online_force_out_of_stock'=>array('name'=>_('Online Force Out of Stock')),
+                       'online_auto'=>array('name'=>_('Online Auto')),
+                       'offline'=>array('name'=>_('Offline')),
+					   'unknown'=>array('name'=>_('Unknown')),
+					   'online_force_for_sale'=>array('name'=>_('Online Force For Sale'))			   
+                   );
+$smarty->assign('web_state',$web_state);
+
+$availability_state=array(
+                       'optimal'=>array('name'=>_('Optimal')),
+                       'low'=>array('name'=>_('Low')),
+                       'critical'=>array('name'=>_('Critical')),
+					   'surplus'=>array('name'=>_('Surplus')),
+					   'out_of_stock'=>array('name'=>_('Out of Stock')),
+					   'unknown'=>array('name'=>_('Unknown')),		
+					   'no_applicable'=>array('name'=>_('No applicable'))		   
+                   );
+$smarty->assign('availability_state',$availability_state);
+
 
 $smarty->assign('view',$_SESSION['state']['customers']['view']);
 $paginator_menu=array(10,25,50,100,500);

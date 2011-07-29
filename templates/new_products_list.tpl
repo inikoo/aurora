@@ -6,7 +6,7 @@
    
       <h2 style="clear:both">{t}New Product List{/t} ({$store->get('Store Name')})</h2>
 <div style="border:1px solid #ccc;padding:20px;width:870px">
-<input type="hidden" id="store_id" value="{$store->id}">
+<input type="hidden" id="store_id" value="{$store_id}">
 
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
       <table >
@@ -36,9 +36,7 @@
         
     </tr>  
       
-  
-{*	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>     *}
-      <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" />
+        <tr><td>{t}any of this product(s){/t}</td><td><input id="product_ordered_or" value="" style="width:500px" />
       <div class="general_options" >
                 <span id="brand" class="state_details">{t}Brand{/t}</span>
                 <span id="tarrif" class="state_details">{t}Tarrif{/t}</span>
@@ -48,6 +46,64 @@
 
       <tr style="display:none"><td>{t}but didn't order this product(s){/t}</td><td><input id="product_not_ordered1" value="" style="width:400px" /></td><tr>
       <tr style="display:none"><td>{t}and did't receive this product(s){/t}</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
+
+	 <tr><td colspan="2"><b>{t}Pricing...{/t}</b></td></tr> 
+     <tr>
+        <td>{t}price{/t}:</td>
+		<td>
+            <input id="price_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="a" style="display:none">&rarr;</span> 
+			<input style="display:none" id="price_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
+			<div id="price_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_price_condition(this)" id="price_condition_{$cat_key}" parent="price_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+        
+    </tr>  
+	
+     <tr>
+        <td>{t}Total invoiced amount...{/t}:</td>
+		<td>
+            <input id="invoice_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="b" style="display:none">&rarr;</span> 
+			<input style="display:none" id="invoice_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
+			<div id="invoice_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_invoice_condition(this)" id="invoice_condition_{$cat_key}" parent="invoice_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+        
+    </tr> 
+	
+	 <tr><td colspan="2"><b>{t}Product state...{/t}</b></td></tr> 
+     <tr>
+        <td>{t}web state{/t}:</td>
+		<td>
+			<div id="web_state_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$web_state item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_web_state_condition(this)" id="web_state_condition_{$cat_key}" parent="web_state_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+        
+    </tr>  	
+
+     <tr>
+        <td>{t}availability state{/t}:</td>
+		<td>
+			<div id="availability_state_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$availability_state item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_availability_state_condition(this)" id="availability_state_condition_{$cat_key}" parent="availability_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+        
+    </tr>  		
+	
+  
+  
+{*	<tr><td colspan="2"><b>{t}Customers who ordered...{/t}</b></td></tr>     *}
 
  {*     <tr>
         <td>{t}during this period{/t}:</td>

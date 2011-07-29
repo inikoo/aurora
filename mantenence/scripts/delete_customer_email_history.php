@@ -27,6 +27,26 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
+
+
+$sql="delete from `Email Read Dimension` where `Customer Communications`='Yes' ";
+  mysql_query($sql);
+  
+
+$sql="select * from `Attachment Bridge` where `Subject` in ('Customer Communications') ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    
+$attachment=new Attachment($row['Attachment Key']);
+$attachment->delete();
+    
+ 
+    
+        
+}
+
+
+
 $i=0;
 $sql="select `History Key` from `Customer History Bridge` where `Type` in ('Emails','Email','') ";
 $result=mysql_query($sql);
