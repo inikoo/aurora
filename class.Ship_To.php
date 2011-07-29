@@ -180,6 +180,22 @@ return _trim($address);
 
     function get($key='') {
 
+
+        if($key=='World Region Code'){
+        
+        
+        if($this->data['Ship To Country Code']=='')return 'UNKN';
+        
+        $sql=sprintf("select `World Region Code` from kbase.`Country Dimension` where `Country Code`=%s",prepare_mysql($this->data['Ship To Country Code']));
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result))
+			return ($row['World Region Code']==''?'UNKN':$row['World Region Code']);
+		else
+		    return 'UNKN';
+        
+        }
+
+
         if (isset($this->data[$key]))
             return $this->data[$key];
 

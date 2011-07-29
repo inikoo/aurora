@@ -38,7 +38,7 @@ chdir('../../');
 $jk=new ReadEmail(); // Creating instance of class####
 //$jk->read_mailbox('customer_communication','Sent Messages'); // calling member function
 
-$jk->read_customer_communications(1);
+$jk->read_customer_communications(1,'[Gmail]/All Mail');
 
 //$jk->read_mailbox('customer_communication',''); 
 ?>

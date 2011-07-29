@@ -136,7 +136,7 @@ class Attachment extends DB_Table {
            if($this->compress){
            $this->compress($data['file'],$tmp_compresed_file);
            $fp      = fopen($tmp_compresed_file, 'r');
-           $this->data['Attachment Compressed Data'] = fread($fp, filesize($tmp_compresed_file));
+           $this->data['Attachment Data'] = fread($fp, filesize($tmp_compresed_file));
            unlink($tmp_compresed_file);
            //$data['file']=$tmp_compresed_file;
 
@@ -145,7 +145,7 @@ class Attachment extends DB_Table {
 
         $filename= $data['file'];
 
-        $this->data['Attachment Compressed Data'] = addslashes(fread(fopen($filename, "r"), filesize($filename)));
+        $this->data['Attachment Data'] = addslashes(fread(fopen($filename, "r"), filesize($filename)));
 //print_r($this->data);
 
         $keys='(';
@@ -154,7 +154,7 @@ class Attachment extends DB_Table {
 
             $keys.="`$key`,";
 
-            if ($key=='Attachment Compressed Data') {
+            if ($key=='Attachment Data') {
                 $values.="'".$value."',";
             } else {
 
@@ -171,6 +171,8 @@ class Attachment extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
 
+
+
         $sql=sprintf("insert into `Attachment Dimension` %s %s",$keys,$values);
         //print "$sql\n";
         // exit;
@@ -181,24 +183,24 @@ class Attachment extends DB_Table {
             $note=_('Attachment Created');
             $details=_('Attachment')." ".$this->data['Attachment File Original Name'];
 
-            $attach_filename=sprintf("app_files/attachments/%016d.kfe",$this->id);
+          //  $attach_filename=sprintf("app_files/attachments/%016d.kfe",$this->id);
             $attach_url=sprintf("file.php?id=%d",$this->id);
 //print "--->  ".$data['file'];
 
 
-            copy($data['file'], $attach_filename);
+            //copy($data['file'], $attach_filename);
 
 
           //  unlink($data['file']);
 
-            $sql=sprintf("update `Attachment Dimension` set `Attachment URL`=%s ,`Attachment Filename`=%s where `Attachment Key`=%d"
+            $sql=sprintf("update `Attachment Dimension` set `Attachment URL`=%s  where `Attachment Key`=%d"
                          ,prepare_mysql($attach_url)
-                         ,prepare_mysql($attach_filename)
+                       //  ,prepare_mysql($attach_filename)
                          ,$this->id
                         );
             mysql_query($sql);
             $this->data['Attachment URL']=$attach_url;
-            $this->data['Attachment Filename']=$attach_filename;
+           // $this->data['Attachment Filename']=$attach_filename;
 
 
         } else {
@@ -323,6 +325,19 @@ class Attachment extends DB_Table {
                 return $mime_type;
         }
 
+
+        function delete(){
+        
+            $sql=sprintf("delete from `Attachment Dimension` where `Attachment Key`=%d",$this->id);
+            mysql_query($sql);
+            
+            
+            
+            $sql=sprintf("delete from `Attachment Bridge` where `Attachment Key`=%d",$this->id);
+            mysql_query($sql);
+               
+        
+        }
 
     }
 

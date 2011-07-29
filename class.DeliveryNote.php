@@ -194,14 +194,23 @@ class DeliveryNote extends DB_Table {
             $store=new Store($this->data['Delivery Note Store Key']);
             $collection_address=new Address($store->data['Store Collection Address Key']);
             if ($collection_address->id) {
-                $store_country_code=$collection_address->data['Address Country 2 Alpha Code'];
+                $this->data ['Delivery Note Country 2 Alpha Code'] =$collection_address->data['Address Country 2 Alpha Code'];
+                $this->data ['Delivery Note Country Code']=$collection_address->data['Address Country Code'];
+                $this->data ['Delivery Note World Region Code']=$collection_address->data['Address World Region'];
+                $this->data ['Delivery Note Town']=$collection_address->data['Address Town'];
+                $this->data ['Delivery Note Postal Code']=$collection_address->data['Address Postal Code'];
+            
             } else {
-                $store_country_code='XX';
+                 $this->data ['Delivery Note Country 2 Alpha Code'] ='XX';
+                  $this->data ['Delivery Note Country Code']='UNK';
+                $this->data ['Delivery Note World Region Code']='UNKN';
+                $this->data ['Delivery Note Town']='';
+                $this->data ['Delivery Note Postal Code']='';
             }
 
 
 
-            $this->data ['Delivery Note Country 2 Alpha Code'] = $store_country_code;
+          
             $this->data ['Delivery Note Ship To Key'] =0;
 
 
@@ -217,19 +226,19 @@ class DeliveryNote extends DB_Table {
 
             if ($order and $order->data ['Order Ship To Key To Deliver']) {
                 $ship_to=new Ship_To($order->data ['Order Ship To Key To Deliver']);
-                
-                
-                $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
-                $this->data ['Delivery Note XHTML Ship To'] =$ship_to->data['Ship To XHTML Address'];
-                $this->data ['Delivery Note Country 2 Alpha Code'] = ($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
-
-            } else {
+             } else {
                 $ship_to=$customer->get_ship_to($this->data ['Delivery Note Date Created']);
-                $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
+           }
+            
+              $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
                 $this->data ['Delivery Note XHTML Ship To'] =$ship_to->data['Ship To XHTML Address'];
                 $this->data ['Delivery Note Country 2 Alpha Code'] = ($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
-
-            }
+                
+                $this->data ['Delivery Note Country Code']=($ship_to->data['Ship To Country Code']==''?'UNK':$ship_to->data['Ship To Country Code']);
+                $this->data ['Delivery Note World Region Code']=$ship_to->get('World Region Code');
+                $this->data ['Delivery Note Town']=$ship_to->data['Ship To Town'];
+                $this->data ['Delivery Note Postal Code']=$ship_to->data['Ship To Postal Code'];
+            
 
 
 
@@ -322,7 +331,14 @@ class DeliveryNote extends DB_Table {
 
 
     function create_header() {
-        $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Country 2 Alpha Code`,`Delivery Note Shipper Code`) values (%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s)"
+        $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
+        `Delivery Note Country 2 Alpha Code`,
+        `Delivery Note Country Code`,
+        `Delivery Note World Region Code`,
+        `Delivery Note Town`,
+        `Delivery Note Postal Code`
+        
+        ) values (%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s  )"
                          , prepare_mysql ( $this->data ['Delivery Note State'] )
 
                          , prepare_mysql ( $this->data ['Delivery Note Date Created'] )
@@ -340,8 +356,13 @@ class DeliveryNote extends DB_Table {
                          , prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] )
                          , $this->data ['Delivery Note Number Pickers'], prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] ), $this->data ['Delivery Note Number Packers'], prepare_mysql ( $this->data ['Delivery Note Type'] )
                          , prepare_mysql ( $this->data ['Delivery Note Title'] )
+                                                  , prepare_mysql ($this->data ['Delivery Note Shipper Code'])
+
                          , prepare_mysql ($this->data ['Delivery Note Country 2 Alpha Code'])
-                         , prepare_mysql ($this->data ['Delivery Note Shipper Code'])
+                          , prepare_mysql ($this->data ['Delivery Note Country Code'])
+                           , prepare_mysql ($this->data ['Delivery Note World Region Code'])
+                            , prepare_mysql ($this->data ['Delivery Note Town'])
+                             , prepare_mysql ($this->data ['Delivery Note Postal Code'])
 
                        );
 
@@ -679,6 +700,7 @@ class DeliveryNote extends DB_Table {
 
 
 
+
         $date=$this->data['Delivery Note Date Created'];
         $skus_data=array();
 
@@ -928,7 +950,16 @@ class DeliveryNote extends DB_Table {
         
 
         foreach($this->get_invoices_objects() as $invoice) {
-            $invoice->update_delivery_note_data(array('Invoice Delivery Country 2 Alpha Code'=>$this->data['Delivery Note Country 2 Alpha Code']));
+            $invoice->update_delivery_note_data(
+            array(
+                'Invoice Delivery Country 2 Alpha Code'=>$this->data['Delivery Note Country 2 Alpha Code'],
+                'Invoice Delivery Country Code'=>$this->data['Delivery Note Country Code'],
+                'Invoice Delivery World Region Code'=>$this->data['Delivery Note World Region Code'],
+                'Invoice Delivery Town'=>$this->data['Delivery Note Town'],
+                'Invoice Delivery Postal Code'=>$this->data['Delivery Note Postal Code'],
+                )
+            
+            );
         }
   foreach($this->get_orders_objects() as $order) {
             $order->update_dispatch_state();

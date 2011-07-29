@@ -60,6 +60,7 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/editor.css',
                'common.css',
                'button.css',
                'container.css',
@@ -76,6 +77,7 @@ $js_files=array(
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
+                 $yui_path.'editor/editor-min.js',
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
@@ -95,6 +97,7 @@ switch ($email_campaign->data['Email Campaign Status']) {
 case 'Creating':
 $general_options_list=array();
     $css_files[]='css/edit.css';
+     $css_files[]='css/email_campaign_in_process.css';
     $js_files[]='js/edit_common.js';
     $js_files[]='email_campaign_in_process.js.php?email_campaign_key='.$email_campaign->id;
     $tpl_file='email_campaign_in_process.tpl';

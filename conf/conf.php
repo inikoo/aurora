@@ -797,6 +797,7 @@ $default_state=array(
 
                    'products'=>array(
                                   'details'=>false,
+								  'store'=>'1',
                                   'percentages'=>false,
                                   'view'=>'general',
                                   'from'=>'',
