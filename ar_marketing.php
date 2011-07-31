@@ -321,7 +321,8 @@ $email_campaign= new EmailCampaign($data['email_campaign_key']);
     }
     
        $response= array('state'=>200,
-       'body'=>$body,
+       'plain'=>$message_data['plain'],
+       'html_src'=>'',
        'subject'=>$message_data['subject'],
        'index'=>$index,
        'formated_index'=>number($index),
