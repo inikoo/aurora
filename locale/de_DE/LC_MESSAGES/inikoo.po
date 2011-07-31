@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-31 13:41+0100\n"
-"PO-Revision-Date: 2011-07-31 13:44+0100\n"
+"PO-Revision-Date: 2011-07-31 13:55+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -345,7 +345,7 @@ msgstr "Skript nicht gefunden"
 #: ar_import_csv.php:158
 #: ar_import_csv.php:831
 msgid "Assigned Field"
-msgstr ""
+msgstr "zugewiesenes Feld"
 
 #: ar_import_csv.php:159
 #: ar_import_csv.php:832
@@ -790,9 +790,8 @@ msgstr "Benutzer"
 
 #: product.php:100
 #: product.php:139
-#, fuzzy
 msgid "Products"
-msgstr "Haushaltsprodukte"
+msgstr "Produkte"
 
 #: product.php:229
 #, fuzzy
@@ -1006,9 +1005,8 @@ msgstr ""
 
 #: export_csv.php:73
 #: export_csv.php:78
-#, fuzzy
 msgid "customers"
-msgstr "Kunde"
+msgstr "Kunden"
 
 #: export_csv.php:83
 #: export_csv.php:87
@@ -2797,24 +2795,20 @@ msgid "Total Contacts"
 msgstr "Kontakte"
 
 #: customers_server.js.php:27
-#, fuzzy
 msgid "Active Contacts"
-msgstr "Kontakte"
+msgstr "Aktive Kontakte"
 
 #: customers_server.js.php:28
-#, fuzzy
 msgid "Losing Contacts"
-msgstr "Kontakte"
+msgstr "verschwindende Kontakte"
 
 #: customers_server.js.php:29
-#, fuzzy
 msgid "Lost Contacts"
-msgstr "Kontakte"
+msgstr "Verlorene Kontakte"
 
 #: customers_server.js.php:31
-#, fuzzy
 msgid "Total Customers"
-msgstr "Schlüssel-Kunde"
+msgstr "Gesamtanzahl Kunden"
 
 #: customers_server.js.php:34
 #, fuzzy
@@ -2904,9 +2898,8 @@ msgid "Invalid Department Code"
 msgstr "Abteilung"
 
 #: add_people.php:24
-#, fuzzy
 msgid "Reports"
-msgstr "Berichte"
+msgstr "Bilanzen"
 
 #: add_people.php:26
 msgid "Create Email Campaign"
@@ -2917,9 +2910,8 @@ msgid "Create Newsletter"
 msgstr ""
 
 #: add_people.php:162
-#, fuzzy
 msgid "Marketing"
-msgstr "Martinique"
+msgstr "Marketing"
 
 #: edit_address.js.php:13
 msgid "No postal code required in"
@@ -8286,7 +8278,7 @@ msgstr "Produkt"
 #: common.php:233
 #: common.php:236
 msgid "Inventory"
-msgstr ""
+msgstr "Bestand"
 
 #: common.php:299
 #, fuzzy
@@ -9429,9 +9421,8 @@ msgid "New Company Department"
 msgstr "Abteilung"
 
 #: index.php:44
-#, fuzzy
 msgid "Search Customers"
-msgstr "Kunden"
+msgstr "nach Kunden suchen"
 
 #: index.php:140
 #, fuzzy
@@ -15269,7 +15260,7 @@ msgstr ""
 
 #: mantenence/smarty.php:6869
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: mantenence/smarty.php:6878
 msgid "Editing Company Staff"
