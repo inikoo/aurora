@@ -269,21 +269,7 @@ dialog_change_header_image.render();
   myEditor = new YAHOO.widget.Editor('paragraph_content', myConfig); 
     myEditor.render(); 
     
-    var myConfig = {
-        height: '300px',
-        width: '600px',
-        animate: true,
-        dompath: true,
-   //     focusAtStart: true
-    };
-    
-    
-      var EmailHTMLEditor = new YAHOO.widget.Editor('html_email_editor', myConfig);
-      
-      
-     
-  
-    EmailHTMLEditor.render();
+ 
 
 }
 YAHOO.util.Event.onDOMReady(init);
