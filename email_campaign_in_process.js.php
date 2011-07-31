@@ -710,8 +710,49 @@ function changeHeight(iframe){
 
 
 function preview_email_campaign(){
+get_preview( Dom.get('preview_index').value ) 
 dialog_preview_text_email.show()
 }
+
+function previous_preview(){
+get_preview( parseInt(Dom.get('preview_index').value)-1 )
+
+}
+
+function next_preview(){
+get_preview( parseInt(Dom.get('preview_index').value)+1 )
+}
+
+
+function get_preview( index ) {
+	var email_campaign_key=Dom.get('email_campaign_key').value;
+	var request='ar_marketing.php?tipo=preview_email_campaign&email_campaign_key='+encodeURIComponent(email_campaign_key)+'&index='+index;
+//alert(request);
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+//		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+             
+           
+             Dom.get('preview_index').value=r.index;
+             Dom.get('preview_formated_index').innerHTML=r.formated_index;
+             Dom.get('preview_to').innerHTML=r.to;
+             Dom.get('preview_subject').innerHTML=r.subject;
+             Dom.get('preview_plain_body').innerHTML=r.plain;
+             Dom.get('preview_html_body').innerHTML=r.html_src;
+             
+                
+            
+		}else{
+		  
+	    }
+	    }
+	    });
+	
+}
+
+
 
 function init(){
 //changeHeight(Dom.get('template_email_iframe'))
@@ -992,7 +1033,9 @@ function init(){
     
     
     
-  
+      Event.addListener("previous_preview", "click", previous_preview);
+      Event.addListener("next_preview", "click", next_preview);
+
 
 
     

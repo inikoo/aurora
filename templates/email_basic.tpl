@@ -61,7 +61,7 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 <tr>
 <td bgcolor="#FFFFFF" valign="top" style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;">
 <div>
-Dear {$customer->get('Customer Main Contact Name')}{if $customer->get('Customer Type')=='Company'}, {$customer->get('Customer Name')}{/if}
+%greeting%
 </div>
 
 {foreach from=$paragraphs item=paragraph key=paragraph_key name=foo}
@@ -72,7 +72,8 @@ Dear {$customer->get('Customer Main Contact Name')}{if $customer->get('Customer 
 {t}Move paragraph here{/t}
 </div>
 <div onClick="delete_paragraph({$paragraph_key})" onmouseout="Dom.setStyle('delete_paragraph{$paragraph_key}','display','none')"   onmouseover="Dom.setStyle('delete_paragraph{$paragraph_key}','display','')"  id="delete_paragraph{$paragraph_key}" style="cursor:pointer;float:right;padding:2px 10px;border:1px solid #ccc;display:none">{t}Delete{/t} <img style="vertical-align:text-bottom;" src="art/icons/cross.png"/></div>
-<div onClick="edit_paragraph(this,{$paragraph_key})" onmouseout="Dom.setStyle('delete_paragraph{$paragraph_key}','display','none')"   onmouseover="Dom.setStyle('delete_paragraph{$paragraph_key}','display','')"  id="paragraph{$paragraph_key}"  class="email_paragraph" >{/if}
+<div onClick="edit_paragraph(this,{$paragraph_key})" onmouseout="Dom.setStyle('delete_paragraph{$paragraph_key}','display','none')"   onmouseover="Dom.setStyle('delete_paragraph{$paragraph_key}','display','')"  id="paragraph{$paragraph_key}"  class="email_paragraph" >
+{/if}
 <p>
 <input type="hidden" id="paragraph_type{$paragraph_key}" value="Main">
 <span style="font-size:20px;font-weight:bold;color:#CC6600;font-family:arial;line-height:110%;" id="paragraph_title{$paragraph_key}">{$paragraph.title}</span><br>
@@ -84,7 +85,7 @@ Dear {$customer->get('Customer Main Contact Name')}{if $customer->get('Customer 
 {if $edit}</div>{/if}
 
 {/if}
-
+{if $edit}
 {if $smarty.foreach.foo.last}
 <div class="target" style="display:none" id="target0">
 {t}Move paragraph here{/t}
@@ -93,7 +94,7 @@ Dear {$customer->get('Customer Main Contact Name')}{if $customer->get('Customer 
 {t}Add a paragraph{/t}
 </div>
 {/if}
-
+{/if}
 {/foreach}
 </td>
 </tr>
@@ -103,7 +104,7 @@ Dear {$customer->get('Customer Main Contact Name')}{if $customer->get('Customer 
 <span style="font-size:10px;color:#996600;line-height:100%;font-family:verdana;">
 {$store->get('Store Description')} <br />
 <br />
-<a href="*|UNSUB|*">Unsubscribe</a> {$customer->get('Customer Main Plain Email')} from this list.<br />
+<a href="*|UNSUB|*">Unsubscribe</a> %email% from this list.<br />
 
 {if $store->get('Store Address')}
 <br />

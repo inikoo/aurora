@@ -3319,6 +3319,13 @@ CHANGE `Order Main Postal Code` `Order Main Postal Code` VARCHAR( 64 ) CHARACTER
 ALTER TABLE `Order Dimension` CHANGE `Order Ship To City Code` `Order Ship To Town` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
+//xxxxxxxxxxxxxxxxxxxx
+
+
+ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,
+ADD INDEX ( `Email Content Key` ) ;
+
+
 */
 
 ?>

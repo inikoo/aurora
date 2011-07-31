@@ -11,6 +11,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('preview_email_campaign'):
+    $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key'),
+                             'index'=>array('type'=>'number')
+                         ));
+    preview_email_campaign($data);
+    break;
+    
 case('is_email_campaign_name'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -279,6 +287,49 @@ function is_email_campaign_name($data) {
         echo json_encode($response);
         return;
     }
+
+}
+
+function preview_email_campaign($data){
+include_once('class.EmailCampaign.php');
+$email_campaign= new EmailCampaign($data['email_campaign_key']);
+  if (!$email_campaign->id) {
+        $response= array('state'=>400,'msg'=>'Invalid Email Campaign Key','key'=>$data['okey']);
+        echo json_encode($response);
+        exit;
+    }
+    $index=$data['index'];
+        if($index>$email_campaign->data['Number of Emails'])
+        $index=1;
+    elseif($index<1)
+        $index=$email_campaign->data['Number of Emails'];
+    $email_mailing_list_key=$email_campaign->get_email_mailing_list_key_from_index($index);
+    
+    if(!$email_mailing_list_key){
+     $response= array('state'=>400,'msg'=>'Invalid Email List Index','key'=>$data['okey']);
+        echo json_encode($response);
+        exit;
+    
+    }
+    $message_data=$email_campaign->get_message_data($email_mailing_list_key);     
+
+    
+    if($message_data['type']=='Plain'){
+            $body=$message_data['plain'];
+    }else{
+     $body=$message_data['html'];
+    }
+    
+       $response= array('state'=>200,
+       'body'=>$body,
+       'subject'=>$message_data['subject'],
+       'index'=>$index,
+       'formated_index'=>number($index),
+       'to'=>$message_data['to']
+       );
+        echo json_encode($response);
+     
+
 
 }
 
