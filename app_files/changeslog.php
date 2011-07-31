@@ -3322,8 +3322,7 @@ CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHA
 //xxxxxxxxxxxxxxxxxxxx
 
 
-ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,
-ADD INDEX ( `Email Content Key` ) ;
+ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,ADD INDEX ( `Email Content Key` ) ;
 
 
 */
