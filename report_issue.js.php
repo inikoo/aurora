@@ -19,7 +19,7 @@ type:
 
     json_value = YAHOO.lang.JSON.stringify(value);
     var request='ar_send_email.php?tipo=report_issue&values=' + json_value;
- //alert(request)
+ alert(request)
  Dom.setStyle(['send','cancel'],'display','none');
     Dom.setStyle(['sending'],'display','');
 
@@ -27,7 +27,7 @@ type:
   
   
 success:function(o) {
- // alert(o.responseText)
+  //alert(o.responseText)
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state==200) {
                 Dom.get('send_from').style.display='none';

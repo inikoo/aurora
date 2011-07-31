@@ -39,7 +39,6 @@
 Function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters="")
 {
 	global $message_object;
-	
 	return($message_object->Mail($to,$subject,$message,$additional_headers,$additional_parameters));
 }
 
