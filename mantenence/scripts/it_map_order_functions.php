@@ -4412,35 +4412,39 @@ function read_records($handle_csv,$y_map,$number_header_rows){
   $row=0;
   
   $header_first_line_read=false;
-  $header[0]=array();
+$header[0]=array();
   while(($cols = fgetcsv($handle_csv))!== false){
 
-    if($row<$number_header_rows){// is a header data
+      if(preg_match('/^public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read ){
+
+                    
+
+                  $header[0]=$cols;
+           $header_first_line_read=true;
+  }elseif($row<$number_header_rows){// is a header data
       $header[]=$cols;
     }else{
 
       if(count($cols)<$y_map['discount'])
-	continue;
+        continue;
 
       if(preg_match('/regalo de bienvenida/i',$cols[$y_map['description']]))
-	$first_order_bonus=true;
+        $first_order_bonus=true;
       if(
-	 (
-	  $cols[$y_map['code']]!=''
-	  and (is_numeric($cols[$y_map['credit']]) or $cols[$y_map['discount']]==1   )
-	  and $cols[$y_map['description']]!='' 
-	  and (is_numeric($cols[$y_map['price']]) or $cols[$y_map['price']]==''  ) 
-	  and (  ( is_numeric($cols[$y_map['order']])   and  $cols[$y_map['order']]!=0   )   
-		 or ( is_numeric($cols[$y_map['reorder']])   and  $cols[$y_map['reorder']]!=0   and $re_order   )  
-		 or ( is_numeric($cols[$y_map['bonus']])   and  $cols[$y_map['bonus']]!=0   ) )  
-	  )or (preg_match('/credit/i',$cols[$y_map['code']])   and  $cols[$y_map['price']]!='' and  $cols[$y_map['price']]!=0  )
-	 ){
+         (
+          $cols[$y_map['code']]!=''
+          and (is_numeric($cols[$y_map['credit']]) or $cols[$y_map['discount']]==1   )
+          and $cols[$y_map['description']]!=''
+          and (is_numeric($cols[$y_map['price']]) or $cols[$y_map['price']]==''  )
+          and (  ( is_numeric($cols[$y_map['order']])   and  $cols[$y_map['order']]!=0   )
+                 or ( is_numeric($cols[$y_map['reorder']])   and  $cols[$y_map['reorder']]!=0   and $re_order   )
+                 or ( is_numeric($cols[$y_map['bonus']])   and  $cols[$y_map['bonus']]!=0   ) )
+          )or (preg_match('/credit/i',$cols[$y_map['code']])   and  $cols[$y_map['price']]!='' and  $cols[$y_map['price']]!=0  )
+         ){
 
-	$cols['fob']=$first_order_bonus;
-	$products[]=$cols;
-      }else if(preg_match('/^public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read )
-	$header[0]=$cols;
-     $header_first_line_read=true;
+        $cols['fob']=$first_order_bonus;
+        $products[]=$cols;
+      }
     }
     $row++;
   }
@@ -4450,37 +4454,6 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 
 }
 
-// function set_pickers_and_packers($order_id,$header_data){
-//   $db =& MDB2::singleton();
-//   $picker_ids=get_user_id($header_data['pickedby'],$order_id,'picked');
-//   $packer_ids=get_user_id($header_data['packedby'],$order_id,'packed');
-
-//   if(count($picker_ids)==0){
-//     $sql=sprintf('insert into pick (order_id,picker_id,share) values (%d,0,1.00)',$order_id);
-//     //mysql_query($sql);
-//     mysql_query($sql);
-//   }
-//   if(count($packer_ids)==0){
-//     $sql=sprintf('insert into pack (order_id,packer_id,share) values (%d,0,1.00)',$order_id);
-//     //mysql_query($sql);
-//     mysql_query($sql);
-//   } 
-
-//   foreach($picker_ids as $picker_id){
-//     $share=1/count($picker_ids);
-//     $sql=sprintf('insert into pick (order_id,picker_id,share) values (%d,%d,%.2f)',$order_id,$picker_id,$share);
-//     // mysql_query($sql);
-//     mysql_query($sql);
-//   }
-//   foreach($packer_ids as $packer_id){
-//     $share=1/count($packer_ids);
-//     $sql=sprintf('insert into pack (order_id,packer_id,share) values (%d,%d,%.2f)',$order_id,$packer_id,$share);
-//     //mysql_query($sql);
-//     mysql_query($sql);
-//   }
-  
-
-// }
 
 
 
