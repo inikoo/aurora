@@ -386,6 +386,9 @@ function delete_email_paragraph($data) {
 
 function add_email_template_header($data){
 print_r($data);
+
+
+
     $data=array(
 	    'file'=>'tmp'.$rand.'.jpg'
 	    ,'path'=>'app_files/pics/assets/'
