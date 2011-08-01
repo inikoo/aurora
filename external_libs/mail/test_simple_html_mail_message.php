@@ -15,9 +15,12 @@
  *  $from_address="me@mydomain.com";
  *  $from_name="My Name";
  */
-	$from_address=getenv("USER")."@".getenv("HOSTNAME");
-	$from_name=getenv("USERNAME");
-
+	//$from_address=getenv("USER")."@".getenv("HOSTNAME");
+	$from_address='migara@inikoo.com';
+	//$from_name=getenv("USERNAME");
+	$from_name='inikoo';
+	
+	
 	$reply_name=$from_name;
 	$reply_address=$from_address;
 	$reply_address=$from_address;
@@ -28,8 +31,8 @@
  *  Change these lines or else you will be mailing the class author.
  */
 	$to_name="Manuel Lemos";
-	$to_address="mlemos@acm.org";
-	$to_address="mlemos@linux.local";
+	//$to_address="mlemos@acm.org";
+	$to_address="migara@inikoo.com";
 
 	$subject="Testing Manuel Lemos' MIME E-mail composing and sending PHP class: HTML message";
 	$email_message=new email_message_class;

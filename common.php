@@ -61,10 +61,10 @@ $session = new Session($max_session_time,1,100);
 //print_r($_SESSION['state']);
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
-$smarty->template_dir = $myconf['template_dir'];
-$smarty->compile_dir = $myconf['compile_dir'];
-$smarty->cache_dir = $myconf['cache_dir'];
-$smarty->config_dir = $myconf['config_dir'];
+$smarty->template_dir = 'templates';
+$smarty->compile_dir = 'server_files/smarty/templates_c';
+$smarty->cache_dir = 'server_files/smarty/cache';
+$smarty->config_dir = 'server_files/smarty/configs';
 
 
  
