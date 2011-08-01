@@ -10,16 +10,8 @@ require_once 'common.php';
 require_once 'class.EmailCampaign.php';
 
 $css_files=array(
-//               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-              // $yui_path.'calendar/assets/skins/sam/calendar.css',
-              // $yui_path.'button/assets/skins/sam/button.css',
-              // $yui_path.'editor/assets/skins/sam/editor.css',
-              // $yui_path.'assets/skins/sam/autocomplete.css',
               $yui_path.'assets/skins/sam/editor.css',
-
-              // 'text_editor.css',
-              //'common.css',
                'button.css',
                'container.css',
               'table.css',
@@ -27,14 +19,6 @@ $css_files=array(
 
            );
 $js_files=array(
-
-
-       
-
-
-
-
-
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
                 $yui_path.'dragdrop/dragdrop-min',

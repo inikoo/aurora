@@ -280,8 +280,8 @@ function add_staff($data) {
         
 	$staff=new Staff($staff_key);
 	
-	$note=_('Staff associted with position');
-	$details=_('Company Staff')." ".$staff->data['Staff Name']." "._('associted with position')." (".$this->data['Company Position Code'].") ".$this->data['Company Position Title'];
+	$note=_('Staff associated with position');
+	$details=_('Company Staff')." ".$staff->data['Staff Name']." "._('associated with position')." (".$this->data['Company Position Code'].") ".$this->data['Company Position Title'];
 	
 	
 	$history_data=array(
