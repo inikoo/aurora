@@ -13,6 +13,16 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('add_email_template_header'):
+    $data=prepare_values($_REQUEST,array(
+                             'files_data'=>array('type'=>'json array'),
+                             'scope'=>array('type'=>'string'),
+                               'scope_key'=>array('type'=>'key'),
+                                 'caption'=>array('type'=>'string')
+                             
+                         ));
+    add_email_template_header($data);
+    break;
 case('delete_email_paragraph'):
     $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array')
@@ -374,5 +384,16 @@ function delete_email_paragraph($data) {
     echo json_encode($response);
 }
 
+function add_email_template_header($data){
+print_r($data);
+    $data=array(
+	    'file'=>'tmp'.$rand.'.jpg'
+	    ,'path'=>'app_files/pics/assets/'
+	    ,'name'=>$data['files_data']['original_filename']
+	    ,'caption'=>$data['caption']
+	    );
 
+ //    print_r($data);
+$image=new Image('find',$data,'create');
+}
 ?>

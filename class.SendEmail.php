@@ -327,13 +327,13 @@ class SendEmail extends DB_Table{
 			break;
 		
 		case 'html':
-			$sql=sprintf("select * from `Email Queue Dimension` where `Status`='No' and `Email Type`='HTML'");
+			$sql=sprintf("select * from `Email Queue Dimension` where `Status`='No' and `Type`='HTML'");
 			//$sql=sprintf("select * from `Email Queue Dimension` ");
-			print $sql;
+			//print $sql;
 		//	print $sql;
 			$result=mysql_query($sql);
 			//print "$result";
-			while($row=mysql_fetch_array($result)){
+			while($row=mysql_fetch_assoc($result)){
 				print mysql_error();
 				$data=array(
 					'subject'=>	$row['Subject'],

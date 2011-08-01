@@ -638,13 +638,15 @@ $output = $smarty->fetch('email_basic.tpl');
         $to='';
         if($row=mysql_fetch_assoc($res)){
         
-    $to=$row['Email Address'];
+        $to=$row['Email Address'];
         
           $email_content_key=$row['Email Content Key'];
             $customer=new LightCustomer($row['Customer Key']);
             if(!$customer->id){
                 $customer->data['Customer Main Contact Name']=$row['Email Contact Name'];
                 $customer->data['Customer Name']=$row['Email Contact Name'];
+                                $customer->data['Customer Main Plain Email']=$row['Email Address'];
+
                  $customer->data['Customer Type']='person';
                  
             }
@@ -668,7 +670,7 @@ $output = $smarty->fetch('email_basic.tpl');
                     $plain=preg_replace('/'.$match.'/',$customer->get(preg_replace('/\%/','',$match)),$plain);
                 }
             }
-            if(preg_match_all('/\%[a-z]+\%/',$plain,$matches)){
+            if(preg_match_all('/\%[a-z]+\%/',$html,$matches)){
                 foreach($matches[0] as $match){
                     $html=preg_replace('/'.$match.'/',$customer->get(preg_replace('/\%/','',$match)),$html);
                 }
