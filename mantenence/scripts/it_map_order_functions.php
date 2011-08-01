@@ -4410,39 +4410,22 @@ function read_records($handle_csv,$y_map,$number_header_rows){
   $products=array();
   $act=false;
   $row=0;
+  
+  $header_first_line_read=false;
+  $header[0]=array();
   while(($cols = fgetcsv($handle_csv))!== false){
 
     if($row<$number_header_rows){// is a header data
       $header[]=$cols;
     }else{
-      //      i
-   //    if(isset($cols[3])){
-// 	if(preg_match('/wsl-1513/i',$cols[3])  ){
-// 	  print_r($cols);
-// 	print $y_map['bonus']."\n ";
-// 	}
-//       }
-      // print count($cols)."\n";
-
-
-
 
       if(count($cols)<$y_map['discount'])
 	continue;
 
-
-
       if(preg_match('/regalo de bienvenida/i',$cols[$y_map['description']]))
 	$first_order_bonus=true;
-
-      //  if($cols[$y_map['code']]=='Pack-29')
-      //	print $y_map['bonus'];
-     
       if(
 	 (
-	    
-	 
-
 	  $cols[$y_map['code']]!=''
 	  and (is_numeric($cols[$y_map['credit']]) or $cols[$y_map['discount']]==1   )
 	  and $cols[$y_map['description']]!='' 
@@ -4453,20 +4436,11 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 	  )or (preg_match('/credit/i',$cols[$y_map['code']])   and  $cols[$y_map['price']]!='' and  $cols[$y_map['price']]!=0  )
 	 ){
 
-
-	
-
-
-// 	if($cols['units']==1 or $cols['units']='')
-// 	  $cols['name']=$cols['description'];
-// 	else
-// 	  $cols['name']=$cols['units'].'x '.$cols['description'];
-
 	$cols['fob']=$first_order_bonus;
 	$products[]=$cols;
-      }else if(preg_match('/^public\d*$|^nic$/i',$cols[0])  )
+      }else if(preg_match('/^public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read )
 	$header[0]=$cols;
-     
+     $header_first_line_read=true;
     }
     $row++;
   }

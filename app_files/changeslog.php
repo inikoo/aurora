@@ -3340,6 +3340,18 @@ ALTER TABLE `Email Queue Dimension` ADD `Status` ENUM( 'Yes', 'No' ) NOT NULL DE
 ALTER TABLE `Email Queue Dimension` CHANGE `Body` `Plain` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Email Queue Dimension` ADD `HTML` LONGTEXT NULL AFTER `Plain`;
 
+ALTER TABLE `Email Queue Dimension` ADD `Type` ENUM( 'Plain', 'HTML' ) NOT NULL DEFAULT 'Plain';
+CREATE TABLE `Email Queue Attachement Dimension` (
+`Attachement Key` INT NOT NULL AUTO_INCREMENT ,
+`Email Queue Key` INT NOT NULL ,
+`Data` VARCHAR( 255 ) NULL ,
+`FileName` VARCHAR( 255 ) NULL ,
+`Name` VARCHAR( 255 ) NULL ,
+`Content-Type` VARCHAR( 255 ) NOT NULL ,
+`Disposition` VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( `Attachement Key` )
+
+) ENGINE = MYISAM;
 
 */
 
