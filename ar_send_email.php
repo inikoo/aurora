@@ -106,9 +106,9 @@ $msg="<html>
 	
 	$send_email=new SendEmail();
 	
-	//$send_email->smtp('plain', $data);
+	$send_email->smtp('plain', $data);
 
-	//$result=$send_email->send();
+	$result=$send_email->send();
 
 	//$result=$send_email->retry('plain');
 	
@@ -116,7 +116,7 @@ $msg="<html>
 
 	//$result=$send_email->send();
 	
-	$result=$send_email->retry('html');
+	//$result=$send_email->retry('html');
 	
 	if(preg_match('/^could not resolve the host domain/',$result['msg'])){
 		if(isset($data['html']) && $data['html']){
@@ -160,13 +160,14 @@ $msg="<html>
 				else
 					$name=null;			
 					
-				$sql=sprintf("insert into `Email Queue Attachement Dimension` (`Email Queue Key`, `Data`, `FileName`, `Name`, `Content-Type`, `Disposition`) values (%d, %s, %s, %s, %s, %s)"
+				$sql=sprintf("insert into `Email Queue Attachement Dimension` (`Email Queue Key`, `Data`, `FileName`, `Name`, `Content-Type`, `Disposition`, `Type`) values (%d, %s, %s, %s, %s, %s, %s)"
 				,$email_queue_key
 				,prepare_mysql($data_temp)
 				,prepare_mysql($file_name)
 				,prepare_mysql($name)
 				,prepare_mysql($value['Content-Type'])
 				,prepare_mysql($value['Disposition'])
+				,prepare_mysql($value['attachement_type'])
 				);
 				
 				//print prepare_mysql($file_name);
