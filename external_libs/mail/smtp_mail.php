@@ -31,7 +31,7 @@
 	$message_object->smtp_user="";            /* authentication user name */
 	$message_object->smtp_realm="";           /* authentication realm or Windows domain when using NTLM authentication */
 	$message_object->smtp_workstation="";     /* authentication workstation name when using NTLM authentication */
-	$message_object->smtp_password="";        /* authentication password */
+	$message_object->smtp_password="NKcyvqzoH2";        /* authentication password */
 	$message_object->smtp_pop3_auth_host="";  /* if you need POP3 authetntication before SMTP delivery, specify the host name here. The smtp_user and smtp_password above should set to the POP3 user and password */
 	$message_object->smtp_debug=0;            /* Output dialog with SMTP server */
 	$message_object->smtp_html_debug=1;       /* If smtp_debug is 1, set this to 1 to output debug information in HTML */

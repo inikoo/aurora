@@ -44,31 +44,73 @@ function report_issue($data) {
 
 	global $message_object;
 	
-	
+$msg="<html>
+					<head>
+					<title>subject</title>
+					<style type=\"text/css\"><!--
+					body { color: black ; font-family: arial, helvetica, sans-serif ; background-color: #A3C5CC }
+					A:link, A:visited, A:active { text-decoration: underline }
+					--></style>
+					</head>
+					<body>
+					<table width=\"100%\">
+					<tr>
+					<td>
+					<center><h1>subject</h1></center>
+					<hr>
+					<P>Hello Test<br><br>
+					This message is just to let you know that the <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
+					Thank you,<br>
+					from_name</p>
+					</td>
+					</tr>
+					</table>
+					</body>
+					</html>";
+					
 	$data=array(
 		'subject'=>	$data['values']['summary'],
-		'body'=>$data['values']['description']."\n\n".$data['values']['metadata'],
+		'plain'=>$data['values']['description']."\n\n".$data['values']['metadata'],
 		'email_credentials_key'=>$email_credential_key,
 		'to'=>$to,
-		'bcc'=>'raul@inikoo.com'
+		'bcc'=>'raul@inikoo.com',
+		'html'=>$msg
 	);
 
+	
+
+
+	
 	$send_email=new SendEmail();
-	$send_email->smtp('plain', $data);
+	//$send_email->smtp('plain', $data);
 
-	$result=$send_email->send();
+	//$result=$send_email->send('plain');
 
-	//$result=$send_email->retry();
+	//$result=$send_email->retry('plain');
+	
+	//$send_email->smtp('html', $data);
+
+	//$result=$send_email->send('html');
+	
+	$result=$send_email->retry('html');
 	
 	if(preg_match('/^could not resolve the host domain/',$result['msg'])){
-		$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `Email Credentials Key`, `BCC`) values (%s, 'Plain', %s, %s, %d, %s)	"
+		if(isset($data['html']) and $data['html'])
+			$html_msg=$data['html'];
+		else
+			$html_msg=null;
+		
+		$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Email Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, 'HTML', %s, %s, %s, %d, %s)	"
 		,prepare_mysql($data['to'])
 		,prepare_mysql($data['subject'])
-		,prepare_mysql($data['body'])
+		,prepare_mysql($data['plain'])
+		,prepare_mysql($html_msg)
 		,$data['email_credentials_key']
 		,prepare_mysql($data['bcc'])
 		);
-
+	
+		//print $sql;
+		
 		if(mysql_query($sql))
 			$result=array('state'=>400,'msg'=>$result['msg'].' Stored in email Queue');
 		
