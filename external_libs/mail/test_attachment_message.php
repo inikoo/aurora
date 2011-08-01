@@ -46,7 +46,54 @@
 		$email_message->SetHeader("Return-Path",$error_delivery_address);
 
 	$email_message->SetEncodedHeader("Subject",$subject);
+	$html_message="<html>
+<head>
+<title>$subject</title>
+<style type=\"text/css\"><!--
+body { color: black ; font-family: arial, helvetica, sans-serif ; background-color: #A3C5CC }
+A:link, A:visited, A:active { text-decoration: underline }
+--></style>
+</head>
+<body>
+<table width=\"100%\">
+<tr>
+<td>
+<center><h1>$subject</h1></center>
+<hr>
+<P>Hello ".strtok($to_name," ").",<br><br>
+This message is just to let you know that the <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
+Thank you,<br>
+$from_name</p>
+</td>
+</tr>
+</table>
+</body>
+</html>";
+	$email_message->CreateQuotedPrintableHTMLPart($html_message,"",$html_part);
 
+/*
+ *  It is strongly recommended that when you send HTML messages,
+ *  also provide an alternative text version of HTML page,
+ *  even if it is just to say that the message is in HTML,
+ *  because more and more people tend to delete HTML only
+ *  messages assuming that HTML messages are spam.
+ */
+	$text_message="This is an HTML message. Please use an HTML capable mail program to read this message.";
+	$email_message->CreateQuotedPrintableTextPart($email_message->WrapText($text_message),"",$text_part);
+
+/*
+ *  Multiple alternative parts are gathered in multipart/alternative parts.
+ *  It is important that the fanciest part, in this case the HTML part,
+ *  is specified as the last part because that is the way that HTML capable
+ *  mail programs will show that part and not the text version part.
+ */
+	$alternative_parts=array(
+		$text_part,
+		$html_part
+	);
+	$email_message->AddAlternativeMultipart($alternative_parts);
+	$text_message="Hello ".strtok($to_name," ")."\n\nThis message is just to let you know that the MIME E-mail message composing and sending PHP class is working as expected.\n\nYou may find attached to this messages a text file and and image file.\n\nThank you,\n$from_name";
+	$email_message->AddQuotedPrintableTextPart($email_message->WrapText($text_message));
 /*
  *  A message with attached files usually has a text message part
  *  followed by one or more attached file parts.

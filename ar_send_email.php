@@ -67,44 +67,67 @@ $msg="<html>
 					</table>
 					</body>
 					</html>";
-					
+
+
+	$files=array();
+	
+	$files[]=array('attachement_type'=>'Text',
+								'Data'=>"This is just a plain text attachment file named attachment.txt .",
+								'Name'=>"attachment.txt",
+								'Content-Type'=>"automatic/name",
+								'Disposition'=>"attachment"	
+						);
+	$files[]=array('attachement_type'=>'Image',
+								'FileName'=>"http://localhost/kaktus/external_libs/mail/mimemessage.gif",
+								'Content-Type'=>"automatic/name",
+								'Disposition'=>"attachment"	
+						);
+						
+	//print_r($files);
+	
 	$data=array(
+		'type'=>'HTML',
 		'subject'=>	$data['values']['summary'],
 		'plain'=>$data['values']['description']."\n\n".$data['values']['metadata'],
 		'email_credentials_key'=>$email_credential_key,
 		'to'=>$to,
 		'bcc'=>'raul@inikoo.com',
-		'html'=>$msg
+		'html'=>$msg,
+		'attachement'=>$files
 	);
-
 	
 
-	$email_type='Plain';
+	
+	if(isset($data['plain']) && $data['plain']){
+		$data['plain']=$data['plain'];
+	}
+	else
+		$data['plain']=null;
 	
 	$send_email=new SendEmail();
-	$send_email->smtp('plain', $data);
+	
+	//$send_email->smtp('plain', $data);
 
-	$result=$send_email->send('plain');
+	//$result=$send_email->send();
 
 	//$result=$send_email->retry('plain');
 	
 	//$send_email->smtp('html', $data);
 
-	//$result=$send_email->send('html');
+	//$result=$send_email->send();
 	
-	//$result=$send_email->retry('html');
+	$result=$send_email->retry('html');
 	
 	if(preg_match('/^could not resolve the host domain/',$result['msg'])){
-		if(isset($data['html']) and $data['html']){
+		if(isset($data['html']) && $data['html']){
 			$html_msg=$data['html'];
-			//$email_type='HTML';
 		}
 		else
 			$html_msg=null;
 		
 		$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, %s, %s, %s, %s, %d, %s)	"
 		,prepare_mysql($data['to'])
-		,prepare_mysql($email_type)
+		,prepare_mysql($data['type'])
 		,prepare_mysql($data['subject'])
 		,prepare_mysql($data['plain'])
 		,prepare_mysql($html_msg)
@@ -113,9 +136,49 @@ $msg="<html>
 		);
 	
 		//print $sql;
+		$stat=mysql_query($sql);
 		
-		if(mysql_query($sql))
+		$email_queue_key=mysql_insert_id();
+		
+		if(isset($files)){
+			foreach($files as $value){
+				if(isset($value['Data']) && $value['Data']){
+					$data_temp=$value['Data'];
+				}
+				else
+					$data_temp=null;
+					
+				if(isset($value['FileName']) && $value['FileName']){
+					$file_name=$value['FileName'];
+				}
+				else
+					$file_name=null;	
+					
+				if(isset($value['Name']) && $value['Name']){
+					$name=$value['Name'];
+				}
+				else
+					$name=null;			
+					
+				$sql=sprintf("insert into `Email Queue Attachement Dimension` (`Email Queue Key`, `Data`, `FileName`, `Name`, `Content-Type`, `Disposition`) values (%d, %s, %s, %s, %s, %s)"
+				,$email_queue_key
+				,prepare_mysql($data_temp)
+				,prepare_mysql($file_name)
+				,prepare_mysql($name)
+				,prepare_mysql($value['Content-Type'])
+				,prepare_mysql($value['Disposition'])
+				);
+				
+				//print prepare_mysql($file_name);
+				$stat = $stat & mysql_query($sql);
+			}
+			
+		}
+		
+		if($stat)
 			$result=array('state'=>400,'msg'=>$result['msg'].' Stored in email Queue');
+		else
+			$result=array('state'=>400,'msg'=>$result['msg'].' Could not Store in email Queue');
 		
 	}
 		

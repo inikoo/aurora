@@ -181,7 +181,23 @@ $from_name</p>
 		$html_part
 	);
 	$email_message->AddAlternativeMultipart($alternative_parts);
-	
+	$text_message="Hello ".strtok($to_name," ")."\n\nThis message is just to let you know that the MIME E-mail message composing and sending PHP class is working as expected.\n\nYou may find attached to this messages a text file and and image file.\n\nThank you,\n$from_name";
+	$email_message->AddQuotedPrintableTextPart($email_message->WrapText($text_message));
+
+	$text_attachment=array(
+		"Data"=>"This is just a plain text attachment file named attachment.txt .",
+		"Name"=>"attachment.txt",
+		"Content-Type"=>"automatic/name",
+		"Disposition"=>"attachment"
+	);
+	$email_message->AddFilePart($text_attachment);
+
+	$image_attachment=array(
+		"FileName"=>"http://www.phpclasses.org/graphics/logo.gif",
+		"Content-Type"=>"automatic/name",
+		"Disposition"=>"attachment"
+	);
+	$email_message->AddFilePart($image_attachment);	
 	
 	$error=$email_message->Send();
 	for($recipient=0,Reset($email_message->invalid_recipients);$recipient<count($email_message->invalid_recipients);Next($email_message->invalid_recipients),$recipient++)
