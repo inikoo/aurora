@@ -39,8 +39,8 @@ function report_issue($data) {
 
 	
 	
-	//$to=$conection_data['email'];
-	$to='migara@inikoo.com';
+	$to=$conection_data['email'];
+	//$to='migara@inikoo.com';
 
 	global $message_object;
 	
@@ -177,9 +177,9 @@ $msg="<html>
 		}
 		
 		if($stat)
-			$result=array('state'=>400,'msg'=>$result['msg'].' Stored in email Queue');
+			$result=array('state'=>400,'msg'=>_('Message will send shortly');
 		else
-			$result=array('state'=>400,'msg'=>$result['msg'].' Could not Store in email Queue');
+			$result=array('state'=>400,'msg'=>'Error: Message could not be sent');
 		
 	}
 		
