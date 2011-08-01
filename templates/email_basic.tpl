@@ -174,15 +174,23 @@ Copyright (C) {$smarty.now|date_format:'%Y'} {$store->get('Store Name')} All rig
 
 
 <div id="dialog_change_header_image" style='font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;width:509px;font-size:90%'>
+
+<input type="hidden" id="attachment_type" value="email_template_header">
+
+<input type="hidden" id="attachment_scope" value="store">
+<input type="hidden" id="attachment_scope_key" value="{$store->id}">
+
+<input type="hidden" id="attachment_caption" value="">
+
   <div id="change_header_image_msg"></div>
   <div style="text-align:right;padding:5px 10px 0 0;font-size:75% ">
     <span  class="unselectable_text button">{t}Add Image{/t}</span>
   </div>
 
 <div style="padding: 0 15px;">
-	<div id="fileProgress" style="border: black 1px solid; width:300px; height:40px;float:left">
-		<div id="fileName" style="text-align:center; margin:5px; font-size:15px; width:290px; height:25px; overflow:hidden"></div>
-		<div id="progressBar" style="width:300px;height:5px;background-color:#CCCCCC"></div>
+	<div id="fileProgress" style="border: black 1px solid; width:200px; height:19px;float:left">
+		<div id="fileName" style="text-align:center; font-size:70%;margin:1px; width:190px; height:12px; overflow:hidden"></div>
+		<div id="progressBar" style="width:200px;height:5px;background-color:#CCCCCC"></div>
 	</div>
 <div id="uploaderUI" style="width:70px;height:16px;margin-left:5px;float:left;cursor:pointer"></div>
 <div class="uploadButton" style="float:left"><a class="rolloverButton disabled" href="#" onClick="upload(); return false;"></a></div>

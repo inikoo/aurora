@@ -3284,6 +3284,7 @@ CREATE TABLE `Attachment Bridge` (
 PRIMARY KEY ( `Attachment Key` , `Subject` , `Subject Key` )
 ) ENGINE = MYISAM ;
 
+
 ALTER TABLE `Attachment Bridge` ADD INDEX ( `Attachment Key` ) ;
 ALTER TABLE `Attachment Bridge` ADD INDEX ( `Subject` , `Subject Key` ); 
 ALTER TABLE `Attachment Dimension` CHANGE `Attachment Compressed Data` `Attachment Data` LONGBLOB NOT NULL ;
@@ -3323,6 +3324,21 @@ CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHA
 
 
 ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,ADD INDEX ( `Email Content Key` ) ;
+
+
+CREATE TABLE `Email Queue Dimension` (
+`Email Queue Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
+`To` VARCHAR( 255 ) NOT NULL ,
+`Subject` VARCHAR( 255 ) NOT NULL ,
+`Body` LONGTEXT NULL ,
+`Email Credentials Key` MEDIUMINT( 8 ) NOT NULL ,
+`BCC` VARCHAR( 1024 ) NULL ,
+PRIMARY KEY ( `Email Queue Key` )
+) ENGINE = MYISAM;
+
+ALTER TABLE `Email Queue Dimension` ADD `Status` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `BCC` ;
+ALTER TABLE `Email Queue Dimension` CHANGE `Body` `Plain` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Email Queue Dimension` ADD `HTML` LONGTEXT NULL AFTER `Plain`;
 
 
 */

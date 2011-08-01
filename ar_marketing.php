@@ -322,11 +322,12 @@ $email_campaign= new EmailCampaign($data['email_campaign_key']);
     
        $response= array('state'=>200,
        'plain'=>$message_data['plain'],
-       'html_src'=>'',
+       'html_src'=>'email_template.php?email_campaign_key='.$email_campaign->id.'&email_mailing_list_key='.$email_mailing_list_key,
        'subject'=>$message_data['subject'],
        'index'=>$index,
        'formated_index'=>number($index),
-       'to'=>$message_data['to']
+       'to'=>$message_data['to'],
+       'type'=>$message_data['type']
        );
         echo json_encode($response);
      

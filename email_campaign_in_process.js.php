@@ -679,7 +679,7 @@ function changeHeight(iframe){
         try
         {
         
-            
+         
           var innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;
           
         
@@ -727,7 +727,7 @@ get_preview( parseInt(Dom.get('preview_index').value)+1 )
 function get_preview( index ) {
 	var email_campaign_key=Dom.get('email_campaign_key').value;
 	var request='ar_marketing.php?tipo=preview_email_campaign&email_campaign_key='+encodeURIComponent(email_campaign_key)+'&index='+index;
-//alert(request);
+
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 //		alert(o.responseText)
@@ -739,9 +739,19 @@ function get_preview( index ) {
              Dom.get('preview_formated_index').innerHTML=r.formated_index;
              Dom.get('preview_to').innerHTML=r.to;
              Dom.get('preview_subject').innerHTML=r.subject;
-             Dom.get('preview_plain_body').innerHTML=r.plain;
-             Dom.get('preview_html_body').innerHTML=r.html_src;
              
+             if(r.type=='Plain'){
+                Dom.setStyle('tr_preview_plain_body','display','')
+                 Dom.setStyle('tr_preview_html_body','display','none')
+                              Dom.get('preview_plain_body').innerHTML=r.plain;
+
+             }else{
+              Dom.setStyle('tr_preview_plain_body','display','none')
+                 Dom.setStyle('tr_preview_html_body','display','')
+                          Dom.get('preview_html_body').src=r.html_src;
+              
+             }
+          
                 
             
 		}else{

@@ -111,7 +111,7 @@ function init(){
 	function onUploadProgress(event) {
 
 
-		prog = Math.round(300*(event["bytesLoaded"]/event["bytesTotal"]));
+		prog = Math.round(200*(event["bytesLoaded"]/event["bytesTotal"]));
 	  	progbar = "<div style=\"background-color: #f00; height: 5px; width: " + prog + "px\"/>";
 
 		var progressbar = document.getElementById("progressBar");
@@ -144,18 +144,22 @@ function init(){
 	function onUploadResponse(event) {
 	
 	var r =  YAHOO.lang.JSON.parse(event['data']);
-	//alert(event['data'])
+	alert(event['data'])
 	
-	
+	if(Dom.get('attachment_type').value=='email_template_header'){
+	ar_file='ar_edit_marketing.php';
+	tipo='add_email_template_header';
+	}else{
+	tipo='add_attachment';
 	ar_file='ar_edit_contacts.php';
 	
+	}
 	 jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(r.files_data));
-	 var request=ar_file+'?tipo=add_attachment&files_data='+jsonificated_values+'&scope='+Dom.get('attachment_scope').value+'&scope_key='+Dom.get('attachment_scope_key').value+'&caption='+Dom.get('attachment_caption').value
-	//alert(request);
+	 var request=ar_file+'?tipo='+tipo+'&files_data='+jsonificated_values+'&scope='+Dom.get('attachment_scope').value+'&scope_key='+Dom.get('attachment_scope_key').value+'&caption='+Dom.get('attachment_caption').value
+	alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-	//	alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				  
@@ -163,7 +167,7 @@ function init(){
 		        var datasource=tables['dataSource0'];
 		        var request='';
 		        datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    			
-dialog_attach.hide();
+                dialog_attach.hide();
 
 				}else{
 				  Dom.get('attach_msg').innerHTML=r.msg;
