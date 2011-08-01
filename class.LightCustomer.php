@@ -8,7 +8,10 @@
 */
 
 
-class LightCustomer extends DB_Table {
+class LightCustomer{
+  
+  var $id=false;
+  var $data=array();
   
     function __construct($arg1=false,$arg2=false) {
         if (is_numeric($arg1) and !$arg2) {
@@ -41,13 +44,13 @@ class LightCustomer extends DB_Table {
  
  
     function get($key){
-    
+ 
         switch ($key) {
             case('name'):
-                return $this->data['Customer Name'];
+                return ($this->data['Customer Name']==''?_('Customer'):$this->data['Customer Name']);
                 break;
             case('contact'):
-                return $this->data['Customer Main Contact Name'];
+                return ($this->data['Customer Main Contact Name']==''?_('Customer'):$this->data['Customer Main Contact Name']);
                 break;
             case('email'):
                 return $this->data['Customer Main Plain Email'];
@@ -55,10 +58,19 @@ class LightCustomer extends DB_Table {
             case('address'):
                 return $this->data['Customer Main XHTML Address'];
                 break;    
-            case('address'):
-                return $this->data['Customer Main XHTML Address'];
+          
+                case('greting'):
+            case('greeting'):
+             case('gretings'):
+             case('greetings'):
+                if($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
+                    return _('To whom it corresponds');
+                $greeting=_('Dear').' '.$this->data['Customer Main Contact Name'];
+                if($this->data['Customer Type']=='Company'){
+                  $greeting.=', '.$this->data['Customer Main Name'];
+                }
+                return $greeting;         
                 break;
-
                                
             default:
                 return false;

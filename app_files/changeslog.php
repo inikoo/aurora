@@ -3284,6 +3284,7 @@ CREATE TABLE `Attachment Bridge` (
 PRIMARY KEY ( `Attachment Key` , `Subject` , `Subject Key` )
 ) ENGINE = MYISAM ;
 
+
 ALTER TABLE `Attachment Bridge` ADD INDEX ( `Attachment Key` ) ;
 ALTER TABLE `Attachment Bridge` ADD INDEX ( `Subject` , `Subject Key` ); 
 ALTER TABLE `Attachment Dimension` CHANGE `Attachment Compressed Data` `Attachment Data` LONGBLOB NOT NULL ;
@@ -3318,6 +3319,39 @@ CHANGE `Order Main Postal Code` `Order Main Postal Code` VARCHAR( 64 ) CHARACTER
 
 ALTER TABLE `Order Dimension` CHANGE `Order Ship To City Code` `Order Ship To Town` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+//xxxxxxxxxxxxxxxxxxxx
+
+
+ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,ADD INDEX ( `Email Content Key` ) ;
+
+
+CREATE TABLE `Email Queue Dimension` (
+`Email Queue Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
+`To` VARCHAR( 255 ) NOT NULL ,
+`Subject` VARCHAR( 255 ) NOT NULL ,
+`Body` LONGTEXT NULL ,
+`Email Credentials Key` MEDIUMINT( 8 ) NOT NULL ,
+`BCC` VARCHAR( 1024 ) NULL ,
+PRIMARY KEY ( `Email Queue Key` )
+) ENGINE = MYISAM;
+
+ALTER TABLE `Email Queue Dimension` ADD `Status` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `BCC` ;
+ALTER TABLE `Email Queue Dimension` CHANGE `Body` `Plain` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Email Queue Dimension` ADD `HTML` LONGTEXT NULL AFTER `Plain`;
+
+ALTER TABLE `Email Queue Dimension` ADD `Type` ENUM( 'Plain', 'HTML' ) NOT NULL DEFAULT 'Plain';
+CREATE TABLE `Email Queue Attachement Dimension` (
+`Attachement Key` INT NOT NULL AUTO_INCREMENT ,
+`Email Queue Key` INT NOT NULL ,
+`Data` VARCHAR( 255 ) NULL ,
+`FileName` VARCHAR( 255 ) NULL ,
+`Name` VARCHAR( 255 ) NULL ,
+`Content-Type` VARCHAR( 255 ) NOT NULL ,
+`Disposition` VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( `Attachement Key` )
+
+) ENGINE = MYISAM;
 
 */
 

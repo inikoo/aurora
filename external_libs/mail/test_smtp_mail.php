@@ -15,8 +15,8 @@
 	/*
 	 *  Change these variables to specify your test sender and recipient addresses
 	 */
-	$from="mlemos@acm.org";
-	$to="mlemos@acm.org";
+	$from="bugs@inikoo.com";
+	$to="migara@inikoo.com";
 
 	$subject="Testing smtp_mail function";
 	$message="Hello,\n\nThis message is just to let you know that the smtp_mail() function is working fine as expected.\n\n$from";
