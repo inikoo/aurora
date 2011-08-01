@@ -459,7 +459,7 @@ class SendEmail extends DB_Table{
 		else
 			$response=  array('state'=>200,'msg'=>'ok');
 
-
+		echo $response;
 		return $response;
 	}
 	
@@ -473,11 +473,10 @@ class SendEmail extends DB_Table{
 		switch($type){
 		case 'plain':
 			$sql=sprintf("select * from `Email Queue Dimension` where `Status`='No' and `Type`='Plain'");
-			print $sql;
-			
+
+
 			$result=mysql_query($sql);
 			while($row=mysql_fetch_array($result)){
-			
 				$sql=sprintf("select * from `Email Queue Attachement Dimension` where `Email Queue Key` = %d", $row['Email Queue Key']);
 				$res=mysql_query($sql);
 				while($r=mysql_fetch_array($res)){
@@ -490,6 +489,7 @@ class SendEmail extends DB_Table{
 								);
 				}
 				
+				
 				$data=array(
 					'subject'=>	$row['Subject'],
 					'plain'=>$row['Plain'],
@@ -498,6 +498,7 @@ class SendEmail extends DB_Table{
 					'bcc'=>$row['BCC'],
 					'attachement'=>$files
 				);
+				
 				$this->smtp('plain', $data);
 				$res=$this->send();
 				
@@ -510,6 +511,7 @@ class SendEmail extends DB_Table{
 					$fail++;
 					
 			}
+			
 			$response=sprintf("%d emails sent. %d has failed", $success, $fail);
 			break;
 		
