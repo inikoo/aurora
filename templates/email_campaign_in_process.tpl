@@ -292,11 +292,24 @@
  
  
  <div id="dialog_preview_text_email" style="padding:10px 20px">
+<input type="hidden" value="1" id="preview_index">
+<input type="hidden" value="{$email_campaign->get('Number of Emails')}" id="preview_number_of_views">
 
-<table border=0 style="width:600px">
+<div id="preview_navigation" style="{if $email_campaign->get('Number of Emails')<2}display:none;{/if}color:#777;text-align:right;margin-right:30px">
+<span id="preview_formated_index">1</span>/<span id="preview_formated_number_of_views">{$email_campaign->get('Number of Emails')}</span>  <span style="margin-left:20px"id="previous_preview" class="state_details">{t}Previous{/t}</span> <span  style="margin-left:10px" id="next_preview" class="state_details">{t}Next{/t}</span>
+</div>
 
-<tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span style=";margin-left:5px"><b>{t}Subject{/t}:</b></span></td><td>{$email_campaign->get_subject($current_content_key)}</td></tr>
-<tr><td colspan=2><div style="min-height: 200px;border:1px solid #ccc;padding:5px">{$email_campaign->get_message_body($current_content_key)}</div></td></tr>
+<table border=0 style="width:700px">
+<tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span  style=";margin-left:5px"><b>{t}To{/t}:</b></span></td><td id="preview_to"></td></tr>
+
+<tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span style=";margin-left:5px"><b>{t}Subject{/t}:</b></span></td><td   id="preview_subject" ></td></tr>
+<tr id="tr_preview_plain_body"><td colspan=2><div id="preview_plain_body" style="min-height: 200px;border:1px solid #ccc;padding:5px"></div></td></tr>
+<tr id="tr_preview_html_body"><td colspan=2>
+<iframe id="preview_html_body" src="" frameborder=0 style="width:700px;height:100px" >
+<p>Your browser does not support iframes.</p>
+</iframe>
+
+</td></tr>
 
 </table>
 
