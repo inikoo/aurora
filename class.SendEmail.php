@@ -286,7 +286,7 @@ class SendEmail extends DB_Table{
 			if(strcmp($error,""))
 				$response=  array('state'=>400,'msg'=>$error);
 			else
-				$response=  "Done.\n";
+				$response=  array('state'=>200,'msg'=>'ok');
 		break;		
 		}		
 		return $response;
@@ -301,7 +301,8 @@ class SendEmail extends DB_Table{
 		
 		switch($type){
 		case 'plain':
-			$sql=sprintf("select * from `Email Queue Dimension` where `Status`='No' and `Email Type`='Plain'");
+			$sql=sprintf("select * from `Email Queue Dimension` where `Status`='No' and `Type`='Plain'");
+			print $sql;
 			$result=mysql_query($sql);
 			while($row=mysql_fetch_array($result)){
 				$data=array(
@@ -312,10 +313,10 @@ class SendEmail extends DB_Table{
 					'bcc'=>$row['BCC']
 				);
 				$this->smtp('plain', $data);
-				$result=$this->send('plain');
+				$res=$this->send('plain');
 				
-				if($result['msg']=='ok'){
-					$sql=sprintf("update `Email Queue Dimension` set `Status`='Yes' where `Email Queue Key`=%d", $row['Key']);
+				if($res['msg']=='ok'){
+					$sql=sprintf("update `Email Queue Dimension` set `Status`='Yes' where `Email Queue Key`=%d", $row['Email Queue Key']);
 					if(mysql_query($sql))
 						$success++;
 				}
@@ -334,7 +335,7 @@ class SendEmail extends DB_Table{
 			$result=mysql_query($sql);
 			//print "$result";
 			while($row=mysql_fetch_assoc($result)){
-				print mysql_error();
+				//print mysql_error();
 				$data=array(
 					'subject'=>	$row['Subject'],
 					'plain'=>$row['Plain'],
@@ -344,10 +345,10 @@ class SendEmail extends DB_Table{
 					'bcc'=>$row['BCC']
 				);
 				$this->smtp('html', $data);
-				$result=$this->send('html');
+				$res=$this->send('html');
 				
-				if($result['msg']=='ok'){
-					$sql=sprintf("update `Email Queue Dimension` set `Status`='Yes' where `Email Queue Key`=%d", $row['Key']);
+				if($res['msg']=='ok'){
+					$sql=sprintf("update `Email Queue Dimension` set `Status`='Yes' where `Email Queue Key`=%d", $row['Email Queue Key']);
 					if(mysql_query($sql))
 						$success++;
 				}

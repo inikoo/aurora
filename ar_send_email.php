@@ -79,12 +79,12 @@ $msg="<html>
 
 	
 
-
+	$email_type='Plain';
 	
 	$send_email=new SendEmail();
-	//$send_email->smtp('plain', $data);
+	$send_email->smtp('plain', $data);
 
-	//$result=$send_email->send('plain');
+	$result=$send_email->send('plain');
 
 	//$result=$send_email->retry('plain');
 	
@@ -92,16 +92,19 @@ $msg="<html>
 
 	//$result=$send_email->send('html');
 	
-	$result=$send_email->retry('html');
+	//$result=$send_email->retry('html');
 	
 	if(preg_match('/^could not resolve the host domain/',$result['msg'])){
-		if(isset($data['html']) and $data['html'])
+		if(isset($data['html']) and $data['html']){
 			$html_msg=$data['html'];
+			//$email_type='HTML';
+		}
 		else
 			$html_msg=null;
 		
-		$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Email Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, 'HTML', %s, %s, %s, %d, %s)	"
+		$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, %s, %s, %s, %s, %d, %s)	"
 		,prepare_mysql($data['to'])
+		,prepare_mysql($email_type)
 		,prepare_mysql($data['subject'])
 		,prepare_mysql($data['plain'])
 		,prepare_mysql($html_msg)
