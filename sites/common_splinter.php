@@ -15,6 +15,7 @@ require_once "classes/class.Auth.php";
 require_once "classes/class.User.php";
 require_once "classes/class.Site.php";
 
+require_once "classes/class.LightProduct.php";
 
 
 $secret_key='FDK/S5GRkZFXi47zvs4pTezyfEr5nWFthsFbG6j1CzCPYPX5';
@@ -39,7 +40,7 @@ $pics_path='http://tunder/';
 
 $max_session_time=36000;
 $session = new Session($max_session_time,1,100);
-require('external_libs/Smarty/Smarty.class.php');
+//require('external_libs/Smarty/Smarty.class.php');
 //$smarty = new Smarty();
 
 
@@ -81,7 +82,7 @@ if (file_exists($store_code.'/labels.php')) {
 $_SESSION ['lang']='';
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
-
+$logged_in=false;
 if ($logged_in ) {
 
     if ($_SESSION['logged_in_page']!=$store_key) {
@@ -148,7 +149,19 @@ log_visit($session->id);
 //$smarty->assign('store_slogan',$store->data['Store Slogan']);
 
 
+function show_product($code){
+	global $logged_in;
+	$product=new LightProduct($code);
 
+	
+	if($logged_in){
+		print $product->get_info_button();
+	}else{
+		print $product->get_full_order_form('ecommerce');
+		//print $product->get_order_list_form();
+	}
+
+}
 
 
 
