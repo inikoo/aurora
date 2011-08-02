@@ -70,8 +70,23 @@ login()
 
 
 function show_forgot_password_from_login(){
-Dom.get('forgot_password_email').value=Dom.get('login_handle').value;
+Dom.get('forgot_password_handle').value=Dom.get('login_handle').value;
 show_forgot_password_dialog();
+}
+
+
+function submit_forgot_password(){
+var error=false;
+if(  !isValidEmail(Dom.get('forgot_password_handle').value)){
+Dom.addClass('login_handle','forgot_password_handle');
+error=true;
+}else{
+Dom.removeClass('forgot_password_handle','error');
+
+}
+
+if(!error)
+forgot_password()
 }
 
 function init(){
@@ -79,6 +94,7 @@ Event.addListener("show_login_dialog", "click", show_login_dialog);
 Event.addListener("show_register_dialog", "click", show_register_dialog);
 Event.addListener("hide_login_dialog", "click", hide_login_dialog);
 Event.addListener("hide_register_dialog", "click", hide_register_dialog);
+Event.addListener("submit_forgot_password", "click", submit_forgot_password);
 
 Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_from_login);
