@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-31 13:41+0100\n"
-"PO-Revision-Date: 2011-07-31 13:55+0100\n"
+"PO-Revision-Date: 2011-08-01 23:49+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -307,9 +307,8 @@ msgid "From"
 msgstr "von"
 
 #: product.js.php:206
-#, fuzzy
 msgid "To"
-msgstr "Togo"
+msgstr "zu"
 
 #: product.js.php:208
 #: supplier_dn_in_process.js.php:257
@@ -317,9 +316,8 @@ msgid "Description"
 msgstr "Beschreibung"
 
 #: product.js.php:210
-#, fuzzy
 msgid "Sales"
-msgstr "Verkauf"
+msgstr "Umsatz"
 
 #: product.js.php:300
 #: product.js.php:303
@@ -702,9 +700,8 @@ msgid "Delivery Notes"
 msgstr "Notizdokumentation"
 
 #: new_orders_list.php:192
-#, fuzzy
 msgid "Invoices"
-msgstr "Name=Rechnung"
+msgstr "Rechnungen"
 
 #: new_orders_list.php:195
 msgid "Go back"
@@ -997,7 +994,7 @@ msgstr ""
 
 #: products_lists.php:77
 msgid "Store"
-msgstr ""
+msgstr "Unterkategorien"
 
 #: supplier_dn_inputted.js.php:111
 msgid "Yes"
@@ -1011,7 +1008,7 @@ msgstr "Kunden"
 #: export_csv.php:83
 #: export_csv.php:87
 msgid "stores"
-msgstr ""
+msgstr "Unterfirmen"
 
 #: export_csv.php:90
 #: export_csv.php:94
@@ -1029,9 +1026,8 @@ msgstr "Produkt"
 
 #: export_csv.php:115
 #: export_csv.php:119
-#, fuzzy
 msgid "staff"
-msgstr "Personalliste"
+msgstr "Personal"
 
 #: export_csv.php:123
 #: export_csv.php:127
@@ -1154,9 +1150,8 @@ msgstr "Notizdokumentation"
 
 #: export_csv.php:381
 #: export_csv.php:382
-#, fuzzy
 msgid "Departments"
-msgstr "Abteilung"
+msgstr "Abteilungen"
 
 #: export_csv.php:386
 #: export_csv.php:451
@@ -1194,9 +1189,8 @@ msgstr "Keines"
 #: export_csv.php:961
 #: export_csv.php:1024
 #: export_csv.php:1338
-#, fuzzy
 msgid "Total Sales"
-msgstr "Gesamttotal"
+msgstr "Gesamtumsatz"
 
 #: export_csv.php:393
 #: export_csv.php:459
@@ -1208,9 +1202,8 @@ msgstr "Gesamttotal"
 #: export_csv.php:1339
 #: export_csv.php:1592
 #: export_csv.php:1658
-#, fuzzy
 msgid "Total Profit"
-msgstr "Haushaltsprodukte"
+msgstr "Gesamtgewinn"
 
 #: export_csv.php:394
 #: export_csv.php:460
@@ -1221,9 +1214,8 @@ msgstr "Haushaltsprodukte"
 #: export_csv.php:1026
 #: export_csv.php:1340
 #: export_csv.php:1472
-#, fuzzy
 msgid "Sales 1Y"
-msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+msgstr "Umsatz 1J"
 
 #: export_csv.php:395
 #: export_csv.php:461
@@ -1236,9 +1228,8 @@ msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
 #: export_csv.php:1473
 #: export_csv.php:1594
 #: export_csv.php:1660
-#, fuzzy
 msgid "Profit 1Y"
-msgstr "Produkt"
+msgstr "Gewinn 1J"
 
 #: export_csv.php:396
 #: export_csv.php:462
@@ -1249,9 +1240,8 @@ msgstr "Produkt"
 #: export_csv.php:1028
 #: export_csv.php:1342
 #: export_csv.php:1474
-#, fuzzy
 msgid "Sales 1Q"
-msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+msgstr "Umsatz 1Q"
 
 #: export_csv.php:397
 #: export_csv.php:463
@@ -1264,9 +1254,8 @@ msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
 #: export_csv.php:1475
 #: export_csv.php:1596
 #: export_csv.php:1662
-#, fuzzy
 msgid "Profit 1Q"
-msgstr "Produkt"
+msgstr "Gewinn 1Q"
 
 #: export_csv.php:398
 #: export_csv.php:464
@@ -1277,9 +1266,8 @@ msgstr "Produkt"
 #: export_csv.php:1030
 #: export_csv.php:1344
 #: export_csv.php:1476
-#, fuzzy
 msgid "Sales 1M"
-msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+msgstr "Umsatz 1M"
 
 #: export_csv.php:399
 #: export_csv.php:465
@@ -1292,9 +1280,8 @@ msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
 #: export_csv.php:1477
 #: export_csv.php:1598
 #: export_csv.php:1664
-#, fuzzy
 msgid "Profit 1M"
-msgstr "Produkt"
+msgstr "Gewinn 1M"
 
 #: export_csv.php:400
 #: export_csv.php:466
@@ -1306,9 +1293,8 @@ msgstr "Produkt"
 #: export_csv.php:1346
 #: export_csv.php:1478
 #: export_csv.php:1665
-#, fuzzy
 msgid "Sales 1W"
-msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+msgstr "Umsatz 1W"
 
 #: export_csv.php:401
 #: export_csv.php:467
@@ -1320,9 +1306,8 @@ msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
 #: export_csv.php:1347
 #: export_csv.php:1479
 #: export_csv.php:1600
-#, fuzzy
 msgid "Profit 1W"
-msgstr "Produkt"
+msgstr "Gewinn 1W"
 
 #: export_csv.php:447
 msgid "Stores"
@@ -1359,9 +1344,8 @@ msgid "Id"
 msgstr "Id"
 
 #: export_csv.php:634
-#, fuzzy
 msgid "Areas"
-msgstr "Armenien"
+msgstr "Bereiche"
 
 #: export_csv.php:683
 #, fuzzy
@@ -1652,9 +1636,8 @@ msgid "Number Of Boxes"
 msgstr "pro Artikel"
 
 #: export_csv.php:1330
-#, fuzzy
 msgid "Store Name"
-msgstr "Name=DN-Attribut-Ordnung"
+msgstr "Firmenname"
 
 #: export_csv.php:1332
 #, fuzzy
@@ -2442,9 +2425,8 @@ msgid "Contacts"
 msgstr "Kontakte"
 
 #: marketing_server.js.php:29
-#, fuzzy
 msgid "New Contacts"
-msgstr "Neuer Kontakt"
+msgstr "neue Kontakte"
 
 #: marketing_server.js.php:32
 msgid "Lost"
@@ -2790,13 +2772,12 @@ msgid "Number of Contacts"
 msgstr "Name=Völlig neues Produkt"
 
 #: customers_server.js.php:25
-#, fuzzy
 msgid "Total Contacts"
-msgstr "Kontakte"
+msgstr "Gesamtanzahl Kontakte"
 
 #: customers_server.js.php:27
 msgid "Active Contacts"
-msgstr "Aktive Kontakte"
+msgstr "aktive Kontakte"
 
 #: customers_server.js.php:28
 msgid "Losing Contacts"
@@ -2804,7 +2785,7 @@ msgstr "verschwindende Kontakte"
 
 #: customers_server.js.php:29
 msgid "Lost Contacts"
-msgstr "Verlorene Kontakte"
+msgstr "verlorene Kontakte"
 
 #: customers_server.js.php:31
 msgid "Total Customers"
@@ -2954,14 +2935,12 @@ msgid "associated with location"
 msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
 
 #: report_sales_main.js.php:2
-#, fuzzy
 msgid "Net Sales"
-msgstr "Verkauf"
+msgstr "Nettoumsatz"
 
 #: report_sales_main.js.php:2
-#, fuzzy
 msgid "Profits"
-msgstr "Produkt"
+msgstr "Gewinne"
 
 #: report_sales_main.js.php:3
 msgid "Montly"
@@ -2972,9 +2951,8 @@ msgid "Yearly"
 msgstr ""
 
 #: report_sales_main.js.php:3
-#, fuzzy
 msgid "Weekly"
-msgstr "Woche"
+msgstr "Wöchentlich"
 
 #: report_sales_main.js.php:3
 msgid "Quarterly"
@@ -4370,9 +4348,8 @@ msgid "Log in"
 msgstr "Login"
 
 #: locale2.php:25
-#, fuzzy
 msgid "Staff"
-msgstr "Personalliste"
+msgstr "Personal"
 
 #: locale2.php:28
 #, fuzzy
@@ -7185,11 +7162,11 @@ msgstr ""
 #: ar_plot.php:164
 #: ar_plot.php:166
 msgid "No sales this week"
-msgstr ""
+msgstr "Kein Umsatz diese Woche"
 
 #: ar_plot.php:167
 msgid "No bonus this week"
-msgstr ""
+msgstr "Kein Bonus diese Woche"
 
 #: ar_plot.php:200
 #, fuzzy
@@ -7207,11 +7184,11 @@ msgstr "Löschvorgang wird gestartet ..."
 #: ar_plot.php:237
 #: ar_plot.php:238
 msgid "No sales this month"
-msgstr ""
+msgstr "Kein Umsatz diesen Monat"
 
 #: ar_plot.php:239
 msgid "No bonus this month"
-msgstr ""
+msgstr "Kein Bonus diesen Monat"
 
 #: ar_plot.php:273
 #: ar_plot.php:347
@@ -7224,7 +7201,7 @@ msgstr "Vorlauf zu: %1/%2 (%3%)"
 #: ar_plot.php:310
 #: ar_plot.php:311
 msgid "No sales this quarter"
-msgstr ""
+msgstr "Kein Umsatz dieses Quartal"
 
 #: ar_plot.php:312
 #, fuzzy
@@ -7235,11 +7212,11 @@ msgstr "Abspielreihenfolge"
 #: ar_plot.php:380
 #: ar_plot.php:381
 msgid "No sales this year"
-msgstr ""
+msgstr "Kein Umsatz dieses Jahr"
 
 #: ar_plot.php:382
 msgid "No bonus this year"
-msgstr ""
+msgstr "Kein Bonus dieses Jahr"
 
 #: ar_plot.php:679
 #: ar_plot.php:1190
@@ -7319,7 +7296,7 @@ msgstr "Kontakt"
 
 #: ar_plot.php:1000
 msgid "New this month"
-msgstr ""
+msgstr "Neu diesen Monat"
 
 #: ar_plot.php:1116
 #, fuzzy
@@ -7333,7 +7310,7 @@ msgstr "Verkauf"
 
 #: ar_plot.php:1338
 msgid "no sales this month"
-msgstr ""
+msgstr "kein Umsatz diesen Monat"
 
 #: ar_plot.php:1370
 #: ar_plot.php:1371
@@ -7346,7 +7323,7 @@ msgstr "Gesamttotal"
 
 #: ar_plot.php:1431
 msgid "no sales this day"
-msgstr ""
+msgstr "kein Umsatz heute"
 
 #: ar_plot.php:1542
 msgid "Stock end of month"
@@ -7378,7 +7355,7 @@ msgstr ""
 
 #: class.SupplierProduct.php:765
 msgid "Value can not be zero"
-msgstr ""
+msgstr "Wert kann nicht null sein"
 
 #: class.SupplierProduct.php:770
 msgid "Value can not negative"
@@ -11476,7 +11453,7 @@ msgstr "_Alle ersetzen"
 #: mantenence/smarty.php:13844
 #: mantenence/smarty.php:14933
 msgid "1y"
-msgstr ""
+msgstr "1J"
 
 #: mantenence/smarty.php:227
 #: mantenence/smarty.php:2276
@@ -11487,7 +11464,7 @@ msgstr ""
 #: mantenence/smarty.php:13847
 #: mantenence/smarty.php:14936
 msgid "1q"
-msgstr ""
+msgstr "1Q"
 
 #: mantenence/smarty.php:230
 #: mantenence/smarty.php:2279
@@ -11497,9 +11474,8 @@ msgstr ""
 #: mantenence/smarty.php:13820
 #: mantenence/smarty.php:13850
 #: mantenence/smarty.php:14939
-#, fuzzy
 msgid "1m"
-msgstr "_HTML"
+msgstr "1M"
 
 #: mantenence/smarty.php:233
 #, fuzzy
@@ -11630,7 +11606,7 @@ msgstr ""
 #: mantenence/smarty.php:13748
 #: mantenence/smarty.php:14138
 msgid "1Yr"
-msgstr ""
+msgstr "1J"
 
 #: mantenence/smarty.php:332
 #: mantenence/smarty.php:2789
@@ -11663,7 +11639,7 @@ msgstr ""
 #: mantenence/smarty.php:13751
 #: mantenence/smarty.php:14141
 msgid "1Qtr"
-msgstr ""
+msgstr "1Q"
 
 #: mantenence/smarty.php:335
 #: mantenence/smarty.php:2792
@@ -11696,7 +11672,7 @@ msgstr ""
 #: mantenence/smarty.php:13754
 #: mantenence/smarty.php:14144
 msgid "1M"
-msgstr ""
+msgstr "1M"
 
 #: mantenence/smarty.php:338
 #: mantenence/smarty.php:2795
@@ -11729,7 +11705,7 @@ msgstr ""
 #: mantenence/smarty.php:13757
 #: mantenence/smarty.php:14147
 msgid "1W"
-msgstr ""
+msgstr "1W"
 
 #: mantenence/smarty.php:341
 #: mantenence/smarty.php:2798
@@ -14829,53 +14805,52 @@ msgstr "&Wochentag"
 #: mantenence/smarty.php:13502
 #: mantenence/smarty.php:13793
 msgid "YTD"
-msgstr ""
+msgstr "JBD"
 
 #: mantenence/smarty.php:5249
 #: mantenence/smarty.php:13796
 msgid "MTD"
-msgstr ""
+msgstr "MBD"
 
 #: mantenence/smarty.php:5252
 #: mantenence/smarty.php:13799
 msgid "WTD"
-msgstr ""
+msgstr "WBD"
 
 #: mantenence/smarty.php:5255
 #: mantenence/smarty.php:13802
 msgid "today"
-msgstr ""
+msgstr "heute"
 
 #: mantenence/smarty.php:5258
 #: mantenence/smarty.php:13805
 msgid "yesterday"
-msgstr ""
+msgstr "gestern"
 
 #: mantenence/smarty.php:5261
 #: mantenence/smarty.php:13808
 msgid "last w"
-msgstr ""
+msgstr "verg. W"
 
 #: mantenence/smarty.php:5264
 #: mantenence/smarty.php:13811
-#, fuzzy
 msgid "last m"
-msgstr "Namen bearbeiten"
+msgstr "verg. M"
 
 #: mantenence/smarty.php:5267
 #: mantenence/smarty.php:13829
 msgid "3y"
-msgstr ""
+msgstr "3J"
 
 #: mantenence/smarty.php:5279
 #: mantenence/smarty.php:13817
 msgid "10d"
-msgstr ""
+msgstr "10T"
 
 #: mantenence/smarty.php:5282
 #: mantenence/smarty.php:13814
 msgid "1w"
-msgstr ""
+msgstr "1W"
 
 #: mantenence/smarty.php:5285
 #, fuzzy
@@ -16654,9 +16629,8 @@ msgstr "Quelltext"
 #: mantenence/smarty.php:11324
 #: mantenence/smarty.php:11963
 #: mantenence/smarty.php:13889
-#, fuzzy
 msgid "All Contacts"
-msgstr "Kontakte"
+msgstr "alle Kontakte"
 
 #: mantenence/smarty.php:11354
 #: mantenence/smarty.php:13922
@@ -16728,20 +16702,17 @@ msgid "Company Departments"
 msgstr "Abteilung"
 
 #: mantenence/smarty.php:11948
-#, fuzzy
 msgid "Customer Corporate Overview"
-msgstr "Name des Kunden  "
+msgstr "Übersicht über alle Kunden"
 
 #: mantenence/smarty.php:11951
-#, fuzzy
 msgid "Customers per Store"
-msgstr "Name des Kunden  "
+msgstr "Kunden je Unterfirma"
 
 #: mantenence/smarty.php:11960
 #: mantenence/smarty.php:13895
-#, fuzzy
 msgid "Contacts with Orders"
-msgstr "Kontakte"
+msgstr "Kontakte mit Bestellungen"
 
 #: mantenence/smarty.php:11975
 #, fuzzy
