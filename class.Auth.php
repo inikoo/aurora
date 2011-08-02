@@ -11,7 +11,7 @@
  Version 2.0
 */
 
-include_once('aes.php');
+
 class Auth {
     private $user_parent_key=false;
 
