@@ -2,9 +2,9 @@
 
 
 include('common.php');
-require_once 'class.Customer.php';
-require_once 'class.User.php';
-require_once 'class.EmailSend.php';
+require_once 'classes/class.Customer.php';
+require_once 'classes/class.User.php';
+require_once 'classes/class.EmailSend.php';
 
 require_once 'ar_edit_common.php';
 if (!isset($_REQUEST['tipo'])) {
@@ -14,6 +14,18 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 switch ($_REQUEST['tipo']) {
+
+case('forgot_password'):
+ $data=prepare_values($_REQUEST,array(
+                             'login_handle'=>array('type'=>'string')
+                             'store_key'=>array('type'=>'key')
+
+                         ));
+    forgot_password($data);
+  
+    break;
+
+
 case('change_password'):
     $password=$_REQUEST['password'];
     change_password($password);
@@ -253,8 +265,10 @@ function send_lost_password_email($email) {
 function check_email_customers($email,$store_key) {
 
 
-    $sql=sprintf('select `Customer Key` from `Customer Dimension`  where  `Customer Store Key`=%d  and `Customer Main Plain Email`=%s',$store_key,prepare_mysql($email));
-    //print $sql;
+  $sql=sprintf("select `Customer Key` from `Email Bridge` B left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)  left join `Customer Key` on (`Customer Key`=`Subject Key`) where  `Subject Type`='Customer' and `Email`=%s and `Customer Store Key`=%d",
+  prepare_mysql($email),
+   $store_key,
+                     );
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res)) {
 
@@ -274,7 +288,7 @@ function check_email_customers($email,$store_key) {
 
 
 function check_email_users($email,$store_key) {
-    $sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer_%d"  and `User Handle`=%s',$store_key,prepare_mysql($email));
+    $sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer" and `Parent Key`=%d  and `User Handle`=%s',$store_key,prepare_mysql($email));
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res)) {
@@ -284,6 +298,93 @@ function check_email_users($email,$store_key) {
     } else {
         return 0;
     }
+}
+
+
+
+
+
+
+function generate_password($length=9, $strength=0) {
+    $vowels = 'aeuy'.md5(mt_rand());
+    $consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
+    if ($strength & 1) {
+        $consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
+    }
+    if ($strength & 2) {
+        $vowels .= "AEUI";
+    }
+    if ($strength & 4) {
+        $consonants .= '2345678906789$%^&*(';
+    }
+    if ($strength & 8) {
+        $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
+    }
+
+    $password = '';
+    $alt = time() % 2;
+    for ($i = 0; $i < $length; $i++) {
+        if ($alt == 1) {
+            $password .= $consonants[(mt_rand() % strlen($consonants))];
+            $alt = 0;
+        } else {
+            $password .= $vowels[(mt_rand() % strlen($vowels))];
+            $alt = 1;
+        }
+    }
+    return $password;
+}
+ 
+    function create_customer_user($handle,$customer_key) {
+        include_once('class.User.php');
+        
+        
+        
+        
+        $password=generate_password(8,10);
+        
+        $data=array(
+                  'User Handle'=>$handle
+                                ,'User Type'=>'Customer_'.$this->data['Customer Store Key']
+                                             ,'User Password'=>md5($password)
+                                                              ,'User Active'=>'Yes'
+                                                                             ,'User Alias'=>$this->data['Customer Name']
+                                                                                           ,'User Parent Key'=>$this->data['Customer Key']
+              );
+        // print_r($data);
+        $user=new user('new',$data);
+        if (!$user->id) {
+            $this->error=true;
+            $this->msg=$user->msg;
+            $this->user_key=0;
+
+        } else {
+            $this->user_key=$user->id;
+
+        }
+
+
+
+    }
+
+ 
+
+
+
+
+
+function forgot_password($data){
+
+$user_key=check_email_users($data['login_handle'],$store_key);
+if(!$user_key){
+    $customer_key=check_email_customers($data['login_handle'],$store_key);
+    if($customer_key){
+    
+    }
+
+}
+
+
 }
 
 

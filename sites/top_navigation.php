@@ -11,6 +11,7 @@
 
 <script type="text/javascript" src="../top_navigation.js.php"></script>
 
+<input type="hidden" value="<?php echo $store_key?>" id="store_key">
 
 
 
@@ -48,9 +49,9 @@
 
 
 <div id="dialog_forgot_password"    class="dialog"    style="position:relative;left:575px;width:300px;top:-22px;">
-<h2>Registration</h2>
+<h2>Forgotten password</h2>
 <table>
-<tr><td>Email: </td><td><input id="forgot_password_email"></td></tr>
+<tr><td>Email: </td><td><input id="forgot_password_handle"></td></tr>
 <tr class="button" style=""><td></td><td><button id="submit_forgot_password">Continue</button></td></tr>
 
 <tr class="button" ><td></td><td ><button id="hide_forgot_password_dialog">Close</button></td></tr>
