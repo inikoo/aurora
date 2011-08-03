@@ -53,7 +53,10 @@
 <table>
 <tr><td class="label">Email: </td><td id="confirmed_register_email"></td></tr>
 <tr><td class="label">Company: </td><td><input id="register_company_name"></td></tr>
-<tr><td>Contact: </td><td><input id="register_contact_name"></td></tr>
+<tr><td>Contact Name: </td><td><input id="register_contact_name"></td></tr>
+<tr><td>Telephone: </td><td><input id="register_telephone"></td></tr>
+
+<tbody id="tbody_register_address"  >
 <tr><td colspan="2">Address: </td></tr>
 
 <tr><td  class="label">Line 1: </td><td><input id="register_telephone"></td></tr>

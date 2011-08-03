@@ -92,6 +92,7 @@ if (file_exists($store_code.'/labels.php')) {
 $_SESSION ['lang']='';
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
+$_SESSION['logged_in']=false;
 $logged_in=false;
 if ($logged_in ) {
 
