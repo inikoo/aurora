@@ -129,6 +129,16 @@ function slfURL()
 return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI']; 
 }
 
+function ecommerceURL() 
+{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+ $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+ if(strpos($_SERVER['REQUEST_URI'], "?")){
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
+ }
+ else
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
+}
+
  function strleft1($s1, $s2) 
 { return substr($s1, 0, strpos($s1, $s2)); }
 

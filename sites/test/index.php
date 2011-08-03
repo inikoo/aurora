@@ -11,9 +11,45 @@
 <meta name="description" content="Lucky Buddhas @ Ancient Wisdom - Wholesale Gifts">
 
 <script menumaker src="mybar.js"></script>
-<script type="text/javascript" src="script.js"></script>	
 
+<script>
+function upDate(){
 
+//alert("aaaa");
+
+	qty="0"; sub="0.00";
+	querystring=parent.document.URL.substring(document.URL.indexOf('?')+1);
+	
+	if (querystring.charAt(0)!="q")
+	{
+		querystring="";
+	}
+	if (querystring){
+		today=new Date();
+		millisecs_in_half_hour=1800000;
+		expireDate = new Date(today.getTime() + millisecs_in_half_hour);
+		document.cookie=querystring+"&exp="+expireDate+";path=/;expires="+expireDate.toGMTString();
+	}else{
+		if (document.cookie !=""){
+			thisCookie=document.cookie.split("; ");
+			for (i=0; i<thisCookie.length; i++) {
+			if (thisCookie[i].split("=")[0]=="qty"){
+				querystring=thisCookie[i];
+				expireDate=thisCookie[i].split("exp=")[1];
+			}
+			}
+		}
+	}
+	if (querystring){
+		querystring=querystring.split("&");
+		qty=querystring[0].split("=")[1]; if (qty==""){qty="0";}qty=parseInt(qty);
+		sub=querystring[1].split("=")[1]; if (sub==""){sub="0.00";}
+	}
+	update=document.write("Items in cart: "+qty+"<br>Subtotal: "+sub+"");
+	Dom.get('basket_stat').innerHTML=update
+	return update;
+}
+</script>
 
 
     <link href="aw-icon2.png" rel="shortcut icon" type="image/x-icon" />
@@ -289,6 +325,19 @@ body {margin: 0px; padding: 0px;}
     <?php include_once('../top_navigation.php')?>
     </div></div>
 </div></center>
-<p><script type="text/javascript">upDate()</script></p>
+<?php
+	if(!isset($_SESSION['basket'])){
+		$_SESSION['basket']=array('qty'=>0,'sub'=>0);
+	}else{
+		$_SESSION['basket']['sub']=$_REQUEST['sub'];
+		$_SESSION['basket']['qty']=$_REQUEST['qty'];
+	}
+?>
+<p>
+<table>
+<tr><td>Qty:</td><td><?php echo sprintf("%d",$_SESSION['basket']['qty']);?></td></tr>
+<tr><td>Sub Total: </td><td><?php echo sprintf("%.2f",$_SESSION['basket']['sub']);?></td></tr>
+</table>
+</p>
 </body>
 </html>
