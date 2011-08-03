@@ -11,7 +11,45 @@
 <meta name="description" content="Lucky Buddhas @ Ancient Wisdom - Wholesale Gifts">
 
 <script menumaker src="mybar.js"></script>
+
+<script>
+function upDate(){
+
+//alert("aaaa");
+
+	qty="0"; sub="0.00";
+	querystring=parent.document.URL.substring(document.URL.indexOf('?')+1);
 	
+	if (querystring.charAt(0)!="q")
+	{
+		querystring="";
+	}
+	if (querystring){
+		today=new Date();
+		millisecs_in_half_hour=1800000;
+		expireDate = new Date(today.getTime() + millisecs_in_half_hour);
+		document.cookie=querystring+"&exp="+expireDate+";path=/;expires="+expireDate.toGMTString();
+	}else{
+		if (document.cookie !=""){
+			thisCookie=document.cookie.split("; ");
+			for (i=0; i<thisCookie.length; i++) {
+			if (thisCookie[i].split("=")[0]=="qty"){
+				querystring=thisCookie[i];
+				expireDate=thisCookie[i].split("exp=")[1];
+			}
+			}
+		}
+	}
+	if (querystring){
+		querystring=querystring.split("&");
+		qty=querystring[0].split("=")[1]; if (qty==""){qty="0";}qty=parseInt(qty);
+		sub=querystring[1].split("=")[1]; if (sub==""){sub="0.00";}
+	}
+	update=document.write("Items in cart: "+qty+"<br>Subtotal: "+sub+"");
+	Dom.get('basket_stat').innerHTML=update
+	return update;
+}
+</script>
 
 
     <link href="aw-icon2.png" rel="shortcut icon" type="image/x-icon" />
@@ -250,9 +288,9 @@ body {margin: 0px; padding: 0px;}
     <a href="http://www.ancientwisdom.biz/pics/sspw-01a.jpg "target="_blank""><img src="_wp_generated/ppe3587a77.png" width="433" height="282" border="0" title="" alt="ppe3587a77.png" ></a></div>
 <div style="position:absolute; left:139px; top:721px; width:183px; height:25px;">
     <div style="text-align:left;">
-    <php show_product('sspw-02')?>
+    <?php show_product('sspw-02')?>
     </div></div>
-<div style="position:absolute; left:16px; top:784px; width:405px; height:297px;">
+<div style="position:absolute; left:16px; top:784px; width:405px; height:297px; display:none">
     <a href="http://www.ancientwisdom.biz/pics/sspw-03.jpg "target="_blank""><img src="_wp_generated/ppa9ef44a7.png" width="405" height="297" border="0" title="" alt="ppa9ef44a7.png" ></a></div>
 <div style="position:absolute; left:91px; top:1170px; width:182px; height:25px;">
     <div style="text-align:left;">
@@ -287,5 +325,19 @@ body {margin: 0px; padding: 0px;}
     <?php include_once('../top_navigation.php')?>
     </div></div>
 </div></center>
+<?php
+	if(!isset($_SESSION['basket'])){
+		$_SESSION['basket']=array('qty'=>0,'sub'=>0);
+	}else{
+		$_SESSION['basket']['sub']=$_REQUEST['sub'];
+		$_SESSION['basket']['qty']=$_REQUEST['qty'];
+	}
+?>
+<p>
+<table>
+<tr><td>Qty:</td><td><?php echo sprintf("%d",$_SESSION['basket']['qty']);?></td></tr>
+<tr><td>Sub Total: </td><td><?php echo sprintf("%.2f",$_SESSION['basket']['sub']);?></td></tr>
+</table>
+</p>
 </body>
 </html>

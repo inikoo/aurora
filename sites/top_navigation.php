@@ -8,6 +8,7 @@
 <script type="text/javascript" src="../js/aes.js"></script>
 
 <script type="text/javascript" src="../js/login.js"></script>
+<script type="text/javascript" src="../basket.js"></script>
 
 <script type="text/javascript" src="../top_navigation.js.php"></script>
 
