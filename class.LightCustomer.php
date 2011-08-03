@@ -83,66 +83,6 @@ class LightCustomer{
     }
     
  
- function generatePassword($length=9, $strength=0) {
-    $vowels = 'aeuy'.md5(mt_rand());
-    $consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
-    if ($strength & 1) {
-        $consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
-    }
-    if ($strength & 2) {
-        $vowels .= "AEUI";
-    }
-    if ($strength & 4) {
-        $consonants .= '2345678906789$%^&*(';
-    }
-    if ($strength & 8) {
-        $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
-    }
-
-    $password = '';
-    $alt = time() % 2;
-    for ($i = 0; $i < $length; $i++) {
-        if ($alt == 1) {
-            $password .= $consonants[(mt_rand() % strlen($consonants))];
-            $alt = 0;
-        } else {
-            $password .= $vowels[(mt_rand() % strlen($vowels))];
-            $alt = 1;
-        }
-    }
-    return $password;
-}
  
-    function create_user() {
-        include_once('class.User.php');
-        
-        $password=this->generatePassword(8,10);
-        
-        $data=array(
-                  'User Handle'=>$this->data['Customer Main Plain Email']
-                                ,'User Type'=>'Customer_'.$this->data['Customer Store Key']
-                                             ,'User Password'=>md5($password)
-                                                              ,'User Active'=>'Yes'
-                                                                             ,'User Alias'=>$this->data['Customer Name']
-                                                                                           ,'User Parent Key'=>$this->data['Customer Key']
-              );
-        // print_r($data);
-        $user=new user('new',$data);
-        if (!$user->id) {
-            $this->error=true;
-            $this->msg=$user->msg;
-            $this->user_key=0;
-
-        } else {
-            $this->user_key=$user->id;
-
-        }
-
-
-
-    }
-
- 
-
 }
 ?>
