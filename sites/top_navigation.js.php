@@ -10,6 +10,82 @@ function isValidEmail(email){
 	}
 }
 
+
+function register(){
+
+
+    var store_key=Dom.get('store_key').value;
+    var site_key=Dom.get('site_key').value;
+
+ 
+
+var data={ 
+    "Customer Type":''
+    ,"Customer Name":Dom.get('register_company_name').value
+    ,"Customer Main Contact Name":Dom.get('register_contact_name').value
+    ,"Customer Tax Number":""
+    ,"Customer Registration Number":""
+    ,"Customer Main Plain Email":Dom.get('confirmed_register_email').innerHTML
+    ,"Customer Main Plain Telephone":""
+    ,"Customer Main Plain FAX":""
+    ,"Customer Main Plain Mobile":""
+    ,"Customer Address Line 1":""
+    ,"Customer Address Line 2":""
+    ,"Customer Address Line 3":""
+    ,"Customer Address Town":""
+    ,"Customer Address Postal Code":""
+    ,"Customer Address Country Name":""
+    ,"Customer Address Country Code":""
+    ,"Customer Address Town Second Division":""
+    ,"Customer Address Town First Division":""
+    ,"Customer Address Country First Division":""
+    ,"Customer Address Country Second Division":""
+    ,"Customer Address Country Third Division":""
+    ,"Customer Address Country Forth Division":""
+    ,"Customer Address Country Fifth Division":""};
+
+  var json_value = YAHOO.lang.JSON.stringify(data); 
+
+     var request='../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key;
+   alert(request);return;
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){
+			
+			if(r.result=='error'){
+                Dom.addClass('register_email','error');
+    		    }else{
+    		            Dom.removeClass('register_email','error');
+
+    		    if(r.result=='not_found'){
+    		        Dom.get('confirmed_register_email').innerHTML=r.login_handle;
+    		        show_register_part_2_dialog();
+    		    
+    		    }else if(r.result=='found'){
+    		    
+    		    
+    		    }
+    		    
+    		    }
+			    
+			
+	
+			        
+			        
+		        }
+		 
+			
+
+		},failure:function(o){
+		    alert(o)
+		}
+	    
+	    });
+}
+
+
 function check_email(){
 
     var login_handle=Dom.get('register_email').value;
@@ -17,10 +93,10 @@ function check_email(){
     var site_key=Dom.get('site_key').value;
 
      var request='../ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
-   alert(request);
+   //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			
@@ -65,7 +141,7 @@ function forgot_password(){
    
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			
@@ -230,12 +306,36 @@ Dom.addClass('forgot_password_handle','error');
 error=true;
 }else{
 Dom.removeClass('forgot_password_handle','error');
-
 }
-
 if(!error)
 forgot_password()
 }
+
+
+
+function submit_register(){
+
+var error=false;
+if( Dom.get('register_company_name').value=='' &&  Dom.get('register_contact_name').value=='' ){
+Dom.addClass(['register_company_name','register_contact_name'],'error');
+error=true;
+}else{
+Dom.removeClass(['register_company_name','register_contact_name'],'error');
+}
+
+if(   Dom.get('register_contact_name').value=='' ){
+Dom.addClass('register_contact_name','error');
+error=true;
+}else{
+Dom.removeClass('register_contact_name','error');
+}
+
+if(!error)
+register()
+}
+
+
+
 
 function init(){
 Event.addListener("show_login_dialog", "click", show_login_dialog);
@@ -245,6 +345,7 @@ Event.addListener("hide_register_dialog", "click", hide_register_dialog);
 Event.addListener("submit_forgot_password", "click", submit_forgot_password);
 
 Event.addListener("submit_check_email", "click", submit_check_email);
+Event.addListener("submit_register", "click", submit_register);
 
 
 Event.addListener("submit_login", "click", submit_login);

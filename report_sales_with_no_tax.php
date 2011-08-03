@@ -157,7 +157,7 @@ $_SESSION['state']['report_sales_with_no_tax']['country']=$corporate_country_2al
  $description='';
  else
  $description=': '.$row['Tax Category Name'];
-  $tax_categories[$row['Tax Category Key']]=array('code'=>$row['Tax Category Code'],'name'=>$description,'invoices'=>$row['invoices'],'customers'=>$row['customers'],'selected'=>$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_code]['tax_category'][$row['Tax Category Code']]  );
+  $tax_categories[$row['Tax Category Key']]=array('code'=>$row['Tax Category Code'],'name'=>$description,'invoices'=>$row['invoices'],'customers'=>$row['customers'],'selected'=>$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'][$row['Tax Category Code']]  );
  }
  $smarty->assign('tax_categories',$tax_categories);
 
