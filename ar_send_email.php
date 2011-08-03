@@ -38,7 +38,7 @@ function report_issue($data) {
 	
 
 	
-	
+	require("app_files/keys/bugs_key.php");
 	$to=$conection_data['email'];
 	//$to='migara@inikoo.com';
 
@@ -118,70 +118,7 @@ $msg="<html>
 	
 	//$result=$send_email->retry('html');
 	
-	if(preg_match('/^could not resolve the host domain/',$result['msg'])){
-		if(isset($data['html']) && $data['html']){
-			$html_msg=$data['html'];
-		}
-		else
-			$html_msg=null;
-		
-		$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, %s, %s, %s, %s, %d, %s)	"
-		,prepare_mysql($data['to'])
-		,prepare_mysql($data['type'])
-		,prepare_mysql($data['subject'])
-		,prepare_mysql($data['plain'])
-		,prepare_mysql($html_msg)
-		,$data['email_credentials_key']
-		,prepare_mysql($data['bcc'])
-		);
-	
-		//print $sql;
-		$stat=mysql_query($sql);
-		
-		$email_queue_key=mysql_insert_id();
-		
-		if(isset($files)){
-			foreach($files as $value){
-				if(isset($value['Data']) && $value['Data']){
-					$data_temp=$value['Data'];
-				}
-				else
-					$data_temp=null;
-					
-				if(isset($value['FileName']) && $value['FileName']){
-					$file_name=$value['FileName'];
-				}
-				else
-					$file_name=null;	
-					
-				if(isset($value['Name']) && $value['Name']){
-					$name=$value['Name'];
-				}
-				else
-					$name=null;			
-					
-				$sql=sprintf("insert into `Email Queue Attachement Dimension` (`Email Queue Key`, `Data`, `FileName`, `Name`, `Content-Type`, `Disposition`, `Type`) values (%d, %s, %s, %s, %s, %s, %s)"
-				,$email_queue_key
-				,prepare_mysql($data_temp)
-				,prepare_mysql($file_name)
-				,prepare_mysql($name)
-				,prepare_mysql($value['Content-Type'])
-				,prepare_mysql($value['Disposition'])
-				,prepare_mysql($value['attachement_type'])
-				);
-				
-				//print prepare_mysql($file_name);
-				$stat = $stat & mysql_query($sql);
-			}
-			
-		}
-		
-		if($stat)
-			$result=array('state'=>400,'msg'=>_('Message will send shortly');
-		else
-			$result=array('state'=>400,'msg'=>'Error: Message could not be sent');
-		
-	}
+	$result=$send_email->store_in_queue($result, $files, $data);
 		
 		
     echo json_encode($result);
