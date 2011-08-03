@@ -73,11 +73,11 @@ function SC() {
     //json_value = YAHOO.lang.JSON.stringify(value);
     //var request='ar_basket.php?tipo=update_basket&values=' + json_value;
 	var request=action+'?product='+product+'&price='+price+'&userid='+userid+'&qty='+qty+'&return='+return_address+'&nocart=';
- alert(request)
+ 
 
  YAHOO.util.Connect.asyncRequest('POST',request ,{});
  
- alert("xx")
+ 
 
 }
 

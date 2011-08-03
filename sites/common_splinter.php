@@ -46,6 +46,10 @@ $session = new Session($max_session_time,1,100);
 if(!isset($_SESSION['basket'])){
 $_SESSION['basket']=array('qty'=>0,'sub'=>0);
 
+}else{
+
+
+
 }
 
 $site=new Site($myconf['site_key']);

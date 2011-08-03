@@ -91,7 +91,7 @@ class LightProduct{
 											   <input type="hidden" name="userid" value="%s">
 											   <input type="hidden" name="product" value="%s %sx %s">
 											   <input type="hidden" name="return" value="%s">
-											   <input type="hidden" name="price" value="%.2f">
+											   <input type="hidden" name="discountpr" value="1,%.2f">
 											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
 											   <input type="hidden" name="nocart">  
 											   <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>'
