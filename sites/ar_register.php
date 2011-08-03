@@ -1,7 +1,5 @@
 <?php
-
-
-include('common.php');
+require_once'common_splinter.php';
 require_once 'classes/class.Customer.php';
 require_once 'classes/class.User.php';
 require_once 'classes/class.EmailSend.php';

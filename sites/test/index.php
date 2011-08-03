@@ -328,7 +328,7 @@ body {margin: 0px; padding: 0px;}
 <?php
 	if(!isset($_SESSION['basket'])){
 		$_SESSION['basket']=array('qty'=>0,'sub'=>0);
-	}else{
+	}elseif(isset($_REQUEST['sub']) and isset($_REQUEST['qty'])){
 		$_SESSION['basket']['sub']=$_REQUEST['sub'];
 		$_SESSION['basket']['qty']=$_REQUEST['qty'];
 	}
