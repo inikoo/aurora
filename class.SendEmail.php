@@ -564,7 +564,7 @@ class SendEmail extends DB_Table{
 		return $response;
 	}
 
-	function store_in_queue($result, $files, $data){
+	function store_in_queue($result, $files=false, $data){
 		if(preg_match('/^could not resolve the host domain/',$result['msg'])){
 			if(isset($data['html']) && $data['html']){
 				$html_msg=$data['html'];
