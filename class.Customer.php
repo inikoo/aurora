@@ -3853,32 +3853,7 @@ class Customer extends DB_Table {
 
     }
 
-    function create_user() {
-        include_once('class.User.php');
-        $data=array(
-                  'User Handle'=>$this->data['Customer Main Plain Email']
-                                ,'User Type'=>'Customer_'.$this->data['Customer Store Key']
-                                             ,'User Password'=>md5(generatePassword(21,10))
-                                                              ,'User Active'=>'Yes'
-                                                                             ,'User Alias'=>$this->data['Customer Name']
-                                                                                           ,'User Parent Key'=>$this->data['Customer Key']
-              );
-        // print_r($data);
-        $user=new user('new',$data);
-        if (!$user->id) {
-            $this->error=true;
-            $this->msg=$user->msg;
-            $this->user_key=0;
-
-        } else {
-            $this->user_key=$user->id;
-
-        }
-
-
-
-    }
-
+ 
     function get_delivery_address_keys() {
 
 

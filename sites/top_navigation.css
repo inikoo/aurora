@@ -1,9 +1,10 @@
 #top_navigator{height:22px;z-index:1000;background:black;color:white;text-align:right;padding:2px 10px 1px 10px}
 .dialog {display:none;font-size:5px;background:black;color:white}
-.dialog table {font-size:12px;color:white;margin:0px 10px 0px 15px}
+.dialog table {font-size:12px;color:white;margin:0px 0px 0px 30px}
 .dialog tr.button{height:40px}
 .dialog tr.button td,.dialog tr.link td{text-align:right}
-.dialog h2 {font-size:15px;weight:800;margin:10px 10px 5px 17px}
+.dialog h2 {font-size:15px;weight:800;margin:10px 10px 5px 30px}
+.dialog .label {width:80px}
 span.link{color:orange;cursor:pointer}
 span.link:hover{text-decoration:underline}
 .dialog input {width:200px;border: 1px solid #ccc}

@@ -17,9 +17,9 @@ switch ($_REQUEST['tipo']) {
 
 case('forgot_password'):
  $data=prepare_values($_REQUEST,array(
-                             'login_handle'=>array('type'=>'string')
-                             'store_key'=>array('type'=>'key')
-
+                             'login_handle'=>array('type'=>'string'),
+                             'store_key'=>array('type'=>'key'),
+                                 'site_key'=>array('type'=>'key')
                          ));
     forgot_password($data);
   
@@ -42,27 +42,15 @@ case('register_customer'):
     register_customer($data);
     break;
 case('check_email'):
-    if (!isset($_REQUEST['email'] )) {
-        $response=array('state'=>401);
-        echo json_encode($response);
-        exit;
-    }
-    $email=$_REQUEST['email'];
 
-    $store_key=$_REQUEST['store_key'];
-    $found=check_email_users($email,$store_key);
-
-    if ($found) {
-        $response=array('state'=>200,'result'=>'found','email'=>$found);
-        echo json_encode($response);
-        exit;
-    } else {
-        $response=array('state'=>200,'result'=>'new');
-        echo json_encode($response);
-        exit;
-
-    }
-
+ $data=prepare_values($_REQUEST,array(
+                             'login_handle'=>array('type'=>'string'),
+                             'store_key'=>array('type'=>'key'),
+                                 'site_key'=>array('type'=>'key')
+                         ));
+  
+check_email($data);
+ 
 
 
 
@@ -265,9 +253,9 @@ function send_lost_password_email($email) {
 function check_email_customers($email,$store_key) {
 
 
-  $sql=sprintf("select `Customer Key` from `Email Bridge` B left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)  left join `Customer Key` on (`Customer Key`=`Subject Key`) where  `Subject Type`='Customer' and `Email`=%s and `Customer Store Key`=%d",
+  $sql=sprintf("select `Customer Key` from `Email Bridge` B left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)  left join `Customer Dimension` on (`Customer Key`=`Subject Key`) where  `Subject Type`='Customer' and `Email`=%s and `Customer Store Key`=%d",
   prepare_mysql($email),
-   $store_key,
+   $store_key
                      );
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res)) {
@@ -288,7 +276,7 @@ function check_email_customers($email,$store_key) {
 
 
 function check_email_users($email,$store_key) {
-    $sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer" and `Parent Key`=%d  and `User Handle`=%s',$store_key,prepare_mysql($email));
+    $sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer" and `User Parent Key`=%d  and `User Handle`=%s',$store_key,prepare_mysql($email));
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res)) {
@@ -335,34 +323,41 @@ function generate_password($length=9, $strength=0) {
     return $password;
 }
  
-    function create_customer_user($handle,$customer_key) {
+    function create_customer_user($handle,$customer_key,$site_key) {
         include_once('class.User.php');
         
         
-        
+        $sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
+        $customer_key);
+        $res=mysql_query($sql);
+        if($row=mysql_fetch_assoc($res)){
         
         $password=generate_password(8,10);
         
         $data=array(
-                  'User Handle'=>$handle
-                                ,'User Type'=>'Customer_'.$this->data['Customer Store Key']
-                                             ,'User Password'=>md5($password)
-                                                              ,'User Active'=>'Yes'
-                                                                             ,'User Alias'=>$this->data['Customer Name']
-                                                                                           ,'User Parent Key'=>$this->data['Customer Key']
+                  'User Handle'=>$handle,
+                  'User Type'=>'Customer',
+                  'User Password'=>md5($password),
+                  'User Parent Key'=>$this->data['Customer Store Key'],
+                  'User Site Key'=>$site_key,
+                  'User Active'=>'Yes',
+                  'User Alias'=>$this->data['Customer Name'],
+                  'User Parent Key'=>$this->data['Customer Key']
               );
         // print_r($data);
         $user=new user('new',$data);
         if (!$user->id) {
-            $this->error=true;
-            $this->msg=$user->msg;
-            $this->user_key=0;
+           
+            return array(0,$user->msg);
 
         } else {
-            $this->user_key=$user->id;
-
+            
+             return array($user->id,$user->msg);
         }
-
+    }else{
+    return array(0,'customer not found');
+    
+    }
 
 
     }
@@ -375,17 +370,105 @@ function generate_password($length=9, $strength=0) {
 
 function forgot_password($data){
 
-$user_key=check_email_users($data['login_handle'],$store_key);
+global $secret_key,$public_url;
+$store_key=$data['store_key'];
+$site_key=$data['site_key'];
+$login_handle=$data['login_handle'];
+
+
+$user_key=check_email_users($login_handle,$store_key);
 if(!$user_key){
-    $customer_key=check_email_customers($data['login_handle'],$store_key);
+    $customer_key=check_email_customers($login_handle,$store_key);
     if($customer_key){
-    
+    list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key);
     }
 
 }
 
 
+if($user_key){
+
+$email_credential_key=1;
+
+
+
+
+
+
+$secret_data=json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$user_key ));
+$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store_key,256));
+
+$html_message="We received request to reset the password associated with this email account.<br><br>
+If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
+<b>Click the link below to reset your password</b>
+<br><br>
+<a href=\"http://".$public_url."/bd.php?p=".$encrypted_secret_data."\">".$public_url."/reset.php?p=".$encrypted_secret_data."</a>
+<br></br>
+If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
+<br><br>
+Thank you";
+
+
+
+$to='rulovico@gmail.com';
+	$data=array(
+		'type'=>'HTML',
+		'subject'=>	'Reset your password',
+		'plain'=>$plain_message,
+		'email_credentials_key'=>$email_credential_key,
+		'to'=>$to,
+		'html'=>$html_message,
+	
+	);
+	
+
+	
+	
+	$send_email=new SendEmail();
+	
+	$send_email->smtp('plain', $data);
+
+	$result=$send_email->send();
+
+
+
+
+}
+else{
+   $response=array('state'=>200,'result'=>'handle_not_found');
+        echo json_encode($response);
+        exit;
 }
 
+}
 
+function check_email($data){
+$store_key=$data['store_key'];
+$site_key=$data['site_key'];
+$login_handle=_trim($data['login_handle']);
+
+
+if($login_handle==''){
+
+ $response=array('state'=>200,'result'=>'error');
+        echo json_encode($response);
+        exit;
+}
+
+    $found=check_email_customers($login_handle,$store_key);
+
+    if ($found) {
+        $response=array('state'=>200,'result'=>'found');
+        echo json_encode($response);
+        exit;
+    } else {
+        $response=array('state'=>200,'result'=>'not_found','login_handle'=>$login_handle);
+        echo json_encode($response);
+        exit;
+
+    }
+
+
+
+}
 ?>

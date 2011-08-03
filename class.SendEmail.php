@@ -442,8 +442,7 @@ class SendEmail extends DB_Table{
 	}
 
 	
-	function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters="")
-	{
+	function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters=""){
 
 		return($this->message_object->Mail($to,$subject,$message,$additional_headers,$additional_parameters));
 		//return($this->message_object->Send());//($to,$subject,$message,$additional_headers,$additional_parameters));
