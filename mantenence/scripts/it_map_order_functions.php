@@ -4415,7 +4415,13 @@ function read_records($handle_csv,$y_map,$number_header_rows){
   $header[0]=array();
   while(($cols = fgetcsv($handle_csv))!== false){
 
-    if($row<$number_header_rows){// is a header data
+      if(preg_match('/^public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read ){
+	        
+	           
+      
+                  $header[0]=$cols;
+           $header_first_line_read=true;
+  }elseif($row<$number_header_rows){// is a header data
       $header[]=$cols;
     }else{
 
@@ -4438,9 +4444,7 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 
 	$cols['fob']=$first_order_bonus;
 	$products[]=$cols;
-      }else if(preg_match('/^public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read )
-	$header[0]=$cols;
-     $header_first_line_read=true;
+      }
     }
     $row++;
   }
