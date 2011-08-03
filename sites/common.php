@@ -1,14 +1,19 @@
 <?php
 
-$path = 'classes/';
-set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+//$path = 'classes/';
+//set_include_path(get_include_path() . $path);
+//print get_include_path() . PATH_SEPARATOR . $path;
 
+ 
 require_once 'app_files/db/dns.php';
 require_once 'common_functions.php';
-require_once "class.Session.php";
-require_once "class.Auth.php";
-require_once "class.User.php";
-require_once "class.Site.php";
+
+
+require_once "classes/class.Session.php";
+
+require_once "classes/class.Auth.php";
+require_once "classes/class.User.php";
+require_once "classes/class.Site.php";
 
 
 
@@ -84,7 +89,7 @@ if ($logged_in ) {
 
         include_once('app_files/key.php');
 
-        include_once('aes.php');
+       
         $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
         $St=AESEncryptCtr($Sk,SKEY, 256);
         $smarty->assign('secret_string',$St);
@@ -128,6 +133,7 @@ if ($logged_in ) {
 log_visit($session->id);
 
 
+
 $smarty->assign('logged_in',$logged_in);
 
 
@@ -140,7 +146,6 @@ $smarty->assign('email',$store->data['Store Email']);
 $smarty->assign('tel',$store->data['Store Telephone']);
 $smarty->assign('fax',$store->data['Store Fax']);
 $smarty->assign('store_slogan',$store->data['Store Slogan']);
-
 
 
 
@@ -182,109 +187,6 @@ while ($row=mysql_fetch_array($res)) {
 
 $smarty->assign('departments',$departments);
 
-function log_visit($session_key) {
-
-
-global $user_click_key;
-$user_click_key=0;
-   // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
-$file = $_SERVER["PHP_SELF"];
-//echo $file;
- 
- $break = Explode('/', $file);
-    $cur_file = $break[count($break) - 1];
-if(preg_match('/^ar\_/',$cur_file)){
-    return;
-}
-
-if(preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)){
-return;
-}
-
-// function to get the full url of the current page
-function slfURL() 
-{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
- $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]); 
-return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI']; 
-}
-
- function strleft1($s1, $s2) 
-{ return substr($s1, 0, strpos($s1, $s2)); }
-
-$cur_fullurl=slfURL();
-//print "$cur_fullurl<br>";
-$break = Explode('/', $cur_fullurl);
-$cur_url = $break[count($break) - 1];
-//print $cur_url;
-
-
-
-//echo $file;
-   // print "current file : $cur_file <br>";           //current file name gets stored in $file
-
-    $purl = (isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');        //previous page url
-    $break = Explode('/', $purl);
-    $prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
-
-    //$pos = strpos($prev_url, '?');
-
-    //$prev_file = substr($prev_url,0, $pos);
-   // print "previous file : $prev_file<br>";
-//echo("<br>");
-
-
-
-    if (isset($user)) {
-        $user_key=$user->id;
-    } else {
-        $user_key=0;
-    }
-
-    $page_key=0;
-    $date=date("Y-m-d H:i:s");
-   
-   
-   if(isset($_SESSION['prev_page_key']))
-    $prev_page_key=$_SESSION['prev_page_key'];
-  else
-  $prev_page_key=0;
-  
-  
-        $sql1=sprintf("INSERT INTO `User Click Dimension` (
-
-                      `User Key` ,
-                      `URL` ,
-                      `Page Key` ,
-                      `Date` ,
-                      `Previous Page` ,
-                      `Session Key` ,
-                      `Previous Page Key`
-                      )
-                      VALUES (
-                      %d,%s, %d,%s, %s, %d,%d
-                      );",
-                      $user_key,
-                      prepare_mysql($cur_url),
-                      $page_key,
-                      prepare_mysql($date),
-                      prepare_mysql($prev_url),
-                      $session_key,
-                      $prev_page_key
-                     );
-
-        //print($sql1);
-        mysql_query($sql1);
-        $user_click_key= mysql_insert_id();
-
-  
-
-}
-function update_page_key_visit_log($page_key){
-    global $user_click_key;
-    $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
-    mysql_query($sql);
-
-}
 
 
 ?>

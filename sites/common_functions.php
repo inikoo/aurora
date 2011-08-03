@@ -15,6 +15,207 @@
 //   $mysql_date= join ('-',array_reverse($date));
 //   return array($mysql_date,0);
 // }
+if(!function_exists('money_format')){
+function money_format($format, $number)
+{
+    $regex  = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?'.
+              '(?:#([0-9]+))?(?:\.([0-9]+))?([in%])/';
+    if (setlocale(LC_MONETARY, 0) == 'C') {
+        setlocale(LC_MONETARY, '');
+    }
+    $locale = localeconv();
+    preg_match_all($regex, $format, $matches, PREG_SET_ORDER);
+    foreach ($matches as $fmatch) {
+        $value = floatval($number);
+        $flags = array(
+            'fillchar'  => preg_match('/\=(.)/', $fmatch[1], $match) ?
+                           $match[1] : ' ',
+            'nogroup'   => preg_match('/\^/', $fmatch[1]) > 0,
+            'usesignal' => preg_match('/\+|\(/', $fmatch[1], $match) ?
+                           $match[0] : '+',
+            'nosimbol'  => preg_match('/\!/', $fmatch[1]) > 0,
+            'isleft'    => preg_match('/\-/', $fmatch[1]) > 0
+        );
+        $width      = trim($fmatch[2]) ? (int)$fmatch[2] : 0;
+        $left       = trim($fmatch[3]) ? (int)$fmatch[3] : 0;
+        $right      = trim($fmatch[4]) ? (int)$fmatch[4] : $locale['int_frac_digits'];
+        $conversion = $fmatch[5];
+
+        $positive = true;
+        if ($value < 0) {
+            $positive = false;
+            $value  *= -1;
+        }
+        $letter = $positive ? 'p' : 'n';
+
+        $prefix = $suffix = $cprefix = $csuffix = $signal = '';
+
+        $signal = $positive ? $locale['positive_sign'] : $locale['negative_sign'];
+        switch (true) {
+            case $locale["{$letter}_sign_posn"] == 1 && $flags['usesignal'] == '+':
+                $prefix = $signal;
+                break;
+            case $locale["{$letter}_sign_posn"] == 2 && $flags['usesignal'] == '+':
+                $suffix = $signal;
+                break;
+            case $locale["{$letter}_sign_posn"] == 3 && $flags['usesignal'] == '+':
+                $cprefix = $signal;
+                break;
+            case $locale["{$letter}_sign_posn"] == 4 && $flags['usesignal'] == '+':
+                $csuffix = $signal;
+                break;
+            case $flags['usesignal'] == '(':
+            case $locale["{$letter}_sign_posn"] == 0:
+                $prefix = '(';
+                $suffix = ')';
+                break;
+        }
+        if (!$flags['nosimbol']) {
+            $currency = $cprefix .
+                        ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']) .
+                        $csuffix;
+        } else {
+            $currency = '';
+        }
+        $space  = $locale["{$letter}_sep_by_space"] ? ' ' : '';
+
+        $value = number_format($value, $right, $locale['mon_decimal_point'],
+                 $flags['nogroup'] ? '' : $locale['mon_thousands_sep']);
+        $value = @explode($locale['mon_decimal_point'], $value);
+
+        $n = strlen($prefix) + strlen($currency) + strlen($value[0]);
+        if ($left > 0 && $left > $n) {
+            $value[0] = str_repeat($flags['fillchar'], $left - $n) . $value[0];
+        }
+        $value = implode($locale['mon_decimal_point'], $value);
+        if ($locale["{$letter}_cs_precedes"]) {
+            $value = $prefix . $currency . $space . $value . $suffix;
+        } else {
+            $value = $prefix . $value . $space . $currency . $suffix;
+        }
+        if ($width > 0) {
+            $value = str_pad($value, $width, $flags['fillchar'], $flags['isleft'] ?
+                     STR_PAD_RIGHT : STR_PAD_LEFT);
+        }
+
+        $format = str_replace($fmatch[0], $value, $format);
+    }
+    return $format;
+} 
+}
+function log_visit($session_key) {
+
+
+global $user_click_key;
+$user_click_key=0;
+   // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
+$file = $_SERVER["PHP_SELF"];
+//echo $file;
+ 
+ $break = Explode('/', $file);
+    $cur_file = $break[count($break) - 1];
+if(preg_match('/^ar\_/',$cur_file)){
+    return;
+}
+
+if(preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)){
+return;
+}
+
+// function to get the full url of the current page
+function slfURL() 
+{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+ $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]); 
+return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI']; 
+}
+
+function ecommerceURL() 
+{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+ $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+ if(strpos($_SERVER['REQUEST_URI'], "?")){
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
+ }
+ else
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
+}
+
+ function strleft1($s1, $s2) 
+{ return substr($s1, 0, strpos($s1, $s2)); }
+
+$cur_fullurl=slfURL();
+//print "$cur_fullurl<br>";
+$break = Explode('/', $cur_fullurl);
+$cur_url = $break[count($break) - 1];
+//print $cur_url;
+
+
+
+//echo $file;
+   // print "current file : $cur_file <br>";           //current file name gets stored in $file
+
+    $purl = (isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');        //previous page url
+    $break = Explode('/', $purl);
+    $prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
+
+    //$pos = strpos($prev_url, '?');
+
+    //$prev_file = substr($prev_url,0, $pos);
+   // print "previous file : $prev_file<br>";
+//echo("<br>");
+
+
+
+    if (isset($user)) {
+        $user_key=$user->id;
+    } else {
+        $user_key=0;
+    }
+
+    $page_key=0;
+    $date=date("Y-m-d H:i:s");
+   
+   
+   if(isset($_SESSION['prev_page_key']))
+    $prev_page_key=$_SESSION['prev_page_key'];
+  else
+  $prev_page_key=0;
+  
+  
+        $sql1=sprintf("INSERT INTO `User Click Dimension` (
+
+                      `User Key` ,
+                      `URL` ,
+                      `Page Key` ,
+                      `Date` ,
+                      `Previous Page` ,
+                      `Session Key` ,
+                      `Previous Page Key`
+                      )
+                      VALUES (
+                      %d,%s, %d,%s, %s, %d,%d
+                      );",
+                      $user_key,
+                      prepare_mysql($cur_url),
+                      $page_key,
+                      prepare_mysql($date),
+                      prepare_mysql($prev_url),
+                      $session_key,
+                      $prev_page_key
+                     );
+
+        //print($sql1);
+        mysql_query($sql1);
+        $user_click_key= mysql_insert_id();
+
+  
+
+}
+function update_page_key_visit_log($page_key){
+    global $user_click_key;
+    $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
+    mysql_query($sql);
+
+}
 
 
 function getEnumValues($table, $field) {

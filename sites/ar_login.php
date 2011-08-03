@@ -10,7 +10,7 @@ if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
 }
 elseif($handle) {
-    //  print urldecode($sk)."\n\n";
+//  print urldecode($sk)."\n\n";
 
     $auth->authenticate($handle,rawurldecode($sk),'customer',$store_key);
 }
