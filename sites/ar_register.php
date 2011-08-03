@@ -12,7 +12,15 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 switch ($_REQUEST['tipo']) {
-
+case('register'):
+ $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array'),
+                             'store_key'=>array('type'=>'key'),
+                                 'site_key'=>array('type'=>'key')
+                         ));
+    register($data);
+  
+    break;
 case('forgot_password'):
  $data=prepare_values($_REQUEST,array(
                              'login_handle'=>array('type'=>'string'),
@@ -469,4 +477,33 @@ if($login_handle==''){
 
 
 }
+
+function register($data){
+
+   include_once('edit_customers_functions.php');
+
+    global $editor;
+
+ 
+ if($data['values']['Customer Name']==''){
+ 
+ $data['values']['Customer Type']='Person';
+ }else{
+  $data['values']['Customer Type']='Company';
+
+ 
+ }
+ 
+    if ($data['values']['Customer Address Country Code']=='')
+        $data['values']['Customer Address Country Code']='UNK';
+
+    $data['values']['editor']=$editor;
+
+
+
+    $response=add_customer($data['values']) ;
+    echo json_encode($response);
+}
+
+
 ?>
