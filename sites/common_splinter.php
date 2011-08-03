@@ -43,6 +43,10 @@ $session = new Session($max_session_time,1,100);
 //require('external_libs/Smarty/Smarty.class.php');
 //$smarty = new Smarty();
 
+if(!isset($_SESSION['basket'])){
+$_SESSION['basket']=array('qty'=>0,'sub'=>0);
+
+}
 
 $site=new Site($myconf['site_key']);
 if(!$site->id){

@@ -16,6 +16,7 @@ class LightProduct{
   var $locale;
   var $url;
   var $user_id;
+  var $method;
   
     function __construct($arg1) {
     
@@ -51,6 +52,7 @@ class LightProduct{
 				require("../app_files/checkoutConf.php");
 				$this->url=$ecommerce_url;				
 				$this->user_id=$username;
+				$this->method=$method;
 			break;
 			
 			default:
@@ -83,26 +85,48 @@ class LightProduct{
 		  } else {
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
 		
-		
-		$_form=sprintf('<input type="hidden" name="action" value="%s">
-								   <input type="hidden" name="userid" value="%s">
-								   <input type="hidden" name="product" value="%s %sx %s">
-								   <input type="hidden" name="return" value="%s">
-								   <input type="hidden" name="price" value="%.2f">
-								   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-								   <input type="hidden" name="nocart"> 
-								   
-								   <button id="SC" style="margin-left:10px">%s</button>'
-				   ,$this->url
-				   ,addslashes($this->user_id)
-				   ,addslashes($this->data['Product Code'])
-				   ,addslashes($this->data['Product Units Per Case'])
-				   ,clean_accents(addslashes($this->data['Product Name']))
-				   //,$site_url.$_SERVER['PHP_SELF']
-				   ,slfURL()
-				   ,$this->data['Product Price']
-				   ,$this->get('Order Msg')
-				   );
+			if($this->method=='reload'){
+			
+					$_form=sprintf('<form action="%s" method="post">
+											   <input type="hidden" name="userid" value="%s">
+											   <input type="hidden" name="product" value="%s %sx %s">
+											   <input type="hidden" name="return" value="%s">
+											   <input type="hidden" name="price" value="%.2f">
+											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
+											   <input type="hidden" name="nocart">  
+											   <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>'
+							   ,$this->url
+							   ,addslashes($this->user_id)
+							   ,addslashes($this->data['Product Code'])
+							   ,addslashes($this->data['Product Units Per Case'])
+							   ,clean_accents(addslashes($this->data['Product Name']))
+							   //,$site_url.$_SERVER['PHP_SELF']
+							   ,ecommerceURL()
+							   ,$this->data['Product Price']
+							   ,$this->get('Order Msg')
+							   );
+			}
+			else{
+								$_form=sprintf('<input type="hidden" name="action" value="%s">
+											   <input type="hidden" name="userid" value="%s">
+											   <input type="hidden" name="product" value="%s %sx %s">
+											   <input type="hidden" name="return" value="%s">
+											   <input type="hidden" name="price" value="%.2f">
+											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
+											   <input type="hidden" name="nocart"> 
+											   
+											   <button id="SC" style="margin-left:10px">%s</button>'
+							   ,$this->url
+							   ,addslashes($this->user_id)
+							   ,addslashes($this->data['Product Code'])
+							   ,addslashes($this->data['Product Units Per Case'])
+							   ,clean_accents(addslashes($this->data['Product Name']))
+							   //,$site_url.$_SERVER['PHP_SELF']
+							   ,slfURL()
+							   ,$this->data['Product Price']
+							   ,$this->get('Order Msg')
+							   );
+			}
 		  }
 
 $_SESSION['logged_in']=1;
