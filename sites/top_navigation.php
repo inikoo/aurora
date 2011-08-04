@@ -35,7 +35,7 @@
 
 </div>
 
-
+<?php if(!$logged_in){?>
 
 <div id="dialog_login"    class="dialog"    style="position:relative;left:525px;top:-22px;width:350px">
 <input type="hidden" value="<?php echo $St?>" id="ep">
@@ -349,3 +349,4 @@
 <tr class="button" ><td></td><td ><button id="hide_forgot_password_dialog">Close</button></td></tr>
 </table>
 </div>
+<?php } ?>

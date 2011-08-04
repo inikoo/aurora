@@ -179,7 +179,6 @@ function show_product($code){
 
 	print $product->get_info();
 
-
 	}
 
 }
