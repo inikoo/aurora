@@ -52,13 +52,13 @@ $public_url=$myconf['public_url'];
 if(!isset($_SESSION['basket'])){
 $_SESSION['basket']=array('qty'=>0,'total'=>0);
 
-}else{
-
-if(isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty']))
-$_SESSION['basket']['qty']=$_REQUEST['qty']
 }
-if(isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot']))
-$_SESSION['basket']['total']=$_REQUEST['tot']
+
+if(isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])){
+$_SESSION['basket']['qty']=$_REQUEST['qty'];
+}
+if(isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])){
+$_SESSION['basket']['total']=$_REQUEST['tot'];
 }
 
 $site=new Site($myconf['site_key']);
@@ -137,7 +137,8 @@ if ($logged_in ) {
 
     }
 
-} else {
+} 
+else {
 
 $_SESSION['logged_in']=0;
 $logged_in=false;
@@ -150,19 +151,6 @@ $St=get_sk();
 log_visit($session->id);
 
 
-
-//$smarty->assign('logged_in',$logged_in);
-
-
-
-//$smarty->assign('head_template',"templates/head.".$store->data['Store Locale'].".tpl");
-//$smarty->assign('footer_template',"templates/footer.".$store->data['Store Locale'].".tpl");
-//$smarty->assign('main_menu_template',"templates/main_menu.tpl");
-
-//$smarty->assign('email',$store->data['Store Email']);
-//$smarty->assign('tel',$store->data['Store Telephone']);
-//$smarty->assign('fax',$store->data['Store Fax']);
-//$smarty->assign('store_slogan',$store->data['Store Slogan']);
 
 function get_sk(){
       
@@ -188,14 +176,14 @@ function show_product($code){
 				print $product->get_full_order_form('ecommerce', $data);
 
 	}else{
+
 	print $product->get_info();
 
-	//			print $product->get_full_order_form('ecommerce', $data);
 
-		//print $product->get_order_list_form();
 	}
 
 }
+
 
 
 function show_products($code){
