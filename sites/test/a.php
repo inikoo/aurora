@@ -34,7 +34,7 @@
 <div style="margin-top:40px;width:500px;border: 1px solid #ccc;padding:5px 30px 20px 30px">
 <h1>Test 1</h1>
 
-<?php show_product('jbb-01')?>
+<?php show_product('sbb-01')?>
 </div>
 <div style="margin-top:40px;width:500px;border: 1px solid #ccc;padding:5px 30px 20px 30px">
 <h1>Test 2</h1>

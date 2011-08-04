@@ -2,24 +2,15 @@
 
 function show_products_in_family_info($data){
 
-		$_form=sprintf('<div style="left:0px; top:487px; width:192px; ">
-						<div style="text-align:left;">
-						<link rel="stylesheet" type="text/css" href="../order.css" />
-						<link rel="stylesheet" type="text/css" href="order.css" />
-						<style type="text/css">.nophp{display:none}</style>
-						<style type="text/css">
-						table.order {width:22em}td.first{width:8 em}
-						table.order{font-size:11px;font-family:arial;}
-						span.price{float:right;margin-right:5px}
-						span.desc{margin-left:5px}
-						span.outofstock{color:red;font-weight:800;float:right;margin-right:5px;}
-						input.qty{width:100%%}td.qty{width:3em}
-						</style>
+		$_form=sprintf('<div><div>					
+					<style type="text/css">.nophp{display:none}</style>
+					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					</style>
 
-						<table class="order" border=0 cellpadding="0" cellspacing="0">');
+					<table class="order" >');
 				
 				
-		$form=sprintf('<table class="order" border=0 cellpadding="0" cellspacing="0">'
+		$form=sprintf('<table class="order" >'
 						);
 					
 	foreach($data as $product){
@@ -48,37 +39,41 @@ function show_products_in_family_info($data){
 		
 		if ($product['Product Web State']=='Online Force Out of Stock'){
 					$_form.=sprintf('<tr class="nophp">
-							<td colspan=2 style="height:20px;padding:0;margin:0;"><span  style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
-							<td><span class="desc">%s</span></td>
+							<td>%s</td><td>%s</td>
+							<td>%s</td>
 							</tr>'
-							,$out_of_stock
 							,addslashes($product['Product Code'])
+							,$out_of_stock
+							
 							,clean_accents(addslashes($product['Product Name']))
 							);
 							
-					$form.=sprintf('<tr ><td colspan=2 style="height:20px;padding:0;margin:0;"><span style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
-							<td><span class="desc">%s</span></td></tr>'
-							,$out_of_stock
+					$form.=sprintf('<tr ><td>%s</td><td>%s</td>
+							<td>%s</td></tr>'
 							,addslashes($product['Product Code'])
+							,$out_of_stock
+							
 							,clean_accents(addslashes($product['Product Name']))
 
 							);
 			}
 			else{
 					$_form.=sprintf('<tr class="nophp">
-							<td class="first"><span class="price">%.2f</span>%s</td>
-							<td><span class="desc">%s</span></td>
+							<td>%s</td><td>%.2f</td>
+							<td>%s</td>
 							</tr>'
-							,$product['Product Price']
+							
 							,addslashes($product['Product Code'])
+							,$product['Product Price']
 							,clean_accents(addslashes($product['Product Name']))
 							);
 							
-					$form.=sprintf('<tr ><td class="first"><span class="price">%.2f</span>%s</td>
+					$form.=sprintf('<tr ><td>%s</td><td>%.2f</td>
 							
-							<td><span class="desc">%s</span></td></tr>'
-							,$product['Product Price']
+							<td>%s</td></tr>'
+							
 							,addslashes($product['Product Code'])
+							,$product['Product Price']
 							,clean_accents(addslashes($product['Product Name']))
 
 
@@ -124,28 +119,19 @@ function show_products_in_family($type, $data, $conf){
 		break;
 	}
 	
-	$_form=sprintf('<div style=" left:0px; top:487px; width:192px; ">
-					<div style="text-align:left;">
-					<link rel="stylesheet" type="text/css" href="../order.css" />
-					<link rel="stylesheet" type="text/css" href="order.css" />
+	$_form=sprintf('<div><div>
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">
-					table.order {width:22em}td.first{width:8 em}
-					table.order{font-size:11px;font-family:arial;}
-					span.price{float:right;margin-right:5px}
-					span.desc{margin-left:5px}
-					span.outofstock{color:red;font-weight:800;float:right;margin-right:5px;}
-					input.qty{width:100%%}td.qty{width:3em}
+					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					input.order{width:30px}
 					</style>
-
-					<table class="order" border=0 cellpadding="0" cellspacing="0">
+					<table  class="order">
 					<form action="%s" method="post">
 					<input type="hidden" name="userid" value="%s">
 					<input type="hidden" name="return" value="%s">'
 			,$ecommerce_url_multi, addslashes($username), ecommerceURL($secure, $_port, $_protocol, $url, $server));
 			
 			
-	$form=sprintf('<table class="order" border=0 cellpadding="0" cellspacing="0">
+	$form=sprintf('<table class="order">
 					<form action="%s" method="post">
 					<input type="hidden" name="userid" value="%s">'
 					,$ecommerce_url_multi
@@ -178,31 +164,33 @@ function show_products_in_family($type, $data, $conf){
 		
 		if ($product['Product Web State']=='Online Force Out of Stock'){
 				$_form.=sprintf('<tr class="nophp">
-						<td colspan=2 style="height:20px;padding:0;margin:0;"><span  style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
-						<td><span class="desc">%s</span></td>
+						<td>%s</td><td>%s</td>
+						<td>%s</td>
 						</tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s" >'
-						,$out_of_stock
 						,addslashes($product['Product Code'])
+						,$out_of_stock
 						,clean_accents(addslashes($product['Product Name']))
 						,$i
-						,$product['Product Price']
+						//,$product['Product Price']
+						,get_formated_price($locale, $product)
 						,$i
 						,addslashes($product['Product Code'])
 						,addslashes($product['Product Units Per Case'])
 						,clean_accents(addslashes($product['Product Name']))
 						);
 						
-				$form.=sprintf('<tr ><td colspan=2 style="height:20px;padding:0;margin:0;"><span style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
-						<td><span class="desc">%s</span></td></tr>
+				$form.=sprintf('<tr ><td>%s</td><td>%s</td>
+						<td>%s</td></tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s">'
-						,$out_of_stock
 						,addslashes($product['Product Code'])
+						,$out_of_stock
 						,clean_accents(addslashes($product['Product Name']))
 						,$i
-						,$product['Product Price']
+						//,$product['Product Price']
+						,get_formated_price($locale, $product)
 						,$i
 						,addslashes($product['Product Code'])
 						,addslashes($product['Product Units Per Case'])
@@ -211,14 +199,14 @@ function show_products_in_family($type, $data, $conf){
 		}
 		else{
 				$_form.=sprintf('<tr class="nophp">
-						<td class="first"><span class="price">%.2f</span>%s</td>
-						<td class="qty"><input type="text"  class="qty" name="qty%s"  id="qty%s"    /></td>
-						<td><span class="desc">%s</span></td>
+						<td>%s</td><td>%.2f</td>
+						<td><input class="order" type="text" name="qty%s"  id="qty%s"    /></td>
+						<td>%s</td>
 						</tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s" >'
-						,$product['Product Price']
 						,addslashes($product['Product Code'])
+						,$product['Product Price']
 						,$i
 						,$i
 						,clean_accents(addslashes($product['Product Name']))
@@ -230,13 +218,13 @@ function show_products_in_family($type, $data, $conf){
 						,clean_accents(addslashes($product['Product Name']))
 						);
 						
-				$form.=sprintf('<tr ><td class="first"><span class="price">%.2f</span>%s</td>
-						<td class="qty" style="width:3em"><input type="text" class="qty" name="qty%s"  id="qty%s"  /></td>
-						<td><span class="desc">%s</span></td></tr>
+				$form.=sprintf('<tr ><td>%s</td><td >%.2f</td>
+						<td><input class="order" type="text"  name="qty%s"  id="qty%s"  /></td>
+						<td>%s</td></tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s">'
-						,$product['Product Price']
 						,addslashes($product['Product Code'])
+						,$product['Product Price']
 						,$i
 						,$i
 						,clean_accents(addslashes($product['Product Name']))
@@ -252,22 +240,56 @@ function show_products_in_family($type, $data, $conf){
 		 $i++;
 	}
 	
-	$_form.=sprintf('<tr id="submit_tr" class="nophp"><td id="submit_td" colspan="3" >
-						<input name="Submit" type="submit" class="text" value="Order"> 
-						<input name="Reset" type="reset" class="text"  id="Reset" value="Reset"></td></tr>
+	$_form.=sprintf('<tr class="nophp"><td>
+						<input name="Submit" type="submit"  value="Order"> 
+						<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr>
+						</form>
 					</table>
-					</form>'
+					'
 					);
 
 
-	$form.=sprintf('<tr id="submit_tr"><td id="submit_td" colspan="3" >
-					<input name="Submit" type="submit" class="text" value="Order">
-					<input name="Reset" type="reset" class="text"  id="Reset" value="Reset"></td></tr></table>
-					<input type="hidden" name="return" value="%s"></form> '
+	$form.=sprintf('<tr ><td >
+					<input name="Submit" type="submit"  value="Order">
+					<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
+					<input type="hidden" name="return" value="%s"> '
 					,ecommerceURL($secure, $_port, $_protocol, $url, $server));
 
 	  //print $form;exit;
 	  return $_form.$form.'</div></div>';
+}
+
+
+function get_formated_price($locale='', $row){
+
+	 $data=array(
+	'Product Price'=>$row['Product Price'],
+	'Product Units Per Case'=>$row['Product Units Per Case'],
+	'Product Currency'=>$row['Product Currency'],
+	'Product Unit Type'=>$row['Product Unit Type'],
+
+
+	'locale'=>$locale);
+	return formated_price($data);
+}
+
+function get($key){
+
+	switch ($key) {
+   
+	case('Order Msg'):
+	if ($this->locale=='de_DE')
+		return 'Bestellen';
+	elseif($this->locale=='fr_FR')
+		return 'Commander';
+	else
+		return 'Order';		
+	break;
+	default:
+		return false;
+	break;
+	}
+
 }
 /*
 function ecommerceURL($secure, $_port, $_protocol, $url, $server) {
