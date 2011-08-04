@@ -1,5 +1,5 @@
 <?php
-include('common.php');
+include('common_splinter.php');
 include_once('app_files/key.php');
 
 $auth=new Auth(IKEY,SKEY);
@@ -17,10 +17,13 @@ elseif($handle) {
 
 if ($auth->is_authenticated()) {
     $_SESSION['logged_in']=true;
-    $_SESSION['logged_in_page']=$store_key;
-   
+    $_SESSION['store_key']=$store_key;
+    $_SESSION['site_key']=$site->id;
+
     $_SESSION['user_key']=$auth->get_user_key();
     $_SESSION['customer_key']=$auth->get_user_parent_key();
+
+/*
 
     $sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' ",$_SESSION['customer_key']);
     $res=mysql_query($sql);
@@ -48,6 +51,8 @@ if ($auth->is_authenticated()) {
                                 );
 
     }
+*/
+
 
     $response=array('state'=>200,'result'=>'ok');
     echo json_encode($response);

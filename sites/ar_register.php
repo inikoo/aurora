@@ -16,7 +16,8 @@ case('register'):
  $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array'),
                              'store_key'=>array('type'=>'key'),
-                                 'site_key'=>array('type'=>'key')
+                                 'site_key'=>array('type'=>'key'),
+                                  'ep'=>array('type'=>'string')
                          ));
     register($data);
   
@@ -329,8 +330,8 @@ function generate_password($length=9, $strength=0) {
     return $password;
 }
  
-    function create_customer_user($handle,$customer_key,$site_key) {
-        include_once('class.User.php');
+    function create_customer_user($handle,$customer_key,$site_key,$password) {
+        include_once('classes/class.User.php');
         
         
         $sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
@@ -338,17 +339,17 @@ function generate_password($length=9, $strength=0) {
         $res=mysql_query($sql);
         if($row=mysql_fetch_assoc($res)){
         
-        $password=generate_password(8,10);
+     
         
         $data=array(
                   'User Handle'=>$handle,
                   'User Type'=>'Customer',
-                  'User Password'=>md5($password),
-                  'User Parent Key'=>$this->data['Customer Store Key'],
+                  'User Password'=>$password,
+                  'User Parent Key'=>$row['Customer Store Key'],
                   'User Site Key'=>$site_key,
                   'User Active'=>'Yes',
-                  'User Alias'=>$this->data['Customer Name'],
-                  'User Parent Key'=>$this->data['Customer Key']
+                  'User Alias'=>$row['Customer Name'],
+                  'User Parent Key'=>$customer_key
               );
         // print_r($data);
         $user=new user('new',$data);
@@ -468,7 +469,7 @@ if($login_handle==''){
         echo json_encode($response);
         exit;
     } else {
-        $response=array('state'=>200,'result'=>'not_found','login_handle'=>$login_handle);
+        $response=array('state'=>200,'result'=>'not_found','login_handle'=>$login_handle,'epw2'=>md5($login_handle.'x**X'));
         echo json_encode($response);
         exit;
 
@@ -502,6 +503,37 @@ function register($data){
 
 
     $response=add_customer($data['values']) ;
+    
+    if($response['state']==200 and $response['action']=='created' ){
+       $ep=rawurldecode($data['ep']);
+                       include_once('aes.php');
+
+$password=AESDecryptCtr($ep,md5($data['values']['Customer Main Plain Email'].'x**X'),256);
+
+    list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
+    
+    if($user_key){
+        
+           $_SESSION['logged_in']=true;
+    $_SESSION['store_key']=$data['store_key'];
+    $_SESSION['site_key']=$data['site_key'];
+
+    $_SESSION['user_key']=$user_key;
+    $_SESSION['customer_key']=$response['customer_key'];
+        
+      $response=array('state'=>200,'result'=>'log_in');
+        echo json_encode($response);
+        exit;
+    
+    }
+    
+    }
+    
+ 
+    
+    
+    
+    
     echo json_encode($response);
 }
 
