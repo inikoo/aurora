@@ -7,7 +7,7 @@
   Copyright (c) 2011, Inikoo
 
 */
-$logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
+
 
 class LightProduct{
   
@@ -46,10 +46,10 @@ class LightProduct{
  
 
  
-	function get_full_order_form($type){
+	function get_full_order_form($type,$data=false){
 		switch($type){
 			case 'ecommerce':
-				require("../app_files/checkoutConf.php");
+				
 				$this->url=$ecommerce_url;				
 				$this->user_id=$username;
 				$this->method=$method;
@@ -147,7 +147,7 @@ $_SESSION['logged_in']=1;
 
 	}
 
-	function get_order_list_form(){
+	function get_order_list_form($data=false){
 	   
 		$data=$this->data;
 		if ($this->locale=='de_DE') {
