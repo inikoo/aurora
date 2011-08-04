@@ -53,7 +53,7 @@ var data={
  
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.action='logged_in'){
@@ -121,6 +121,8 @@ function check_email(){
     		        show_register_part_2_dialog();
     		    
     		    }else if(r.result=='found'){
+    		    
+    		        //show_login_dialog_from_registration();
     		    
     		    
     		    }

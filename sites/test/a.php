@@ -31,10 +31,18 @@
 
 
 
-<div style="margin-top:40px;clear:both;width:500px;border: 1px solid #ccc;padding:30px">
+<div style="margin-top:40px;width:500px;border: 1px solid #ccc;padding:5px 30px 20px 30px">
 <h1>Test 1</h1>
 
 <?php show_product('jbb-01')?>
+</div>
+<div style="margin-top:40px;width:500px;border: 1px solid #ccc;padding:5px 30px 20px 30px">
+<h1>Test 2</h1>
+<?php show_products('jbb-01,sbb-01')?>
+</div>
+<div style="margin-top:40px;width:500px;border: 1px solid #ccc;padding:5px 30px 20px 30px">
+<h1>Test 3</h1>
+<?php show_products('sbb')?>
 </div>
 
 

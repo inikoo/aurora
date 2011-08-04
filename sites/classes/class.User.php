@@ -160,6 +160,7 @@ class User extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
+        //print $sql;
         if (mysql_query($sql)) {
 
             $user_id=mysql_insert_id();

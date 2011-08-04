@@ -224,18 +224,8 @@ $_SESSION['logged_in']=1;
 	}
 	
 	
-	function get_info($type,$data=false){
-		switch($type){
-			case 'ecommerce':
-				
-				$this->url=$data['ecommerce_url'];				
-				$this->user_id=$data['username'];
-				$this->method=$data['method'];
-			break;
-			
-			default:
-			break;
-		}
+	function get_info(){
+
 	//$this->locale=$row['Product Locale'];
 		if ($this->locale=='de_DE') {
 		$out_of_stock='nicht vorrv§tig';
@@ -263,37 +253,13 @@ $_SESSION['logged_in']=1;
 		  } else {
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
 		
-			if($this->method=='reload'){
+			
 			
 					$_form=sprintf('<input type="hidden" name="product" value="%s %sx %s">'
 							   ,addslashes($this->data['Product Code'])
 							   ,addslashes($this->data['Product Units Per Case'])
 							   ,clean_accents(addslashes($this->data['Product Name']))
 							   );
-			}
-			else{
-			/*
-								$_form=sprintf('<input type="hidden" name="action" value="%s">
-											   <input type="hidden" name="userid" value="%s">
-											   <input type="hidden" name="product" value="%s %sx %s">
-											   <input type="hidden" name="return" value="%s">
-											   <input type="hidden" name="discountpr" value="1,%.2f">
-											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-											   <input type="hidden" name="nocart"> 
-											   
-											   <button id="SC" style="margin-left:10px">%s</button>'
-							   ,$this->url
-							   ,addslashes($this->user_id)
-							   ,addslashes($this->data['Product Code'])
-							   ,addslashes($this->data['Product Units Per Case'])
-							   ,clean_accents(addslashes($this->data['Product Name']))
-							   //,$site_url.$_SERVER['PHP_SELF']
-							   ,slfURL()
-							   ,$this->data['Product Price']
-							   ,$this->get('Order Msg')
-							   );
-							   */
-			}
 		  }
 
 		  $_SESSION['logged_in']=1;

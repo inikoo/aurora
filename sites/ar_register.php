@@ -6,7 +6,10 @@ require_once 'classes/class.EmailSend.php';
 
 require_once 'ar_edit_common.php';
 
+//print AESDecryptCtr('MwGJYmKPOk5u','a',256);
 
+//print "\n";
+//exit;
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -355,7 +358,7 @@ function generate_password($length=9, $strength=0) {
                   'User Alias'=>$row['Customer Name'],
                   'User Parent Key'=>$customer_key
               );
-        // print_r($data);
+        
         $user=new user('new',$data);
         if (!$user->id) {
            
@@ -490,6 +493,10 @@ function register($data){
     global $editor;
 
  
+
+
+ 
+ 
  if($data['values']['Customer Name']==''){
  
  $data['values']['Customer Type']='Person';
@@ -510,12 +517,19 @@ function register($data){
     
     if($response['state']==200 and $response['action']=='created' ){
        $ep=rawurldecode($data['ep']);
-                       include_once('aes.php');
+                     
 
 $password=AESDecryptCtr($ep,md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 
-print "pass $password";
 
+ //print AESDecryptCtr('MwGJYmKPOk5u','a',256);
+
+//print " xxx \n";
+
+
+
+//print "pass $password";
+//exit;
     list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
     
     if($user_key){
