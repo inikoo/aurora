@@ -42,7 +42,7 @@
 </div>
 <div style="margin-top:40px;width:500px;border: 1px solid #ccc;padding:5px 30px 20px 30px">
 <h1>Test 3</h1>
-<?php show_products('sbb')?>
+<?php show_products('jbb')?>
 </div>
 
 

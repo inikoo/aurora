@@ -102,22 +102,30 @@ class LightFamily{
 
 		if ($row['Product Web State']=='Online Force Out of Stock'){
 					$_form.=sprintf('<tr class="nophp">
-							<td>%s</td><td>%s</td>
 							<td>%s</td>
+							<td>%.2f</td>
+							<td>%s</td>
+							<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
 							</tr>'
 							,addslashes($row['Product Code'])
-							,$out_of_stock
+							,$row['Product Price']
+							
 							
 							,clean_accents(addslashes($row['Product Name']))
+							,$out_of_stock
 							);
 							
-					$form.=sprintf('<tr ><td>%s</td><td>%s</td>
-							<td>%s</td></tr>'
+					$form.=sprintf('<tr ><td>%s</td>
+							<td>%.2f</td>
+							<td>%s</td>
+							<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
+							</tr>'
 							,addslashes($row['Product Code'])
-							,$out_of_stock
+							,$row['Product Price']
+							
 							
 							,clean_accents(addslashes($row['Product Name']))
-
+							,$out_of_stock
 							);
 			}
 			else{
@@ -232,14 +240,19 @@ class LightFamily{
 		
 		if ($row['Product Web State']=='Online Force Out of Stock'){
 				$_form.=sprintf('<tr class="nophp">
-						<td>%s</td><td>%s</td>
 						<td>%s</td>
+						<td>%.2f</td>
+						<td><input class="order" type="hidden" /></td>
+						<td>%s</td>
+						<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
 						</tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s" >'
 						,addslashes($row['Product Code'])
-						,$out_of_stock
+						,get_formated_price($this->locale, $row)
 						,clean_accents(addslashes($row['Product Name']))
+						,$out_of_stock
+						
 						,$i
 						//,$row['Product Price']
 						,get_formated_price($this->locale, $row)
@@ -249,13 +262,19 @@ class LightFamily{
 						,clean_accents(addslashes($row['Product Name']))
 						);
 						
-				$form.=sprintf('<tr ><td>%s</td><td>%s</td>
-						<td>%s</td></tr>
+				$form.=sprintf('<tr ><td>%s</td>
+						<td>%.2f</td>
+						<td><input class="order" type="hidden" /></td>
+						<td>%s</td>
+						<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
+						</tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
-						<input type="hidden"  name="product%s"  value="%s %sx %s">'
+						<input type="hidden"  name="product%s"  value="%s %sx %s" >'
 						,addslashes($row['Product Code'])
-						,$out_of_stock
+						,get_formated_price($this->locale, $row)
 						,clean_accents(addslashes($row['Product Name']))
+						,$out_of_stock
+						
 						,$i
 						//,$row['Product Price']
 						,get_formated_price($this->locale, $row)
