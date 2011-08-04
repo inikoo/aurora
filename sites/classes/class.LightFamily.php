@@ -17,6 +17,7 @@ class LightFamily{
   var $url;
   var $user_id;
   var $method;
+  var $match=true;
   
     function __construct($arg1,$arg2) {
     
@@ -34,8 +35,12 @@ class LightFamily{
 		else
             return false;
 			
+
+			
         $result=mysql_query($sql);
 		
+		if(!mysql_num_rows($result))
+			$this->match=false;	
 		
 		//print $sql;
 		print mysql_error();
