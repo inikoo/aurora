@@ -3,10 +3,11 @@
 //$path = 'classes/';
 //set_include_path(get_include_path() . $path);
 //print get_include_path() . PATH_SEPARATOR . $path;
-
+  include_once('app_files/key.php');
+                include_once('aes.php');
  
 require_once 'app_files/db/dns.php';
-require("conf/checkout.php");
+require_once("conf/checkout.php");
 require_once 'common_functions.php';
 
 
@@ -15,6 +16,7 @@ require_once "classes/class.Session.php";
 require_once "classes/class.Auth.php";
 require_once "classes/class.User.php";
 require_once "classes/class.Site.php";
+require_once "classes/class.LightCustomer.php";
 
 require_once "classes/class.LightProduct.php";
 require_once "classes/class.LightFamily.php";
@@ -88,6 +90,30 @@ if (file_exists($store_code.'/labels.php')) {
 
 $_SESSION ['lang']='';
 
+
+
+$logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
+ 
+if ($logout) {
+ 
+ //    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+  //  mysql_query($sql);
+ 
+    session_regenerate_id();
+    session_destroy();
+    unset($_SESSION);
+ 
+   // include_once 'login.php';
+   // exit;
+   
+   $_SESSION['logged_in']=0;
+$logged_in=false;
+$St=get_sk();
+   
+}
+
+
+
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 if(!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])){
 $_SESSION['logged_in']=0;
@@ -104,11 +130,7 @@ if ($logged_in ) {
     } else {
 
         $user=new User($_SESSION['user_key']);
-   //     $smarty->assign('user',$user);
-     //   if (isset($_SESSION['order_data']))
-       //     $smarty->assign('order',$_SESSION['order_data']);
-
-
+        $customer=new LightCustomer($_SESSION['customer_key']);
 
     }
 
@@ -140,8 +162,7 @@ log_visit($session->id);
 //$smarty->assign('store_slogan',$store->data['Store Slogan']);
 
 function get_sk(){
-        include_once('app_files/key.php');
-                include_once('aes.php');
+      
 
    $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
         $St=AESEncryptCtr($Sk,SKEY, 256);
