@@ -6,7 +6,7 @@
 
  
 require_once 'app_files/db/dns.php';
-require("/app_files/checkoutConf.php");
+require("conf/checkout.php");
 require_once 'common_functions.php';
 
 
