@@ -158,7 +158,7 @@ class LightFamily{
 		  $form.=sprintf('<tr ><td class="first"><span class="price">%.2f</span>%s</td>
 						<td class="qty" style="width:3em"><input type="text" class="qty" name="qty%s"  id="qty%s"  /></td>
 						<td><span class="desc">%s</span></td></tr>
-						<input type="hidden"  name="price%s"  value="%.2f"  >
+						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s">'
 						,$row['Product Price']
 						,addslashes($row['Product Code'])
