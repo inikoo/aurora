@@ -174,7 +174,8 @@ function show_product($code){
 	if($logged_in){
 		print $product->get_info_button();
 	}else{
-		print $product->get_full_order_form('ecommerce', $data);
+		//print $product->get_full_order_form('ecommerce', $data);
+		print $product->get_info('ecommerce', $data);
 		//print $product->get_order_list_form();
 	}
 
