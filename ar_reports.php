@@ -1677,7 +1677,7 @@ function list_invoices_with_no_tax() {
 
 
 
-$country='GBR';
+$country='GB';
 
 
     $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];

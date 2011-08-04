@@ -1168,7 +1168,7 @@ $default_state=array(
                                                   'stores'=>false,
                                                   'currency_type'=>'original',
                                                   'view'=>'overview',
-                                                  'country'=>'GBR',
+                                                  'country'=>'GB',
                                                   'GB'=>array(
                                                             'tax_category'=>array(),
                                                             'regions'=>array('GBIM'=>1,'EU'=>1,'NOEU'=>1)
