@@ -6,7 +6,7 @@
 
  
 require_once 'app_files/db/dns.php';
-require("conf/checkout.php");
+require_once("conf/checkout.php");
 require_once 'common_functions.php';
 
 
@@ -161,16 +161,19 @@ log_visit($session->id);
 //$smarty->assign('fax',$store->data['Store Fax']);
 //$smarty->assign('store_slogan',$store->data['Store Slogan']);
 
-
 function show_product($code){
-	global $logged_in;
-	$product=new LightProduct($code);
+	global $logged_in, $ecommerce_url, $username, $method;
+	$product=new LightProduct($code, 1);
 
+	
+
+	
+	$data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
 	
 	if($logged_in){
 		print $product->get_info_button();
 	}else{
-		print $product->get_full_order_form('ecommerce');
+		print $product->get_full_order_form('ecommerce', $data);
 		//print $product->get_order_list_form();
 	}
 
