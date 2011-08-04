@@ -64,9 +64,7 @@
 <tr><td class="label">Town: </td><td><input id="register_telephone"></td></tr>
 <tr><td class="label">Postal Code: </td><td><input id="register_telephone"></td></tr>
 
-<tr><td class="label">Country: </td><td>
-
-<select size="1" id="country" name="country">
+<tr><td class="label">Country: </td><td><select size="1" id="country" name="country">
 <option value="">Select One</option>
 <option value="GB">United Kingdom</option>
 <option value="">----------</option>
@@ -317,11 +315,9 @@
 <option value="ZR">Zaire</option>
 <option value="ZM">Zambia</option>
 <option value="ZW">Zimbabwe</option>
-</select>
-</td></tr>
+</select></td></tr>
 
-<tr class="button" style=""><td></td><td><button id="submit_check_email">Register</button></td></tr>
-<tr class="button" ><td></td><td ><button id="hide_register_part_2_dialog">Close</button></td></tr>
+<tr class="button" style=""><td colspan=2> <button id="hide_register_part_2_dialog">Close</button><button id="submit_register">Register</button></td></tr>
 </table>
 </div>
 

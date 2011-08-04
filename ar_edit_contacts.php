@@ -2468,32 +2468,21 @@ function clone_customer($data) {
 function new_customer($data) {
     include_once('edit_customers_functions.php');
 
-    //Timer::timing_milestone('begin');
     global $editor,$user;
-
-
-
 
     if (!in_array($data['values']['Customer Store Key'],$user->stores)) {
         $response= array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
         echo json_encode($response);
         return;
-
     }
-
-
 
     if ($data['values']['Customer Address Country Code']=='')
         $data['values']['Customer Address Country Code']='UNK';
 
     $data['values']['editor']=$editor;
 
-
-
     $response=add_customer($data['values']) ;
-
     echo json_encode($response);
-
 }
 
 
