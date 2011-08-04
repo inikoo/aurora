@@ -9,7 +9,7 @@
 require_once 'app_files/db/dns.php';
 require_once("conf/checkout.php");
 require_once 'common_functions.php';
-
+require_once 'ar_show_products.php';
 
 require_once "classes/class.Session.php";
 
@@ -170,20 +170,72 @@ return $St;
 }
 
 
-function show_product($code){
-	global $logged_in;
-	$product=new LightProduct($code);
 
+function show_product($code){
+	global $logged_in, $ecommerce_url, $username, $method;
+	$product=new LightProduct($code, 1);
+
+	if(!$product->match)
+		return;
+
+	
+	$data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
 	
 	if($logged_in){
 		print $product->get_info_button();
 	}else{
-		print $product->get_full_order_form('ecommerce');
+		print $product->get_full_order_form('ecommerce', $data);
 		//print $product->get_order_list_form();
 	}
 
 }
 
+
+function show_products($code){
+	
+	global $ecommerce_url_multi, $username, $method;
+	
+	$conf= array('ecommerce_url_multi'=>$ecommerce_url_multi
+				,'username'=>$username
+				,'method'=>$method
+				,'secure'=>(empty($secure) ? '' : $_SERVER["HTTPS"])
+				,'_port'=>$_SERVER["SERVER_PORT"]
+				,'_protocol'=>$_SERVER["SERVER_PROTOCOL"]
+				,'url'=>$_SERVER['REQUEST_URI']
+				,'server'=>$_SERVER['SERVER_NAME']
+				);
+
+	
+	$code_list=array();
+	$data=array();
+
+	
+	if(preg_match('/,/', $code)){
+		$code_list=explode(',', $code);
+		
+		foreach($code_list as $code){
+			$product=new LightProduct($code, 1);
+			if($product->match){
+				$data[]=$product->data;
+			}
+		}
+		
+		echo show_products_in_family('ecommerce', $data, $conf);
+		
+	}
+	else{
+	}
+
+	
+	$product=new LightFamily($code, 1);
+	if(!$product->match)
+		return;
+	
+	
+	
+	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
+	echo $product->get_order_list('ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
+}
 
 
 ?>

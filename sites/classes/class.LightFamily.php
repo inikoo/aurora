@@ -17,6 +17,7 @@ class LightFamily{
   var $url;
   var $user_id;
   var $method;
+  var $match=true;
   
     function __construct($arg1,$arg2) {
     
@@ -34,8 +35,12 @@ class LightFamily{
 		else
             return false;
 			
+
+			
         $result=mysql_query($sql);
 		
+		if(!mysql_num_rows($result))
+			$this->match=false;	
 		
 		//print $sql;
 		print mysql_error();
@@ -127,13 +132,43 @@ class LightFamily{
 		$discontinued='Discontinued';
 		  }
 
-		if ($row['Product Web State']=='Online Force Out of Stock') {
-		$_form.='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
-		$form.='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
-		  } else {
+
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
-		
-		$_form.=sprintf('<tr class="nophp">
+		if ($row['Product Web State']=='Online Force Out of Stock'){
+				$_form.=sprintf('<tr class="nophp">
+						<td colspan=2 style="height:20px;padding:0;margin:0;"><span  style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
+						<td><span class="desc">%s</span></td>
+						</tr>
+						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
+						<input type="hidden"  name="product%s"  value="%s %sx %s" >'
+						,$out_of_stock
+						,addslashes($row['Product Code'])
+						,clean_accents(addslashes($row['Product Name']))
+						,$i
+						,$row['Product Price']
+						,$i
+						,addslashes($row['Product Code'])
+						,addslashes($row['Product Units Per Case'])
+						,clean_accents(addslashes($row['Product Name']))
+						);
+						
+				$form.=sprintf('<tr ><td colspan=2 style="height:20px;padding:0;margin:0;"><span style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
+						<td><span class="desc">%s</span></td></tr>
+						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
+						<input type="hidden"  name="product%s"  value="%s %sx %s">'
+						,$out_of_stock
+						,addslashes($row['Product Code'])
+						,clean_accents(addslashes($row['Product Name']))
+						,$i
+						,$row['Product Price']
+						,$i
+						,addslashes($row['Product Code'])
+						,addslashes($row['Product Units Per Case'])
+						,clean_accents(addslashes($row['Product Name']))
+						);
+		}
+		else{
+				$_form.=sprintf('<tr class="nophp">
 						<td class="first"><span class="price">%.2f</span>%s</td>
 						<td class="qty"><input type="text"  class="qty" name="qty%s"  id="qty%s"    /></td>
 						<td><span class="desc">%s</span></td>
@@ -152,11 +187,8 @@ class LightFamily{
 						,addslashes($row['Product Units Per Case'])
 						,clean_accents(addslashes($row['Product Name']))
 						);
-		
-		  }
-
-
-		  $form.=sprintf('<tr ><td class="first"><span class="price">%.2f</span>%s</td>
+						
+				$form.=sprintf('<tr ><td class="first"><span class="price">%.2f</span>%s</td>
 						<td class="qty" style="width:3em"><input type="text" class="qty" name="qty%s"  id="qty%s"  /></td>
 						<td><span class="desc">%s</span></td></tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
@@ -173,6 +205,11 @@ class LightFamily{
 						,addslashes($row['Product Units Per Case'])
 						,clean_accents(addslashes($row['Product Name']))
 						);
+		
+		 }
+
+
+
 		  
 		
 		$i++;		

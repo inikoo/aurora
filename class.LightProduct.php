@@ -7,7 +7,7 @@
   Copyright (c) 2011, Inikoo
 
 */
-$logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
+
 
 class LightProduct{
   
@@ -35,24 +35,27 @@ class LightProduct{
         
         else
             return false;
-        $result=mysql_query($sql);
+			
 
+        $result=mysql_query($sql);
+		
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $this->id=$this->data['Product ID'];
 			$this->locale=$this->data['Product Locale'];
         }
+		
     }
  
  
 
  
-	function get_full_order_form($type){
+	function get_full_order_form($type,$data=false){
 		switch($type){
 			case 'ecommerce':
-				require("../app_files/checkoutConf.php");
-				$this->url=$ecommerce_url;				
-				$this->user_id=$username;
-				$this->method=$method;
+				
+				$this->url=$data['ecommerce_url'];				
+				$this->user_id=$data['username'];
+				$this->method=$data['method'];
 			break;
 			
 			default:
@@ -147,7 +150,7 @@ $_SESSION['logged_in']=1;
 
 	}
 
-	function get_order_list_form(){
+	function get_order_list_form($data=false){
 	   
 		$data=$this->data;
 		if ($this->locale=='de_DE') {

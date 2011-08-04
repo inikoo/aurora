@@ -17,11 +17,12 @@ class LightProduct{
   var $url;
   var $user_id;
   var $method;
+  var $match=true;
   
     function __construct($arg1,$arg2=false) {
     
    
-        $this->get_data('code',$arg1,$arg2);
+        return $this->get_data('code',$arg1,$arg2);
 
 
     }
@@ -35,12 +36,20 @@ class LightProduct{
         
         else
             return false;
+			
+		
+		
         $result=mysql_query($sql);
-
+		
+		if(!mysql_num_rows($result))
+			$this->match=false;
+		
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $this->id=$this->data['Product ID'];
 			$this->locale=$this->data['Product Locale'];
         }
+
+		
     }
  
  
@@ -50,9 +59,9 @@ class LightProduct{
 		switch($type){
 			case 'ecommerce':
 				
-				$this->url=$ecommerce_url;				
-				$this->user_id=$username;
-				$this->method=$method;
+				$this->url=$data['ecommerce_url'];				
+				$this->user_id=$data['username'];
+				$this->method=$data['method'];
 			break;
 			
 			default:
