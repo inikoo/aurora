@@ -52,12 +52,18 @@
 <h2>Registration</h2>
 <table>
 <tr><td class="label">Email: </td><td id="confirmed_register_email"></td></tr>
-<tr><td class="label">Company: </td><td><input id="register_company_name"></td></tr>
+<tr><td>Password: </td><td><input type="password" id="register_password1"></td></tr>
+<tr><td>Password: </td><td><input type="password" id="register_password2"></td></tr>
+<input id="epw2" value="" type="hidden"/>
+
+<tr class="title" ><td colspan="2">Contact Info: </td></tr>
 <tr><td>Contact Name: </td><td><input id="register_contact_name"></td></tr>
+
+<tr><td class="label">Company: </td><td><input id="register_company_name"></td></tr>
 <tr><td>Telephone: </td><td><input id="register_telephone"></td></tr>
 
 <tbody id="tbody_register_address"  >
-<tr><td colspan="2">Address: </td></tr>
+<tr class="title" ><td colspan="2">Address: </td></tr>
 
 <tr><td  class="label">Line 1: </td><td><input id="register_telephone"></td></tr>
 <tr><td class="label">Line 2: </td><td><input id="register_telephone"></td></tr>
@@ -317,7 +323,7 @@
 <option value="ZW">Zimbabwe</option>
 </select></td></tr>
 
-<tr class="button" style=""><td colspan=2> <button id="hide_register_part_2_dialog">Close</button><button id="submit_register">Register</button></td></tr>
+<tr class="button" style=""><td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span> <button id="hide_register_part_2_dialog">Close</button><button id="submit_register">Register</button></td></tr>
 </table>
 </div>
 

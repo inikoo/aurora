@@ -46,7 +46,10 @@ var data={
 
   var json_value = YAHOO.lang.JSON.stringify(data); 
 
-     var request='../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key;
+       var epwd=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.get('epw2').value,256);
+
+
+     var request='../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
    alert(request);return;
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -107,6 +110,8 @@ function check_email(){
 
     		    if(r.result=='not_found'){
     		        Dom.get('confirmed_register_email').innerHTML=r.login_handle;
+    		        
+    		        Dom.get('epw2').value=r.epw2;
     		        show_register_part_2_dialog();
     		    
     		    }else if(r.result=='found'){
@@ -136,6 +141,8 @@ function forgot_password(){
     var login_handle=Dom.get('forgot_password_handle').value;
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
+
+
 
      var request='../ar_register.php?tipo=forgot_password&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
    
@@ -316,6 +323,52 @@ forgot_password()
 function submit_register(){
 
 var error=false;
+
+
+if(  Dom.get('register_password1').value=='' &&  Dom.get('register_password1').value==Dom.get('register_password2').value ){
+Dom.addClass(['register_password1','register_password2'],'error');
+error=true;
+Dom.setStyle('register_error_no_password','display','')
+
+}else{
+Dom.removeClass(['register_password1','register_password2'],'error');
+Dom.setStyle('register_error_no_password','display','none')
+
+}
+
+
+
+if(!error){
+if( Dom.get('register_password1').value!=Dom.get('register_password2').value ){
+Dom.addClass(['register_password1','register_password2'],'error');
+if(!error)
+Dom.setStyle('register_error_password_not_march','display','')
+error=true;
+
+}else{
+Dom.removeClass(['register_password1','register_password2'],'error');
+Dom.setStyle('register_error_password_not_march','display','none')
+
+}
+}
+if(!error){
+if(!error &&   Dom.get('register_password1').value.length<6){
+Dom.addClass(['register_password1'],'error');
+
+if(!error)
+    Dom.setStyle('register_error_password_too_short','display','')
+
+    
+error=true;
+}else{
+Dom.removeClass(['register_password1'],'error');
+    Dom.setStyle('register_error_password_too_short','display','none')
+
+}
+}
+
+
+
 if( Dom.get('register_company_name').value=='' &&  Dom.get('register_contact_name').value=='' ){
 Dom.addClass(['register_company_name','register_contact_name'],'error');
 error=true;

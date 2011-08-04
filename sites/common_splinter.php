@@ -82,39 +82,24 @@ if (file_exists($store_code.'/labels.php')) {
     require_once 'conf/labels.php';
 }
 
-//$smarty->assign('traslated_labels',$traslated_labels);
 
-//$smarty->template_dir = '.';
-//$smarty->compile_dir ='server_files/smarty/templates_c';
-//$smarty->cache_dir = 'server_files/smarty/cache';
-//$smarty->config_dir = 'server_files/smarty/configs';
 
 $_SESSION ['lang']='';
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
-$_SESSION['logged_in']=false;
+if(!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])){
+$_SESSION['logged_in']=0;
 $logged_in=false;
+$St=get_sk();
+}
+
 if ($logged_in ) {
 
-    if ($_SESSION['logged_in_page']!=$store_key) {
-
-
-        include_once('app_files/key.php');
-
-       
-        $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
-        $St=AESEncryptCtr($Sk,SKEY, 256);
-        $smarty->assign('secret_string',$St);
-        $logged_in=0;
+    if ($_SESSION['site_key']!=$site->id) {
         $_SESSION['logged_in']=0;
-
+        $logged_in=false;
+        $St=get_sk();
     } else {
-
-
-        if (!isset($_SESSION['state'])) {
-            include_once('conf/state.php');
-            $_SESSION['state']=$default_state;
-        }
 
         $user=new User($_SESSION['user_key']);
    //     $smarty->assign('user',$user);
@@ -127,20 +112,13 @@ if ($logged_in ) {
 
 } else {
 
+$_SESSION['logged_in']=0;
+$logged_in=false;
+$St=get_sk();
 
 
-
-    include_once('app_files/key.php');
-    //$auth=new Auth(IKEY,SKEY);
-
-
-
-    include_once('aes.php');
-    $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
-    $St=AESEncryptCtr($Sk,SKEY, 256);
- //   $smarty->assign('secret_string',$St);
+ 
 }
-
 
 log_visit($session->id);
 
@@ -158,6 +136,15 @@ log_visit($session->id);
 //$smarty->assign('tel',$store->data['Store Telephone']);
 //$smarty->assign('fax',$store->data['Store Fax']);
 //$smarty->assign('store_slogan',$store->data['Store Slogan']);
+
+function get_sk(){
+        include_once('app_files/key.php');
+                include_once('aes.php');
+
+   $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+        $St=AESEncryptCtr($Sk,SKEY, 256);
+return $St;
+}
 
 
 function show_product($code){
