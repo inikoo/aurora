@@ -124,7 +124,7 @@ function show_products_in_family($type, $data, $conf){
 		break;
 	}
 	
-	$_form=sprintf('<div style="position:absolute; left:0px; top:487px; width:192px; height:26px;">
+	$_form=sprintf('<div style=" left:0px; top:487px; width:192px; ">
 					<div style="text-align:left;">
 					<link rel="stylesheet" type="text/css" href="../order.css" />
 					<link rel="stylesheet" type="text/css" href="order.css" />
