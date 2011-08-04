@@ -1,6 +1,7 @@
 <?php
 include('common_splinter.php');
-include_once('app_files/key.php');
+
+
 
 $auth=new Auth(IKEY,SKEY);
 
@@ -12,7 +13,7 @@ if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
 elseif($handle) {
 //  print urldecode($sk)."\n\n";
 
-    $auth->authenticate($handle,rawurldecode($sk),'customer',$store_key);
+    $auth->authenticate($handle,rawurldecode($sk),'customer',$site->id);
 }
 
 if ($auth->is_authenticated()) {

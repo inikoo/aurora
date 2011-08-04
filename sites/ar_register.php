@@ -5,6 +5,10 @@ require_once 'classes/class.User.php';
 require_once 'classes/class.EmailSend.php';
 
 require_once 'ar_edit_common.php';
+
+
+
+
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>400);
     echo json_encode($response);
@@ -510,6 +514,8 @@ function register($data){
 
 $password=AESDecryptCtr($ep,md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 
+print "pass $password";
+
     list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
     
     if($user_key){
@@ -521,7 +527,7 @@ $password=AESDecryptCtr($ep,md5($data['values']['Customer Main Plain Email'].'x*
     $_SESSION['user_key']=$user_key;
     $_SESSION['customer_key']=$response['customer_key'];
         
-      $response=array('state'=>200,'result'=>'log_in');
+      $response=array('state'=>200,'action'=>'logged_in');
         echo json_encode($response);
         exit;
     

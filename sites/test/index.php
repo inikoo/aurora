@@ -288,7 +288,6 @@ body {margin: 0px; padding: 0px;}
     <a href="http://www.ancientwisdom.biz/pics/sspw-01a.jpg "target="_blank""><img src="_wp_generated/ppe3587a77.png" width="433" height="282" border="0" title="" alt="ppe3587a77.png" ></a></div>
 <div style="position:absolute; left:139px; top:721px; width:183px; height:25px;">
     <div style="text-align:left;">
-    <?php show_product('sspw-02')?>
     </div></div>
 <div style="position:absolute; left:16px; top:784px; width:405px; height:297px; display:none">
     <a href="http://www.ancientwisdom.biz/pics/sspw-03.jpg "target="_blank""><img src="_wp_generated/ppa9ef44a7.png" width="405" height="297" border="0" title="" alt="ppa9ef44a7.png" ></a></div>
@@ -325,16 +324,9 @@ body {margin: 0px; padding: 0px;}
     <?php include_once('../top_navigation.php')?>
     </div></div>
 </div></center>
-<?php
-	if(!isset($_SESSION['basket'])){
-		$_SESSION['basket']=array('qty'=>0,'sub'=>0);
-	}elseif(isset($_REQUEST['sub']) and isset($_REQUEST['qty'])){
-		$_SESSION['basket']['sub']=$_REQUEST['sub'];
-		$_SESSION['basket']['qty']=$_REQUEST['qty'];
-	}
-?>
+
 <p>
-<table>
+<table style="display:none">
 <tr><td>Qty:</td><td><?php echo sprintf("%d",$_SESSION['basket']['qty']);?></td></tr>
 <tr><td>Sub Total: </td><td><?php echo sprintf("%.2f",$_SESSION['basket']['sub']);?></td></tr>
 </table>

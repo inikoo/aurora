@@ -10,7 +10,11 @@
 <script type="text/javascript" src="../js/login.js"></script>
 <script type="text/javascript" src="../basket.js"></script>
 
-<script type="text/javascript" src="../top_navigation.js.php"></script>
+<?php if($logged_in){?>
+<script type="text/javascript" src="../top_navigation_login.js.php"></script>
+<?php }else{?>
+<script type="text/javascript" src="../top_navigation_logout.js.php"></script>
+<?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
 <input type="hidden" value="<?php echo $site->id?>" id="site_key">
@@ -18,9 +22,17 @@
 
 
 <div id="top_navigator" style="width:855px">
+<?php if($logged_in){?>
+<div style="width:20px;float:left;margin-right:10px"><img style="height:20px" src="../art/basket.jpg"/></div>
 
+<div style="width:600px;float:left;text-align:left;xborder:1px solid red;"> Items: <span id="basket_items">0</span> Total: <span id="basket_total">£0.00</span>  <span class="soft_link" style="margin:0 15px 0 5px;xfont-style:italic; ">see basket</span> <button id="checkout">Check Out</button> </div>
+<span>Hello, <?php print $user->data['User Alias']." (".$customer->id.")"?></span>
+<button id="logout">Log Out</button>
+<?php }else{ ?>
 <button id="show_register_dialog">Register</button>
 <button id="show_login_dialog">Log In</button>
+<?php } ?>
+
 </div>
 
 
@@ -31,7 +43,7 @@
 <table>
 
 <tr><td class="label">Email: </td><td><input id="login_handle"></td></tr>
-<tr><td  class="label">Password: </td><td><input  id="login_password"></td></tr>
+<tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
 <tr class="button" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button></td></tr>
 <tr class="link"><td colspan=2>Forgot your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
 <tr class="link"><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>

@@ -50,12 +50,18 @@ var data={
 
 
      var request='../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
-   alert(request);return;
+ 
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
+		       if(r.action='logged_in'){
+		       window.location ='http://'+ window.location.host + window.location.pathname+'?welcome=1';
+
+		       }
+		    
+		    
 			
 			if(r.result=='error'){
                 Dom.addClass('register_email','error');
@@ -181,24 +187,23 @@ function login(){
     var site_key=Dom.get('site_key').value;
 
     
-    
+ 
      var epwd=AESEncryptCtr(Dom.get('ep').value,pwd,256);
-    // var epwd=AESEncryptCtr('hola1234567890123456789','caca',256);
-    //    alert(AESDecryptCtr(epwd, 'caca',256)+"\n"+epwd);
-    //  return;
+  
+
 //Dom.get('login_password').value='';
     //Dom.get('loginform').submit();
      var request='../ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key;
-     // alert(request);
+    //  alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			
 		      if(r.result=='ok'){
+            window.location ='http://'+ window.location.host + window.location.pathname;
 
-			  location.reload(true);
 			  
 		   }else if(r.result=='no_valid'){
 			  Dom.setStyle('invalid_credentials','display','');
@@ -389,21 +394,41 @@ register()
 
 
 
+//if log ini
+
+function logout(){
+var url = window.location;
+alert(url)
+
+}
+
+
 
 function init(){
+
+
+//     var epwd=AESEncryptCtr('a','a',256);
+   
+//    alert('a ->'+epwd+'<-')
+//return;
+
 Event.addListener("show_login_dialog", "click", show_login_dialog);
 Event.addListener("show_register_dialog", "click", show_register_dialog);
 Event.addListener("hide_login_dialog", "click", hide_login_dialog);
 Event.addListener("hide_register_dialog", "click", hide_register_dialog);
 Event.addListener("submit_forgot_password", "click", submit_forgot_password);
-
 Event.addListener("submit_check_email", "click", submit_check_email);
 Event.addListener("submit_register", "click", submit_register);
-
-
 Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_from_login);
 Event.addListener("link_register_from_login", "click", show_register_from_login);
+
+
+//if log ini
+
+
+Event.addListener("logout", "click", logout);
+
 
 
 }

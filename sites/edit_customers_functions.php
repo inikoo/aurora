@@ -3,7 +3,7 @@ function add_customer($data) {
     //Timer::timing_milestone('begin');
     
 
-print_r($data);
+//print_r($data);
 
     if ($data['Customer Type']=='Person') {
         $data['Customer Name']=$data['Customer Main Contact Name'];
