@@ -187,7 +187,7 @@ function show_product($code){
 
 function show_products($code){
 	
-	global $ecommerce_url_multi, $username, $method;
+	global $logged_in,$ecommerce_url_multi, $username, $method;
 	
 	$conf= array('ecommerce_url_multi'=>$ecommerce_url_multi
 				,'username'=>$username
@@ -213,9 +213,14 @@ function show_products($code){
 				$data[]=$product->data;
 			}
 		}
-		
-		echo show_products_in_family('ecommerce', $data, $conf);
-		return;
+		if($logged_in){
+			echo show_products_in_family('ecommerce', $data, $conf);
+			return;
+		}
+		else{
+			echo show_products_in_family_info($data);
+			return;
+		}
 	}
 	else{
 	}
@@ -228,35 +233,17 @@ function show_products($code){
 	
 	
 	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
-	echo $product->get_order_list('ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
-}
-
-
-function show_order_list_info($code){
-	$product=new LightFamily($code, 1);
-	echo $product->get_order_list_info($code);
-	return;
-}
-
-function products_in_family_info($code){
-	$code_list=array();
-	$data=array();
-
-	
-	if(preg_match('/,/', $code)){
-		$code_list=explode(',', $code);
-		
-		foreach($code_list as $code){
-			$product=new LightProduct($code, 1);
-			if($product->match){
-				$data[]=$product->data;
-			}
-		}
-		
-		echo show_products_in_family_info($data);
+	if($logged_in){
+		echo $product->get_order_list('ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
+	}
+	else{
+		echo $product->get_order_list_info();
 		return;
 	}
 }
+
+
+
 
 
 ?>
