@@ -57,6 +57,118 @@ class LightFamily{
     }
  
  
+ 
+ 	function get_order_list_info(){
+		$i=1;
+		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d", $this->id);
+		$result=mysql_query($sql);
+		//print $sql;
+	
+		//$this->locale=$row['Product Locale'];
+		$_form=sprintf('<div style="position:absolute; left:0px; top:487px; width:192px; height:26px;">
+						<div style="text-align:left;">
+						<link rel="stylesheet" type="text/css" href="../order.css" />
+						<link rel="stylesheet" type="text/css" href="order.css" />
+						<style type="text/css">.nophp{display:none}</style>
+						<style type="text/css">
+						table.order {width:22em}td.first{width:8 em}
+						table.order{font-size:11px;font-family:arial;}
+						span.price{float:right;margin-right:5px}
+						span.desc{margin-left:5px}
+						span.outofstock{color:red;font-weight:800;float:right;margin-right:5px;}
+						input.qty{width:100%%}td.qty{width:3em}
+						</style>
+
+						<table class="order" border=0 cellpadding="0" cellspacing="0">');
+				
+				
+		$form=sprintf('<table class="order" border=0 cellpadding="0" cellspacing="0">'
+						);
+	
+		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+			$this->locale=$row['Product Locale'];
+			
+			if ($this->locale=='de_DE') {
+			$out_of_stock='nicht vorrv§tig';
+			$discontinued='ausgelaufen';
+			  }if ($this->locale=='de_DE') {
+			$out_of_stock='nicht vorrv§tig';
+			$discontinued='ausgelaufen';
+			  }
+			elseif($this->locale=='es_ES') {
+			$out_of_stock='Fuera de Stock';
+			$discontinued='Fuera de Stock';
+			  }
+
+			  elseif($this->locale=='fr_FR') {
+			$out_of_stock='Rupture de stock';
+			$discontinued='Rupture de stock';
+			  }
+			  else {
+			$out_of_stock='Out of Stock';
+			$discontinued='Discontinued';
+			  }
+
+
+			//global $site_checkout_address_indv,$site_checkout_id,$site_url;
+			if ($row['Product Web State']=='Online Force Out of Stock'){
+					$_form.=sprintf('<tr class="nophp">
+							<td colspan=2 style="height:20px;padding:0;margin:0;"><span  style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
+							<td><span class="desc">%s</span></td>
+							</tr>'
+							,$out_of_stock
+							,addslashes($row['Product Code'])
+							,clean_accents(addslashes($row['Product Name']))
+							);
+							
+					$form.=sprintf('<tr ><td colspan=2 style="height:20px;padding:0;margin:0;"><span style="float:right;font-size:8pt;color:red;font-weight:800;">%s</span>%s</td>
+							<td><span class="desc">%s</span></td></tr>'
+							,$out_of_stock
+							,addslashes($row['Product Code'])
+							,clean_accents(addslashes($row['Product Name']))
+
+							);
+			}
+			else{
+					$_form.=sprintf('<tr class="nophp">
+							<td class="first"><span class="price">%.2f</span>%s</td>
+							<td><span class="desc">%s</span></td>
+							</tr>'
+							,$row['Product Price']
+							,addslashes($row['Product Code'])
+							,clean_accents(addslashes($row['Product Name']))
+							);
+							
+					$form.=sprintf('<tr ><td class="first"><span class="price">%.2f</span>%s</td>
+							
+							<td><span class="desc">%s</span></td></tr>'
+							,$row['Product Price']
+							,addslashes($row['Product Code'])
+							,clean_accents(addslashes($row['Product Name']))
+
+
+							);
+			
+			 }
+
+
+
+			  
+			
+			$i++;		
+		}
+	
+		$_form.=sprintf('</table>');
+	
+	
+		$form.=sprintf('</table>');
+	
+		  //print $form;exit;
+		  return $_form.$form.'</div></div>';
+	}
+	
+	
+	
 	function get_order_list($type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method){
 		$i=1;
 		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d", $this->id);
