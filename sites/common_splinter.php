@@ -50,12 +50,15 @@ $session = new Session($max_session_time,1,100);
 
 $public_url=$myconf['public_url'];
 if(!isset($_SESSION['basket'])){
-$_SESSION['basket']=array('qty'=>0,'sub'=>0);
+$_SESSION['basket']=array('qty'=>0,'total'=>0);
 
 }else{
 
-
-
+if(isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty']))
+$_SESSION['basket']['qty']=$_REQUEST['qty']
+}
+if(isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot']))
+$_SESSION['basket']['total']=$_REQUEST['tot']
 }
 
 $site=new Site($myconf['site_key']);
@@ -172,8 +175,8 @@ return $St;
 
 
 function show_product($code){
-	global $logged_in, $ecommerce_url, $username, $method;
-	$product=new LightProduct($code, 1);
+	global $logged_in, $ecommerce_url, $username, $method,$store_key;
+	$product=new LightProduct($code, $store_key);
 
 	if(!$product->match)
 		return;
@@ -182,9 +185,13 @@ function show_product($code){
 	$data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
 	
 	if($logged_in){
-		print $product->get_info_button();
+				print $product->get_full_order_form('ecommerce', $data);
+
 	}else{
-		print $product->get_full_order_form('ecommerce', $data);
+	print $product->get_info();
+
+	//			print $product->get_full_order_form('ecommerce', $data);
+
 		//print $product->get_order_list_form();
 	}
 

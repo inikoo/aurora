@@ -30,10 +30,13 @@
 </div></center>
 
 
-<table style="display:none">
-<tr><td>Qty:</td><td><?php echo sprintf("%d",$_SESSION['basket']['qty']);?></td></tr>
-<tr><td>Sub Total: </td><td><?php echo sprintf("%.2f",$_SESSION['basket']['sub']);?></td></tr>
-</table>
+
+<div style="margin-top:40px;clear:both;width:500px;border: 1px solid #ccc;padding:30px">
+<h1>Test 1</h1>
+
+<?php show_product('jbb-01')?>
+</div>
+
 
 </body>
 </html>
