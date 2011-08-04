@@ -6,6 +6,7 @@
 
  
 require_once 'app_files/db/dns.php';
+require("/app_files/checkoutConf.php");
 require_once 'common_functions.php';
 
 
@@ -16,6 +17,7 @@ require_once "classes/class.User.php";
 require_once "classes/class.Site.php";
 
 require_once "classes/class.LightProduct.php";
+require_once "classes/class.LightFamily.php";
 
 
 $secret_key='FDK/S5GRkZFXi47zvs4pTezyfEr5nWFthsFbG6j1CzCPYPX5';

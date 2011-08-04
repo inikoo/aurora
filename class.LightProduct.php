@@ -18,19 +18,19 @@ class LightProduct{
   var $user_id;
   var $method;
   
-    function __construct($arg1) {
+    function __construct($arg1,$arg2=false) {
     
    
-        $this->get_data('code',$arg1);
+        $this->get_data('code',$arg1,$arg2);
 
 
     }
 
-    function get_data($tag,$id) {
+    function get_data($tag,$id,$id2=false) {
         if ($tag=='id')
             $sql=sprintf("select * from `Product Dimension` where `Product Key`=%s",prepare_mysql($id));
         elseif($tag=='code')
-			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s",prepare_mysql($id));
+			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($id),$id2);
        
         
         else
@@ -111,7 +111,7 @@ class LightProduct{
 											   <input type="hidden" name="userid" value="%s">
 											   <input type="hidden" name="product" value="%s %sx %s">
 											   <input type="hidden" name="return" value="%s">
-											   <input type="hidden" name="price" value="%.2f">
+											   <input type="hidden" name="discountpr" value="1,%.2f">
 											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
 											   <input type="hidden" name="nocart"> 
 											   
@@ -189,7 +189,8 @@ $_SESSION['logged_in']=1;
 				  ,$out_of_stock
 				  );
 		  } else {
-		$form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
+		$form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="dis
+		price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
 				  //,money_locale($this->data['Product Price'],$this->locale,$currency)
 				  ,$this->data['Product Code'].' '.money_locale($this->data['Product Price'],$this->locale,$currency).''
 				  ,$counter
