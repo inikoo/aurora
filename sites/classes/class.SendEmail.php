@@ -377,11 +377,13 @@ class SendEmail extends DB_Table{
 
 					$this->message_object->SetEncodedHeader("Subject",$this->subject);
 
+					
 					if(isset($data['html']) and $data['html'])
 						$html_msg=$data['html'];
 					else
 						$html_msg='';
-						
+					
+					
 					$this->html_message=$html_msg;
 					$this->message_object->CreateQuotedPrintableHTMLPart($this->html_message,"",$this->html_part);
 
@@ -393,6 +395,7 @@ class SendEmail extends DB_Table{
 				 *  messages assuming that HTML messages are spam.
 				 */
 					$this->text_message=$this->message;
+					
 					$this->message_object->CreateQuotedPrintableTextPart($this->message_object->WrapText($this->text_message),"",$this->text_part);
 
 				/*
@@ -402,9 +405,13 @@ class SendEmail extends DB_Table{
 				 *  mail programs will show that part and not the text version part.
 				 */
 					$this->alternative_parts=array(
+						
 						$this->text_part,
 						$this->html_part
+						
 					);
+					
+					
 					$this->message_object->AddAlternativeMultipart($this->alternative_parts);
 					
 					

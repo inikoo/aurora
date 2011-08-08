@@ -439,7 +439,7 @@ mysql_query($sql);
 $encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
 
 
-$plain_message=$customer->get('greetings')."\n\nWe received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
+$plain_message=$customer->get('greetings')."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
 
 
 $html_message=$customer->get('greetings')."<br/>We received request to reset the password associated with this email account.<br><br>
@@ -454,7 +454,7 @@ Thank you";
 
 
 
-$to='rulovico@gmail.com';
+$to='migara@inikoo.com';
 	$data=array(
 		'type'=>'HTML',
 		'subject'=>	'Reset your password',
@@ -470,7 +470,7 @@ $to='rulovico@gmail.com';
 	
 	$send_email=new SendEmail();
 	
-	$send_email->smtp('plain', $data);
+	$send_email->smtp('HTML', $data);
 
 	$result=$send_email->send();
 	
