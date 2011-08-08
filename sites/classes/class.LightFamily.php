@@ -70,10 +70,11 @@ class LightFamily{
 					td.order{padding-right:2em;}
 					</style>
 
-					<table class="order" >');
+					<table class="order" >
+					<input type="hidden" name="nocart"> ');
 				
 				
-		$form=sprintf('<table class="order" >'
+		$form=sprintf('<table class="order" ><input type="hidden" name="nocart"> '
 						);
 	
 		$sql=sprintf("select `Product Price` from `Product Dimension` where `Product Family Key`=%d order by `Product Price` limit 0,1", $this->id);
@@ -219,13 +220,15 @@ class LightFamily{
 					<table  class="order">
 					<form action="%s" method="post">
 					<input type="hidden" name="userid" value="%s">
-					<input type="hidden" name="return" value="%s">'
+					<input type="hidden" name="return" value="%s">
+					<input type="hidden" name="nocart"> '
 			,$ecommerce_url, addslashes($username), ecommerceURL($secure, $_port, $_protocol, $url, $server));
 			
 			
 	$form=sprintf('<table class="order">
 					<form action="%s" method="post">
-					<input type="hidden" name="userid" value="%s">'
+					<input type="hidden" name="userid" value="%s">
+					<input type="hidden" name="nocart"> '
 					,$ecommerce_url
 					,addslashes($username)
 					
@@ -362,9 +365,10 @@ class LightFamily{
 
 
 	$form.=sprintf('<tr ><td >
+					<input type="hidden" name="return" value="%s"> 
 					<input name="Submit" type="submit"  value="Order">
 					<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
-					<input type="hidden" name="return" value="%s"> '
+					'
 					,ecommerceURL($secure, $_port, $_protocol, $url, $server));
 
 	  //print $form;exit;

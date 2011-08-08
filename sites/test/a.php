@@ -14,11 +14,6 @@
 
 
     <link href="aw-icon2.png" rel="shortcut icon" type="image/x-icon" />
-
-	
-
-
-
 </head>
 
 <body link="#008ce4" vlink="#800080" text="#000000" style="background: #ffffff;">
@@ -27,7 +22,9 @@
     <div style="text-align:left;">
     <?php include_once('../top_navigation.php')?>
     </div></div>
-</div></center>
+</div>
+
+</center>
 
 
 
