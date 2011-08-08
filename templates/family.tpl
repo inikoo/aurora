@@ -286,14 +286,14 @@
 </div>
 
 </div> 
-
+</div>
 
 <div id="rppmenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
       {foreach from=$paginator_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
       {/foreach}
     </ul>
   </div>

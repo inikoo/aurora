@@ -71,6 +71,7 @@ $smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
 //$smarty->assign('restrictions',$_SESSION['state']['department']['restrictions']);
 
 
+$smarty->assign('store_key',$store->id);
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');

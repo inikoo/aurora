@@ -2656,7 +2656,7 @@ $default_state=array(
                                                'percentages'=>false,
                                                'view'=>'general',
 
-                                               'edit_view'=>'view_name',
+                                               'edit_view'=>'view_state',
                                                'id'=>1,
                                                'period'=>'year',
                                                'percentage'=>0,
@@ -2954,7 +2954,30 @@ $default_state=array(
                               'edit'=>'description',
                               'view'=>'description',
 
-
+                              'history'=>array(
+                                               'order'=>'date',
+                                               'order_dir'=>'desc',
+                                               'sf'=>0,
+                                               'nr'=>15,
+                                               'where'=>'where true',
+                                               'f_field'=>'id',
+                                               'f_value'=>'','f_show'=>false,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>array()
+                                           ),
+                            'products'=>array(
+                                               'order'=>'code',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>15,
+                                               'where'=>'where true',
+                                               'f_field'=>'id',
+                                               'f_value'=>'','f_show'=>false,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>array()
+                                           ),
 
                               'stock_history'=>array(
                                                   'order'=>'date',

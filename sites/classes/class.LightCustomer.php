@@ -67,7 +67,7 @@ class LightCustomer{
                     return _('To whom it corresponds');
                 $greeting=_('Dear').' '.$this->data['Customer Main Contact Name'];
                 if($this->data['Customer Type']=='Company'){
-                  $greeting.=', '.$this->data['Customer Main Name'];
+                  $greeting.=', '.$this->data['Customer Name'];
                 }
                 return $greeting;         
                 break;
@@ -83,6 +83,6 @@ class LightCustomer{
     }
     
  
-
+ 
 }
 ?>

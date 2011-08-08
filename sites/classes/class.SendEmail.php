@@ -18,6 +18,10 @@ class SendEmail extends DB_Table{
 	function smtp($type, $data){
 		
 		
+		
+		if(!isset($data['attachement']))
+		    $data['attachement']=array();
+		
 		$this->message_object=new smtp_message_class;
 		$this->message_object->localhost="localhost";   /* This computer address */
 		$this->message_object->smtp_host="localhost";   /* SMTP server address */
@@ -50,6 +54,7 @@ class SendEmail extends DB_Table{
 		
 		
 		switch($type){
+		    case 'Plain':
 			case 'plain':
 				$sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
 				$result=mysql_query($sql);
@@ -235,7 +240,7 @@ class SendEmail extends DB_Table{
 				else
 					return false;
 			
-			
+			case 'HTML':
 			case 'html':
 			/*
 				$data=array(
@@ -442,8 +447,7 @@ class SendEmail extends DB_Table{
 	}
 
 	
-	function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters="")
-	{
+	function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters=""){
 
 		return($this->message_object->Mail($to,$subject,$message,$additional_headers,$additional_parameters));
 		//return($this->message_object->Send());//($to,$subject,$message,$additional_headers,$additional_parameters));
@@ -459,7 +463,7 @@ class SendEmail extends DB_Table{
 		else
 			$response=  array('state'=>200,'msg'=>'ok');
 
-		echo $response;
+		//e$response;
 		return $response;
 	}
 	
@@ -565,7 +569,73 @@ class SendEmail extends DB_Table{
 		return $response;
 	}
 
-
+	function store_in_queue($result, $files=false, $data){
+		if(preg_match('/^could not resolve the host domain/',$result['msg'])){
+			if(isset($data['html']) && $data['html']){
+				$html_msg=$data['html'];
+			}
+			else
+				$html_msg=null;
+			
+			$sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, %s, %s, %s, %s, %d, %s)	"
+			,prepare_mysql($data['to'])
+			,prepare_mysql($data['type'])
+			,prepare_mysql($data['subject'])
+			,prepare_mysql($data['plain'])
+			,prepare_mysql($html_msg)
+			,$data['email_credentials_key']
+			,prepare_mysql($data['bcc'])
+			);
+		
+			//print $sql;
+			$stat=mysql_query($sql);
+			
+			$email_queue_key=mysql_insert_id();
+			
+			if(isset($files)){
+				foreach($files as $value){
+					if(isset($value['Data']) && $value['Data']){
+						$data_temp=$value['Data'];
+					}
+					else
+						$data_temp=null;
+						
+					if(isset($value['FileName']) && $value['FileName']){
+						$file_name=$value['FileName'];
+					}
+					else
+						$file_name=null;	
+						
+					if(isset($value['Name']) && $value['Name']){
+						$name=$value['Name'];
+					}
+					else
+						$name=null;			
+						
+					$sql=sprintf("insert into `Email Queue Attachement Dimension` (`Email Queue Key`, `Data`, `FileName`, `Name`, `Content-Type`, `Disposition`, `Type`) values (%d, %s, %s, %s, %s, %s, %s)"
+					,$email_queue_key
+					,prepare_mysql($data_temp)
+					,prepare_mysql($file_name)
+					,prepare_mysql($name)
+					,prepare_mysql($value['Content-Type'])
+					,prepare_mysql($value['Disposition'])
+					,prepare_mysql($value['attachement_type'])
+					);
+					
+					//print prepare_mysql($file_name);
+					$stat = $stat & mysql_query($sql);
+				}
+				
+			}
+			
+			if($stat)
+				$result=array('state'=>400,'msg'=>_('Message will send shortly'));
+			else
+				$result=array('state'=>400,'msg'=>'Error: Message could not be sent');
+			
+		}
+		return $result;
+	}
   
 }
 

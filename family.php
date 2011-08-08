@@ -243,6 +243,8 @@ $smarty->assign('home',$product_home);
 
 $smarty->assign('family',$family);
 $smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
+
 $smarty->assign('department',$department);
 
 

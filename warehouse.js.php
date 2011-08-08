@@ -132,17 +132,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"description", label:"<?php echo _('Description')?>",width:310,<?php echo($_SESSION['state']['parts']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"used_in", label:"<?php echo _('Used In')?>",width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"supplied_by", label:"<?php echo _('Supplied By')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['parts']['view']=='forecast' or $_SESSION['state']['parts']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"supplied_by", label:"<?php echo _('Supplied By')?>",width:150,<?php echo($_SESSION['state']['parts']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   
+				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['parts']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //  ,{key:"available_for", label:"<?php echo _('S Until')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['parts']['view']=='stock' or $_SESSION['state']['parts']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"avg_stock", label:"<?php echo _('AS')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"avg_stockvalue", label:"<?php echo _('ASV')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"keep_days", label:"<?php echo _('KD')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"outstock_days", label:"<?php echo _('OofS')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"unknown_days", label:"<?php echo _('?S')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='stock'   ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sales'   ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    
 				    ,{key:"sold", label:"<?php echo _('Sold(Given) Qty')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //   ,{key:"given", label:"<?php echo _('Given Qty')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sale'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
@@ -150,7 +151,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    //    ,{key:"profit", label:"<?php echo _('Profit Out')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sale'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit_sold", label:"<?php echo _('Profit (Inc Given)')?>", width:160,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:160,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
 	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts&tableid=2");
@@ -225,6 +226,91 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehou
 }
 
 
+var change_parts_view=function(e){
+      
+      
+      
+      
+      var tipo=this.getAttribute('name');
+      
+      
+      var table=tables['table2'];
+      
+      Dom.removeClass(['parts_general','parts_stock','parts_sales','parts_forecast'],'selected')
+      
+       Dom.addClass(this,'selected')
+  
+       table.hideColumn('description');
+       table.hideColumn('supplied_by');
+       table.hideColumn('stock');
+       table.hideColumn('stock_value');
+       table.hideColumn('avg_stock');
+       table.hideColumn('avg_stockvalue');
+       table.hideColumn('keep_days');
+       table.hideColumn('outstock_days');
+       table.hideColumn('unknown_days');
+       table.hideColumn('gmroi');
+       table.hideColumn('sold');
+       table.hideColumn('money_in');
+       table.hideColumn('profit_sold');
+       table.hideColumn('margin');
+
+      
+      if(tipo=='general'){
+	 
+	  table.showColumn('description');
+	  table.showColumn('supplied_by');
+	
+      }else if(tipo=='stock'){
+	  table.showColumn('stock');
+	  table.showColumn('stock_value');
+ table.showColumn('avg_stock');
+       table.showColumn('avg_stockvalue');
+       table.showColumn('keep_days');
+       table.showColumn('outstock_days');
+       table.showColumn('unknown_days');
+      }else if(tipo=='sales'){
+	  table.showColumn('sold');
+	  table.showColumn('money_in');
+	  table.showColumn('profit_sold');
+	  table.showColumn('margin');
+	  table.showColumn('gmroi');
+
+      }else if(tipo=='forecast'){
+	  
+      }
+
+
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=parts-view&value='+escape(tipo),{});
+  }
+
+
+function change_parts_period(e,table_id){
+    tipo=this.id;
+ 
+  ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+
+ Dom.removeClass(ids,"selected")
+ Dom.addClass(this,"selected")
+   
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&period=' + this.getAttribute('period');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+function change_parts_avg(e,table_id){
+
+    //  alert(avg);
+    tipo=this.id;
+    Dom.get(avg).className="";
+    Dom.get(tipo).className="selected";	
+    avg=tipo;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&avg=' + this.getAttribute('avg');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+
 
  function init(){
   init_search('locations');
@@ -273,43 +359,18 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
     });
 
 
-  var change_view=function(e){
-      var tipo=this.id;
-      var table=tables['table0'];
-      old_view=table.view;
-      
-      if(tipo=='general'){
-	  table.hideColumn('email');
-	  table.hideColumn('tel');
-	  table.showColumn('location');
-	  table.showColumn('last_order');
-	  table.showColumn('orders');
-	  table.showColumn('super_total');
-	  Dom.get('contact').className='';
-	  Dom.get('general').className='selected';
-      }else{
-	  table.showColumn('email');
-	  table.showColumn('tel');
-	  table.hideColumn('location');
-	  table.hideColumn('last_order');
-	  table.hideColumn('orders');
-	  table.hideColumn('super_total');
-
-
-      }
-
-
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=locations-view&value='+escape(tipo));
-  }
+  
 
 
 
-YAHOO.util.Event.addListener('but_show_details', "click",show_details,'locations');
-var ids=['general','contact'];
-YAHOO.util.Event.addListener(ids, "click",change_view);
-//YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+var ids=['parts_general','parts_stock','parts_sales','parts_forecast'];
+YAHOO.util.Event.addListener(ids, "click",change_parts_view);
 
 
+ ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+ YAHOO.util.Event.addListener(ids, "click",change_parts_period,2);
+ ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
+ YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
 
  }
 

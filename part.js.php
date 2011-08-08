@@ -268,6 +268,18 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-view&value='+this.id ,{});
 }
 
+function change_sales_period(){
+  tipo=this.id;
+ 
+  ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+
+ Dom.removeClass(ids,"selected")
+ Dom.addClass(this,"selected")
+   period=this.getAttribute('period');
+ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=parts-period&value='+period ,{});
+
+}
+
 
 function init(){
 
@@ -291,8 +303,8 @@ Event.addListener(ids, "click", change_snapshot_granularity);
 
 
 
-
-
+ ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+ YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 
 
   

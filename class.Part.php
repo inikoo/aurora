@@ -634,8 +634,27 @@ function formated_sku() {
 
 
 
+
+
+
         if (array_key_exists($key,$this->data))
             return $this->data[$key];
+
+
+    
+
+        if (preg_match('/No Supplied$/',$key)) {
+        
+            $_key=preg_replace('/ No Supplied$/','',$key);
+            if (preg_match('/^Part /',$key)) {
+                   return $this->data["$_key Required"]-$this->data["$_key Provided"];
+                   
+            }else{
+                return number($this->data["Part $_key Required"]-$this->data["Part $_key Provided"]);
+            }
+            
+        }
+
 
         if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
@@ -1161,8 +1180,276 @@ return $part_locations;
 
 
 
+    function update_up_today_sales() {
+        $this->update_sales_from_invoices('Today');
+        $this->update_sales_from_invoices('Week To Day');
+        $this->update_sales_from_invoices('Month To Day');
+        $this->update_sales_from_invoices('Year To Day');
+        $this->update_sales_from_invoices('Total');
 
-    function update_sales() {
+    }
+
+    function update_last_period_sales() {
+
+        $this->update_sales_from_invoices('Yesterday');
+        $this->update_sales_from_invoices('Last Week');
+        $this->update_sales_from_invoices('Last Month');
+    }
+
+
+    function update_interval_sales() {
+        $this->update_sales_from_invoices('3 Year');
+        $this->update_sales_from_invoices('1 Year');
+        $this->update_sales_from_invoices('6 Month');
+        $this->update_sales_from_invoices('1 Quarter');
+        $this->update_sales_from_invoices('1 Month');
+        $this->update_sales_from_invoices('10 Day');
+        $this->update_sales_from_invoices('1 Week');
+    }
+    
+    
+    
+ function update_sales_from_invoices($interval) {
+
+        $to_date='';
+
+        switch ($interval) {
+        case 'Last Month':
+            $db_interval='Last Month';
+            $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+            $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+
+        case 'Last Week':
+            $db_interval='Last Week';
+
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+                $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+            } else {
+                return;
+            }
+
+
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            break;
+
+        case 'Yesterday':
+            $db_interval='Yesterday';
+            $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+            $to_date=date('Y-m-d 00:00:00',strtotime('today'));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            break;
+
+        case 'Week To Day':
+        case 'wtd':
+            $db_interval='Week To Day';
+
+            $from_date=false;
+            $from_date_1yb=false;
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=$row['First Day'].' 00:00:00';
+                $lapsed_seconds=strtotime('now')-strtotime($from_date);
+
+            } else {
+                return;
+            }
+
+            $sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date_1yb=$row['First Day'].' 00:00:00';
+            }
+
+
+            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+
+
+
+            break;
+        case 'Today':
+
+            $db_interval='Today';
+            $from_date=date('Y-m-d 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+        case 'Total':
+        case 'all':
+            $db_interval='Total';
+            $from_date=$this->data['Part Valid From'];
+              $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case 'Month To Day':
+        case 'mtd':
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case 'Year To Day':
+        case 'ytd':
+            $db_interval='Year To Day';
+            $from_date=date('Y-01-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+        case '3 Year':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+            $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case '1 Year':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '6 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Quarter':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '10 Day':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Week':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+        default:
+            return;
+            break;
+        }
+
+         setlocale(LC_ALL, 'en_GB');
+
+        //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+
+         $this->data["Part $db_interval Acc Required"]=0;
+            $this->data["Part $db_interval Acc Provided"]=0;
+            $this->data["Part $db_interval Acc Given"]=0;
+            $this->data["Part $db_interval Acc Sold Amount"]=0;
+            $this->data["Part $db_interval Acc Absolute Profit"]=0;
+            $this->data["Part $db_interval Acc Profit When Sold"]=0;
+            $this->data["Part $db_interval Acc Sold"]=0;
+            $this->data["Part $db_interval Acc Margin"]=0;
+
+
+
+        $sql=sprintf("select    ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   
+                                ifnull(sum(`Required`),0) as required,
+                                ifnull(sum(`Given`),0) as given,
+                                ifnull(sum(`Amount In`),0) as amount_in, 
+                                ifnull(sum(-`Inventory Transaction Quantity`),0) as qty,
+                                ifnull(sum(-`Inventory Transaction Amount`),0) as value 
+                                from  `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Sale' and  `Date`>=%s %s     ",
+        $this->sku,
+        prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')  
+        );
+    
+    
+    //    print "$sql\n";
+    
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {   
+            $this->data["Part $db_interval Acc Required"]=$row["required"];
+            $this->data["Part $db_interval Acc Provided"]=$row["qty"];
+            $this->data["Part $db_interval Acc Given"]=$row["given"];
+            $this->data["Part $db_interval Acc Sold Amount"]=$row["amount_in"];
+            $this->data["Part $db_interval Acc Absolute Profit"]=$row["amount_in"]-$row['value'];
+            $this->data["Part $db_interval Acc Profit When Sold"]=$row["amount_in"]-$row['value']+$row['value_free'];
+            $this->data["Part $db_interval Acc Sold"]=$row["qty"]-$row["given"];
+            $this->data["Part $db_interval Acc Margin"]=($row["amount_in"]==0?0:$this->data["Part $db_interval Acc Profit When Sold"]/$row["amount_in"]);
+
+
+        }
+       
+
+         $sql=sprintf("update `Part Dimension` set 
+                                `Part $db_interval Acc Required`=%f ,
+                                `Part $db_interval Acc Provided`=%f,
+                                `Part $db_interval Acc Given`=%f ,
+                                `Part $db_interval Acc Sold Amount`=%f ,
+                                `Part $db_interval Acc Absolute Profit`=%f ,
+                                `Part $db_interval Acc Profit When Sold`=%f , 
+                                `Part $db_interval Acc Sold`=%f , 
+                                `Part $db_interval Acc Margin`=%s where 
+                                `Part SKU`=%d "
+                     ,$this->data["Part $db_interval Acc Required"]
+                     ,$this->data["Part $db_interval Acc Provided"]
+                     ,$this->data["Part $db_interval Acc Given"]
+                     ,$this->data["Part $db_interval Acc Sold Amount"]
+                     ,$this->data["Part $db_interval Acc Absolute Profit"]
+                     ,$this->data["Part $db_interval Acc Profit When Sold"]
+                     ,$this->data["Part $db_interval Acc Sold"]
+                     ,$this->data["Part $db_interval Acc Margin"]
+                     
+                     ,$this->id);
+
+mysql_query($sql);
+       
+    //   print "$sql\n";
+
+
+
+
+        if ($from_date_1yb) {
+        
+     //    prepare_mysql($from_date_1yb),
+       //                  prepare_mysql($to_1yb)
+        
+        
+   
+   
+   
+        }
+
+
+    }
+
+
+    function update_sales_old() {
         // the product wich this one is
         $sold=0;
         $required=0;

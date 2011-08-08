@@ -2510,7 +2510,8 @@ function list_departments() {
 
 
 
-        } else {// totals
+        } else 
+        {// totals
             if ($period=='all') {
                 if ($avg=='totals') {
                     $factor=1;
@@ -2965,7 +2966,8 @@ function list_departments() {
             else$active='';
             if ($sum_discontinued!=0)$discontinued='100.00%';
             else$discontinued='';
-        } else {
+        } 
+        else {
             $tsall=money($sum_total_sales,$currency_code);
             $tprofit=money($sum_total_profit,$currency_code);
             $tfamilies=number($sum_families);
@@ -2984,10 +2986,6 @@ function list_departments() {
         $adata[]=array(
 
                      'code'=>_('Total'),
-
-
-
-
                      'families'=>$tfamilies,
                      'active'=>number($sum_active),
                      'sales'=>$tsall,
@@ -3084,19 +3082,22 @@ if (isset( $_REQUEST['list_key']))
         $view=$conf['view'];
 
 
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
+
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
+
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
         }
     } else
         $number_results=$conf['nr'];
-
+        
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -4315,7 +4316,7 @@ if (isset( $_REQUEST['list_key']))
 
                  );
     }
-
+    mysql_free_result($res);
 
     if ($total<=$number_results) {
 
@@ -4323,7 +4324,8 @@ if (isset( $_REQUEST['list_key']))
             $tsall='100.00%';
             $tprofit='100.00%';
             $tstock_value='100.00%';
-        } else {
+        } 
+        else {
             $tsall=money($sum_total_sales);
             $tprofit=money($sum_total_profit);
             $tstock_value=money($sum_total_stock_value);
@@ -4362,8 +4364,14 @@ if (isset( $_REQUEST['list_key']))
         $adata[]=array();
 
     }
-    $total_records=ceil($total/$number_results)+$total;
+
+ $total_records=ceil($total/$number_results)+$total;
     $number_results++;
+
+    if ($start_from==0)
+        $record_offset=0;
+    else
+        $record_offset=$start_from+1;
 
 
     $response=array('resultset'=>
@@ -4586,7 +4594,7 @@ function list_parts() {
 
     else if ($order=='margin') {
         if ($period=='all')
-            $order=' `Part Total Margin` ';
+            $order=' `Part Total Acc Margin` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Margin` ';
         elseif($period=='quarter')
@@ -4608,7 +4616,7 @@ function list_parts() {
 
     } else if ($order=='sold') {
         if ($period=='all')
-            $order=' `Part Total Sold` ';
+            $order=' `Part Total Acc Sold` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Sold` ';
         elseif($period=='quarter')
@@ -4630,7 +4638,7 @@ function list_parts() {
 
     } else if ($order=='money_in') {
         if ($period=='all')
-            $order=' `Part Total Sold Amount` ';
+            $order=' `Part Total Acc Sold Amount` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Sold Amount` ';
         elseif($period=='quarter')
@@ -4651,7 +4659,7 @@ function list_parts() {
 // ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='profit_sold') {
         if ($period=='all')
-            $order=' `Part Total Profit When Sold` ';
+            $order=' `Part Total Acc Profit When Sold` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Profit When Sold` ';
         elseif($period=='quarter')
@@ -4672,7 +4680,7 @@ function list_parts() {
 // ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='avg_stock') {
         if ($period=='all')
-            $order=' `Part Total AVG Stock` ';
+            $order=' `Part Total Acc AVG Stock` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc AVG Stock` ';
         elseif($period=='quarter')
@@ -4684,7 +4692,7 @@ function list_parts() {
 
     } else if ($order=='avg_stockvalue') {
         if ($period=='all')
-            $order=' `Part Total AVG Stock Value` ';
+            $order=' `Part Total Acc AVG Stock Value` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc AVG Stock Value` ';
         elseif($period=='quarter')
@@ -4696,7 +4704,7 @@ function list_parts() {
 
     } else if ($order=='keep_days') {
         if ($period=='all')
-            $order=' `Part Total Keeping Days` ';
+            $order=' `Part Total Acc Keeping Days` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Keeping Days` ';
         elseif($period=='quarter')
@@ -4717,7 +4725,7 @@ function list_parts() {
 // ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='outstock_days') {
         if ($period=='all')
-            $order=' `Part Total Out of Stock Days` ';
+            $order=' `Part Total Acc Out of Stock Days` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Out of Stock Days` ';
         elseif($period=='quarter')
@@ -4729,7 +4737,7 @@ function list_parts() {
 
     } else if ($order=='unknown_days') {
         if ($period=='all')
-            $order=' `Part Total Unknown Stock Days` ';
+            $order=' `Part Total Acc Unknown Stock Days` ';
         elseif($period=='year')
         $order=' `Part 1 Year Unknown Stock Days` ';
         elseif($period=='quarter')
@@ -4741,7 +4749,7 @@ function list_parts() {
 
     } else if ($order=='gmroi') {
         if ($period=='all')
-            $order=' `Part Total GMROI` ';
+            $order=' `Part Total Acc GMROI` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc GMROI` ';
         elseif($period=='quarter')
@@ -4758,28 +4766,33 @@ function list_parts() {
 
 
     $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-    //          print $sql;
+   //        print $sql;
     $adata=array();
     $result=mysql_query($sql);
+    
+   // print "$period $avg";
+    
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
 
         if ($period=='all') {
             if ($avg=='totals') {
-                $sold=number($data['Part Total Sold']);
-                $given=number($data['Part Total Given']);
-                $sold_amount=money($data['Part Total Sold Amount']);
-                $abs_profit=money($data['Part Total Absolute Profit']);
-                $profit_sold=money($data['Part Total Profit When Sold']);
+                $sold=number($data['Part Total Acc Sold']);
+                $given=number($data['Part Total Acc Given']);
+                $sold_amount=money($data['Part Total Acc Sold Amount']);
+                $abs_profit=money($data['Part Total Acc Absolute Profit']);
+                $profit_sold=money($data['Part Total Acc Profit When Sold']);
             } else {
 
                 if ($avg=='month')
-                    $factor=$data['Part Total Keeping Days']/30.4368499;
+                    $factor=$data['Part Total Acc Keeping Days']/30.4368499;
                 elseif($avg=='month_eff')
-                $factor=($data['Part Total Keeping Days']-$data['Part Total Out of Stock Days'])/30.4368499;
+                $factor=($data['Part Total Acc Keeping Days']-$data['Part Total Acc Out of Stock Days'])/30.4368499;
                 elseif($avg=='week')
-                $factor=$data['Part Total Keeping Days']/7;
+                $factor=$data['Part Total Acc Keeping Days']/7;
                 elseif($avg=='week_eff')
-                $factor=($data['Part Total Keeping Days']-$data['Part Total Out of Stock Days'])/7;
+                $factor=($data['Part Total Acc Keeping Days']-$data['Part Total Acc Out of Stock Days'])/7;
                 else
                     $factor=1;
                 if ($factor==0) {
@@ -4789,26 +4802,25 @@ function list_parts() {
                     $abs_profit=money(0);
                     $profit_sold=money(0);
                 } else {
-                    $sold=number($data['Part Total Sold']/$factor);
-                    $given=number($data['Part Total Given']/$factor);
-                    $sold_amount=money($data['Part Total Sold Amount']/$factor);
-                    $abs_profit=money($data['Part Total Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part Total Profit When Sold']/$factor);
+                    $sold=number($data['Part Total Acc Sold']/$factor);
+                    $given=number($data['Part Total Acc Given']/$factor);
+                    $sold_amount=money($data['Part Total Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part Total Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part Total Acc Profit When Sold']/$factor);
                 }
             }
 
             if ($given!=0)
                 $sold="$sold ($given)";
-            $margin=percentage($data['Part Total Margin'],1);
-            $avg_stock=number($data['Part Total AVG Stock']);
-            $avg_stockvalue=money($data['Part Total AVG Stock Value']);
-            $keep_days=number($data['Part Total Keeping Days'],0);
-            $outstock_days=percentage($data['Part Total Out of Stock Days'],$data['Part Total Keeping Days']);
-            $unknown_days=percentage($data['Part Total Unknown Stock Days'],$data['Part Total Keeping Days']);
-            $gmroi=number($data['Part Total GMROI'],0);
+            $margin=percentage($data['Part Total Acc Margin'],1);
+            $avg_stock=number($data['Part Total Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part Total Acc AVG Stock Value']);
+            $keep_days=number($data['Part Total Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part Total Acc Out of Stock Days'],$data['Part Total Acc Keeping Days']);
+            $unknown_days=percentage($data['Part Total Acc Unknown Stock Days'],$data['Part Total Acc Keeping Days']);
+            $gmroi=number($data['Part Total Acc GMROI'],0);
 
         }
-// ----------------------------------Start for 3 year--------------------------
         elseif($period=='three_year') {
 
 
@@ -4860,7 +4872,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for 3 year----------------------------
         elseif($period=='year') {
 
 
@@ -4912,9 +4923,6 @@ function list_parts() {
 
 
         }
-
-
-// ----------------------------------Start for yeartoday--------------------------
         elseif($period=='yeartoday') {
 
 
@@ -4966,9 +4974,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for yeartoday----------------------------
-
-// ----------------------------------Start for 6 month--------------------------
         elseif($period=='six_month') {
 
 
@@ -5020,9 +5025,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for 6 month----------------------------
-
-
         elseif($period=='quarter') {
 
 
@@ -5072,11 +5074,6 @@ function list_parts() {
             $gmroi=number($data['Part 1 Quarter Acc GMROI'],0);
 
         }
-
-
-
-
-
         elseif($period=='month') {
 
 
@@ -5130,9 +5127,6 @@ function list_parts() {
 
 
         }
-
-
-// ----------------------------------Start for 10 day--------------------------
         elseif($period=='ten_day') {
 
 
@@ -5184,10 +5178,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for 10 day----------------------------
-
-
-
         elseif($period=='week') {
 
 
@@ -5461,18 +5451,22 @@ function list_families() {
     }
 
 
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
+
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
+
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
         }
     } else
         $number_results=$conf['nr'];
+
 
 
     if (isset( $_REQUEST['o']))
@@ -5565,7 +5559,8 @@ function list_families() {
     $_SESSION['state'][$conf_table]['families']['parent']=$parent;
 
     //  $where.=" and `Product Department Key`=".$id;
-
+//print $conf_table;
+//print_r($_SESSION['state'][$conf_table]['families']);
  if(count($user->stores)==0)
     $where="where false";
     else{
@@ -5768,7 +5763,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// ---------------------------------------Start for families 3 year-----------------------------------------
     elseif($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5781,8 +5775,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// ---------------------------------------Ends for families 3 year-----------------------------------------
-// ---------------------------------------Start for families YearToDay-----------------------------------------
     elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5795,7 +5787,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// ---------------------------------------Ends for families YearToDay-----------------------------------------
     elseif($period=='year') {
 
         $sum_total_sales=0;
@@ -5812,7 +5803,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Start for families 6 month -----------------------------------------
     elseif($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5825,7 +5815,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Ends for families 6 month -----------------------------------------
     elseif($period=='quarter') {
 
         $sum_total_sales=0;
@@ -5842,7 +5831,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-
     elseif($period=='month') {
 
         $sum_total_sales=0;
@@ -5859,7 +5847,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Start for families 10 days -----------------------------------------
     elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5872,7 +5859,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Ends for families 10 days -----------------------------------------
     elseif($period=='week') {
         $sum_families=0;
         $sum_total_sales=0;
@@ -6336,15 +6322,16 @@ function list_families() {
 
                  );
     }
-
-
-    if ($total<=$number_results) {
+    mysql_free_result($res);
+    
+   if ($total<=$number_results and $total>1) {
 
 
         if ($percentages) {
             $tsall='100.00%';
             $tprofit='100.00%';
-        } else {
+        } 
+        else {
             $tsall=money($sum_total_sales);
             $tprofit=money($sum_total_profit);
         }
@@ -6365,12 +6352,17 @@ function list_families() {
 
                  );
 
-    } else {
+    }else {
         $adata[]=array();
-
     }
-    $total_records=ceil($total/$number_results)+$total;
+ $total_records=ceil($total/$number_results)+$total;
     $number_results++;
+
+    if ($start_from==0)
+        $record_offset=0;
+    else
+        $record_offset=$start_from+1;
+        
     $response=array('resultset'=>
                                 array(
                                     'state'=>200,
@@ -6767,8 +6759,6 @@ function list_stores() {
         mysql_free_result($result);
 
     }
-
-
     elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -6817,7 +6807,6 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
-
     elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;

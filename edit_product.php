@@ -90,8 +90,9 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 $yui_path.'container/assets/skins/sam/container.css',
+		// $yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
+		 'container.css', 
 		  'text_editor.css',
 		 'common.css',
 		 'button.css',
@@ -188,6 +189,7 @@ $_parts=array();
 foreach($parts_info as $key=>$value){
 $_parts[$key]=$key;
 }
+
 
 $js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s',
     $product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));

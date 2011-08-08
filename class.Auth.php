@@ -76,24 +76,37 @@ class Auth {
 
     function authenticate_from_masterkey($data) {
 
-        $data=preg_split('/h_Adkiseqto/',$data);
-
-        if (count($data)==2) {
-            $handle=$data[0];
-            $key=$data[1];
-        } else
-            exit;
 
 
-        $sql=sprintf("select `MasterKey Key`,`User Key` from `MasterKey Dimension` left join  (`User Dimension`) ON (`User Handle`=`Handle`)   where `Key`=%s and  `Valid Until`>=%s and `Handle`=%s   "
-                     ,prepare_mysql($key)
-                     ,prepare_mysql(date('Y-m-d H:i:s'))
-                     ,prepare_mysql($handle)
+
+
+
+
+        if(preg_match('/^\d+/',$data,$match)){
+        
+            $user_key=$match[0];
+        
+        }else{
+           // $this->log_failed_login();
+        }
+
+     
+
+        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s and U.`User Key`=%d   ",
+                     prepare_mysql($data),
+                     prepare_mysql(date('Y-m-d H:i:s')),
+                     $user_key
                     );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->status=true;
-            $this->user_key=$row['User Key'];
+            $this->user_key=$user_key;
+            
+            
+            $this->user_parent_key=$row['User Parent Key'];
+            $this->create_user_log();
+            
+            
 
             $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   "
                          ,$row['MasterKey Key']
@@ -101,6 +114,12 @@ class Auth {
             mysql_query($sql);
 
 
+        }else{
+        
+        
+        // $this->log_failed_login();
+        
+        
         }
 
 

@@ -21,71 +21,101 @@
 
 
 
-<div id="top_navigator" style="width:855px">
+<div id="top_navigator" style="width:855px;vertical-align:bottom;">
 <?php if($logged_in){?>
-<div style="width:20px;float:left;margin-right:10px"><img style="height:20px" src="../art/basket.jpg"/></div>
 
-<div style="width:600px;float:left;text-align:left;xborder:1px solid red;"> Items: <span id="basket_items">0</span> Total: <span id="basket_total">£0.00</span>  <span class="soft_link" style="margin:0 15px 0 5px;xfont-style:italic; ">see basket</span> <button id="checkout">Check Out</button> </div>
+
+<div style="margin-left:10px;width:500px;float:left;text-align:left;xborder:1px solid red;">
+ 
+<img style="height:22px;vertical-align:-6px;" src="../art/basket.jpg"/>
+ Items: <span id="basket_items"><?php echo number($_SESSION['basket']['items'])?></span> Total: <span id="basket_total"><?php echo money($_SESSION['basket']['total'])?></span>  
+ <span class="link" style="margin-left:15px;" id="see_basket" ">See Basket</span> 
+  <span class="link" style="margin-left:10px;"  id="checkout" >Check Out</span> 
+
+ 
+</div>
+
 <span>Hello, <?php print $user->data['User Alias']." (".$customer->id.")"?></span>
-<button id="logout">Log Out</button>
+ <span style="margin-left:15px;" class="link" id="logout">Log Out</span>
+<img src="../art/gear.png" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
+
 <?php }else{ ?>
 <button id="show_register_dialog">Register</button>
 <button id="show_login_dialog">Log In</button>
+<img src="../art/gear.png" style="visibility:hidden;height:22px;vertical-align:-6px;">
+
 <?php } ?>
 
 </div>
 
-<?php if(!$logged_in){?>
+<?php if($logged_in){?>
 
-<div id="dialog_login"    class="dialog"    style="position:relative;left:525px;top:-22px;width:350px">
+
+
+
+
+
+
+<?php }else{?>
+
+<div id="dialog_login"    class="dialog"    style="position:relative;left:515px;top:-22px;width:350px">
 <input type="hidden" value="<?php echo $St?>" id="ep">
 <h2>Login</h2>
-<table>
+<table style="margin-bottom:10px">
+
+
+<tr id="login_from_email_found" style="display:none"><td class="label"></td><td>Email found in our database</td></tr>
+
 
 <tr><td class="label">Email: </td><td><input id="login_handle"></td></tr>
 <tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
-<tr class="button" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button></td></tr>
+<tr class="button" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
 <tr class="link"><td colspan=2>Forgot your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
-<tr class="link"><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>
-<tr class="button" ><td></td><td ><button id="hide_login_dialog">Close</button></td></tr>
+<tr id="tr_link_register_from_login" class="link"><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>
+<tr id="tr_link_register_from_login2" class="link"><td colspan=2>Use another email, <span class="link" id="link_register_from_login2">Register Here</span></td></tr>
+
 </table>
 </div>
 
-<div id="dialog_register"    class="dialog"    style="position:relative;left:525px;width:350px;top:-22px;">
+<div id="dialog_register"    class="dialog"    style="position:relative;left:515px;width:350px;top:-22px;">
 <h2>Registration</h2>
 <table>
 <tr><td class="label">Email: </td><td><input id="register_email"></td></tr>
-<tr class="button" ><td colspan=2 ><button id="hide_register_dialog">Close</button> <button id="submit_check_email">Continue</button></td></tr>
+<tr class="button" ><td colspan=2 > <button id="submit_check_email">Continue</button> <button id="hide_register_dialog">Close</button></td></tr>
+
+
 </table>
 </div>
 
 
-<div id="dialog_register_part_2"    class="dialog"    style="position:relative;left:525px;width:350px;top:-22px;">
+<div id="dialog_register_part_2"    class="dialog"    style="position:relative;left:450px;width:415px;top:-22px;">
 <h2>Registration</h2>
 <table>
-<tr><td class="label">Email: </td><td id="confirmed_register_email"></td></tr>
-<tr><td>Password: </td><td><input type="password" id="register_password1"></td></tr>
-<tr><td>Password: </td><td><input type="password" id="register_password2"></td></tr>
+<tr class="title" ><td colspan="3">Login info: </td></tr>
+
+<tr><td class="label">Email: </td><td id="confirmed_register_email"></td><td style="width:10px"></td></tr>
+<tr><td class="label">Password: </td><td><input type="password" id="register_password1"></td></tr>
+<tr><td class="label">Confirm pwd: </td><td><input type="password" id="register_password2"></td></tr>
 <input id="epw2" value="" type="hidden"/>
 
-<tr class="title" ><td colspan="2">Contact Info: </td></tr>
-<tr><td>Contact Name: </td><td><input id="register_contact_name"></td></tr>
+<tr class="title" ><td colspan="3">Contact Info: </td></tr>
+<tr><td class="label">Contact Name: </td><td><input id="register_contact_name"></td></tr>
 
 <tr><td class="label">Company: </td><td><input id="register_company_name"></td></tr>
-<tr><td>Telephone: </td><td><input id="register_telephone"></td></tr>
+<tr><td class="label">Telephone: </td><td><input id="register_telephone"></td></tr>
 
 <tbody id="tbody_register_address"  >
-<tr class="title" ><td colspan="2">Address: </td></tr>
+<tr class="title" ><td colspan="3">Address: </td></tr>
 
-<tr><td  class="label">Line 1: </td><td><input id="register_telephone"></td></tr>
-<tr><td class="label">Line 2: </td><td><input id="register_telephone"></td></tr>
-<tr><td class="label">Town: </td><td><input id="register_telephone"></td></tr>
-<tr><td class="label">Postal Code: </td><td><input id="register_telephone"></td></tr>
+<tr><td  class="label">Line 1: </td><td><input id="register_address_line1"/></td></tr>
+<tr><td class="label">Line 2: </td><td><input id="register_address_line2"/></td></tr>
+<tr><td class="label">Town: </td><td><input id="register_address_town"/></td></tr>
+<tr><td class="label">Postal Code: </td><td><input id="register_address_postcode"/></td></tr>
 
-<tr><td class="label">Country: </td><td><select size="1" id="country" name="country">
-<option value="">Select One</option>
+<tr><td class="label">Country: </td><td><select size="1" id="register_address_country_2alpha_code" >
+<option value="XX">Select One</option>
 <option value="GB">United Kingdom</option>
-<option value="">----------</option>
+<option value="XX">----------</option>
 <option value="AF">Afghanistan</option>
 <option value="AL">Albania</option>
 <option value="DZ">Algeria</option>
@@ -335,18 +365,69 @@
 <option value="ZW">Zimbabwe</option>
 </select></td></tr>
 
-<tr class="button" style=""><td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span> <button id="hide_register_part_2_dialog">Close</button><button id="submit_register">Register</button></td></tr>
+<tr class="title" ><td colspan="3">Other: </td></tr>
+
+<?php
+$categories=array();
+include_once('classes/class.Category.php');
+
+$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$tmp=new Category($row['Category Key']);
+$categories[$row['Category Key']]=$tmp;
+}
+
+foreach($categories as $cat_key=>$cat){
+print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id="'.$cat_key.'" cat_key="'.$cat_key.'"  onChange="update_category(this)">';
+  $count=1;
+  foreach($cat->get_children_objects() as $sub_cat_key=>$sub_cat){
+  
+  if($count==1){
+    print ' <option  value="">Unknown</option>';
+  }
+  $count++;
+  print ' <option value="'.$sub_cat->get('Category Key').'">'.$sub_cat->get('Category Label').'</option>';
+  
+    
+       
+
+};
+ print ' </select>
+  
+ </td>   
+</tr>';
+}
+
+
+
+
+?>
+
+
+<tr><td  class="label">Catalogue (post): </td><td><input checked=checked onChange="change_allow(this)"  style="width:10px" type="radio" name="catalogue" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="catalogue" value="No">No   </td></tr>
+<tr><td  class="label">Offers by email & e-Newsletter: </td><td style="vertical-align:top;"><input checked=checked onChange="change_allow(this)" style="width:10px" type="radio" name="newsletter" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="newsletter" value="No">No   </td></tr>
+
+
+
+<tr  id="tr_register_part_2_buttons"  class="button" ><td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span> <button id="submit_register">Register</button> <button id="hide_register_part_2_dialog">Cancel</button></td></tr>
+<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td></tr>
+
+
 </table>
 </div>
 
 
-<div id="dialog_forgot_password"    class="dialog"    style="position:relative;left:525px;width:350px;top:-22px;">
+<div id="dialog_forgot_password"    class="dialog"    style="position:relative;left:515px;width:350px;top:-22px;">
 <h2>Forgotten password</h2>
-<table>
+<table  style="width:290px">
 <tr><td  class="label">Email: </td><td><input id="forgot_password_handle"></td></tr>
-<tr class="button" style=""><td></td><td><button id="submit_forgot_password">Continue</button></td></tr>
+<tr id="tr_forgot_password_buttons" class="button" style=""><td></td><td><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td></tr>
+<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
+<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
+<tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
+<tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>
 
-<tr class="button" ><td></td><td ><button id="hide_forgot_password_dialog">Close</button></td></tr>
 </table>
 </div>
 <?php } ?>

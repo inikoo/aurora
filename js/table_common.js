@@ -171,7 +171,6 @@ var dir=oState.sortedBy.dir;
 var myRequestBuilderwithTotals = function(oState, oSelf) {
     // Get states or use defaults
 
-   
     oState = oState || {pagination:null, sortedBy:null};
 
     var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
@@ -179,6 +178,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 //    var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
 var dir=oState.sortedBy.dir;
 
+   
    var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
     var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
 
@@ -187,7 +187,7 @@ var dir=oState.sortedBy.dir;
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-//alert(oState)
+
 
     return request;
 };
@@ -230,9 +230,7 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
-    
-   // alert(table.get('paginator'))
-    //alert(table.get('paginator').getState())
+
     table.get('paginator').setRowsPerPage(rpp)
 
 }
@@ -241,6 +239,8 @@ var change_rpp=function (rpp,tableid){
 var change_rpp_with_totals=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
+
+
     table.get('paginator').setRowsPerPage(rpp+1)
 
 }

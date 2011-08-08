@@ -25,7 +25,7 @@ require_once '../../conf/conf.php';
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$stores=array(1,2,3);
+//$stores=array(1,2,3);
 
 
  $sql="select `Product ID` from `Product Dimension` ";
@@ -33,12 +33,14 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
  $product=new Product('pid',$row['Product ID']);
 //$product=new Product('pid',37949);
- $product->update_sales_data();
+// $product->update_sales_data();
  // $product->update_full_search();
-  print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+  $product->update_parts();
+    
+    print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 
 }
-
+exit;
 
  $sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
 $result=mysql_query($sql);

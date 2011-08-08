@@ -42,7 +42,7 @@ while($row=mysql_fetch_array($res)){
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s  order by `Part Total Sold Amount` ,`Part Valid From`   ',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s  order by `Part Total Acc Sold Amount` ,`Part Valid From`   ',$where);
 //print $sql;
 $res=mysql_query($sql);
 $count=0;
