@@ -66,7 +66,7 @@ class LightFamily{
 	
 		$_form=sprintf('<div><div>					
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					<style type="text/css">table.order{font-size:11px;font-family:arial; td.padding-left: 10em;}
 					</style>
 
 					<table class="order" >');
@@ -102,7 +102,7 @@ class LightFamily{
 //<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
 		if ($row['Product Web State']=='Online Force Out of Stock'){
 					$_form.=sprintf('<tr class="nophp">
-							<td>%s</td>
+							<td style="padding-right:100px">%s</td>
 							<td>%.2f</td>
 							<td>%s (%s)</td>
 							
@@ -115,7 +115,7 @@ class LightFamily{
 							,$out_of_stock
 							);
 //<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>							
-					$form.=sprintf('<tr ><td>%s</td>
+					$form.=sprintf('<tr ><td style="padding-right:100px">%s</td>
 							<td>%.2f</td>
 							<td>%s (%s)</td>
 							
@@ -130,7 +130,7 @@ class LightFamily{
 			}
 			else{
 					$_form.=sprintf('<tr class="nophp">
-							<td>%s</td><td>%.2f</td>
+							<td style="padding-right:100px">%s</td><td>%.2f</td>
 							<td>%s</td>
 							</tr>'
 							
@@ -139,7 +139,7 @@ class LightFamily{
 							,clean_accents(addslashes($row['Product Name']))
 							);
 							
-					$form.=sprintf('<tr ><td>%s</td><td>%.2f</td>
+					$form.=sprintf('<tr ><td style="padding-right:100px">%s</td><td>%.2f</td>
 							
 							<td>%s</td></tr>'
 							

@@ -237,9 +237,12 @@ class SendEmail extends DB_Table{
 					
 					return true;
 				}
-				else
-					return false;
-			
+				else{
+					$this->error=true;
+					$this->msg="Cretentials not found";
+				return false;
+				}
+				
 			case 'HTML':
 			case 'html':
 			/*
@@ -445,8 +448,11 @@ class SendEmail extends DB_Table{
 						
 					return true;
 				}
-				else
-					return false;
+				else{
+					$this->error=true;
+					$this->msg="Cretentials not found";
+				return false;
+				}
 			
 			break;
 		}
@@ -454,7 +460,7 @@ class SendEmail extends DB_Table{
 	}
 
 	
-	function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters=""){
+	function smtp_mailxxxx($to,$subject,$message,$additional_headers="",$additional_parameters=""){
 
 		return($this->message_object->Mail($to,$subject,$message,$additional_headers,$additional_parameters));
 		//return($this->message_object->Send());//($to,$subject,$message,$additional_headers,$additional_parameters));
