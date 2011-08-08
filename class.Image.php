@@ -599,6 +599,9 @@ return $image_data;
     }
 
 
-
+    function get_url(){
+    
+        return "image.php?id=".$this->id;
+    }
 
 }
