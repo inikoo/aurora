@@ -2,7 +2,7 @@
 require_once'common_splinter.php';
 require_once 'classes/class.Customer.php';
 require_once 'classes/class.User.php';
-require_once 'classes/class.EmailSend.php';
+require_once 'classes/class.SendEmail.php';
 
 require_once 'ar_edit_common.php';
 
@@ -31,9 +31,8 @@ case('register'):
     break;
 case('forgot_password'):
  $data=prepare_values($_REQUEST,array(
-                             'login_handle'=>array('type'=>'string'),
-                             'store_key'=>array('type'=>'key'),
-                                 'site_key'=>array('type'=>'key')
+                             'values'=>array('type'=>'json array'),
+                           
                          ));
     forgot_password($data);
   
@@ -385,16 +384,17 @@ function generate_password($length=9, $strength=0) {
 function forgot_password($data){
 
 global $secret_key,$public_url;
-$store_key=$data['store_key'];
-$site_key=$data['site_key'];
-$login_handle=$data['login_handle'];
+$store_key=$data['values']['store_key'];
+$site_key=$data['values']['site_key'];
+$login_handle=$data['values']['login_handle'];
+$url=$data['values']['url'];
 
 
 $user_key=check_email_users($login_handle,$store_key);
 if(!$user_key){
     $customer_key=check_email_customers($login_handle,$store_key);
     if($customer_key){
-    list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key);
+    list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key,generate_password(10,10));
     }
 
 }
@@ -402,21 +402,51 @@ if(!$user_key){
 
 if($user_key){
 
+
+$user=new User($user_key);
+$customer=new LightCustomer($user->data['User Parent Key']);
+
+
+
 $email_credential_key=1;
 
 
 
+$signature_name='';
+$signature_company='';
+
+$master_key=$user_key.'x'.generatePassword(6,10);
 
 
 
-$secret_data=json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$user_key ));
-$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store_key,256));
 
-$html_message="We received request to reset the password associated with this email account.<br><br>
+$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
+prepare_mysql($master_key),
+$user_key,
+prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
+prepare_mysql(ip())
+);
+
+mysql_query($sql);
+
+
+
+//json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$user_key ));
+//$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store_key,256));
+
+
+
+$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
+
+
+$plain_message=$customer->get('greetings')."\n\nWe received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
+
+
+$html_message=$customer->get('greetings')."<br/>We received request to reset the password associated with this email account.<br><br>
 If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
 <b>Click the link below to reset your password</b>
 <br><br>
-<a href=\"http://".$public_url."/bd.php?p=".$encrypted_secret_data."\">".$public_url."/reset.php?p=".$encrypted_secret_data."</a>
+<a href=\"".$url."?p=".$encrypted_secret_data."\">".$url."?p=".$encrypted_secret_data."</a>
 <br></br>
 If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
 <br><br>
@@ -443,8 +473,18 @@ $to='rulovico@gmail.com';
 	$send_email->smtp('plain', $data);
 
 	$result=$send_email->send();
-
-
+	
+	if($result['msg']=='ok'){
+	 $response=array('state'=>200,'result'=>'send');
+        echo json_encode($response);
+        exit;
+	
+	}else{
+	
+	 $response=array('state'=>200,'result'=>'error');
+        echo json_encode($response);
+        exit;
+	}
 
 
 }
@@ -513,22 +553,44 @@ function register($data){
 
 
 
+//print_r($data['values']);
+
+
+ $found=check_email_customers($data['values']['Customer Main Plain Email'],$data['store_key']);
+
+    if ($found) {
+     $response=array('state'=>200,'result'=>'handle_found');
+        echo json_encode($response);
+        exit;
+    
+    }
+    
+
     $response=add_customer($data['values']) ;
     
     if($response['state']==200 and $response['action']=='created' ){
-       $ep=rawurldecode($data['ep']);
+      // $ep=rawurldecode($data['ep']);
                      
 
-$password=AESDecryptCtr($ep,md5($data['values']['Customer Main Plain Email'].'x**X'),256);
+$password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 
 
  //print AESDecryptCtr('MwGJYmKPOk5u','a',256);
 
-//print " xxx \n";
+//print $data['values']['ep']." \n";
+//print $ep." \n";
 
 
 
-//print "pass $password";
+
+//print "pass $password\n";
+
+//$password=AESDecryptCtr($ep,md5($data['values']['Customer Main Plain Email'].'x**X'),256);
+
+//print "pass $password\n";
+
+
+
 //exit;
     list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
     

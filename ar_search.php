@@ -1233,7 +1233,7 @@ function search_products($data) {
         while ($row=mysql_fetch_array($res)) {
             $image='';
             if ($row['Product Main Image']!='art/nopic.png')
-                $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnails',$row['Product Main Image']));
+                $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Product Main Image']));
             $the_results[]=array('Title'=>'<span>'.$row['Product Code'].'</span><span style="margin-left:10px">'.$row['Product XHTML Short Description'].'</span>');
 
             $results['P '.$row['Product ID']]=array('store'=>$row['Store Code'],'image'=>$image,'code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);

@@ -20,50 +20,11 @@
 	</ul>
   
  
-     <div class="tabbed_container" > 
- 
+<div class="tabbed_container" > 
+
  
       <div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;width:770px;" id="description_messages">
-	
-	<div id="info_name" style="float:left;width:260px;{if !( $edit=='pictures') }display:none{/if}">
-	  
-	  <table    class="show_info_product">
-	    <tr>
-	      <td colspan="2" class="aright product_name" id="l_product_name" >{$product->get('Product Name')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Code{/t}:</td><td  class="aright">{$product->get('Product Code')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Store{/t}:</td><td  class="aright">{$store->get('Store Name')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Family{/t}:</td><td  class="aright">{$product->get('Product Family Code')}</td>
-	    </tr>
- 
-	    
-	  </table>
-	</div>
-	<div  id="info_price"  style="float:left;width:260px;margin-left:20px;display:none">
-  
-	  <table    class="show_info_product">
-	    <tr style="{if $product->get('Product Units Per Case')==1}display:none{/if}">
-	      <td>{t}Unit per Case{/t}:</td><td  class="aright">{$product->get('Units')}</td>
-	    </tr>
-	    <tr>
-	      <td>{t}Cost{/t}:</td><td  id="l_formated_cost" class="aright">
-		{$product->get('Formated Cost')}
-	      </td>
-	    </tr>
-	    <td>{t}Price{/t}:</td><td  id="l_formated_price" class="price aright">
-	      {$product->get('Formated Price')}
-	    </td>
-</tr>
-<tr id="tr_rrp_per_unit" {if $product->get('Product RRP')==''}style="display:none"{/if} >
-	    <td>{t}RRP{/t}:</td><td id="l_formated_rrp_per_unit" class="aright">{$product->get('RRP Per Unit')}</td>
-	  </tr>
-	</table>
-</div>
+
 
 
 	<div style="float:right">
@@ -77,12 +38,12 @@
 	<div id="description_warnings">
 	</div>
 	<div style="clear:both"></div>
-      </div>
+</div>
 
 
 <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
 	
-	<table style="margin:5px 0px ;xwidth:500px"  border=0 class="edit">
+	<table style="margin:5px 0px ;width:700px"  border=0 class="edit">
 	 <tr class="title"><td >{t}Type of Product{/t}</td></tr>
 	 <tr>
 	   
@@ -101,17 +62,11 @@
 
 
 
-	    {if $num_parts==0}
-	  {t}Choose the part{/t} 
-	   
-	    <div id="adding_new_part" style="width:400px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
-	  
-	  {else}
 	  
 	  
 	  
 	  
-	 	  <table class="edit" border=0  id="part_editor_table"   >
+	 	  <table class="edit" style="width:100%"   border=0  id="part_editor_table"   >
 	 	   <tr class="title">
 	 	   <td colspan=2 >{t}Part List{/t}</td>
 	 	   <td colspan=2>
@@ -119,7 +74,7 @@
 	 
 	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
 	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
-	   <span style="margin-right:10px;" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
+	   <span style="margin-right:10px; {if $product->get('Product Type')=="Normal" and $num_parts!=0}display:none{/if}" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
 	  </div>
 	 	   </td>
 	 	   </tr>
@@ -127,12 +82,17 @@
 	  {foreach from=$product->get_current_part_list('smarty') key=sku item=part_list}
 	   
 	   <tr  id="part_list{$sku}" sku="{$sku}" class="top title">
-		<td class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
-		<td style="width:120px"><span>{$part_list.part->get_sku()}</span></td>
-		<td style="width:350px">{$part_list.part->get('Part XHTML Description')}</td>
-		<td>
+		<td  id="part_list{$sku}_label1" class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
+		<td id="part_list{$sku}_label2" colspan="2"style="width:120px"><span class="id">{$part_list.part->get_sku()}</span>
+		{$part_list.part->get('Part XHTML Description')}</td>
+		<td style="width:200px;text-align:right">
+		<div id="part_list{$sku}_controls">
 		<span onClick="remove_part({$sku})" style="cursor:pointer"><img   src="art/icons/delete_bw.png"/> {t}Remove{/t}</span>
 		<span onClick="show_change_part_dialog({$sku},this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> {t}Change{/t}</span>
+		</div>
+		<div id="part_list{$sku}_controls2" style="display:none">
+		<span onClick="unremove_part({$sku})" style="cursor:pointer"><img   src="art/icons/arrow_rotate_clockwise.png"/> {t}Restore{/t}</span>
+		</div>
 		</td>
 	    </tr>
 	   
@@ -155,7 +115,7 @@
 	  </table>	  
 	  
 	  
-	  {/if}
+
 	
 	
 	
@@ -174,7 +134,8 @@
 </div>
 
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
-<input id="v_cost" value="{$product->get('Product Cost Supplier')}" type="hidden"/>
+
+<input id="v_cost" value="{$product->get_cost_supplier()}" type="hidden"/>
 
 <div class="general_options" style="float:right">
 	
@@ -194,7 +155,7 @@
        <div id="Product_Price_Container" style="" ></div>
      </div>
    </td>
-<td id="price_per_unit" cost="{$product->get('Product Cost Supplier')}"  old_price="{$product->get('Product Price')}"  units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
+<td id="price_per_unit" cost="{$product->get_cost_supplier()}"  old_price="{$product->get('Product Price')}"  units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
 <td id="price_margin">{t}Margin{/t}: {$product->get('Margin')}</td>
 
    <td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
@@ -214,7 +175,6 @@
 
 
 </table>
-
 
   
 </div>
@@ -264,61 +224,7 @@
 </div>
 
 
-<div class="edit_block" {if $edit!="parts"}style="display:none"{/if}  id="d_parts">
- 
- {t}Add new part{/t} 
-  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 
-  
-  <table  class="edit" style="width:33em"  >
-    <tbody id="new_part_form" style="display:none;background:#f1fdf2"  part_id="" >
-      <tr class="top title">
-	<td style="width:18em" class="label" colspan=2>
-	  <img id="cancel_new"         class="icon" onClick="cancel_new_part()" src="art/icons/cross.png">
-	  <img id="save_part_new"  class="icon" onClick="save_new_part()" src="art/icons/disk.png">
-	  <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png">
-	</td>
-      </tr>
-      <tr>
-	<td class="label">{t}Parts product code{/t}:</td>
-	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="" id="new_part_code" value="" ></td>
-      </tr>
-      <tr class="last">
-	<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
-	<td style="text-align:left">{$currency}<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
-      </tr>
-      <tr>
-	<td style="background:white" colspan="4"></td>
-      </tr>
-    </tbody>
-    <tbody id="current_parts_form">
-
-      {foreach from=$parts item=part key=part_id }
-      <tr  id="sup_tr1_{$part_id}" class="top title">
-	<td  class="label" colspan=2>
-	  <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')"  src="art/icons/arrow_refresh_bw.png">
-	  <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')"  src="art/icons/cross.png">
-	  <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onClick="save_part({$part_id})" src="art/icons/disk.png">
-	  <a href="part.php?id={$part_id}">{$part.code}</a>
-	</td>
-      </tr>
-      <tr id="sup_tr2_{$part_id}">
-	<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
-	<td style="text-align:left;">
-	  <input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code"   onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
-      </tr>
-      <tr id="sup_tr3_{$part_id}" class="last">
-	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-	<td style="text-align:left">{$currency}<input id="v_part_cost{$part_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})"  value="{$part.price}" ovalue="{$part.price}" ></td>
-      </tr>
-      <tr id="sup_tr4_{$part_id}">
-	<td colspan="2"></td>
-      </tr>
-      {/foreach}
-    </tbody>
-    
-  </table>	  
-</div>
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
     {include file='edit_images_splinter.tpl'}
 </div>
@@ -449,79 +355,6 @@
 </div>
 
 
-<div id="Editor_change_part" style="xposition:fixed;xtop:-200px;">
-  <div style="display:none" class="hd"></div>
-    <div class="bd dt-editor" >
-          <table border=0>
-	    <input type="hidden" id="change_part_sku" value=0 >
-	    <tbody id="change_part_selector">
-	    <tr><td>{t}Choose the part{/t}</tr>
-	    <tr >
-	    
-	    <td  >
-			
-			<div  style="width:410px">
-			  <input id="change_part" type="text" value=""   >
-			  <div id="change_part_container"></div>
-			</div>
-
-
-	      </td>
-	    </tr>
-	   </tbody>
-	   <tbody id="change_part_confirmation" style="display:none">
-	   <tr><td>{t}Part{/t}: <span id="change_part_old_part"></span> <br/>{t}will be replaced with{/t}:<br/><span id="change_part_new_part"></span>
-	   
-	   </td></tr>
-	   
-	   </tbody>
-	   
-	  </table>
-	  <div style="margin-top:20px">
-
-	    <button id="save_change_part" class="state_details" style="display:none" onclick="save_change_part();" >{t}Save{/t}</button>
-	    <button class="state_details" onclick="close_change_part_dialog()" >{t}Cancel{/t}</button>
-	  </div>
-    </div>
-</div>
-
-<div id="Editor_add_part" style="position:fixed;top:-200px;">
-  <div style="display:none" class="hd"></div>
-    <div class="bd dt-editor" >
-          <table border=0>
-          
-         
-          
-	    <input type="hidden" id="add_part_sku" value=0 >
-	     <input type="hidden" id="add_part_key" value=0 >
-
-	    <tr><td>{t}Add Part{/t}</tr>
-	    <tr>
-	    
-	    <td id="other_part" >
-			
-			<div id="add_part"  style="width:460px">
-			  <input id="add_part_input" type="text" value="" style="width:460px">
-			  <div id="add_part_container" style="width:460px"></div>
-			</div>
-
-
-	      </td>
-	    </tr>
-	   
-	  </table>
-	  
-	  <div>
-	  
-	  </div>
-	  
-	  <div class="yui-dt-button">
-	    <button style="display:none" onclick="save_add_part();" class="state_details">{t}Save{/t}</button>
-	    <button onclick="close_add_part_dialog()" >{t}Cancel{/t}</button>
-	  </div>
-    </div>
-</div>
-
 <div id="filtermenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -544,5 +377,14 @@
 </div>
 
 {include file='footer.tpl'}
+<div id="dialog_part_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Parts{/t}</span>
+            {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
+            <div  id="table1"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
 
 

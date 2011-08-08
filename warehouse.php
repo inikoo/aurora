@@ -35,6 +35,10 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('view',$_SESSION['state']['warehouse']['view']);
+$smarty->assign('parts_view',$_SESSION['state']['parts']['view']);
+$smarty->assign('parts_period',$_SESSION['state']['parts']['period']);
+$smarty->assign('parts_avg',$_SESSION['state']['parts']['avg']);
+$smarty->assign('parts_mode',$_SESSION['state']['parts']['mode']);
 
 
 $css_files=array(

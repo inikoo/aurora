@@ -37,12 +37,21 @@ $smarty->assign('view_customers',$view_cust);
 $page='part';
 $smarty->assign('page',$page);
 
+/*
 $parts_period=$_SESSION['state']['parts']['period'];
-$parts_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+print $parts_period;
+
+$parts_period_title=array(
+            'three_year'=>_('Last 3 Years'),
+            'year'=>_('Last Year'),
+            'quarter'=>_('Last Quarter'),
+            'month'=>_('Last Month'),
+            'week'=>_('Last Week'),
+            'all'=>_('All'));
 
 $smarty->assign('parts_period',$parts_period);
 $smarty->assign('parts_period_title',$parts_period_title[$parts_period]);
-
+*/
 
 
 $css_files=array(
@@ -82,7 +91,9 @@ $smarty->assign('search_scope','part');
 
 
 
-
+$smarty->assign('parts_period',$_SESSION['state']['parts']['period']);
+$smarty->assign('parts_avg',$_SESSION['state']['parts']['avg']);
+$smarty->assign('parts_mode',$_SESSION['state']['parts']['mode']);
 
 
 $smarty->assign('view',$_SESSION['state']['part']['view']);

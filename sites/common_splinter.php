@@ -47,15 +47,14 @@ $session = new Session($max_session_time,1,100);
 //require('external_libs/Smarty/Smarty.class.php');
 //$smarty = new Smarty();
 
-
 $public_url=$myconf['public_url'];
 if(!isset($_SESSION['basket'])){
-$_SESSION['basket']=array('qty'=>0,'total'=>0);
+$_SESSION['basket']=array('items'=>0,'total'=>0);
 
 }
 
 if(isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])){
-$_SESSION['basket']['qty']=$_REQUEST['qty'];
+$_SESSION['basket']['items']=$_REQUEST['qty'];
 }
 if(isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])){
 $_SESSION['basket']['total']=$_REQUEST['tot'];
@@ -64,10 +63,8 @@ $_SESSION['basket']['total']=$_REQUEST['tot'];
 $site=new Site($myconf['site_key']);
 if(!$site->id){
 
-print_r($site);
-exit ("Site data not found (".$myconf['site_key'].')<br/> click <a href="../mantenence/scripts/create_sites.php">here to create one</a> ');
+exit ("Site data not found");
 }
-$page_data=$site->get_data_for_smarty();
 
 
 
@@ -113,6 +110,31 @@ if ($logout) {
 $logged_in=false;
 $St=get_sk();
    
+}
+
+
+
+if(isset($_REQUEST['p'])){
+
+
+$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
+// print "$dencrypted_secret_data\n";
+ $auth=new Auth(IKEY,SKEY);
+
+    $auth->authenticate_from_masterkey($dencrypted_secret_data);
+
+if ($auth->is_authenticated()) {
+    $_SESSION['logged_in']=true;
+    $_SESSION['store_key']=$store_key;
+    $_SESSION['site_key']=$site->id;
+
+    $_SESSION['user_key']=$auth->get_user_key();
+    $_SESSION['customer_key']=$auth->get_user_parent_key();
+    
+    
+    }
+
+
 }
 
 

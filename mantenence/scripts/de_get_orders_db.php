@@ -116,7 +116,7 @@ $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  o
 
 
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/%DE0050.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/%DE0145ref.xls' ) order by filename";
 
 
 $contador=0;

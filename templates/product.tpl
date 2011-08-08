@@ -1,18 +1,21 @@
 {include file='header.tpl'}
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
+
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
   <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
 
-    <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
+    <h1><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </h1>
     {if $product->get('Product Record Type')=='Historic'}<h2>{t}Historic Product{/t}</h2>{/if}
 
 
     
-<div class="" id="block_info"  style="width:890px">
+<div class="" id="block_info"  style="width:890px;position:relative">
+<img style="position:absolute;top:20px;left:160px;z-index:4" src="art/stamp.discontinued.en.png"/>
+
       <div   style="clear:left;padding:0;width:100%">
 
 	  <div id="photo_container" style="margin-top:10px;float:left">

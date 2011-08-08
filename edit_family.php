@@ -286,6 +286,10 @@ $units_tipo=array(
 $smarty->assign('units_tipo',$units_tipo);
   $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
 
+
+$smarty->assign('view',$_SESSION['state']['family']['products']['edit_view']);
+
+
   $smarty->display('edit_family.tpl');
 
 ?>

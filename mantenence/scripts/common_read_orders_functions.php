@@ -1079,7 +1079,7 @@ function create_refund($data,$header_data,$data_dn_transactions) {
                                         );
     foreach($data_invoice_transactions as $transaction) {
 
-        $sql=sprintf("select `Order Transaction Fact Key`,OTF.`Product Key`,`Product Code` from `Order Transaction Fact` OTF   where `Order Key`=%d  and OTF.`Product Key`=%d ",
+        $sql=sprintf("select * from `Order Transaction Fact` OTF   where `Order Key`=%d  and OTF.`Product Key`=%d ",
                      $parent_order->id,
                      $transaction['Product Key']
                     );
@@ -1087,9 +1087,47 @@ function create_refund($data,$header_data,$data_dn_transactions) {
         if ($row=mysql_fetch_assoc($res)) {
             $net=$factor*($transaction['gross amount']-$transaction['discount amount']);
             $tax=$net*$tax_category_object->data['Tax Category Rate'];
+            
+            $net_items=$net;
+            $net_shipping=0;
+            $net_charges=0;
+            $tax_items=$tax;
+            $tax_shipping=0;
+            $tax_charges=0;
+            
+            $otf_component_items=$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'];
+            $otf_component_shipping=$row['Invoice Transaction Shipping Amount'];
+            $otf_component_charges=$row['Invoice Transaction Charges Amount'];
+            $otf_component_sum=$otf_component_items+$otf_component_shipping+$otf_component_charges;
+            if($otf_component_sum!=0){
+            
+            $net_items=round($net*($otf_component_items/$otf_component_sum),2);
+            $net_shipping=round($net*($otf_component_shipping/$otf_component_sum),2);
+            $net_charges=round($net*($otf_component_charges/$otf_component_sum),2);
+            }
+            
+             $otf_component_items=$row['Invoice Transaction Item Tax Amount'];
+            $otf_component_shipping=$row['Invoice Transaction Shipping Tax Amount'];
+            $otf_component_charges=$row['Invoice Transaction Charges Tax Amount'];
+            $otf_component_sum=$otf_component_items+$otf_component_shipping+$otf_component_charges;
+            if($otf_component_sum!=0){
+            
+            $tax_items=round($tax*($otf_component_items/$otf_component_sum),2);
+            $tax_shipping=round($tax*($otf_component_shipping/$otf_component_sum),2);
+            $tax_charges=round($tax*($otf_component_charges/$otf_component_sum),2);
+            }
+            
+            
             $refund_transaction_data=array(
                                          'Order Transaction Fact Key'=>$row['Order Transaction Fact Key'],
+                                         'Invoice Transaction Net Refund Items'=>$net_items,
+                                         'Invoice Transaction Net Refund Shipping'=>$net_shipping,
+                                         'Invoice Transaction Net Refund Charges'=>$net_charges,
                                          'Invoice Transaction Net Refund Amount'=>$net,
+                                           'Invoice Transaction Tax Refund Items'=>$tax_items,
+                                         'Invoice Transaction Tax Refund Shipping'=>$tax_shipping,
+                                         'Invoice Transaction Tax Refund Charges'=>$tax_charges,
+                                         
                                          'Invoice Transaction Tax Refund Amount'=>$tax,
                                          'Refund Metadata'=>$store_code.$order_data_id
 

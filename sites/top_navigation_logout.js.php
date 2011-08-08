@@ -1,31 +1,13 @@
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 
-function isValidEmail(email){
-    var RegExp = /^((([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+(\.([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+)*)@((((([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.))*([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.)[\w]{2,4}|(((([0-9]){1,3}\.){3}([0-9]){1,3}))|(\[((([0-9]){1,3}\.){3}([0-9]){1,3})\])))$/i
-	if(RegExp.test(email)){
-	    return true;
-	}else{
-	    return false;
-	}
-}
-
-
-function register(){
-
-
-    var store_key=Dom.get('store_key').value;
-    var site_key=Dom.get('site_key').value;
-
- 
-
 var data={ 
     "Customer Type":''
-    ,"Customer Name":Dom.get('register_company_name').value
-    ,"Customer Main Contact Name":Dom.get('register_contact_name').value
+    ,"Customer Name":''
+    ,"Customer Main Contact Name":''
     ,"Customer Tax Number":""
     ,"Customer Registration Number":""
-    ,"Customer Main Plain Email":Dom.get('confirmed_register_email').innerHTML
+    ,"Customer Main Plain Email":''
     ,"Customer Main Plain Telephone":""
     ,"Customer Main Plain FAX":""
     ,"Customer Main Plain Mobile":""
@@ -36,24 +18,86 @@ var data={
     ,"Customer Address Postal Code":""
     ,"Customer Address Country Name":""
     ,"Customer Address Country Code":""
+     ,"Customer Address Country 2 Alpha Code":""
     ,"Customer Address Town Second Division":""
     ,"Customer Address Town First Division":""
     ,"Customer Address Country First Division":""
     ,"Customer Address Country Second Division":""
     ,"Customer Address Country Third Division":""
     ,"Customer Address Country Forth Division":""
-    ,"Customer Address Country Fifth Division":""};
+    ,"Customer Address Country Fifth Division":""
+    ,"Customer Send Newsletter":"Yes"
+    ,"Customer Send Email Marketing":"Yes"
+    ,"Customer Send Postal Marketing":"Yes"
+    };
 
-  var json_value = YAHOO.lang.JSON.stringify(data); 
+function isValidEmail(email){
+    var RegExp = /^((([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+(\.([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+)*)@((((([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.))*([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.)[\w]{2,4}|(((([0-9]){1,3}\.){3}([0-9]){1,3}))|(\[((([0-9]){1,3}\.){3}([0-9]){1,3})\])))$/i
+	if(RegExp.test(email)){
+	    return true;
+	}else{
+	    return false;
+	}
+}
+
+
+function change_allow(o){
+
+    if(o.name=='newsletter'){
+        data["Customer Send Email Marketing"]=o.value;
+        data["Customer Send Email Marketing"]=o.value;
+    }else if(o.name=='catalogue'){
+        data["Customer Send Postal Marketing"]=o.value;
+    }
+}
+
+function my_encodeURIComponent (str) {
+str=encodeURIComponent (str);
+
+return (str + '').replace(/'/g, '%27');
+
+
+}
+
+
+function update_category(o){
+    var parent_category_key=o.getAttribute('cat_key');
+    var category_key=o.options[o.selectedIndex].value;
+    data['Cat'+parent_category_key]=category_key;
+}
+
+function register(){
+
+
+    var store_key=Dom.get('store_key').value;
+    var site_key=Dom.get('site_key').value;
+
+
+data['Customer Name']=Dom.get('register_company_name').value;
+data['Customer Main Contact Name']=Dom.get('register_contact_name').value;
+data['Customer Main Plain Email']=Dom.get('confirmed_register_email').innerHTML
+data['Customer Main Plain Telephone']=Dom.get('register_telephone').value;
+data['Customer Address Line 1']=Dom.get('register_address_line1').value;
+data['Customer Address Line 2']=Dom.get('register_address_line2').value;
+data['Customer Address Town']=Dom.get('register_address_town').value;
+data['Customer Address Postal Code']=Dom.get('register_address_postcode').value;
+data['Customer Address Country 2 Alpha Code']=Dom.get('register_address_country_2alpha_code').value;
+
+
+data['ep']=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.get('epw2').value,256);
+  var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
        var epwd=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.get('epw2').value,256);
 
 
+Dom.setStyle('tr_register_part_2_buttons','display','none');
+Dom.setStyle('tr_register_part_2_wait','display','');
+
      var request='../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
- 
+// alert(request);return;
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.action='logged_in'){
@@ -122,7 +166,7 @@ function check_email(){
     		    
     		    }else if(r.result=='found'){
     		    
-    		        //show_login_dialog_from_registration();
+    		        show_login_dialog_from_email_found();
     		    
     		    
     		    }
@@ -150,10 +194,19 @@ function forgot_password(){
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 
+var url ='http://'+ window.location.host + window.location.pathname;
+
+var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,'url':url}
+
+  var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='../ar_register.php?tipo=forgot_password&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
-   
+     var request='../ar_register.php?tipo=forgot_password&values='+json_value;
+  
+  Dom.setStyle('tr_forgot_password_buttons','display','none');
+    Dom.setStyle('tr_forgot_password_wait','display','');
+
+  
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	//	alert(o.responseText)
@@ -161,20 +214,27 @@ function forgot_password(){
 		    if(r.state=='200'){
 			
 		        if(r.result=='send'){
-      
+       Dom.setStyle('tr_forgot_password_wait','display','none');
+			            Dom.setStyle('tr_forgot_password_send','display','');
     		    }else if(r.result=='handle_not_found'){
 			        
+			            Dom.setStyle('tr_forgot_password_wait','display','none');
+			            Dom.setStyle('tr_forgot_password_not_found','display','');
+
 			        
 			        
-			        
+		        }else{
+		          Dom.setStyle('tr_forgot_password_wait','display','none');
+			            Dom.setStyle('tr_forgot_password_error','display','');
 		        }
 		    }else{
-		    
+		          Dom.setStyle('tr_forgot_password_wait','display','none');
+			            Dom.setStyle('tr_forgot_password_error','display','');
 		    }
 			
 
 		},failure:function(o){
-		    alert(o)
+		  //  alert(o)
 		}
 	    
 	    });
@@ -224,12 +284,17 @@ function login(){
 }
 
 function show_login_dialog(){
-Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register','dialog_forgot_password','dialog_register_part_2'],'display','none');
-Dom.setStyle('dialog_login','display','block');
+Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register','dialog_forgot_password','dialog_register_part_2','tr_link_register_from_login2'],'display','none');
+Dom.setStyle(['dialog_login'],'display','block');
+Dom.setStyle(['tr_link_register_from_login'],'display','');
+
 }
 function hide_login_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog'],'display','');
-Dom.setStyle('dialog_login','display','none');
+Dom.setStyle(['dialog_login','login_from_email_found'],'display','none');
+
+
+
 Dom.get('login_handle').value='';
 Dom.get('login_password').value='';
 }
@@ -246,10 +311,13 @@ Dom.setStyle('dialog_register','display','none');
 function show_register_part_2_dialog(){
 Dom.setStyle(['show_login_dialog','dialog_login','dialog_forgot_password','dialog_register'],'display','none');
 Dom.setStyle('dialog_register_part_2','display','block');
+Dom.get('register_password1').focus()
 }
 function hide_register_part_2_dialog(){
-Dom.setStyle(['show_login_dialog'],'display','');
+Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register'],'display','');
 Dom.setStyle('dialog_register_part_2','display','none');
+Dom.get('register_password1').value=''
+Dom.get('register_password2').value='';
 }
 
 
@@ -258,13 +326,24 @@ Dom.setStyle(['show_login_dialog','show_forgot_password_dialog','dialog_login','
 Dom.setStyle('dialog_forgot_password','display','block');
 }
 function hide_forgot_password_dialog(){
-Dom.setStyle(['show_login_dialog','show_forgot_password_dialog'],'display','');
-Dom.setStyle('dialog_forgot_password','display','none');
+Dom.setStyle(['show_login_dialog','show_register_dialog',"tr_forgot_password_buttons"],'display','');
+Dom.setStyle(['dialog_forgot_password',"tr_forgot_password_wait","tr_forgot_password_send","tr_forgot_password_error","tr_forgot_password_not_found"],'display','none');
+
+
+
+
 }
 
 
 function show_register_from_login(){
 Dom.get('register_email').value=Dom.get('login_handle').value;
+show_register_dialog();
+}
+
+
+
+function show_register_from_forgot_password(){
+Dom.get('register_email').value=Dom.get('forgot_password_handle').value;
 show_register_dialog();
 }
 
@@ -395,14 +474,18 @@ register()
 }
 
 
+function show_login_dialog_from_email_found(){
+Dom.get('login_handle').value=Dom.get('register_email').value;
+Dom.get('register_email').value='';
+show_login_dialog();
+Dom.setStyle(['login_from_email_found','tr_link_register_from_login2'],'display','');
+Dom.setStyle('tr_link_register_from_login','display','none');
 
-//if log ini
 
-function logout(){
-var url = window.location;
-alert(url)
+
 
 }
+
 
 
 
@@ -418,18 +501,20 @@ Event.addListener("show_login_dialog", "click", show_login_dialog);
 Event.addListener("show_register_dialog", "click", show_register_dialog);
 Event.addListener("hide_login_dialog", "click", hide_login_dialog);
 Event.addListener("hide_register_dialog", "click", hide_register_dialog);
+Event.addListener(["hide_forgot_password_dialog","hide_forgot_password_dialog2","hide_forgot_password_dialog3","hide_forgot_password_dialog4"], "click", hide_forgot_password_dialog);
+Event.addListener("hide_register_part_2_dialog", "click", hide_register_part_2_dialog);
+
+
+
 Event.addListener("submit_forgot_password", "click", submit_forgot_password);
 Event.addListener("submit_check_email", "click", submit_check_email);
 Event.addListener("submit_register", "click", submit_register);
 Event.addListener("submit_login", "click", submit_login);
-Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_from_login);
+Event.addListener(["link_forgot_password_from_login","tr_link_register_from_login2"], "click", show_forgot_password_from_login);
 Event.addListener("link_register_from_login", "click", show_register_from_login);
+Event.addListener("link_register_from_forgot_password", "click", show_register_from_forgot_password);
 
 
-//if log ini
-
-
-Event.addListener("logout", "click", logout);
 
 
 

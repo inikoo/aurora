@@ -101,7 +101,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $part->update_estimated_future_cost();
   $part->load('used in');
   $part->load('supplied by');
-  $part->load('sales');
+  $part->update_up_today_sales();
+$part->update_interval_sales();
+$part->update_last_period_sales();
 
 }
 
