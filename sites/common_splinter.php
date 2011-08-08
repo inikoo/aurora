@@ -225,7 +225,7 @@ function show_products($code){
 	$code_list=array();
 	$data=array();
 
-	
+
 	if(preg_match('/,/', $code)){
 		$code_list=explode(',', $code);
 		
@@ -233,14 +233,24 @@ function show_products($code){
 			$product=new LightProduct($code, 1);
 			if($product->match){
 				$data[]=$product->data;
+
 			}
 		}
+		
+		$price=$data[0]['Product Price'];
+		foreach($data as $val){
+			if($price>$val['Product Price'])
+				$price=$val['Product Price'];
+		}
+		
+		$header=array('on'=>true, 'price'=>$price);
+		
 		if($logged_in){
-			echo show_products_in_family('ecommerce', $data, $conf);
+			echo show_products_in_family('ecommerce', $data, $conf, $header);
 			return;
 		}
 		else{
-			echo show_products_in_family_info($data);
+			echo show_products_in_family_info($data, $header);
 			return;
 		}
 	}
@@ -253,13 +263,13 @@ function show_products($code){
 		return;
 	
 	
-	
+	$header=array('on'=>true);
 	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
 	if($logged_in){
-		echo $product->get_order_list('ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
+		echo $product->get_order_list($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
 	}
 	else{
-		echo $product->get_order_list_info();
+		echo $product->get_order_list_info($header);
 		return;
 	}
 }

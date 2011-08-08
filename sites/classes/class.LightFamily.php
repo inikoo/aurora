@@ -58,7 +58,7 @@ class LightFamily{
  
  
  
- 	function get_order_list_info(){
+ 	function get_order_list_info($header){
 		$i=1;
 		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d", $this->id);
 		$result=mysql_query($sql);
@@ -66,7 +66,8 @@ class LightFamily{
 	
 		$_form=sprintf('<div><div>					
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">table.order{font-size:11px;font-family:arial; td.padding-left: 10em;}
+					<style type="text/css">table.order{font-size:11px;font-family:arial; }
+					td.order{padding-right:2em;}
 					</style>
 
 					<table class="order" >');
@@ -75,6 +76,15 @@ class LightFamily{
 		$form=sprintf('<table class="order" >'
 						);
 	
+		$sql=sprintf("select `Product Price` from `Product Dimension` where `Product Family Key`=%d order by `Product Price` limit 0,1", $this->id);
+		$res=mysql_query($sql);
+		$price_row=mysql_fetch_array($res, MYSQL_ASSOC);
+		$price=$price_row['Product Price'];	
+	
+	
+		if($header['on'])
+			$form.=sprintf('<th style="font-size:20px;font-family:arial;">Price from %.2f</th>',$price);
+			
 		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 			$this->locale=$row['Product Locale'];
 			
@@ -102,7 +112,7 @@ class LightFamily{
 //<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
 		if ($row['Product Web State']=='Online Force Out of Stock'){
 					$_form.=sprintf('<tr class="nophp">
-							<td style="padding-right:100px">%s</td>
+							<td class="order">%s</td>
 							<td>%.2f</td>
 							<td>%s (%s)</td>
 							
@@ -115,9 +125,9 @@ class LightFamily{
 							,$out_of_stock
 							);
 //<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>							
-					$form.=sprintf('<tr ><td style="padding-right:100px">%s</td>
-							<td>%.2f</td>
-							<td>%s (%s)</td>
+					$form.=sprintf('<tr ><td class="order">%s</td>
+							<td class="order">%.2f</td>
+							<td class="order">%s (%s)</td>
 							
 							</tr>'
 							,addslashes($row['Product Code'])
@@ -130,7 +140,7 @@ class LightFamily{
 			}
 			else{
 					$_form.=sprintf('<tr class="nophp">
-							<td style="padding-right:100px">%s</td><td>%.2f</td>
+							<td>%s</td><td>%.2f</td>
 							<td>%s</td>
 							</tr>'
 							
@@ -139,9 +149,9 @@ class LightFamily{
 							,clean_accents(addslashes($row['Product Name']))
 							);
 							
-					$form.=sprintf('<tr ><td style="padding-right:100px">%s</td><td>%.2f</td>
+					$form.=sprintf('<tr ><td class="order">%s</td><td class="order">%.2f</td>
 							
-							<td>%s</td></tr>'
+							<td class="order">%s</td></tr>'
 							
 							,addslashes($row['Product Code'])
 							,$row['Product Price']
@@ -170,8 +180,9 @@ class LightFamily{
 	
 	
 	
-	function get_order_list($type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method){
+	function get_order_list($header, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method){
 		$i=1;
+		$price=0;
 		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d", $this->id);
 		$result=mysql_query($sql);
 		//print $sql;
@@ -191,12 +202,19 @@ class LightFamily{
 							
 
 		*/
-		
+	
+
+	$sql=sprintf("select `Product Price` from `Product Dimension` where `Product Family Key`=%d order by `Product Price` limit 0,1", $this->id);
+	$res=mysql_query($sql);
+	$price_row=mysql_fetch_array($res, MYSQL_ASSOC);
+	$price=$price_row['Product Price'];	
+	
 	//$this->locale=$row['Product Locale'];
 	$_form=sprintf('<div><div>
 					<style type="text/css">.nophp{display:none}</style>
 					<style type="text/css">table.order{font-size:11px;font-family:arial;}
 					input.order{width:30px}
+					td.order{padding-right:2em;}
 					</style>
 					<table  class="order">
 					<form action="%s" method="post">
@@ -210,9 +228,16 @@ class LightFamily{
 					<input type="hidden" name="userid" value="%s">'
 					,$ecommerce_url
 					,addslashes($username)
+					
 					);
 	
+	if($header['on'])
+		$form.=sprintf('<th style="font-size:20px;font-family:arial;">Price from %.2f</th>',$price);	
+	
+	
 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+		
 		$this->locale=$row['Product Locale'];
 		
 		if ($this->locale=='de_DE') {
@@ -262,11 +287,11 @@ class LightFamily{
 						,clean_accents(addslashes($row['Product Name']))
 						);
 						
-				$form.=sprintf('<tr ><td>%s</td>
-						<td>%.2f</td>
-						<td><input class="order" type="hidden" /></td>
-						<td>%s</td>
-						<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
+				$form.=sprintf('<tr ><td class="order">%s</td>
+						<td class="order">%.2f</td>
+						<td class="order"><input class="order" type="hidden" /></td>
+						<td class="order">%s (%s)</td>
+						
 						</tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s" >'
@@ -305,9 +330,9 @@ class LightFamily{
 						,clean_accents(addslashes($row['Product Name']))
 						);
 						
-				$form.=sprintf('<tr ><td>%s</td><td >%.2f</td>
-						<td><input class="order"  type="text"  name="qty%s"  id="qty%s"  /></td>
-						<td>%s</td></tr>
+				$form.=sprintf('<tr ><td class="order">%s</td><td >%.2f</td>
+						<td class="order"><input class="order"  type="text"  name="qty%s"  id="qty%s"  /></td>
+						<td class="order">%s</td></tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s">'
 						,addslashes($row['Product Code'])

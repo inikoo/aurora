@@ -1,10 +1,11 @@
 <?php
 
-function show_products_in_family_info($data){
+function show_products_in_family_info($data, $header){
 
 		$_form=sprintf('<div><div>					
 					<style type="text/css">.nophp{display:none}</style>
 					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					td.order{padding-right:2em;}
 					</style>
 
 					<table class="order" >');
@@ -12,7 +13,9 @@ function show_products_in_family_info($data){
 				
 		$form=sprintf('<table class="order" >'
 						);
-					
+	if($header['on'])
+		$form.=sprintf('<th style="font-size:20px;font-family:arial;">Price from %.2f</th>',$header['price']);				
+		
 	foreach($data as $product){
 		$i=1;
 		$locale=$product['Product Locale'];
@@ -54,9 +57,9 @@ function show_products_in_family_info($data){
 							);
 		//<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>					
 					$form.=sprintf('<tr >
-							<td>%s</td>
-							<td>%.2f</td>					
-							<td>%s (%s)</td>
+							<td class="order">%s</td>
+							<td class="order">%.2f</td>					
+							<td class="order">%s (%s)</td>
 							</tr>'
 							,addslashes($product['Product Code'])
 							,$product['Product Price']
@@ -76,9 +79,9 @@ function show_products_in_family_info($data){
 							,clean_accents(addslashes($product['Product Name']))
 							);
 							
-					$form.=sprintf('<tr ><td>%s</td><td>%.2f</td>
+					$form.=sprintf('<tr ><td class="order">%s</td><td class="order">%.2f</td>
 							
-							<td>%s</td></tr>'
+							<td class="order">%s</td></tr>'
 							
 							,addslashes($product['Product Code'])
 							,$product['Product Price']
@@ -106,7 +109,7 @@ function show_products_in_family_info($data){
 }
 
 
-function show_products_in_family($type, $data, $conf){
+function show_products_in_family($type, $data, $conf, $header){
 	//print_r($data);
 	
 	$secure=$conf['secure'];
@@ -127,10 +130,13 @@ function show_products_in_family($type, $data, $conf){
 		break;
 	}
 	
+
+	
 	$_form=sprintf('<div><div>
 					<style type="text/css">.nophp{display:none}</style>
 					<style type="text/css">table.order{font-size:11px;font-family:arial;}
 					input.order{width:30px}
+					td.order{padding-right:2em;}
 					</style>
 					<table  class="order">
 					<form action="%s" method="post">
@@ -144,7 +150,11 @@ function show_products_in_family($type, $data, $conf){
 					<input type="hidden" name="userid" value="%s">'
 					,$ecommerce_url_multi
 					,addslashes($username)
+			
 					);
+
+	if($header['on'])
+		$form.=sprintf('<th style="font-size:20px;font-family:arial;">Price from %.2f</th>',$header['price']);
 					
 	foreach($data as $product){
 		$i=1;
@@ -191,12 +201,12 @@ function show_products_in_family($type, $data, $conf){
 						,addslashes($product['Product Units Per Case'])
 						,clean_accents(addslashes($product['Product Name']))
 						);
-						
+//<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>						
 				$form.=sprintf('<tr >
-						<td>%s</td>
-						<td>%.2f</td>
-						<td><input class="order" type="hidden" /></td>
-						<td>%s</td><td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td></tr>
+						<td class="order">%s</td>
+						<td class="order">%.2f</td>
+						<td class="order"><input class="order" type="hidden" /></td>
+						<td class="order">%s (%s)</td></tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s">'
 						,addslashes($product['Product Code'])
@@ -235,10 +245,10 @@ function show_products_in_family($type, $data, $conf){
 						);
 						
 				$form.=sprintf('<tr >
-						<td>%s</td>
-						<td >%.2f</td>
-						<td><input class="order" type="text"  name="qty%s"  id="qty%s"  /></td>
-						<td>%s</td></tr>
+						<td class="order">%s</td>
+						<td class="order">%.2f</td>
+						<td class="order"><input class="order" type="text"  name="qty%s"  id="qty%s"  /></td>
+						<td class="order">%s</td></tr>
 						<input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
 						<input type="hidden"  name="product%s"  value="%s %sx %s">'
 						,addslashes($product['Product Code'])
