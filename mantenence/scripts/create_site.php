@@ -72,7 +72,7 @@ foreach($store_data as $store_code=>$xdata) {
 
         if ($image->id) {
             $site_data['Site Logo Data']['Image Key']=$image->id;
-            $site_data['Site Logo Data']['Image Source']=preg_replace('/^sites./','',$image->data['Image URL']);
+            $site_data['Site Logo Data']['Image Source']=preg_replace('/^sites./','',$image->get_url());
         }else{
              exit("image not found\n");
         }
@@ -96,7 +96,7 @@ foreach($store_data as $store_code=>$xdata) {
                             );
                 $image=new Image('find',$image_data,'create');
                 if ($image->id) {
-                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    $image_src=preg_replace('/^sites./','',$image->get_url());
                     
                     
                    
@@ -119,7 +119,7 @@ foreach($store_data as $store_code=>$xdata) {
                             );
                 $image=new Image('find',$image_data,'create');
                 if ($image->id) {
-                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    $image_src=preg_replace('/^sites./','',$image->get_url());
                     
                     
                    
@@ -179,7 +179,7 @@ foreach($page_data as $store_code=>$data) {
                             );
                 $image=new Image('find',$image_data,'create');
                 if ($image->id) {
-                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    $image_src=preg_replace('/^sites./','',$image->get_url());
                     
                     
                    
@@ -202,7 +202,7 @@ foreach($page_data as $store_code=>$data) {
                             );
                 $image=new Image('find',$image_data,'create');
                 if ($image->id) {
-                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    $image_src=preg_replace('/^sites./','',$image->get_url());
                     
                     
                    
@@ -226,7 +226,7 @@ foreach($page_data as $store_code=>$data) {
                             );
                 $image=new Image('find',$image_data,'create');
                 if ($image->id) {
-                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    $image_src=preg_replace('/^sites./','',$image->get_url());
                    
                     
                    
@@ -250,9 +250,9 @@ foreach($page_data as $store_code=>$data) {
                                     );
                         $image=new Image('find',$image_data,'create');
                         if ($image->id) {
-                            $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                            $image_src=preg_replace('/^sites./','',$image->get_url());
                             $page_data['Page Store Content Data']['Showcases'][$key]['Image Key']=$image->id;
-                            $page_data['Page Store Content Data']['Showcases'][$key]['src']=preg_replace('/^sites./','',$image->data['Image URL']);
+                            $page_data['Page Store Content Data']['Showcases'][$key]['src']=preg_replace('/^sites./','',$image->get_url());
                         } else {
                             print $image->msg."\n";
                             exit("\nCreate Site: bad image\n");
@@ -270,7 +270,7 @@ foreach($page_data as $store_code=>$data) {
                                     );
                         $image=new Image('find',$image_data,'create');
                         if ($image->id) {
-                            $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                            $image_src=preg_replace('/^sites./','',$image->get_url());
                             $page_data['Page Store Content Data']['Showcases'][$key]['Image Key']=$image->id;
                             $page_data['Page Store Content Data']['Showcases'][$key]['style']['background-image']="url('$image_src')";
                         } else {

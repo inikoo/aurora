@@ -128,7 +128,8 @@ $smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
 
 
-
+ $smarty->assign('search_label',_('Products'));
+    $smarty->assign('search_scope','products');
 
 $product_home="Products Home";
 
