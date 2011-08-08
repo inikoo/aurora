@@ -195,11 +195,11 @@ function show_product($code){
 	$data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
 	
 	if($logged_in){
-				print $product->get_full_order_form('ecommerce', $data);
+		print $product->get_full_order_form('ecommerce', $data);
 
 	}else{
 
-	print $product->get_info();
+		print $product->get_info();
 
 	}
 

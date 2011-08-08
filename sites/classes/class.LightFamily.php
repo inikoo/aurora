@@ -99,13 +99,13 @@ class LightFamily{
 			$discontinued='Discontinued';
 			  }
 
-
+//<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
 		if ($row['Product Web State']=='Online Force Out of Stock'){
 					$_form.=sprintf('<tr class="nophp">
 							<td>%s</td>
 							<td>%.2f</td>
-							<td>%s</td>
-							<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
+							<td>%s (%s)</td>
+							
 							</tr>'
 							,addslashes($row['Product Code'])
 							,$row['Product Price']
@@ -114,11 +114,11 @@ class LightFamily{
 							,clean_accents(addslashes($row['Product Name']))
 							,$out_of_stock
 							);
-							
+//<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>							
 					$form.=sprintf('<tr ><td>%s</td>
 							<td>%.2f</td>
-							<td>%s</td>
-							<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
+							<td>%s (%s)</td>
+							
 							</tr>'
 							,addslashes($row['Product Code'])
 							,$row['Product Price']

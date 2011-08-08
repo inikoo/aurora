@@ -36,13 +36,13 @@ function show_products_in_family_info($data){
 			$discontinued='Discontinued';
 		}
 		  
-		
+	//<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>	
 		if ($product['Product Web State']=='Online Force Out of Stock'){
 					$_form.=sprintf('<tr class="nophp">
 							<td>%s</td>
 							<td>%.2f</td>					
-							<td>%s</td>
-							<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>
+							<td>%s (%s)</td>
+							
 							
 							</tr>'
 							,addslashes($product['Product Code'])
@@ -52,12 +52,12 @@ function show_products_in_family_info($data){
 							
 							
 							);
-							
+		//<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td>					
 					$form.=sprintf('<tr >
 							<td>%s</td>
 							<td>%.2f</td>					
-							<td>%s</td>
-							<td style="float:right;font-size:8pt;color:red;font-weight:800;">%s</td></tr>'
+							<td>%s (%s)</td>
+							</tr>'
 							,addslashes($product['Product Code'])
 							,$product['Product Price']
 							,clean_accents(addslashes($product['Product Name']))
