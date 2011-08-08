@@ -231,7 +231,7 @@ class PageStoreSection extends DB_Table {
                             );
                 $image=new Image('find',$image_data,'create');
                 if ($image->id) {
-                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    $image_src=preg_replace('/^sites./','',$image->get_url());
                     
                     
                    

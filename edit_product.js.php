@@ -447,7 +447,8 @@ dialog_part_list.show()
 
 function init(){
 
-
+ init_search('products_store');
+ 
 //Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});
  //   Editor_change_part.render();
     

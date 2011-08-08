@@ -2,11 +2,12 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-
-<div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Product{/t}: <span id="title_name">{$product->get('Product Name')}</span> (<span id="title_code">{$product->get('Product Code')}</span>)</h1>
+<div class="branch"> 
+  <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
+
+    <h1><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </h1>
 
 
   
@@ -183,20 +184,18 @@
 
 
 <div class="general_options" style="float:right">
-	
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_weight" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_weight" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
+</div>
 
 <table class="edit" >
  <tr class="title">
  <td colspan=3>{t}Weight{/t}</td>
  </tr>
 <tr class="first"><td style="" class="label">{t}Unit Weight{/t}:</td>
-   <td  style="text-align:left;width:4em;">
-     <div  style="width:4em;position:relative;top:00px" >
-       <input style="text-align:left;width:4em" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
+   <td  style="text-align:left;">
+     <div   >
+       <input style="text-align:left;" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
        <div id="Product_Unit_Weight_Container" style="" ></div>
      </div>
     
@@ -206,8 +205,8 @@
 <tr style="display:none">
 <td style="" class="label">{t}Outer Weight{/t}:<br/><small>with packing</small></td>
    <td  style="text-align:left">
-     <div  style="width:4em;position:relative;top:00px" >
-       <input style="text-align:left;width:4em" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0">
+     <div   >
+       <input style="text-align:left;" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0">
        <div id="Product_Outer_Weight_Container" style="" ></div>
      </div>
    </td><td>Kg</td>
@@ -241,7 +240,7 @@
  <tr class="title"><td colspan=5>{t}Units{/t}</td></tr>
 <tr class="first"><td style="" class="label">{t}Units Per Outer{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
+     <div   >
        <input style="text-align:left;width:18em" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0">
        <div id="Product_Units_Per_Case_Container" style="" ></div>
      </div>
@@ -279,7 +278,7 @@
  <tr class="title"><td colspan=5>{t}Name / Description{/t}</td></tr>
 <tr class="first"><td style="" class="label">{t}Product Name{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
+     <div   >
        <input style="text-align:left;width:18em" id="Product_Name" value="{$product->get('Product Name')}" ovalue="{$product->get('Product Name')}" valid="0">
        <div id="Product_Name_Container" style="" ></div>
      </div>
@@ -288,7 +287,7 @@
  </tr>
 <tr><td style="" class="label">{t}Special Characteristic{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
+     <div   >
        <input style="text-align:left;width:18em" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')}" ovalue="{$product->get('Product Special Characteristic')}" valid="0">
        <div id="Product_Special_Characteristic_Container" style="" ></div>
      </div>
