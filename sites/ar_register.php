@@ -454,7 +454,7 @@ Thank you";
 
 
 
-$to='migara@inikoo.com';
+$to='rulovico@gmail.com';
 	$data=array(
 		'type'=>'HTML',
 		'subject'=>	'Reset your password',
@@ -480,7 +480,7 @@ $to='migara@inikoo.com';
         exit;
 	
 	}else{
-	
+	print_r($result);
 	 $response=array('state'=>200,'result'=>'error');
         echo json_encode($response);
         exit;
