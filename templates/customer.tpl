@@ -50,7 +50,7 @@
         <td  valign="top">
             <table border=0 style="padding:0">
                 {if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
-                {if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  src="art/icons/email.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
+                {if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td>XXX</td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email }
                     <tr><td colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  src="art/icons/email.png"/></td><td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
                 {/foreach}
@@ -149,7 +149,7 @@
   {/if}
   
   </td></tr>
-  
+  <tr><td>{if $customer_type}User is registered in the site{/if}</td></tr>
   <tr><td>{$correlation_msg}</td></tr>
   
 {if  $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
@@ -218,6 +218,7 @@
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
+	<li> <span class="item {if $view=='history'}selected{/if}"  id="login_stat">  <span> {t}Login Status{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Order Details{/t}</span></span></li>
  </ul>
@@ -328,6 +329,20 @@
 		    </tr>
 		</table>
 </div>
+<div style="clear:both"></div>
+
+
+<h2 style="clear:both">{t}Login Details{/t}</h2>
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+
+		   <tr >
+		  		      <td>{t}Last Login{/t}:</td><td>{$login_stat.UserLastLogin}</td>
+
+		    </tr>
+		</table>
+</div>
+
 
 <div style="clear:both"></div>
 
@@ -353,7 +368,18 @@
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>
 
+ <div id="block_login_stat" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<table    class="show_info_product">
 
+	<tr ><td>{t}User Login Count{/t}:</td><td>{$login_stat.UserLoginCount}</td></tr>
+	<tr><td>{t}User Last Login IP{/t}:</td><td>{$login_stat.UserLastLoginIP}</td></tr>
+	<tr><td>{t}User Failed Login Count{/t}:</td><td>{$login_stat.UserFailedLoginCount}</td></tr>
+	<tr><td>{t}User Last Failed Login IP{/t}:</td><td>{$login_stat.UserLastFailedLoginIP}</td></tr>
+	<tr><td>{t}User Last Failed Login{/t}:</td><td>{$login_stat.UserLastFailedLogin}</td></tr>
+
+	</table>
+ </div>
+	
 <div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
  
