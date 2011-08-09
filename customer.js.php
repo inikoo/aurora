@@ -740,8 +740,8 @@ function take_order(){
 
 
 function change_view(){
-ids=['orders','history','products','details'];
-block_ids=['block_orders','block_history','block_products','block_details'];
+ids=['orders','history','products','details', 'login_stat'];
+block_ids=['block_orders','block_history','block_products','block_details', 'block_login_stat'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 
@@ -805,7 +805,7 @@ Event.addListener(['elements_changes','elements_orders','elements_notes','elemen
 
 
   init_search('customers_store');
-Event.addListener(['orders','history','products','details'], "click",change_view);
+Event.addListener(['orders','history','products','details', 'login_stat'], "click",change_view);
 
 
 Event.addListener('clean_table_filter_show0', "click",show_filter,0);
