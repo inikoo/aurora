@@ -1,4 +1,3 @@
-
 <?php
 /*
   
@@ -17,11 +16,12 @@ class LightProduct{
   var $url;
   var $user_id;
   var $method;
+  var $match=true;
   
     function __construct($arg1,$arg2=false) {
     
    
-        $this->get_data('code',$arg1,$arg2);
+        return $this->get_data('code',$arg1,$arg2);
 
 
     }
@@ -36,13 +36,18 @@ class LightProduct{
         else
             return false;
 			
-
+		
+		
         $result=mysql_query($sql);
+		
+		if(!mysql_num_rows($result))
+			$this->match=false;
 		
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $this->id=$this->data['Product ID'];
 			$this->locale=$this->data['Product Locale'];
         }
+
 		
     }
  
@@ -213,6 +218,63 @@ $_SESSION['logged_in']=1;
 		  }
 
 		  return $form."\n";
+
+
+	}
+	
+	
+	function get_info(){
+
+	//$this->locale=$row['Product Locale'];
+		if ($this->locale=='de_DE') {
+		$out_of_stock='nicht vorrv§tig';
+		$discontinued='ausgelaufen';
+		  }if ($this->locale=='de_DE') {
+		$out_of_stock='nicht vorrv§tig';
+		$discontinued='ausgelaufen';
+		  }
+		elseif($this->locale=='es_ES') {
+		$out_of_stock='Fuera de Stock';
+		$discontinued='Fuera de Stock';
+		  }
+
+		  elseif($this->locale=='fr_FR') {
+		$out_of_stock='Rupture de stock';
+		$discontinued='Rupture de stock';
+		  }
+		  else {
+		$out_of_stock='Out of Stock';
+		$discontinued='Discontinued';
+		  }
+
+		  if ($this->data['Product Web State']=='Online Force Out of Stock') {
+		$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+		  } else {
+		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
+		
+			
+			
+					$_form=sprintf('<input type="hidden" name="product" value="%s %sx %s">'
+							   ,addslashes($this->data['Product Code'])
+							   ,addslashes($this->data['Product Units Per Case'])
+							   ,clean_accents(addslashes($this->data['Product Name']))
+							   );
+		  }
+
+		  $_SESSION['logged_in']=1;
+		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="rrp">%s</span><br/>%s</div>'
+				,$this->data['Product Code']
+				,$this->data['Product Units Per Case']
+				,$this->data['Product Name']
+				//,$this->get_formated_price($this->locale)
+				,$this->get_formated_rrp($this->locale)
+				,(isset($_SESSION['logged_in'])?$_form:'')
+
+
+				);
+
+		  //print $form;exit;
+		  return $form;
 
 
 	}
