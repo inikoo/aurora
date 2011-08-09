@@ -12,9 +12,19 @@ function logout(){
 window.location ='http://'+ window.location.host + window.location.pathname+'?logout=1';
 }
 
+function checkout(){
 
+window.location=Dom.get('checkout').getAttribute('link')
+}
+
+function see_basket(){
+
+window.location=Dom.get('see_basket').getAttribute('link')
+}
 
 function init(){
+Event.addListener("checkout", "click",checkout);
+Event.addListener("see_basket", "click",see_basket);
 
 
 Event.addListener("logout", "click",logout);
