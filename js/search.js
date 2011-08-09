@@ -65,10 +65,10 @@ function init_search(type) {
           subject='products';
       
         break;
-    case 'part':
-        search_scope='part';
+    case 'parts':
+        search_scope='parts';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
-
+    subject='parts';
         break;
     case 'suppliers':
         search_scope='suppliers';
@@ -150,7 +150,7 @@ success:function(o) {
 }
 
 function search_part(query) {
-    search(query,'part','');
+    search(query,'parts','warehouse');
 }
 
 function search_suppliers(query) {
@@ -229,7 +229,7 @@ success:function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                //  alert(subject+'_search_results')
+               //   alert(subject+'_search_results')
 
                 Dom.get(subject+'_search_results').removeChild(Dom.get(subject+'_search_results_table'));
                 oTbl=document.createElement("Table");
@@ -323,7 +323,7 @@ success:function(o) {
                             oTD.innerHTML=r.data[result_key ].state;
                             var oTD= oTR.insertCell(-1);
                             oTD.innerHTML=r.data[result_key ].balance;
-                        } else if (subject=='part') {
+                        } else if (subject=='parts') {
                             oTR.setAttribute('key',r.data[result_key].sku);
                             oTR.setAttribute('link',r.data[result_key].link);
                             oTR.setAttribute('sku',r.data[result_key].fsku);

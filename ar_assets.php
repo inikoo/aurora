@@ -4397,11 +4397,11 @@ if (isset( $_REQUEST['list_key']))
 }
 
 function list_parts() {
-    $conf=$_SESSION['state']['parts']['table'];
+    $conf=$_SESSION['state']['warehouse']['parts'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
     else
-        $view=$_SESSION['state']['parts']['view'];
+        $view=$_SESSION['state']['warehouse']['parts']['view'];
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -4459,32 +4459,50 @@ function list_parts() {
     if (isset( $_REQUEST['avg']))
         $avg=$_REQUEST['avg'];
     else
-        $avg=$_SESSION['state']['parts']['avg'];
-    $_SESSION['state']['parts']['avg']=$avg;
+        $avg=$_SESSION['state']['warehouse']['parts']['avg'];
+    $_SESSION['state']['warehouse']['parts']['avg']=$avg;
 
 
     if (isset( $_REQUEST['period']))
         $period=$_REQUEST['period'];
     else
-        $period=$_SESSION['state']['parts']['period'];
-    $_SESSION['state']['parts']['period']=$period;
+        $period=$_SESSION['state']['warehouse']['parts']['period'];
+    $_SESSION['state']['warehouse']['parts']['period']=$period;
 
 
     if (isset( $_REQUEST['percentage']))
         $percentage=$_REQUEST['percentage'];
     else
-        $percentage=$_SESSION['state']['parts']['percentage'];
-    $_SESSION['state']['parts']['percentage']=$percentage;
+        $percentage=$_SESSION['state']['warehouse']['parts']['percentage'];
+    $_SESSION['state']['warehouse']['parts']['percentage']=$percentage;
+
+
+
+
+
+  $elements=$conf['elements'];
+    if (isset( $_REQUEST['elements_InUse'])) {
+        $elements['In Use']=$_REQUEST['elements_InUse'];
+
+    }
+    if (isset( $_REQUEST['elements_NotInUse'])) {
+        $elements['Not In Use']=$_REQUEST['elements_NotInUse'];
+    }
+ 
+
+
+
 
     //$_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-    $_SESSION['state']['parts']['table']['order']=$order;
-    $_SESSION['state']['parts']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['parts']['table']['nr']=$number_results;
-    $_SESSION['state']['parts']['table']['sf']=$start_from;
-    $_SESSION['state']['parts']['table']['where']=$where;
-    $_SESSION['state']['parts']['table']['f_field']=$f_field;
-    $_SESSION['state']['parts']['table']['f_value']=$f_value;
+    $_SESSION['state']['warehouse']['parts']['order']=$order;
+    $_SESSION['state']['warehouse']['parts']['order_dir']=$order_direction;
+    $_SESSION['state']['warehouse']['parts']['nr']=$number_results;
+    $_SESSION['state']['warehouse']['parts']['sf']=$start_from;
+    $_SESSION['state']['warehouse']['parts']['where']=$where;
+    $_SESSION['state']['warehouse']['parts']['f_field']=$f_field;
+    $_SESSION['state']['warehouse']['parts']['f_value']=$f_value;
+    $_SESSION['state']['warehouse']['parts']['elements']=$elements;
 
 
     $filter_msg='';
@@ -4496,7 +4514,30 @@ function list_parts() {
     if (!is_numeric($number_results))
         $number_results=25;
 
-    $where.="  ";
+    $where="where true  ";
+
+
+
+
+
+    $_elements='';
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Part Status` in ('.$_elements.')' ;
+    }
+
+
+
+
+
+
+
 
     $_order=$order;
     $_dir=$order_direction;
@@ -4603,7 +4644,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Margin` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Margin` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Margin` ';
         elseif($period=='yeartoday')
@@ -4612,7 +4652,6 @@ function list_parts() {
         $order=' `Part 6 Month Acc Margin` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Margin` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
 
     } else if ($order=='sold') {
         if ($period=='all')
@@ -4625,7 +4664,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Sold` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Sold` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Sold` ';
         elseif($period=='yeartoday')
@@ -4634,7 +4672,6 @@ function list_parts() {
         $order=' `Part 6 Month Acc Sold` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Sold` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
 
     } else if ($order=='money_in') {
         if ($period=='all')
@@ -4647,7 +4684,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Sold Amount` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Sold Amount` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Sold Amount` ';
         elseif($period=='yeartoday')
@@ -4656,7 +4692,6 @@ function list_parts() {
         $order=' `Part 6 Month Acc Sold Amount` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Sold Amount` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='profit_sold') {
         if ($period=='all')
             $order=' `Part Total Acc Profit When Sold` ';
@@ -4668,7 +4703,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Profit When Sold` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Profit When Sold` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Profit When Sold` ';
         elseif($period=='yeartoday')
@@ -4677,7 +4711,6 @@ function list_parts() {
         $order=' `Part 6 Month Acc Profit When Sold` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Profit When Sold` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='avg_stock') {
         if ($period=='all')
             $order=' `Part Total Acc AVG Stock` ';
@@ -4713,7 +4746,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Keeping Days` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Keeping Days` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Keeping Days` ';
         elseif($period=='yeartoday')
@@ -4722,7 +4754,6 @@ function list_parts() {
         $order=' `Part 6 Month Acc Keeping Days` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Keeping Days` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='outstock_days') {
         if ($period=='all')
             $order=' `Part Total Acc Out of Stock Days` ';
@@ -4766,7 +4797,7 @@ function list_parts() {
 
 
     $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-   //        print $sql;
+ //      print $sql;
     $adata=array();
     $result=mysql_query($sql);
     
@@ -5305,6 +5336,10 @@ function list_products_with_same_code() {
         $order_dir=$conf['order_dir'];
 
 
+ 
+
+
+
     $code=$_SESSION['state']['product']['server']['tag'];
     $where=sprintf('where `Product Code`=%s  ',prepare_mysql($code));
     $wheref='';
@@ -5323,11 +5358,12 @@ function list_products_with_same_code() {
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $id=sprintf("<a href='product.php?pid=%d'>%05d</a>",$row['Product ID'],$row['Product ID']);
+        $store=sprintf("<a href='product.php?pid=%d'>%s</a>",$row['Product Store Key'],$row['Store Code']);
         $adata[]=array(
-                     'id'=>$id
-                          ,'description'=>$row['Product XHTML Short Description']
-                                         ,'store'=>$row['Store Name']
-                                                  ,'parts'=>$row['Product XHTML Parts']
+                     'id'=>$id,
+                          'description'=>$row['Product XHTML Short Description'],
+                                         'store'=>$store,
+                                                  'parts'=>$row['Product XHTML Parts']
                  );
 
     }

@@ -25,21 +25,18 @@ $general_options_list=array();
 if($modify or true)
 
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'part_configuration.php','label'=>_('Part Configuration'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php?id='.$warehouse_id,'label'=>_('Parts'));
 
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
-
 $smarty->assign('general_options_list',$general_options_list);
 
 
-$smarty->assign('view',$_SESSION['state']['warehouse']['view']);
-$smarty->assign('parts_view',$_SESSION['state']['parts']['view']);
-$smarty->assign('parts_period',$_SESSION['state']['parts']['period']);
-$smarty->assign('parts_avg',$_SESSION['state']['parts']['avg']);
-$smarty->assign('parts_mode',$_SESSION['state']['parts']['mode']);
 
+
+
+$smarty->assign('view',$_SESSION['state']['warehouse']['view']);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

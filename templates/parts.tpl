@@ -32,15 +32,17 @@
 	  <td  {if period=='ten_day'}selected{/if}"  period="ten_day"  id="period_ten_day"  >{t}10D{/t}</td>
 	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
 
+  <td  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}YTD{/t}</td>	
+	  <td  {if $parts_period=='monthtoday'}class="selected"{/if}"  period="monthtoday"  id="parts_period_monthtoday"  >{t}MTD{/t}</td>	
+	  <td  {if $parts_period=='weektoday'}class="selected"{/if}"  period="weektoday"  id="parts_period_weektoday"  >{t}WTD{/t}</td>	
+	  <td  {if $parts_period=='today'}class="selected"{/if}"  period="today"  id="parts_period_today"  >{t}Today{/t}</td>	
 
-{*-------------------------------------------------------------------------
-	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
-	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
-	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
-	  <td {if $period=='month'}class="selected"{/if}  period="month"  id="period_month"  >{t}1M{/t}</td>
-	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
----------------------------------------------------------------------------*}
+
 	</tr>
+	
+	
+	
+	
       </table>
        <table id="avg_options"  style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>

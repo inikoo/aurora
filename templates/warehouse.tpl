@@ -10,7 +10,7 @@
 </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-    <li> <span class="item {if $view=='parts'}selected{/if}"  id="parts">  <span> {t}Parts{/t}</span></span></li>
+    <li> <span class="item {if $view=='parts'}selected{/if}"  style="display:none" id="parts">  <span> {t}Parts{/t}</span></span></li>
 
     <li> <span class="item {if $view=='locations'}selected{/if}"  id="locations">  <span> {t}Locations{/t}</span></span></li>
     <li> <span class="item {if $view=='areas'}selected{/if}"  id="areas">  <span> {t}Areas{/t}</span></span></li>
