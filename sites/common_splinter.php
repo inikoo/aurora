@@ -172,7 +172,11 @@ $St=get_sk();
 
 log_visit($session->id);
 
+function show_footer(){
 
+include_once('../footer.php');
+print $footer;
+}
 
 function get_sk(){
       

@@ -14,7 +14,7 @@ function show_products_in_family_info($data, $header){
 		$form=sprintf('<table class="order" >'
 						);
 	if($header['on'])
-		$form.=sprintf('<th style="font-size:20px;font-family:arial;">Price from %.2f</th>',$header['price']);				
+		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="2">Price from %.2f</td>',$header['price']);				
 		
 	foreach($data as $product){
 		$i=1;
@@ -156,7 +156,7 @@ function show_products_in_family($type, $data, $conf, $header){
 					);
 
 	if($header['on'])
-		$form.=sprintf('<th style="font-size:20px;font-family:arial;">Price from %.2f</th>',$header['price']);
+		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="2">Price from %.2f</td>',$header['price']);
 					
 	foreach($data as $product){
 		$i=1;
@@ -270,7 +270,7 @@ function show_products_in_family($type, $data, $conf, $header){
 		 $i++;
 	}
 	
-	$_form.=sprintf('<tr class="nophp"><td>
+	$_form.=sprintf('<tr class="nophp"><td colspan="2">
 						<input name="Submit" type="submit"  value="Order"> 
 						<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr>
 						</form>
@@ -321,23 +321,5 @@ function get($key){
 	}
 
 }
-/*
-function ecommerceURL($secure, $_port, $_protocol, $url, $server) {
-	$s = empty($secure) ? '' : ($secure == "on") ? "s" : "";
-	$protocol = $this->strleft1(strtolower($_protocol), "/").$s; 
-	$port = ($_port == "80") ? "" : (":".$_port);
-	if(strpos($url, "?")){
-		return $protocol."://".$server.$port.$this->strleft1(strtolower($url), "?"); 
-	}
-	else
-		return $protocol."://".$server.$port.$url;
-}
 
-
- function strleft1($s1, $s2){ 
-	return substr($s1, 0, strpos($s1, $s2)); 
- }
- 
-*/
 ?>
-

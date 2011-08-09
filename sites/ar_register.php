@@ -5,7 +5,6 @@ require_once 'classes/class.User.php';
 require_once 'classes/class.SendEmail.php';
 
 require_once 'ar_edit_common.php';
-
 //print AESDecryptCtr('MwGJYmKPOk5u','a',256);
 
 //print "\n";
@@ -388,8 +387,22 @@ $store_key=$data['values']['store_key'];
 $site_key=$data['values']['site_key'];
 $login_handle=$data['values']['login_handle'];
 $url=$data['values']['url'];
+	include_once '/securimage/securimage.php';
 
+	$securimage = new Securimage();
+	if ($securimage->check($data['values']['captcha_code']) == false) {
+		//echo $securimage->getCode();
+		// the code was incorrect
+		// you should handle the error so that the form processor doesn't continue
 
+		// or you can use the following code if there is no validation or you do not know how
+		//echo "The security code entered was incorrect.<br /><br />";
+		//echo "Please go <a href='javascript:history.go(-1)'>back</a> and try again.";
+		$response=array('state'=>450,'result'=>'capture_false');
+        echo json_encode($response);
+        exit;
+	}
+	
 $user_key=check_email_users($login_handle,$store_key);
 if(!$user_key){
     $customer_key=check_email_customers($login_handle,$store_key);
@@ -528,6 +541,31 @@ if($login_handle==''){
 
 function register($data){
 
+	include_once '/securimage/securimage.php';
+
+	$securimage = new Securimage();
+	
+	//print_r($data);
+	
+	//print_r($_SESSION);
+	
+	if ($securimage->check($data['values']['captcha_code']) == false) {
+		//echo $securimage->getCode();
+		// the code was incorrect
+		// you should handle the error so that the form processor doesn't continue
+
+		// or you can use the following code if there is no validation or you do not know how
+		//echo "The security code entered was incorrect.<br /><br />";
+		//echo "Please go <a href='javascript:history.go(-1)'>back</a> and try again.";
+		$response=array('state'=>450,'result'=>'capture_false');
+        echo json_encode($response);
+        exit;
+	}
+
+
+	//echo $data['values']['captcha_code'];
+	
+	
    include_once('edit_customers_functions.php');
 
     global $editor;
