@@ -97,6 +97,9 @@ class Auth {
                      prepare_mysql(date('Y-m-d H:i:s')),
                      $user_key
                     );
+                    
+                 //   print $sql;
+                    
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->status=true;

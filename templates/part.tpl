@@ -80,61 +80,7 @@
 			
 		  </table>
 		  
-		   <table  {if !$details}style="display:none"{/if}  class="show_info_product">
-      <tr >
-      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
-      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
-    </tr>
-       <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
-	<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Total Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('Total Acc Provided')}</td></tr>
-      <tr><td>{t}Adquired{/t}:</td><td class="aright">{$part->get('Total Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('Total Acc Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('Total Acc Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('Total Acc Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Total Acc Lost')}</td></tr>
-     </tbody>
-      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
-      <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
-      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
-
-
-      </tbody>
-        <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
-       <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
-      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
-      </tbody>
-        <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
-      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
-	  
-      </tbody>
-       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
-      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
-	  
-      </tbody>
-</table>
+		
 </div>
 
 
@@ -299,9 +245,9 @@
   <table  id="period_options" style="float:left;margin:0 0 20px 10px ;padding:0 0  0px 0" class="options_mini" >
 	<tr>
 	  <td  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}YTD{/t}</td>	
-	  <td  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}MTD{/t}</td>	
-	  <td  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}WTD{/t}</td>	
-	  <td  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}Today{/t}</td>	
+	  <td  {if $parts_period=='monthtoday'}class="selected"{/if}"  period="monthtoday"  id="parts_period_monthtoday"  >{t}MTD{/t}</td>	
+	  <td  {if $parts_period=='weektoday'}class="selected"{/if}"  period="weektoday"  id="parts_period_weektoday"  >{t}WTD{/t}</td>	
+	  <td  {if $parts_period=='today'}class="selected"{/if}"  period="today"  id="parts_period_today"  >{t}Today{/t}</td>	
 
 	</tr>
       </table>
@@ -312,50 +258,90 @@
   
     <table style="clear:both"  class="show_info_product">
     
-      <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
-	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Total Acc Sold Amount')}</td></tr>
-	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Total Acc Absolute Profit')}</td></tr>
-	<tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('Total Acc Margin')}</td></tr>
-	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Total Acc GMROI')}</td></tr>
-
-      </tbody>
-      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
-	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Year Acc Sold Amount')}</td></tr>
-	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Year Acc Absolute Profit')}</td></tr>
-	<tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Year Acc Margin')}</td></tr>
-	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Year Acc GMROI')}</td></tr>
-     </tbody>
+        <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Total Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Total Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('Total Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Total Acc GMROI')}</td></tr>
+        </tbody>
+        <tbody id="info_three_year"  style="{if $parts_period!='three_year'}display:none{/if}">
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('3 Year Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('3 Year Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('3 Year Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('3 Year Acc GMROI')}</td></tr>
+        </tbody>
+        
+        <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Year Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Year Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Year Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Year Acc GMROI')}</td></tr>
+        </tbody>
+          <tbody id="info_six_month" style="{if $parts_period!='six_month'}display:none{/if}"  >
+ 	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('6 Month Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('6 Month Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('6 Month Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('6 Month Acc GMROI')}</td></tr>
+        </tbody>
         <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
- 	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Sold Amount')}</td></tr>
-	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Absolute Profit')}</td></tr>
-	<tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Margin')}</td></tr>
-	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Quarter Acc GMROI')}</td></tr>
-    
-    
-      </tbody>
+ 	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Quarter Acc GMROI')}</td></tr>
+        </tbody>
         <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Month Acc Sold Amount')}</td></tr>
-	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Month Acc Absolute Profit')}</td></tr>
-	<tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Month Acc Margin')}</td></tr>
-	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Month Acc GMROI')}</td></tr>
-	  
-      </tbody>
-       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Week Acc Sold Amount')}</td></tr>
-	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Week Acc Absolute Profit')}</td></tr>
-	<tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Week Acc Margin')}</td></tr>
-	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Week Acc GMROI')}</td></tr>
-	  
-      </tbody>
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Month Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Month Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Month Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Month Acc GMROI')}</td></tr>
+        </tbody>
+         <tbody id="info_ten_day" style="{if $parts_period!='ten_day'}display:none{/if}"  >
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('10 Day Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('10 Day Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('10 Day Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('10 Day Acc GMROI')}</td></tr>
+        </tbody>
+        <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Week Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Week Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('1 Week Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Week Acc GMROI')}</td></tr>
+        </tbody>
+
+
+<tbody id="info_yeartoday" style="{if $parts_period!='yeartoday'}display:none{/if}"  >
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Year To Day Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Year To Day Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('Year To Day Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Year To Day Acc GMROI')}</td></tr>
+        </tbody>
+<tbody id="info_monthtoday" style="{if $parts_period!='monthtoday'}display:none{/if}"  >
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Month To Day Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Month To Day Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('Month To Day Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Month To Day Acc GMROI')}</td></tr>
+        </tbody>
+<tbody id="info_weektoday" style="{if $parts_period!='weektoday'}display:none{/if}"  >
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Week To Day Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Week To Day Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('v Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Week To Day Acc GMROI')}</td></tr>
+        </tbody>
+<tbody id="info_today" style="{if $parts_period!='today'}display:none{/if}"  >
+	        <tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Today Acc Sold Amount')}</td></tr>
+	        <tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Today Acc Absolute Profit')}</td></tr>
+	        <tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('Today Acc Margin')}</td></tr>
+	        <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Today Acc GMROI')}</td></tr>
+        </tbody>
  </table>
 </div>
- <div style="float:left;margin-left:20px">
+      <div style="float:left;margin-left:20px">
 
 	
 		
 		   <table  style="width:200px;clear:both" class="show_info_product">
    
-    <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
+        <tbody id="info2_all" style="{if $parts_period!='all'}display:none{/if}">
     	{if $part->get('Part Total Acc No Supplied')!=0}
     		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Total Acc Required')}</td></tr>
     	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('Total Acc No Supplied')}</td></tr>
@@ -371,7 +357,7 @@
             <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Total Acc Lost')}</td></tr>
         {/if}
     </tbody>
-     <tbody id="info_three_year" style="{if $parts_period!='three_year'}display:none{/if}">
+        <tbody id="info2_three_year" style="{if $parts_period!='three_year'}display:none{/if}">
     	{if $part->get('Part 3 Year Acc No Supplied')!=0}
     		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('3 Year Acc Required')}</td></tr>
     	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('3 Year Acc No Supplied')}</td></tr>
@@ -386,10 +372,8 @@
       	{if $part->get('Part 3 Year Acc Given')!=0}
             <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('3 Year Acc Lost')}</td></tr>
         {/if}
-    </tbody>   
-    
-    
-      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
+    </tbody> 
+        <tbody id="info2_year"  style="{if $parts_period!='year'}display:none{/if}">
     	{if $part->get('Part 1 Year Acc No Supplied')!=0}
     		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
     	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('1 Year Acc No Supplied')}</td></tr>
@@ -405,7 +389,23 @@
             <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Acc Lost')}</td></tr>
         {/if}
       </tbody>
-        <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
+        <tbody id="info2_six_month"  style="{if $parts_period!='six_month'}display:none{/if}">
+    	{if $part->get('Part 6 Month Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('6 Month Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('6 Month Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('6 Month Acc Sold')}</td></tr>
+        {if $part->get('Part 6 Month Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('6 Month Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part 6 Month Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('6 Month Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part 6 Month Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('6 Month Acc Lost')}</td></tr>
+        {/if}
+      </tbody>
+        <tbody id="info2_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
     	{if $part->get('Part 1 Quarter Acc No Supplied')!=0}
     		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Quarter Acc Required')}</td></tr>
     	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('1 Quarter Acc No Supplied')}</td></tr>
@@ -422,26 +422,126 @@
         {/if}
  
        </tbody>
-        <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
-         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
-      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+        <tbody id="info2_month" style="{if $parts_period!='month'}display:none{/if}"  >
+     	{if $part->get('Part 1 Month Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Month Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('1 Month Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Month Acc Sold')}</td></tr>
+        {if $part->get('Part 1 Month Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('1 Month Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part 1 Month Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Month Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part 1 Month Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Month Acc Lost')}</td></tr>
+        {/if}
 	  
       </tbody>
-       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
-         <tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
-      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
-      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
-      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
-      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
-	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
-      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
-	  
+        <tbody id="info2_ten_day"  style="{if $parts_period!='ten_day'}display:none{/if}">
+    	{if $part->get('Part 10 Day Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('10 Day Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('10 Day Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('10 Day Acc Sold')}</td></tr>
+        {if $part->get('Part 10 Day Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('10 Day Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part 10 Day Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('10 Day Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part 10 Day Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('10 Day Acc Lost')}</td></tr>
+        {/if}
+      </tbody> 
+        <tbody id="info2_week" style="{if $parts_period!='week'}display:none{/if}"  >
+        	{if $part->get('Part 1 Week Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Week Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('1 Week Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Week Acc Sold')}</td></tr>
+        {if $part->get('Part 1 Week Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('1 Week Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part 1 Week Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Week Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part 1 Week Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Week Acc Lost')}</td></tr>
+        {/if}
       </tbody>
+           
+              <tbody id="info2_yeartoday"  style="{if $parts_period!='yeartoday'}display:none{/if}">
+    	{if $part->get('Part Year To Day Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Year To Day Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('Year To Day Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('Year To Day Acc Sold')}</td></tr>
+        {if $part->get('Part Year To Day Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('Year To Day Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part Year To Day Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('Year To Day Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part Year To Day Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Year To Day Acc Lost')}</td></tr>
+        {/if}
+      </tbody>
+      
+           <tbody id="info2_monthtoday"  style="{if $parts_period!='monthtoday'}display:none{/if}">
+    	{if $part->get('Part Month To Day Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Month To Day Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('Month To Day Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('Month To Day Acc Sold')}</td></tr>
+        {if $part->get('Part Month To Day Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('Month To Day Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part Month To Day Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('Month To Day Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part Month To Day Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Month To Day Acc Lost')}</td></tr>
+        {/if}
+      </tbody>
+      
+           <tbody id="info2_weektoday"  style="{if $parts_period!='weektoday'}display:none{/if}">
+    	{if $part->get('Part Week To Day Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Week To Day Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('Week To Day Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('Week To Day Acc Sold')}</td></tr>
+        {if $part->get('Part Week To Day Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('Week To Day Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part Week To Day Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('Week To Day Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part Week To Day Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Week To Day Acc Lost')}</td></tr>
+        {/if}
+      </tbody>
+      
+           <tbody id="info2_today"  style="{if $parts_period!='today'}display:none{/if}">
+    	{if $part->get('Part Today Acc No Supplied')!=0}
+    		<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Today Acc Required')}</td></tr>
+    	    <tr><td>{t}No Supplied{/t}:</td><td class="aright error">{$part->get('Today Acc No Supplied')}</td></tr>
+        {/if}
+            <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('Today Acc Sold')}</td></tr>
+        {if $part->get('Part Today Acc Given')!=0}
+            <tr><td>{t}Given for free{/t}:</td><td class="aright">{$part->get('Today Acc Given')}</td></tr>
+	    {/if}
+	    {if $part->get('Part Today Acc Given')!=0}
+	        <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('Today Acc Broken')}</td></tr>
+        {/if}
+      	{if $part->get('Part Today Acc Given')!=0}
+            <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Today Acc Lost')}</td></tr>
+        {/if}
+      </tbody>
+      
+      
+      
 </table>
 </div>
 

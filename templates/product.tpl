@@ -14,8 +14,9 @@
 
     
 <div class="" id="block_info"  style="width:890px;position:relative">
+{if $product->get('Product Record Type')=='Discontinued'}
 <img style="position:absolute;top:20px;left:160px;z-index:4" src="art/stamp.discontinued.en.png"/>
-
+{/if}
       <div   style="clear:left;padding:0;width:100%">
 
 	  <div id="photo_container" style="margin-top:10px;float:left">

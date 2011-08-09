@@ -529,7 +529,7 @@ function list_staff_loginhistory() {
     echo json_encode($response);
 }
 function list_staff_user_loginhistory() {
-    $conf=$_SESSION['state']['users']['loginhistory'];
+    $conf=$_SESSION['state']['staff_user']['loginhistory'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -559,6 +559,17 @@ function list_staff_user_loginhistory() {
         $where=$_REQUEST['where'];
     else
         $where=$conf['where'];
+        
+        
+     if (isset( $_REQUEST['user_key'])){
+        $id=$_REQUEST['user_key'];
+            $_SESSION['state']['staff_user']['user_key']=$id;
+
+    }else{
+      $id=$_SESSION['state']['staff_user']['user_key'];
+    }
+        
+        
 
     if (isset( $_REQUEST['tableid']))
         $tableid=$_REQUEST['tableid'];
@@ -578,20 +589,21 @@ function list_staff_user_loginhistory() {
     $filter_msg='';
 
 
-    $_SESSION['state']['users']['loginhistory']['type']=$type;
-    $_SESSION['state']['users']['loginhistory']['order']=$order;
-    $_SESSION['state']['users']['loginhistory']['order_dir']=$order_direction;
-    $_SESSION['state']['users']['loginhistory']['nr']=$number_results;
+    $_SESSION['state']['staff_user']['loginhistory']['type']=$type;
+    $_SESSION['state']['staff_user']['loginhistory']['order']=$order;
+    $_SESSION['state']['usstaff_userers']['loginhistory']['order_dir']=$order_direction;
+    $_SESSION['state']['staff_user']['loginhistory']['nr']=$number_results;
 
-    $_SESSION['state']['users']['loginhistory']['sf']=$start_from;
-    $_SESSION['state']['users']['loginhistory']['where']=$where;
-    $_SESSION['state']['users']['loginhistory']['f_field']=$f_field;
-    $_SESSION['state']['users']['loginhistory']['f_value']=$f_value;
+    $_SESSION['state']['staff_user']['loginhistory']['sf']=$start_from;
+    $_SESSION['state']['staff_user']['loginhistory']['where']=$where;
+    $_SESSION['state']['staff_user']['loginhistory']['f_field']=$f_field;
+    $_SESSION['state']['staff_user']['loginhistory']['f_value']=$f_value;
+    $_SESSION['state']['staff_user']['loginhistory']['f_value']=$f_value;
 
     $where=sprintf('where true ');
     $where.=" and `User Type`='Staff'";
 
-    $id=$_SESSION['state']['user']['id'];
+  
     $where.=" and UL.`User Key`=".$id;
 
 
@@ -603,7 +615,7 @@ function list_staff_user_loginhistory() {
     $wheref.=" and  `IP Address` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `User Log Dimension` UL left join `User Dimension` U on (U.`User Key`=UL.`User Key`)  $where $wheref   ";
-// print $sql;
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -623,7 +635,7 @@ function list_staff_user_loginhistory() {
     }
 
 
-    $rtext=$total_records." ".ngettext('user','users',$total_records);
+    $rtext=$total_records." ".ngettext('record','records',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else

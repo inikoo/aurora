@@ -656,14 +656,14 @@ function formated_sku() {
         }
 
 
-        if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+        if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Amount|Profit)$/',$key)) {
 
             $amount='Part '.$key;
 
             return money($this->data[$amount]);
         }
 
-        if (preg_match('/^(Total|1).*(Margin)$/',$key)) {
+        if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin)$/',$key)) {
 
             $amount='Part '.$key;
 
@@ -671,7 +671,7 @@ function formated_sku() {
         }
 
 
-        if (preg_match('/^(Total|1).*(Given|Lost|Required|Sold|Provided|Broken|Adquired)$/',$key) or $key=='Current Stock'  ) {
+        if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Adquired)$/',$key) or $key=='Current Stock'  ) {
 
             $amount='Part '.$key;
 

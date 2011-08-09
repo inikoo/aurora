@@ -3514,10 +3514,34 @@ ADD `Invoice Transaction Net Refund Shipping` DECIMAL( 12, 2 ) NOT NULL DEFAULT 
 ADD `Invoice Transaction Net Refund Charges` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Refund Shipping` ,
 ADD `Invoice Transaction Tax Refund Items` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Refund Charges` ,
 ADD `Invoice Transaction Tax Refund Shipping` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Tax Refund Items` ,
-ADD `Invoice Transaction Tax Refund Charges` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Tax Refund Shipping` 
+ADD `Invoice Transaction Tax Refund Charges` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Tax Refund Shipping`;
 
 
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `MasterKey Dimension` ADD `IP` VARCHAR( 64 ) NOT NULL ;
+
+ALTER TABLE `Part Dimension` CHANGE `Part 10 day Acc Required` `Part 10 Day Acc Required` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Provided` `Part 10 Day Acc Provided` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Lost` `Part 10 Day Acc Lost` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Broken` `Part 10 Day Acc Broken` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Adquired` `Part 10 Day Acc Adquired` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Sold` `Part 10 Day Acc Sold` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Given` `Part 10 Day Acc Given` FLOAT NOT NULL DEFAULT '0';
+
+ALTER TABLE `Part Dimension` CHANGE `Part 10 day Acc Sold Amount` `Part 10 Day Acc Sold Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Absolute Profit` `Part 10 Day Acc Absolute Profit` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Profit When Sold` `Part 10 Day Acc Profit When Sold` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Absolute Profit After Storing` `Part 10 Day Acc Absolute Profit After Storing` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Profit When Sold After Storing` `Part 10 Day Acc Profit When Sold After Storing` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+
+ALTER TABLE `Part Dimension` CHANGE `Part 10 day Acc Margin` `Part 10 Day Acc Margin` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc AVG Stock` `Part 10 Day Acc AVG Stock` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc AVG Stock Value` `Part 10 Day Acc AVG Stock Value` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Keeping Days` `Part 10 Day Acc Keeping Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Out of Stock Days` `Part 10 Day Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Unknown Stock Days` `Part 10 Day Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc GMROI` `Part 10 Day Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+
 
 */
 

@@ -74,7 +74,7 @@ if (isset($_POST['submit'])) {
         header("location:import_csv.php?subject=$scope&subject_key=$scope_args");
         exit();
     } else {
-        if (  ($_FILES["fileUpload"]["type"] == "text/plain") || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
+        if (  ($_FILES["fileUpload"]["type"] == "text/plain")|| ($_FILES["fileUpload"]["type"] == "application/vnd.ms-excel")   || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
             if ($_FILES["fileUpload"]["error"] > 0) {
                 echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
             } else {

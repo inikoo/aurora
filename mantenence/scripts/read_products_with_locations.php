@@ -39,9 +39,9 @@ date_default_timezone_set('UTC');
 
 
 
-$sql=sprintf("select * from aw_old.product where code='abp-21'   order by code   ");
+$sql=sprintf("select * from aw_old.product where code='wallh-11'   order by code   ");
 
-$sql=sprintf("select * from aw_old.product  order by code   ");
+//$sql=sprintf("select * from aw_old.product  order by code   ");
 $result=mysql_query($sql);
 while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $product_code=$row2['code'];

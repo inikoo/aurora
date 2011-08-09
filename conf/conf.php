@@ -1244,6 +1244,26 @@ $default_state=array(
                                    'id'=>1,
                                    'edit'=>'description',
                                    'view'=>'locations',
+                                    'parts_view'=>'parts',
+
+                                      'parts'=>array(
+                                           'order'=>'sku',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>20,
+                                           'view'=>'general',
+                                           'where'=>'where true',
+                                           'f_field'=>'used_in',
+                                           'period'=>'year',
+                                            'mode'=>'all',
+                                           'avg'=>'totals',
+                                           'percentage'=>false,
+                                           'f_value'=>'',
+                                           'elements'=>array('In Use'=>1,'Not In Use'=>0),
+                                         
+
+                                       ),
+                                    
 
                                    'stock_history'=>array(
                                                        'order'=>'date',
@@ -2115,11 +2135,23 @@ $default_state=array(
                                                         )
                         ),
                         
-                    'user'=>array(
-                    'id',
-                    '{}{}sssss'=>'login_history'
-                    ),    
-                        
+                 
+                 
+                 'staff_user'=>array(
+                        'block_view'=>'login_history',
+                  'loginhistory'=>array(
+                                                  'display'=>'all',
+                                                  'order'=>'login_date',
+                                                  'order_dir'=>'',
+                                                  'type'=>'',
+                                                  'sf'=>0,
+                                                  'nr'=>50,
+                                                  'where'=>'where true',
+                                                  'f_field'=>'user',
+                                                  'f_value'=>''
+                                              ),
+                        ),
+                 
                         
                    'users'=>array(
                                'staff'=>array(
@@ -2719,49 +2751,7 @@ $default_state=array(
                             ),
 
 
-                   'parts'=>array(
-                               'details'=>false,
-                               'view'=>'general',
-                               'period'=>'year',
-                               'percentage'=>0,
-                               'mode'=>'all',
-                               'avg'=>'totals',
-                               'table'=>array(
-                                           'order'=>'sku',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>20,
-                                           'where'=>'where true',
-                                           'f_field'=>'used_in',
-                                           'f_value'=>'',
-                                           'csv_export'=>array(
-                                                            'sku'=>true,
-                                                            'used_in'=>true,
-                                                            'description'=>true,
-                                                            'stock'=>true,
-                                                            'stock_cost'=>true,
-                                                            'unit'=>false,
-                                                            'status'=>false,
-                                                            'valid_from'=>false,
-                                                            'valid_to'=>false,
-                                                            'total_lost'=>false,
-                                                            'total_broken'=>false,
-                                                            'total_sold'=>false,
-                                                            'total_given'=>false,
-                                                            'sales_all'=>false,
-                                                            'profit_all'=>false,
-                                                            'sales_1y'=>false,
-                                                            'profit_1y'=>false,
-                                                            'sales_1q'=>false,
-                                                            'profit_1q'=>false,
-                                                            'sales_1m'=>false,
-                                                            'profit_1m'=>false,
-                                                            'sales_1w'=>false,
-                                                            'profit_1w'=>false
-                                                        )
-
-                                       )
-                           ),
+               
 
                    'families'=>array(
                                   'details'=>false,

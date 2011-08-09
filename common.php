@@ -230,8 +230,11 @@ if ($user->can_view('reports')) {
 }
 if ($user->can_view('suppliers'))
 	$nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
+	
+	
+	
 if ($user->can_view('warehouses')) {
-	if ($user->warehouses==1)
+	if (count($user->warehouses)==1)
 		$nav_menu[] = array(_('Inventory'), 'warehouse.php','warehouses');
  
 	else

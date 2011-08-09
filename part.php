@@ -86,14 +86,13 @@ $js_files=array(
 
 
 $smarty->assign('search_label',_('Parts'));
-$smarty->assign('search_scope','part');
+$smarty->assign('search_scope','parts');
 
 
 
 
-$smarty->assign('parts_period',$_SESSION['state']['parts']['period']);
-$smarty->assign('parts_avg',$_SESSION['state']['parts']['avg']);
-$smarty->assign('parts_mode',$_SESSION['state']['parts']['mode']);
+$smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
+$smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
 
 $smarty->assign('view',$_SESSION['state']['part']['view']);

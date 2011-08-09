@@ -271,19 +271,25 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-vi
 function change_sales_period(){
   tipo=this.id;
  
-  ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+  ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week','parts_period_yeartoday','parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
 
  Dom.removeClass(ids,"selected")
  Dom.addClass(this,"selected")
    period=this.getAttribute('period');
- YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=parts-period&value='+period ,{});
+ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-parts-period&value='+period ,{});
+
+Dom.setStyle(['info_all','info_three_year','info_year','info_six_month','info_quarter','info_month','info_ten_day','info_week','info_yeartoday','info_monthtoday','info_weektoday','info_today'],'display','none')
+
+
+Dom.setStyle(['info2_all','info2_three_year','info2_year','info2_six_month','info2_quarter','info2_month','info2_ten_day','info2_week','info2_yeartoday','info2_monthtoday','info2_weektoday','info2_today'],'display','none')
+Dom.setStyle(['info_'+period,'info2_'+period],'display','')
 
 }
 
 
 function init(){
 
-init_search('part');
+init_search('parts');
 Event.addListener(['description','sales','transactions','history','purchase_orders'], "click",change_block);
 
 
@@ -303,7 +309,7 @@ Event.addListener(ids, "click", change_snapshot_granularity);
 
 
 
- ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+ ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week','parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
  YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 
 
