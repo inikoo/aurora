@@ -218,7 +218,7 @@
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
-	<li> <span class="item {if $view=='history'}selected{/if}"  id="login_stat">  <span> {t}Login Status{/t}</span></span></li>
+	<li> <span class="item {if $view=='login_stat'}selected{/if}"  id="login_stat">  <span> {t}Login Status{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Order Details{/t}</span></span></li>
  </ul>
@@ -368,7 +368,7 @@
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>
 
- <div id="block_login_stat" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+ <div id="block_login_stat" class="data_table" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	<table    class="show_info_product">
 
 	<tr ><td>{t}User Login Count{/t}:</td><td>{$login_stat.UserLoginCount}</td></tr>
