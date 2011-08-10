@@ -4549,8 +4549,9 @@ function list_parts() {
     $wheref.=" and  `Part XHTML Description` like '%".addslashes($f_value)."%'";
     elseif($f_field=='supplied_by' and $f_value!='')
     $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-
-
+   elseif($f_field=='sku' and $f_value!='')
+    $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
+    
     $sql="select count(*) as total from `Part Dimension`  $where $wheref";
 
     //   print $sql;
@@ -4563,14 +4564,14 @@ function list_parts() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Part Dimension`  $where ";
+        $sql="select count(*) as total_without_filters from `Part Dimension`  $where ";
 
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
+             $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
         }
 
     }
@@ -4585,6 +4586,10 @@ function list_parts() {
         $rtext_rpp=' '._('(Showing all)');
     if ($total==0 and $filtered>0) {
         switch ($f_field) {
+        case('sku'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+            break;
+
         case('used_in'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
             break;
@@ -4600,6 +4605,10 @@ function list_parts() {
 
 
         switch ($f_field) {
+        case('sku'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+            break;
+
         case('used_in'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
             break;

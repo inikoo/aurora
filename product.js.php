@@ -122,7 +122,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								       })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['orders']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -184,7 +184,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['customers']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -246,7 +246,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['code_timeline']['order_dir']?>"
 								   }
 								   ,dynamicData : true

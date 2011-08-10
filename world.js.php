@@ -146,7 +146,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['world']['wregions']['order']?>",
+								      key: "<?php echo $_SESSION['state']['world']['wregions']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['world']['wregions']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -206,7 +206,7 @@ var tableid=2;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['world']['continents']['order']?>",
+								      key: "<?php echo $_SESSION['state']['world']['continents']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['world']['continents']['order_dir']?>"
 								   }
 								   ,dynamicData : true

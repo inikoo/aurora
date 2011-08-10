@@ -413,7 +413,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "wregion_code",
+								      key: "wregion_code",
 								       dir: ""
 								   }
 								   ,dynamicData : true

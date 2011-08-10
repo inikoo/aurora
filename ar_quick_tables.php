@@ -381,7 +381,7 @@ function part_list() {
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
     else
-        $order='code';
+        $order='formated_sku';
     if (isset( $_REQUEST['od']))
         $order_dir=$_REQUEST['od'];
     else
@@ -389,7 +389,7 @@ function part_list() {
     if (isset( $_REQUEST['f_field']))
         $f_field=$_REQUEST['f_field'];
     else
-        $f_field='code';
+        $f_field='sku';
 
     if (isset( $_REQUEST['f_value']))
         $f_value=$_REQUEST['f_value'];
@@ -436,7 +436,8 @@ function part_list() {
     $wheref.=" and  `Part Unit Description` like '".addslashes($f_value)."%'";
  elseif($f_field=='used_in' and $f_value!='')
     $wheref.=" and  `Part Currently Used In` like '".addslashes($f_value)."%'";
-
+  elseif($f_field=='sku' and $f_value!='')
+    $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(DISTINCT `Part SKU`) as total from `Part Dimension` $where $wheref  ";
 
@@ -469,17 +470,17 @@ function part_list() {
     $filter_msg='';
 
     switch ($f_field) {
-    case('code'):
+     case('sku'):
         if ($total==0 and $filtered>0)
-            $filter_msg=_("There isn't any family with code")." <b>".$f_value."*</b> ";
+            $filter_msg=_("There isn't any part with")." <b> ".sprintf("SKU%05d",$f_value)."*</b> ";
         elseif($filtered>0)
-        $filter_msg=_('Showing')." $total ("._('families with code like')." <b>$f_value</b>)";
+        $filter_msg=_('Showing')." $total ("._('parts with')." <b> ".sprintf("SKU%05d",$f_value)."</b>)";
         break;
-    case('name'):
+    case('description'):
         if ($total==0 and $filtered>0)
-            $filter_msg=_("There isn't any family with name")." <b>".$f_value."*</b> ";
+            $filter_msg=_("There isn't any part with description")." <b>".$f_value."*</b> ";
         elseif($filtered>0)
-        $filter_msg=_('Showing')." $total ("._('families with name like')." <b>$f_value</b>)";
+        $filter_msg=_('Showing')." $total ("._('parts with description like')." <b>$f_value</b>)";
         break;
 
     }

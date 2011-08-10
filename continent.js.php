@@ -126,7 +126,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['continent']['wregions']['order']?>",
+								      key: "<?php echo $_SESSION['state']['continent']['wregions']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['continent']['wregions']['order_dir']?>"
 								   }
 								   ,dynamicData : true

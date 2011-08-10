@@ -33,7 +33,9 @@ var myRowsPerPageDropdown = function(){return true};
 var mydoBeforeSortColumn = function(){return true};
 var mydoBeforePaginatorChange = function(e){
 
-return true};
+return true
+
+};
 
 
 var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
@@ -146,7 +148,6 @@ Dom.setStyle('paginator'+this.table_id,'display','none')
 var myRequestBuilder = function(oState, oSelf) {
     // Get states or use defaults
 
-    
     oState = oState || {pagination:null, sortedBy:null};
 
     var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
@@ -197,6 +198,9 @@ var dir=oState.sortedBy.dir;
 
 var mygetTerms =function (query) {
 
+
+
+
     if(this.table_id==undefined)
 	var table_id=0;
     else
@@ -208,7 +212,6 @@ var mygetTerms =function (query) {
 
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-   
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 
@@ -230,7 +233,6 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
-
     table.get('paginator').setRowsPerPage(rpp)
 
 }
@@ -239,7 +241,6 @@ var change_rpp=function (rpp,tableid){
 var change_rpp_with_totals=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
-
 
     table.get('paginator').setRowsPerPage(rpp+1)
 

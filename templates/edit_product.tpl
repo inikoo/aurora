@@ -75,7 +75,7 @@
 	 
 	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
 	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
-	   <span style="margin-right:10px; {if $product->get('Product Type')=="Normal" and $num_parts!=0}display:none{/if}" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
+	   <span style="margin-right:10px; {if $product->get('Product Type')=="Normal" and $num_parts!=0}xdisplay:none{/if}" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
 	  </div>
 	 	   </td>
 	 	   </tr>
@@ -375,7 +375,31 @@
   </div>
 </div>
 
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+
+
 {include file='footer.tpl'}
+
 <div id="dialog_part_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
         <div id="the_table" class="data_table" >
