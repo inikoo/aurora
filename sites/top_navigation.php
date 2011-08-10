@@ -88,7 +88,7 @@
 </div>
 
 
-<div id="dialog_register_part_2"    class="dialog"    style="display:block;position:relative;left:450px;width:415px;top:-22px;">
+<div id="dialog_register_part_2"    class="dialog"    style="position:relative;left:450px;width:415px;top:-22px;">
 <h2>Registration</h2>
 <table>
 <tr class="title" ><td colspan="3">Login info: </td></tr>

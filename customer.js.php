@@ -724,10 +724,80 @@ Event.addListener(window, "load", function() {
 
 	   
 
+	   
+	   //login stat table
+	   
+	   
+	       
+
+	    var tableid=3; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [
+			      // {key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      {key:"ip", label:"<?php echo _('IP Address')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
+			];
+			       
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key);
+		alert("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key)
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: ["user","ip","login_date","logout_date"]};
+
+
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource3
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['loginhistory']['nr']?>,containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
+
+
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_value']?>'};
+	   
+	   
+	   
 // -------------------------------------orders end ----------------------------------
 
 	
-	};
+		};
     });
 
 

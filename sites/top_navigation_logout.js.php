@@ -107,27 +107,27 @@ Dom.setStyle('tr_register_part_2_wait','display','');
 		    
 		    
 			
-			if(r.result=='error'){
-				Dom.addClass('register_email','error');
-			}else{
-				Dom.removeClass('register_email','error');
-					
-				if(r.result=='not_found'){
-					Dom.get('confirmed_register_email').innerHTML=r.login_handle;
-					show_register_part_2_dialog();
-				}else if(r.result=='found'){
-					
-				}else if(r.result=='capture_false'){
+				if(r.result=='error'){
+					Dom.addClass('register_email','error');
+				}else{
+					Dom.removeClass('register_email','error');
+						
+					if(r.result=='not_found'){
+						Dom.get('confirmed_register_email').innerHTML=r.login_handle;
+						show_register_part_2_dialog();
+					}else if(r.result=='found'){
+						
+					}else if(r.result=='capture_false'){
+						
+					}
 					
 				}
-    		    
-    		}
 			    
 			
 	
 			        
 			        
-		        }
+		    }
 		 
 			
 

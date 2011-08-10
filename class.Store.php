@@ -247,7 +247,7 @@ class Store extends DB_Table {
             return $this->data[$key];
 
 
-
+		
 
 
 
