@@ -412,7 +412,6 @@ if(!$user_key){
 
 }
 
-
 if($user_key){
 
 
@@ -467,7 +466,8 @@ Thank you";
 
 
 
-$to='rulovico@gmail.com';
+//$to='rulovico@gmail.com';
+$to='migara@inikoo.com';
 	$data=array(
 		'type'=>'HTML',
 		'subject'=>	'Reset your password',
