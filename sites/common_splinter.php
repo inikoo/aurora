@@ -96,8 +96,8 @@ $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
  
 if ($logout) {
  
- //    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
-  //  mysql_query($sql);
+     $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+   mysql_query($sql);
  
     session_regenerate_id();
     session_destroy();

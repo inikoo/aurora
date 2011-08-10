@@ -150,6 +150,10 @@ class User extends DB_Table {
             }
 
         }
+		if ($base_data['User Type']=='Customer') {
+			$sql=sprintf("update `Store Dimension` set `Store Total Users`=`Store Total Users`+1 where `Store Key`=%d",$base_data['User Site Key']);
+			mysql_query($sql);
+        }
 
         $keys='(';
         $values='values(';
@@ -160,8 +164,7 @@ class User extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
-        
-      
+        //print $sql;
         if (mysql_query($sql)) {
 
             $user_id=mysql_insert_id();
@@ -169,6 +172,10 @@ class User extends DB_Table {
             $this->new=true;
             $this->msg= _('User added susesfully');
             $this->get_data('id',$user_id);
+			
+			
+			
+			
             return;
         } else {
             $this->error=true;
