@@ -389,15 +389,13 @@ part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
  
     var oTD= oTR.insertCell(1);
     Dom.addClass(oTD,'sku');
-    oTD.innerHTML='<span>'+formated_sku+'</span>';
-    Dom.setStyle(oTD, 'width', '120px');
+    oTD.innerHTML='<span class="id">'+formated_sku+'</span> '+description;
+    //Dom.setStyle(oTD, 'width', '120px');
         
-    var oTD= oTR.insertCell(2);
-    Dom.addClass(oTD,'description');
-    Dom.setStyle(oTD, 'width', '350px');
-    oTD.innerHTML=description;
+   oTD.colSpan = 2;
   
-    var oTD= oTR.insertCell(3);
+    var oTD= oTR.insertCell(2);
+    Dom.setStyle(oTD,'text-align','right');
     oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
     oTR= oTbl.insertRow(-1);
       oTR.id="sup_tr2_"+sku;
@@ -446,6 +444,26 @@ dialog_part_list.show()
 }
 
 function init(){
+
+
+   Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+ 
+ 
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+  oACDS.table_id=0;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+ 
+ var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+  oACDS1.table_id=1;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+ 
 
  init_search('products_store');
  
@@ -610,11 +628,20 @@ var tableid=1;
 					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
 			     	,{key:"status", label:"",width:20, sortable:false,className:"aleft"}
-
+                   
 					];
 		    
 		      
-		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=part_list&tableid=1&nr=20&sf=0");
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=part_list&tableid=1");
+		      
+		      
+		      
+		      
+	
+		      
+		      
+		      
+		      
 		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      	    this.dataSource1.table_id=tableid;
@@ -622,14 +649,15 @@ var tableid=1;
 		      this.dataSource1.responseSchema = {
 			  resultsList: "resultset.data", 
 			  metaFields: {
-			    rowsPerPage:"resultset.records_perpage",
-			    rtext:"resultset.rtext",
-			     rtext_rpp:"resultset.rtext_rpp",
-			    sort_key:"resultset.sort_key",
-			    sort_dir:"resultset.sort_dir",
-			    tableid:"resultset.tableid",
-			    filter_msg:"resultset.filter_msg",
-			    totalRecords: "resultset.total_records"
+			  rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
 			  },
 			  
 			  fields: [
@@ -651,7 +679,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "formated_sku",
+								      key: "formated_sku",
 								       dir: ""
 								   }
 								   ,dynamicData : true
@@ -661,7 +689,6 @@ var tableid=1;
 		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-                   this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
                    
                    this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
        this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
@@ -694,6 +721,20 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
+
+
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
 
 
 function close_change_part_dialog(){

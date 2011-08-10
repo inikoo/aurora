@@ -169,7 +169,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['report_geo_sales']['countries']['order']?>",
+								      key: "<?php echo $_SESSION['state']['report_geo_sales']['countries']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['report_geo_sales']['countries']['order_dir']?>"
 								   }
 								  // ,dynamicData : true

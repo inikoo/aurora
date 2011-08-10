@@ -212,18 +212,18 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-//while($row=mysql_fetch_array($res)){
-  //$tree=preg_split('/>/',$row['Category Position']);
-  //print $row['Category Key'];
-  //print_r($nodes->fetch($row['Category Key']));
-  //$cat_theme[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
-//}
-//mysql_free_result($res);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
-//$smarty->assign('cat_use',$cat_use);
-//$smarty->assign('cat_material',$cat_material);
-//$smarty->assign('cat_theme',$cat_theme);
+$smarty->assign('filter1','sku');
+$smarty->assign('filter_value1','');
+$filter_menu=array(
+		   'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
+		   'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
 
+		   );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu['sku']['label']);
 
 $smarty->display('edit_product.tpl');
 

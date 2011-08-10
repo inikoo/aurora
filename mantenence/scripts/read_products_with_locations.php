@@ -39,7 +39,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql=sprintf("select * from aw_old.product where code='wallh-11'   order by code   ");
+$sql=sprintf("select * from aw_old.product    order by code   ");
 
 //$sql=sprintf("select * from aw_old.product  order by code   ");
 $result=mysql_query($sql);

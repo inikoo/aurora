@@ -51,7 +51,7 @@ include_once('common.php');
 								       })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['server']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['server']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['server']['order_dir']?>"
 								   }
 								   ,dynamicData : true
