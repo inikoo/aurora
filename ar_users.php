@@ -24,6 +24,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('forgot_password'):
+    forgot_password();
+    break;
 case('staff_users'):
     list_staff_users();
     break;
@@ -608,9 +611,10 @@ function list_customer_user_loginhistory() {
     $where=sprintf('where true ');
     $where.=" and `User Type`='Customer'";
 
-  
-    $where.=" and U.`User Parent Key`=".$id;
-
+	if(isset($_REQUEST['customer_user']))
+		$where.=" and UL.`User Key`=".$id;
+	else
+		$where.=" and U.`User Parent Key`=".$id;
 	
     $filter_msg='';
     $wheref='';
@@ -1410,8 +1414,7 @@ function list_customer_users() {
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
     $where.=" and `User Key` IS NOT NULL  ";
-
-
+	$where.=sprintf(" and `User Type`='Customer' and `User Site Key`=%d", $_REQUEST['store_key']);
     $sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`) $where $wheref";
 
 
@@ -1475,6 +1478,7 @@ function list_customer_users() {
 
     $sql="select *   from `Customer Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Customer Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
+	//print $sql;
 //print($sql);
 
     $adata=array();
@@ -1496,19 +1500,14 @@ function list_customer_users() {
 //  if ($data['User Key']){
 //  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
 // }
-        $customer_name=sprintf('<a href="customer_user.php?id=%d">%s</a>',$data['User Key'],$data['Customer Main Contact Name']);
+        $customer_name=sprintf('<a href="customer_user.php?id=%d&store=%d">%s</a>',$data['User Key'],$data['User Site Key'],$data['Customer Main Contact Name']);
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'customer_id'=>$data['Customer Key'],
-                     //'alias'=>$data['Staff Alias'],
+                     'alias'=>$data['User Handle'],
                      'name'=>$customer_name,
-                     //'password'=>$password,
-                     'location'=>$data['Customer Main Location'],
-                     'email'=>$data['Customer Main Plain Email'],
-                     'telephone'=>$data['Customer Main XHTML Telephone'],
-                     // 'groups'=>$groups,
-                     // 'stores'=>$stores,
-                     // 'warehouses'=>$warehouses,
+                     'login'=>$data['User Last Login'],
+					 'count'=>$data['User Login Count'],
                      'isactive'=>$is_active
                  );
 
@@ -1533,6 +1532,11 @@ function list_customer_users() {
                                      )
                    );
     echo json_encode($response);
+}
+
+function forgot_password(){
+	$user = new User(43);
+	$user->forgot_password();
 }
 
 ?>

@@ -740,7 +740,7 @@ Event.addListener(window, "load", function() {
 			];
 			       
 	    this.dataSource3 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key);
-		alert("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key)
+		//alert("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key)
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {

@@ -437,16 +437,12 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 <h2>Forgotten password</h2>
 <table  style="width:290px">
 <tr><td  class="label">Email: </td><td><input id="forgot_password_handle"></td></tr>
-<tr></tr>
-<tr id="tr_forgot_password_buttons" class="button" style="">
+
+
 <tr>
 <td class="label">
-
-
-
 <img id="captcha2" src="../securimage/securimage_show.php" alt="CAPTCHA Image" /> <br>
 <a href="#" onclick="document.getElementById('captcha2').src = '../securimage/securimage_show.php?' + Math.random(); return false">[Different Image]</a>
-
 </td>
 <td>
 <input type="text" id="captcha_code2" name="captcha_code2" size="3" maxlength="3" />
@@ -454,7 +450,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </td>
 </tr>
 
-<td><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td></tr>
+<td colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
 <tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
 <tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
