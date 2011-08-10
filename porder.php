@@ -102,6 +102,9 @@ $filter_menu=array(
 		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Our Product Code'),
 		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Product Code'),
 		    );
+		    
+		  
+		    
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);

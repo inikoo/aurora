@@ -540,14 +540,15 @@ $default_state=array(
                                 'parent'=>'supplier',
                                 'parent_key'=>0,
 
-                                'table'=>array(
+                                'products'=>array(
                                             'order'=>'last_date',
                                             'order_dir'=>'desc',
                                             'sf'=>0,
                                             'nr'=>25,
                                             'where'=>'where true',
-                                            'f_field'=>'public_id',
-                                            'f_value'=>'','f_show'=>false,
+                                            'f_field'=>'p.code',
+                                            'f_value'=>'',
+                                            'f_show'=>false,
                                             'from'=>'',
                                             'to'=>'',
                                             'elements'=>array(),

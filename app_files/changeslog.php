@@ -3541,7 +3541,7 @@ CHANGE `Part 10 day Acc Keeping Days` `Part 10 Day Acc Keeping Days` FLOAT NOT N
 CHANGE `Part 10 day Acc Out of Stock Days` `Part 10 Day Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0',
 CHANGE `Part 10 day Acc Unknown Stock Days` `Part 10 Day Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0',
 CHANGE `Part 10 day Acc GMROI` `Part 10 Day Acc GMROI` FLOAT NOT NULL DEFAULT '0';
-
+ALTER TABLE `Image Dimension` ADD `Image Public` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Image Public` ) ;
 
 */
 
