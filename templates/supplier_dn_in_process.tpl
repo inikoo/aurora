@@ -2,6 +2,9 @@
 <div id="time2_picker" class="time_picker_div"></div>
 <div id="bd" >
 
+
+<input id="supplier_delivery_note_key" value="{$supplier_dn->id}" type="hidden"/>
+
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
 
@@ -19,7 +22,7 @@
     </div>
     
     
-    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')}</h1>
+    <h1 style="padding:0px 0 10px 0;width:500px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')} ({$supplier_dn->get('Supplier Delivery Note Current State')})</h1>
     <table border=0 style="">
       <tr><td>{t}Supplier Delivery Note Key{/t}:</td><td class="aright">{$supplier_dn->get('Supplier Delivery Note Key')}</td></tr>
       <tr><td>{t}Supplier{/t}:</td><td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td></tr>
@@ -82,11 +85,9 @@
     </div>
 
   
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-  </div>
+
+  	   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
+
   <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
 

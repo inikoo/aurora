@@ -541,8 +541,8 @@ $default_state=array(
                                 'parent_key'=>0,
 
                                 'products'=>array(
-                                            'order'=>'last_date',
-                                            'order_dir'=>'desc',
+                                            'order'=>'code',
+                                            'order_dir'=>'',
                                             'sf'=>0,
                                             'nr'=>25,
                                             'where'=>'where true',
