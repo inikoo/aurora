@@ -186,7 +186,7 @@ function delete_order() {
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
 	    success:function(o) {
-		  alert(o.responseText)
+		 // alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    location.href='supplier.php?id='+supplier_id;
@@ -230,7 +230,7 @@ var select_staff=function(o,e){
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		
 		success:function(o) {
-		  alert(o.responseText)
+		  //alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 
@@ -241,11 +241,6 @@ var select_staff=function(o,e){
 		}
 	    });    
     }
-
-
-
-
-
 
 	    var swap_show_all_products=function(o){
 
@@ -328,7 +323,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['porder']['products']['nr']?>,containers : 'paginator', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -338,8 +333,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['porder']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['porder']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -353,7 +348,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['porder']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['porder']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -425,6 +420,8 @@ function init(){
 
     YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
    
+  Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 
 
 

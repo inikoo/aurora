@@ -3,7 +3,7 @@
 
 <div style="padding:0 20px">
 
-{include file='assets_navigation.tpl'}
+{include file='suppliers_navigation.tpl'}
 
 <div style="clear:left;">
   <h1>{t}Suppliers{/t}</h1>
