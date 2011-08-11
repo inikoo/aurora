@@ -22,7 +22,7 @@ require_once "classes/class.LightProduct.php";
 require_once "classes/class.LightFamily.php";
 
 
-$secret_key='FDK/S5GRkZFXi47zvs4pTezyfEr5nWFthsFbG6j1CzCPYPX5';
+
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$default_DB_link) {
@@ -61,12 +61,14 @@ $_SESSION['basket']['total']=$_REQUEST['tot'];
 }
 
 $site=new Site($myconf['site_key']);
+
+
 if(!$site->id){
 
 exit ("Site data not found");
 }
 
-
+$secret_key=$site->data['Site Secret Key'];
 
 $store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);

@@ -16,8 +16,8 @@ if(!$user->can_view('users'))
   exit();
   
   
- 
 
+$smarty->assign('store_key',$_REQUEST['store_key']);
 		 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
