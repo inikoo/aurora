@@ -226,14 +226,15 @@ Dom.get('place_sku_qty').value=o.getAttribute('qty');
     
 var ar_file='ar_assets.php';
 	request='tipo=part_location_info&sku='+ o.getAttribute('sku');
-		alert(ar_file+'?'+request)
+	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
+						Dom.get('place_sku_label').innerHTML=r.data.description
 						   place_sku.show();
 						    
 						} else {

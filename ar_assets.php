@@ -10267,6 +10267,20 @@ function list_products_lists() {
 
 function part_location_info($data){
 
+$part=new Part($data['sku']);
+
+
+$data=array(
+'description'=>'<span class="id">'.$part->get_sku().'</span>'.$part->data['Part XHTML Description'].'<br/>'.$part->data['Part XHTML Currently Used In']
+);
+
+   $response= array('state'=>200,'data'=>$data);
+            echo json_encode($response);
+            return;
+
+
+
+
 }
 
 

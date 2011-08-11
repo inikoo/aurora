@@ -127,10 +127,10 @@
 
 
 <div id="place_sku" class="nicebox">
-<div class="bd" style="width:400px">
-<h2>{t}Stock Placing for{/t} <span id="place_sku_label"></span></h2>
+<div class="bd" style="width:350px;padding:10px">
+<span id="place_sku_label"></span>
 <div id="place_sku_msg"></div>
-<table>
+<table border=1 style="margin-top:10px;border-top:1px solid #ccc">
 <tr><td style="width:80px">{t}Quantity{/t}</td><td><input style="width:40px" id="place_sku_qty" value="" type="text"></td>
 <td class="label">{t}Location{/t}</td><td><input id="place_sku_location" /></td>
 </tr>
