@@ -611,8 +611,6 @@ success:function(o) {
 };
 
 
-
-
 function init() {
 
 audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:false,underlay: "none",draggable:false});

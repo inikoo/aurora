@@ -3553,6 +3553,7 @@ ALTER TABLE `dw`.`Supplier Product Dimension` ADD INDEX ( `Supplier Product Curr
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Description` ,ADD `Supplier Product XHTML Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Store As` ,ADD `Supplier Product Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product XHTML Store As` ,ADD `Supplier Product XHTML Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Sold As` 
 ALTER TABLE `Supplier Product Dimension` CHANGE `Supplier Product Store As` `Supplier Product Store As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product XHTML Store As` `Supplier Product XHTML Store As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product Sold As` `Supplier Product Sold As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product XHTML Sold As` `Supplier Product XHTML Sold As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
 ALTER TABLE `Supplier Delivery Note Item Part Bridge` CHANGE `Supplier Delivery Note Line` `Purchase Order Transaction Fact Key` MEDIUMINT( 5 ) UNSIGNED NOT NULL ;
+
 */
 
 ?>
