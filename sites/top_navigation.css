@@ -3,7 +3,7 @@
 .soft_link{cursor:pointer;color:#ccc}
 .soft_link:hover{text-decoration:underline}
 
-.dialog {display:none;font-size:5px;background:black;color:white;font-family:"Arial";}
+.dialog {display:none;font-size:5px;background:black;color:white;font-family:"Arial";z-index:10000}
 .dialog table {font-size:12px;color:white;margin:0px 0px 0px 30px}
 .dialog tr.button{height:40px}
 .dialog tr.button td,.dialog tr.link td{text-align:right}

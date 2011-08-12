@@ -7007,7 +7007,7 @@ function list_customers_per_store() {
 
 
 
-    $sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,(`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
+    $sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,`Store Total Users`, (`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
          `Store Contacts With Orders`,(`Store Active Contacts With Orders`+`Store Losing Contacts With Orders`)as active_with_orders,`Store New Contacts With Orders`,`Store Lost Contacts With Orders`,`Store Losing Contacts With Orders` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 
 
@@ -7060,7 +7060,8 @@ function list_customers_per_store() {
         $active_contacts_with_orders=number($row['active_with_orders']);
         $losing_contacts_with_orders=number($row['Store Losing Contacts With Orders']);
         $lost_contacts_with_orders=number($row['Store Lost Contacts With Orders']);
-
+		$total_users=$row['Store Total Users'];
+		
         //  $contacts_with_orders=number($row['contacts_with_orders']);
         // $active_contacts=number($row['active_contacts']);
         // $new_contacts=number($row['new_contacts']);
@@ -7100,9 +7101,11 @@ function list_customers_per_store() {
                      'new_contacts_with_orders'=>$new_contacts_with_orders,
                      'lost_contacts_with_orders'=>$lost_contacts_with_orders,
                      'losing_contacts_with_orders'=>$losing_contacts_with_orders,
+					 'users'=>$total_users
 
 
                  );
+				 
     }
     mysql_free_result($res);
 
@@ -7150,6 +7153,7 @@ function list_customers_per_store() {
                  'new_contacts_with_orders'=>$total_new_contacts_with_orders,
                  'lost_contacts_with_orders'=>$total_lost_contacts_with_orders,
                  'losing_contacts_with_orders'=>$total_losing_contacts_with_orders,
+				 'users'=>$total_users
 
                  //               'customers'=>$sum_total,
                  //             'active'=>$sum_active,

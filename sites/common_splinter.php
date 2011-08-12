@@ -4,7 +4,7 @@
 //set_include_path(get_include_path() . $path);
 //print get_include_path() . PATH_SEPARATOR . $path;
   include_once('app_files/key.php');
-                include_once('aes.php');
+            include_once('aes.php');
  
 require_once 'app_files/db/dns.php';
 require_once("conf/checkout.php");
@@ -175,9 +175,8 @@ $St=get_sk();
 log_visit($session->id);
 
 function show_footer(){
-
-include_once('../footer.php');
-print $footer;
+	include_once('footer.php');
+	echo $footer;
 }
 
 function get_sk(){
@@ -264,6 +263,8 @@ function show_products($code){
 	}
 
 	
+	
+	
 	$product=new LightFamily($code, 1);
 	if(!$product->match)
 		return;
@@ -279,6 +280,23 @@ function show_products($code){
 		return;
 	}
 }
+
+function set_parameters($data){
+	global $found_in_url, $found_in_label;
+	
+	$arg1=strleft($data, "found_in_label");
+	$data=substr($data, strpos($data, "found_in_label"));
+	$arg2=strleft($data, "see_also_1");
+	
+	echo $arg1;
+	echo $arg2;
+	
+	
+	
+	$found_in_url=substr($arg1, strpos($arg1, "=")+1);
+	$found_in_label=substr($arg2, strpos($arg2, "=")+1);
+}
+
 
 
 
