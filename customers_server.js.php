@@ -33,11 +33,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       	,{key:"active_contacts_with_orders", label:"<?php echo _('Active Customers')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 				       	,{key:"losing_contacts_with_orders", label:"<?php echo _('Losing Customers')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 				       	,{key:"lost_contacts_with_orders", label:"<?php echo _('Lost Customers')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+						//	,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['stores']['customers']['type']=='contacts_with_orders'?'':'hidden:true,')?> //sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
      
 				   
 					 ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=customers_per_store&tableid="+tableid);
+		//alert("ar_assets.php?tipo=customers_per_store&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -55,7 +57,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 'code','name','contacts','active_contacts','new_contacts','lost_contacts','losing_contacts',
-			'contacts_with_orders','active_contacts_with_orders','new_contacts_with_orders','lost_contacts_with_orders','losing_contacts_with_orders'
+			'contacts_with_orders','active_contacts_with_orders','new_contacts_with_orders','lost_contacts_with_orders','losing_contacts_with_orders','users'
 			 ]};
 	    //__You shouls not change anything from here
 

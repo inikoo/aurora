@@ -4,7 +4,7 @@ function show_products_in_family_info($data, $header){
 
 		$_form=sprintf('<div><div>					
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					<style type="text/css">table.order{font-size:8pt;font-family:arial;font-weight:bold}
 					td.order{padding-right:2em;}
 					</style>
 
@@ -14,7 +14,7 @@ function show_products_in_family_info($data, $header){
 		$form=sprintf('<table class="order" >'
 						);
 	if($header['on'])
-		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="2">Price from %.2f</td>',$header['price']);				
+		$form.=sprintf('<td style="font-size:20p;font-family:arial;" colspan="4">Price from %.2f</td>',$header['price']);				
 		
 	foreach($data as $product){
 		$i=1;
@@ -134,7 +134,7 @@ function show_products_in_family($type, $data, $conf, $header){
 	
 	$_form=sprintf('<div><div>
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					<style type="text/css">table.order{font-size:8pt;font-family:arial; font-weight:bold}
 					input.order{width:30px}
 					td.order{padding-right:2em;}
 					</style>
@@ -156,7 +156,7 @@ function show_products_in_family($type, $data, $conf, $header){
 					);
 
 	if($header['on'])
-		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="2">Price from %.2f</td>',$header['price']);
+		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="4">Price from %.2f</td>',$header['price']);
 					
 	foreach($data as $product){
 		$i=1;
@@ -270,7 +270,7 @@ function show_products_in_family($type, $data, $conf, $header){
 		 $i++;
 	}
 	
-	$_form.=sprintf('<tr class="nophp"><td colspan="2">
+	$_form.=sprintf('<tr class="nophp"><td colspan="4">
 						<input name="Submit" type="submit"  value="Order"> 
 						<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr>
 						</form>
@@ -279,7 +279,7 @@ function show_products_in_family($type, $data, $conf, $header){
 					);
 
 
-	$form.=sprintf('<tr ><td >
+	$form.=sprintf('<tr ><td colspan="4">
 					<input type="hidden" name="return" value="%s"> 
 					<input name="Submit" type="submit"  value="Order">
 					<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>'

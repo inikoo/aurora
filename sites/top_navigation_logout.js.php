@@ -93,7 +93,7 @@ data['ep']=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.
 Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
-     var request='../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
+     var request='../../ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
  //alert(request);return;
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -145,7 +145,7 @@ function check_email(){
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 
-     var request='../ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
+     var request='../../ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
    //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -202,7 +202,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='../ar_register.php?tipo=forgot_password&values='+json_value;
+     var request='../../ar_register.php?tipo=forgot_password&values='+json_value;
   alert(request);
   Dom.setStyle('tr_forgot_password_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait','display','');
@@ -256,7 +256,7 @@ function login(){
 
 //Dom.get('login_password').value='';
     //Dom.get('loginform').submit();
-     var request='../ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key;
+     var request='../../ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key;
     //  alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
