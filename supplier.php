@@ -50,8 +50,9 @@ if (!$supplier->id) {
 }
 
 
-$show_details=$_SESSION['state']['supplier']['details'];
-$smarty->assign('show_details',$show_details);
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','suppliers');
+
 
 $general_options_list=array();
 
@@ -64,7 +65,6 @@ if ($modify) {
     $general_options_list[]=array('tipo'=>'url','url'=>'porder.php?new=1&supplier_id='.$supplier_id,'label'=>_('New Purchase Order'));
 
 }
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
 
 

@@ -200,22 +200,65 @@ function close_dialog(tipo){
   
 } 
 
+function close_dialog(tipo){
+    switch(tipo){
+   
+case('delete'):
+	delete_dialog.hide();
 
+	break;
+    }
+  
+} 
+  
 
 function place(o){
 
+
+Dom.get('place_sku_qty').value=o.getAttribute('qty');
  var y=(Dom.getY(o))
     var x=(Dom.getX(o))
     x=x-440;
     y=y-30
     Dom.setX('place_sku', x)
     Dom.setY('place_sku', y)
-  
-   // var user_id=o.getAttribute('user_id');
-   // var user_name=o.getAttribute('user_name');
-   // Dom.get("place_sku_alias").setAttribute('user_id',user_id);
-   // Dom.get("place_sku_alias").innerHTML=user_name;
-    place_sku.show();
+    
+    
+var ar_file='ar_assets.php';
+	request='tipo=part_location_info&sku='+ o.getAttribute('sku');
+	//	alert(ar_file+'?'+request)
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						//alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						Dom.get('place_sku_label').innerHTML=r.data.description
+						   place_sku.show();
+						    
+						} else {
+						    alert(r.msg);
+						    //	callback();
+						}
+					    },
+						failure:function(o) {
+						alert(o.statusText);
+						// callback();
+					    },
+						scope:this
+						},
+					request
+				    
+					);  
+
+
+
+
+
+
+
+   
 
 }
 
@@ -285,7 +328,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier_dn']['products']['nr']?>,containers : 'paginator', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -296,7 +339,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 
 							     ,sortedBy : {
 								 key: "sku",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 dir: "<?php echo$_SESSION['state']['supplier_dn']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -310,7 +353,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -331,7 +374,7 @@ var select_staff=function(o,e){
 var checked_order_save=function(o){
  var staff_key=Dom.get('checked_by').value;
     var request='ar_edit_porders.php?tipo=set_dn_as_checked&id='+escape(dn_key)+'&staff_key='+escape(staff_key);
-    alert(request)
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {

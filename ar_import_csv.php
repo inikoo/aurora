@@ -635,7 +635,7 @@ function browse_maps($data) {
     }
 
 
-    $rtext=$total_records." ".ngettext('Map','Maps',$total_records);
+    $rtext=$total_records." ".ngettext('Record','Records',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else

@@ -29,8 +29,11 @@ var myCellEdit = function (callback, newValue) {
    
     ar_file='ar_edit_porders.php';
     
-    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-   // alert(ar_file+'?'+request);
+    
+    
+    
+    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) +  myBuildUrl(datatable,record)+'&supplier_delivery_note_key='+Dom.get('supplier_delivery_note_key').value;
+ 
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
@@ -53,7 +56,7 @@ var myCellEdit = function (callback, newValue) {
 						
 						callback(true, r.quantity);
 					    } else {
-						alert(r.msg);
+						//alert(r.msg);
 						callback();
 					    }
 					},
@@ -106,8 +109,8 @@ var myonCellClick = function(oArgs) {
 	    var new_qty=parseFloat(data['dn_quantity'])-1;
 
 	var ar_file='ar_edit_porders.php';
-	request='tipo=edit_new_supplier_dn&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id'];
-	//	alert(ar_file+'?'+request)
+	request='tipo=edit_new_supplier_dn&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id']+'&supplier_delivery_note_key='+Dom.get('supplier_delivery_note_key').value;
+	//	alert(ar_file+'?'+request);return;
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -283,7 +286,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ];
 		
 		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_process&tableid="+tableid);
-		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {
@@ -308,7 +310,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier_dn']['products']['nr']?>,containers : 'paginator0', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -318,8 +320,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['supplier_dn']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['supplier_dn']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -333,7 +335,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -427,12 +429,12 @@ function init(){
   
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
 
   
-   
-
+      Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 
 }
 
