@@ -1542,7 +1542,7 @@ function dn_transactions_to_stock() {
 
 
 
-    $table="`Supplier Delivery Note Item Part Bridge` P left join `Purchase Order Transaction Fact` F on (P.`Purchase Order Transaction Fact Key`=F.`Purchase Order Transaction Fact Key`) left join `Part Dimension` PA on (PA.`Part SKU`=P.`Part SKU`) left join `Supplier Product History Dimension` SPH on (SPH.`SPH Key`=F.`Supplier Product Key`) left join `Supplier Product Dimension` SP on (SPH.`SPH Key`=SP.`Supplier Product Current Key`)";
+    $table="`Supplier Delivery Note Item Part Bridge` P left join `Purchase Order Transaction Fact` F on (P.`Purchase Order Transaction Fact Key`=F.`Purchase Order Transaction Fact Key`)  left join `Part Location Dimension` PLD on (P.`Part SKU`=PLD.`Part SKU` and  F.`Supplier Delivery Note Received Location Key`=`Location Key` )  left join `Part Dimension` PA on (PA.`Part SKU`=P.`Part SKU`) left join `Supplier Product History Dimension` SPH on (SPH.`SPH Key`=F.`Supplier Product Key`) left join `Supplier Product Dimension` SP on (SPH.`SPH Key`=SP.`Supplier Product Current Key`)";
     $where=sprintf(' where F.`Supplier Delivery Note Key`=%d',$supplier_dn_key);
     $_order=$order;
     $_dir=$order_direction;
@@ -1556,7 +1556,7 @@ function dn_transactions_to_stock() {
     $sql="select count(*) as total from $table     $where   ";
 
     // print_r($conf);exit;
-     //   print $sql;
+      //  print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -1624,7 +1624,7 @@ function dn_transactions_to_stock() {
 
 
 
-    $sql="select `Part XHTML Currently Used In`,`Supplier Product Code`,`Part XHTML Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Used In`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Name`,`Supplier Delivery Note Received Quantity` 
+    $sql="select `Purchase Order Transaction Fact Key`,`Supplier Delivery Note Received Location Key`,`Quantity On Hand`,  `Part XHTML Currently Used In`,`Supplier Product Code`,`Part XHTML Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Used In`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Name`,`Supplier Delivery Note Received Quantity` 
     
     from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
@@ -1645,9 +1645,19 @@ function dn_transactions_to_stock() {
        //     $notes='('.-1.*$row['Supplier Delivery Note Damaged Quantity'].')';
        // else
        //     $notes='';
-            
-       $qty=$row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity'];
-         $notes=sprintf('SKUs to place: <button class="option" onClick="place(this)" sku="%d" qty="%d" >%s</button>',$row['Part SKU'],$qty,number($qty));
+           
+           
+        if($row['Part Quantity']>$row['Quantity On Hand'])
+        $qty=$row['Quantity On Hand'];
+        else
+         $qty=$row['Part Quantity'];
+         $notes=sprintf('SKUs to place: <button class="option" onClick="place(this)" sku="%d" qty="%d" old_location_key="%d"   potfk="%d"    >%s</button>',
+         $row['Part SKU'],
+         $qty,
+         $row['Supplier Delivery Note Received Location Key'],
+         $row['Purchase Order Transaction Fact Key'],
+         number($qty)
+         );
 
             
             
@@ -1660,13 +1670,13 @@ function dn_transactions_to_stock() {
                      'code'=>$row['Supplier Product Code'],
                      'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span>',
                      'used_in'=>$row['Supplier Product XHTML Used In'],
-                     'to_stock_quantity'=>$row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity'],
-                     'sku'=>$row['Part SKU'],
+                     'to_stock_quantity'=>$qty,
+                     'sku'=>sprintf("<a href='part.php?id=%d'>SKU%05d</a>",$row['Part SKU'],$row['Part SKU']),
                      'sku_name'=>$row['Part XHTML Description'].'<br/>'.$row['Part XHTML Currently Used In'],
                      'part_quantity'=>$row['Part Quantity'],
                      'notes'=>$notes,
                      'done'=>$row['Done'],
-                     'sp_data'=>'('.$row['Supplier Product Code'].') <span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span> <span style="font-size:110%;font-weight:800"> To Place: '.($row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity']).'</span>'
+                     'sp_data'=>'('.$row['Supplier Product Code'].') <span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span> <span style="font-size:110%;font-weight:800"> To Place: '.($qty).'</span>'
 
 
                  );

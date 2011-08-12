@@ -210,6 +210,58 @@ case('delete'):
     }
   
 } 
+
+
+
+YAHOO.util.Event.onContentReady("place_sku_location", function () {
+ 
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
+    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+    new_loc_oDS.responseSchema = {resultsList : "data",fields :["code","key","stock"]};
+    var new_loc_oAC = new YAHOO.widget.AutoComplete("place_sku_location", "place_sku_location_container", new_loc_oDS);
+  new_loc_oAC.maxResultsDisplayed = 4;
+  
+  
+
+  new_loc_oAC.generateRequest = function(sQuery) {
+
+        
+      return "?tipo=find_location&query=" + sQuery ;
+    };
+    new_loc_oAC.forceSelection = true;
+    new_loc_oAC.itemSelectEvent.subscribe(location_selected);
+ 
+ 
+  
+  
+});
+
+
+  
+  function location_selected(sType, aArgs) {
+
+    var locData= aArgs[2];
+    var data = {
+"location_code":
+        locData[0]
+,"location_key":
+        locData[1]
+,"stock":
+        locData[2]
+    };
+   
+   
+  
+   Dom.get('place_location_key').value=data["location_key"];
+   
+   
+};
+
+  
+  function save_place_sku(){
+  alert("x")
+  
+  }
   
 
 function place(o){

@@ -1033,14 +1033,15 @@ class SupplierDeliveryNote extends DB_Table {
                     $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Deliver Note Part Assigned`='Yes' where `Purchase Order Transaction Fact Key`=%d  ",$row['Purchase Order Transaction Fact Key']);
                     mysql_query($sql);
 
-                    $notes=sprintf('SKUs to place: <button class="place_sku" onClick="place(this)" id="%d"  >%s</button>',$part_data['Part_SKU'],$parts_quantity);
-
+                    //$notes=sprintf('SKUs to place: <button class="place_sku" onClick="place(this)" id="%d"  >%s</button>',$part_data['Part_SKU'],$parts_quantity);
+                    $notes='';
                     $sql=sprintf('insert into `Supplier Delivery Note Item Part Bridge` values (%d,%d,%d,%f,"No",%s) '
                                  ,$this->id
                                  ,$row['Purchase Order Transaction Fact Key']
                                  ,$part_data['Part_SKU']
+                                 
                                  ,$parts_quantity
-                                 ,prepare_mysql($notes)
+                                 ,prepare_mysql($notes,false)
                                 );
                     mysql_query($sql);
                      //print "$sql\n";;       
