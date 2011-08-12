@@ -1,19 +1,21 @@
-<link rel="stylesheet" type="text/css" href="../top_navigation.css" />
-<script type="text/javascript" src="../external_libs/yui/2.9/build/utilities/utilities.js"></script>
-<script type="text/javascript" src="../external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
-<script type="text/javascript" src="../external_libs/yui/2.9/build/json/json-min.js"></script>
-<script type="text/javascript" src="../external_libs/yui/2.9/build/element/element-min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../top_navigation.css" />
+<link rel="stylesheet" type="text/css" href="../../ui.css" />
+<link href="../newmenubar-files/styles_wp36t.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="../../external_libs/yui/2.9/build/utilities/utilities.js"></script>
+<script type="text/javascript" src="../../external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="../../external_libs/yui/2.9/build/json/json-min.js"></script>
+<script type="text/javascript" src="../../external_libs/yui/2.9/build/element/element-min.js"></script>
 
-<script type="text/javascript" src="../js/sha256.js"></script>
-<script type="text/javascript" src="../js/aes.js"></script>
+<script type="text/javascript" src="../../js/sha256.js"></script>
+<script type="text/javascript" src="../../js/aes.js"></script>
 
-<script type="text/javascript" src="../js/login.js"></script>
-<script type="text/javascript" src="../basket.js"></script>
+<script type="text/javascript" src="../../js/login.js"></script>
+<script type="text/javascript" src="../../basket.js"></script>
 
 <?php if($logged_in){?>
-<script type="text/javascript" src="../top_navigation_login.js.php"></script>
+<script type="text/javascript" src="../../top_navigation_login.js.php"></script>
 <?php }else{?>
-<script type="text/javascript" src="../top_navigation_logout.js.php"></script>
+<script type="text/javascript" src="../../top_navigation_logout.js.php"></script>
 <?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
@@ -27,7 +29,7 @@
 
 <div style="margin-left:10px;width:500px;float:left;text-align:left;xborder:1px solid red;">
  
-<img style="height:22px;vertical-align:-6px;" src="../art/basket.jpg"/>
+<img style="height:22px;vertical-align:-6px;" src="../../art/basket.jpg"/>
  Items: <span id="basket_items"><?php echo number($_SESSION['basket']['items'])?></span> Total: <span id="basket_total"><?php echo money($_SESSION['basket']['total'])?></span>  
  <span class="link" style="margin-left:15px;" id="see_basket"  link="<?php echo $ecommerce_basket?>" >See Basket</span> 
   <span class="link" style="margin-left:10px;"  id="checkout" link="<?php echo $ecommerce_checkout?>">Check Out</span> 
@@ -37,12 +39,12 @@
 
 <span>Hello, <?php print $user->data['User Alias']." (".$customer->id.")"?></span>
  <span style="margin-left:15px;" class="link" id="logout">Log Out</span>
-<img src="../art/gear.png" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
+<img src="../../art/gear.png" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
 
 <?php }else{ ?>
 <button id="show_register_dialog">Register</button>
 <button id="show_login_dialog">Log In</button>
-<img src="../art/gear.png" style="visibility:hidden;height:22px;vertical-align:-6px;">
+<img src="../../art/gear.png" style="visibility:hidden;height:22px;vertical-align:-6px;">
 
 <?php } ?>
 
@@ -414,8 +416,8 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 
-<img id="captcha" src="../securimage/securimage_show.php" alt="CAPTCHA Image" /> <br>
-<a href="#" onclick="document.getElementById('captcha').src = '../securimage/securimage_show.php?' + Math.random(); return false">[Different Image]</a>
+<img id="captcha" src="../../securimage/securimage_show.php" alt="CAPTCHA Image" /> <br>
+<a href="#" onclick="document.getElementById('captcha').src = '../../securimage/securimage_show.php?' + Math.random(); return false">[Different Image]</a>
 
 </td>
 <td>
@@ -426,7 +428,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 <tr  id="tr_register_part_2_buttons"  class="button" ><td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span><span>
 </span><button id="submit_register">Register</button> <button id="hide_register_part_2_dialog">Cancel</button></td></tr>
-<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td></tr>
+<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td></tr>
 
 
 </table>
@@ -441,8 +443,8 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 <tr>
 <td class="label">
-<img id="captcha2" src="../securimage/securimage_show.php" alt="CAPTCHA Image" /> <br>
-<a href="#" onclick="document.getElementById('captcha2').src = '../securimage/securimage_show.php?' + Math.random(); return false">[Different Image]</a>
+<img id="captcha2" src="../../securimage/securimage_show.php" alt="CAPTCHA Image" /> <br>
+<a href="#" onclick="document.getElementById('captcha2').src = '../../securimage/securimage_show.php?' + Math.random(); return false">[Different Image]</a>
 </td>
 <td>
 <input type="text" id="captcha_code2" name="captcha_code2" size="3" maxlength="3" />
@@ -451,7 +453,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </tr>
 
 <td colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
-<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
+<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
 <tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
 <tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>

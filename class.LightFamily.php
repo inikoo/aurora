@@ -65,7 +65,7 @@ class LightFamily{
 	
 		$_form=sprintf('<div><div>					
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">table.order{font-size:11px;font-family:arial; }
+					<style type="text/css">table.order{font-size:8pt;font-family:arial; font-weight:bold}
 					td.order{padding-right:2em;}
 					</style>
 
@@ -83,7 +83,7 @@ class LightFamily{
 	
 	
 		if($header['on'])
-			$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="2">Price from %.2f</td>',$price);
+			$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="4">Price from %.2f</td>',$price);
 			
 		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 			$this->locale=$row['Product Locale'];
@@ -212,7 +212,7 @@ class LightFamily{
 	//$this->locale=$row['Product Locale'];
 	$_form=sprintf('<div><div>
 					<style type="text/css">.nophp{display:none}</style>
-					<style type="text/css">table.order{font-size:11px;font-family:arial;}
+					<style type="text/css">table.order{font-size:8pt;font-family:arial;font-weight:bold}
 					input.order{width:30px}
 					td.order{padding-right:2em;}
 					</style>
@@ -234,7 +234,7 @@ class LightFamily{
 					);
 	
 	if($header['on'])
-		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="2">Price from %.2f</td>',$price);	
+		$form.=sprintf('<td style="font-size:20px;font-family:arial;" colspan="4">Price from %.2f</td>',$price);	
 	
 	
 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -363,7 +363,7 @@ class LightFamily{
 					);
 
 
-	$form.=sprintf('<tr ><td colspan="2">
+	$form.=sprintf('<tr ><td colspan="4">
 					<input type="hidden" name="return" value="%s"> 
 					<input name="Submit" type="submit"  value="Order">
 					<input name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
