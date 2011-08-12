@@ -58,8 +58,11 @@ $overview_text=sprintf("Tenemos %s contactos de los cuales %s son contactos acti
 			  ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
 );
 }else{
+$s='';
+if($store->data['Store Total Users'])
+	$s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->get('Active Contacts')));
 
-$overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base.",
+$overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
 			 $store->get('Contacts')
 			 ,$store->get('Active Contacts')
 			 ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
@@ -67,6 +70,7 @@ $overview_text=sprintf("We have had %s  contacts so far, %s of them still active
 			 ,$store->get('New Contacts')
 		       ,ngettext('customer','customers',$store->data['Store New Contacts'])
 		       ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
+			   ,$s
 		       )
 ;
 }
