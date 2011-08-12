@@ -279,55 +279,7 @@ var manual_check=function(){
 	});
 }
 
-var  change_web_status =function(tipo){
-    var request='ar_assets.php?tipo=ep_update&key=web_status'+'&value='+escape(tipo);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		//	alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.ok){
-		    Dom.get('web_status').innerHTML=r.web_status;
-		    if(r.web_status_error==1){
-			Dom.get('web_status_error').style.visibility='visible';
-			Dom.get('web_status_error').setAttribute('title',r.web_status_error);
-		    }else
-			Dom.get('web_status_error').style.visibility='hidden';
 
-		     if(!r.same){
-			 Dom.get('no_sincro_pages').style.visibility='visible';
-			 Dom.get('no_sincro_db').style.visibility='visible';
-		     }
-		     Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
-		}
-
-		Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
-		var request='ar_xml.php?tipo=sincronize';
-		YAHOO.util.Connect.asyncRequest('POST',request ,{
-			success:function(o) {
-			    				 alert(o.responseText)
-			    var r =  YAHOO.lang.JSON.parse(o.responseText);
-			    if(r.ok){
-				Dom.get('no_sincro_db').style.visibility='hidden';
-				Dom.get('edit_web_messages').innerHTML=r.msg;
-				
-			    }else
-				Dom.get('edit_web_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-			}
-			
-		    });
-
-
-
-
-
-
-
-
-	    }
-	    
-	    });
-
-      }
 
 function init(){
  init_search('products_store');

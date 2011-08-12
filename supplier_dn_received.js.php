@@ -135,8 +135,8 @@ var myonCellClick = function(oArgs) {
 
 	var ar_file='ar_edit_porders.php';
 
-	request='tipo=edit_'+column.object+'&key='+Key+'&newvalue='+new_qty+ '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ '&old_damaged_quantity=' + encodeURIComponent(oldDamaged)+'&id='+ data['id'];
-			alert(ar_file+'?'+request)
+	request='tipo=edit_'+column.object+'&key='+Key+'&newvalue='+new_qty+ '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ '&old_damaged_quantity=' + encodeURIComponent(oldDamaged)+'&id='+ data['id']+'&supplier_deliver_note_key='+Dom.get('supplier_deliver_note_key').value;
+			
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -301,12 +301,12 @@ var checked_order_save=function(o){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		  //  alert(o.responseText);
+		   alert(o.responseText);
 		    
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
-			location.href='supplier_dn.php?id='+dn_key;
+		//	location.href='supplier_dn.php?id='+dn_key;
 
 			
 

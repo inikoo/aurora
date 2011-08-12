@@ -1261,7 +1261,7 @@ class PartLocation extends DB_Table {
 
 
         }
-        print $sql;
+        //print $sql;
         mysql_query($sql);
         $this->get_data();
 

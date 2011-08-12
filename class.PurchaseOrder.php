@@ -157,23 +157,24 @@ else
       }else{
 	
 
-	$sql=sprintf("select `Purchase Order Line` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
+	$sql=sprintf("select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product Historic Key`=%d ",$this->id,$data ['Supplier Product Historic Key']);
 	$res=mysql_query($sql);
 	if($row=mysql_fetch_array($res)){
-	  $sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f, `Purchase Order Quantity Type`=%s,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f   where `Purchase Order Key`=%d and `Purchase Order Line`=%d "
+	  $sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f, `Purchase Order Quantity Type`=%s,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f   where `Purchase Order Key`=%d and `Purchase Order Transaction Fact Key`=%d "
 			   ,$data ['qty']
 			   ,prepare_mysql ( $data ['qty_type'])
 			   ,prepare_mysql ( $data ['date'] )
 			   , $data ['amount']
 			  , $tax_amount
 			   ,$this->id
-			   ,$row['Purchase Order Line']
+			   ,$row['Purchase Order Transaction Fact Key']
 			   );
 	  //	print "$sql";
 	  mysql_query($sql);
 	  
 	}else{
-	  $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Line`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`) values (%s,%s,%s,%d,  %s    ,%d,%d,%d, %.6f,%s,%.2f,%.2f)   "
+	  $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Product Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`) values (%d,%s,%s,%s,%d,  %s    ,%d,%d, %.6f,%s,%.2f,%.2f)   "
+			   , $data ['Supplier Product Historic Key']
 			   , prepare_mysql ( $data['tax_code'] )
 			   , prepare_mysql ( $this->data ['Purchase Order Currency Code'] )
 			   , prepare_mysql ( $data ['date'] )
@@ -183,7 +184,7 @@ else
 			   
 			   , $this->data['Purchase Order Supplier Key' ] 
 			   , $this->data ['Purchase Order Key']
-			   , $data ['line_number']
+			 
 			   
 			 , $data ['qty']
 			   , prepare_mysql ( $data ['qty_type'] )
@@ -203,10 +204,10 @@ else
 		
     }
 
-    if($this->data['Purchase Order Current Dispatch State']=='In Process' or $this->data['Purchase Order Current Dispatch State']=='Submitted'){
-      $supplier=new Supplier('id',$this->data['Purchase Order Supplier Key' ]);
-      $supplier->normalize_purchase_orders();
-    }
+ //   if($this->data['Purchase Order Current Dispatch State']=='In Process' or $this->data['Purchase Order Current Dispatch State']=='Submitted'){
+ //     $supplier=new Supplier('id',$this->data['Purchase Order Supplier Key' ]);
+ //     $supplier->normalize_purchase_orders();
+ //   }
     return array('to_charge'=>money($data ['amount'],$this->data['Purchase Order Currency Code']),'qty'=>$data ['qty']);
 		
     //  print "$sql\n";
@@ -216,18 +217,7 @@ else
 	
 
 	
- function get_next_line_number(){
-    
-    $sql=sprintf("select MAX(`Purchase Order Line`) as max_line from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d ",$this->id);
-    $res=mysql_query($sql);
-    
-    $line_number=1;
-    if($row=mysql_fetch_array($res))
-      $line_number=(int) $row['max_line']+1;
-    return $line_number;
-    
-    
-  }
+
 
 
  function get_next_public_id($supplier_key){

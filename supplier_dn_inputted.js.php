@@ -69,9 +69,6 @@ var myCellEdit = function (callback, newValue) {
 				    );  
 };
 
-
-
-
 var myonCellClick = function(oArgs) {
 
 
@@ -165,12 +162,6 @@ var myonCellClick = function(oArgs) {
 };   
 
 
-
-
-
-
-
-
 function delete_order() {
     var request='ar_edit_porders.php?tipo=delete_dn&id='+dn_key;
     // alert(request);
@@ -189,14 +180,7 @@ function delete_order() {
 
 }
 
-
-
-
-
-
-
-
-	    var swap_show_all_products=function(o){
+var swap_show_all_products=function(o){
 
 		var status=o.getAttribute('status');
 		//alert(status)
@@ -363,8 +347,16 @@ var select_location=function(o,e){
 };
 
 
+function close_dialog(tipo){
+    switch(tipo){
+   
+case('delete'):
+	delete_dialog.hide();
 
-
+	break;
+    }
+  
+} 
   
 var received_order_save=function(o){
 
@@ -376,8 +368,7 @@ var received_order_save=function(o){
 
 
     var request='ar_edit_porders.php?tipo=receive_dn&id='+escape(dn_key)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&received_date='+escape(received_date)+'&received_time='+escape(received_time)+'&location_key='+escape(location_key);
-    //  alert(request)
-    //return;
+  
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
@@ -408,7 +399,7 @@ function init(){
  
   
 
-  received_dialog = new YAHOO.widget.Dialog("received_dialog", {context:["receive_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+  received_dialog = new YAHOO.widget.Dialog("received_dialog", {context:["receive_dn","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     received_dialog.render();
 
     
