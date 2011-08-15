@@ -1,8 +1,8 @@
 <?php
 function formated_rrp($data,$options=false) {
 
-$prefix=true;
-if(isset($options['prefix']))$prefix=$options['prefix'];
+    $prefix=true;
+    if (isset($options['prefix']))$prefix=$options['prefix'];
 
 
     $locale=$data['locale'];
@@ -14,7 +14,7 @@ if(isset($options['prefix']))$prefix=$options['prefix'];
     elseif ($locale=="pl_PL") {
         return ($prefix?'SCD: ':'')."$rrp za sztukę";
     }
-     elseif ($locale=="es_ES") {
+    elseif ($locale=="es_ES") {
         return ($prefix?'PVP: ':'')."$rrp und";
     }
     elseif($locale=="fr_FR") {
@@ -27,6 +27,9 @@ if(isset($options['prefix']))$prefix=$options['prefix'];
 
 
 function formated_price($data) {
+
+  
+
 
     $locale=$data['locale'];
 

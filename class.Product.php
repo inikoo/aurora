@@ -2064,13 +2064,19 @@ class product extends DB_Table {
                              ,$this->pid
                             );
                 mysql_query($sql);
-                if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+                
+               
+                
+               
+                
+                //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
                 if (mysql_affected_rows()>0) {
                     $this->msg=_('Product Web Configuration updated');
                     $this->updated=true;
-
+                    $this->data['Product Web Configuration']=$web_state;
+                    $this->update_web_state();
                     $this->new_value=$a1;
                     return;
                 } else {
@@ -6045,6 +6051,7 @@ $sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Produ
 prepare_mysql($this->get_web_state()),
 $this->pid
 );
+//print $sql;
 mysql_query($sql);
 }
 
