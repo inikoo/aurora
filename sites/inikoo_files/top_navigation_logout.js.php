@@ -379,6 +379,11 @@ Dom.get('register_password1').value=''
 Dom.get('register_password2').value='';
 }
 
+function hide_email_in_db_dialog(){
+
+
+}
+
 
 function show_forgot_password_dialog(){
 Dom.setStyle(['show_login_dialog','show_forgot_password_dialog','dialog_login','dialog_register','dialog_register_part_2'],'display','none');
@@ -604,6 +609,7 @@ Event.addListener("hide_login_dialog", "click", hide_login_dialog);
 Event.addListener("hide_register_dialog", "click", hide_register_dialog);
 Event.addListener(["hide_forgot_password_dialog","hide_forgot_password_dialog2","hide_forgot_password_dialog3","hide_forgot_password_dialog4"], "click", hide_forgot_password_dialog);
 Event.addListener("hide_register_part_2_dialog", "click", hide_register_part_2_dialog);
+Event.addListener("hide_email_in_db_dialog", "click", hide_email_in_db_dialog);
 
 
 
