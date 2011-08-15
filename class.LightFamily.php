@@ -66,7 +66,8 @@ class LightFamily {
     function get_product_list_no_price($header_options=false) {
 
         $print_header=true;
-        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web Configuration`!='Offline' ", $this->id);
+
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $number_records=$row['num'];
@@ -87,7 +88,7 @@ class LightFamily {
 
             } if ($number_records>2) {
 
-                $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) min, max(`Product RRP`/`Product Units Per Case`),avg(`Product RRP`/`Product Units Per Case`)  as max from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
+                $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) min, max(`Product RRP`/`Product Units Per Case`),avg(`Product RRP`/`Product Units Per Case`)  as max from `Product Dimension` where `Product Family Key`=%d and `Product Web Configuration` in ('For Sale','Out of Stock') ", $this->id);
                 $res=mysql_query($sql);
                 if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $rrp=$row['min'];
@@ -146,7 +147,7 @@ class LightFamily {
         }
 
 
-        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'", $this->id);
+        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web Configuration`!='Offline'", $this->id);
         $result=mysql_query($sql);
         $counter=0;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -161,12 +162,12 @@ class LightFamily {
                                               'Product Unit Type'=>$row['Product Unit Type']));
 
 
-            if ($row['Product Web State']=='Out of Stock') {
+            if ($row['Product Web Configuration']=='Out of Stock') {
                 $class_state='out_of_stock';
                 $state=$out_of_stock;
 
             }
-            elseif ($row['Product Web State']=='Discontinued') {
+            elseif ($row['Product Web Configuration']=='Discontinued') {
                 $class_state='discontinued';
                 $state=$discontinued;
 
