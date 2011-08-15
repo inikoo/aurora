@@ -1,0 +1,65 @@
+body, html, div , table{	 font-family:"Arial", sans-serif; font-size:11.0px;font-weight: bold;  }
+table {border-collapse: collapse;}
+
+#header_container{position:absolute;top:24px;width:875px}
+
+#header{
+	background-image:url('../art/header4.jpg'); 
+	background-repeat:no-repeat; 
+	background-position:center bottom; 
+	color:black; 
+	height: 90px; 
+	background-repeat:no-repeat;  
+    
+	width: 100%
+}
+#footer{
+	background-image:url('footer_art/footerbackground.png'); 
+	height: 54; 
+	background-repeat:no-repeat; 
+	position:absolute; 
+	top:80px; 
+	width: 100%
+}
+
+
+
+
+
+table.header_table{
+	width:100%;
+
+	
+}
+
+
+ .header_table td.found_in{
+	background-image:url('../art/found_in.png'); 
+	background-repeat:no-repeat; 
+	background-position:center bottom; 
+	width:128px;padding-top:5px;padding-bottom:10px
+	
+}
+
+ .header_table span{margin-left:15px}
+
+.header_table td.search{
+	vertical-align:bottom;text-align:center
+}
+.header_table td.see_also{
+	background-image:url('../art/see_also.png'); 
+	background-repeat:no-repeat; 
+	background-position:center bottom; 
+	width:401px;padding-top:5px;padding-bottom:10px
+}
+
+
+.product_list td{padding:4px 5px 4px 10px;}
+.product_list .top td  {border-top:1px solid #ccc}
+.product_list .last td {border-top:1px solid #ddd}
+
+.product_list .rrp{color:	#900020}
+.product_list .description{color:	#444}
+.product_list p {line-height:150%}
+.product_list .register {color:#444;font-style: italic;}
+

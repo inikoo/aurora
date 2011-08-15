@@ -215,7 +215,7 @@ $smarty->assign('general_options_list',$general_options_list);
 
 $web_status_error=false;
 $web_status_error_title='';
- if($product->get('Product Web State')=='Online For Sale'){
+ if($product->get('Product Web Configuration')=='Online For Sale'){
    if(!($product->get('Product Availability')>0)){
      $web_status_error=true;
      $web_status_error_title=_('This product is out of stock');

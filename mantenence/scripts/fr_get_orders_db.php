@@ -922,7 +922,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                                                                                  ,'product sales type'=>'Not for Sale'
                                                                                                        ,'product type'=>'Normal'
                                                                                                                        ,'product record type'=>'Normal'
-                                                                                                                                              ,'product web state'=>'Offline'
+                                                                                                                                              ,'Product Web Configuration'=>'Offline'
 
                                                                                                                                                                    ,'Product Family Key'=>$fam_key
                                                                                                                                                                                          ,'Product Locale'=>'fr_FR'

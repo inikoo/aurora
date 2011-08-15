@@ -775,7 +775,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                               'Product Locale'=>'es_ES',
                               'Product Currency'=>'EUR',
                               'product record type'=>'Discontinued',
-                              'product web state'=>'Offline',
+                              'Product Web Configuration'=>'Offline',
                               'product special characteristic'=>$special_char,
 
                               'Product Store Key'=>$store_key,

@@ -305,6 +305,8 @@ case('Checked'):
     }
     $smarty->assign('staff',$staff);
     $smarty->assign('staff_cols',$num_cols);
+    $css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
+
     $js_files[]='js/edit_common.js';
 
 

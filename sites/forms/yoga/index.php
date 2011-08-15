@@ -8,10 +8,10 @@
 <title>Yoga Figures @ Ancient Wisdom - Wholesale Gifts</title>
 <meta name="keywords" content="stoneware, gemstone, gem, angel, precious, gift, jewel, jewellery, wholesale, ancient, wisdom , cross, animal, rings, gifts, hematite, jade, catseye, carnelian, moonstone, turquoise, howlite, trade, boxes, yoga">
 <meta name="description" content="Yoga Figures @ Ancient Wisdom - Wholesale Gifts">
-<?php include_once('../../common_splinter.php');
+<?php include_once('../../inikoo_files/common_splinter.php');
 
-set_parameters('
-found_in= http://inikoo.com
+set_parameters(
+'found_in= http://inikoo.com,
 found_in_label=Inikoo
 see_also_1=this
 see_also_label_1=http://that
@@ -72,13 +72,13 @@ body {margin: 0px; padding: 0px;}
     <div class="Normal-P1">
         <span class="Normal-C0">These resin yoga figures are an excellent companion while performing </span><span class="Normal-C1">asanas</span><span class="Normal-C0">, they include incense holders, old burners and nightlight holders.</span></div>
 </div>
-<div style="position:absolute; left:409px; top:376px; width:405px; height:26px;">
+<div style="position:absolute; left:409px; top:376px; width:600px; height:26px;">
     <div style="text-align:left;">
-    <?php show_products('yoga')?>
+    <?php show_products('sbb')?>
     </div></div>
 <div style="position:absolute; left:0px; top:0px; width:875px; height:24px;">
     <div style="text-align:left;">
-    <?php include_once('../../top_navigation.php');?>
+    <?php include_once('../../inikoo_files/top_navigation.php');?>
     </div></div>
 </div></center>
 </body>
