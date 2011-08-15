@@ -749,12 +749,12 @@ function transactions_to_process() {
         $order='`Product Sales State`';
     }
     elseif($order=='web') {
-        $order='`Product Web State`';
+        $order='`Product Web Configuration`';
     }
 
 
 
-    $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 // print $sql;
 
@@ -771,7 +771,7 @@ function transactions_to_process() {
         $type=$row['Product Record Type'];
         if ($row['Product Record Type']=='In Process')
             $type.='<span style="color:red">*</span>';
-        switch ($row['Product Web State']) {
+        switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
             $web_state=_('Out of Stock');
             break;
@@ -790,7 +790,7 @@ function transactions_to_process() {
             $web_state=_('Sale');
             break;
         default:
-            $web_state=$row['Product Web State'];
+            $web_state=$row['Product Web Configuration'];
         }
 
 
@@ -1021,12 +1021,12 @@ function post_transactions_to_process() {
         $order='`Product Sales State`';
     }
     elseif($order=='web') {
-        $order='`Product Web State`';
+        $order='`Product Web Configuration`';
     }
 
 
 
-    $sql="select `Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 //print $sql;
 
     $res = mysql_query($sql);
@@ -1042,7 +1042,7 @@ function post_transactions_to_process() {
         $type=$row['Product Record Type'];
         if ($row['Product Record Type']=='In Process')
             $type.='<span style="color:red">*</span>';
-        switch ($row['Product Web State']) {
+        switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
             $web_state=_('Out of Stock');
             break;
@@ -1061,7 +1061,7 @@ function post_transactions_to_process() {
             $web_state=_('Sale');
             break;
         default:
-            $web_state=$row['Product Web State'];
+            $web_state=$row['Product Web Configuration'];
         }
 
 

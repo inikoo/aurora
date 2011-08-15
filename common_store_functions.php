@@ -1,23 +1,27 @@
 <?php
-function formated_rrp($data) {
+function formated_rrp($data,$options=false) {
+
+$prefix=true;
+if(isset($options['prefix']))$prefix=$options['prefix'];
+
 
     $locale=$data['locale'];
 
     $rrp=money_locale($data['Product RRP']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
     if ($locale=="de_DE") {
-        return "UVP: $rrp pro Stück";
+        return ($prefix?'UVP: ':'')."$rrp pro Stück";
     }
     elseif ($locale=="pl_PL") {
-        return "SCD:$rrp za sztukę";
+        return ($prefix?'SCD: ':'')."$rrp za sztukę";
     }
      elseif ($locale=="es_ES") {
-        return "PVP:$rrp und";
+        return ($prefix?'PVP: ':'')."$rrp und";
     }
     elseif($locale=="fr_FR") {
-        return "PVC:$rrp  /unité PVC";
+        return ($prefix?'PVC: ':'')."$rrp  /unité PVC";
     }
     else
-        return _("RRP").": $rrp "._("each");
+        return ($prefix?_("RRP").': ':'')."$rrp "._("each");
 
 }
 

@@ -984,7 +984,7 @@ function list_products_for_edition() {
         }
 
 
-        switch ($row['Product Web State']) {
+        switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
             $web_state=_('Out of Stock');
             break;

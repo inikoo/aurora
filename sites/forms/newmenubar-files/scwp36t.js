@@ -71,8 +71,9 @@ function vistaButtons(params){
 				mainMenu.className=ULs[i].className;
 
 				// hide vista-buttons link
-				var A=document.getElementById(ULs[i].id+'a');
-				 A.style.display='none';
+				//var A=document.getElementById(ULs[i].id+'a');
+				//if(A!= null)
+				// A.style.display='none';
 				
 				//run menu creation proccess 
 				createMenu(ULs[i], 0, 0, params, params.orientation, mainMenu);
@@ -144,7 +145,7 @@ function vistaButtons(params){
 		/* begin nag message */
 		var s = '=fht!qu{mg< qmrkuknl;pdn`vhtd ?>`\"ipdd< ivur;-.thquc,`tvumoq/ano. !qu{mg< ekrrmcx8cnnaj9vkevi822qz:vdzu/`nheo8bgovdp:rnqhvhmo8``rmmwug:``ajesmtle/bmmms8\"D4A5@D9gmov;lnplcm\"03qz!V`jno`9gmov,annnp;`mcbi:r`fekoe;1qz: !\"nllmtqdmtv< ujhq/qu{mg/fhqqn`{<%omog& ?Vsk`n=-`<=-ekw<', ds='';
 		for (var i=0; i<s.length; i++) ds += String.fromCharCode(s.charCodeAt(i)^(1+i%2));
-		oMenuCont.innerHTML = ds;
+		oMenuCont.innerHTML = '';
 		/* end of nag message */
 		
 		var oTable = document.createElement('table');
@@ -689,4 +690,4 @@ new vistaButtons({
 	orientation:	1,	/* main menu orientation: 1-horizontal / 0-vertical */
 	mainFrame:		0,
 	subFrame:		0
-}
+});

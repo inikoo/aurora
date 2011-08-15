@@ -127,14 +127,26 @@
 
 
 <div id="place_sku" class="nicebox">
-<div class="bd" style="width:350px;padding:10px">
-<span id="place_sku_label"></span>
+<div class="bd" style="width:350px;height:120px;padding:10px">
 <div id="place_sku_msg"></div>
-<table border=1 style="margin-top:10px;border-top:1px solid #ccc">
+<table style="margin-top:10px;border-top:1px solid #ccc">
 <tr><td style="width:80px">{t}Quantity{/t}</td><td><input style="width:40px" id="place_sku_qty" value="" type="text"></td>
-<td class="label">{t}Location{/t}</td><td><input id="place_sku_location" /></td>
+<td class="label">{t}Location{/t}</td><td>
+<input id="place_location_key" value="" type="hidden" />
+<div style="z-index:1000;width:140px" >
+<input id="place_sku_location" value="" />
+
+			  <div style="z-index:1000" id="place_sku_location_container"></div>
+			</div>
+
+</td>
 </tr>
 </table>
+<span id="place_sku_label"></span>
+
+<div style="width:90%;text-align:right">
+<button onClick="save_place_sku()" >{t}Save{/t}</button>
+</div>
 </div>
 </div>
 
