@@ -501,6 +501,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </table>
 </div>
 <?php }
+
 include_once('header.php');
 
 print $header;

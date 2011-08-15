@@ -13,18 +13,35 @@ table {border-collapse: collapse;}
     
 	width: 100%
 }
-#footer{
-	background-image:url('footer_art/footerbackground.png'); 
-	height: 54; 
+#footerxx{
+	background-image:url('../art/footerbackground.png'); 
+	height: 54px; 
 	background-repeat:no-repeat; 
-	position:absolute; 
+	
 	top:80px; 
-	width: 100%
+	
+	position:absolute;bottom:0px;
 }
 
 
+#footer_container{
 
 
+position:absolute;
+bottom:0;
+width:100%;
+
+}
+
+#footer{
+background-image:url('../art/footerbackground.png'); 
+height:54px;
+
+bottom:0;
+width:875px;
+margin:0px auto;
+margin-bottom:10px
+}
 
 table.header_table{
 	width:100%;

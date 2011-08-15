@@ -1,5 +1,7 @@
 <?php
 $footer=<<<EOD
+
+xxxxx
 <div id="footer"><span class="footer_last_update">Last Update: 11Aug11</span>
 <div id="contact">
 <span class="footer_address">Ancient Wisdom, BLOCK B,</span><br>
@@ -9,6 +11,6 @@ $footer=<<<EOD
 </div>
 <span class="footer_description">Wholesale giftware supplier. Please note this is a wholesale site we supply wholesale to the trade.</span>
 EOD;
-
+$footer='';
 ?>
 
