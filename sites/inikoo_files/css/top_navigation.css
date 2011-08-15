@@ -12,7 +12,7 @@
 .dialog h2 {font-size:15px;weight:800;xmargin:10px 10px 5px 30px}
 
 .dialog table .title td{border-bottom:1px solid #ddd;height:30px;vertical-align:bottom;font-style:italic}
-
+.dialog p{width: 300px;}
 .dialog .label {width:60px;text-align:right;padding-right:10px}
 
 #dialog_register_part_2 .label {width:120px;}
@@ -23,4 +23,7 @@ span.link:hover{text-decoration:underline}
 .dialog input {width:200px;border: 1px solid #ccc}
 .dialog input.error {background-color: #F5EEA2;}
 #top_navigator button, .dialog button{cursor:pointer}
-#top_navigator button{margin:0};
+#top_navigator button{margin:0}
+
+
+.logged {margin-top:20;text-aling:right}

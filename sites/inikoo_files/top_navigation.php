@@ -38,7 +38,10 @@
 
 <span>Hello, <?php print $user->data['User Alias']." (".$customer->id.")"?></span>
  <span style="margin-left:15px;" class="link" id="logout">Log Out</span>
-<img src="../../inikoo_files/art/gear.png" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
+<img src="../../inikoo_files/art/gear.png" id="show_actions_dialog" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
+
+
+
 
 <?php }else{ ?>
 <button id="show_register_dialog">Register</button>
@@ -52,9 +55,34 @@
 <?php if($logged_in){?>
 
 
+<div id="dialog_actions"    class="dialog logged" style=""  >
+<table border=0 style="margin-top:20px;float:right">
+<tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
+<tr class="button space"><td><button id="hide_actions_dialog" >Close</button></td></tr>
+</table>
+
+</div>
+
+<div id="dialog_change_password"    class="dialog logged" style="display:block"  >
+<h2>Change Password</h2>
+<table border=0 >
+<tr><td class="label" style="width:80px">Password: </td><td><input type="password" id="change_password_password1"></td></tr>
+<tr><td class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
+<input id="epw2" value="" type="hidden"/>
+
+
+<tr  id="tr_change_password_buttons"  class="button space" >
+<td colspan=2><span style="display:none" id="change_password_error_no_password">Write new password</span><span style="display:none" id="change_password_error_password_not_march">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short">Password is too short</span><span>
+</span><button id="submit_change_password">Submit Changes</button> 
+<button id="hide_change_password_dialog">Cancel</button></td></tr>
+<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
 
 
 
+
+</table>
+
+</div>
 
 
 <?php }else{?>
@@ -65,7 +93,6 @@
 <table style="margin-bottom:10px">
 
 
-<tr id="login_from_email_found" style="display:none"><td class="label"></td><td>Email found in our database</td></tr>
 
 
 <tr><td class="label">Email: </td><td><input id="login_handle"></td></tr>
@@ -77,28 +104,24 @@
 
 </table>
 </div>
-
 <div id="dialog_email_in_db"    class="dialog"    style="xdisplay:block">
 <h2>Email already in our Database</h2>
 
-<p style="width:300px">
+<p id="email_in_db_instructions" style="width:300px">
 <span id="email_in_db"></span> is already in our records, fill the anti-spam field and we will send you an email with instructions of how to access your account.
-<p>
+</p>
+
+
 
 <table border=0 style="margin:0 auto;">
-<tr>
+<tr id="tr_email_in_db_captcha">
 <td class="label" style="text-align:left">
-
-
-
-<img id="captcha" src="../../inikoo_files/securimage_show.php?height=40" alt="CAPTCHA Image" /> <br>
+<img id="captcha3" src="" alt="CAPTCHA Image" /> <br>
 <i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
-
 </td>
 <td style="vertical-align:top">
 <span style="font-size:10px">input the letters shown on the left</span><br/>
 <input type="text" id="captcha_code3" name="captcha_code"  style="width:50%" />
-
 </td>
 </tr>
 
@@ -109,14 +132,12 @@
 </tr>
 
 <tr id="tr_forgot_password_wait2"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
-<tr id="tr_forgot_password_send2" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
-<tr id="tr_forgot_password_error2" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
+<tr id="tr_forgot_password_send2" style="display:none" class="button" style=""><td colspan=2><p style="width:300px">An email has send to you with instructions how to access your account</p> <br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog2">Close</button></td></tr>
+<tr id="tr_forgot_password_error2" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog3">Close</button></td></tr>
 
 
 </table>
 </div>
-
-
 <div id="dialog_register"    class="dialog"    style="">
 <h2>Registration</h2>
 <table>
@@ -126,8 +147,6 @@
 
 </table>
 </div>
-
-
 <div id="dialog_register_part_2"    class="dialog"  style="xdisplay:block"  >
 <h2>Registration</h2>
 <table border=0 style="margin:0 auto;">
@@ -456,7 +475,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 
-<img id="captcha" src="../../inikoo_files/securimage_show.php" alt="CAPTCHA Image" /> <br>
+<img id="captcha" src="" /> <br>
 <i><a href="#" onclick="document.getElementById('captcha').src = '../../inikoo_files/securimage_show.php?' + Math.random(); return false">Different Image</a></i>
 
 </td>
@@ -466,33 +485,36 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </td>
 </tr>
 
-<tr  id="tr_register_part_2_buttons"  class="button" ><td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span><span>
+<tr  id="tr_register_part_2_buttons"  class="button space" >
+<td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span><span>
 </span><button id="submit_register">Register</button> <button id="hide_register_part_2_dialog">Cancel</button></td></tr>
 <tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td></tr>
 
 
 </table>
 </div>
-
-
-<div id="dialog_forgot_password"    class="dialog">
+<div id="dialog_forgot_password"    class="dialog" >
 <h2>Forgotten password</h2>
-<table  style="width:290px">
+<table>
 <tr><td  class="label">Email: </td><td><input id="forgot_password_handle"></td></tr>
 
 
-<tr>
-<td class="label">
-<img id="captcha2" src="../../inikoo_files/securimage/securimage_show.php" alt="CAPTCHA Image" /> <br>
-<a href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage/securimage_show.php?' + Math.random(); return false">[Different Image]</a>
+<tr id="">
+<td class="label" style="text-align:left">
+<img id="captcha2" src="" alt="CAPTCHA Image" /> <br>
+<i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
 </td>
-<td>
-<input type="text" id="captcha_code2" name="captcha_code2" size="3" maxlength="3" />
-
+<td style="vertical-align:top">
+<span style="font-size:10px">input the letters shown on the left</span><br/>
+<input type="text" id="captcha_code2" name="captcha_code"  style="width:50%" />
 </td>
 </tr>
 
+
+<tr class="button space">
+
 <td colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
+</tr>
 <tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
 <tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
@@ -500,8 +522,8 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 </table>
 </div>
-<?php }
-
+<?php 
+}
 include_once('header.php');
 
 print $header;
