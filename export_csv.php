@@ -514,7 +514,7 @@ $fields=array(
 'code'=>array('title'=>_('Code'),'db_name'=>'Product Code'),
 'name'=>array('title'=>_('Name'),'db_name'=>'Product Short Description'),
 'status'=>array('title'=>_('Status'),'db_name'=>'Product Sales Type'),
-'web'=>array('title'=>_('Web'),'db_name'=>'Product Web State'),
+'web'=>array('title'=>_('Web'),'db_name'=>'Product Web Configuration'),
 
 
 'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Product Total Invoiced Gross Amount'),

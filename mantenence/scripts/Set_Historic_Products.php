@@ -33,7 +33,7 @@ while($row_c=mysql_fetch_array($res_code)){
     $to=$row['Product Valid To'];
     //print "$code $pid $to ".$row['Product Short Description']."\n";
     if($count>0){
-      $sql=sprintf("update `Product Dimension` set `Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product To Be Discontinued`='No Applicable',`Product Web State`='Offline' where `Product ID`=%d",$pid);
+      $sql=sprintf("update `Product Dimension` set `Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product To Be Discontinued`='No Applicable',`Product Web Configuration`='Offline' where `Product ID`=%d",$pid);
       //exit($sql);
       mysql_query($sql);
     }
@@ -47,7 +47,7 @@ while($row_c=mysql_fetch_array($res_code)){
 $sql=sprintf("select id,code  from aw_old.product  where   condicion=2 and stock=0  ");
 	$result2a=mysql_query($sql);
 	while($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
-	  $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued',`Product Sales Type`='Public Sale',`Product To Be Discontinued`='No Applicable',`Product Web State`='Offline' where `Product Code`=%s and `Product Record Type`!='Historic' "
+	  $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued',`Product Sales Type`='Public Sale',`Product To Be Discontinued`='No Applicable',`Product Web Configuration`='Offline' where `Product Code`=%s and `Product Record Type`!='Historic' "
 		       ,prepare_mysql($row2a['code']));
 
       mysql_query($sql);
@@ -59,7 +59,7 @@ $sql=sprintf("select id,code  from aw_old.product  where   condicion=2 and stock
 $sql=sprintf("select id,code  from aw_old.product  where   condicion=2 and stock>0  ");
 	$result2a=mysql_query($sql);
 	while($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
-	  $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinuing',`Product Sales Type`='Public Sale',`Product To Be Discontinued`='Yes',`Product Web State`='Offline' where `Product Code`=%s and `Product Record Type`!='Historic' "
+	  $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinuing',`Product Sales Type`='Public Sale',`Product To Be Discontinued`='Yes',`Product Web Configuration`='Offline' where `Product Code`=%s and `Product Record Type`!='Historic' "
 		       ,prepare_mysql($row2a['code']));
 
       mysql_query($sql);
@@ -73,7 +73,7 @@ $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $product=new Product('pid',$row['Product ID']);
   if($product->data['Product 1 Year Acc Quantity Ordered']==0){
- $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued' ,`Product Sales Type`='Public Sale',`Product To Be Discontinued`='No Applicable',`Product Web State`='Offline' where   `Product ID`=%d "
+ $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued' ,`Product Sales Type`='Public Sale',`Product To Be Discontinued`='No Applicable',`Product Web Configuration`='Offline' where   `Product ID`=%d "
 	      ,$row['Product ID']);
  // print "$sql\n";
       mysql_query($sql);

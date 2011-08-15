@@ -247,7 +247,7 @@ class Store extends DB_Table {
             return $this->data[$key];
 
 
-		
+
 
 
 
@@ -264,7 +264,7 @@ class Store extends DB_Table {
         case('Losing Contacts With Orders'):
             return number($this->data['Store '.$key]);
         case('Potential Customers'):
-                return number($this->data['Store Active Contacts']-$this->data['Store Active Contacts With Orders']);
+            return number($this->data['Store Active Contacts']-$this->data['Store Active Contacts With Orders']);
         case('Total Users'):
             return number($this->data['Store Total Users']);
         case('All To Pay Invoices'):
@@ -485,10 +485,10 @@ class Store extends DB_Table {
         case('fax'):
             $this->update_field('Store Fax',$a1);
             break;
-		case('address'):
+        case('address'):
             $this->update_field('Store Address',$a1);
             break;
-		case('marketing_description'):
+        case('marketing_description'):
             $this->update_field('Short Marketing Description',$a1);
             break;
         case('name'):
@@ -746,7 +746,7 @@ class Store extends DB_Table {
 
     }
 
-	
+
 
     function update_families() {
         $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Record Type` in ('New','Normal','Discontinuing') and  `Product Family Store Key`=%d",$this->id);
@@ -941,7 +941,7 @@ class Store extends DB_Table {
 
         switch ($interval) {
 
-  
+
 
 
         case 'Last Month':
@@ -1084,7 +1084,7 @@ class Store extends DB_Table {
             break;
         }
 
-         setlocale(LC_ALL, 'en_GB');
+        setlocale(LC_ALL, 'en_GB');
 
         //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
@@ -1240,8 +1240,8 @@ class Store extends DB_Table {
     }
 
 
-function update_email_campaign_data(){
- $sql=sprintf("select count(*) as email_campaign from `Email Campaign Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
+    function update_email_campaign_data() {
+        $sql=sprintf("select count(*) as email_campaign from `Email Campaign Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
 
         $res=mysql_query($sql);
         $sites=array();
@@ -1249,12 +1249,12 @@ function update_email_campaign_data(){
             $email_campaign=$row['email_campaign'];
         }
 
-    $sql=sprintf('update `Store Dimension` set `Store Email Campaigns`=%d where `Store Key`=%d',
-$email_campaign,
-$this->id
-);
+        $sql=sprintf('update `Store Dimension` set `Store Email Campaigns`=%d where `Store Key`=%d',
+                     $email_campaign,
+                     $this->id
+                    );
 
-}
+    }
 
     function create_site($data) {
 
@@ -1289,7 +1289,7 @@ $this->id
     function get_page_data() {
         $data=array();
         $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
-        print "$sql\n";
+        //  print "$sql\n";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
             $data=$row;
@@ -1301,5 +1301,58 @@ $this->id
         return $data;
 
     }
+
+    function get_email_credentials_data($type) {
+        $credentials=array();
+        $sql=sprintf("select * from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
+                     prepare_mysql($type),
+                     $this->id
+                    );
+                    
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $credentials[$row['Email Credentials Key ']]=$row;
+        }
+
+
+        return $credentials;
+
+    }
+
+
+function get_formated_email_credentials($type){
+
+    $credentials=$this->get_email_credentials_data($type);
+   
+    $formated_credentials='';
+    foreach($credentials as $credential){
+        $formated_credentials.=','.$credential['Email Address'];
+    }
+    
+    $formated_credentials=preg_replace('/^,/','',$formated_credentials);
+    return $formated_credentials;
+    
+
+}
+
+
+function get_email_credential_key($type){
+
+ $sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
+                     prepare_mysql($type),
+                     $this->id
+                    );
+                    
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            return $row['Email Credentials Key'];
+        }else{
+        
+            return false;
+        }
+
+
+}
+
 
 }

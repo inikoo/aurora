@@ -2210,7 +2210,7 @@ function list_products() {
         $order='`Product Sales Type`';
     }
     elseif($order=='web') {
-        $order='`Product Web State`';
+        $order='`Product Web Configuration`';
     }
     elseif($order=='stock_state') {
         $order='`Product Availability State`';
@@ -2980,7 +2980,7 @@ function list_products() {
         if ($row['Product Record Type']=='In Process')
             $type.='<span style="color:red">*</span>';
 
-        switch ($row['Product Web State']) {
+        switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
             $web_state=_('Out of Stock');
             break;
@@ -2999,7 +2999,7 @@ function list_products() {
             $web_state=_('Sale');
             break;
         default:
-            $web_state=$row['Product Web State'];
+            $web_state=$row['Product Web Configuration'];
         }
         include_once('locale.php');
         global $locale_product_record_type;

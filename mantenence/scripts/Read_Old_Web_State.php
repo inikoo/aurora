@@ -52,7 +52,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $stock='NULL';
   }
 
-  $sql=sprintf("update `Product Dimension` set `Product Availability`=%s ,`Product Web State`=%s where `Product Code`=%s "
+  $sql=sprintf("update `Product Dimension` set `Product Availability`=%s ,`Product Web Configuration`=%s where `Product Code`=%s "
 	       ,$stock
 	       ,prepare_mysql($web_state)
 	       ,prepare_mysql($code)
