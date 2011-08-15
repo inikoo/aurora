@@ -1,16 +1,21 @@
 <?php
-$footer=<<<EOD
 
-xxxxx
-<div id="footer"><span class="footer_last_update">Last Update: 11Aug11</span>
-<div id="contact">
-<span class="footer_address">Ancient Wisdom, BLOCK B,</span><br>
-<span class="footer_address">Parkwood Business Park, Sheffield, S3 8AL, UK</span><br>
-<span class="footer_address">Tel -<wbr> 0114 2729 165</span>
+$footer_description='Wholesale giftware supplier. Please note this is a wholesale site we supply wholesale to the trade.';
+$other="";
+$address=$store->data['Store Address'];
+$telephone=$store->data['Store Telephone'];
+$footer=<<<EOD
+<div id="footer_container" style="display:none" >
+<div id="footer">
+<table class="footer_table">
+<tr><td class="address">$address><br/>$telephone</td><td class="description">$footer_description</td><td>$other</td></tr>
+</table>
 </div>
 </div>
-<span class="footer_description">Wholesale giftware supplier. Please note this is a wholesale site we supply wholesale to the trade.</span>
 EOD;
-$footer='';
+
+
+
+
 ?>
 

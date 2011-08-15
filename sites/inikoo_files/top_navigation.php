@@ -10,6 +10,7 @@
 <script type="text/javascript" src="../../inikoo_files/js/aes.js"></script>
 <script type="text/javascript" src="../../inikoo_files/js/login.js"></script>
 <script type="text/javascript" src="../../inikoo_files/basket.js"></script>
+<script type="text/javascript" src="../../inikoo_files/js/top_navigation.js"></script>
 
 <?php if($logged_in){?>
 <script type="text/javascript" src="../../inikoo_files/top_navigation_login.js.php"></script>
@@ -503,9 +504,9 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 <?php }
 
 include_once('header.php');
-
 print $header;
-
+//include_once('footer.php');
+//print $footer;
  ?>
 
 
