@@ -259,7 +259,62 @@ YAHOO.util.Event.onContentReady("place_sku_location", function () {
 
   
   function save_place_sku(){
-  alert("x")
+  
+  
+key=Dom.get("product_part_items").getAttribute("product_part_key");
+
+for(part_key in part_list){
+part_list[part_key].ppp=Dom.get('parts_per_product'+part_list[part_key].sku).value;
+part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
+
+}
+json_value = YAHOO.lang.JSON.stringify(part_list);
+ var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+product_pid;
+		alert(request);
+		  
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				  
+				  if(r.new){
+				   window.location.reload( true );
+		location.href='edit_product.php?pid='+r.newvalue+'&new';		  
+				  }else if(r.changed){
+				  
+				  if(r.newvalue['Product Part Key']!= undefined){
+				  window.location.reload( true );
+				  return;
+				  }
+				  
+				    for (sku in  r.newvalue.items){
+				  
+				  if(r.newvalue.items[sku]['Product Part List Note']!= undefined)
+				  
+				   
+				        Dom.get('pickers_note'+sku).value=r.newvalue.items[sku]['Product Part List Note'];
+				         Dom.get('pickers_note'+sku).setAttribute('ovalue',r.newvalue.items[sku]['Product Part List Note']);
+			
+				    
+				    
+				    }
+				  
+				  }
+				    reset_part(key)
+
+
+				}else{
+				  
+				    
+				}
+				
+			    }
+			    
+			});
+
+
+
   
   }
   

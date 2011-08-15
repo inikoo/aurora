@@ -127,14 +127,14 @@ class product extends DB_Table {
                 return;
             mysql_free_result($result);
 
-            $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+            $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type` from `Product Dimension` where `Product ID`=%d ",$this->pid);
             //  print "$sql\n";
             $result=mysql_query($sql);
             //print "hols";
             if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                 $this->locale=$row['Product Locale'];
                 $this->code=$row['Product Code'];
-                $items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product To Be Discontinued','Product Family Key','Product Main Department Key','Product Store Key');
+                $items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key');
                 foreach($items_from_parent as $item)
                 $this->data[$item]=$row[$item];
 
@@ -866,7 +866,7 @@ class product extends DB_Table {
                        'product sales type'=>'Public Sale',
                        'product type'=>'Normal',
                        'product record type'=>'In process',
-                       'product web state'=>'Offline',
+                       'Product Web Configuration'=>'Offline',
                        'product store key'=>1,
                        'product locale'=>$myconf['lang'].'_'.$myconf['country'],
                        'product currency'=>$myconf['currency_code'],
@@ -1237,7 +1237,7 @@ class product extends DB_Table {
         $this_list_num_parts=count($list);
         $good_product_parts=array();
         $found_product_parts=array();
-$found_list=array();
+        $found_list=array();
         foreach($list as $key=>$value) {
 
             $sql=sprintf("select PPD.`Product Part Key` from  `Product Part Dimension`  PPD  left join  `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID`=%d and `Part SKU`=%d  and `Parts Per Product`=%f and `Product Part Type`=%s   ",
@@ -2059,7 +2059,7 @@ $found_list=array();
 
                 }
 
-                $sql=sprintf("update `Product Dimension` set `Product Web State`=%s  where  `Product ID`=%d "
+                $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
                              ,prepare_mysql($web_state)
                              ,$this->pid
                             );
@@ -2068,13 +2068,13 @@ $found_list=array();
 
 
                 if (mysql_affected_rows()>0) {
-                    $this->msg=_('Product Web State updated');
+                    $this->msg=_('Product Web Configuration updated');
                     $this->updated=true;
 
                     $this->new_value=$a1;
                     return;
                 } else {
-                    $this->msg=_("Error: Product web state could not be updated ");
+                    $this->msg=_("Error: Product Web Configuration could not be updated ");
                     $this->updated=false;
                     return;
                 }
@@ -4524,7 +4524,7 @@ $found_list=array();
                       'product sales type'=>'Public Sale',
                       'product type'=>'Mix',
                       'product record type'=>'Normal',
-                      'product web state'=>'Offline',
+                      'Product Web Configuration'=>'Offline',
                       'product store key'=>$this->data['Product Store Key'],
                       'product currency'=>$this->get('Product Currency'),
                       'product locale'=>$this->data['Product Locale'],
@@ -4817,7 +4817,7 @@ $found_list=array();
         $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  `Product Part Most Recent`='Yes' limit 1 "
                      ,$this->pid
                     );
-                
+
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $key=$row['Product Part Key'];
@@ -4856,7 +4856,7 @@ $found_list=array();
         $sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
                      ,$this->pid
                     );
-       // print $sql;
+        // print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
 
@@ -5407,38 +5407,38 @@ $found_list=array();
     function update_parts() {
         $parts='';
         $mysql_where='';
-        
-        
-        
-                if ($this->data['Product Record Type']=='Discontinued' or $this->data['Product Record Type']=='Historic') {
-        $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d order by `Product Part Valid To` desc limit 1;",$this->data['Product ID']);
 
-}else{
-        $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
-      }  
-        
-        
+
+
+        if ($this->data['Product Record Type']=='Discontinued' or $this->data['Product Record Type']=='Historic') {
+            $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d order by `Product Part Valid To` desc limit 1;",$this->data['Product ID']);
+
+        } else {
+            $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
+        }
+
+
         // print "$sql\n";
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
             $mysql_where.=', '.$row['Part SKU'];
         }
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         $parts=preg_replace('/^, /','',$parts);
         $mysql_where=preg_replace('/^, /','',$mysql_where);
 
         if ($mysql_where=='')
             $mysql_where=0;
         $supplied_by='';
-        
-        
+
+
 
         if ($this->data['Product Type']=='Normal') {
 
@@ -5480,8 +5480,7 @@ $found_list=array();
 
             $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
 
-        } 
-        else {
+        } else {
             $supplied_by='Mix';
 
         }
@@ -5761,7 +5760,7 @@ $found_list=array();
             $discontinued='Discontinued';
         }
 
-        if ($this->data['Product Web State']=='Online Force Out of Stock') {
+        if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
             $_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
         } else {
             global $site_checkout_address_indv,$site_checkout_id,$site_url;
@@ -5835,7 +5834,7 @@ $found_list=array();
 
 
 
-        if ($this->data['Product Web State']=='Online Force Out of Stock') {
+        if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
             $form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
                           // ,$this->get_formated_price($this->locale)
                           ,$this->data['Product Code']
@@ -5963,7 +5962,7 @@ $found_list=array();
             $date=date("Y-m-d H:i:s");
         }
 
-        $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product To Be Discontinued`='No Applicable',`Product Web State`='Offline' where `Product ID`=%d"
+        $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product Web Configuration`='Offline' where `Product ID`=%d"
                      ,prepare_mysql($date)
                      ,$this->pid);
         //exit($sql);
@@ -6005,10 +6004,10 @@ $found_list=array();
     function get_cost_supplier($date=false) {
         $cost=0;
 
-        
-        
-        
-        
+
+
+
+
 
         foreach($this->get_part_list() as $part_data) {
             $part=$part_data['part'];
@@ -6037,6 +6036,77 @@ $found_list=array();
 
     function et_cost_storing() {
         return 0;
+    }
+
+
+function update_web_state(){
+
+$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
+prepare_mysql($this->get_web_state()),
+$this->pid
+);
+mysql_query($sql);
+}
+
+    function get_web_state() {
+
+        if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Record Type']=='In Process') {
+            return 'Offline';
+        }
+
+        switch ($this->data['Product Web Configuration']) {
+        case 'Offline':
+            return 'Offline';
+            break;
+        case 'Online Force Out of Stock':
+            return 'Out of Stock';
+            break;
+        case 'Online Force For Sale':
+            return 'For Sale';
+            break;
+        case 'Online Auto':
+
+            if ($this->data['Product Availability']>0) {
+                return 'For Sale';
+            } else {
+            
+                if ($this->data['Product Record Type']=='Discontinued') {
+
+
+                    $sql=sprintf("select `Store Web Days Until Remove Discontinued Products`*86400 as interval from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+                    $res=mysql_query($sql);
+                    
+                    $interval=7776000;
+                    if ($row=mysql_fetch_assoc($res)) {
+                        $interval=$row['interval'];
+                    }
+                    if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
+                        return 'Offline';
+                    else
+                        return 'Discontinued';
+
+
+                } else if ( $this->data['Product Record Type']=='Discontinuing') {
+                    return 'Discontinued';
+                } else {
+
+                    return 'Out of Stock';
+                }
+
+            }
+
+            break;
+
+        default:
+            return 'Offline';
+            break;
+        }
+
+
+
+
+
+
     }
 
 }

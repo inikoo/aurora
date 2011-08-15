@@ -1564,19 +1564,19 @@ function product_awhere($awhere){
     foreach($where_data['web_state'] as $web_state) {
         switch ($web_state) {
         case 'online_force_out_of_stock':
-            $web_state_where.=sprintf(" or `Product Web State`='Online Force Out of Stock' ");
+            $web_state_where.=sprintf(" or `Product Web Configuration`='Online Force Out of Stock' ");
             break;
         case 'online_auto':
-            $web_state_where.=sprintf(" or `Product Web State`='Online Auto'  ");
+            $web_state_where.=sprintf(" or `Product Web Configuration`='Online Auto'  ");
             break;
         case 'offline':
-            $web_state_where.=sprintf(" or  `Product Web State`='Offline'  ");
+            $web_state_where.=sprintf(" or  `Product Web Configuration`='Offline'  ");
             break;
 		case 'unknown':
-            $web_state_where.=sprintf(" or  `Product Web State`='Unknown'  ");
+            $web_state_where.=sprintf(" or  `Product Web Configuration`='Unknown'  ");
             break;
 		case 'online_force_for_sale':
-            $web_state_where.=sprintf(" or  `Product Web State`='Online Force For Sale'  ");
+            $web_state_where.=sprintf(" or  `Product Web Configuration`='Online Force For Sale'  ");
             break;	
         }
     }

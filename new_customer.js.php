@@ -182,9 +182,14 @@ validate_form();
 
 function validate_company_name (query) {
 
+
+
 if(Dom.get('Customer_Type').value=='Person'){
+
 validate_data.company_name.validated=true;
+
 }else{
+
 
     var validator=new RegExp(validate_data.company_name.regexp,"i");
 

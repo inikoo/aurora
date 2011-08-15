@@ -19,7 +19,10 @@
     <li> <span class="item {if $edit=='departments'}selected{/if}" id="departments"  ><span> {t}Departments{/t}</span></span></li>
       <li> <span class="item {if $edit=='website'}selected{/if} " id="website" ><span class="todo" style="background-color: #C8E02B">{t}Web Sites{/t}</span></span></li>
     <li style="display:none" > <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
-  </ul>
+     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Customer Contact{/t}</span></span></li>
+
+ 
+ </ul>
   
   <div class="tabbed_container" > 
     <div id="info_name" style="margin-left:20px;float:left;width:260px;{if !( $edit=='pictures' or $edit=='charges' )  }display:none{/if}">
@@ -98,12 +101,15 @@ DB: `Site Dimension`
      
 	
 	
-      <table style="margin:0;clear:both;width:800px" class="edit" border=0 >
+      <table style="margin:0;clear:both;width:870px" class="edit" border=0 >
 	<tr><td style="width:120px" class="label" >{t}Store Code{/t}:</td>
-	<td style="width:400px">
-		 <div  >
+	<td style="width:370px">
+		
 
 	      <input  
+	      
+	      style="width:100%" 
+	      
 		 id="code" 
 		 
 		 name="code" 
@@ -116,38 +122,38 @@ DB: `Site Dimension`
 		 ovalue="{$store->get('Store Code')}"  
 		 />
 		 <div id="code_Container" style="" ></div>
-         </div>
+       
 	    </td>
 	     <td id="code_msg" class="edit_td_alert" style="xwidth:300px"></td>
 
 	  </tr>
 
 	  <tr><td class="label">{t}Store Name{/t}:</td><td>
-	  <div  >
-	   <input  id="name" name="name" changed=0 type='text' MAXLENGTH="255"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
+	
+	   <input  style="width:100%" id="name" name="name" changed=0 type='text' MAXLENGTH="255"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
 	   <div id="name_Container" style="" ></div>
        </div>
-	   </td>
+	  
 	   <td id="name_msg" class="edit_td_alert" ></td>
 	  </tr>
 	  
 	    <tr><td class="label">{t}Store Slogan{/t}:</td><td>
-	  <div  >
-	   <input  id="slogan" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	
+	   <input  style="width:100%" id="slogan" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Slogan')}" ovalue="{$store->get('Store Slogan')}" />
 	   <div id="slogan_Container" style="" ></div>
-       </div>
+       
 	   </td>
 	   <td id="slogan_msg" class="edit_td_alert" ></td>
 	  </tr>
 	  
 	  
 	  <tr><td class="label">{t}Store Contact{/t}:</td><td>
-	  <div  >
-	   <input  id="contact" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	 
+	   <input  style="width:100%" id="contact" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Contact Name')}" ovalue="{$store->get('Store Contact Name')}" />
 	   <div id="contact_Container" style="" ></div>
-       </div>
+      
 	   </td>
 	   <td id="contact_msg" class="edit_td_alert" ></td>
 	  </tr>
@@ -155,38 +161,38 @@ DB: `Site Dimension`
 	
 	 
 	  <tr><td class="label">{t}Store Email{/t}:</td><td>
-	  <div  >
-	   <input  id="email" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	  
+	   <input  style="width:100%" id="email" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Email')}" ovalue="{$store->get('Store Email')}" />
 	   <div id="email_Container" style="" ></div>
-       </div>
+       
 	   </td>
 	   <td id="email_msg" class="edit_td_alert" ></td>
 	  </tr>
 	 
 	   <tr><td class="label">{t}Store Telephone{/t}:</td><td>
-	  <div  >
-	   <input  id="telephone" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	 
+	   <input  style="width:100%" id="telephone" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Telephone')}" ovalue="{$store->get('Store Telephone')}" />
 	   <div id="telephone_Container" style="" ></div>
-       </div>
+       
 	   </td>
 	   <td id="telephone_msg" class="edit_td_alert" ></td>
 	  </tr>
 	 
 	  <tr><td class="label">{t}Store Fax{/t}:</td><td>
-	  <div  >
-	   <input  id="fax" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	 
+	   <input  style="width:100%" id="fax" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Fax')}" ovalue="{$store->get('Store Fax')}" />
 	   <div id="fax_Container" style="" ></div>
-       </div>
+      
 	   </td>
 	   <td id="fax_msg" class="edit_td_alert" ></td>
 	  </tr>
 	
 	 <tr><td class="label">{t}Store URL{/t}:</td><td>
 	  <div  >
-	   <input  id="url" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   <input  style="width:100%" id="url" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
 	   <div id="url_Container" style="" ></div>
        </div>
@@ -196,7 +202,7 @@ DB: `Site Dimension`
 	
 	<tr><td class="label">{t}Store Address{/t}:</td><td>
 	  <div>
-	   <textarea id="address"  changed=0 olength="{$store->get('Store Address')}"  value="{$store->get('Store Address')}"  ovalue="{$store->get('Store Address')}"  ohash="{$store->get('Product Description MD5 Hash')}" rows="6" cols="42">{$store->get('Store Address')}</textarea>
+	   <textarea style="width:100%" id="address"  changed=0 olength="{$store->get('Store Address')}"  value="{$store->get('Store Address')}"  ovalue="{$store->get('Store Address')}"  ohash="{$store->get('Product Description MD5 Hash')}" rows="6" cols="42">{$store->get('Store Address')}</textarea>
 	   <div id="address_Container" style="" ></div>
        </div>
 	   </td>
@@ -205,7 +211,7 @@ DB: `Site Dimension`
 	 
 	 <tr><td class="label">{t}Short Marketing Description{/t}:</td><td>
 	  <div  >
-	   <input  id="marketing_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   <input style="width:100%"  id="marketing_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Short Marketing Description')}" ovalue="{$store->get('Short Marketing Description')}" />
 	   <div id="marketing_description_Container" style="" ></div>
        </div>
@@ -352,7 +358,32 @@ DB: `Site Dimension`
 	</div>
      
       </div>
+      <div  class="edit_block" style="{if $edit!="communications"}display:none{/if}"  id="d_communications">
+      	 <div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_communications" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_communications" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
+      <h2>Store Emails Accounts</h2>
       
+      <table class="edit">
+        <tr><td lass="label">{t}Newsletters{/t}</td><td>{$store->get_formated_email_credentials('Newsletters')}</td></tr>
+        <tr><td lass="label">{t}Marketing Emails{/t}</td><td></td></tr>
+        <tr><td lass="label">{t}General Messages{/t}</td><td></td></tr>
+        <tr><td lass="label">{t}Website Registration{/t}</td><td></td></tr>
+        
+        
+
+
+      </table>
+      
+      
+      </div>
+  
+  
+  
+  
 </div>      
 
 

@@ -537,7 +537,7 @@ foreach($__cols as $cols){
 		  'product sales type'=>'Public Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
-		  'product web state'=>'Online Auto',
+		  'Product Web Configuration'=>'Online Auto',
 		  'product store key'=>$store_key,
 		  'product currency'=>'GBP',
 		  'product locale'=>'en_GB',

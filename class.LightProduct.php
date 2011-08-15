@@ -88,7 +88,7 @@ class LightProduct{
 		$discontinued='Discontinued';
 		  }
 
-		  if ($this->data['Product Web State']=='Online Force Out of Stock') {
+		  if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
 		$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
 		  } else {
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
@@ -188,7 +188,7 @@ $_SESSION['logged_in']=1;
 
 
 
-		  if ($this->data['Product Web State']=='Online Force Out of Stock') {
+		  if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
 		$form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
 				 // ,$this->get_formated_price($this->locale)
 				  ,$this->data['Product Code']
@@ -225,7 +225,6 @@ $_SESSION['logged_in']=1;
 	
 	function get_info(){
 
-	//$this->locale=$row['Product Locale'];
 		if ($this->locale=='de_DE') {
 		$out_of_stock='nicht vorrv§tig';
 		$discontinued='ausgelaufen';
@@ -247,7 +246,7 @@ $_SESSION['logged_in']=1;
 		$discontinued='Discontinued';
 		  }
 
-		  if ($this->data['Product Web State']=='Online Force Out of Stock') {
+		  if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
 		$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
 		  } else {
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
