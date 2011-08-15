@@ -3550,12 +3550,12 @@ ALTER TABLE `Purchase Order Transaction Fact` ADD `Purchase Order Transaction Fa
 ALTER TABLE `Supplier Product Dimension` DROP INDEX `Supplier Product Code` ;
 ALTER TABLE `Supplier Product Dimension` ADD INDEX ( `Supplier Product Current Key` ) ;
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Description` ,ADD `Supplier Product XHTML Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Store As` ,ADD `Supplier Product Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product XHTML Store As` ,ADD `Supplier Product XHTML Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Sold As` 
+ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Description` ,ADD `Supplier Product XHTML Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Store As` ,ADD `Supplier Product Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product XHTML Store As` ,ADD `Supplier Product XHTML Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Sold As` ;
 ALTER TABLE `Supplier Product Dimension` CHANGE `Supplier Product Store As` `Supplier Product Store As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product XHTML Store As` `Supplier Product XHTML Store As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product Sold As` `Supplier Product Sold As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product XHTML Sold As` `Supplier Product XHTML Sold As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
 ALTER TABLE `Supplier Delivery Note Item Part Bridge` CHANGE `Supplier Delivery Note Line` `Purchase Order Transaction Fact Key` MEDIUMINT( 5 ) UNSIGNED NOT NULL ;
 
-ALTER TABLE `site dimension` ADD `Site Secret Key` VARCHAR( 255 ) NOT NULL;
-ALTER TABLE `site dimension` ADD `Site URL` VARCHAR( 255 ) NOT NULL AFTER `Site Name`;
+ALTER TABLE `Site Dimension` ADD `Site Secret Key` VARCHAR( 255 ) NOT NULL;
+ALTER TABLE `Site Dimension` ADD `Site URL` VARCHAR( 255 ) NOT NULL AFTER `Site Name`;
 ALTER TABLE `Product Dimension` DROP `Product Sales State DELETEME` ;
 ALTER TABLE `Product Dimension` CHANGE `Product Web State` `Product Web Configuration` ENUM( 'Online Force Out of Stock', 'Online Auto', 'Offline', 'Unknown', 'Online Force For Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Product Dimension` CHANGE `Product Web Configuration` `Product Web Configuration` ENUM( 'Online Force Out of Stock', 'Online Auto', 'Offline', 'Online Force For Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Online Auto';
@@ -3563,7 +3563,7 @@ ALTER TABLE `Store Dimension` ADD `Store Web Days Until Remove Discontinued Prod
 ALTER TABLE `Product Dimension` DROP `Product To Be Discontinued` ;
 ALTER TABLE `Email Credentials Dimension` DROP `Customer Communication` ;
 ALTER TABLE `Email Credentials Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Customer Communications', 'Newsletters', 'Marketing Email', 'Site Registration', 'Inikoo' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-
+ALTER TABLE `Order Transaction Fact` CHANGE `Invoice Transaction Tax Refund Items` `Invoice Transaction Tax Refund Items` DECIMAL( 12, 6 ) NOT NULL DEFAULT '0.00';
 */
 
 ?>

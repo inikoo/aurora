@@ -97,7 +97,7 @@ Dom.setStyle('tr_register_part_2_wait','display','');
 // alert(request);return;
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.action='logged_in'){
@@ -211,7 +211,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
   
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');
@@ -329,7 +329,7 @@ function login(){
     //  alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			
@@ -357,7 +357,7 @@ function show_login_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register','dialog_forgot_password','dialog_register_part_2','tr_link_register_from_login2'],'display','none');
 Dom.setStyle(['dialog_login'],'display','block');
 Dom.setStyle(['tr_link_register_from_login'],'display','');
-
+Dom.get('login_handle').focus();
 }
 function hide_login_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog'],'display','');

@@ -216,7 +216,7 @@ function show_product($code){
 
 
 
-function show_products($code){
+function show_products($code,$options=false){
 	
 	global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
 	
@@ -252,14 +252,14 @@ function show_products($code){
 				$price=$val['Product Price'];
 		}
 		
-		$header=array('on'=>true, 'price'=>$price);
 		
 		if($logged_in){
-			echo show_products_in_family('ecommerce', $data, $conf, $header);
+			echo show_products_in_family('ecommerce', $data, $conf, $options);
 			return;
 		}
 		else{
-			echo show_products_in_family_info($data, $header);
+		    $options=array();
+			echo show_products_in_family_info($data, $options);
 			return;
 		}
 	}

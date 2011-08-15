@@ -5,6 +5,7 @@
 <script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
 <script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/json/json-min.js"></script>
 <script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/element/element-min.js"></script>
+<script type="text/javascript" src="../../inikoo_files/js/common.js"></script>
 
 <script type="text/javascript" src="../../inikoo_files/js/sha256.js"></script>
 <script type="text/javascript" src="../../inikoo_files/js/aes.js"></script>
@@ -26,7 +27,7 @@
 <div id="top_navigator" style="width:875px;vertical-align:bottom;">
 <?php if($logged_in){?>
 
-
+<input type="hidden" id="user_key" value="{$user->id}">
 <div style="margin-left:10px;width:500px;float:left;text-align:left;xborder:1px solid red;">
  
 <img style="height:22px;vertical-align:-6px;" src="../../inikoo_files/art/basket.jpg"/>
@@ -64,12 +65,33 @@
 
 </div>
 
-<div id="dialog_change_password"    class="dialog logged" style="display:block"  >
+<div id="dialog_change_password"    class="dialog logged" style="xdisplay:block"  >
 <h2>Change Password</h2>
-<table border=0 >
-<tr><td class="label" style="width:80px">Password: </td><td><input type="password" id="change_password_password1"></td></tr>
+
+
+
+<table border=0 id="change_password_ok" style="display:none">
+<tr>
+<td colspan=2>
+Your password has been changed.
+</td>
+</tr>
+<tr   class="button space" >
+<td colspan=2>
+<button id="hide_change_password_dialog2">Close</button>
+</td>
+</tr>
+</table>
+
+
+<table border=0 id="change_password_form" >
+
+
+
+<tr><td class="label" style="width:120px">Password: </td><td><input type="password" id="change_password_password1"></td></tr>
 <tr><td class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
-<input id="epw2" value="" type="hidden"/>
+<input id="epwcp1" value="<?php $rnd=md5(rand()); echo md5($user->id.'insecure_key'.$rnd)?>" type="hidden"/>
+<input id="epwcp2" value="<?php echo $rnd?>" type="hidden"/>
 
 
 <tr  id="tr_change_password_buttons"  class="button space" >

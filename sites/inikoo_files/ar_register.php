@@ -35,8 +35,14 @@ case('forgot_password'):
 
 
 case('change_password'):
-    $password=$_REQUEST['password'];
-    change_password($password);
+  //  $password=$_REQUEST['password'];
+      $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array'),
+                     
+                         ));
+    
+    
+    change_password($data);
     break;
 case('send_lost_password_email'):
     $email=$_REQUEST['email'];
@@ -179,8 +185,17 @@ function register_customer($data) {
 }
 
 
-function change_password($password) {
+function change_password($data) {
     global $user;
+    
+  //  print_r($data['values']);
+  //  print "\n". $user->id;
+    
+    $_key=md5($user->id.'insecure_key'.$data['values']['ep2']);
+    $password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
+
+    
+   // exit($password);
     $user->change_password($password);
     if ($user->updated) {
         $response=array('state'=>200,'result'=>'ok',);
