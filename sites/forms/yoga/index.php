@@ -21,7 +21,7 @@ $data=array(
 
 set_parameters($data);
 
-add_extra_header_content('counter.js.php,google_analytics.js.php');
+add_extra_header_content('counter.js.php,google_analytics.js.php,shortcut_icon.js.php');
 
 
  include_once('../../inikoo_files/footer.php');
@@ -29,7 +29,7 @@ print $footer;
 
 ?>
 
- <link href="../../inikoo_files/art/aw-icon2.png" rel="shortcut icon" type="image/x-icon" />
+
 <style type="text/css">
 <!--
 body {margin: 0px; padding: 0px;}
