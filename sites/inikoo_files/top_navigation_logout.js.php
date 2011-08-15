@@ -204,7 +204,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request='../../inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
-  alert(request);
+  //alert(request);
   Dom.setStyle('tr_forgot_password_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait','display','');
 
@@ -214,7 +214,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
-			
+			Dom.removeClass('captcha_code2','error');
 		        if(r.result=='send'){
        Dom.setStyle('tr_forgot_password_wait','display','none');
 			            Dom.setStyle('tr_forgot_password_send','display','');
@@ -223,7 +223,13 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 			            Dom.setStyle('tr_forgot_password_wait','display','none');
 			            Dom.setStyle('tr_forgot_password_not_found','display','');
 
-			        
+			      }else if(r.result=='capture_false'){
+		        
+		            Dom.addClass('captcha_code2','error');
+		              Dom.setStyle('tr_forgot_password_wait','display','none');
+		               Dom.setStyle('tr_forgot_password_buttons','display','');
+		        
+		          
 			        
 		        }else{
 		          Dom.setStyle('tr_forgot_password_wait','display','none');
@@ -258,20 +264,21 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request='../../inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
-  alert(request);
+ 
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
-  
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
-			
+					            Dom.removeClass('captcha_code3','error');
+
 		        if(r.result=='send'){
-                        Dom.setStyle('tr_forgot_password_wait2','display','none');
+                        Dom.setStyle(['tr_forgot_password_wait2','email_in_db_instructions','tr_email_in_db_captcha'],'display','none');
 			            Dom.setStyle('tr_forgot_password_send2','display','');
+			            
     		    }else if(r.result=='handle_not_found'){
 			        
 			            Dom.setStyle('tr_forgot_password_wait2','display','none');
@@ -279,6 +286,12 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 			        
 			        
+		        }else if(r.result=='capture_false'){
+		        
+		            Dom.addClass('captcha_code3','error');
+		              Dom.setStyle('tr_forgot_password_wait2','display','none');
+		               Dom.setStyle('tr_email_in_db_buttons','display','');
+		        
 		        }else{
 		          Dom.setStyle('tr_forgot_password_wait2','display','none');
 			            Dom.setStyle('tr_forgot_password_error2','display','');
@@ -348,12 +361,12 @@ Dom.setStyle(['tr_link_register_from_login'],'display','');
 }
 function hide_login_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog'],'display','');
-Dom.setStyle(['dialog_login','login_from_email_found'],'display','none');
-
-
+Dom.setStyle(['dialog_login'],'display','none');
 
 Dom.get('login_handle').value='';
 Dom.get('login_password').value='';
+Dom.removeClass(['login_handle','login_password'],'error')
+
 }
 
 function show_register_dialog(){
@@ -368,6 +381,8 @@ Dom.setStyle('dialog_register','display','none');
 }
 
 function show_register_part_2_dialog(){
+Dom.get('captcha').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random();
+
 Dom.setStyle(['show_login_dialog','dialog_login','dialog_forgot_password','dialog_register'],'display','none');
 Dom.setStyle('dialog_register_part_2','display','block');
 Dom.get('register_password1').focus()
@@ -380,15 +395,31 @@ Dom.get('register_password2').value='';
 }
 
 function hide_email_in_db_dialog(){
+Dom.setStyle(['show_login_dialog','show_register_dialog'],'display','');
 
+Dom.setStyle('dialog_email_in_db','display','none')
+    Dom.get('captcha_code3').value='';
 
 }
 
 
 function show_forgot_password_dialog(){
+Dom.get('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random();
+
 Dom.setStyle(['show_login_dialog','show_forgot_password_dialog','dialog_login','dialog_register','dialog_register_part_2'],'display','none');
 Dom.setStyle('dialog_forgot_password','display','block');
+
+
 }
+
+
+
+function show_forgot_password_from_login(){
+
+Dom.get('forgot_password_handle').value=Dom.get('login_handle').value;
+show_forgot_password_dialog();
+}
+
 function hide_forgot_password_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog',"tr_forgot_password_buttons"],'display','');
 Dom.setStyle(['dialog_forgot_password',"tr_forgot_password_wait","tr_forgot_password_send","tr_forgot_password_error","tr_forgot_password_not_found"],'display','none');
@@ -435,10 +466,6 @@ login()
 }
 
 
-function show_forgot_password_from_login(){
-Dom.get('forgot_password_handle').value=Dom.get('login_handle').value;
-show_forgot_password_dialog();
-}
 
 function submit_check_email(){
 var error=false;
@@ -494,7 +521,7 @@ Dom.removeClass(['captcha_code3'],'error');
 
 
 if(!error)
-forgot_password()
+forgot_password2()
 }
 
 
@@ -577,6 +604,7 @@ register()
 
 function show_email_in_db_dialog(){
 
+Dom.get('captcha3').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random();
 
 Dom.get('email_in_db').innerHTML=Dom.get('register_email').value;
 Dom.get('register_email').value='';
@@ -585,9 +613,9 @@ Dom.setStyle('dialog_email_in_db',  'display','block');
 Dom.setStyle(['dialog_register','tr_forgot_password_wait2','tr_forgot_password_send2','tr_forgot_password_error2'],'display','none');
 
 
-    Dom.setStyle('tr_email_in_db_buttons','display','');
+    Dom.setStyle(['tr_email_in_db_buttons','email_in_db_instructions','tr_email_in_db_captcha'],'display','');
 
-
+Dom.get('captcha_code3').focus();
 
 
 }
@@ -609,7 +637,7 @@ Event.addListener("hide_login_dialog", "click", hide_login_dialog);
 Event.addListener("hide_register_dialog", "click", hide_register_dialog);
 Event.addListener(["hide_forgot_password_dialog","hide_forgot_password_dialog2","hide_forgot_password_dialog3","hide_forgot_password_dialog4"], "click", hide_forgot_password_dialog);
 Event.addListener("hide_register_part_2_dialog", "click", hide_register_part_2_dialog);
-Event.addListener("hide_email_in_db_dialog", "click", hide_email_in_db_dialog);
+Event.addListener(["hide_email_in_db_dialog","hide_email_in_db_dialog2","hide_email_in_db_dialog3"], "click", hide_email_in_db_dialog);
 
 
 

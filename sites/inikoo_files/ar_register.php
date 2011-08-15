@@ -403,24 +403,23 @@ function create_customer_user($handle,$customer_key,$site_key,$password) {
 
 
 function forgot_password($data) {
-
+global $store;
+    
     global $secret_key,$public_url;
     $store_key=$data['values']['store_key'];
     $site_key=$data['values']['site_key'];
     $login_handle=$data['values']['login_handle'];
     $url=$data['values']['url'];
-    include_once '/securimage/securimage.php';
+    include_once 'external_libs/securimage/securimage.php';
+
+
+//print_r($data['values']);
+//print_r($_SESSION);
 
     $securimage = new Securimage();
     if ($securimage->check($data['values']['captcha_code']) == false) {
-        //echo $securimage->getCode();
-        // the code was incorrect
-        // you should handle the error so that the form processor doesn't continue
 
-        // or you can use the following code if there is no validation or you do not know how
-        //echo "The security code entered was incorrect.<br /><br />";
-        //echo "Please go <a href='javascript:history.go(-1)'>back</a> and try again.";
-        $response=array('state'=>450,'result'=>'capture_false');
+        $response=array('state'=>200,'result'=>'capture_false');
         echo json_encode($response);
         exit;
     }
