@@ -20,33 +20,14 @@ $data=array(
 
 
 set_parameters($data);
+
+add_extra_header_content('counter.js.php,google_analytics.js.php');
+
+
  include_once('../../inikoo_files/footer.php');
 print $footer;
 
 ?>
-
-<!-- Start of StatCounter Code -->
-<script type="text/javascript" language="javascript">
-<!-- 
-var sc_project=1245778; 
-var sc_invisible=1; 
-var sc_partition=11; 
-var sc_security="16985d12"; 
-//-->
-</script>
-
-<script type="text/javascript" language="javascript" src="http://www.statcounter.com/counter/counter.js"></script><noscript><a href="http://www.statcounter.com/" target="_blank"><img  src="http://c12.statcounter.com/counter.php?sc_project=1245778&amp;java=0&amp;security=16985d12&amp;invisible=1" alt="free page hit counter" border="0"></a> </noscript>
-<!-- End of StatCounter Code -->
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-3953837-1");
-pageTracker._initData();
-pageTracker._trackPageview();
-</script>
 
  <link href="../../inikoo_files/art/aw-icon2.png" rel="shortcut icon" type="image/x-icon" />
 <style type="text/css">
