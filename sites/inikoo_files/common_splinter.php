@@ -72,6 +72,10 @@ $secret_key=$site->data['Site Secret Key'];
 
 $store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);
+
+	//$storetelephone=$store->data['Store Telephone'];
+//		$address=$store->data['Store Address'];
+
 $store_code=$store->data['Store Code'];
 //$smarty->assign('store_code',$store_code);
 //$smarty->assign('store_key',$store_key);
@@ -282,17 +286,24 @@ function show_products($code){
 }
 
 function set_parameters($data){
-	global $found_in_url, $found_in_label;
-	
-	$arg1=strleft($data, "found_in_label");
-	$data=substr($data, strpos($data, "found_in_label"));
-	$arg2=strleft($data, "see_also_1");
-	
-
+	//print_r( $data);
+	global $found_in_url, $found_in_label, $see_also, $footer_description;
 	
 	
-	$found_in_url=substr($arg1, strpos($arg1, "=")+1);
-	$found_in_label=substr($arg2, strpos($arg2, "=")+1);
+	list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
+	
+	$see_also_temp=array();
+	
+	$see_also_temp=explode(";", $data['see_also']);
+	
+	$see_also=array();
+	
+	foreach($see_also_temp as $val){
+		list($label, $url)=explode(",", $val);
+		$see_also[$label]=$url;
+	}
+	
+	$footer_description=$data['footer_description'];
 }
 
 
