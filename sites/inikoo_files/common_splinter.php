@@ -306,7 +306,14 @@ function set_parameters($data){
 	$footer_description=$data['footer_description'];
 }
 
-
+function add_extra_header_content($data){
+	$files=explode(",", $data);
+	
+	foreach($files as $file){
+		$file="../../inikoo_files/".$file;
+		include_once($file);
+	}
+}
 
 function log_visit($session_key) {
 
