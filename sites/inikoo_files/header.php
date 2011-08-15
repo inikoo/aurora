@@ -1,6 +1,7 @@
 <?php 
 //global $found_in['url'];
 global $found_in_label, $found_in_url;
+global $see_also;
 //print $found_in_url;
 
 $search_input=file_get_contents('../../inikoo_files/templates/search_input.html');
@@ -15,6 +16,19 @@ if(isset($found_in['url']))
 $found_in="<a href='".$found_in['url']."'>".$found_in['label']."</a>";
 else
 $found_in='';
+
+
+$see_also_data="";
+foreach($see_also as $key=>$value){
+$see_also_data.="<span><a href='".$value."'>".$key."</a></span>";
+}
+
+/*
+<span  >Chill Pilss</span>
+<span  >Bath bombs</span>
+<span style="" >Mini Incense sticks</span>
+*/
+
 $header=<<<EOD
 
 <div id="header_container" >
@@ -27,13 +41,19 @@ $header=<<<EOD
 <div style="margin-left:230px" id="menu_bar">$menubar
 </div>
 
-
+<div style="position:absolute;top:50px;padding:0;margin-left:80px">div1</div>
+<div style="position:absolute;top:60px;padding:0;margin-left:790px">div2</div>
 
 <table  class="header_table" >
 <tr>
 <td class="found_in"><span >$found_in</span></td>
 <td >$search_input</td>
-<td rowspan="2" class="see_also"><span ><b>See also:</b></span> <span  >Chill Pilss</span><span  >Bath bombs</span><span style="" >Mini Incense sticks</span></td>
+<td rowspan="2" class="see_also"><span ><b>See also:</b></span> 
+
+$see_also_data
+
+
+</td>
 </tr>
 </table>
 </div>

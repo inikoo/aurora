@@ -30,7 +30,7 @@ table {border-collapse: collapse;}
 position:absolute;
 bottom:0;
 width:100%;
-
+text-align:center;
 }
 
 #footer{
@@ -39,9 +39,36 @@ height:54px;
 
 bottom:0;
 width:875px;
-margin:0px auto;
+margin:auto auto;
 margin-bottom:10px
 }
+
+table.footer_table{
+	width:100%;
+
+	
+}
+
+
+ .footer_table td.address{
+	background-position:center bottom; 
+	width:128px;padding-top:5px;padding-bottom:10px;
+	font-family:"Arial", sans-serif; font-weight:700; font-size:9.0px; 
+    line-height:1.22; color:#ffffff; 
+}
+
+ .footer_table span{margin-left:15px}
+
+.footer_table td.description{
+	text-align:center;
+	font-family:"Arial", sans-serif; font-size:11.0px; line-height:1.27; 
+    color:#ff8000; 
+}
+.footer_table td.other{
+	background-position:center bottom; 
+	width:401px;padding-top:5px;padding-bottom:10px
+}
+
 
 table.header_table{
 	width:100%;
