@@ -261,12 +261,12 @@ $_SESSION['logged_in']=1;
 		  }
 
 		  $_SESSION['logged_in']=1;
-		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="rrp">%s</span><br/>%s</div>'
+		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span style="color:#444;font-style: italic;">Please login to see wholesale prices</span>%s</div>'
 				,$this->data['Product Code']
 				,$this->data['Product Units Per Case']
 				,$this->data['Product Name']
 				//,$this->get_formated_price($this->locale)
-				,$this->get_formated_rrp($this->locale)
+				//,$this->get_formated_rrp($this->locale)
 				,(isset($_SESSION['logged_in'])?$_form:'')
 
 
