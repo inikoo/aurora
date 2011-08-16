@@ -14,8 +14,7 @@ $data=array(
 
 'found_in'=>"BagsBags.biz,http://www.bagsbags.biz/"
 ,'see_also'=>"Rebel Rebel Bags,http://www.ancientwisdom.biz/forms/jutehb/;
-Shopping/Beach Bags,http://www.ancientwisdom.biz/forms/pbp/;
-Jute Pouches,http://www.ancientwisdom.biz/forms/pbp/"
+Shopping/Beach Bags,http://www.ancientwisdom.biz/forms/pbp/"
 
 ,'footer_description'=>"test description"
 );
