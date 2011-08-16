@@ -69,13 +69,13 @@ class LightFamily {
         $print_rrp=false;
         $print_register=true;
 
-        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web Configuration`!='Offline' ", $this->id);
+        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
 
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $number_records=$row['num'];
         } else {
-            // NO PRODUCTS
+            // NO PRODUCTS XXX
             return;
         }
 
@@ -120,7 +120,7 @@ class LightFamily {
 
                 } elseif ($number_records>2) {
 
-                    $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) min, max(`Product RRP`/`Product Units Per Case`) as max ,avg(`Product RRP`/`Product Units Per Case`)  as avg from `Product Dimension` where `Product Family Key`=%d and `Product Web Configuration` in ('For Sale','Out of Stock') ", $this->id);
+                    $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) min, max(`Product RRP`/`Product Units Per Case`) as max ,avg(`Product RRP`/`Product Units Per Case`)  as avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
                     $res=mysql_query($sql);
                     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
                         $rrp=$row['min'];
@@ -153,7 +153,7 @@ class LightFamily {
 
 
         }
-        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web Configuration`!='Offline'", $this->id);
+        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'", $this->id);
 
         //print $sql;
         $result=mysql_query($sql);
