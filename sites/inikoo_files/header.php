@@ -41,14 +41,14 @@ $header=<<<EOD
 <div style="margin-left:230px" id="menu_bar">$menubar
 </div>
 
-<div style="position:absolute;top:50px;padding:0;margin-left:80px">div1</div>
-<div style="position:absolute;top:60px;padding:0;margin-left:790px">div2</div>
+<div id="div1">Giftware sourced worldwide</div>
+<div id="div2">Please note this is a <br/> Trade Only Site </div>
 
 <table  class="header_table" >
 <tr>
 <td class="found_in"><span >$found_in</span></td>
 <td >$search_input</td>
-<td rowspan="2" class="see_also"><span ><b>See also:</b></span> 
+<td rowspan="2" class="see_also"><span><b>See also:</b></span> 
 
 $see_also_data
 

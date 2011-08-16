@@ -12,8 +12,9 @@
 
 $data=array(
 
-'found_in'=>"x,xurl"
-,'see_also'=>"see,seeurl;see2,seeurl2"
+'found_in'=>"The Art Loft,http://www.the-art-loft.com/"
+,'see_also'=>"Small 3D Art Pictures,http://www.ancientwisdom.biz/forms/s3dart;
+Large 3D Art Pictures,http://www.ancientwisdom.biz/forms/l3dart"
 
 ,'footer_description'=>"test description"
 );

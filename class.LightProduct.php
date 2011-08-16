@@ -101,7 +101,7 @@ class LightProduct{
 											   <input type="hidden" name="return" value="%s">
 											   <input type="hidden" name="discountpr" value="1,%.2f">
 											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-											   <input type="hidden" name="nocart">  
+											   <input type="hidden" name="nnocart">  
 											   <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>'
 							   ,$this->url
 							   ,addslashes($this->user_id)
@@ -121,7 +121,7 @@ class LightProduct{
 											   <input type="hidden" name="return" value="%s">
 											   <input type="hidden" name="discountpr" value="1,%.2f">
 											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-											   <input type="hidden" name="nocart"> 
+											   <input type="hidden" name="nnocart"> 
 											   
 											   <button id="SC" style="margin-left:10px">%s</button>'
 							   ,$this->url

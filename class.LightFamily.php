@@ -345,7 +345,7 @@ class LightFamily {
         $form.=sprintf('
                        <form action="%s" method="post">
                        <input type="hidden" name="userid" value="%s">
-                       <input type="hidden" name="nocart"> '
+                       <input type="hidden" name="nnocart"> '
                        ,$ecommerce_url
                        ,addslashes($username)
 
