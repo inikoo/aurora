@@ -217,8 +217,10 @@ function show_product($code){
 
 
 function show_products($code,$options=false){
-	
 	global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
+	
+	
+	
 	
 	$conf= array('ecommerce_url_multi'=>$ecommerce_url_multi
 				,'username'=>$username
@@ -280,7 +282,7 @@ function show_products($code,$options=false){
 		echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
 	}
 	else{
-		echo $product->get_product_list_no_price($header);
+		echo $product->get_product_list_no_price($header, $options);
 		return;
 	}
 }

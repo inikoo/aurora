@@ -13,8 +13,8 @@ function show_products_in_family_info($data, $header){
 				
 		$form=sprintf('<table class="order" >'
 						);
-	if($header['on'])
-		$form.=sprintf('<td style="font-size:20p;font-family:arial;" colspan="4">Price from %.2f</td>',$header['price']);				
+	//if($header['on'])
+		//$form.=sprintf('<td style="font-size:20p;font-family:arial;" colspan="4">Price from %.2f</td>',$header['price']);				
 		
 	foreach($data as $product){
 		$i=1;
