@@ -400,12 +400,15 @@ class LightFamily {
 
                                               ));
 
+
+
+
             if ($counter==0)
                 $tr_class='class="top"';
             else
                 $tr_class='';
             $form.=sprintf('<tr %s >
-                                    <input type="hidden"  name="discountpr%s"  value="1,%.2f"  >
+                                    <input type="hidden"  name="discountpr%s"     value="1,%.2f"  >
                                     <input type="hidden"  name="product%s"  value="%s %s" >
                                     <td class="code">%s</td><td class="price">%s</td>
                                     <td class="input"><input name="qty%s"  id="qty%s"  type="text" value="" class="%s"  %s ></td>
