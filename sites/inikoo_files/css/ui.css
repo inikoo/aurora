@@ -46,12 +46,12 @@ margin-bottom:10px
 
 #div2{
 position:absolute;top:50px;padding:0;margin-left:730px;font-family:"Arial", sans-serif; font-weight:700; font-size:11.0px; 
-        line-height:1.27; color:#ffffff; 
+        line-height:1.27; color:#ffffff; text-align:center;
 }
 
 #div1{
 position:absolute;top:50px;padding:0;margin-left:30px;font-family:"Arial", sans-serif; font-size:11.0px; line-height:1.27; 
-        color:#800000; 
+        color:#800000; text-align:center;
 }
 
 table.footer_table{
@@ -129,7 +129,7 @@ table.header_table{
 .product_list td.price {text-align:right;padding-right:0px}
 .product_list td.input {padding-left:5px;padding-right:0px}
 
-.product_list input.out_of_stock ,product_list input.discontinued {background-color:#ccc;border:1px solid red}
+.product_list input.out_of_stock ,product_list input.discontinued {background-color:#ccc;border:1px solid red; visibility:hidden}
 
 
 .form td{padding:1px 5px 1px 10px;}
