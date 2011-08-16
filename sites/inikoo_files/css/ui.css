@@ -43,6 +43,17 @@ margin:auto auto;
 margin-bottom:10px
 }
 
+
+#div2{
+position:absolute;top:50px;padding:0;margin-left:730px;font-family:"Arial", sans-serif; font-weight:700; font-size:11.0px; 
+        line-height:1.27; color:#ffffff; 
+}
+
+#div1{
+position:absolute;top:50px;padding:0;margin-left:30px;font-family:"Arial", sans-serif; font-size:11.0px; line-height:1.27; 
+        color:#800000; 
+}
+
 table.footer_table{
 	width:100%;
 
@@ -94,7 +105,8 @@ table.header_table{
 	background-image:url('../art/see_also.png'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
-	width:401px;padding-top:5px;padding-bottom:10px
+	width:401px;padding-top:5px;padding-bottom:10px;
+	
 }
 
 

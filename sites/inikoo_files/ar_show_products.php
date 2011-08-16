@@ -142,14 +142,14 @@ function show_products_in_family($type, $data, $conf, $header){
 					<form action="%s" method="post">
 					<input type="hidden" name="userid" value="%s">
 					<input type="hidden" name="return" value="%s">
-					<input type="hidden" name="nocart">'
+					<input type="hidden" name="nnocart">'
 			,$ecommerce_url_multi, addslashes($username), ecommerceURL($secure, $_port, $_protocol, $url, $server));
 			
 			
 	$form=sprintf('<table class="order">
 					<form action="%s" method="post">
 					<input type="hidden" name="userid" value="%s">
-					<input type="hidden" name="nocart">'
+					<input type="hidden" name="nnocart">'
 					,$ecommerce_url_multi
 					,addslashes($username)
 			
