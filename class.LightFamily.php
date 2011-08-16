@@ -63,8 +63,24 @@ class LightFamily {
 
 
 
-    function get_product_list_no_price($header_options=false) {
+    function get_product_list_no_price($header_options=false, $options=false) {
 
+		if(isset($options['order_by']))
+			if(strtolower($options['order_by']) == 'price')
+				$order_by='`Product RRP`';
+			elseif(strtolower($options['order_by']) == 'code')
+				$order_by='`Product Code`';
+			else
+				$order_by=true;
+		else
+			$order_by=true;
+			
+		if(isset($options['limit']))
+			$limit='limit '.$options['limit'];
+		else
+			$limit='';
+				
+		
         $print_header=true;
         $print_rrp=false;
         $print_register=true;
@@ -153,7 +169,8 @@ class LightFamily {
 
 
         }
-        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'", $this->id);
+		
+        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' order by %s %s", $this->id, $order_by, $limit);
 
         //print $sql;
         $result=mysql_query($sql);
