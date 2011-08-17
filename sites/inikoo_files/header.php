@@ -43,7 +43,7 @@ $header=<<<EOD
 
 <div id="div1">Giftware sourced worldwide</div>
 <div id="div2">Please note this is a <br/> Trade Only Site </div>
-
+<a href="http://www.ancientwisdom.biz"><span id="aw_link"></span></a>
 <table  class="header_table" >
 <tr>
 <td class="found_in"><span >$found_in</span></td>

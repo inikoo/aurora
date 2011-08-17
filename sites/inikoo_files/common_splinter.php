@@ -452,5 +452,12 @@ function found_in($code){
 	
 }
 
+function see_also($code){
+	global $store_key;
+	$family=new LightFamily($code, $store_key);
+	
+	return $family->get_see_also($code);
+}
+
 
 ?>
