@@ -2031,13 +2031,6 @@ class product extends DB_Table {
             break;
         case('web_state'):
 
-            if (
-                $a1==_('Out of Stock')
-                or $a1==_('Auto')
-                or $a1==_('Offline')
-                or $a1==_('Hide')
-                or $a1==_('Sale')
-            ) {
 
 
                 switch ($a1) {
@@ -2059,6 +2052,7 @@ class product extends DB_Table {
 
                 }
 
+                $web_state=$a1;
                 $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
                              ,prepare_mysql($web_state)
                              ,$this->pid
@@ -2078,15 +2072,51 @@ class product extends DB_Table {
                     $this->data['Product Web Configuration']=$web_state;
                     $this->update_web_state();
                     $this->new_value=$a1;
+                    
+                          switch ($this->data['Product Web Configuration']) {
+        case('Online Force Out of Stock'):
+            $web_configuration=_('Force out of stock');
+            break;
+        case('Online Auto'):
+            $web_configuration=_('Auto');
+            break;
+        case('Offline'):
+            $web_configuration=_('Force offline');
+            break;
+        case('Online Force For Sale'):
+            $web_configuration=_('Force Online');
+            break;
+
+        }
+
+   switch ($this->data['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+            break;
+      
+
+        }
+
+                    
+                    $description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
+                    $this->new_data=array('web_configuration'=>$web_configuration,'description'=>$description);
+                    
                     return;
                 } else {
                     $this->msg=_("Error: Product Web Configuration could not be updated ");
                     $this->updated=false;
                     return;
                 }
-            } else
-                $this->msg=_("Error: wrong value")." [Web State] ($a1)";
-            $this->updated=false;
+          
+          
             break;
         case('sales_type'):
         case('sales_state'):
@@ -6046,13 +6076,16 @@ class product extends DB_Table {
 
 
 function update_web_state(){
-
+$web_state=$this->get_web_state();
 $sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
-prepare_mysql($this->get_web_state()),
+prepare_mysql($web_state),
 $this->pid
 );
+
 //print $sql;
 mysql_query($sql);
+$this->data['Product Web State']=$web_state;
+
 }
 
     function get_web_state() {

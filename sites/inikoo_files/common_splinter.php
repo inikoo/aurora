@@ -118,7 +118,7 @@ $St=get_sk();
    
 }
 
-
+$authentication_type='login';
 
 if(isset($_REQUEST['p'])){
 
@@ -130,6 +130,7 @@ $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,
     $auth->authenticate_from_masterkey($dencrypted_secret_data);
 
 if ($auth->is_authenticated()) {
+$authentication_type='masterkey';
     $_SESSION['logged_in']=true;
     $_SESSION['store_key']=$store_key;
     $_SESSION['site_key']=$site->id;

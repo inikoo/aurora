@@ -986,26 +986,35 @@ function list_products_for_edition() {
 
         switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
-            $web_state=_('Out of Stock');
+            $web_configuration=_('Force out of stock');
             break;
         case('Online Auto'):
-            $web_state=_('Auto');
+            $web_configuration=_('Auto');
             break;
-        case('Unknown'):
-            $web_state=_('Unknown');
         case('Offline'):
-            $web_state=_('Offline');
-            break;
-        case('Online Force Hide'):
-            $web_state=_('Hide');
+            $web_configuration=_('Force offline');
             break;
         case('Online Force For Sale'):
-            $web_state=_('Sale');
+            $web_configuration=_('Force Online');
             break;
 
         }
 
+   switch ($row['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+            break;
+      
 
+        }
 
 
         $adata[]=array(
@@ -1013,14 +1022,14 @@ function list_products_for_edition() {
                      'code'=>$row['Product Code'],
                      'code_price'=>$row['Product Code'].($row['Product Units Per Case']!=1?' <span style="font-style: italic;">('.$row['Product Units Per Case'].'s)</span>':''),
                      //'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
-                     'smallname'=>$row['Product XHTML Short Description'],
-
+                     'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>',
+ 
                      'name'=>$row['Product Name'],
                      'processing'=>$processing,
                      'sales_type'=>$sales_type,
                      'record_type'=>$record_type,
 
-                     'web_state'=>$web_state,
+                     'web_state'=>$web_configuration,
                      'state_info'=>$sales_type,
                      'sdescription'=>$sdescription,
 

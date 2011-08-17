@@ -18,7 +18,7 @@ class Auth {
     private $user_key=false;
     private $status=false;
     private $use_cookies=false;
-
+    var $authentication_type=false;
     function Auth($ikey,$skey,$options='') {
         if (preg_match('/use( |\_)cookies?/i',$options))
             $this->use_cookies=true;
@@ -42,15 +42,15 @@ class Auth {
         switch ($this->log_page) {
         case 'staff':
             $this->user_type="'Administrator','Staff'";
-            $this->where_user_type=" and `User Type` in ('Administrator','Staff')"; 
+            $this->where_user_type=" and `User Type` in ('Administrator','Staff')";
             break;
-        case 'customer':    
-             $this->user_type="'Customer'";
-            $this->where_user_type=sprintf(" and `User Type`='Customer' and `User Site Key`=%d ",$page_key); 
+        case 'customer':
+            $this->user_type="'Customer'";
+            $this->where_user_type=sprintf(" and `User Type`='Customer' and `User Site Key`=%d ",$page_key);
             break;
-         case 'supplier':    
-             $this->user_type="'Supplier'";
-            $this->where_user_type=sprintf(" and `User Type`='Supplier'  "); 
+        case 'supplier':
+            $this->user_type="'Supplier'";
+            $this->where_user_type=sprintf(" and `User Type`='Supplier'  ");
             break;
         }
 
@@ -77,52 +77,53 @@ class Auth {
     function authenticate_from_masterkey($data) {
 
 
+        $this->authentication_type='masterkey';
 
 
 
 
+        if (preg_match('/^\d+/',$data,$match)) {
 
-        if(preg_match('/^\d+/',$data,$match)){
-        
             $user_key=$match[0];
-        
-        }else{
-           // $this->log_failed_login();
+
+        } else {
+            // $this->log_failed_login();
         }
 
-     
+
 
         $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s and U.`User Key`=%d   ",
                      prepare_mysql($data),
                      prepare_mysql(date('Y-m-d H:i:s')),
                      $user_key
                     );
-                    
-                 //   print $sql;
-                    
+
+  //         print $sql;
+//exit;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->status=true;
             $this->user_key=$user_key;
-            
-            
+
+
             $this->user_parent_key=$row['User Parent Key'];
             $this->create_user_log();
-            
-            
+
+
 
             $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   "
                          ,$row['MasterKey Key']
                         );
             mysql_query($sql);
+           // print $sql;
+           // exit;
+
+        } else {
 
 
-        }else{
-        
-        
-        // $this->log_failed_login();
-        
-        
+            // $this->log_failed_login();
+
+
         }
 
 
@@ -132,6 +133,8 @@ class Auth {
     function authenticate_from_login() {
         date_default_timezone_set('UTC');
         include_once('aes.php');
+
+        $this->authentication_type='login';
         $this->status=false;
         $pass_tests=false;
         $this->pass=array(
@@ -260,21 +263,21 @@ class Auth {
                      'NULL');
 
         mysql_query($sql);
-        
-         $sql=sprintf("select count(*) as num from `User Log Dimension` where `User Key`=%d",$this->user_key);
-            $res=mysql_query($sql);
-            $num_logins=0;
-            if ($row=mysql_fetch_assoc($res)) {
-                $num_logins=$row['num'];
-            }
-            $sql=sprintf("update `User Dimension` set `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
-                         $num_logins,
-                         prepare_mysql($ip),
-                         prepare_mysql($date),
-                         $this->user_key
-                        );
-            mysql_query($sql);
-        
+
+        $sql=sprintf("select count(*) as num from `User Log Dimension` where `User Key`=%d",$this->user_key);
+        $res=mysql_query($sql);
+        $num_logins=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $num_logins=$row['num'];
+        }
+        $sql=sprintf("update `User Dimension` set `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
+                     $num_logins,
+                     prepare_mysql($ip),
+                     prepare_mysql($date),
+                     $this->user_key
+                    );
+        mysql_query($sql);
+
         date_default_timezone_set(TIMEZONE) ;
     }
 
@@ -286,8 +289,8 @@ class Auth {
     }
 
 
-public function set_user_key($user_key){
-    $this->user_key=$user_key;
-}
+    public function set_user_key($user_key) {
+        $this->user_key=$user_key;
+    }
 }
 ?>

@@ -180,8 +180,6 @@ function change_block(e){
 		datatable = this.getDataTable(),
 		recordIndex = datatable.getRecordIndex(record);
 
-		//alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record))
-
 
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
@@ -208,6 +206,11 @@ function change_block(e){
                                datatable.updateCell(record,'rrp_info','<?php echo _('Margin')?> '+r.newdata['RRP Margin']);
 								
 								callback(true, r.newvalue);
+								
+							    }else if(column.key=='web_state'  ){
+								 datatable.updateCell(record,'smallname',r.newdata['description']);
+                             	
+								callback(true, r.newdata['web_configuration']);
 								
 							    }else{
 							
@@ -772,19 +775,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				    {key:"pid", label:"", hidden:true,action:"none",isPrimaryKey:true}
 				    ,{key:"go", label:"", width:20,action:"none"}
-				    ,{key:"code",<?php echo($_SESSION['state']['family']['products']['edit_view']!='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"code",<?php echo($_SESSION['state']['family']['products']['edit_view']!='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"code_price",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:105,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				   // ,{key:"units_info",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_price'?'':'hidden:true,')?> label:"<?php echo _('Units')?>", width:30,className:"aleft"}
 				    
-				    ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_name'?'':'hidden:true,')?>width:350, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
-				    ,{key:"smallname", label:"<?php echo _('Name')?>",width:380, sortable:true,className:"aleft",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_name'?'':'hidden:true,')?>width:340, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
+				    ,{key:"smallname", label:"<?php echo _('Description')?>",width:380, sortable:true,className:"aleft",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				 //  ,{key:"processing", label:"<?php echo _('Editing State')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Editing')?>","<?php echo _('Live')?>"],disableBtns:true})}
 				    ,{key:"sales_type", label:"<?php echo _('Sale Type')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Public Sale')?>","<?php echo _('Private Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
-				    ,{key:"web_state", label:"<?php echo _('Web State')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Auto')?>","<?php echo _('Sale')?>","<?php echo _('Out of Stock')?>","<?php echo _('Hide')?>","<?php echo _('Offline')?>"],disableBtns:true})}
+				    ,{key:"web_state", label:"<?php echo _('Web Config')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{'value':"Online Auto",'label':"<?php echo _('Auto')?>"},{'value':"Online Force For Sale",'label':"<?php echo _('Force online')?>"},{'label':'<?php echo _('Force out of stock')?>','value':"Online Force Out of Stock"},{'label':"<?php echo _('Force offline')?>",'value':'Offline'}],disableBtns:true})}
 
 
+				  //  ,{key:"web_state", label:"<?php echo _('Web Config')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["Online Auto":"<?php echo _('Auto')?>","<?php echo _('Force online')?>","<?php echo _('Force out of stock')?>","<?php echo _('Force offline')?>"],disableBtns:true})}
 
 
 				    ,{key:"sdescription", label:"<?php echo _('Special Characteristic')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_name'?'':'hidden:true,')?>width:285, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}

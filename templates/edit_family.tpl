@@ -697,7 +697,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  
    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-	  <div  id="table0"   class="data_table_container dtable btable "> </div>
+	  <div  id="table0"  style="font-size:90%" class="data_table_container dtable btable "> </div>
 	</div>
 
       </div>
