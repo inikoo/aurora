@@ -38,6 +38,8 @@
  
 </div>
 <span>Hello, <?php print $user->data['User Alias']." (".$customer->data['Customer Main Contact Name'].")"?></span>
+
+
  <span style="margin-left:15px;" class="link" id="logout">Log Out</span>
 <img src="../../inikoo_files/art/gear.png" id="show_actions_dialog" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
 
@@ -64,8 +66,11 @@
 
 </div>
 
-<div id="dialog_change_password"    class="dialog logged" style="xdisplay:block"  >
-<h2>Change Password</h2>
+<div id="dialog_change_password"    class="dialog logged" style="<?php if( $authentication_type=='masterkey') print "display:block";?>"  >
+<h2><?php 
+    if( $authentication_type=='masterkey'){
+    print "Reset your password";
+    }else{print "Change Password";}?></h2>
 
 
 
@@ -86,7 +91,7 @@ Your password has been changed.
 <table border=0 id="change_password_form" >
 
 
-<tr><td class="label" style="width:120px">Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
+<tr style="display:none"><td class="label" style="width:120px">Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
 <tr><td class="label" style="width:120px">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
 <tr><td class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="<?php $rnd=md5(rand()); echo md5($user->id.'insecure_key'.$rnd)?>" type="hidden"/>
