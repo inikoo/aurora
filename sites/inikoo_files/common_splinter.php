@@ -287,12 +287,18 @@ function show_products($code,$options=false){
 	}
 }
 
-function set_parameters($data){
+function set_parameters($data=false){
 	//print_r( $data);
-	global $found_in_url, $found_in_label, $see_also, $footer_description;
+	global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
 	
 	
-	list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
+	if(!isset($data['found_in'])){
+		list($found_in_label, $found_in_url)=found_in($data['code']);
+	}
+	else{
+		list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
+	}
+	
 	
 	$see_also_temp=array();
 	
@@ -305,6 +311,11 @@ function set_parameters($data){
 		$see_also[$label]=$url;
 	}
 	
+	if(isset($data['header_title'])){
+		$header_title=$data['header_title'];
+	}
+	else
+		$header_title="";
 	$footer_description=$data['footer_description'];
 }
 
@@ -431,6 +442,15 @@ function update_page_key_visit_log($page_key){
 
 }
 
+function found_in($code){
+	global $store_key;
+	
+	$family=new LightFamily($code, $store_key);
+	//print_r($family);
+	
+	return $family->get_found_in();
+	
+}
 
 
 ?>
