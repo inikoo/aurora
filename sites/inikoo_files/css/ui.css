@@ -54,6 +54,10 @@ position:absolute;top:50px;padding:0;margin-left:30px;font-family:"Arial", sans-
         color:#800000; text-align:center;
 }
 
+#aw_link{
+	position:absolute;top:10px;padding:0;margin-left:65px;height:40px;width:70px;
+}
+
 table.footer_table{
 	width:100%;
 

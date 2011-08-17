@@ -549,7 +549,46 @@ class LightFamily {
 		
 	}
 
+	function get_see_also($code){
+		$department_codes=array();
+		$department_keys=array();
+		$see_also=array();
+		
+		
+		$sql=sprintf("select `Product Family Main Department Code` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+			$department_codes[]=$row['Product Family Main Department Code'];
+		}
+		
+		$keys=array();
+		foreach($department_codes as $department_code) {
+			$keys[] = '\''.$department_code.'\'';
+		}
+		$department_codes = implode(',',$keys);
 
+	
+		$sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s)", $department_codes);
+		//print $sql;
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+			$department_keys[]=$row['Product Department Key'];
+		}
+		
+		
+		
+		$department_keys = implode(',',$department_keys);
+		//print_r($department_keys);
+		
+		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Record Type`= 'Normal' and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
+		//print $sql;
+		
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+			$see_also[]=$row['Product Family Name'];
+		}
+		return $see_also;
+	}
 
 }
 ?>

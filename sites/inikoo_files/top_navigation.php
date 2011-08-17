@@ -32,13 +32,12 @@
  
 <img style="height:22px;vertical-align:-6px;" src="../../inikoo_files/art/basket.jpg"/>
  Items: <span id="basket_items"><?php echo number($_SESSION['basket']['items'])?></span> Total: <span id="basket_total"><?php echo money($_SESSION['basket']['total'])?></span>  
- <span class="link" style="margin-left:15px;" id="see_basket"  link="<?php echo $ecommerce_basket?>" >See Basket</span> 
+ <span class="link" style="margin-left:15px;" id="see_basket"  link="<?php echo $ecommerce_basket.ecommerceURL() ?>" >See Basket</span> 
   <span class="link" style="margin-left:10px;"  id="checkout" link="<?php echo $ecommerce_checkout?>">Check Out</span> 
 
  
 </div>
-
-<span>Hello, <?php print $user->data['User Alias']." (".$customer->id.")"?></span>
+<span>Hello, <?php print $user->data['User Alias']." (".$customer->data['Customer Main Contact Name'].")"?></span>
  <span style="margin-left:15px;" class="link" id="logout">Log Out</span>
 <img src="../../inikoo_files/art/gear.png" id="show_actions_dialog" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
 
@@ -87,8 +86,8 @@ Your password has been changed.
 <table border=0 id="change_password_form" >
 
 
-
-<tr><td class="label" style="width:120px">Password: </td><td><input type="password" id="change_password_password1"></td></tr>
+<tr><td class="label" style="width:120px">Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
+<tr><td class="label" style="width:120px">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
 <tr><td class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="<?php $rnd=md5(rand()); echo md5($user->id.'insecure_key'.$rnd)?>" type="hidden"/>
 <input id="epwcp2" value="<?php echo $rnd?>" type="hidden"/>

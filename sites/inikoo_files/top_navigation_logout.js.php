@@ -150,27 +150,30 @@ function check_email(){
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		var r=YAHOO.lang.JSON.parse(o.responseText);
+		//alert('xx');
 		    if(r.state=='200'){
 			
-			if(r.result=='error'){
-                Dom.addClass('register_email','error');
+				if(r.result=='error'){
+					
+					Dom.addClass('register_email','error');
     		    }else{
+					
     		            Dom.removeClass('register_email','error');
 
-    		    if(r.result=='not_found'){
-    		        Dom.get('confirmed_register_email').innerHTML=r.login_handle;
-    		        
-    		        Dom.get('epw2').value=r.epw2;
-    		        show_register_part_2_dialog();
-    		    
-    		    }else if(r.result=='found'){
-    		    
-    		    
-    		        show_email_in_db_dialog();
-    		    
-    		    
-    		    }
+					if(r.result=='not_found'){
+						Dom.get('confirmed_register_email').innerHTML=r.login_handle;
+						
+						Dom.get('epw2').value=r.epw2;
+						show_register_part_2_dialog();
+					
+					}else if(r.result=='found'){
+					
+					
+						show_email_in_db_dialog();
+					
+					
+					}
     		    
     		    }
 			    
@@ -468,6 +471,7 @@ login()
 
 
 function submit_check_email(){
+
 var error=false;
 if(  !isValidEmail(Dom.get('register_email').value)){
 Dom.addClass('register_email','error');
