@@ -37,7 +37,7 @@
 
  
 </div>
-<span>Hello, <?php print $user->data['User Alias']." (".$customer->data['Customer Main Contact Name'].")"?></span>
+<span>Hello, <?php print $customer->get_hello(); ?></span>
 
 
  <span style="margin-left:15px;" class="link" id="logout">Log Out</span>

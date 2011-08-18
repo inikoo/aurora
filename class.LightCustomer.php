@@ -45,6 +45,37 @@ class LightCustomer {
 
 
 
+ function get_hello($locale=false) {
+
+        if ($locale) {
+
+            if (preg_match('/^es_/',$locale)) {
+                $unknown_name='';
+                $greeting_prefix='Hola';
+            } else {
+                $unknown_name='';
+                $greeting_prefix='Hello';
+            }
+
+
+
+        } else{
+            $unknown_name='';
+             $greeting_prefix='Hello';
+        }
+        if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
+            return $unknown_name;
+        $greeting=$greeting_prefix.' '.$this->data['Customer Main Contact Name'];
+        if ($this->data['Customer Type']=='Company') {
+            $greeting.=', '.$this->data['Customer Name'];
+        }
+        return $greeting;
+
+    }
+
+
+
+
     function get_greetings($locale=false) {
 
         if ($locale) {
