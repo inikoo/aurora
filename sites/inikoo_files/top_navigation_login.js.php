@@ -14,13 +14,13 @@ function change_password(){
 	
 //alert(ep1)	
 	
-///	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
+//	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
     //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
 var url ='http://'+ window.location.host + window.location.pathname;
 
 var data={'user_key':user_key,'store_key':store_key,'site_key':site_key,'ep1':ep1, 'ep2':ep2}
 
-  var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+  var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
      var request='../../inikoo_files/ar_register.php?tipo=change_password&values='+json_value;
