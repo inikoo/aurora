@@ -1342,7 +1342,7 @@ function get_email_credential_key($type){
                      prepare_mysql($type),
                      $this->id
                     );
-                    
+                
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
             return $row['Email Credentials Key'];

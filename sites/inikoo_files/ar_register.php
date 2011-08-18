@@ -346,7 +346,7 @@ function generate_password($length=9, $strength=0) {
     return $password;
 }
 
-function create_customer_user($handle,$customer_key,$site_key,$password) {
+function create_customer_user($handle,$customer_key,$site_key,$password, $send_email=true) {
 
     global $site,$store;
 
@@ -395,10 +395,11 @@ function create_customer_user($handle,$customer_key,$site_key,$password) {
 
               );
 
+		if($send_email){
         $send_email=new SendEmail();
         $send_email->smtp('HTML', $data);
         $result=$send_email->send();
-
+		}
 
 
             return array($user->id,$user->msg);
@@ -419,7 +420,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password) {
 
 function forgot_password($data) {
 global $store;
-    
+
     global $secret_key,$public_url;
     $store_key=$data['values']['store_key'];
     $site_key=$data['values']['site_key'];
@@ -443,7 +444,7 @@ global $store;
     if (!$user_key) {
         $customer_key=check_email_customers($login_handle,$store_key);
         if ($customer_key) {
-            list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key,generate_password(10,10));
+            list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key,generate_password(10,10), false);
         }
 
     }
@@ -458,7 +459,7 @@ global $store;
 
         $email_credential_key=$store->get_email_credential_key('Site Registration');
 
-
+		
 
         $signature_name='';
         $signature_company='';
@@ -518,13 +519,15 @@ global $store;
         $send_email->smtp('HTML', $data);
         $result=$send_email->send();
 
+		//print_r($result);
+		
         if ($result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);
             exit;
 
         } else {
-            print_r($result);
+            //print_r($result);
             $response=array('state'=>200,'result'=>'error');
             echo json_encode($response);
             exit;
