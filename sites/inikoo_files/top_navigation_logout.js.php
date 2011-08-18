@@ -147,11 +147,12 @@ function check_email(){
 
      var request='../../inikoo_files/ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
  
+	//alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)
 		var r=YAHOO.lang.JSON.parse(o.responseText);
-		//alert('xx');
+	
 		    if(r.state=='200'){
 			
 				if(r.result=='error'){
