@@ -561,6 +561,8 @@ class LightFamily {
 			$department_codes[]=$row['Product Family Main Department Code'];
 		}
 		
+		print_r($department_codes);
+		
 		$keys=array();
 		foreach($department_codes as $department_code) {
 			$keys[] = '\''.$department_code.'\'';
@@ -575,7 +577,7 @@ class LightFamily {
 			$department_keys[]=$row['Product Department Key'];
 		}
 		
-		
+		print_r($department_keys);
 		
 		$department_keys = implode(',',$department_keys);
 		//print_r($department_keys);
