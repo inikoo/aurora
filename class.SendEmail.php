@@ -255,7 +255,9 @@ class SendEmail extends DB_Table{
 					'bcc'=>''
 				);
 			*/
+			
 				$sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
+				
 				$result=mysql_query($sql);
 				if($row=mysql_fetch_array($result)){
 					
@@ -445,13 +447,14 @@ class SendEmail extends DB_Table{
 
 					foreach($image_attachment as $single_image)
 						$this->message_object->AddFilePart($single_image);		
-						
+					
 					return true;
 				}
 				else{
+					
 					$this->error=true;
 					$this->msg="Cretentials not found";
-				return false;
+					return false;
 				}
 			
 			break;
@@ -467,7 +470,7 @@ class SendEmail extends DB_Table{
 	}
 	
 	function send(){
-	
+	//print_r($this->message_object);	
 		$error=$this->message_object->Send();
 		for($recipient=0,Reset($this->message_object->invalid_recipients);$recipient<count($this->message_object->invalid_recipients);Next($this->message_object->invalid_recipients),$recipient++)
 			$response= "Invalid recipient: ".Key($this->message_object->invalid_recipients)." Error: ".$this->message_object->invalid_recipients[Key($this->message_object->invalid_recipients)]."\n";

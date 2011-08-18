@@ -580,12 +580,12 @@ class LightFamily {
 		$department_keys = implode(',',$department_keys);
 		//print_r($department_keys);
 		
-		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Record Type`= 'Normal' and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
+		$sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Record Type`= 'Normal' and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
 		//print $sql;
 		
 		$result=mysql_query($sql);
 		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			$see_also[]=$row['Product Family Name'];
+			$see_also[]='<a href="http://www.ancientwisdom.biz/forms/'.strtolower($row['Product Family Code']).'">'.$row['Product Family Name'].'</a>';
 		}
 		return $see_also;
 	}
