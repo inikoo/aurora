@@ -561,6 +561,7 @@ class LightFamily {
 			$department_codes[]=$row['Product Family Main Department Code'];
 		}
 		
+		$department_codes=array_unique(array_map('strtolower', $department_codes));
 		print_r($department_codes);
 		
 		$keys=array();
