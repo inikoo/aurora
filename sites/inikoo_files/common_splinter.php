@@ -129,21 +129,35 @@ $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,
 
     $auth->authenticate_from_masterkey($dencrypted_secret_data);
 
-if ($auth->is_authenticated()) {
-$authentication_type='masterkey';
-    $_SESSION['logged_in']=true;
-    $_SESSION['store_key']=$store_key;
-    $_SESSION['site_key']=$site->id;
+	if ($auth->is_authenticated()) {
+	$authentication_type='masterkey';
+		$_SESSION['logged_in']=true;
+		$_SESSION['store_key']=$store_key;
+		$_SESSION['site_key']=$site->id;
 
-    $_SESSION['user_key']=$auth->get_user_key();
-    $_SESSION['customer_key']=$auth->get_user_parent_key();
-    
-    
-    }
+		$_SESSION['user_key']=$auth->get_user_key();
+		$_SESSION['customer_key']=$auth->get_user_parent_key();
+		
+		
+		}
 
 
 }
+else{
+	$auth=new Auth(IKEY,SKEY);
+	//$auth->use_cookies=true;
+	$auth->authenticate();
 
+	if ($auth->is_authenticated()) {
+	$authentication_type='cookie';
+		$_SESSION['logged_in']=true;
+		$_SESSION['store_key']=$store_key;
+		$_SESSION['site_key']=$site->id;
+
+		$_SESSION['user_key']=$auth->get_user_key();
+		$_SESSION['customer_key']=$auth->get_user_parent_key();
+	}
+}
 
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
@@ -178,6 +192,10 @@ $St=get_sk();
 }
 
 log_visit($session->id);
+
+
+
+
 
 function show_footer(){
 	include_once('footer.php');
@@ -289,19 +307,24 @@ function show_products($code,$options=false){
 }
 
 function set_parameters($data=false){
+
+	if(!isset($data['code']))
+		$code='';
+	else
+		$code=$data['code'];
 	//print_r( $data);
 	global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
 	$see_also=array();
 	
 	if(!isset($data['found_in'])){
-		list($found_in_label, $found_in_url)=found_in($data['code']);
+		list($found_in_label, $found_in_url)=found_in($code);
 	}
 	else{
 		list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
 	}
 	
 	if(!isset($data['see_also'])){
-		$see_also=see_also($data['code']);
+		$see_also=see_also($code);
 	}
 	else{
 		$see_also_temp=explode(";", $data['see_also']);
@@ -451,7 +474,8 @@ function found_in($code){
 	
 	$family=new LightFamily($code, $store_key);
 	//print_r($family);
-	
+	if(!$family->id)
+		return;
 	return $family->get_found_in();
 	
 }
@@ -459,7 +483,8 @@ function found_in($code){
 function see_also($code, $url="http://www.ancientwisdom.biz/forms/"){
 	global $store_key;
 	$family=new LightFamily($code, $store_key);
-	
+	if(!$family->id)
+		return;
 	return $family->get_see_also($code, $url);
 }
 

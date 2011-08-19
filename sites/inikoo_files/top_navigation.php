@@ -124,6 +124,7 @@ Your password has been changed.
 
 <tr><td class="label">Email: </td><td><input id="login_handle"></td></tr>
 <tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
+<tr><td  class="label">Remember Me: </td><td><input type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
 <tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
 <tr class="link space"><td colspan=2>Forgot your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
 <tr id="tr_link_register_from_login" class="link" ><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>

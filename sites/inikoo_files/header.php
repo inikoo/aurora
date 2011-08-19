@@ -19,11 +19,12 @@ $found_in='';
 
 $i=0;
 $see_also_data="";
+if(isset($see_also)){
 foreach($see_also as $key=>$value){
 $see_also_data.="<span><a href='".$value."'>".$key."</a></span>";
 	if($i++>0) break;
 }
-
+}
 /*
 <span  >Chill Pilss</span>
 <span  >Bath bombs</span>
