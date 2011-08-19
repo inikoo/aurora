@@ -539,6 +539,7 @@ class LightFamily {
 		//print $this->data['Product Family Main Department Key'];
 		
 		$sql=sprintf("select `Product Department Name`, `Product Department URL` from `Product Department Dimension` where `Product Department Key`=%d", $this->data['Product Family Main Department Key']);
+		//print $sql;
 		$result=mysql_query($sql);
 		if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 			$found_in_label=$row['Product Department Name'];
@@ -549,7 +550,7 @@ class LightFamily {
 		
 	}
 
-	function get_see_also($code){
+	function get_see_also($code, $base_url){
 		$department_codes=array();
 		$department_keys=array();
 		$see_also=array();
@@ -562,7 +563,7 @@ class LightFamily {
 		}
 		
 		$department_codes=array_unique(array_map('strtolower', $department_codes));
-		print_r($department_codes);
+		//print_r($department_codes);
 		
 		$keys=array();
 		foreach($department_codes as $department_code) {
@@ -578,20 +579,65 @@ class LightFamily {
 			$department_keys[]=$row['Product Department Key'];
 		}
 		
-		print_r($department_keys);
+		//print_r($department_keys);
 		
 		$department_keys = implode(',',$department_keys);
 		//print_r($department_keys);
 		
 		$sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Record Type`= 'Normal' and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
 		//print $sql;
-		
+		$match='/'.strtolower($code).'/';
 		$result=mysql_query($sql);
 		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			$see_also[]='<a href="http://www.ancientwisdom.biz/forms/'.strtolower($row['Product Family Code']).'">'.$row['Product Family Name'].'</a>';
+			//if(!file_exists($base_url.strtolower($row['Product Family Code'])))
+			if(preg_match($match, strtolower(preg_replace('/\s/','',$row['Product Family Code']))))
+				$weight=10;
+			else
+				$weight=0;
+			
+			//$temp='<a href="'.$base_url.strtolower($row['Product Family Code']).'">'.$row['Product Family Name'].'</a>';
+			$temp=$base_url.strtolower($row['Product Family Code']);
+				$see_also[]=array('url'=>$temp,
+									'label'=>$row['Product Family Name'],
+									'weight'=>$weight);
+			
+
 		}
-		return $see_also;
+		
+		
+		$this->aasort($see_also,"weight");
+
+		//$see_also_label=array();
+		$see_also_array=array();
+		
+		foreach($see_also as $value){
+			$see_also_array[$value['label']]=$value['url'];
+			//$see_also_url=$value['url'];
+		}
+			
+		
+		//print_r($see_also_array);
+		return $see_also_array;
+		//$see_also;
 	}
+	
+	function aasort (&$array, $key) {
+		$sorter=array();
+		$ret=array();
+		reset($array);
+		foreach ($array as $ii => $va) {
+			$sorter[$ii]=$va[$key];
+		}
+		arsort($sorter);
+		foreach ($sorter as $ii => $va) {
+			$ret[$ii]=$array[$ii];
+		}
+		$array=$ret;
+	}
+
+
+
+
 
 }
 ?>
