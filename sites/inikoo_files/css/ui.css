@@ -96,8 +96,8 @@ table.header_table{
 	background-image:url('../art/found_in.png'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
-	width:128px;padding-top:5px;padding-bottom:10px
-	
+	width:128px;padding-top:5px;padding-bottom:10px;
+	text-align:center;
 }
 
  .header_table span{margin-left:15px}
@@ -110,7 +110,7 @@ table.header_table{
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
 	width:401px;padding-top:5px;padding-bottom:10px;
-	
+	text-align:center;
 }
 
 

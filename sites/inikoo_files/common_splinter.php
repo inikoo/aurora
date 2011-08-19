@@ -291,7 +291,7 @@ function show_products($code,$options=false){
 function set_parameters($data=false){
 	//print_r( $data);
 	global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
-	
+	$see_also=array();
 	
 	if(!isset($data['found_in'])){
 		list($found_in_label, $found_in_url)=found_in($data['code']);
@@ -300,17 +300,20 @@ function set_parameters($data=false){
 		list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
 	}
 	
-	
-	$see_also_temp=array();
-	
-	$see_also_temp=explode(";", $data['see_also']);
-	
-	$see_also=array();
-	
-	foreach($see_also_temp as $val){
-		list($label, $url)=explode(",", $val);
-		$see_also[$label]=$url;
+	if(!isset($data['see_also'])){
+		$see_also=see_also($data['code']);
 	}
+	else{
+		$see_also_temp=explode(";", $data['see_also']);
+		foreach($see_also_temp as $val){
+			list($label, $url)=explode(",", $val);
+			$see_also[$label]=$url;
+		}
+	}	
+	
+	
+	
+
 	
 	if(isset($data['header_title'])){
 		$header_title=$data['header_title'];
@@ -453,11 +456,11 @@ function found_in($code){
 	
 }
 
-function see_also($code){
+function see_also($code, $url="http://www.ancientwisdom.biz/forms/"){
 	global $store_key;
 	$family=new LightFamily($code, $store_key);
 	
-	return $family->get_see_also($code);
+	return $family->get_see_also($code, $url);
 }
 
 

@@ -17,10 +17,11 @@ $found_in="<a href='".$found_in['url']."'>".$found_in['label']."</a>";
 else
 $found_in='';
 
-
+$i=0;
 $see_also_data="";
 foreach($see_also as $key=>$value){
 $see_also_data.="<span><a href='".$value."'>".$key."</a></span>";
+	if($i++>0) break;
 }
 
 /*
