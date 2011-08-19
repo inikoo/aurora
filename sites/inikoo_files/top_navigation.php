@@ -144,7 +144,7 @@ Your password has been changed.
 <tr id="tr_email_in_db_captcha">
 <td class="label" style="text-align:left">
 <img id="captcha3" src="" alt="CAPTCHA Image" /> <br>
-<i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
+<i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha3').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
 </td>
 <td style="vertical-align:top">
 <span style="font-size:10px">input the letters shown on the left</span><br/>
