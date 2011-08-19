@@ -1,10 +1,12 @@
 <?php
 include('common_splinter.php');
 
-
+//print_r($_COOKIE);
 
 $auth=new Auth(IKEY,SKEY);
 
+$remember=(array_key_exists('remember_me', $_REQUEST)) ? $_REQUEST['remember_me'] : false;
+//echo $remember;
 $handle = (array_key_exists('login_handle', $_REQUEST)) ? $_REQUEST['login_handle'] : false;
 $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
@@ -14,6 +16,14 @@ elseif($handle) {
 //  print urldecode($sk)."\n\n";
 
     $auth->authenticate($handle,rawurldecode($sk),'customer',$site->id);
+}
+
+if($remember){
+	$auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
+}
+else{
+
+	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
 }
 
 if ($auth->is_authenticated()) {

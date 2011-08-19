@@ -321,7 +321,7 @@ function login(){
     var input_epwd=Dom.get('ep').value;
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
-
+	var remember_me=Dom.get('remember_me').value;
     
  
      var epwd=AESEncryptCtr(Dom.get('ep').value,pwd,256);
@@ -329,8 +329,8 @@ function login(){
 
 //Dom.get('login_password').value='';
     //Dom.get('loginform').submit();
-     var request='../../inikoo_files/ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key;
-    //  alert(request);
+     var request='../../inikoo_files/ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
+      alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)
@@ -447,6 +447,12 @@ show_register_dialog();
 }
 
 function submit_login(){
+if(Dom.get('remember_me').checked)
+	Dom.get('remember_me').value=1;
+else
+	Dom.get('remember_me').value=0;
+	
+
 var error=false;
 if(Dom.get('login_password').value==''){
 Dom.addClass('login_password','error');

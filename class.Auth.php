@@ -17,7 +17,7 @@ class Auth {
 
     private $user_key=false;
     private $status=false;
-    private $use_cookies=false;
+    private $use_cookies=true;
     var $authentication_type=false;
     function Auth($ikey,$skey,$options='') {
         if (preg_match('/use( |\_)cookies?/i',$options))
@@ -36,7 +36,7 @@ class Auth {
     }
 
 
-    function authenticate($handle=false,$sk=false,$page=false,$page_key=f0) {
+    function authenticate($handle=false,$sk=false,$page=false,$page_key='f0') {
 
         $this->log_page=$page;
         switch ($this->log_page) {
@@ -60,6 +60,8 @@ class Auth {
             $this->authenticate_from_login();
         }
         elseif($this->use_cookies) {
+			$this->handle=$_COOKIE['user_handle'];
+            $this->sk=$_COOKIE['sk'];
             $this->authenticate_from_cookie();
         }
 
@@ -71,9 +73,105 @@ class Auth {
     }
 
     function authenticate_from_cookie() {
+		//echo 'aaa';
+		date_default_timezone_set('UTC');
+        //include_once('aes.php');
+
+        $this->authentication_type='cookie';
+        $this->status=false;
+        $pass_tests=false;
+        $this->pass=array(
+                        'handle'=>'No',
+                        'handle_in_use'=>'No',
+                        'handle_key'=>0,
+                        'password'=>'Unknown',
+                        'time'=>'Unknown',
+                        'ip'=>'Unknown',
+                        'ikey'=>'Unknown',
+                        'main_reason'=>'handle'
+                    );
+
+        $sql=sprintf("select `User Key`,`User Password`,`User Parent Key` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' %s  "
+                     ,prepare_mysql($this->handle)
+                     ,$this->where_user_type
+                    );
+//print $sql;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $this->pass['handle']='Yes';
+            $this->pass['handle_in_use']='Yes';
+
+            $st=AESDecryptCtr(AESDecryptCtr($this->sk,$row['User Password'],256),$this->skey,256);
+			//echo $st;
+            $this->pass['handle_key']=$row['User Key'];
+            if (preg_match('/^skstart\|\d+\|[abcdef0-9\.\:]+\|.+\|/',$st)) {
+                $this->pass['password']='Yes';
+                $data=preg_split('/\|/',$st);
+				
+				//print_r($data);
+                $time=$data[1];
+                $ip=$data[2];
+                $ikey=$data[3];
+
+                $pass_tests=true;
+                if ($time<time(date('U'))  ) {
+                    $pass_tests=false;
+                    $this->pass['main_reason']='logging_timeout';
+                    $this->pass['time']='No';
+                } else {
+                    $this->pass['time']='Yes';
+                }
+                if (ip()!=$ip) {
+                    $pass_tests=false;
+                    $this->pass['main_reason']='ip';
+                    $this->pass['ip']='No';
+                } else {
+                    $this->pass['ip']='Yes';
+                }
+                if ($this->ikey!=$ikey) {
+                    $pass_tests=false;
+                    $this->pass['main_reason']='ikey';
+                    $this->pass['ikey']='No';
+
+                } else {
+                    $this->pass['ikey']='Yes';
+                }
+
+            } else {
+                $pass_tests=false;
+                $this->pass['password']='No';
+                $this->pass['main_reason']='password';
+            }
+        }
+
+        if ($pass_tests ) {
+            $this->status=true;
+            $this->user_key=$row['User Key'];
+            $this->user_parent_key=$row['User Parent Key'];
+            $this->create_user_log();
+        } else {
+            $this->log_failed_login();
+        }
+
+        date_default_timezone_set(TIMEZONE) ;
 
     }
 
+	function set_cookies($handle=false,$sk=false,$page=false,$page_key=f0){
+		setcookie('user_handle', $handle, time()+60*60*24*365);
+		setcookie('sk', $sk, time()+60*60*24*365);
+		setcookie('page', $page, time()+60*60*24*365);
+		setcookie('page_key', $page_key, time()+60*60*24*365);
+	}
+	
+	function unset_cookies($handle=false,$sk=false,$page=false,$page_key=f0){
+		setcookie('user_handle', $handle, time()-3600);
+		setcookie('sk', $sk, time()-3600);
+		setcookie('page', $page, time()-3600);
+		setcookie('page_key', $page_key, time()-3600);
+	}
+	
+	
     function authenticate_from_masterkey($data) {
 
 
@@ -159,11 +257,13 @@ class Auth {
             $this->pass['handle_in_use']='Yes';
 
             $st=AESDecryptCtr(AESDecryptCtr($this->sk,$row['User Password'],256),$this->skey,256);
-
+			//echo $st;
             $this->pass['handle_key']=$row['User Key'];
             if (preg_match('/^skstart\|\d+\|[abcdef0-9\.\:]+\|.+\|/',$st)) {
                 $this->pass['password']='Yes';
                 $data=preg_split('/\|/',$st);
+				
+				//print_r($data);
                 $time=$data[1];
                 $ip=$data[2];
                 $ikey=$data[3];
