@@ -378,17 +378,19 @@ return;
 function slfURL() 
 { $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
  $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]); 
-return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI']; 
+return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF']; 
 }
 
 function ecommerceURL() 
-{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+{ 
+
+$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
  $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
- if(strpos($_SERVER['REQUEST_URI'], "?")){
-	return $protocol."://".$_SERVER['SERVER_NAME'].$port.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
+ if(strpos($_SERVER['PHP_SELF'], "?")){
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.strleft1(strtolower($_SERVER['PHP_SELF']), "?"); 
  }
  else
-	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
 }
 
  function strleft1($s1, $s2) 
@@ -494,4 +496,5 @@ if(isset($_REQUEST['user_handle']))
 else
 	print 'not set';
 	*/
+
 ?>

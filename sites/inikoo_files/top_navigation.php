@@ -32,7 +32,7 @@
  
 <img style="height:22px;vertical-align:-6px;" src="../../inikoo_files/art/basket.jpg"/>
  Items: <span id="basket_items"><?php echo number($_SESSION['basket']['items'])?></span> Total: <span id="basket_total"><?php echo money($_SESSION['basket']['total'])?></span>  
- <span class="link" style="margin-left:15px;" id="see_basket"  link="<?php echo $ecommerce_basket.ecommerceURL().'index.php' ?>" >See Basket</span> 
+ <span class="link" style="margin-left:15px;" id="see_basket"  link="<?php echo $ecommerce_basket.ecommerceURL() ?>" >See Basket</span> 
   <span class="link" style="margin-left:10px;"  id="checkout" link="<?php echo $ecommerce_checkout?>">Check Out</span> 
 
  
