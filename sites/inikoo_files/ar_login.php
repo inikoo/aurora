@@ -16,7 +16,7 @@ if($remember){
 else{
 	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
 }
-print $_REQUEST['user_handle'];
+//print $_REQUEST['user_handle'];
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
 }
