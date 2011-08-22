@@ -487,6 +487,11 @@ function see_also($code, $url="http://www.ancientwisdom.biz/forms/"){
 		return;
 	return $family->get_see_also($code, $url);
 }
-
-
+/*
+setcookie('user_handle', 'ghjghj', time()+60*60*24*365);
+if(isset($_REQUEST['user_handle']))
+	print $_REQUEST['user_handle'];
+else
+	print 'not set';
+	*/
 ?>
