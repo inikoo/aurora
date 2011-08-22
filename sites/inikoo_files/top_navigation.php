@@ -13,7 +13,12 @@
 <script type="text/javascript" src="../../inikoo_files/basket.js"></script>
 <script type="text/javascript" src="../../inikoo_files/js/top_navigation.js"></script>
 
-<?php if($logged_in){?>
+<?php 
+//print_r($_COOKIE);
+//exit;
+
+//echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
+if($logged_in){?>
 <script type="text/javascript" src="../../inikoo_files/top_navigation_login.js.php"></script>
 <?php }else{?>
 <script type="text/javascript" src="../../inikoo_files/top_navigation_logout.js.php"></script>

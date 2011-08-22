@@ -47,6 +47,11 @@ $session = new Session($max_session_time,1,100);
 //require('external_libs/Smarty/Smarty.class.php');
 //$smarty = new Smarty();
 
+//print_r($_COOKIE);
+//exit;
+
+
+
 $public_url=$myconf['public_url'];
 if(!isset($_SESSION['basket'])){
 $_SESSION['basket']=array('items'=>0,'total'=>0);
@@ -120,6 +125,7 @@ $St=get_sk();
 
 $authentication_type='login';
 
+
 if(isset($_REQUEST['p'])){
 
 
@@ -143,19 +149,21 @@ $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,
 
 
 }
-else{
+elseif(isset($_COOKIE['user_handle'])){
 	$auth=new Auth(IKEY,SKEY);
+	$auth->set_use_cookies();
 	//$auth->use_cookies=true;
-	$auth->authenticate();
+	$auth->authenticate(false, false, 'customer', $_COOKIE['page_key']);
 
 	if ($auth->is_authenticated()) {
-	$authentication_type='cookie';
+		$authentication_type='cookie';
 		$_SESSION['logged_in']=true;
 		$_SESSION['store_key']=$store_key;
 		$_SESSION['site_key']=$site->id;
 
 		$_SESSION['user_key']=$auth->get_user_key();
 		$_SESSION['customer_key']=$auth->get_user_parent_key();
+		//echo 'jj'; 
 	}
 }
 
@@ -168,7 +176,6 @@ $St=get_sk();
 }
 
 if ($logged_in ) {
-
     if ($_SESSION['site_key']!=$site->id) {
         $_SESSION['logged_in']=0;
         $logged_in=false;
@@ -489,12 +496,8 @@ function see_also($code, $url="http://www.ancientwisdom.biz/forms/"){
 		return;
 	return $family->get_see_also($code, $url);
 }
-/*
-setcookie('user_handle', 'ghjghj', time()+60*60*24*365);
-if(isset($_REQUEST['user_handle']))
-	print $_REQUEST['user_handle'];
-else
-	print 'not set';
-	*/
+
+
+
 
 ?>
