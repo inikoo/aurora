@@ -367,7 +367,7 @@ class LightFamily {
                        ,addslashes($username)
 
                       );
-        $counter=0;
+        $counter=1;
         $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
