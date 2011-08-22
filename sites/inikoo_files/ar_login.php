@@ -9,6 +9,14 @@ $remember=(array_key_exists('remember_me', $_REQUEST)) ? $_REQUEST['remember_me'
 //echo $remember;
 $handle = (array_key_exists('login_handle', $_REQUEST)) ? $_REQUEST['login_handle'] : false;
 $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
+
+if($remember){
+	$auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
+}
+else{
+	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
+}
+print $_REQUEST['user_handle'];
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
 }
@@ -18,14 +26,8 @@ elseif($handle) {
     $auth->authenticate($handle,rawurldecode($sk),'customer',$site->id);
 }
 
-if($remember){
-	$auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
-}
-else{
 
-	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
-}
-
+//print $_COOKIE['user_handle'];
 if ($auth->is_authenticated()) {
     $_SESSION['logged_in']=true;
     $_SESSION['store_key']=$store_key;
