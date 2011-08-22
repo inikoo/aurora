@@ -1,5 +1,4 @@
 <?php
-
 $footer_description='Wholesale giftware supplier. Please note this is a wholesale site we supply wholesale to the trade.';
 $other="";
 $address=$store->data['Store Address'];
@@ -13,9 +12,5 @@ $footer=<<<EOD
 </div>
 </div>
 EOD;
-
-
-
-
 ?>
 
