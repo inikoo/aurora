@@ -8,7 +8,7 @@ $footer=<<<EOD
 <div id="footer_container" style="display:none" >
 <div id="footer">
 <table class="footer_table">
-<tr><td class="address">$address><br/>$telephone</td><td class="description">$footer_description</td><td>$other</td></tr>
+<tr><td class="address">$address<br/>$telephone</td><td class="description">$footer_description</td><td>$other</td></tr>
 </table>
 </div>
 </div>

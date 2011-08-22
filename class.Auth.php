@@ -158,7 +158,7 @@ class Auth {
     }
 
 	function set_cookies($handle=false,$sk=false,$page=false,$page_key=f0){
-		//setcookie('user_handle', $handle, time()+60*60*24*365);
+		setcookie('user_handle', $handle, time()+60*60*24*365);
 		setcookie('sk', $sk, time()+60*60*24*365);
 		setcookie('page', $page, time()+60*60*24*365);
 		setcookie('page_key', $page_key, time()+60*60*24*365);
