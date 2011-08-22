@@ -101,12 +101,14 @@ if (file_exists($store_code.'/labels.php')) {
 
 $_SESSION ['lang']='';
 
-
+$authentication_type='login';
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
  
 if ($logout) {
- 
+ $auth=new Auth(IKEY,SKEY);
+ //$auth->unset_cookies($_COOKIE['user_handle'],$_COOKIE['sk'],$_COOKIE['page'],$_COOKIE['page_key']);
+ $auth->unset_cookies();
      $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
    mysql_query($sql);
  
@@ -120,13 +122,7 @@ if ($logout) {
    $_SESSION['logged_in']=0;
 $logged_in=false;
 $St=get_sk();
-   
-}
-
-$authentication_type='login';
-
-
-if(isset($_REQUEST['p'])){
+}elseif(isset($_REQUEST['p'])){
 
 
 $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
@@ -148,8 +144,7 @@ $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,
 		}
 
 
-}
-elseif(isset($_COOKIE['user_handle'])){
+}elseif(isset($_COOKIE['user_handle'])){
 	$auth=new Auth(IKEY,SKEY);
 	$auth->set_use_cookies();
 	//$auth->use_cookies=true;
