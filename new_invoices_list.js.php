@@ -168,6 +168,23 @@ function checkbox_changed_net_amount_condition(o){
 } 
 
 
+function checkbox_changed_category(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	//if(cat=='less'){
+	//	if(Dom.hasClass(o,'selected')){
+	//		return;
+	//	}else{
+		
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'category_option'),'selected');
+			Dom.addClass(o,'selected');
+	//	}
+	//}
+} 
+
+
+
+
  function hide_tax(){
 		Dom.setStyle('total_tax_amount_upper','display','none')
 		Dom.setStyle('b','display','none')
@@ -402,7 +419,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices&tableid=0");
+		
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.table_id=tableid;
 
@@ -444,7 +462,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['list']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['stores']['invoices']['list']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -457,15 +475,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['customers']['list']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['customers']['list']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['stores']['invoices']['list']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['stores']['invoices']['list']['order_dir']?>"
 								     },
 								     dynamicData : true
 
 								  }
 								   
 								 );
-	    
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -474,7 +491,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['stores']['invoices']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['stores']['invoices']['list']['f_value']?>'};
 
 
 var tableid=1;
@@ -486,9 +503,12 @@ var tableid=1;
 			     	,{key:"flags", label:"<?php echo _('Countries')?>",width:240, sortable:false,className:"aleft"}
 
 					];
-		    
+		    var awhere=get_awhere();
+	
+	store_id=Dom.get('store_id').value;
+    //var request='&sf=0&store_id='+store_id+'&where=' +awhere;
 		      
-		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=world_regions_list&tableid=1&nr=20&sf=0");
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=world_regions_list&tableid=1&nr=20&sf=0&where=" +awhere);
 		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      	    this.dataSource1.table_id=tableid;
@@ -982,6 +1002,16 @@ var tableid=1;
 	
 	};
 
+	
+	if(Dom.get('auto').value=='1'){
+
+	
+	set_period();
+	set_category();
+	
+	submit_search(false)
+}
+	
     });
 
 
@@ -1005,6 +1035,12 @@ function get_awhere(){
     total_net_amount_array= new Array();
     for(x in total_net_amount){
         total_net_amount_array[x]=total_net_amount[x].getAttribute('cat');
+    }
+	
+	category=Dom.getElementsByClassName('selected', 'span', 'category_option');
+    category_array= new Array();
+    for(x in category){
+        category_array[x]=category[x].getAttribute('cat');
     }
 	
 	total_tax_amount=Dom.getElementsByClassName('selected', 'span', 'total_tax_amount_option');
@@ -1032,6 +1068,7 @@ function get_awhere(){
 	total_tax_amount:total_tax_amount_array,
 	total_profit:total_profit_array,
 	total_amount:total_amount_array,
+	category:category_array,
 	invoice_date_from:Dom.get('v_calpop1').value,
 	invoice_date_to:Dom.get('v_calpop2').value,
 	invoice_paid_date_from:Dom.get('v_calpop3').value,
@@ -1051,7 +1088,7 @@ function get_awhere(){
 
     return YAHOO.lang.JSON.stringify(data);
 
-   
+	
 
 }
 
@@ -1063,19 +1100,29 @@ function submit_search(e){
 
 searched=true;
 
-  
+ 
    var awhere=get_awhere();
-
+ 
 	//alert(jsonStr);
+
+	
     var table=tables.table0;
+
+	
     var datasource=tables.dataSource0;
+	
+	
+	
 	store_id=Dom.get('store_id').value;
     var request='&sf=0&store_id='+store_id+'&where=' +awhere;
+	
+	
+	
     Dom.setStyle('the_table','display','none');
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-alert(request)
+//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -1169,6 +1216,20 @@ function show_postal_code_list(e,geo_constrain){
 current_geo_constrain=geo_constrain;
 dialog_postal_code_list.show();
 }
+
+function set_period(){
+	period_from=Dom.get('period_from').value;
+	Dom.get('v_calpop1').value=period_from;
+	period_to=Dom.get('period_to').value;
+	Dom.get('v_calpop2').value=period_to;
+
+}
+
+function set_category(){
+	key=Dom.get('category_key').value;
+	Dom.addClass('category_'+key,'selected');
+}
+
 function init(){
 
     dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {context:["country","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
@@ -1244,7 +1305,8 @@ cal4.selectEvent.subscribe(handleSelect, cal4, true);
 	YAHOO.util.Event.addListener("invoice_date_to", "click", cal2.show, cal2, true);
 	YAHOO.util.Event.addListener("invoice_paid_date_from", "click", cal3.show, cal3, true);
 	YAHOO.util.Event.addListener("invoice_paid_date_to", "click", cal4.show, cal4, true);
-
+	
+	
 }
 
 YAHOO.util.Event.onDOMReady(init);

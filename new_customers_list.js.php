@@ -1092,6 +1092,7 @@ searched=true;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
+
 var submit_search_on_enter=function(e,tipo){
      var key;     
      if(window.event)
@@ -1276,6 +1277,7 @@ if(Dom.get('auto').value=='1'){
 }
 
 set_values();
+
 }
 
 YAHOO.util.Event.onDOMReady(init);
