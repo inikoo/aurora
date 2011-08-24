@@ -950,8 +950,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 exit;
             }
 
+
             if (!$product->found_in_code or !$product->found_in_store) {
-                $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
+                $sql=sprintf("update `Product Dimension` set `Product Record Type`='Normal',`Product Availability Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
             }
             elseif($product->found_in_id) {
                 $sql=sprintf("update `Product Dimension` set `Product Record Type`='Historic' , `Product Sales Type`='Public Sale' where `Product ID`=%d ",$product->pid);
@@ -960,10 +961,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             elseif($product->found_in_key) {
 
             } else {
-                $sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
+                $sql=sprintf("update `Product Dimension` set  `Product Record Type`='Normal',`Product Availability Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
 
             }
 
+       
 
             $supplier_code=_trim($transaction['supplier_code']);
             if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
@@ -1014,7 +1016,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $product_part_header=array(
                                              'Product Part Valid From'=>$date_order,
                                              'Product Part Valid To'=>$date2,
-                                             'Product Part Most Recent'=>'No',
+                                             'Product Part Most Recent'=>'Yes',
                                              'Product Part Type'=>'Simple'
 
                                          );
@@ -1050,7 +1052,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $product_part_header=array(
                                              'Product Part Valid From'=>$date_order,
                                              'Product Part Valid To'=>$date2,
-                                             'Product Part Most Recent'=>'No',
+                                             'Product Part Most Recent'=>'Yes',
                                              'Product Part Type'=>'Simple'
 
                                          );

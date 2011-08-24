@@ -23,19 +23,24 @@ $sql=sprintf("select `Product Code` from `Product Dimension` group by `Product C
 $res_code=mysql_query($sql);
 while($row_c=mysql_fetch_array($res_code)){
   $code=$row_c['Product Code'];
-  $sql=sprintf("select * from `Product Dimension` where `Product Store Key`=1 and `Product Code`=%s order by  `Product Valid To` desc",prepare_mysql($code));
+  $sql=sprintf("select `Product ID`, `Product Code`,`Product Valid To`,`Product Record Type` from `Product Dimension` where `Product Store Key`=1 and `Product Code`=%s and `Product Record Type`!='Historic' order by  `Product Valid To` desc",prepare_mysql($code));
   $res=mysql_query($sql);
   $number=mysql_num_rows($res);
   if($number>1){
     $count=0;  
-    while($row=mysql_fetch_array($res)){
+    while($row=mysql_fetch_assoc($res)){
       $pid=$row['Product ID'];
     $to=$row['Product Valid To'];
     //print "$code $pid $to ".$row['Product Short Description']."\n";
     if($count>0){
-      $sql=sprintf("update `Product Dimension` set `Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product To Be Discontinued`='No Applicable',`Product Web Configuration`='Offline' where `Product ID`=%d",$pid);
-      //exit($sql);
-      mysql_query($sql);
+    
+    
+    
+    //  $sql=sprintf("update `Product Dimension` set `Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product To Be Discontinued`='No Applicable',`Product Web Configuration`='Offline' where `Product ID`=%d",$pid);
+      print "duplicated codes in store!\n";
+      print_r($row);
+      exit($sql);
+     // mysql_query($sql);
     }
 
     $count++;
@@ -43,7 +48,27 @@ while($row_c=mysql_fetch_array($res_code)){
   }
 }
 
- 
+
+$sql=sprintf("select id,code  from aw_old.product  where   condicion=2   ");
+	$result2a=mysql_query($sql);
+	while($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
+	
+	$product=new Product('code_store',$row2a['code'],1);
+	if($product->id){
+	$current_part_skus=$product->get_current_part_skus();
+
+
+foreach($current_part_skus as $_part_sku){
+$part=new Part($_part_sku);
+$part->update_part_status('Not In Use');
+}
+}
+           	  
+
+	}
+
+
+ /*
 $sql=sprintf("select id,code  from aw_old.product  where   condicion=2 and stock=0  ");
 	$result2a=mysql_query($sql);
 	while($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
@@ -79,7 +104,7 @@ while($row=mysql_fetch_array($res)){
       mysql_query($sql);
   }
 }
-
+*/
 
 
 

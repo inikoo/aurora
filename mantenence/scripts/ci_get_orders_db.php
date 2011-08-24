@@ -879,7 +879,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $product_part_header=array(
                                          'Product Part Valid From'=>$date_order,
                                          'Product Part Valid To'=>$date2,
-                                         'Product Part Most Recent'=>'No',
+                                         'Product Part Most Recent'=>'Yes',
                                          'Product Part Type'=>'Simple'
 
                                      );

@@ -2885,7 +2885,7 @@ $default_state=array(
                                                      'to'=>''
                                                  ),
                                  'customers'=>array(
-                                                 'order'=>'dispached',
+                                                 'order'=>'dispatched',
                                                  'order_dir'=>'desc',
                                                  'sf'=>0,
                                                  'nr'=>15,

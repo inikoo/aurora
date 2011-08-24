@@ -127,15 +127,17 @@ class product extends DB_Table {
                 return;
             mysql_free_result($result);
 
-            $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+            $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product Availability Type`,`Product Stage` from `Product Dimension` where `Product ID`=%d ",$this->pid);
             //  print "$sql\n";
             $result=mysql_query($sql);
             //print "hols";
             if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                 $this->locale=$row['Product Locale'];
                 $this->code=$row['Product Code'];
-                $items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key');
+                $items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key','Product Availability Type','Product Stage');
                 foreach($items_from_parent as $item)
+             //   print "** $item\n";
+             //   print_r($row);
                 $this->data[$item]=$row[$item];
 
                 //	print "caca";
@@ -174,12 +176,7 @@ class product extends DB_Table {
         if ($tipo=='code_store' or $tipo=='code-store') {
             $this->mode='pid';
             $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d    order by
-                         `Product Record Type`='New' DESC
-                         ,`Product Record Type`='Normal' DESC
-                         ,`Product Record Type`='Discontinuing' DESC
-                         ,`Product Record Type`='Discontinuing' DESC
-                         ,`Product Record Type`='In Process' DESC
-                         ,`Product Record Type`='Discontinued' DESC
+                         `Product Record Type`='Normal' DESC
                          ,`Product Record Type`='Historic' DESC
 
 
@@ -865,7 +862,9 @@ class product extends DB_Table {
         $base_data=array(
                        'product sales type'=>'Public Sale',
                        'product type'=>'Normal',
-                       'product record type'=>'In process',
+                       'product record type'=>'Normal',
+                       'product availability type'=>'Normal',
+                       'product stage'=>'In Process',
                        'Product Web Configuration'=>'Offline',
                        'product store key'=>1,
                        'product locale'=>$myconf['lang'].'_'.$myconf['country'],
@@ -2030,93 +2029,10 @@ class product extends DB_Table {
             $this->update_net_weight_per_unit($a1);
             break;
         case('web_state'):
+            return $this->update_web_configuration($a1);
 
 
 
-                switch ($a1) {
-                case(_('Out of Stock')):
-                    $web_state='Online Force Out of Stock';
-                    break;
-                case(_('Auto')):
-                    $web_state='Online Auto';
-                    break;
-                case(_('Offline')):
-                    $web_state=_('Offline');
-                    break;
-                case(_('Hide')):
-                    $web_state='Online Force Hide';
-                    break;
-                case(_('Sale')):
-                    $web_state='Online Force For Sale';
-                    break;
-
-                }
-
-                $web_state=$a1;
-                $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
-                             ,prepare_mysql($web_state)
-                             ,$this->pid
-                            );
-                mysql_query($sql);
-                
-               
-                
-               
-                
-                //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-
-
-                if (mysql_affected_rows()>0) {
-                    $this->msg=_('Product Web Configuration updated');
-                    $this->updated=true;
-                    $this->data['Product Web Configuration']=$web_state;
-                    $this->update_web_state();
-                    $this->new_value=$a1;
-                    
-                          switch ($this->data['Product Web Configuration']) {
-        case('Online Force Out of Stock'):
-            $web_configuration=_('Force out of stock');
-            break;
-        case('Online Auto'):
-            $web_configuration=_('Auto');
-            break;
-        case('Offline'):
-            $web_configuration=_('Force offline');
-            break;
-        case('Online Force For Sale'):
-            $web_configuration=_('Force Online');
-            break;
-
-        }
-
-   switch ($this->data['Product Web State']) {
-        case('Out of Stock'):
-            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
-            break;
-        case('For Sale'):
-            $web_state='';
-            break;
-        case('Discontinued'):
-            $web_state=_('Discontinued');
-        case('Offline'):
-            $web_state=_('Offline');
-            break;
-      
-
-        }
-
-                    
-                    $description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
-                    $this->new_data=array('web_configuration'=>$web_configuration,'description'=>$description);
-                    
-                    return;
-                } else {
-                    $this->msg=_("Error: Product Web Configuration could not be updated ");
-                    $this->updated=false;
-                    return;
-                }
-          
-          
             break;
         case('sales_type'):
         case('sales_state'):
@@ -2145,13 +2061,13 @@ class product extends DB_Table {
 
             if ( $a1==_('Editing')  ) {
                 //changing to editing mode
-                if (  $this->data['Product Record Type']=='In Process'  or  $this->data['Product Record Type']=='New') {
+                if (  $this->data['Product Stage']=='In Process'  or  $this->data['Product Stage']=='New') {
                     $this->updated=true;
                     $this->new_value=_('Editing');
                     return;
                 }
 
-                $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s  ,`Product Editing Price`=%f,`Product Editing RRP`=%s,`Product Editing Name`=%s,`Product Editing Special Characteristic`=%s ,`Product Editing Family Special Characteristic`=%s,`Product Editing Units Per Case`=%f ,`Product Editing Unit Type`=%s  where `Product Key`=%d "
+                $sql=sprintf("update `Product Dimension` set `Product Stage`=%s  ,`Product Editing Price`=%f,`Product Editing RRP`=%s,`Product Editing Name`=%s,`Product Editing Special Characteristic`=%s ,`Product Editing Family Special Characteristic`=%s,`Product Editing Units Per Case`=%f ,`Product Editing Unit Type`=%s  where `Product Key`=%d "
                              ,prepare_mysql('In Process')
                              ,$this->data['Product Price']
                              ,($this->data['Product RRP']==''?'NULL':$this->data['Product RRP'])
@@ -2170,35 +2086,35 @@ class product extends DB_Table {
                     $this->new_value=_('Editing');
                     return;
                 } else {
-                    $this->msg=_("Error: Product record type could not be updated"." $sql");
+                    $this->msg=_("Error: Product stage could not be updated"." $sql");
                     $this->updated=false;
                     return;
                 }
 
             } else {
                 // Change from editing to normal
-                if ( $this->data['Product Record Type']=='Normal' ) {
+                if ( $this->data['Product Stage']=='Normal' ) {
                     $this->updated=true;
                     $this->new_value=_('Live');
                     return;
                 }
 
 
-                if ($this->data['Product Record Type']=='New' ) {
+                if ($this->data['Product Stage']=='New' ) {
 
-                    $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s  where `Product Key`=%d "
+                    $sql=sprintf("update `Product Dimension` set `Product Stage`=%s  where `Product Key`=%d "
                                  ,prepare_mysql('Normal')
                                  ,$this->id
                                 );
                     if (mysql_query($sql)) {
                         if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-                        $this->msg=_('Product Record Type updated');
+                        $this->msg=_('Product Stage updated');
                         $this->updated=true;
 
                         $this->new_value=_('Live');
                         return;
                     } else {
-                        $this->msg=_("Error: Product record state could not be updated");
+                        $this->msg=_("Error: Product stage could not be updated");
                         $this->updated=false;
                         return;
                     }
@@ -2233,9 +2149,9 @@ class product extends DB_Table {
 
 
                 } else {
-                    // No change in procce, or unis no necesiti of make a new product with different ID
+                    // No change in procce, or unis no necessity of make a new product with different ID
 
-                    $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s, `Product RRP`=%s,`Product Name`=%s,`Product Special Characteristic`=%s ,`Product Family Special Characteristic`=%s"
+                    $sql=sprintf("update `Product Dimension` set `Product Stage`=%s, `Product RRP`=%s,`Product Name`=%s,`Product Special Characteristic`=%s ,`Product Family Special Characteristic`=%s"
                                  ,prepare_mysql('Normal')
                                  ,($this->data['Product Editing RRP']==''?'NULL':$this->data['Product Editing RRP'])
                                  ,prepare_mysql($this->data['Product Editing Name'])
@@ -2283,7 +2199,7 @@ class product extends DB_Table {
             break;
         case('code'):
 
-            if ($this->data['Product Record Type']!='In process') {
+            if ($this->data['Product Stage']!='In process') {
                 $this->msg='This product can not changed';
                 return;
             }
@@ -2338,7 +2254,7 @@ class product extends DB_Table {
             break;
         case('famsdescription'):
 
-            if ($this->data['Product Record Type']=='In Process') {
+            if ($this->data['Product Stage']=='In Process') {
                 if ($a1==$this->data['Product Editing Family Special Characteristic']) {
                     $this->updated=true;
                     $this->new_value=$a1;
@@ -2358,7 +2274,7 @@ class product extends DB_Table {
                 return;
             }
 
-            if ($this->data['Product Record Type']=='In Process')
+            if ($this->data['Product Stage']=='In Process')
                 $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
                              ,$this->data['Product Family Key']
                              ,prepare_mysql($a1)
@@ -2384,7 +2300,7 @@ class product extends DB_Table {
                 return;
             }
 
-            if ($this->data['Product Record Type']=='In Process')
+            if ($this->data['Product Stage']=='In Process')
                 $editing_column='Product Editing Family Special Characteristic';
             else
                 $editing_column='Product Family Special Characteristic';
@@ -3789,7 +3705,7 @@ class product extends DB_Table {
             }
         }
 
-        if ($this->data['Product Record Type']=='In process') {
+        if ($this->data['Product Stage']=='In Process') {
 
             if ($key=='Product Price Per Unit')
                 $amount=$amount*$this->data['Product Editing Units Per Case'];
@@ -4098,7 +4014,7 @@ class product extends DB_Table {
 
     function update_name($value) {
 
-        if ($this->data['Product Record Type']=='In Process') {
+        if ($this->data['Product Stage']=='In Process') {
             if ($value==$this->data['Product Editing Name']) {
                 $this->updated=true;
                 $this->new_value=$value;
@@ -4129,7 +4045,7 @@ class product extends DB_Table {
                 return;
             }
         }
-        if ($this->data['Product Record Type']=='In Process')
+        if ($this->data['Product Stage']=='In Process')
             $edit_column='Product Editing Name';
         else
             $edit_column='Product Name';
@@ -4176,7 +4092,7 @@ class product extends DB_Table {
         }
     }
     function update_special_characteristic($value) {
-        if ($this->data['Product Record Type']=='In Process') {
+        if ($this->data['Product Stage']=='In Process') {
             if ($value==$this->data['Product Editing Special Characteristic']) {
                 $this->updated=true;
                 $this->new_value=$value;
@@ -4198,7 +4114,7 @@ class product extends DB_Table {
 
 
 
-        if ($this->data['Product Record Type']=='In Process')
+        if ($this->data['Product Stage']=='In Process')
             $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Editing Special Characteristic`=%s   and `Product ID`!=%d"
                          ,$this->data['Product Family Key']
                          ,prepare_mysql($value)
@@ -4219,7 +4135,7 @@ class product extends DB_Table {
             $this->msg=_("Error: Another product with the same Product/Family Special Characteristic in this family");
             return;
         }
-        if ($this->data['Product Record Type']=='In Process')
+        if ($this->data['Product Stage']=='In Process')
             $editing_column='Product Editing Special Characteristic';
         else
             $editing_column='Product Special Characteristic';
@@ -4558,9 +4474,11 @@ class product extends DB_Table {
         while ($row=mysql_fetch_array($res)) {
             $data=array(
                       'product sales type'=>'Public Sale',
-                      'product type'=>'Mix',
+                      'product type'=>'Fuzzy',
                       'product record type'=>'Normal',
-                      'Product Web Configuration'=>'Offline',
+                      'product availability type'=>'Normal',
+                      'Product stage'=>'Normal',
+                      'product web configuration'=>'Online Auto',
                       'product store key'=>$this->data['Product Store Key'],
                       'product currency'=>$this->get('Product Currency'),
                       'product locale'=>$this->data['Product Locale'],
@@ -5261,10 +5179,10 @@ class product extends DB_Table {
 
     function update_if_still_new() {
         $one_week=604800;
-        if ($this->data['Product Record Type']=='New' and date('U')-strtotime($this->data['Product For Sale Since Date'])>$one_week ) {
-            $this->data['Product Record Type']='Normal';
-            $sql=sprintf("update `Product Dimension` set `Product recorf Type`=%s  where  `Product ID`=%d "
-                         ,prepare_mysql($this->data['Product Record Type'])
+        if ($this->data['Product Stage']=='New' and date('U')-strtotime($this->data['Product For Sale Since Date'])>$one_week ) {
+            $this->data['Product Stage']='Normal';
+            $sql=sprintf("update `Product Dimension` set `Product Stage`=%s  where  `Product ID`=%d "
+                         ,prepare_mysql($this->data['Product Stage'])
                          ,$this->pid
                         );
             mysql_query($sql);
@@ -5440,18 +5358,22 @@ class product extends DB_Table {
         if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
     }
+
+
+
+
     function update_parts() {
         $parts='';
         $mysql_where='';
 
 
 
-        if ($this->data['Product Record Type']=='Discontinued' or $this->data['Product Record Type']=='Historic') {
-            $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d order by `Product Part Valid To` desc limit 1;",$this->data['Product ID']);
+//        if ($this->data['Product Record Type']=='Discontinued' or $this->data['Product Record Type']=='Historic') {
+//           $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d order by `Product Part Valid To` desc limit 1;",$this->data['Product ID']);
 
-        } else {
-            $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
-        }
+//        } else {
+        $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
+        //      }
 
 
         // print "$sql\n";
@@ -5535,6 +5457,29 @@ class product extends DB_Table {
 
     }
 
+    function update_availability_type() {
+        $availability_type='Normal';
+        $current_part_skus=$this->get_current_part_skus();
+        foreach($current_part_skus as $sku){
+            $part=new Part($sku);
+            if($part->data['Part Status']=='Not In Use'){
+                  $availability_type='Discontinued';
+            }
+        
+        }
+        
+        $this->data['Product Availability Type']=$availability_type;
+        
+          $sql=sprintf("update `Product Dimension` set `Product Availability Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Availability Type']),$this->pid);
+       // print "$sql\n";
+
+        mysql_query($sql);
+        
+        $this->update_web_state();
+        
+    
+    }
+
     function update_availability() {
         $stock_forecast_method='basic1';
         $stock_tipo_method='basic1';
@@ -5607,7 +5552,7 @@ class product extends DB_Table {
 
 
 
-        if ($this->data['Product Record Type']=='Discontinued') {
+        if ($this->data['Product Availability Type']=='Discontinued') {
             $stock=0;
             $tipo='No applicable';
 
@@ -5749,12 +5694,12 @@ class product extends DB_Table {
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $part=new Part($row['Part SKU']);
             $parts[$row['Part SKU']]=array(
-                                         'key'=>$row['Product Part List Key']
-                                               ,'sku'=>$part->get_sku()
-                                                      ,'description'=>$part->get_description()
-                                                                     ,'note'=>$row['Product Part List Note']
-                                                                             ,'parts_per_product'=>$row['Parts Per Product']
-                                                                                                  ,'days_available'=>$row['days']
+                                         'key'=>$row['Product Part List Key'],
+                                         'sku'=>$part->get_sku(),
+                                         'description'=>$part->get_description(),
+                                         'note'=>$row['Product Part List Note'],
+                                         'parts_per_product'=>$row['Parts Per Product'],
+                                         'days_available'=>$row['days']
                                      );
         }
         return $parts;
@@ -6075,22 +6020,81 @@ class product extends DB_Table {
     }
 
 
-function update_web_state(){
-$web_state=$this->get_web_state();
-$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
-prepare_mysql($web_state),
-$this->pid
-);
+    function update_web_state() {
+        $web_state=$this->get_web_state();
+        $sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
+                     prepare_mysql($web_state),
+                     $this->pid
+                    );
 
 //print $sql;
-mysql_query($sql);
-$this->data['Product Web State']=$web_state;
+        mysql_query($sql);
+        $this->data['Product Web State']=$web_state;
+
+    }
+
+
+function get_formated_sales_type(){
+   switch ($this->data['Product Sales Type']) {
+                case('Public Sale'):
+                    $sales_type=_('Public Sale');
+                    break;
+                case('Private Sale'):
+                    $sales_type=_('Private Sale');
+                    break;
+                case('Not for Sale'):
+                    $sales_type=_('Not for Sale');
+                    break;
+               
+
+                }
+return $sales_type;
+}
+
+function get_formated_web_state(){
+
+      switch ($this->data['Product Web Configuration']) {
+                case('Online Force Out of Stock'):
+                    $web_configuration=_('Forced');
+                    break;
+                case('Online Auto'):
+                    $web_configuration=_('Auto');
+                    break;
+                case('Offline'):
+                    $web_configuration=_('Forced');
+                    break;
+                case('Online Force For Sale'):
+                    $web_configuration=_('Forced');
+                    break;
+
+                }
+
+                switch ($this->data['Product Web State']) {
+                case('Out of Stock'):
+                    $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+                    break;
+                case('For Sale'):
+                    $web_state='';
+                    break;
+                case('Discontinued'):
+                    $web_state=_('Discontinued');
+                case('Offline'):
+                    $web_state=_('Offline');
+                    break;
+
+
+                }
+
+
+                $description='<span class="web_state">'.$web_state.'</span> (<span>'.$web_configuration.')</span>';
+
+return $description;
 
 }
 
     function get_web_state() {
 
-        if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Record Type']=='In Process') {
+        if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Stage']=='In Process') {
             return 'Offline';
         }
 
@@ -6109,13 +6113,13 @@ $this->data['Product Web State']=$web_state;
             if ($this->data['Product Availability']>0) {
                 return 'For Sale';
             } else {
-            
-                if ($this->data['Product Record Type']=='Discontinued') {
+
+                if ($this->data['Product Availability Type']=='Discontinued') {
 
 
                     $sql=sprintf("select `Store Web Days Until Remove Discontinued Products`*86400 as interval from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
                     $res=mysql_query($sql);
-                    
+
                     $interval=7776000;
                     if ($row=mysql_fetch_assoc($res)) {
                         $interval=$row['interval'];
@@ -6126,8 +6130,7 @@ $this->data['Product Web State']=$web_state;
                         return 'Discontinued';
 
 
-                } else if ( $this->data['Product Record Type']=='Discontinuing') {
-                    return 'Discontinued';
+
                 } else {
 
                     return 'Out of Stock';
@@ -6148,6 +6151,94 @@ $this->data['Product Web State']=$web_state;
 
 
     }
+
+    function update_web_configuration($a1){
+    
+            switch ($a1) {
+            case(_('Out of Stock')):
+                $web_state='Online Force Out of Stock';
+                break;
+            case(_('Auto')):
+                $web_state='Online Auto';
+                break;
+            case(_('Offline')):
+                $web_state=_('Offline');
+                break;
+            case(_('Hide')):
+                $web_state='Online Force Hide';
+                break;
+            case(_('Sale')):
+                $web_state='Online Force For Sale';
+                break;
+
+            }
+
+            $web_state=$a1;
+            $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
+                         ,prepare_mysql($web_state)
+                         ,$this->pid
+                        );
+            mysql_query($sql);
+
+
+
+
+
+            //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
+
+            if (mysql_affected_rows()>0) {
+                $this->msg=_('Product Web Configuration updated');
+                $this->updated=true;
+                $this->data['Product Web Configuration']=$web_state;
+                $this->update_web_state();
+                $this->new_value=$a1;
+
+                switch ($this->data['Product Web Configuration']) {
+                case('Online Force Out of Stock'):
+                    $web_configuration=_('Force out of stock');
+                    break;
+                case('Online Auto'):
+                    $web_configuration=_('Auto');
+                    break;
+                case('Offline'):
+                    $web_configuration=_('Force offline');
+                    break;
+                case('Online Force For Sale'):
+                    $web_configuration=_('Force Online');
+                    break;
+
+                }
+
+                switch ($this->data['Product Web State']) {
+                case('Out of Stock'):
+                    $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+                    break;
+                case('For Sale'):
+                    $web_state='';
+                    break;
+                case('Discontinued'):
+                    $web_state=_('Discontinued');
+                case('Offline'):
+                    $web_state=_('Offline');
+                    break;
+
+
+                }
+
+
+                $description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
+                $this->new_data=array('web_configuration'=>$web_configuration,'description'=>$description);
+
+                return;
+            } else {
+                $this->msg=_("Error: Product Web Configuration could not be updated ");
+                $this->updated=false;
+                return;
+            }
+
+}
+
 
 }
 

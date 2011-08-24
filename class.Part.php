@@ -759,6 +759,9 @@ function formated_sku() {
             $stock=$row['stock'];
             $value=$row['value'];
         }
+        
+       
+        
         return array($stock,$value);
 
     }
@@ -860,6 +863,10 @@ function formated_sku() {
     function update_stock() {
         //print_r($this->get_current_stock());
         list($stock,$value)=$this->get_current_stock();
+        
+        $this->data['Part Current Stock']=$stock;
+        $this->data['Part Current Value']=$value;
+        
         $sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f where  `Part SKU`=%d   "
                      ,$stock
                      ,$value
@@ -887,6 +894,14 @@ function formated_sku() {
                      ,$this->id
                     );
         mysql_query($sql);
+        
+        $products=$this->get_product_ids();
+        foreach($products as $product_pid){
+            $product=new Product ('pid',$product_pid);
+            $product->update_availability_type();
+        
+        }
+        
 
     }
 
@@ -918,6 +933,30 @@ function formated_sku() {
         
 
     }
+    
+    function update_picking_location(){
+    
+    $sql=sprintf("select * from `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`) where `Part SKU`=%d and `Can Pick`='Yes'  ",$this->sku);
+    $res=mysql_query($sql);
+    $picking_location='';
+    while($row=mysql_fetch_assoc($res)){
+    $picking_location.=sprintf(", <href='location.php?id=%d'>%s</a>",$row['Location Key'],$row['Location Code']);
+    }
+    //print $sql;
+    $picking_location=preg_replace('/^,/','',$picking_location);
+    $this->data['Part XHTML Picking Location']=$picking_location;
+    
+     $sql=sprintf("update `Part Dimension`  set `Part XHTML Picking Location`=%s where  `Part SKU`=%d   "
+                     ,prepare_mysql($this->data['Part XHTML Picking Location'],false)
+                     ,$this->id
+                    );
+          // print $sql;
+      //  exit;
+        mysql_query($sql);
+    
+    }
+    
+    
     function update_valid_dates($date) {
         $affected_from=0;
         $affected_to=0;
@@ -1102,6 +1141,8 @@ $row['Formated Quantity On Hand']=number($row['Quantity On Hand']);
 $row['Part Formated SKU']=$this->get_sku();
 
 $row['Location Code']=$location->data['Location Code'];
+
+
 if($for_smarty){
 $row_for_smarty=array();
 foreach($row as $key=>$value){
@@ -2231,7 +2272,7 @@ left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B
     function get_product_ids() {
 
 
-        $sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d   "
+        $sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Most Recent`='Yes' "
                      ,$this->sku
                     );
 

@@ -1,0 +1,13 @@
+#part_locations .button {width:16px;filter:alpha(opacity=60);
+	-moz-opacity:0.6;
+	-khtml-opacity: 0.6;
+	opacity: 0.6;
+}
+#part_locations .button:hover {width:16px;filter:alpha(opacity=100);
+	-moz-opacity:1;
+	-khtml-opacity: 1;
+	opacity: 1;
+}
+
+
+#part_locations .quantity{padding-right:10px;text-align:right}

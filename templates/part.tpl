@@ -32,11 +32,9 @@
       <td class="aright">
 	
 	<tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
-      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From Datetime')}</td></tr>
-			<tr><td>{t}Sold as{/t}:</td><td>{$part->get('Part XHTML Currently Used In')}</td></tr>
-
+    <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From Datetime')}</td></tr>
+	<tr><td>{t}Sold as{/t}:</td><td>{$part->get('Part XHTML Currently Used In')}</td></tr>
 	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
-
 	<tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
 	
 	{foreach from=$show_case key=name item=value}
@@ -70,10 +68,11 @@
 			<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode}
 			</a></td>
 		     <td class="quantity"  id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}"  >{$location.FormatedQuantityOnHand}</td>
-		     <td class="button"   ><img  id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" alt="{t}audit{/t}" onClick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
+		     <td class="button"   ><img  id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onClick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
 		     <td class="button"  > <img style="{if $location.QuantityOnHand!=0}display:none{/if}" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_delete_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/cross_bw.png" alt="{t}delete{/t}" onClick="delete_part_location({$location.PartSKU},{$location.LocationKey})" /><img style="{if $location.QuantityOnHand==0}display:none{/if}" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/package_delete.png" alt="{t}lost{/t}" onClick="lost({$location.PartSKU},{$location.LocationKey})" /></td>
 			 <td class="button"  ><img sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/package_go.png" alt="{t}move{/t}" onClick="move({$location.PartSKU},{$location.LocationKey})" /></td>
-			
+			<td class="button"  ><img sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  {if $location.CanPick=='Yes'}can_pick="No"  src="art/icons/basket.png"{else} can_pick="Yes"   src="art/icons/box.png"{/if} alt="{t}can_pick{/t}"   onClick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /></td>
+
 
 			</tr>
 			{/foreach}
