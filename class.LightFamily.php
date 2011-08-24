@@ -234,8 +234,32 @@ class LightFamily {
 
 
 
-    function get_product_list_with_order_form($header, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method) {
+    function get_product_list_with_order_form($header, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false) {
 
+		
+		if(isset($options['order_by']))
+			if(strtolower($options['order_by']) == 'price')
+				$order_by='`Product RRP`';
+			elseif(strtolower($options['order_by']) == 'code')
+				$order_by='`Product Code`';
+			else
+				$order_by=true;
+		else
+			$order_by=true;
+			
+		if(isset($options['limit']))
+			$limit='limit '.$options['limit'];
+		else
+			$limit='';
+
+		if(isset($options['range'])){
+			list($range1, $range2)=explode(":", strtoupper($options['range']));
+			$range_where=sprintf("and ( (ord(`Product Code`) >= %d and ord(`Product Code`) <= %d) || (ord(`Product Code`) >= %d and ord(`Product Code`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+			
+		}
+		else 
+			$range_where="";//"  true";
+			
 
         $print_header=true;
         $print_rrp=true;
@@ -369,7 +393,9 @@ class LightFamily {
 
                       );
         $counter=1;
-        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+        //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
+		print $sql;
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 

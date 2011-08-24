@@ -298,9 +298,14 @@ function show_products($code,$options=false){
 	
 	
 	$header=array('on'=>true);
+	$options=array('order_by'=>'code'
+	, 
+	//'limit'=>1, 
+	//'range'=>'a:f'
+	);
 	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
 	if($logged_in){
-		echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
+		echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
 	}
 	else{
 		echo $product->get_product_list_no_price($header, $options);
