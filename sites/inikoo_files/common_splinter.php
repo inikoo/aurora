@@ -310,10 +310,10 @@ function show_products($code,$options=false){
 
 function set_parameters($data=false){
 
-	if(!isset($data['code']))
+	if(!isset($data['family']))
 		$code='';
 	else
-		$code=$data['code'];
+		$code=$data['family'];
 	//print_r( $data);
 	global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
 	$see_also=array();
@@ -345,7 +345,9 @@ function set_parameters($data=false){
 	}
 	else
 		$header_title="";
-	$footer_description=$data['footer_description'];
+		
+	if(isset($data['footer_description']))
+		$footer_description=$data['footer_description'];
 }
 
 function add_extra_header_content($data){
