@@ -22,6 +22,7 @@ function sales_init(){
 
 					 ];
 	    sales_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=sales&tableid="+tableid);
+		//alert("ar_splinters.php?tipo=sales&tableid="+tableid);
 	    sales_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    sales_tables.dataSourcetopprod.connXhrMode = "queueRequests";
 	    sales_tables.dataSourcetopprod.responseSchema = {
@@ -126,6 +127,7 @@ period=this.id;
 var table=sales_tables.table1;
     var datasource=sales_tables.dataSourcetopprod;
     var request='&period=' + period;
+	//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
 }
 

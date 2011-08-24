@@ -3337,8 +3337,18 @@ $default_state=array(
                                                'order_dir'=>'',
                                                'sf'=>0,
                                                'nr'=>25,
+											   'xx'=>'xx',
 
-
+										'list'=>array(
+                                                                 'order'=>'date',
+                                                                 'order_dir'=>'',
+                                                                 'sf'=>0,
+                                                                 'nr'=>25,
+                                                                 'where'=>'',
+                                                                 'f_field'=>'',
+                                                                 'f_value'=>'',
+                                                                 'view'=>'general'
+                                                             ),
                                                'csv_export'=>array(
                                                                 'code'=>true,
                                                                 'name'=>true,
