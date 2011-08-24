@@ -213,6 +213,7 @@ if(!$row=mysql_fetch_array($result))
 	$valid_products=false;
 	
 $smarty->assign('valid_products',$valid_products);
+//print_r($_SESSION['state']['orders']['invoices']);
 
 //print_r($_SESSION['state']['home']['splinters']);
 $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);

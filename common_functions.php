@@ -1289,6 +1289,7 @@ function invoices_awhere($awhere) {
                     'total_tax_amount'=>array(),
 					'total_profit'=>array(),
 					'total_amount'=>array(),
+					'category'=>array(),
 					'store_key'=>false
                 );
 
@@ -1306,6 +1307,8 @@ function invoices_awhere($awhere) {
     //$use_categories =false;
     $use_otf =false;
 
+	
+	
     $where_billing_geo_constraints='';
     if ($where_data['billing_geo_constraints']!='') {
         $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
@@ -1468,6 +1471,52 @@ function invoices_awhere($awhere) {
     if($total_amount_where!=''){
 		$where.="and ($total_amount_where)";
     }
+	
+	
+	/*
+		   $total_net_amount_where='';
+   foreach($where_data['total_net_amount'] as $total_net_amount) {
+        switch ($total_net_amount) {
+        case 'less':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`<'%s' ",$where_data['total_net_amount_lower']);
+            break;
+        case 'equal':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`='%s'  ",$where_data['total_net_amount_lower']);
+            break;
+        case 'more':
+            $total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`>'%s'  ",$where_data['total_net_amount_upper']);
+            break;
+		case 'between':
+			$total_net_amount_where.=sprintf(" and  `Invoice Total Net Amount`>'%s'  and `Invoice Total Net Amount`<'%s'", $where_data['total_net_amount_lower'], $where_data['total_net_amount_upper']);
+			break;
+		}
+    }
+    $total_net_amount_where=preg_replace('/^\s*and/','',$total_net_amount_where);
+	
+    if($total_net_amount_where!=''){
+		$where.="and ($total_net_amount_where)";
+    }
+	*/
+	
+	$category_where='';
+    foreach($where_data['category'] as $category) {
+		$sql=sprintf("select `Subject Key` from `Category Bridge` where `Category Key`=%d", $category);
+		$result=mysql_query($sql);
+		$subject_keys=array();
+		while($row=mysql_fetch_array($result)){
+			$subject_keys[]=$row['Subject Key'];
+		}
+		$subject_keys=join(",", $subject_keys);
+		//print_r($subject_keys);exit;
+		$category_where.=sprintf(" and `Invoice Key` in ($subject_keys)");
+    }
+    $category_where=preg_replace('/^\s*and/','',$category_where);
+	
+    if($category_where!=''){
+		$where.="and ($category_where)";
+    }
+	
+	
 	
 	//print $table. $where; exit;
     return array($where,$table);
@@ -1946,15 +1995,15 @@ function orders_awhere($awhere) {
 		else
 			$country[]=$value;	
 	}
-	print 'wr';
-	print_r($wr);
-	print 'country';
-	print_r($country);
-	print 'city';
-	print_r($city);
-	print 'pc';
-	print_r($postal_code);
-	exit;
+	//print 'wr';
+	//print_r($wr);
+	//print 'country';
+	//print_r($country);
+	//print 'city';
+	//print_r($city);
+	//print 'pc';
+	//print_r($postal_code);
+	//exit;
     if ($where_data['billing_geo_constraints']!='') {
         $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
     }
@@ -2189,6 +2238,8 @@ function orders_awhere($awhere) {
 	//print $table; 
 	//print '|';
 	//print $where; exit;
+	
+	//exit;
     return array($where,$table);
 	
 

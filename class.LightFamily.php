@@ -17,7 +17,8 @@ class LightFamily {
     var $user_id;
     var $method;
     var $match=true;
-
+	var $currency;
+	
     function __construct($arg1,$arg2) {
 
 

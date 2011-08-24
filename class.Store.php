@@ -945,6 +945,7 @@ class Store extends DB_Table {
 
 
         case 'Last Month':
+		case 'last_m':
             $db_interval='Last Month';
             $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
             $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
@@ -955,6 +956,7 @@ class Store extends DB_Table {
             break;
 
         case 'Last Week':
+		case 'last_w':
             $db_interval='Last Week';
 
 
@@ -975,6 +977,7 @@ class Store extends DB_Table {
             break;
 
         case 'Yesterday':
+		case 'yesterday':
             $db_interval='Yesterday';
             $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
             $to_date=date('Y-m-d 00:00:00',strtotime('today'));
@@ -1013,7 +1016,7 @@ class Store extends DB_Table {
 
             break;
         case 'Today':
-
+		case 'today':
             $db_interval='Today';
             $from_date=date('Y-m-d 00:00:00');
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1037,12 +1040,14 @@ class Store extends DB_Table {
             //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
             break;
         case '3 Year':
+		case '3y':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
             $from_date_1yb=false;
             $to_1yb=false;
             break;
         case '1 Year':
+		case '1y':		
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1055,24 +1060,28 @@ class Store extends DB_Table {
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Quarter':
+		case '1q':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Month':
+		case '1m':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '10 Day':
+		case '10d':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Week':
+		case '1w':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1198,11 +1207,16 @@ class Store extends DB_Table {
 // print "$sql\n";
             mysql_query($sql);
         }
-
+		
+		return array(substr($from_date, -19,-9), date("Y-m-d"));
 
     }
 
-
+	function get_from_date($period){
+		return $this->update_sales_from_invoices($period);
+		
+	}
+	
     function update_customer_activity_interval() {
 
 
