@@ -9,7 +9,10 @@
       
 <div style="clear:both;border:1px solid #ccc;padding:20px;width:870px">
 <input type="hidden" id="store_id" value="{$store->id}">
-
+<input type="hidden" id="period_from" value="{$period_from}">
+<input type="hidden" id="period_to" value="{$period_to}">
+<input type="hidden" id="auto" value="{if $auto==1}1{else}0{/if}">
+<input type="hidden" id="category_key" value="{$category_key}">
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
       <table >
 	<form>
@@ -83,6 +86,20 @@
 		</td>
 	</tr>
 
+	<tr><td colspan="2"><b>{t}Invoices in{/t}</b></td></tr>
+      <tr>
+        <td>{t}Category{/t}:</td>
+		<td>
+			<div id="category_option" default_cat=""   class="options" style="margin:5px 0">
+			 {foreach from=$category item=cat3 key=cat_key name=foo3}
+			 <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_category(this)" id="category_{$cat_key}"  parent="category_" cat="{$cat_key}"  >{$cat3.name}</span>
+			 {/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+
+	  
 	  <tr><td colspan="2"><b>{t}Invoices With...{/t}</b></td></tr>
       <tr>
         <td>{t}Total Net Amount{/t}:</td>

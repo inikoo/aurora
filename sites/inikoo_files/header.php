@@ -37,8 +37,9 @@ $header=<<<EOD
 
 <div id="header">
 
-<div style="height:57px">
-<h1 style="position:relative;top:20px;padding:0;margin:0px 0 0 240px">$title</h1>
+
+<div style="height:55px;color:#800000">
+<h1>$title</h1>
 </div>
 <div style="margin-left:172px" id="menu_bar">$menubar
 </div>

@@ -168,10 +168,10 @@ function invoice_categories_sales_overview() {
         $fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales " );
     }
 
-    $sql=sprintf("select  IC.`Category Key`,`Category Label`, `Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
+    $sql=sprintf("select  IC.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
     $fields);
     $adata=array();
-    //  print $sql;
+      //print $sql;
     $position=1;
     $result=mysql_query($sql);
     $sum_invoices=0;
@@ -186,12 +186,14 @@ function invoice_categories_sales_overview() {
         $sum_dc_sales+=$row['dc_sales'];
         $sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
-
+	$invoice=number($row['invoices']);
         $category="<a href='report_sales.php?invoice_category_key=".$row['Category Key']."'>".$row['Category Label'].'</a>';
+		//$invoices=sprintf('<a href="orders.php?view=invoices&invoice_type=invoices&splinter=1&cat_key=%d">%s</a>',$row['Category Key'], $invoice); 
+		$invoices=sprintf('<a href="new_invoices_list.php?store=%d&period=%s&auto=1&cat_key=%d">%s</a>',$row['Category Store Key'],$period,$row['Category Key'],$invoice);
         $adata[]=array(
 
                      'store'=>$category,
-                     'invoices'=>number($row['invoices']),
+                     'invoices'=>$invoices,
                      'invoices_1yb'=>number($row['invoices_1yb']),
                      'invoices_delta'=>delta($row['invoices'],$row['invoices_1yb']),
                      'invoices_share'=>$row['invoices'],
@@ -381,7 +383,7 @@ function store_sales_overview() {
 
     $sql=sprintf("select  S.`Store Key`,`Store Name`, `Store Currency Code` currency,%s from `Store Dimension` S left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`) ",$fields);
     $adata=array();
-    //print $sql;
+   //print $sql;
     $position=1;
     $result=mysql_query($sql);
     $sum_invoices=0;
@@ -396,12 +398,14 @@ function store_sales_overview() {
         $sum_dc_sales+=$row['dc_sales'];
         $sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
-
+		$invoice=number($row['invoices']);
         $store="<a href='report_sales.php?store_key=".$row['Store Key']."'>".$row['Store Name'].'</a>';
+		$invoices=sprintf('<a href="new_invoices_list.php?store=%d&period=%s&auto=1">%s</a>',$row['Store Key'],$period,$invoice);
+		
         $adata[]=array(
 
                      'store'=>$store,
-                     'invoices'=>number($row['invoices']),
+                     'invoices'=>$invoices,
                      'invoices_1yb'=>number($row['invoices_1yb']),
                      'invoices_delta'=>delta($row['invoices'],$row['invoices_1yb']),
                      'invoices_share'=>$row['invoices'],
