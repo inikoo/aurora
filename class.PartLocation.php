@@ -213,11 +213,15 @@ class PartLocation extends DB_Table {
         if (mysql_query($sql)) {
             $this->updated=true;
             $this->data['Can Pick']=$value;
+            $this->part->update_picking_location();
         }
+        
+        
+        
     }
 
 
-    function audit($qty) {
+    function audit($qty,$note='') {
 
         if (!is_numeric($qty) or $qty<0) {
             $this->error=true;
@@ -259,7 +263,11 @@ class PartLocation extends DB_Table {
 
 
             $details='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to audit in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
-
+            if($note){
+                $details.=', '.$note;
+            
+            }
+            
             $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                          ,$this->part_sku
                          ,$this->location_key
@@ -275,6 +283,12 @@ class PartLocation extends DB_Table {
                 print "Error can not audit location";
 
             $details=_('Audit').', '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('set to').': '.number($qty);
+              if($note){
+                $details.=', '.$note;
+            
+            }
+            
+            
             $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                          ,$this->part_sku
                          ,$this->location_key
@@ -293,7 +307,7 @@ class PartLocation extends DB_Table {
         }
 
 
-
+            $this->part->update_stock();
 
 
 

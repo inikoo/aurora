@@ -1548,7 +1548,7 @@ $yeartoday=YTD();
     function update_product_data() {
 
 
-        $sql=sprintf("select     sum(if(`Product Record Type`='Discontinuing',1,0)) as to_be_discontinued , sum(if(`Product Record Type`='Historic',1,0)) as historic ,  sum(if(`Product Record Type` in ('Normal','New','Discontinuing') ,1,0)) as for_sale ,   sum(if(`Product Record Type`='In process',1,0)) as in_process ,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
+        $sql=sprintf("select     sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`>0   ,1,0)) as to_be_discontinued , sum(if(`Product Record Type`='Historic',1,0)) as historic ,  sum(if(`Product Sales Type` in ('Public Sale') ,1,0)) as for_sale ,   sum(if(`Product Stage`='In process',1,0)) as in_process ,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`<=0,1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
         //  print $sql;
 
 	
@@ -1682,7 +1682,7 @@ $yeartoday=YTD();
 
 
             $products[]=array(
-                            'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Record Type']!='Discontinued'?date('Y-m-d H:i:s'):$row['Product Valid To']));
+                            'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Sales Type']!='Not for Sale'?date('Y-m-d H:i:s'):$row['Product Valid To']));
         }
         //print "$min_date $max_date\n";
         //print_r($products);

@@ -2028,13 +2028,13 @@ function list_products() {
         $where.=sprintf(" and `Product Sales Type`!='Not For Sale'  ");
         break;
     case('editable'):
-        $where.=sprintf(" and `Product Record Type`!='Discontinued'  ");
+        $where.=sprintf(" and `Product Availability Type`!='Discontinued'  ");
         break;
     case('notforsale'):
         $where.=sprintf(" and `Product Sales Type` in ('Not For Sale')  ");
         break;
     case('discontinued'):
-        $where.=sprintf(" and `Product Record Type` in ('Discontinued')  ");
+        $where.=sprintf(" and `Product Availability Type`='Discontinued'  ");
         break;
     case('all'):
 
@@ -2977,7 +2977,7 @@ function list_products() {
         }
 
         $type=$row['Product Sales Type'];
-        if ($row['Product Record Type']=='In Process')
+        if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
 
         switch ($row['Product Web Configuration']) {
@@ -9628,7 +9628,8 @@ function part_transactions() {
         $where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Adjust') ";
         break;
     default:
-
+         $where.="and `Inventory Transaction Type`!='Audit' ";
+        break;
         break;
     }
 
@@ -9711,7 +9712,10 @@ function part_transactions() {
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
         $qty=$data['Inventory Transaction Quantity'];
-        if ($qty>0) {
+     
+        
+     
+     if ($qty>0) {
             $qty='+'.$qty;
         }
         elseif($qty==0) {

@@ -37,13 +37,13 @@ $header=<<<EOD
 
 <div id="header">
 
-<div style="height:55px">
+<div style="height:57px">
 <h1 style="position:relative;top:20px;padding:0;margin:0px 0 0 240px">$title</h1>
 </div>
-<div style="margin-left:230px" id="menu_bar">$menubar
+<div style="margin-left:172px" id="menu_bar">$menubar
 </div>
 
-<div id="div1">Giftware sourced worldwide</div>
+<div id="header_slogans"><span id="slogan2">Giftware sourced worldwide</span></div>
 <div id="div2">Please note this is a <br/> Trade Only Site </div>
 <a href="http://www.ancientwisdom.biz"><span id="aw_link"></span></a>
 <table  class="header_table" >

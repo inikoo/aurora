@@ -556,7 +556,7 @@ foreach($__cols as $cols){
 		    );
 
 
- print_r($data);
+ //print_r($data);
    if (array_key_exists($code,$codigos)) {
     print "Product: $code is duplicated\n";
     continue;
@@ -565,6 +565,9 @@ foreach($__cols as $cols){
 $codigos[$code]=1;
 
 $product=new Product('find',$data,'create');
+
+$product->update_sales_type('Public Sale');
+$product->update_web_configuration('Online Auto');
 
 
 if ($product->new_id) {
@@ -599,6 +602,21 @@ $product->change_current_key($product->id);
 //print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
 
 $product->update_rrp('Product RRP',$rrp);
+
+
+
+$current_part_skus=$product->get_current_part_skus();
+
+
+foreach($current_part_skus as $_part_sku){
+$part=new Part($_part_sku);
+$part->update_part_status('In Use');
+}
+
+
+//if($code=='3DART-22')
+//exit;
+
 
 
 

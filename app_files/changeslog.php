@@ -3564,6 +3564,12 @@ ALTER TABLE `Product Dimension` DROP `Product To Be Discontinued` ;
 ALTER TABLE `Email Credentials Dimension` DROP `Customer Communication` ;
 ALTER TABLE `Email Credentials Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Customer Communications', 'Newsletters', 'Marketing Email', 'Site Registration', 'Inikoo' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `Order Transaction Fact` CHANGE `Invoice Transaction Tax Refund Items` `Invoice Transaction Tax Refund Items` DECIMAL( 12, 6 ) NOT NULL DEFAULT '0.00';
+
+ALTER TABLE `Product Dimension` CHANGE `Product Record Type` `Product Record Type` ENUM( 'Normal', 'Historic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Product Dimension` CHANGE `Product Type` `Product Type` ENUM( 'Normal', 'Fuzzy' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Product Dimension` ADD `Product Availability Type` ENUM( 'Normal', 'Discontinued' ) NOT NULL AFTER `Product Sales Type` ,ADD INDEX ( `Product Availability Type` ) ;
+ALTER TABLE `Product Dimension` ADD `Product Stage` ENUM( 'In Process', 'New', 'Normal' ) NOT NULL AFTER `Product Record Type` ,ADD INDEX ( `Product Stage` ) ;
+ALTER TABLE `Product Dimension` CHANGE `Product Sales Type` `Product Sales Type` ENUM( 'Public Sale', 'Private Sale', 'Not for Sale', 'Discontinued Public Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 */
 
 ?>

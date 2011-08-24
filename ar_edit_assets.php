@@ -895,7 +895,7 @@ function list_products_for_edition() {
         }
 
 
-        if ($row['Product Record Type']=='In Process') {
+        if ($row['Product Stage']=='In Process') {
 
             if ($row['Product Editing Price']!=0 and is_numeric($row['Product Cost']))
                 $margin=number(100*($row['Product Editing Price']-$row['Product Cost'])/$row['Product Editing Price'],1).'%';
@@ -958,7 +958,7 @@ function list_products_for_edition() {
         }
 
 
-        if ($row['Product Record Type']=='New')
+        if ($row['Product Stage']=='New')
             $processing=_('Editing');
 
         switch ($row['Product Sales Type']) {
@@ -1022,7 +1022,7 @@ function list_products_for_edition() {
                      'code'=>$row['Product Code'],
                      'code_price'=>$row['Product Code'].($row['Product Units Per Case']!=1?' <span style="font-style: italic;">('.$row['Product Units Per Case'].'s)</span>':''),
                      //'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
-                     'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>',
+                     'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="web_state">'.$web_state.'</span>',
  
                      'name'=>$row['Product Name'],
                      'processing'=>$processing,

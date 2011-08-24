@@ -2,7 +2,7 @@
 <div id="bd" >
 
 
-
+<input value="{$delivery_note->id}" id="dn_key" type="hidden"/>
   <div id="control_panel" class="yui-b">
 
  <div style="text-align:right">
@@ -46,7 +46,7 @@
     <div class="data_table"  style="clear:both">
 	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
 	<div id="table_type">
-	  <span id="set_as_all_picked" style="float:right;color:brown" class="table_type state_details ">{t}Set as all Picked{/t}</span>
+	  <span id="set_pending_as_picked" style="float:right;color:brown" class="table_type state_details ">{t}Set pending as Picked{/t}</span>
 	 
 	</div>
 <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>

@@ -1170,7 +1170,7 @@ function search_products($data) {
     if ($found_family) {
         if ($extra_q) {
 
-            $sql=sprintf("SELECT `Product ID`, MATCH(`Product Name`) AGAINST (%s) as Relevance FROM `Product Dimension` WHERE   `Product Record Type` not in ('historic') and  `Product Family Key`=%d  and MATCH
+            $sql=sprintf("SELECT `Product ID`, MATCH(`Product Name`) AGAINST (%s) as Relevance FROM `Product Dimension` WHERE   `Product Record Type` not in ('Historic') and  `Product Family Key`=%d  and MATCH
                          (`Product Name`) AGAINST(%s IN
                          BOOLEAN MODE) HAVING Relevance > 0.2 ORDER
                          BY Relevance DESC",prepare_mysql($extra_q),$found_family,prepare_mysql('+'.join(' +',$array_q)));
@@ -1190,7 +1190,7 @@ function search_products($data) {
     } else {
 
 
-        $sql=sprintf('select `Product ID`,`Product Code` from `Product Dimension` where `Product Record Type` not in ("historic") and   `Product Store Key` in (%s) and `Product Code` like "%s%%" limit 100 ',$stores,addslashes($q));
+        $sql=sprintf('select `Product ID`,`Product Code` from `Product Dimension` where `Product Record Type` not in ("Historic") and   `Product Store Key` in (%s) and `Product Code` like "%s%%" limit 100 ',$stores,addslashes($q));
         //print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {

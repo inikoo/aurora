@@ -16,6 +16,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('set_picking_aid_sheet_pending_as_picked'):
+    $data=prepare_values($_REQUEST,array(
+                             'dn_key'=>array('type'=>'dn_key'),
+
+
+                         ));
+    set_picking_aid_sheet_pending_as_picked($data);
+    break;
+
 case('delete_order_list'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -643,7 +653,7 @@ function transactions_to_process() {
         $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
     } else {
         $table=' `Product Dimension` P ';
-        $where=sprintf('where `Product Store Key`=%d  and `Product Record Type` not in ("Discontinued","In Process","Historic") ',$store_key);
+        $where=sprintf('where `Product Store Key`=%d  and `Product Sales Type`!="Not for Sale"   ',$store_key);
         $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id);
 
 
@@ -769,7 +779,7 @@ function transactions_to_process() {
         else
             $stock='?';
         $type=$row['Product Record Type'];
-        if ($row['Product Record Type']=='In Process')
+        if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
         switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
@@ -1040,7 +1050,7 @@ function post_transactions_to_process() {
         else
             $stock='?';
         $type=$row['Product Record Type'];
-        if ($row['Product Record Type']=='In Process')
+        if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
         switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
@@ -1523,16 +1533,29 @@ function start_packing($data) {
 
 }
 
+
+
+
+function set_picking_aid_sheet_pending_as_picked($data){
+$dn_key=$data['dn_key'];
+
+
+}
+
+
+
 function picking_aid_sheet() {
-    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-        $order_id=$_REQUEST['id'];
-    else
-        $order_id=$_SESSION['state']['dn']['id'];
+    if (isset( $_REQUEST['dn_key']) and is_numeric( $_REQUEST['dn_key']))
+        $order_id=$_REQUEST['dn_key'];
+    else{
+       
+        return;
+        }
+        
+     
+        
 
-//print_r($_SESSION['state']['dn']);
-
-
-    $where=' where `Delivery Note Key`='.$order_id;
+    $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
 
     $total_charged=0;
     $total_discounts=0;
@@ -1577,6 +1600,7 @@ function picking_aid_sheet() {
                     'used_in'=>$row['Part XHTML Currently Used In'],
                     'quantity'=>number($row['Required']),
                     'location'=>$row['Part XHTML Picking Location'],
+                     'check_mark'=>'&#x2713;',
                     'add'=>'+',
                     'remove'=>'-',
                     'picked'=>$row['Picked'],
