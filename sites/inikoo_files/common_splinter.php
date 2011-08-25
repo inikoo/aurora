@@ -298,10 +298,10 @@ function show_products($code,$options=false){
 	
 	
 	$header=array('on'=>true);
-	$options=array('order_by'=>'code'
+	$options=array('order_by'=>'name'
 	, 
 	//'limit'=>1, 
-	//'range'=>'a:f'
+	'range'=>'a:f'
 	);
 	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
 	if($logged_in){

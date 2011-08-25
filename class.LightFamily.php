@@ -71,6 +71,8 @@ class LightFamily {
 				$order_by='`Product RRP`';
 			elseif(strtolower($options['order_by']) == 'code')
 				$order_by='`Product Code`';
+			elseif(strtolower($options['order_by']) == 'name')
+				$order_by='`Product Name`';
 			else
 				$order_by=true;
 		else
@@ -80,7 +82,14 @@ class LightFamily {
 			$limit='limit '.$options['limit'];
 		else
 			$limit='';
-				
+
+		if(isset($options['range'])){
+			list($range1, $range2)=explode(":", strtoupper($options['range']));
+			$range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+			
+		}
+		else 
+			$range_where="";//"  true";				
 		
         $print_header=true;
         $print_rrp=false;
@@ -171,8 +180,8 @@ class LightFamily {
 
         }
 		
-        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' order by %s %s", $this->id, $order_by, $limit);
-
+        //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' order by %s %s", $this->id, $order_by, $limit);
+		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
         //print $sql;
         $result=mysql_query($sql);
         $counter=0;
@@ -242,6 +251,8 @@ class LightFamily {
 				$order_by='`Product RRP`';
 			elseif(strtolower($options['order_by']) == 'code')
 				$order_by='`Product Code`';
+			elseif(strtolower($options['order_by']) == 'name')
+				$order_by='`Product Name`';
 			else
 				$order_by=true;
 		else
@@ -254,7 +265,7 @@ class LightFamily {
 
 		if(isset($options['range'])){
 			list($range1, $range2)=explode(":", strtoupper($options['range']));
-			$range_where=sprintf("and ( (ord(`Product Code`) >= %d and ord(`Product Code`) <= %d) || (ord(`Product Code`) >= %d and ord(`Product Code`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+			$range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
 			
 		}
 		else 
