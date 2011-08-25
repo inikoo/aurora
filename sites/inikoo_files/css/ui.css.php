@@ -1,7 +1,7 @@
 body, html, div , table{	 font-family:"Arial", sans-serif; font-size:11.0px;font-weight: bold;  }
 table {border-collapse: collapse;}
 
-#header_container{position:absolute;top:24px;width:875px}
+#header_container{position:absolute;top:24px;width:875px;}
 
 #header{
 	background-image:url('../art/header1.jpg'); 

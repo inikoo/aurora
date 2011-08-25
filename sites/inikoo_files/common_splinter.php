@@ -280,7 +280,8 @@ function show_products($code,$options=false) {
     $code_list=array();
     $data=array();
 
-
+	$header=array('on'=>true);
+	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
     if (preg_match('/,/', $code)) {
         $code_list=explode(',', $code);
 
@@ -293,13 +294,18 @@ function show_products($code,$options=false) {
         }
 
 		$code=$code_list[0];
-		$sql=sprintf("select `Product Family Key` from `Product Dimension` where `Product Code`=%s", $code);
+		
+		$sql=sprintf("select `Product Family Key` from `Product Dimension` where `Product Code`='%s'", $code);
+		//print $sql;
 		$result=mysql_query($sql);
-		if($row=mysqol_fetch_array($result))
+		if($row=mysql_fetch_array($result))
 			$family_key=$row['Product Family Key'];
 			
-		//$sql=sprintf("select `Product Family Code`");
-		
+		$sql=sprintf("select `Product Family Code` from `Product Family Dimension` where `Product Family Key`=%d", $family_key);
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result))
+			$family_code=$row['Product Family Code'];		
+			
 		/*
         $price=$data[0]['Product Price'];
         foreach($data as $val) {
@@ -307,14 +313,15 @@ function show_products($code,$options=false) {
                 $price=$val['Product Price'];
         }
 		*/
-		
+		$product=new LightFamily($family_code, $store_key);
         if ($logged_in) {
-            echo show_products_in_family('ecommerce', $data, $conf, $options);
+            //echo show_products_in_family('ecommerce', $data, $conf, $options);
+			echo $product->get_product_in_family_with_order_form($data, $header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
             return;
         } else {
             $options=array();
             //echo show_products_in_family_info($data, $options);
-			//get_product_in_family_no_price
+			echo $product->get_product_in_family_no_price($data);
             return;
         }
     } else {
@@ -328,9 +335,9 @@ function show_products($code,$options=false) {
         return;
 
 
-    $header=array('on'=>true);
+    
 
-    $s = empty($secure) ? '' : $_SERVER["HTTPS"];
+    
     if ($logged_in) {
         echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
     } else {
@@ -373,8 +380,15 @@ function set_parameters($data=false) {
 
     if (isset($data['header_title'])) {
         $header_title=$data['header_title'];
-    } else
-        $header_title="";
+    } else{
+		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`=%s", prepare_mysql($data['family']));
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result))
+			$header_title=$row['Product Family Name'];
+		else
+			$header_title="xx";
+	}
+
 
     if (isset($data['footer_description']))
         $footer_description=$data['footer_description'];
