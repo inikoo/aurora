@@ -12,6 +12,8 @@
  Version 2.0
 */
 include_once('common.php');
+include_once('class.Location.php');
+
 include_once('class.Product.php');
 include_once('assets_header_functions.php');
 $page='product';
