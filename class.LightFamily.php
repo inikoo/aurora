@@ -62,7 +62,190 @@ class LightFamily {
 
     }
 
+//Start
+    function get_product_in_family_no_price($data, $header_options=false, $options=false) {
 
+		if(isset($options['order_by']))
+			if(strtolower($options['order_by']) == 'price')
+				$order_by='`Product RRP`';
+			elseif(strtolower($options['order_by']) == 'code')
+				$order_by='`Product Code`';
+			elseif(strtolower($options['order_by']) == 'name')
+				$order_by='`Product Name`';
+			else
+				$order_by=true;
+		else
+			$order_by=true;
+			
+		if(isset($options['limit']))
+			$limit='limit '.$options['limit'];
+		else
+			$limit='';
+
+		if(isset($options['range'])){
+			list($range1, $range2)=explode(":", strtoupper($options['range']));
+			$range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+			
+		}
+		else 
+			$range_where="";//"  true";				
+		
+        $print_header=true;
+        $print_rrp=false;
+        $print_register=true;
+
+        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $number_records=$row['num'];
+        } else {
+            // NO PRODUCTS XXX
+            return;
+        }
+
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+            $register='In order to see prices register';
+
+        }
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+            $register='In order to see prices register';
+
+        }
+        elseif($this->locale=='es_ES') {
+            $out_of_stock='Fuera de Stock';
+            $discontinued='Fuera de Stock';
+            $register='In order to see prices register';
+
+        }
+        elseif($this->locale=='fr_FR') {
+            $out_of_stock='Rupture de stock';
+            $discontinued='Rupture de stock';
+            $register='In order to see prices register';
+
+        }
+        else {
+            $out_of_stock='Out of Stock';
+            $discontinued='Discontinued';
+            $register='Please login to see wholesale prices';
+        }
+        $form=sprintf('<table class="product_list" >' );
+
+        if ($print_header) {
+
+            $rrp_label='';
+
+            if ($print_rrp) {
+
+                if ($number_records==1) {
+
+                } elseif ($number_records>2) {
+
+                    $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) min, max(`Product RRP`/`Product Units Per Case`) as max ,avg(`Product RRP`/`Product Units Per Case`)  as avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
+                    $res=mysql_query($sql);
+                    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+                        $rrp=$row['min'];
+
+
+                        $rrp= $this->get_formated_rrp(array(
+                                                          'Product RRP'=>$rrp,
+                                                          'Product Units Per Case'=>1,
+                                                          'Product Unit Type'=>''),array('prefix'=>false));
+
+                        if ($row['avg']==$row['min'])
+                            $rrp_label='<br/>RRP: '.$rrp;
+                        else
+                            $rrp_label='<br/>RRP from '.$rrp;
+
+
+
+                    } else {
+                        return;
+                    }
+
+                }
+
+            }
+
+
+            $form.='<tr class="list_info" ><td colspan="4"><p>'.$this->data['Product Family Name'].$rrp_label.'</p></td><td>';
+            if ($print_register and $number_records>10)
+                $form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
+
+
+        }
+		
+        //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' order by %s %s", $this->id, $order_by, $limit);
+		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
+        //print $sql;
+        $result=mysql_query($sql);
+        $counter=0;
+        //while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		foreach($data as $row){
+
+
+            if ($print_rrp) {
+
+                $rrp= $this->get_formated_rrp(array(
+                                                  'Product RRP'=>$row['Product RRP'],
+                                                  'Product Units Per Case'=>$row['Product Units Per Case'],
+                                                  'Product Unit Type'=>$row['Product Unit Type']));
+
+            } else {
+                $rrp='';
+            }
+            if ($row['Product Web State']=='Out of Stock') {
+                $class_state='out_of_stock';
+                $state=$out_of_stock;
+
+            }
+            elseif ($row['Product Web State']=='Discontinued') {
+                $class_state='discontinued';
+                $state=$discontinued;
+
+            }
+            else {
+
+                $class_state='';
+                $state='';
+
+
+            }
+
+
+            if ($counter==0)
+                $tr_class='class="top"';
+            else
+                $tr_class='';
+            $form.=sprintf('<tr %s ><td class="code">%s</td><td class="description">%s</td><td class="rrp">%s</td><td class="%s">%s</td></tr>',
+                           $tr_class,
+                           $row['Product Code'],
+                           $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
+                           $rrp,
+                           $class_state,
+                           $state
+                          );
+
+
+            $counter++;
+        }
+
+        if ($print_register)
+            $form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
+        $form.=sprintf('</table>');
+        return $form;
+    }
+//End
+	
+	
+	
+	
+	
+	
 
     function get_product_list_no_price($header_options=false, $options=false) {
 
@@ -225,7 +408,7 @@ class LightFamily {
             $form.=sprintf('<tr %s ><td class="code">%s</td><td class="description">%s</td><td class="rrp">%s</td><td class="%s">%s</td></tr>',
                            $tr_class,
                            $row['Product Code'],
-                           $row['Product Units Per Case'].'x '.$row['Product Name'],
+                           $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
                            $rrp,
                            $class_state,
                            $state
@@ -471,7 +654,7 @@ class LightFamily {
                                     </tr>'."\n",
                            $tr_class,
                            $counter,$row['Product Price'],
-                           $counter,$row['Product Code'],$row['Product Units Per Case'].'x '.$row['Product Name'],
+                           $counter,$row['Product Code'],$row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
 
                            $row['Product Code'],
                            $price,
@@ -479,7 +662,7 @@ class LightFamily {
                            $counter,
                              $class_state,
                              ($class_state!=''?' readonly="readonly" ':''),
-                           $row['Product Units Per Case'].'x '.$row['Product Name'],
+                           $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
                            $state,
                            $rrp
                           
