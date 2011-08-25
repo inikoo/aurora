@@ -97,6 +97,7 @@ Dom.setStyle('tr_register_part_2_wait','display','');
 // alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
+	
 	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
