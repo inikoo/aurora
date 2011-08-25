@@ -1024,7 +1024,7 @@ class LightFamily {
 	function get_found_in(){
 		//print 'found in';
 		//print $this->data['Product Family Main Department Key'];
-		
+		/*
 		$sql=sprintf("select `Product Department Name`, `Product Department URL` from `Product Department Dimension` where `Product Department Key`=%d", $this->data['Product Family Main Department Key']);
 		print $sql;
 		$result=mysql_query($sql);
@@ -1032,7 +1032,9 @@ class LightFamily {
 			$found_in_label=$row['Product Department Name'];
 			$found_in_url=$row['Product Department URL'];
 		}
-		
+		*/
+		$found_in_label="";
+		$found_in_url="";
 		return array($found_in_label,$found_in_url);
 		
 	}
