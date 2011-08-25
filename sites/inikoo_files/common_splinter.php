@@ -1,8 +1,5 @@
 <?php
 
-//$path = '';
-//set_include_path(get_include_path() . $path);
-//print get_include_path() . PATH_SEPARATOR . $path;
 include_once('conf/key.php');
 include_once('aes.php');
 
@@ -25,7 +22,7 @@ require_once "class.LightCustomer.php";
 require_once "class.LightProduct.php";
 require_once "class.LightFamily.php";
 
-exit;
+
 
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -242,82 +239,6 @@ function show_product($code) {
 
 
 
-
-function show_products($code,$options=false){
-	global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
-	
-	
-	
-	
-	$conf= array('ecommerce_url_multi'=>$ecommerce_url_multi
-				,'username'=>$username
-				,'method'=>$method
-				,'secure'=>(empty($secure) ? '' : $_SERVER["HTTPS"])
-				,'_port'=>$_SERVER["SERVER_PORT"]
-				,'_protocol'=>$_SERVER["SERVER_PROTOCOL"]
-				,'url'=>$_SERVER['REQUEST_URI']
-				,'server'=>$_SERVER['SERVER_NAME']
-				);
-
-	
-	$code_list=array();
-	$data=array();
-
-
-	if(preg_match('/,/', $code)){
-		$code_list=explode(',', $code);
-		
-		foreach($code_list as $code){
-			$product=new LightProduct($code, $store_key);
-			if($product->match){
-				$data[]=$product->data;
-
-			}
-		}
-		
-		$price=$data[0]['Product Price'];
-		foreach($data as $val){
-			if($price>$val['Product Price'])
-				$price=$val['Product Price'];
-		}
-		
-		
-		if($logged_in){
-			echo show_products_in_family('ecommerce', $data, $conf, $options);
-			return;
-		}
-		else{
-		    $options=array();
-			echo show_products_in_family_info($data, $options);
-			return;
-		}
-	}
-	else{
-	}
-
-	
-	
-	
-	$product=new LightFamily($code, $store_key);
-	if(!$product->match)
-		return;
-	
-	
-	$header=array('on'=>true);
-	$options=array('order_by'=>'name'
-	, 
-	//'limit'=>1, 
-	'range'=>'a:f'
-	);
-	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
-	if($logged_in){
-		echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
-	}
-	else{
-		echo $product->get_product_list_no_price($header, $options);
-		return;
-	}
-
 function show_products($code,$options=false) {
     global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
 
@@ -389,7 +310,6 @@ function show_products($code,$options=false) {
         echo $product->get_product_list_no_price($header, $options);
         return;
     }
-
 }
 
 function set_parameters($data=false) {
@@ -577,6 +497,5 @@ function see_also($code, $url="http://www.ancientwisdom.biz/forms/") {
         return;
     return $family->get_see_also($code, $url);
 }
-
 
 ?>
