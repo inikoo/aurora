@@ -370,7 +370,7 @@ function set_parameters($data=false) {
 		if($row=mysql_fetch_array($result))
 			$header_title=$row['Product Family Name'];
 		else
-			$header_title="xx";
+			$header_title="xxd";
 	}
 
 
