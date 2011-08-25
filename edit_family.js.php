@@ -185,7 +185,7 @@ function change_block(e){
 						'POST',
 						'ar_edit_assets.php', {
 						    success:function(o) {
-								alert(o.responseText);
+							//	alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
@@ -207,9 +207,13 @@ function change_block(e){
 								
 								callback(true, r.newvalue);
 								
-							    }else if(column.key=='web_state'  ){
+							    }else if(column.key=='web_configuration'  ){
 								 datatable.updateCell(record,'smallname',r.newdata['description']);
-                             	
+								 datatable.updateCell(record,'formated_web_configuration',r.newdata['formated_web_configuration']);
+								 datatable.updateCell(record,'web_configuration',r.newdata['web_configuration']);
+
+
+                             	// alert(r.newdata['web_configuration'])   
 								callback(true, r.newdata['web_configuration']);
 								
 							    }else{
@@ -718,7 +722,10 @@ function save_new_family(){
 
 }
 
-
+ function formater_web_configuration  (el, oRecord, oColumn, oData) {
+		
+		     el.innerHTML = oRecord.getData("formated_web_configuration");
+	    }
 
 var tmponCellClick = function(oArgs) {
 		var target = oArgs.target,
@@ -767,7 +774,7 @@ var tmponCellClick = function(oArgs) {
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-
+   
 
 
 	    var tableid=0; // Change if you have more the 1 table
@@ -785,8 +792,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				 //  ,{key:"processing", label:"<?php echo _('Editing State')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Editing')?>","<?php echo _('Live')?>"],disableBtns:true})}
 				    ,{key:"sales_type", label:"<?php echo _('Sale Type')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Public Sale')?>","<?php echo _('Private Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
-				    ,{key:"web_state", label:"<?php echo _('Web Config')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{'value':"Online Auto",'label':"<?php echo _('Auto')?>"},{'value':"Online Force For Sale",'label':"<?php echo _('Force online')?>"},{'label':'<?php echo _('Force out of stock')?>','value':"Online Force Out of Stock"},{'label':"<?php echo _('Force offline')?>",'value':'Offline'}],disableBtns:true})}
-
+				    ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web Config')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},{'value':"Online Force For Sale",'label':"<?php echo _('Force online')?><br/>"},{'label':'<?php echo _('Force out of stock')?><br/>','value':"Online Force Out of Stock"},{'label':"<?php echo _('Force offline')?>",'value':'Offline'}],disableBtns:true})}
+//formatter: formater_web_configuration 
+				    ,{key:"formated_web_configuration" , label:"",hidden:true}
 
 				  //  ,{key:"web_state", label:"<?php echo _('Web Config')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["Online Auto":"<?php echo _('Auto')?>","<?php echo _('Force online')?>","<?php echo _('Force out of stock')?>","<?php echo _('Force offline')?>"],disableBtns:true})}
 
@@ -825,7 +833,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "code","units_info","code_price",'go','smallname','sales_type','pid',
 			 "name",
-			 'delete','delete_type','id','sdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','web_state'
+			 'delete','delete_type','id','sdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','formated_web_configuration','web_configuration'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

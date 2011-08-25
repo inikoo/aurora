@@ -1,4 +1,4 @@
-#top_navigator{height:24px;z-index:1000;background:black;text-align:right;padding:0px;font-size:12px;font-family:"Arial";color:#ddd}
+#top_navigator{height:24px;z-index:1000;background:black;text-align:right;padding:0px;font-size:12px;font-family:"Arial";color:#ddd;visibility:hidden}
 
 .soft_link{cursor:pointer;color:#ccc}
 .soft_link:hover{text-decoration:underline}

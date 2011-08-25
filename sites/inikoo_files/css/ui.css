@@ -4,7 +4,7 @@ table {border-collapse: collapse;}
 #header_container{position:absolute;top:24px;width:875px}
 
 #header{
-	background-image:url('../art/header2.jpg'); 
+	background-image:url('../art/header1.jpg'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
 	color:black; 
@@ -13,8 +13,16 @@ table {border-collapse: collapse;}
     
 	width: 100%
 }
-h1 {
-position:relative;top:20px;padding:0;margin:0px 0 0 240px;font-family: Delicious, sans-serif;}
+h1 {position:relative;top:5px;padding:0;margin:0px 0 0 180px;font-family: Delicious, sans-serif;font-size:35px;color:#111;text-shadow: 1px 2px 1px  #444}
+
+@font-face {
+	font-family: weathered;
+	src: url('weathered.TTF');}
+@font-face {
+	font-family: weathered;
+	font-weight: 1000;
+	src: url('weathered.TTF');
+}
 
 @font-face {
 	font-family: Delicious;

@@ -46,8 +46,8 @@
     </div>
     
     <div id="location_save_block" style="margin:0px 20px;padding:20px 20px;float:left;border:1px solid #ddd;width:300px">
-      <span id="add_location" class="button">{t}Save{/t}</span>
-      
+      <span id="add_location" class="button">{t}Create{/t}</span>
+       <span id="add_location_and_add_other" class="button">{t}Create & Add Other{/t}</span><br/><br/>
       <span style="margin-right:10px" id="cancel_edit_location" class="button">{t}Cancel{/t}</span>
 
     </div>
