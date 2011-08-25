@@ -365,12 +365,12 @@ function set_parameters($data=false) {
     if (isset($data['header_title'])) {
         $header_title=$data['header_title'];
     } else{
-		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`='%s'", $data['family']);
+		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`=%s", prepare_mysql($data['family']));
 		$result=mysql_query($sql);
 		if($row=mysql_fetch_array($result))
 			$header_title=$row['Product Family Name'];
 		else
-			$header_title="";
+			$header_title="xx";
 	}
 
 
