@@ -25,7 +25,7 @@ require_once "class.LightCustomer.php";
 require_once "class.LightProduct.php";
 require_once "class.LightFamily.php";
 
-
+exit;
 
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -242,7 +242,7 @@ function show_product($code) {
 
 
 
-<<<<<<< HEAD
+
 function show_products($code,$options=false){
 	global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
 	
@@ -317,7 +317,7 @@ function show_products($code,$options=false){
 		echo $product->get_product_list_no_price($header, $options);
 		return;
 	}
-=======
+
 function show_products($code,$options=false) {
     global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
 
@@ -389,7 +389,7 @@ function show_products($code,$options=false) {
         echo $product->get_product_list_no_price($header, $options);
         return;
     }
->>>>>>> e94b202460e200fedf3116af5ca864796965906d
+
 }
 
 function set_parameters($data=false) {
