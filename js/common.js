@@ -439,7 +439,7 @@ var show_percentages=function(e,location){
 
 
 
-
+/*
 
     Node.prototype.moveRow = function(){
         if(this && this.nodeName.match(/^(table|t(body|head|foot))$/i)){
@@ -466,7 +466,7 @@ var show_percentages=function(e,location){
             }
         }
     }
-
+*/
 
 function change_period(e,table_id){
 

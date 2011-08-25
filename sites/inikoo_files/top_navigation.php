@@ -61,18 +61,18 @@ if($logged_in){?>
 </div>
 
 <?php if($logged_in){?>
-<div id="dialog_actions"    class="dialog logged" style=""  >
-<table border=0 style="margin-top:20px;float:right">
+<div id="dialog_actions"    class="dialog logged"  >
+<table border=0 style="margin-top:20px;">
 <tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
 <tr class="button space"><td><button id="hide_actions_dialog" >Close</button></td></tr>
 </table>
 
 </div>
+
+
+
 <div id="dialog_change_password"    class="dialog logged" style="<?php if( $authentication_type=='masterkey') print "display:block";?>"  >
-<h2><?php 
-    if( $authentication_type=='masterkey'){
-    print "Reset your password";
-    }else{print "Change Password";}?></h2>
+<h2><?php if( $authentication_type=='masterkey'){print "Reset your password";}else{print "Change Password";}?></h2>
 
 
 
@@ -93,9 +93,9 @@ Your password has been changed.
 <table border=0 id="change_password_form" >
 
 
-<tr style="display:none"><td class="label" style="width:120px">Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
-<tr><td class="label" style="width:120px">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
-<tr><td class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
+<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
+<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
+<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="<?php $rnd=md5(rand()); echo md5($user->id.'insecure_key'.$rnd)?>" type="hidden"/>
 <input id="epwcp2" value="<?php echo $rnd?>" type="hidden"/>
 
@@ -112,6 +112,10 @@ Your password has been changed.
 </table>
 
 </div>
+
+
+
+
 <?php }else{
 
 ?>
@@ -124,9 +128,9 @@ Your password has been changed.
 
 
 
-<tr><td style="width:90px" class="label">Email: </td><td><input id="login_handle"></td></tr>
+<tr><td  class="label">Email: </td><td><input id="login_handle"></td></tr>
 <tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
-<tr><td  class="label">Remember Me: </td><td style="text-align:left;"><input style="width:20px" type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
+<tr><td  class="label">Remember Me: </td><td style="text-align:left;"><input style="width:20px;border:none" type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
 <tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
 <tr class="link space"><td colspan=2>Don't know your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
 <tr id="tr_link_register_from_login" class="link" ><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>
@@ -185,7 +189,7 @@ Your password has been changed.
 </tr>
 
 <tr>
-<td class="label" style="width:200px">Email: </td><td id="confirmed_register_email"></td><td style="width:20px"></td>
+<td class="label" >Email: </td><td id="confirmed_register_email"></td><td style="width:20px"></td>
 </tr>
 <tr>
 <td class="label">Password: </td><td><input type="password" id="register_password1"></td>
@@ -523,10 +527,13 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 <tr>
-<td  class="label">Catalogue (post): </td><td><input checked=checked onChange="change_allow(this)"  style="width:10px" type="radio" name="catalogue" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="catalogue" value="No">No   </td>
+<td  class="label">Catalogue (post): </td>
+<td>
+<input    checked=checked onChange="change_allow(this)"  style="width:10px;border:none" type="radio" name="catalogue" value="Yes"> Yes 
+<input onChange="change_allow(this)"  style="width:10px;border:none" type="radio"  name="catalogue" value="No"> No   </td>
 </tr>
 <tr>
-<td  class="label">Offers by email & e-Newsletter: </td><td style="vertical-align:top;"><input checked=checked onChange="change_allow(this)" style="width:10px" type="radio" name="newsletter" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="newsletter" value="No">No   </td>
+<td  class="label">Offers by email & e-Newsletter: </td><td style="vertical-align:top;"><input   checked=checked onChange="change_allow(this)" style="border:none;width:10px" type="radio" name="newsletter" value="Yes"> Yes <input    onChange="change_allow(this)"  style="width:10px;border:none" type="radio"  name="newsletter" value="No"> No   </td>
 </tr>
 
 <tr class="title" >
@@ -578,13 +585,13 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 <h2>Forgotten password</h2>
 <table>
 <tbody id="forgot_password_form">
-<tr><td  class="label">Email: </td><td><input id="forgot_password_handle"></td></tr>
+<tr><td  class="label" style="text-align:right;width:120px">Email: </td><td><input id="forgot_password_handle"></td></tr>
 
 
 <tr >
-<td class="label" style="text-align:left">
-<img id="captcha2" src="" alt="CAPTCHA Image" /> <br>
-<i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
+<td class="label" style="text-align:left;width:120px">
+<img id="captcha2"  src="" alt="CAPTCHA Image" />
+<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
 </td>
 <td style="vertical-align:top">
 <span style="font-size:10px">input the letters shown on the left</span><br/>
