@@ -1,8 +1,5 @@
 <?php
 
-//$path = '';
-//set_include_path(get_include_path() . $path);
-//print get_include_path() . PATH_SEPARATOR . $path;
 include_once('conf/key.php');
 include_once('aes.php');
 
@@ -500,7 +497,5 @@ function see_also($code, $url="http://www.ancientwisdom.biz/forms/") {
         return;
     return $family->get_see_also($code, $url);
 }
-
-
 
 ?>
