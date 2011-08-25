@@ -14,6 +14,8 @@
 
 require_once 'common.php';
 //require_once 'stock_functions.php';
+require_once 'class.Store.php';
+
 require_once 'class.Product.php';
 require_once 'class.Department.php';
 require_once 'class.Family.php';
@@ -3008,8 +3010,8 @@ function list_products() {
         $stock_forecast=interval($row['Product Available Days Forecast']);
 
 
-        //		print_r($locale_product_record_type);
-        $record_type=$locale_product_record_type[$row['Product Record Type']];
+        	
+        $record_type=$row['Product Record Type'];
 
         $adata[]=array(
                      'store'=>$store,
