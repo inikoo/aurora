@@ -55,15 +55,20 @@ $session = new Session($max_session_time,1,100);
 
 $public_url=$myconf['public_url'];
 if (!isset($_SESSION['basket'])) {
-    $_SESSION['basket']=array('items'=>0,'total'=>0);
-
+	if(!isset($_COOKIE['qty']))
+		$_SESSION['basket']=array('items'=>0,'total'=>0);
+	else
+		$_SESSION['basket']=array('items'=>$_COOKIE['qty'],'total'=>$_COOKIE['tot']);
+	
 }
 
 if (isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])) {
     $_SESSION['basket']['items']=$_REQUEST['qty'];
+	setcookie('qty', $_SESSION['basket']['items'], time()+60*60*2, "/");
 }
 if (isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])) {
     $_SESSION['basket']['total']=$_REQUEST['tot'];
+	setcookie('tot', $_SESSION['basket']['total'], time()+60*60*2, "/");
 }
 
 $site=new Site($myconf['site_key']);
@@ -271,19 +276,29 @@ function show_products($code,$options=false) {
             }
         }
 
+		$code=$code_list[0];
+		$sql=sprintf("select `Product Family Key` from `Product Dimension` where `Product Code`=%s", $code);
+		$result=mysql_query($sql);
+		if($row=mysqol_fetch_array($result))
+			$family_key=$row['Product Family Key'];
+			
+		//$sql=sprintf("select `Product Family Code`");
+		
+		/*
         $price=$data[0]['Product Price'];
         foreach($data as $val) {
             if ($price>$val['Product Price'])
                 $price=$val['Product Price'];
         }
-
-
+		*/
+		
         if ($logged_in) {
             echo show_products_in_family('ecommerce', $data, $conf, $options);
             return;
         } else {
             $options=array();
-            echo show_products_in_family_info($data, $options);
+            //echo show_products_in_family_info($data, $options);
+			//get_product_in_family_no_price
             return;
         }
     } else {
@@ -298,11 +313,7 @@ function show_products($code,$options=false) {
 
 
     $header=array('on'=>true);
-    $options=array('order_by'=>'code'
-                              ,
-                   //'limit'=>1,
-                   //'range'=>'a:f'
-                  );
+
     $s = empty($secure) ? '' : $_SERVER["HTTPS"];
     if ($logged_in) {
         echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
