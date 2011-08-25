@@ -201,11 +201,13 @@ class Auth {
                      $user_key
                     );
 
-  //         print $sql;
-//exit;
+       
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
-            $this->status=true;
+     
+    
+     
+     $this->status=true;
             $this->user_key=$user_key;
 
 
