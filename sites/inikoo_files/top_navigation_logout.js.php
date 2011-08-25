@@ -94,10 +94,10 @@ Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
      var request='../../inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
-// alert(request);return;
+// alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
+	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.action='logged_in'){
@@ -208,20 +208,21 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request='../../inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
-  //alert(request);
+ // alert(request);
   Dom.setStyle('tr_forgot_password_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait','display','');
 
   
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
+	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');
 		        if(r.result=='send'){
-       Dom.setStyle('tr_forgot_password_wait','display','none');
+                        Dom.setStyle(['tr_forgot_password_wait','forgot_password_form','forgot_password_buttons'],'display','none');
 			            Dom.setStyle('tr_forgot_password_send','display','');
+			            
     		    }else if(r.result=='handle_not_found'){
 			        
 			            Dom.setStyle('tr_forgot_password_wait','display','none');
@@ -412,6 +413,7 @@ Dom.get('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + 
 
 Dom.setStyle(['show_login_dialog','show_forgot_password_dialog','dialog_login','dialog_register','dialog_register_part_2'],'display','none');
 Dom.setStyle('dialog_forgot_password','display','block');
+Dom.setStyle(['forgot_password_form','forgot_password_buttons'],'display','');
 
 
 }
@@ -641,6 +643,8 @@ function init(){
    
 //    alert('a ->'+epwd+'<-')
 //return;
+
+Dom.setStyle('top_navigator','visibility','visible');
 
 Event.addListener("show_login_dialog", "click", show_login_dialog);
 Event.addListener("show_register_dialog", "click", show_register_dialog);

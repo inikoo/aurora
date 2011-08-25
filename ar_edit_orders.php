@@ -1539,6 +1539,20 @@ function start_packing($data) {
 function set_picking_aid_sheet_pending_as_picked($data){
 $dn_key=$data['dn_key'];
 
+  $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
+   $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
+    // print $sql;
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
+      
+   $data=array(
+   'dn_key'=>$dn_key
+   
+   );
+      
+      
+    }
 
 }
 

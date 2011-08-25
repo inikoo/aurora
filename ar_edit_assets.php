@@ -997,7 +997,8 @@ function list_products_for_edition() {
         case('Online Force For Sale'):
             $web_configuration=_('Force Online');
             break;
-
+	default:
+	 $web_configuration=$row['Product Web Configuration'];
         }
 
    switch ($row['Product Web State']) {
@@ -1011,6 +1012,10 @@ function list_products_for_edition() {
             $web_state=_('Discontinued');
         case('Offline'):
             $web_state=_('Offline');
+            default:
+             $web_state=$row['Product Web State'];
+            
+            
             break;
       
 
@@ -1029,7 +1034,8 @@ function list_products_for_edition() {
                      'sales_type'=>$sales_type,
                      'record_type'=>$record_type,
 
-                     'web_state'=>$web_configuration,
+                     'web_configuration'=>$row['Product Web Configuration'],
+                     'formated_web_configuration'=>$web_configuration,
                      'state_info'=>$sales_type,
                      'sdescription'=>$sdescription,
 

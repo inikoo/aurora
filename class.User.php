@@ -12,9 +12,7 @@
  Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('class.Store.php');
-include_once('class.Warehouse.php');
-require_once 'class.SendEmail.php';
+
 
 class User extends DB_Table {
 
