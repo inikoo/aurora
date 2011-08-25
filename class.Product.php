@@ -2028,7 +2028,7 @@ class product extends DB_Table {
         case('Product Net Weight Per Unit'):
             $this->update_net_weight_per_unit($a1);
             break;
-        case('web_state'):
+        case('web_configuration'):
             return $this->update_web_configuration($a1);
 
 
@@ -6094,7 +6094,12 @@ return $description;
 
     function get_web_state() {
 
+
+
+
+
         if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Stage']=='In Process') {
+          
             return 'Offline';
         }
 
@@ -6117,12 +6122,16 @@ return $description;
                 if ($this->data['Product Availability Type']=='Discontinued') {
 
 
-                    $sql=sprintf("select `Store Web Days Until Remove Discontinued Products`*86400 as interval from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+                    $sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
                     $res=mysql_query($sql);
 
                     $interval=7776000;
+                   // print "$sql\n";
                     if ($row=mysql_fetch_assoc($res)) {
-                        $interval=$row['interval'];
+                        if($row['days'])
+                        $interval=$row['days']*86400;
+                        
+                        
                     }
                     if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
                         return 'Offline';
@@ -6153,25 +6162,15 @@ return $description;
     }
 
     function update_web_configuration($a1){
-    
-            switch ($a1) {
-            case(_('Out of Stock')):
-                $web_state='Online Force Out of Stock';
-                break;
-            case(_('Auto')):
-                $web_state='Online Auto';
-                break;
-            case(_('Offline')):
-                $web_state=_('Offline');
-                break;
-            case(_('Hide')):
-                $web_state='Online Force Hide';
-                break;
-            case(_('Sale')):
-                $web_state='Online Force For Sale';
-                break;
 
+
+            if($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline' 
+            and $a1!= 'Online Force For Sale'){
+                    $this->msg='Wrong value '.$a1;
+                    $this->error=true;
+                return;
             }
+
 
             $web_state=$a1;
             $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
@@ -6187,12 +6186,12 @@ return $description;
             //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
-            if (mysql_affected_rows()>0) {
+           
                 $this->msg=_('Product Web Configuration updated');
                 $this->updated=true;
                 $this->data['Product Web Configuration']=$web_state;
                 $this->update_web_state();
-                $this->new_value=$a1;
+                $this->new_value=$this->data['Product Web Configuration'];
 
                 switch ($this->data['Product Web Configuration']) {
                 case('Online Force Out of Stock'):
@@ -6207,7 +6206,10 @@ return $description;
                 case('Online Force For Sale'):
                     $web_configuration=_('Force Online');
                     break;
-
+                default:
+                 $web_configuration='';
+                    break;
+                   
                 }
 
                 switch ($this->data['Product Web State']) {
@@ -6223,19 +6225,17 @@ return $description;
                     $web_state=_('Offline');
                     break;
 
-
+default:
+                 $web_state='';
+                    break;
                 }
 
 
                 $description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
-                $this->new_data=array('web_configuration'=>$web_configuration,'description'=>$description);
+                $this->new_data=array('formated_web_configuration'=>$web_configuration,'web_configuration'=>$this->data['Product Web Configuration'],'description'=>$description);
 
                 return;
-            } else {
-                $this->msg=_("Error: Product Web Configuration could not be updated ");
-                $this->updated=false;
-                return;
-            }
+          
 
 }
 

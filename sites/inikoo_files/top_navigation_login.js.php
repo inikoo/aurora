@@ -164,6 +164,9 @@ Dom.setStyle(['dialog_actions','dialog_change_password'],'display','none')
 
 
 function init(){
+
+Dom.setStyle('top_navigator','visibility','visible');
+
 Event.addListener("checkout", "click",checkout);
 Event.addListener("see_basket", "click",see_basket);
 

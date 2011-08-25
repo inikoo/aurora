@@ -1,17 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
 
-<div class="search_box" style="margin-top:15px">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
-    {/foreach}
-    </div>
-</div>
+
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>
 </div>
@@ -30,14 +20,12 @@
 	<tr><td class="label">{t}Location Code{/t}:</td><td>
 	      <input  
 		 id="code" 
-		 onKeyUp="changed(this)" 
-		 onMouseUp="changed(this)"  
-		 onChange="changed(this)"  
+	
 		 name="code" 
 		 changed=0 
 		 type='text' 
 		 class='text' 
-		 style="width:15em" 
+	
 		 MAXLENGTH="16" 
 		 value="{$location->get('Location Code')}" 
 		 ovalue="{$location->get('Location Code')}"  

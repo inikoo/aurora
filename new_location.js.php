@@ -171,10 +171,10 @@ function save_add_location(){
     get_location_data();
     var json_value = YAHOO.lang.JSON.stringify(individual_location_data);
     var request='ar_edit_warehouse.php?tipo=new_location&values=' + encodeURIComponent(json_value); 
-    alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	  alert(o.responseText);
+	  //alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		
