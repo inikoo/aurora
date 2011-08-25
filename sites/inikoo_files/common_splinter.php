@@ -345,6 +345,8 @@ function set_parameters($data=false) {
 
 
 
+
+
     if (isset($data['header_title'])) {
         $header_title=$data['header_title'];
     } else
@@ -498,7 +500,6 @@ function see_also($code, $url="http://www.ancientwisdom.biz/forms/") {
         return;
     return $family->get_see_also($code, $url);
 }
-
 
 
 
