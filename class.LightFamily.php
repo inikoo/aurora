@@ -62,6 +62,272 @@ class LightFamily {
 
     }
 
+
+	function get_product_in_family_with_order_form($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false) {
+
+		
+		if(isset($options['order_by']))
+			if(strtolower($options['order_by']) == 'price')
+				$order_by='`Product RRP`';
+			elseif(strtolower($options['order_by']) == 'code')
+				$order_by='`Product Code`';
+			elseif(strtolower($options['order_by']) == 'name')
+				$order_by='`Product Name`';
+			else
+				$order_by=true;
+		else
+			$order_by=true;
+			
+		if(isset($options['limit']))
+			$limit='limit '.$options['limit'];
+		else
+			$limit='';
+
+		if(isset($options['range'])){
+			list($range1, $range2)=explode(":", strtoupper($options['range']));
+			$range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+			
+		}
+		else 
+			$range_where="";//"  true";
+			
+
+        $print_header=true;
+        $print_rrp=true;
+        $print_price=true;
+
+        switch ($type) {
+        case 'ecommerce':
+            $this->url=$ecommerce_url;
+            $this->user_id=$username;
+            $this->method=$method;
+            break;
+
+        default:
+            break;
+        }
+
+        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $number_records=$row['num'];
+        } else {
+            // NO PRODUCTS
+            return;
+        }
+
+
+
+
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+        }
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+        }
+        elseif($this->locale=='es_ES') {
+            $out_of_stock='Fuera de Stock';
+            $discontinued='Fuera de Stock';
+        }
+
+        elseif($this->locale=='fr_FR') {
+            $out_of_stock='Rupture de stock';
+            $discontinued='Rupture de stock';
+        }
+        else {
+            $out_of_stock='Out of Stock';
+            $discontinued='Discontinued';
+        }
+
+
+
+        $form=sprintf('<table class="product_list form" >' );
+
+        if ($print_header) {
+
+            $rrp_label='';
+
+            if ($print_rrp) {
+
+                $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) rrp_min, max(`Product RRP`/`Product Units Per Case`) as rrp_max,avg(`Product RRP`/`Product Units Per Case`)  as rrp_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
+
+                $res=mysql_query($sql);
+                if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+                    $rrp=$row['rrp_min'];
+
+
+                    $rrp= $this->get_formated_rrp(array(
+                                                      'Product RRP'=>$rrp,
+                                                      'Product Units Per Case'=>1,
+                                                      'Product Unit Type'=>''),array('prefix'=>false));
+
+
+
+
+                    if ($row['rrp_avg']==$row['rrp_min']) {
+                        $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
+                        $print_rrp=false;
+                    } else
+                        $rrp_label='<br/>span class="rrp">RRP from '.$rrp.'</span>';
+
+
+
+                } else {
+                    return;
+                }
+            }
+
+            if ($print_price) {
+
+                $sql=sprintf("select min(`Product Price`/`Product Units Per Case`) price_min, max(`Product Price`/`Product Units Per Case`) as price_max,avg(`Product Price`/`Product Units Per Case`)  as price_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
+
+                $res=mysql_query($sql);
+                if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+                    $price=$row['price_min'];
+
+
+                    $price= $this->get_formated_price(array(
+                                                          'Product Price'=>$price,
+                                                          'Product Units Per Case'=>1,
+                                                          'Product Unit Type'=>'',
+                                                          'Label'=>($row['price_avg']==$row['price_min']?'price':'from')
+
+                                                      ));
+
+
+                    $price_label='<br/><span class="price">'.$price.'</span>';
+
+
+
+
+                } else {
+                    return;
+                }
+            }
+
+
+            $form.='<tr class="list_info" ><td colspan="4"><p>'.$this->data['Product Family Name'].$price_label.$rrp_label.'</p></td><td>';
+
+
+        }
+
+
+
+        $form.=sprintf('
+                       <form action="%s" method="post">
+                       <input type="hidden" name="userid" value="%s">
+                       <input type="hidden" name="nnocart"> '
+                       ,$ecommerce_url
+                       ,addslashes($username)
+
+                      );
+        $counter=1;
+        //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
+		//print $sql;
+        $result=mysql_query($sql);
+        //while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		foreach($data as $row){
+
+
+
+            if ($print_rrp) {
+
+                $rrp= $this->get_formated_rrp(array(
+                                                  'Product RRP'=>$row['Product RRP'],
+                                                  'Product Units Per Case'=>$row['Product Units Per Case'],
+                                                  'Product Unit Type'=>$row['Product Unit Type']));
+
+            } else {
+                $rrp='';
+            }
+
+
+
+
+
+            if ($row['Product Web State']=='Out of Stock') {
+                $class_state='out_of_stock';
+               
+                $state=' <span class="out_of_stock">('.$out_of_stock.')</span>';
+
+            }
+            elseif ($row['Product Web State']=='Discontinued') {
+                $class_state='discontinued';
+                $state=' <span class="discontinued">'.$discontinued.'</span>';
+
+            }
+            else {
+
+                $class_state='';
+                $state='';
+
+
+            }
+
+            $price= $this->get_formated_price(array(
+                                                  'Product Price'=>$row['Product Price'],
+                                                  'Product Units Per Case'=>1,
+                                                  'Product Unit Type'=>'',
+                                                  'Label'=>(''),
+                                                  'price per unit text'=>''
+
+                                              ));
+
+
+
+
+            if ($counter==0)
+                $tr_class='class="top"';
+            else
+                $tr_class='';
+            $form.=sprintf('<tr %s >
+                                    <input type="hidden"  name="discountpr%s"     value="1,%.2f"  >
+                                    <input type="hidden"  name="product%s"  value="%s %s" >
+                                    <td class="code">%s</td><td class="price">%s</td>
+                                    <td class="input"><input name="qty%s"  id="qty%s"  type="text" value="" class="%s"  %s ></td>
+                                    <td class="description">%s %s</td><td class="rrp">%s</td>
+                                    </tr>'."\n",
+                           $tr_class,
+                           $counter,$row['Product Price'],
+                           $counter,$row['Product Code'],$row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
+
+                           $row['Product Code'],
+                           $price,
+                           $counter,
+                           $counter,
+                             $class_state,
+                             ($class_state!=''?' readonly="readonly" ':''),
+                           $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
+                           $state,
+                           $rrp
+                          
+                          );
+
+
+
+
+
+            $counter++;
+        }
+
+        $form.=sprintf('<tr class="space"><td colspan="4">
+                       <input type="hidden" name="return" value="%s">
+                       <input class="button" name="Submit" type="submit"  value="Order">
+                       <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
+                       '
+                       ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
+
+
+
+        return $form;
+    }
+	
+	
+	
+	
 //Start
     function get_product_in_family_no_price($data, $header_options=false, $options=false) {
 
@@ -758,7 +1024,7 @@ class LightFamily {
 	function get_found_in(){
 		//print 'found in';
 		//print $this->data['Product Family Main Department Key'];
-		
+		/*
 		$sql=sprintf("select `Product Department Name`, `Product Department URL` from `Product Department Dimension` where `Product Department Key`=%d", $this->data['Product Family Main Department Key']);
 		print $sql;
 		$result=mysql_query($sql);
@@ -766,7 +1032,9 @@ class LightFamily {
 			$found_in_label=$row['Product Department Name'];
 			$found_in_url=$row['Product Department URL'];
 		}
-		
+		*/
+		$found_in_label="";
+		$found_in_url="";
 		return array($found_in_label,$found_in_url);
 		
 	}

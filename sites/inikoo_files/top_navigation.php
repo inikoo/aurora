@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="../../inikoo_files/css/top_navigation.css" />
-<link rel="stylesheet" type="text/css" href="../../inikoo_files/css/ui.css" />
+<link rel="stylesheet" type="text/css" href="../../inikoo_files/css/ui.css.php" />
 <link href="../newmenubar-files/styles_wp36t.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/utilities/utilities.js"></script>
 <script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
