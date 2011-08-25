@@ -1,8 +1,8 @@
 <?php
 require_once'common_splinter.php';
-require_once 'classes/class.Customer.php';
-require_once 'classes/class.User.php';
-require_once 'classes/class.SendEmail.php';
+require_once 'class.Customer.php';
+require_once 'class.User.php';
+require_once 'class.SendEmail.php';
 
 require_once 'ar_edit_common.php';
 
@@ -350,7 +350,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 
     global $site,$store;
 
-    include_once('classes/class.User.php');
+    include_once('class.User.php');
 
 
     $sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
@@ -527,8 +527,8 @@ global $store;
             exit;
 
         } else {
-            //print_r($result);
-            $response=array('state'=>200,'result'=>'error');
+            print_r($result);
+            $response=array('state'=>200,'result'=>'error '.join(' ',$result));
             echo json_encode($response);
             exit;
         }

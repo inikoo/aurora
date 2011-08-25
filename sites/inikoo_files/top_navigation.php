@@ -15,7 +15,7 @@
 
 <?php 
 //print_r($_COOKIE);
-//exit;
+
 
 //echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
 if($logged_in){?>
@@ -56,13 +56,11 @@ if($logged_in){?>
 <button id="show_login_dialog">Log In</button>
 <img src="../../inikoo_files/art/gear.png" style="visibility:hidden;height:22px;vertical-align:-6px;">
 
-<?php } ?>
+<?php   } ?>
 
 </div>
 
 <?php if($logged_in){?>
-
-
 <div id="dialog_actions"    class="dialog logged" style=""  >
 <table border=0 style="margin-top:20px;float:right">
 <tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
@@ -70,7 +68,6 @@ if($logged_in){?>
 </table>
 
 </div>
-
 <div id="dialog_change_password"    class="dialog logged" style="<?php if( $authentication_type=='masterkey') print "display:block";?>"  >
 <h2><?php 
     if( $authentication_type=='masterkey'){
@@ -115,9 +112,9 @@ Your password has been changed.
 </table>
 
 </div>
+<?php }else{
 
-
-<?php }else{?>
+?>
 
 <div id="dialog_login"    class="dialog"   >
 <input type="hidden" value="<?php echo $St?>" id="ep">
@@ -127,11 +124,11 @@ Your password has been changed.
 
 
 
-<tr><td class="label">Email: </td><td><input id="login_handle"></td></tr>
+<tr><td style="width:90px" class="label">Email: </td><td><input id="login_handle"></td></tr>
 <tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
-<tr><td  class="label">Remember Me: </td><td><input type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
+<tr><td  class="label">Remember Me: </td><td style="text-align:left;"><input style="width:20px" type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
 <tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
-<tr class="link space"><td colspan=2>Forgot your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
+<tr class="link space"><td colspan=2>Don't know your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
 <tr id="tr_link_register_from_login" class="link" ><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>
 <tr id="tr_link_register_from_login2" class="link"><td colspan=2>Use another email, <span class="link" id="link_register_from_login2">Register Here</span></td></tr>
 
@@ -181,28 +178,54 @@ Your password has been changed.
 </table>
 </div>
 <div id="dialog_register_part_2"    class="dialog"  style="xdisplay:block"  >
+<input id="epw2" value="" type="hidden"/>
 <h2>Registration</h2>
 <table border=0 style="margin:0 auto;">
-<tr class="title" ><td colspan="3">Login info: </td></tr>
+<tr class="title" ><td colspan="3">Login info: </td>
+</tr>
 
-<tr><td class="label" style="width:200px">Email: </td><td id="confirmed_register_email"></td><td style="width:20px"></td></tr>
-<tr><td class="label">Password: </td><td><input type="password" id="register_password1"></td></tr>
-<tr><td class="label">Confirm pwd: </td><td><input type="password" id="register_password2"></td></tr>
-<input id="epw2" value="" type="hidden"/>
+<tr>
+<td class="label" style="width:200px">Email: </td><td id="confirmed_register_email"></td><td style="width:20px"></td>
+</tr>
+<tr>
+<td class="label">Password: </td><td><input type="password" id="register_password1"></td>
+</tr>
+<tr>
+<td class="label">Confirm pwd: </td><td><input type="password" id="register_password2"></td>
+</tr>
 
-<tr class="title" ><td colspan="3">Contact Info: </td></tr>
-<tr><td class="label">Contact Name: </td><td><input id="register_contact_name"></td></tr>
 
-<tr><td class="label">Company: </td><td><input id="register_company_name"></td></tr>
-<tr><td class="label">Telephone: </td><td><input id="register_telephone"></td></tr>
+<tr class="title" >
+<td colspan="3">Contact Info: </td>
+</tr>
+<tr>
+<td class="label">Contact Name: </td><td><input id="register_contact_name"></td>
+</tr>
 
-<tbody id="tbody_register_address"  >
-<tr class="title" ><td colspan="3">Address: </td></tr>
+<tr>
+<td class="label">Company: </td><td><input id="register_company_name"></td>
+</tr>
+<tr>
+<td class="label">Telephone: </td><td><input id="register_telephone"></td>
+</tr>
 
-<tr><td  class="label">Line 1: </td><td><input id="register_address_line1"/></td></tr>
-<tr><td class="label">Line 2: </td><td><input id="register_address_line2"/></td></tr>
-<tr><td class="label">Town: </td><td><input id="register_address_town"/></td></tr>
-<tr><td class="label">Postal Code: </td><td><input id="register_address_postcode"/></td></tr>
+
+<tr class="title" >
+<td colspan="3">Address: </td>
+</tr>
+
+<tr>
+<td  class="label">Line 1: </td><td><input id="register_address_line1"/></td>
+</tr>
+<tr>
+<td class="label">Line 2: </td><td><input id="register_address_line2"/></td>
+</tr>
+<tr>
+<td class="label">Town: </td><td><input id="register_address_town"/></td>
+</tr>
+<tr>
+<td class="label">Postal Code: </td><td><input id="register_address_postcode"/></td>
+</tr>
 
 <tr><td class="label">Country: </td><td><select size="1" id="register_address_country_2alpha_code" >
 <option value="XX">Select One</option>
@@ -457,11 +480,13 @@ Your password has been changed.
 <option value="ZW">Zimbabwe</option>
 </select></td></tr>
 
-<tr class="title" ><td colspan="3">Other: </td></tr>
+<tr class="title" >
+<td colspan="3">Other: </td>
+</tr>
 
 <?php
 $categories=array();
-include_once('classes/class.Category.php');
+include_once('class.Category.php');
 
 $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
 $res=mysql_query($sql);
@@ -497,10 +522,16 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 ?>
 
 
-<tr><td  class="label">Catalogue (post): </td><td><input checked=checked onChange="change_allow(this)"  style="width:10px" type="radio" name="catalogue" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="catalogue" value="No">No   </td></tr>
-<tr><td  class="label">Offers by email & e-Newsletter: </td><td style="vertical-align:top;"><input checked=checked onChange="change_allow(this)" style="width:10px" type="radio" name="newsletter" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="newsletter" value="No">No   </td></tr>
+<tr>
+<td  class="label">Catalogue (post): </td><td><input checked=checked onChange="change_allow(this)"  style="width:10px" type="radio" name="catalogue" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="catalogue" value="No">No   </td>
+</tr>
+<tr>
+<td  class="label">Offers by email & e-Newsletter: </td><td style="vertical-align:top;"><input checked=checked onChange="change_allow(this)" style="width:10px" type="radio" name="newsletter" value="Yes">Yes<input onChange="change_allow(this)"  style="width:10px" type="radio"  name="newsletter" value="No">No   </td>
+</tr>
 
-<tr class="title" ><td colspan="3">CAPTCHA: </td></tr>
+<tr class="title" >
+<td colspan="3">CAPTCHA: </td>
+</tr>
 
 
 <tr>
@@ -519,20 +550,38 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </tr>
 
 <tr  id="tr_register_part_2_buttons"  class="button space" >
-<td colspan=2><span style="display:none" id="register_error_no_password">Please, create a password</span><span style="display:none" id="register_error_password_not_march">Passwords don't match</span><span style="display:none" id="register_error_password_too_short">Password is too short</span><span>
-</span><button id="submit_register">Register</button> <button id="hide_register_part_2_dialog">Cancel</button></td></tr>
-<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td></tr>
+<td colspan=2>
+<span style="display:none" id="register_error_no_password">Please, create a password</span>
+<span style="display:none" id="register_error_password_not_march">Passwords don't match</span>
+<span style="display:none" id="register_error_password_too_short">Password is too short</span>
+<button id="submit_register">Register</button> 
+<button id="hide_register_part_2_dialog">Cancel</button>
+</td>
+</tr>
+
+<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td>
+</tr>
 
 
 </table>
 </div>
+
+
+
+
+
+
+
+
+
 <div id="dialog_forgot_password"    class="dialog" >
 <h2>Forgotten password</h2>
 <table>
+<tbody id="forgot_password_form">
 <tr><td  class="label">Email: </td><td><input id="forgot_password_handle"></td></tr>
 
 
-<tr id="">
+<tr >
 <td class="label" style="text-align:left">
 <img id="captcha2" src="" alt="CAPTCHA Image" /> <br>
 <i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
@@ -543,10 +592,10 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </td>
 </tr>
 
-
+</tbody>
 <tr class="button space">
 
-<td colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
+<td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
 </tr>
 <tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
 <tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
@@ -556,9 +605,12 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </table>
 </div>
 <?php 
+
 }
 include_once('header.php');
 print $header;
+
+
 //include_once('footer.php');
 //print $footer;
  ?>

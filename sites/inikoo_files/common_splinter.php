@@ -1,25 +1,29 @@
 <?php
 
-//$path = 'classes/';
+//$path = '';
 //set_include_path(get_include_path() . $path);
 //print get_include_path() . PATH_SEPARATOR . $path;
-  include_once('conf/key.php');
-            include_once('aes.php');
- 
+include_once('conf/key.php');
+include_once('aes.php');
+
 require_once 'conf/dns.php';
 require_once("conf/checkout.php");
 require_once 'common_functions.php';
+require_once 'common_store_functions.php';
+
+
 require_once 'ar_show_products.php';
 
-require_once "classes/class.Session.php";
+require_once "class.Session.php";
+require_once "class.Store.php";
 
-require_once "classes/class.Auth.php";
-require_once "classes/class.User.php";
-require_once "classes/class.Site.php";
-require_once "classes/class.LightCustomer.php";
+require_once "class.Auth.php";
+require_once "class.User.php";
+require_once "class.Site.php";
+require_once "class.LightCustomer.php";
 
-require_once "classes/class.LightProduct.php";
-require_once "classes/class.LightFamily.php";
+require_once "class.LightProduct.php";
+require_once "class.LightFamily.php";
 
 
 
@@ -53,24 +57,24 @@ $session = new Session($max_session_time,1,100);
 
 
 $public_url=$myconf['public_url'];
-if(!isset($_SESSION['basket'])){
-$_SESSION['basket']=array('items'=>0,'total'=>0);
+if (!isset($_SESSION['basket'])) {
+    $_SESSION['basket']=array('items'=>0,'total'=>0);
 
 }
 
-if(isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])){
-$_SESSION['basket']['items']=$_REQUEST['qty'];
+if (isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])) {
+    $_SESSION['basket']['items']=$_REQUEST['qty'];
 }
-if(isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])){
-$_SESSION['basket']['total']=$_REQUEST['tot'];
+if (isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])) {
+    $_SESSION['basket']['total']=$_REQUEST['tot'];
 }
 
 $site=new Site($myconf['site_key']);
 
 
-if(!$site->id){
+if (!$site->id) {
 
-exit ("Site data not found");
+    exit ("Site data not found");
 }
 
 $secret_key=$site->data['Site Secret Key'];
@@ -78,7 +82,7 @@ $secret_key=$site->data['Site Secret Key'];
 $store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);
 
-	//$storetelephone=$store->data['Store Telephone'];
+//$storetelephone=$store->data['Store Telephone'];
 //		$address=$store->data['Store Address'];
 
 $store_code=$store->data['Store Code'];
@@ -104,70 +108,72 @@ $_SESSION ['lang']='';
 $authentication_type='login';
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
- 
+
 if ($logout) {
- $auth=new Auth(IKEY,SKEY);
- //$auth->unset_cookies($_COOKIE['user_handle'],$_COOKIE['sk'],$_COOKIE['page'],$_COOKIE['page_key']);
- $auth->unset_cookies();
-     $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
-   mysql_query($sql);
- 
+    $auth=new Auth(IKEY,SKEY);
+//$auth->unset_cookies($_COOKIE['user_handle'],$_COOKIE['sk'],$_COOKIE['page'],$_COOKIE['page_key']);
+    $auth->unset_cookies();
+    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+    mysql_query($sql);
+
     session_regenerate_id();
     session_destroy();
     unset($_SESSION);
- 
-   // include_once 'login.php';
-   // exit;
-   
-   $_SESSION['logged_in']=0;
-$logged_in=false;
-$St=get_sk();
-}elseif(isset($_REQUEST['p'])){
+
+    // include_once 'login.php';
+    // exit;
+
+    $_SESSION['logged_in']=0;
+    $logged_in=false;
+    $St=get_sk();
+}
+elseif(isset($_REQUEST['p'])) {
 
 
-$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
+    $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
 // print "$dencrypted_secret_data\n";
- $auth=new Auth(IKEY,SKEY);
+    $auth=new Auth(IKEY,SKEY);
 
     $auth->authenticate_from_masterkey($dencrypted_secret_data);
 
-	if ($auth->is_authenticated()) {
-	$authentication_type='masterkey';
-		$_SESSION['logged_in']=true;
-		$_SESSION['store_key']=$store_key;
-		$_SESSION['site_key']=$site->id;
+    if ($auth->is_authenticated()) {
+        $authentication_type='masterkey';
+        $_SESSION['logged_in']=true;
+        $_SESSION['store_key']=$store_key;
+        $_SESSION['site_key']=$site->id;
 
-		$_SESSION['user_key']=$auth->get_user_key();
-		$_SESSION['customer_key']=$auth->get_user_parent_key();
-		
-		
-		}
+        $_SESSION['user_key']=$auth->get_user_key();
+        $_SESSION['customer_key']=$auth->get_user_parent_key();
 
 
-}elseif(isset($_COOKIE['user_handle'])){
-	$auth=new Auth(IKEY,SKEY);
-	$auth->set_use_cookies();
-	//$auth->use_cookies=true;
-	$auth->authenticate(false, false, 'customer', $_COOKIE['page_key']);
+    }
 
-	if ($auth->is_authenticated()) {
-		$authentication_type='cookie';
-		$_SESSION['logged_in']=true;
-		$_SESSION['store_key']=$store_key;
-		$_SESSION['site_key']=$site->id;
 
-		$_SESSION['user_key']=$auth->get_user_key();
-		$_SESSION['customer_key']=$auth->get_user_parent_key();
-		//echo 'jj'; 
-	}
+}
+elseif(isset($_COOKIE['user_handle'])) {
+    $auth=new Auth(IKEY,SKEY);
+    $auth->set_use_cookies();
+    //$auth->use_cookies=true;
+    $auth->authenticate(false, false, 'customer', $_COOKIE['page_key']);
+
+    if ($auth->is_authenticated()) {
+        $authentication_type='cookie';
+        $_SESSION['logged_in']=true;
+        $_SESSION['store_key']=$store_key;
+        $_SESSION['site_key']=$site->id;
+
+        $_SESSION['user_key']=$auth->get_user_key();
+        $_SESSION['customer_key']=$auth->get_user_parent_key();
+        //echo 'jj';
+    }
 }
 
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
-if(!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])){
-$_SESSION['logged_in']=0;
-$logged_in=false;
-$St=get_sk();
+if (!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])) {
+    $_SESSION['logged_in']=0;
+    $logged_in=false;
+    $St=get_sk();
 }
 
 if ($logged_in ) {
@@ -182,15 +188,14 @@ if ($logged_in ) {
 
     }
 
-} 
-else {
+} else {
 
-$_SESSION['logged_in']=0;
-$logged_in=false;
-$St=get_sk();
+    $_SESSION['logged_in']=0;
+    $logged_in=false;
+    $St=get_sk();
 
 
- 
+
 }
 
 log_visit($session->id);
@@ -199,44 +204,45 @@ log_visit($session->id);
 
 
 
-function show_footer(){
-	include_once('footer.php');
-	echo $footer;
+function show_footer() {
+    include_once('footer.php');
+    echo $footer;
 }
 
-function get_sk(){
-      
-
-   $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
-        $St=AESEncryptCtr($Sk,SKEY, 256);
-return $St;
-}
+function get_sk() {
 
 
-
-function show_product($code){
-	global $logged_in, $ecommerce_url, $username, $method,$store_key;
-	$product=new LightProduct($code, $store_key);
-
-	if(!$product->match)
-		return;
-
-	
-	$data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
-	
-	if($logged_in){
-		print $product->get_full_order_form('ecommerce', $data);
-
-	}else{
-
-		print $product->get_info();
-
-	}
-
+    $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+    $St=AESEncryptCtr($Sk,SKEY, 256);
+    return $St;
 }
 
 
 
+function show_product($code) {
+    global $logged_in, $ecommerce_url, $username, $method,$store_key;
+    $product=new LightProduct($code, $store_key);
+
+    if (!$product->match)
+        return;
+
+
+    $data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
+
+    if ($logged_in) {
+        print $product->get_full_order_form('ecommerce', $data);
+
+    } else {
+
+        print $product->get_info();
+
+    }
+
+}
+
+
+
+<<<<<<< HEAD
 function show_products($code,$options=false){
 	global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
 	
@@ -311,110 +317,181 @@ function show_products($code,$options=false){
 		echo $product->get_product_list_no_price($header, $options);
 		return;
 	}
+=======
+function show_products($code,$options=false) {
+    global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
+
+
+
+
+    $conf= array('ecommerce_url_multi'=>$ecommerce_url_multi
+                                       ,'username'=>$username
+                                                   ,'method'=>$method
+                                                             ,'secure'=>(empty($secure) ? '' : $_SERVER["HTTPS"])
+                                                                       ,'_port'=>$_SERVER["SERVER_PORT"]
+                                                                                ,'_protocol'=>$_SERVER["SERVER_PROTOCOL"]
+                                                                                             ,'url'=>$_SERVER['REQUEST_URI']
+                                                                                                    ,'server'=>$_SERVER['SERVER_NAME']
+                );
+
+
+    $code_list=array();
+    $data=array();
+
+
+    if (preg_match('/,/', $code)) {
+        $code_list=explode(',', $code);
+
+        foreach($code_list as $code) {
+            $product=new LightProduct($code, $store_key);
+            if ($product->match) {
+                $data[]=$product->data;
+
+            }
+        }
+
+        $price=$data[0]['Product Price'];
+        foreach($data as $val) {
+            if ($price>$val['Product Price'])
+                $price=$val['Product Price'];
+        }
+
+
+        if ($logged_in) {
+            echo show_products_in_family('ecommerce', $data, $conf, $options);
+            return;
+        } else {
+            $options=array();
+            echo show_products_in_family_info($data, $options);
+            return;
+        }
+    } else {
+    }
+
+
+
+
+    $product=new LightFamily($code, $store_key);
+    if (!$product->match)
+        return;
+
+
+    $header=array('on'=>true);
+    $options=array('order_by'=>'code'
+                              ,
+                   //'limit'=>1,
+                   //'range'=>'a:f'
+                  );
+    $s = empty($secure) ? '' : $_SERVER["HTTPS"];
+    if ($logged_in) {
+        echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
+    } else {
+        echo $product->get_product_list_no_price($header, $options);
+        return;
+    }
+>>>>>>> e94b202460e200fedf3116af5ca864796965906d
 }
 
-function set_parameters($data=false){
+function set_parameters($data=false) {
 
-	if(!isset($data['family']))
-		$code='';
-	else
-		$code=$data['family'];
-	//print_r( $data);
-	global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
-	$see_also=array();
-	
-	if(!isset($data['found_in'])){
-		list($found_in_label, $found_in_url)=found_in($code);
-	}
-	else{
-		list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
-	}
-	
-	if(!isset($data['see_also'])){
-		$see_also=see_also($code);
-	}
-	else{
-		$see_also_temp=explode(";", $data['see_also']);
-		foreach($see_also_temp as $val){
-			list($label, $url)=explode(",", $val);
-			$see_also[$label]=$url;
-		}
-	}	
-	
-	
-	
+    if (!isset($data['family']))
+        $code='';
+    else
+        $code=$data['family'];
+    //print_r( $data);
+    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
+    $see_also=array();
 
-	
-	if(isset($data['header_title'])){
-		$header_title=$data['header_title'];
-	}
-	else
-		$header_title="";
-		
-	if(isset($data['footer_description']))
-		$footer_description=$data['footer_description'];
+    if (!isset($data['found_in'])) {
+        list($found_in_label, $found_in_url)=found_in($code);
+    } else {
+        list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
+    }
+
+    if (!isset($data['see_also'])) {
+        $see_also=see_also($code);
+    } else {
+        $see_also_temp=explode(";", $data['see_also']);
+        foreach($see_also_temp as $val) {
+            list($label, $url)=explode(",", $val);
+            $see_also[_trim($label)]=_trim($url);
+        }
+    }
+
+
+
+
+
+    if (isset($data['header_title'])) {
+        $header_title=$data['header_title'];
+    } else
+        $header_title="";
+
+    if (isset($data['footer_description']))
+        $footer_description=$data['footer_description'];
 }
 
-function add_extra_header_content($data){
-	$files=explode(",", $data);
-	
-	foreach($files as $file){
-		$file="../../inikoo_files/".$file;
-		include_once($file);
-	}
+function add_extra_header_content($data) {
+    $files=explode(",", $data);
+
+    foreach($files as $file) {
+        $file="../../inikoo_files/".$file;
+        include_once($file);
+    }
 }
 
 function log_visit($session_key) {
 
 
-global $user_click_key;
-$user_click_key=0;
-   // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
-$file = $_SERVER["PHP_SELF"];
+    global $user_click_key;
+    $user_click_key=0;
+    // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
+    $file = $_SERVER["PHP_SELF"];
 //echo $file;
- 
- $break = Explode('/', $file);
-    $cur_file = $break[count($break) - 1];
-if(preg_match('/^ar\_/',$cur_file)){
-    return;
-}
 
-if(preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)){
-return;
-}
+    $break = Explode('/', $file);
+    $cur_file = $break[count($break) - 1];
+    if (preg_match('/^ar\_/',$cur_file)) {
+        return;
+    }
+
+    if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)) {
+        return;
+    }
 
 // function to get the full url of the current page
-function slfURL() 
-{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
- $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]); 
-return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF']; 
-}
+    function slfURL() {
+        $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+        $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
+        $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+        return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];
+    }
 
-function ecommerceURL() 
-{ 
+    function ecommerceURL() {
 
-$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
- $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
- if(strpos($_SERVER['PHP_SELF'], "?")){
-	return $protocol."://".$_SERVER['SERVER_NAME'].$port.strleft1(strtolower($_SERVER['PHP_SELF']), "?"); 
- }
- else
-	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?"); 
-}
+        $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+        $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
+        $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+        if (strpos($_SERVER['PHP_SELF'], "?")) {
+            return $protocol."://".$_SERVER['SERVER_NAME'].$port.strleft1(strtolower($_SERVER['PHP_SELF']), "?");
+        } else
+            return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?");
+    }
 
- function strleft1($s1, $s2) 
-{ return substr($s1, 0, strpos($s1, $s2)); }
+    function strleft1($s1, $s2) {
+        return substr($s1, 0, strpos($s1, $s2));
+    }
 
-$cur_fullurl=slfURL();
+    $cur_fullurl=slfURL();
 //print "$cur_fullurl<br>";
-$break = Explode('/', $cur_fullurl);
-$cur_url = $break[count($break) - 1];
+    $break = Explode('/', $cur_fullurl);
+    $cur_url = $break[count($break) - 1];
 //print $cur_url;
 
 
 
 //echo $file;
-   // print "current file : $cur_file <br>";           //current file name gets stored in $file
+    // print "current file : $cur_file <br>";           //current file name gets stored in $file
 
     $purl = (isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');        //previous page url
     $break = Explode('/', $purl);
@@ -423,7 +500,7 @@ $cur_url = $break[count($break) - 1];
     //$pos = strpos($prev_url, '?');
 
     //$prev_file = substr($prev_url,0, $pos);
-   // print "previous file : $prev_file<br>";
+    // print "previous file : $prev_file<br>";
 //echo("<br>");
 
 
@@ -436,67 +513,67 @@ $cur_url = $break[count($break) - 1];
 
     $page_key=0;
     $date=date("Y-m-d H:i:s");
-   
-   
-   if(isset($_SESSION['prev_page_key']))
-    $prev_page_key=$_SESSION['prev_page_key'];
-  else
-  $prev_page_key=0;
-  
-  
-        $sql1=sprintf("INSERT INTO `User Click Dimension` (
 
-                      `User Key` ,
-                      `URL` ,
-                      `Page Key` ,
-                      `Date` ,
-                      `Previous Page` ,
-                      `Session Key` ,
-                      `Previous Page Key`
-                      )
-                      VALUES (
-                      %d,%s, %d,%s, %s, %d,%d
-                      );",
-                      $user_key,
-                      prepare_mysql($cur_url),
-                      $page_key,
-                      prepare_mysql($date),
-                      prepare_mysql($prev_url),
-                      $session_key,
-                      $prev_page_key
-                     );
 
-        //print($sql1);
-        mysql_query($sql1);
-        $user_click_key= mysql_insert_id();
+    if (isset($_SESSION['prev_page_key']))
+        $prev_page_key=$_SESSION['prev_page_key'];
+    else
+        $prev_page_key=0;
 
-  
+
+    $sql1=sprintf("INSERT INTO `User Click Dimension` (
+
+                  `User Key` ,
+                  `URL` ,
+                  `Page Key` ,
+                  `Date` ,
+                  `Previous Page` ,
+                  `Session Key` ,
+                  `Previous Page Key`
+                  )
+                  VALUES (
+                  %d,%s, %d,%s, %s, %d,%d
+                  );",
+                  $user_key,
+                  prepare_mysql($cur_url),
+                  $page_key,
+                  prepare_mysql($date),
+                  prepare_mysql($prev_url),
+                  $session_key,
+                  $prev_page_key
+                 );
+
+    //print($sql1);
+    mysql_query($sql1);
+    $user_click_key= mysql_insert_id();
+
+
 
 }
-function update_page_key_visit_log($page_key){
+function update_page_key_visit_log($page_key) {
     global $user_click_key;
     $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
     mysql_query($sql);
 
 }
 
-function found_in($code){
-	global $store_key;
-	
-	$family=new LightFamily($code, $store_key);
-	//print_r($family);
-	if(!$family->id)
-		return;
-	return $family->get_found_in();
-	
+function found_in($code) {
+    global $store_key;
+
+    $family=new LightFamily($code, $store_key);
+    //print_r($family);
+    if (!$family->id)
+        return;
+    return $family->get_found_in();
+
 }
 
-function see_also($code, $url="http://www.ancientwisdom.biz/forms/"){
-	global $store_key;
-	$family=new LightFamily($code, $store_key);
-	if(!$family->id)
-		return;
-	return $family->get_see_also($code, $url);
+function see_also($code, $url="http://www.ancientwisdom.biz/forms/") {
+    global $store_key;
+    $family=new LightFamily($code, $store_key);
+    if (!$family->id)
+        return;
+    return $family->get_see_also($code, $url);
 }
 
 

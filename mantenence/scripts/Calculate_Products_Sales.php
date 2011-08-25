@@ -36,7 +36,7 @@ while($row=mysql_fetch_array($result)   ){
 // $product->update_sales_data();
  // $product->update_full_search();
   $product->update_parts();
-    
+     $product->update_web_state();
     print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 
 }
