@@ -1,5 +1,4 @@
 <?php
-
 include_once('conf/key.php');
 include_once('aes.php');
 
@@ -111,6 +110,11 @@ $authentication_type='login';
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 
+
+//print "<br> xxx1";
+//print_r($_SESSION);
+
+
 if ($logout) {
     $auth=new Auth(IKEY,SKEY);
 //$auth->unset_cookies($_COOKIE['user_handle'],$_COOKIE['sk'],$_COOKIE['page'],$_COOKIE['page_key']);
@@ -148,6 +152,11 @@ elseif(isset($_REQUEST['p'])) {
         $_SESSION['customer_key']=$auth->get_user_parent_key();
 
 
+    }else{
+        
+      $_SESSION['logged_in']=0;
+    $logged_in=false;
+    $St=get_sk();
     }
 
 
@@ -167,9 +176,16 @@ elseif(isset($_COOKIE['user_handle'])) {
         $_SESSION['user_key']=$auth->get_user_key();
         $_SESSION['customer_key']=$auth->get_user_parent_key();
         //echo 'jj';
+    }else{
+    
+      $_SESSION['logged_in']=0;
+    $logged_in=false;
+    $St=get_sk();
     }
 }
 
+//print "<br> xxx2";
+//print_r($_SESSION);
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 if (!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])) {

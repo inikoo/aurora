@@ -291,6 +291,7 @@ var $id=0;
 	  
 	}else{
 	  print "error";
+	  exit("error inserting sessions");
 	  return false;
       }
       
