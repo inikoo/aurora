@@ -150,7 +150,7 @@ Your password has been changed.
 <table border=0 style="margin:0 auto;">
 <tr id="tr_email_in_db_captcha">
 <td class="label" style="text-align:left">
-<img id="captcha3" src="" alt="CAPTCHA Image" /> <br>
+<img id="captcha3" src="../../inikoo_files/art/x.png" alt="CAPTCHA Image" /> <br>
 <i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha3').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
 </td>
 <td style="vertical-align:top">
@@ -546,7 +546,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 
-<img id="captcha" src="" /> <br>
+<img id="captcha" src="../../inikoo_files/art/x.png" /> <br>
 <i><a href="#" onclick="document.getElementById('captcha').src = '../../inikoo_files/securimage_show.php?' + Math.random(); return false">Different Image</a></i>
 
 </td>
@@ -590,7 +590,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 <tr >
 <td class="label" style="text-align:left;width:120px">
-<img id="captcha2"  src="" alt="CAPTCHA Image" />
+<img id="captcha2"  src="../../inikoo_files/art/x.png" alt="CAPTCHA Image" />
 <i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
 </td>
 <td style="vertical-align:top">
