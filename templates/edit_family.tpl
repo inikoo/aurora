@@ -149,30 +149,76 @@
 	{if $family->get('Product Family Page Key')}
 
 	
+	
+	
 		 <div class="general_options" style="float:right">
+		   
+		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_properties" class="state_details">{t}Save{/t}</span>
+		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_properties" class="state_details">{t}Reset{/t}</span>
+		   
+      </div>
+	
+	   <table class="edit"  border=1 id="edit_family_page"  style="width:100%" page_key={$family->get('Product Family Page Key')}    >
+	     <tr class="title"><td colspan="2">{t}Page Properties{/t}
+	     </td></tr>
+
+  <tr><td width="180px" class="label">{t}Page Code{/t}:</td>
+	     <td>
+		 <div   >
+		   <input  id="family_page_properties_code"   value="{$page_data.PageCode}" ovalue="{$page_data.PageCode}"  />
+		   
+		   <div id="family_page_properties_code_Container" style="" ></div>
+		 </div>
+	       </td><div id="family_page_properties_code_msg"></div><td>
+      </td></tr>
+
+	     <tr><td width="180px" class="label">{t}URL{/t}:</td>
+	     <td>
+		 <div   >
+		   <input  id="family_page_properties_url"   value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
+		   
+		   <div id="family_page_properties_url_Container" style="" ></div>
+		 </div>
+	       </td><div id="family_page_properties_url_msg"></div><td>
+      </td></tr>
+
+
+
+<tr><td class="label">{t}Page Type{/t}:</td>
+ <td>
+ <table>
+ <tr><td class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.ProductThumbnailsLayout=="Yes"}checked="checked"{/if} ></td></tr>
+ 
+
+ </table>
+ 
+	
+	
+
+    </td></tr>
+
+	
+	
+	
+	
+	
+	
+
+
+	     <tr class="title"><td colspan="2">{t}Page Properties{/t} [HTML HEAD]
+	     </td><td>
+	     	 <div class="general_options" style="float:right">
 		   
 		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_html_head" class="state_details">{t}Save{/t}</span>
 		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_html_head" class="state_details">{t}Reset{/t}</span>
 		   
       </div>
-	
-	   <table class="edit"   id="edit_family_page"  style="width:100%" page_key={$family->get('Product Family Page Key')}    >
-	     <tr class="title"><td colspan="2">{t}Page Properties{/t} [HTML HEAD]
-
-
-
+	     
 	     </td></tr>
-	     <tr><td width="180px" class="label">{t}URL{/t}:</td>
-	     <td>
-		 <div   >
-		   <input  id="family_page_html_head_url"   value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
-		   
-		   <div id="family_page_html_head_url_Container" style="" ></div>
-		 </div>
-	       </td><div id="family_page_html_head_url_msg"></div><td>
-	
 
-      </td></tr>
+
+
+
 	     <tr><td class="label">{t}Title{/t}:</td><td>
 		 <div   >
 		   <input  id="family_page_html_head_title"    value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
@@ -199,24 +245,7 @@
 
 
 
-   <tr class="title"><td colspan="2">Content Type</td>
-	     <td>
-		 <div class="general_options" style="float:right">
-		   
-		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_content" class="state_details">{t}Save{/t}</span>
-		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_content" class="state_details">{t}Reset{/t}</span>
-		   
-		 </div>
-		 
-	       </td>
-	     </tr>
-	     
-<tr>
-<td></td>
-<td>
-sss
-</td>
-</tr>
+  
 
 
 

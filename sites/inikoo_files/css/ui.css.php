@@ -150,12 +150,12 @@ table.header_table{
 
 .product_list .price{color:#236E4B;text-align:right}
 .product_list .out_of_stock{color:	red}
-
+.product_list .discontinued{color:	red}
 
 .product_list td.price {text-align:right;padding-right:0px}
 .product_list td.input {padding-left:5px;padding-right:0px}
 
-.product_list input.out_of_stock ,product_list input.discontinued {background-color:#ccc;border:1px solid red; visibility:hidden}
+.product_list input.out_of_stock ,.product_list input.discontinued {background-color:#ccc;border:1px solid red; visibility:hidden}
 
 
 .form td{padding:1px 5px 1px 10px;}
