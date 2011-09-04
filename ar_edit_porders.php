@@ -1727,7 +1727,7 @@ function receive_supplier_delivery_note() {
 
     if (isset($_REQUEST['date_type']) and $_REQUEST['date_type']=='manual' ) {
         if (isset($_REQUEST['received_date']) and  isset($_REQUEST['received_time']) ) {
-            $_date=$_REQUEST['received_date'].' '.$_REQUEST['received_time'];
+            $_date=$_REQUEST['received_date'].' '.$_REQUEST['received_time'];o
             $date_data=prepare_mysql_datetime($_date);
             if (!$date_data['ok']) {
                 $response= array('state'=>400,'msg'=>_('Wrong date/time'));

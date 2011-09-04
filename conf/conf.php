@@ -2581,7 +2581,9 @@ $default_state=array(
                                                    'percentage'=>0,
                                                    'mode'=>'all',
                                                    'avg'=>'totals',
-                                                   'restrictions'=>'',
+                                                  
+                                                   'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'In Process'=>0),
+
                                                    'csv_export'=>array(
                                                                     'code'=>true,
                                                                     'name'=>true,
@@ -2706,6 +2708,8 @@ $default_state=array(
                                                'f_field'=>'code',
                                                'f_value'=>'',
                                                'restrictions'=>'',
+                                                'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
+
                                                'csv_export'=>array(
                                                                 'code'=>true,
                                                                 'name'=>true,

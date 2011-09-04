@@ -103,9 +103,9 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  orders_data.orders  where   deleted='Yes'    ";
-   $res=mysql_query($sql);
+$res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
- $order_data_id=$row2['id'];
+    $order_data_id=$row2['id'];
     delete_old_data();
 }
 
@@ -118,7 +118,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
-$sql="select * from  orders_data.orders where filename  like '%/c/%.xls' order by filename";
+$sql="select * from  orders_data.orders where filename  like '%/130100.xls' order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
@@ -969,8 +969,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                               'product type'=>'Normal',
                               'Product Locale'=>'en_GB',
                               'Product Currency'=>'GBP',
-                              'product record type'=>'Discontinued',
+                              'product record type'=>'Normal',
                               'Product Web Configuration'=>'Offline',
+
                               'product special characteristic'=>$special_char,
                               'Product Store Key'=>$store_key,
                               'Product Main Department Key'=>$dept_key,
@@ -1043,6 +1044,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $part_data=array(
 
                                'Part Status'=>'Not In Use',
+                               'Part Available'=>'No',
                                'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
                                'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
                                'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
@@ -1072,14 +1074,21 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
                 $used_parts_sku=array(
                                     $part->sku => array(
-                                                    'parts_per_product'=>$parts_per_product
-                                                                        ,'unit_cost'=>$supplier_product_cost*$transaction['units']
+                                                    'parts_per_product'=>$parts_per_product,
+                                                    'unit_cost'=>$supplier_product_cost*$transaction['units']
 
                                                 )
 
                                 );
 
-            } else {
+                $products=$part->get_product_ids();
+                foreach($products as $product_pid) {
+                    $product=new Product ('pid',$product_pid);
+                    $product->update_availability_type();
+
+                }
+
+            } else {//Old Product ID
 
 
 
@@ -1356,60 +1365,61 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
 //-----------------
-         $customer_done=false;
+            $customer_done=false;
             $customer_posible_key=0;
             $customer=false;
-            
-            if ($customer_key_from_order_data) {
-                    print "use prev ";
-                $customer_posible_key=$customer_key_from_order_data;
-                $customer = new Customer($customer_key_from_order_data);
-                $customer_done=true;
-            }
-            else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-                    print "inikko ";
+
+
+            if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+                print "inikko ";
                 $customer_posible_key=$act_data['act'];
                 $customer = new Customer($act_data['act']);
                 $customer_done=true;
             }
-            
-             if ($customer_posible_key) {
-                if(!$customer->id){
-                $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
-                $res2=mysql_query($sql);
-                if ($row2=mysql_fetch_assoc($res2)) {
-                    $customer=new Customer($row2['Customer Key']);
-                    $customer_done=true;
-                }
+            elseif ($customer_key_from_order_data) {
+                print "use prev ";
+                $customer_posible_key=$customer_key_from_order_data;
+                $customer = new Customer($customer_key_from_order_data);
+                $customer_done=true;
+            }
+
+            if ($customer_posible_key) {
+                if (!$customer->id) {
+                    $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
+                    $res2=mysql_query($sql);
+                    if ($row2=mysql_fetch_assoc($res2)) {
+                        $customer=new Customer($row2['Customer Key']);
+                        $customer_done=true;
+                    }
                 }
             }
 
-            
-            if(!$customer_done or !$customer->id) {
-                
-               $customer = new Customer ( 'find', $data['Customer Data'] );
+
+            if (!$customer_done or !$customer->id) {
+
+                $customer = new Customer ( 'find', $data['Customer Data'] );
             }
-            
+
             if (!$customer->id) {
-                           $customer = new Customer ( 'find create', $data['Customer Data'] );
+                $customer = new Customer ( 'find create', $data['Customer Data'] );
             }
-         
 
-        
-        
-        
-        
-        if (!$customer->id) {
-        print_r($act_data);
-            print "Error !!!! customer not found\n";
-            continue;
-        }
-        
-        
-        if($customer->data['Customer Store Key']!=$store->id){
-             print "Error !!!! customer from another store\n";
-            continue;
-        }
+
+
+
+
+
+            if (!$customer->id) {
+                print_r($act_data);
+                print "Error !!!! customer not found\n";
+                continue;
+            }
+
+
+            if ($customer->data['Customer Store Key']!=$store->id) {
+                print "Error !!!! customer from another store\n";
+                continue;
+            }
 
 //------------------------
 

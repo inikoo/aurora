@@ -1064,8 +1064,8 @@ class SupplierDeliveryNote extends DB_Table {
             $part_location=new PartLocation('find',$part_location_data,'create');
             $part_location->add_stock(
                 array(
-                    'Quantity'=>$data['Quantity']
-                               ,'Origin'=>_('Supplier Delivery Note').' <a href="supplier_dn.php?id='.$this->id.'">'.$this->data['Supplier Delivery Note Public ID'].'</a>'
+                    'Quantity'=>$data['Quantity'],
+                               'Origin'=>_('Supplier Delivery Note').' <a href="supplier_dn.php?id='.$this->id.'">'.$this->data['Supplier Delivery Note Public ID'].'</a>'
                 )
             );
         }

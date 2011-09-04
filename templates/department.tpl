@@ -203,24 +203,40 @@
 <div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 <div class="data_table" style="clear:both;">
-  <span id="table_title" class="clean_table_title">{t}Families{/t}</span>
-  <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families_in_department" >{t}Export (CSV){/t}</span>
-    <div id="table_type">
-     <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
-     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
+  <span id="table_title" class="clean_table_title">{t}Families{/t} 
+   <img id="export_csv0"   tipo="families_in_department" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif">
+
+  
+  </span>
+   
+     
+   
+ 
+  <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+
+            
+                        <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_family_products_discontinued"  id="elements_discontinued" table_type="discontinued"   >{t}Discontinued{/t} (<span id="elements_discontinued_number">{$elements_number.Discontinued}</span>)</span>
+                        <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinuing}selected{/if} label_family_products_discontinued"  id="elements_discontinuing" table_type="discontinuing"   >{t}Discontinuing{/t} (<span id="elements_discontinuing_number">{$elements_number.Discontinuing}</span>)</span>
+
+                <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Normal}selected{/if} label_family_products_normal"  id="elements_normal" table_type="normal"   >{t}For Sale{/t} (<span id="elements_notes_number">{$elements_number.Normal}</span>)</span>
+                <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_family_products_inprocess"  id="elements_inprocess" table_type="inprocess"   >{t}In Process{/t} (<span id="elements_notes_number">{$elements_number.InProcess}</span>)</span>
+
+        </div>
+     </div>
+ 
+  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+   <div id="table_type">
+     <span   style="float:right;margin-left:40px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
+
+     <span id="table_type_list" style="float:right" class=" state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
+     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class=" state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
      </div>
      
-  
-  
-  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-  
       <div id="list_options0"> 
 
   
-  <span   style="float:right;margin-left:40px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
-  <span   style="float:right;margin-left:20px" class="state_details"  id="restrictions_show_for_sale"   >{t}For Sale{/t} ({$department->get('For Public For Sale Families')})</span>
-  <span   style="float:right;margin-left:20px" class="state_details"  id="restrictions_show_discontinued"   >{t}Discontinued{/t} ({$department->get('For Public Discontinued Families')})</span>
-  <span   style="float:right;margin-left:20px" class="state_details"  id="restrictions_show_all"   >{t}All{/t} ({$department->get('Families')})</span>
+ 
 
 
   <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >

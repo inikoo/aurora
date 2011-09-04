@@ -1619,7 +1619,7 @@ $yeartoday=YTD();
 
 	if($for_sale==0){
 	  if($in_process>0 and $discontinued==0)
-	    $record_type='In Processs';
+	    $record_type='InProcesss';
 	  else
 	    $record_type='Discontinued';
 	}else{

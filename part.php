@@ -14,6 +14,8 @@
 
 include_once('common.php');
 //include_once('stock_functions.php');
+include_once('class.Location.php');
+
 include_once('class.Part.php');
 
 $view_sales=false;
@@ -116,6 +118,14 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
 }
 
 $subject_id=$part->id;
+
+if(!$part->id){
+header('Location: warehouse.php?msg=part_not_found');
+exit;
+
+}
+
+
 $warehouse_key=0;
 
 

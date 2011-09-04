@@ -102,7 +102,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   $code=$_cols[$map['code']];
 
  
-  if(($code=='FO-A1' or $code=='AWFO-01') and !$inicio){
+  if(($code=='FO-A1' or $code=='AWFO-01' or $code=='3DART-01') and !$inicio){
     $inicio=true;
     $x=$__cols[count($__cols)-4];
     $z=$__cols[count($__cols)-3];

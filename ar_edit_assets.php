@@ -405,6 +405,10 @@ function edit_product() {
     $product=new product('pid',$_REQUEST['pid']);
     global $editor;
     $product->editor=$editor;
+    
+    $key=$_REQUEST['key'];
+    $newvalue=$_REQUEST['newvalue'];
+    
     $translator=array(
                     'name'=>'Product Name',
                     'sdescription'=>'Product Special Characteristic',
@@ -423,19 +427,22 @@ function edit_product() {
 
                 );
 
-    if (array_key_exists($_REQUEST['key'],$translator))
-        $key=$translator[$_REQUEST['key']];
+    if (array_key_exists($key,$translator))
+        $key=$translator[$key];
     else
-        $key=$_REQUEST['key'];
-
-    $product->update($key,stripslashes(urldecode($_REQUEST['newvalue'])));
+        $key=$key;
+        
+        
+        if($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale') )
+			$key='Product Sales Type';
+    $product->update($key,stripslashes(urldecode($newvalue)));
 
 
     if ($product->updated) {
-        $response= array('state'=>200,'newvalue'=>$product->new_value,'newdata'=>$product->new_data,'key'=>$_REQUEST['key']);
+        $response= array('state'=>200,'newvalue'=>$product->new_value,'newdata'=>$product->new_data,'key'=>$key);
 
     } else {
-        $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
+        $response= array('state'=>400,'msg'=>$product->msg,'key'=>$key);
     }
     echo json_encode($response);
 }
@@ -986,19 +993,19 @@ function list_products_for_edition() {
 
         switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
-            $web_configuration=_('Force out of stock');
+            $formated_web_configuration=_('Force out of stock');
             break;
         case('Online Auto'):
-            $web_configuration=_('Auto');
+            $formated_web_configuration=_('Auto');
             break;
         case('Offline'):
-            $web_configuration=_('Force offline');
+            $formated_web_configuration=_('Force Offline');
             break;
         case('Online Force For Sale'):
-            $web_configuration=_('Force Online');
+            $formated_web_configuration=_('Force Online');
             break;
 	default:
-	 $web_configuration=$row['Product Web Configuration'];
+	 $formated_web_configuration=$row['Product Web Configuration'];
         }
 
    switch ($row['Product Web State']) {
@@ -1020,7 +1027,21 @@ function list_products_for_edition() {
       
 
         }
-
+        
+        if($row['Product Sales Type']!='Public Sale'){
+       $web_configuration=$row['Product Sales Type'];
+        switch ($row['Product Sales Type']) {
+			    case 'Private Sale':
+			        $formated_web_configuration=_('Private Sale');
+			        break;
+			    default:
+			        $formated_web_configuration=_('Not For Sale');
+			        break;
+			}
+		}else{
+			
+			 $web_configuration=$row['Product Web Configuration'];
+		}
 
         $adata[]=array(
                      'pid'=>$row['Product ID'],
@@ -1034,8 +1055,8 @@ function list_products_for_edition() {
                      'sales_type'=>$sales_type,
                      'record_type'=>$record_type,
 
-                     'web_configuration'=>$row['Product Web Configuration'],
-                     'formated_web_configuration'=>$web_configuration,
+                     'web_configuration'=>$web_configuration,
+                     'formated_web_configuration'=>$formated_web_configuration,
                      'state_info'=>$sales_type,
                      'sdescription'=>$sdescription,
 

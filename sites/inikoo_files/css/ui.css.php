@@ -13,7 +13,7 @@ table {border-collapse: collapse;}
     
 	width: 100%
 }
-h1 {position:relative;top:5px;padding:0;margin:0px 0 0 180px;font-family: Delicious, sans-serif;font-size:35px;color:#111;text-shadow: 1px 2px 1px  #444}
+h1 {position:relative;top:5px;padding:0;margin:0px 0 0 180px;xfont-family: Delicious, sans-serif;font-size:35px;color:#111;text-shadow: 1px 2px 1px  #444}
 
 @font-face {
 	font-family: weathered;
