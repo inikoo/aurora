@@ -650,12 +650,12 @@ class LightFamily {
             }
             if ($row['Product Web State']=='Out of Stock') {
                 $class_state='out_of_stock';
-                $state=$out_of_stock;
+                $state='('.$out_of_stock.')';
 
             }
             elseif ($row['Product Web State']=='Discontinued') {
                 $class_state='discontinued';
-                $state=$discontinued;
+                $state='('.$discontinued.')';
 
             }
             else {
@@ -671,13 +671,14 @@ class LightFamily {
                 $tr_class='class="top"';
             else
                 $tr_class='';
-            $form.=sprintf('<tr %s ><td class="code">%s</td><td class="description">%s</td><td class="rrp">%s</td><td class="%s">%s</td></tr>',
+            $form.=sprintf('<tr %s ><td class="code">%s</td><td class="description">%s   <span class="%s">%s</span></td><td class="rrp">%s</td></tr>',
                            $tr_class,
                            $row['Product Code'],
                            $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
-                           $rrp,
                            $class_state,
-                           $state
+                           $state,
+                           $rrp
+                         
                           );
 
 
@@ -799,7 +800,7 @@ class LightFamily {
                         $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
                         $print_rrp=false;
                     } else
-                        $rrp_label='<br/>span class="rrp">RRP from '.$rrp.'</span>';
+                        $rrp_label='<br/><span class="rrp">RRP from '.$rrp.'</span>';
 
 
 
@@ -884,7 +885,7 @@ class LightFamily {
             }
             elseif ($row['Product Web State']=='Discontinued') {
                 $class_state='discontinued';
-                $state=' <span class="discontinued">'.$discontinued.'</span>';
+                $state=' <span class="discontinued">('.$discontinued.')</span>';
 
             }
             else {
