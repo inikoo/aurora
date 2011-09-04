@@ -173,7 +173,7 @@ case('find_part'):
     break;
 case('families'):
     list_families();
-break;
+    break;
 case('stores'):
     list_stores();
     break;
@@ -195,10 +195,10 @@ case('stock_history'):
     part_stock_history();
     break;
 case('part_location_info'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'sku'=>array('type'=>'key'),
                          ));
-part_location_info($data);
+    part_location_info($data);
     break;
 default:
 
@@ -1897,10 +1897,38 @@ function list_products() {
     else
         $mode=$conf['mode'];
 
-    if (isset( $_REQUEST['restrictions']))
-        $restrictions=$_REQUEST['restrictions'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
     else
-        $restrictions=$conf['restrictions'];
+        $elements=$conf['elements'];
+
+
+    if (isset( $_REQUEST['elements_discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_discontinued'];
+
+    }
+    if (isset( $_REQUEST['elements_nosale'])) {
+        $elements['NoSale']=$_REQUEST['elements_nosale'];
+    }
+    if (isset( $_REQUEST['elements_sale'])) {
+        $elements['Sale']=$_REQUEST['elements_sale'];
+    }
+
+
+    if (isset( $_REQUEST['elements_private'])) {
+        $elements['Private']=$_REQUEST['elements_private'];
+    }
+    if (isset( $_REQUEST['elements_historic'])) {
+        $elements['Historic']=$_REQUEST['elements_historic'];
+    }
+
+
+
+
+
+
+
+
 
     if (isset( $_REQUEST['store_id'])    ) {
         $store=$_REQUEST['store_id'];
@@ -1922,7 +1950,7 @@ function list_products() {
     $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
     $_SESSION['state'][$conf_table]['products']['avg']=$avg;
     $_SESSION['state'][$conf_table]['products']['period']=$period;
-    $_SESSION['state'][$conf_table]['products']['restrictions']=$restrictions;
+    $_SESSION['state'][$conf_table]['products']['elements']=$elements;
     $_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
 
@@ -2025,23 +2053,23 @@ function list_products() {
     /*      break; */
     /*    } */
 
-    switch ($restrictions) {
-    case('forsale'):
-        $where.=sprintf(" and `Product Sales Type`!='Not For Sale'  ");
-        break;
-    case('editable'):
-        $where.=sprintf(" and `Product Availability Type`!='Discontinued'  ");
-        break;
-    case('notforsale'):
-        $where.=sprintf(" and `Product Sales Type` in ('Not For Sale')  ");
-        break;
-    case('discontinued'):
-        $where.=sprintf(" and `Product Availability Type`='Discontinued'  ");
-        break;
-    case('all'):
 
-        break;
+    $_elements='';
+
+
+
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
     }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Product Main Type` in ('.$_elements.')' ;
+    }
+
+
 
 
     $filter_msg='';
@@ -2982,27 +3010,77 @@ function list_products() {
         if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
 
-        switch ($row['Product Web Configuration']) {
-        case('Online Force Out of Stock'):
-            $web_state=_('Out of Stock');
+
+
+
+
+
+        switch ($row['Product Main Type']) {
+        case('Historic'):
+            $web_state=_('Historic Product').' ('._('Offline').')';
             break;
-        case('Online Auto'):
-            $web_state=_('Auto');
+        case('Private'):
+            $web_state=_('Private Sale').' ('._('Offline').')';
             break;
-        case('Unknown'):
-            $web_state=_('Unknown');
-        case('Offline'):
-            $web_state=_('Offline');
+        case('NoSale'):
+            $web_state=_('Not for Sale').' ('._('Offline').')';
+        case('Discontinued'):
+            $web_state=_('Discontinued').' ('._('Offline').')';
             break;
-        case('Online Force Hide'):
-            $web_state=_('Hide');
-            break;
-        case('Online Force For Sale'):
-            $web_state=_('Sale');
-            break;
+        case('Sale'):
+
+
+            switch ($row['Product Web Configuration']) {
+            case('Online Force Out of Stock'):
+                $formated_web_configuration=_('Force out of stock');
+                break;
+            case('Offline'):
+                $formated_web_configuration=_('Force Offline');
+                break;
+            case('Online Force For Sale'):
+                $formated_web_configuration=_('Force Online');
+                break;
+            default:
+                $formated_web_configuration='('._('Auto').')';
+            }
+
+            switch ($row['Product Web State']) {
+            case('Out of Stock'):
+                $_web_state='<span class=="out_of_stock">'._('Out of Stock').'</span>';
+                break;
+            case('For Sale'):
+                $_web_state='<span class=="online">'._('Online').'</span>';
+                break;
+            case('Discontinued'):
+                $_web_state=_('Discontinued');
+            case('Offline'):
+                $_web_state=_('Offline');
+            default:
+                $_web_state=$row['Product Web State'];
+
+
+                break;
+
+
+            }
+
+
+            $web_state=$_web_state.' '.$formated_web_configuration;
+
+        break;
         default:
-            $web_state=$row['Product Web Configuration'];
+            $web_state='?';
         }
+
+
+
+
+
+
+
+
+
+
         include_once('locale.php');
         global $locale_product_record_type;
 
@@ -3010,7 +3088,7 @@ function list_products() {
         $stock_forecast=interval($row['Product Available Days Forecast']);
 
 
-        	
+
         $record_type=$row['Product Record Type'];
 
         $adata[]=array(
@@ -4300,10 +4378,10 @@ function list_families() {
     else
         $tableid=0;
 
-    if (isset( $_REQUEST['restrictions']))
-        $restrictions=$_REQUEST['restrictions'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
     else
-        $restrictions=$conf['restrictions'];
+        $elements=$conf['elements'];
 
     $filter_msg='';
 
@@ -4326,7 +4404,7 @@ function list_families() {
     $_SESSION['state'][$conf_table]['families']['avg']=$avg;
 
     $_SESSION['state'][$conf_table]['families']['mode']=$mode;
-    $_SESSION['state'][$conf_table]['families']['restrictions']=$restrictions;
+    $_SESSION['state'][$conf_table]['families']['elements']=$elements;
     $_SESSION['state'][$conf_table]['families']['parent']=$parent;
 
     //  $where.=" and `Product Department Key`=".$id;
@@ -4354,18 +4432,24 @@ function list_families() {
 
     }
 
-    switch ($restrictions) {
-    case('for_sale'):
-        $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type` in ("New","Normal","Discontinuing") ');
-        break;
-    case('for_sale_and_discontinued'):
-        $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type`!="In Process" ');
-        break;
-    case('discontinued'):
-        $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type`="Discontinued"  ');
-        break;
-    default:
+
+    $_elements='';
+
+
+
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
     }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Product Family Record Type` in ('.$_elements.')' ;
+    }
+
+
+
 
 
 
@@ -7062,8 +7146,8 @@ function list_customers_per_store() {
         $active_contacts_with_orders=number($row['active_with_orders']);
         $losing_contacts_with_orders=number($row['Store Losing Contacts With Orders']);
         $lost_contacts_with_orders=number($row['Store Lost Contacts With Orders']);
-		$total_users=$row['Store Total Users'];
-		
+        $total_users=$row['Store Total Users'];
+
         //  $contacts_with_orders=number($row['contacts_with_orders']);
         // $active_contacts=number($row['active_contacts']);
         // $new_contacts=number($row['new_contacts']);
@@ -7103,11 +7187,11 @@ function list_customers_per_store() {
                      'new_contacts_with_orders'=>$new_contacts_with_orders,
                      'lost_contacts_with_orders'=>$lost_contacts_with_orders,
                      'losing_contacts_with_orders'=>$losing_contacts_with_orders,
-					 'users'=>$total_users
+                     'users'=>$total_users
 
 
                  );
-				 
+
     }
     mysql_free_result($res);
 
@@ -7155,14 +7239,14 @@ function list_customers_per_store() {
                  'new_contacts_with_orders'=>$total_new_contacts_with_orders,
                  'lost_contacts_with_orders'=>$total_lost_contacts_with_orders,
                  'losing_contacts_with_orders'=>$total_losing_contacts_with_orders,
-				 'users'=>$total_users
+                 'users'=>$total_users
 
-                 //               'customers'=>$sum_total,
-                 //             'active'=>$sum_active,
-                 //           'new'=>$sum_new,
-                 //         'lost'=>$sum_lost,
-                 //
-                 //     'new_contacts'=>$sum_new_contacts
+                         //               'customers'=>$sum_total,
+                         //             'active'=>$sum_active,
+                         //           'new'=>$sum_new,
+                         //         'lost'=>$sum_lost,
+                         //
+                         //     'new_contacts'=>$sum_new_contacts
              );
 
 
@@ -9630,7 +9714,7 @@ function part_transactions() {
         $where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Adjust') ";
         break;
     default:
-         $where.="and `Inventory Transaction Type`!='Audit' ";
+        $where.="and `Inventory Transaction Type`!='Audit' ";
         break;
         break;
     }
@@ -9714,10 +9798,10 @@ function part_transactions() {
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
         $qty=$data['Inventory Transaction Quantity'];
-     
-        
-     
-     if ($qty>0) {
+
+
+
+        if ($qty>0) {
             $qty='+'.$qty;
         }
         elseif($qty==0) {
@@ -10275,18 +10359,18 @@ function list_products_lists() {
 }
 
 
-function part_location_info($data){
+function part_location_info($data) {
 
-$part=new Part($data['sku']);
+    $part=new Part($data['sku']);
 
 
-$data=array(
-'description'=>'<span class="id">'.$part->get_sku().'</span><br/>'.$part->data['Part XHTML Description'].'<br/>'._('Sold as').': '.$part->data['Part XHTML Currently Used In']
-);
+    $data=array(
+              'description'=>'<span class="id">'.$part->get_sku().'</span><br/>'.$part->data['Part XHTML Description'].'<br/>'._('Sold as').': '.$part->data['Part XHTML Currently Used In']
+          );
 
-   $response= array('state'=>200,'data'=>$data);
-            echo json_encode($response);
-            return;
+    $response= array('state'=>200,'data'=>$data);
+    echo json_encode($response);
+    return;
 
 
 

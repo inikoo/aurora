@@ -35,7 +35,7 @@ $js_files=array(
 		'sha256.js.php',
 		'js/aes.js',
 		'login.js.php',
-		'config.js.php?store_key=1'
+//		'config.js.php?store_key=1'
 		);
 
 

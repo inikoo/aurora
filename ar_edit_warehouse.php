@@ -36,6 +36,13 @@ $data=prepare_values($_REQUEST,array(
 			     ));
 audit_stock($data);
 break;
+case('add_stock'):
+$data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+add_stock($data);
+break;
 case('save_description'):
   save_description();
   break;
@@ -229,7 +236,39 @@ function audit_stock($data) {
 
 }
 
+function add_stock($data) {
+    global $editor;
+    $part_sku=$data['values']['part_sku'];
+    $location_key=$data['values']['location_key'];
+    $qty=$data['values']['qty'];
+    $note=$data['values']['note'];
+    $part_location=new PartLocation($part_sku,$location_key);
+    $part_location->editor=$editor;
+    $_data=array('Quantity'=>$qty,'Origin'=>$note);
+    $part_location->add_stock($_data);
 
+    if ($part_location->updated) {
+        $response=array(
+                      'state'=>200,
+                      'action'=>'updates',
+                      'msg'=>$part_location->msg,
+                      'qty'=>$part_location->data['Quantity On Hand'],
+                      'formated_qty'=>number($part_location->data['Quantity On Hand']),
+                      'newvalue'=>$part_location->data['Quantity On Hand'],
+                      'stock'=>$part_location->part->get('Part Current Stock'),
+                      'location_key'=>$part_location->location_key,
+                      'sku'=>$part_location->part_sku,
+                      );
+        echo json_encode($response);
+        return;
+    } else {
+        $response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);
+        echo json_encode($response);
+        return;
+
+    }
+
+}
 
 function update_part_location(){
   global $editor;

@@ -28,16 +28,19 @@ require_once '../../conf/conf.php';
 //$stores=array(1,2,3);
 
 
- $sql="select `Product ID` from `Product Dimension` ";
+ $sql="select `Product ID` from `Product Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
  $product=new Product('pid',$row['Product ID']);
 //$product=new Product('pid',37949);
 // $product->update_sales_data();
  // $product->update_full_search();
-  $product->update_parts();
-     $product->update_web_state();
-    print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+ // $product->update_parts();
+ //    $product->update_web_state();
+  
+  $product->update_main_type();
+  $product->update_web_state();
+  print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 
 }
 exit;

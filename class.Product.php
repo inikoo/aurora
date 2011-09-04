@@ -136,8 +136,8 @@ class product extends DB_Table {
                 $this->code=$row['Product Code'];
                 $items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key','Product Availability Type','Product Stage');
                 foreach($items_from_parent as $item)
-             //   print "** $item\n";
-             //   print_r($row);
+                //   print "** $item\n";
+                //   print_r($row);
                 $this->data[$item]=$row[$item];
 
                 //	print "caca";
@@ -4788,7 +4788,7 @@ class product extends DB_Table {
                      ,$this->pid
                     );
 
-        // print $sql;
+        //print $sql;
 
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
@@ -5192,50 +5192,7 @@ class product extends DB_Table {
 
     }
 
-    function update_sales_type($value) {
-        if (
-            $value==_('Public Sale') or $value==_('Private Sale')
-            or $value==_('Discontinue')
-            or $value==_('Not For Sale')
-        ) {
 
-
-            switch ($value) {
-            case(_('Public Sale')):
-                $sales_state='Public Sale';
-                break;
-            case(_('Private Sale')):
-                $sales_state='Private Sale';
-                break;
-            case(_('Discontinue')):
-                $sales_state='Discontinued';
-                break;
-            case(_('Not For Sale')):
-                $sales_state='Not for Sale';
-                break;
-            }
-
-            $sql=sprintf("update `Product Dimension` set `Product Sales Type`=%s  where  `Product ID`=%d "
-                         ,prepare_mysql($sales_state)
-                         ,$this->pid
-                        );
-            //print $sql;
-            if (mysql_query($sql)) {
-                if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-                $this->msg=_('Product Sales Type updated');
-                $this->updated=true;
-
-                $this->new_value=$value;
-                return;
-            } else {
-                $this->msg=_("Error: Product sales type could not be updated ");
-                $this->updated=false;
-                return;
-            }
-        } else
-            $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
-        $this->updated=false;
-    }
 
 
     function update_next_supplier_shippment() {
@@ -5457,28 +5414,69 @@ class product extends DB_Table {
 
     }
 
-    function update_availability_type() {
-        $availability_type='Normal';
-        $current_part_skus=$this->get_current_part_skus();
-        foreach($current_part_skus as $sku){
-            $part=new Part($sku);
-            if($part->data['Part Status']=='Not In Use'){
-                  $availability_type='Discontinued';
-            }
-        
+
+    function update_main_type() {
+
+
+
+        if ($this->data['Product Record Type']=='Historic') {
+            $this->data['Product Main Type']='Historic';
         }
-        
+        elseif($this->data['Product Sales Type']=='Private Sale') {
+            $this->data['Product Main Type']='Private';
+        }
+        elseif($this->data['Product Sales Type']=='Not for Sale') {
+            $this->data['Product Main Type']='NoSale';
+        }
+        else {
+
+            if ($this->data['Product Availability Type']=='Discontinued' and $this->data['Product Availability']<=0) {
+                $this->data['Product Main Type']='Discontinued';
+            } else {
+
+                $this->data['Product Main Type']='Sale';
+            }
+
+
+        }
+
+
+        $sql=sprintf("update `Product Dimension` set `Product Main Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Main Type']),$this->pid);
+        // print "$sql\n";
+        mysql_query($sql);
+    }
+
+    function update_availability_type() {
+
+
+        if ($this->data['Product Record Type']=='Historic') {
+            $availability_type='Discontinued';
+        } else {
+
+
+            $availability_type='Normal';
+            $current_part_skus=$this->get_current_part_skus();
+            foreach($current_part_skus as $sku) {
+                $part=new Part($sku);
+                if ($part->data['Part Available']=='No') {
+                    $availability_type='Discontinued';
+                }
+
+            }
+        }
         $this->data['Product Availability Type']=$availability_type;
-        
-          $sql=sprintf("update `Product Dimension` set `Product Availability Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Availability Type']),$this->pid);
-       // print "$sql\n";
+
+        $sql=sprintf("update `Product Dimension` set `Product Availability Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Availability Type']),$this->pid);
+        //  print "$sql\n";
 
         mysql_query($sql);
-        
+
         $this->update_web_state();
-        
-    
+$this->update_main_type();
+
     }
+
+
 
     function update_availability() {
         $stock_forecast_method='basic1';
@@ -5486,8 +5484,8 @@ class product extends DB_Table {
 
         // get parts;
         $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
-
-
+ //print "$sql\n";
+        
         $result=mysql_query($sql);
         $stock=99999999999;
         $change=false;
@@ -5506,15 +5504,15 @@ class product extends DB_Table {
 
         }
 
-        // print "Stock: $stock\n";
+   //      print "Stock: $stock\n";
         if (!$change or $stock_error)
             $stock='NULL';
-        //print "Stock: $stock\n";
+     //   print "Stock: $stock\n";
         if (is_numeric($stock) and $stock<0)
             $stock='NULL';
-        //print "Stock: $stock\n";
+       // print "Stock: $stock\n";
         $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product ID`=%d",$stock,$this->pid);
-        //print $sql;
+        //print "$sql\n";
 
         mysql_query($sql);
         $days_available='NULL';
@@ -5943,12 +5941,19 @@ class product extends DB_Table {
             $date=date("Y-m-d H:i:s");
         }
 
-        $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product Web Configuration`='Offline' where `Product ID`=%d"
+        $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='No applicable' where `Product ID`=%d"
                      ,prepare_mysql($date)
                      ,$this->pid);
-        //exit($sql);
-        if (!mysql_query($sql))
-            exit($sql);
+        //    print "$sql\n";
+        mysql_query($sql);
+
+
+
+
+        //$this->data['Product Record Type']='Historic';
+        $this->get_data('pid',$this->data['Product ID']);
+        // $this->update_sales_type('Public Sale');
+
         $sql=sprintf("update `Product History Dimension` set `Product History Valid To`=%s where `Product Key`=%d"
                      ,prepare_mysql($date)
                      ,$this->data['Product Current Key']
@@ -5960,7 +5965,7 @@ class product extends DB_Table {
 
 
 
-        $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s ,`Product Part Most Recent`='No' where `Product ID`=%d and `Product Part Most Recent`='Yes' "
+        $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s  where `Product ID`=%d  "
                      ,prepare_mysql($date)
                      ,$this->pid
 
@@ -6034,63 +6039,63 @@ class product extends DB_Table {
     }
 
 
-function get_formated_sales_type(){
-   switch ($this->data['Product Sales Type']) {
-                case('Public Sale'):
-                    $sales_type=_('Public Sale');
-                    break;
-                case('Private Sale'):
-                    $sales_type=_('Private Sale');
-                    break;
-                case('Not for Sale'):
-                    $sales_type=_('Not for Sale');
-                    break;
-               
-
-                }
-return $sales_type;
-}
-
-function get_formated_web_state(){
-
-      switch ($this->data['Product Web Configuration']) {
-                case('Online Force Out of Stock'):
-                    $web_configuration=_('Forced');
-                    break;
-                case('Online Auto'):
-                    $web_configuration=_('Auto');
-                    break;
-                case('Offline'):
-                    $web_configuration=_('Forced');
-                    break;
-                case('Online Force For Sale'):
-                    $web_configuration=_('Forced');
-                    break;
-
-                }
-
-                switch ($this->data['Product Web State']) {
-                case('Out of Stock'):
-                    $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
-                    break;
-                case('For Sale'):
-                    $web_state='';
-                    break;
-                case('Discontinued'):
-                    $web_state=_('Discontinued');
-                case('Offline'):
-                    $web_state=_('Offline');
-                    break;
+    function get_formated_sales_type() {
+        switch ($this->data['Product Sales Type']) {
+        case('Public Sale'):
+            $sales_type=_('Public Sale');
+            break;
+        case('Private Sale'):
+            $sales_type=_('Private Sale');
+            break;
+        case('Not for Sale'):
+            $sales_type=_('Not for Sale');
+            break;
 
 
-                }
+        }
+        return $sales_type;
+    }
+
+    function get_formated_web_state() {
+
+        switch ($this->data['Product Web Configuration']) {
+        case('Online Force Out of Stock'):
+            $web_configuration=_('Forced');
+            break;
+        case('Online Auto'):
+            $web_configuration=_('Auto');
+            break;
+        case('Offline'):
+            $web_configuration=_('Forced');
+            break;
+        case('Online Force For Sale'):
+            $web_configuration=_('Forced');
+            break;
+
+        }
+
+        switch ($this->data['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+            break;
 
 
-                $description='<span class="web_state">'.$web_state.'</span> (<span>'.$web_configuration.')</span>';
+        }
 
-return $description;
 
-}
+        $description='<span class="web_state">'.$web_state.'</span> (<span>'.$web_configuration.')</span>';
+
+        return $description;
+
+    }
 
     function get_web_state() {
 
@@ -6099,7 +6104,7 @@ return $description;
 
 
         if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Stage']=='In Process') {
-          
+
             return 'Offline';
         }
 
@@ -6126,12 +6131,12 @@ return $description;
                     $res=mysql_query($sql);
 
                     $interval=7776000;
-                   // print "$sql\n";
+                    // print "$sql\n";
                     if ($row=mysql_fetch_assoc($res)) {
-                        if($row['days'])
-                        $interval=$row['days']*86400;
-                        
-                        
+                        if ($row['days'])
+                            $interval=$row['days']*86400;
+
+
                     }
                     if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
                         return 'Offline';
@@ -6161,83 +6166,157 @@ return $description;
 
     }
 
-    function update_web_configuration($a1){
 
 
-            if($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline' 
-            and $a1!= 'Online Force For Sale'){
-                    $this->msg='Wrong value '.$a1;
-                    $this->error=true;
-                return;
-            }
 
 
-            $web_state=$a1;
-            $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
-                         ,prepare_mysql($web_state)
+
+    function update_sales_type($value) {
+        if (
+            $value=='Public Sale' or $value=='Private Sale'
+            or $value=='Not For Sale' or $value=='Discontinued Public Sale'
+        ) {
+
+            $sales_state=$value;
+
+
+            $sql=sprintf("update `Product Dimension` set `Product Sales Type`=%s  where  `Product ID`=%d "
+                         ,prepare_mysql($sales_state)
                          ,$this->pid
                         );
-            mysql_query($sql);
+            //print $sql;
+            if (mysql_query($sql)) {
 
+                $this->data['Product Sales Type']=$sales_state;
 
-
-
-
-            //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-
-
-           
-                $this->msg=_('Product Web Configuration updated');
+                if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+                $this->msg=_('Product Sales Type updated');
                 $this->updated=true;
-                $this->data['Product Web Configuration']=$web_state;
-                $this->update_web_state();
-                $this->new_value=$this->data['Product Web Configuration'];
-
-                switch ($this->data['Product Web Configuration']) {
-                case('Online Force Out of Stock'):
-                    $web_configuration=_('Force out of stock');
-                    break;
-                case('Online Auto'):
-                    $web_configuration=_('Auto');
-                    break;
-                case('Offline'):
-                    $web_configuration=_('Force offline');
-                    break;
-                case('Online Force For Sale'):
-                    $web_configuration=_('Force Online');
-                    break;
-                default:
-                 $web_configuration='';
-                    break;
-                   
-                }
-
-                switch ($this->data['Product Web State']) {
-                case('Out of Stock'):
-                    $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
-                    break;
-                case('For Sale'):
-                    $web_state='';
-                    break;
-                case('Discontinued'):
-                    $web_state=_('Discontinued');
-                case('Offline'):
-                    $web_state=_('Offline');
-                    break;
-
-default:
-                 $web_state='';
-                    break;
-                }
 
 
-                $description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
-                $this->new_data=array('formated_web_configuration'=>$web_configuration,'web_configuration'=>$this->data['Product Web Configuration'],'description'=>$description);
+
+
+                if ($value=='Public Sale')
+                    $_web_configuration='Online Auto';
+                else
+                    $_web_configuration='Offline';
+                $this->update_web_configuration($_web_configuration);
+
+                $this->msg=_('Product Sales Type updated');
+                $this->new_value=$value;
+
 
                 return;
-          
+            } else {
+                $this->msg=_("Error: Product sales type could not be updated ");
+                $this->updated=false;
+                return;
+            }
+        } else
+            $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+        $this->updated=false;
+    }
 
-}
+
+
+    function update_web_configuration($a1) {
+
+
+        if ($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline'
+                and $a1!= 'Online Force For Sale'      ) {
+            $this->msg='Wrong value '.$a1;
+            $this->error=true;
+            return;
+        }
+
+
+        $web_state=$a1;
+        $sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
+                     ,prepare_mysql($web_state)
+                     ,$this->pid
+                    );
+        mysql_query($sql);
+
+
+
+
+
+        //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
+
+
+        $this->msg=_('Product Web Configuration updated');
+        $this->updated=true;
+        $this->data['Product Web Configuration']=$web_state;
+        $this->update_web_state();
+        $this->new_value=$this->data['Product Web Configuration'];
+
+        switch ($this->data['Product Web Configuration']) {
+        case('Online Force Out of Stock'):
+            $formated_web_configuration=_('Force out of stock');
+            break;
+        case('Online Auto'):
+            $formated_web_configuration=_('Auto');
+            break;
+        case('Offline'):
+            $formated_web_configuration=_('Force offline');
+            break;
+        case('Online Force For Sale'):
+            $formated_web_configuration=_('Force Online');
+            break;
+        default:
+            $formated_web_configuration='';
+            break;
+
+        }
+
+        switch ($this->data['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+            break;
+
+        default:
+            $web_state='';
+            break;
+        }
+
+
+        if ($this->data['Product Sales Type']!='Public Sale') {
+            $web_configuration=$this->data['Product Sales Type'];
+            switch ($this->data['Product Sales Type']) {
+            case 'Private Sale':
+                $formated_web_configuration=_('Private Sale');
+                break;
+            default:
+                $formated_web_configuration=_('Not For Sale');
+                break;
+            }
+        } else {
+
+            $web_configuration=$this->data['Product Web Configuration'];
+        }
+
+
+
+        $description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
+        $this->new_data=array(
+                            'formated_web_configuration'=>$formated_web_configuration,
+                            'web_configuration'=>$web_configuration,
+                            'description'=>$description
+                        );
+
+        return;
+
+
+    }
 
 
 }

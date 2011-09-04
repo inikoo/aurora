@@ -42,7 +42,7 @@ mysql_query($sql);
 
 
 print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  order by `Part SKU` desc  ');
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  order by `Part SKU`   ');
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
@@ -58,7 +58,7 @@ while($row=mysql_fetch_array($res)){
  
   $part->wrap_transactions();
   $count++;
-  print percentage($count,$total)."\r";
+  print percentage($count,$total)." ".$part->sku."  \r";
 }
 
 

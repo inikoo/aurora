@@ -3353,6 +3353,8 @@ PRIMARY KEY ( `Attachement Key` )
 
 ) ENGINE = MYISAM;
 
+from here to inikoo(machne)
+
 ALTER TABLE `MasterKey Dimension` CHANGE `Handle` `User Key` MEDIUMINT NOT NULL ;
 ALTER TABLE `Image Dimension` CHANGE `Image URL` `Image Data` LONGBLOB NOT NULL ,
 CHANGE `Image Thumbnail URL` `Image Thumbnail Data` LONGBLOB NULL DEFAULT NULL ,
@@ -3570,6 +3572,15 @@ ALTER TABLE `Product Dimension` CHANGE `Product Type` `Product Type` ENUM( 'Norm
 ALTER TABLE `Product Dimension` ADD `Product Availability Type` ENUM( 'Normal', 'Discontinued' ) NOT NULL AFTER `Product Sales Type` ,ADD INDEX ( `Product Availability Type` ) ;
 ALTER TABLE `Product Dimension` ADD `Product Stage` ENUM( 'In Process', 'New', 'Normal' ) NOT NULL AFTER `Product Record Type` ,ADD INDEX ( `Product Stage` ) ;
 ALTER TABLE `Product Dimension` CHANGE `Product Sales Type` `Product Sales Type` ENUM( 'Public Sale', 'Private Sale', 'Not for Sale', 'Discontinued Public Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Product Dimension` ADD `Product Web State` ENUM( 'For Sale', 'Out of Stock', 'Discontinued', 'Offline' ) NOT NULL AFTER `Product Web Configuration` , ADD INDEX ( `Product Web State` ) ;
+ALTER TABLE `Product Dimension` CHANGE `Product Web State` `Product Web State` ENUM( 'For Sale', 'Out of Stock', 'Discontinued', 'Offline' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Offline';
+ALTER TABLE `Part Dimension` ADD `Part Available` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Part Status` , ADD INDEX ( `Part Available` ) ;
+ALTER TABLE `Product Dimension` CHANGE `Product Sales Type` `Product Sales Type` ENUM( 'Public Sale', 'Private Sale', 'Not for Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+ALTER TABLE `Product Dimension` ADD `Product Main Type` ENUM( 'Historic', 'Discontinued', 'Private', 'NoSale', 'Sale' ) NOT NULL AFTER `Product Availability Type` ,ADD INDEX ( `Product Main Type` ); 
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'In Process', 'Normal', 'Discontinuing', 'Discontinued' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'InProcess', 'Normal', 'Discontinuing', 'Discontinued' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Site Dimension` CHANGE `Site Secret Key` `Site Secret Key` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 */
 
 ?>
