@@ -1,5 +1,6 @@
 <?php
 include_once('common.php');
+include_once('class.Store.php');
 
 if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
   $store_id=$_REQUEST['store'];

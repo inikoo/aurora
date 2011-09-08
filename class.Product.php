@@ -1255,6 +1255,8 @@ class product extends DB_Table {
             }
         }
 
+  
+
         foreach($found_list as $sku=>$found_data) {
             if (count($found_data)==0) {
                 return 0;
@@ -1424,6 +1426,12 @@ class product extends DB_Table {
             $product_part_key=$this->create_product_part_list($header_data,$list);
         }
         $this->set_part_list_as_current($product_part_key);
+         $this->update_parts();
+         $this->update_cost_supplier();
+        $this->update_main_type();
+        $this->update_availability_type();
+        $this->update_availability();
+        
 
     }
 
@@ -5964,14 +5972,19 @@ $this->update_main_type();
 
 
 
+    $this->update_main_type();
+        $this->update_availability_type();
+        $this->update_availability();
 
-        $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s  where `Product ID`=%d  "
-                     ,prepare_mysql($date)
-                     ,$this->pid
 
-                    );
-        if (!mysql_query($sql))
-            exit($sql);
+
+   //     $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s  where `Product ID`=%d  "
+     //                ,prepare_mysql($date)
+      //               ,$this->pid
+
+        //            );
+        //if (!mysql_query($sql))
+         //   exit($sql);
 
 
     }

@@ -2,8 +2,11 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
-if(!$user->can_view('orders'))
+if(!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) ){
+
   exit();
+}
+
 ?>
 
 var Dom   = YAHOO.util.Dom;
@@ -241,7 +244,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 				       {key:"weight", label:"<?php echo _('Weight')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"operations", label:"<?php echo _('Operations')?>", width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"operations", label:"<?php echo _('Operations')?>", width:170,hidden:true,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"see_link", label:"",sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 				];
 
@@ -266,7 +270,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "id","public_id",
 			 "weight","picks",
 			 "customer",
-			 "date","picker","packer","status","operations"
+			 "date","picker","packer","status","operations","see_link"
 			
 			 ]};
 

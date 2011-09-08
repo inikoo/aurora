@@ -15,7 +15,7 @@
     {/foreach}
 </div>
 
- <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px;margin-top:0;margin-bottom:0;padding-bottom:0">
+ <div id="search" style="display:none;border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px;margin-top:0;margin-bottom:0;padding-bottom:0">
 Please use the Search in customers/orders pages.
 </div>
 

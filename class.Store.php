@@ -1300,21 +1300,7 @@ class Store extends DB_Table {
 
 
 
-    function get_page_data() {
-        $data=array();
-        $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
-        //  print "$sql\n";
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_assoc($res)) {
-            $data=$row;
-            $data['Page Options']=unserialize($data['Page Options']);
-        }
 
-
-
-        return $data;
-
-    }
 
     function get_email_credentials_data($type) {
         $credentials=array();

@@ -3581,6 +3581,11 @@ ALTER TABLE `Product Dimension` ADD `Product Main Type` ENUM( 'Historic', 'Disco
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'In Process', 'Normal', 'Discontinuing', 'Discontinued' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'InProcess', 'Normal', 'Discontinuing', 'Discontinued' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 ALTER TABLE `Site Dimension` CHANGE `Site Secret Key` `Site Secret Key` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Type` ENUM( 'External Content and HTML HEAD' ) NOT NULL DEFAULT 'External Content and HTML HEAD' AFTER `Page Parent Key` ,ADD INDEX ( `Page Store Type` ); 
+ALTER TABLE `Page Store Dimension` ADD UNIQUE (`Page Site Key` ,`Page Code`);
+ALTER TABLE `Part Dimension` ADD `Part Current On Hand Stock` FLOAT NOT NULL DEFAULT '0' AFTER `Part Current Stock`;
+ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM( 'Customer', 'Staff', 'Supplier', 'Administrator', 'Warehouse' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
 */
 
 ?>

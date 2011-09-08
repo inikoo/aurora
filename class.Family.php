@@ -1911,29 +1911,13 @@ function add_image($image_key,$args='') {
     }
 
 
-    function get_page_data() {
-    
-        $data=array();
-        $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Family Page Key']);
-        // print $sql;
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res,MYSQL_ASSOC)) {
-            $data=$row;
-                return $data;
-
-        }else
-        return array();
-
-
-
-
-    }
 
 
 
 
 
-function has_layout($type){
+
+function has_layout_old_to_delete($type){
 
 
 if(!$this->data['Family Page Key'])

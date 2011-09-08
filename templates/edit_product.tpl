@@ -75,7 +75,7 @@
 	 
 	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
 	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
-	   <span style="margin-right:10px; {if $product->get('Product Type')=="Normal" and $num_parts!=0}xdisplay:none{/if}" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
+	   <span style="margin-right:10px; {if $product->get('Product Type')=="Normal" and $num_parts!=0}xdisplay:none{/if}" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
 	  </div>
 	 	   </td>
 	 	   </tr>
@@ -89,7 +89,7 @@
 		<td style="width:200px;text-align:right">
 		<div id="part_list{$sku}_controls">
 		<span onClick="remove_part({$sku})" style="cursor:pointer"><img   src="art/icons/delete_bw.png"/> {t}Remove{/t}</span>
-		<span onClick="show_change_part_dialog({$sku},this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> {t}Change{/t}</span>
+		<span onClick="show_change_part_dialog({$sku},this)"  style="display:none;cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> {t}Change{/t}</span>
 		</div>
 		<div id="part_list{$sku}_controls2" style="display:none">
 		<span onClick="unremove_part({$sku})" style="cursor:pointer"><img   src="art/icons/arrow_rotate_clockwise.png"/> {t}Restore{/t}</span>
@@ -385,6 +385,8 @@
     </ul>
   </div>
 </div>
+
+
 <div id="rppmenu1" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">

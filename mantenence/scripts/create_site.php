@@ -363,6 +363,10 @@ while ($row=mysql_fetch_array($res)) {
         $data['Page Store Resume']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume']:'');
         $data['Page Store Section']='Family Catalogue';
         $data['Showcases Layout']='Splited';
+         $data['Page URL']='www.ancientwisdom.biz/forms/'.strtolower($row['Product Family Code']);
+      
+      print "cretate page\n";
+      //    $data['Page Code']=strtolower($row['Product Family Code']);
         $site->add_family_page($data);
     }
 }

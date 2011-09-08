@@ -257,18 +257,18 @@ function delete_old_data() {
     mysql_query($sql);
 
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-    
+
     //print "$sql\n";
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
 
 
-          $sql=sprintf("select `History Key` from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
-            $result_test2=mysql_query($sql);
-           while ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
-                $sql=sprintf("delete from `Customer History Bridge`  where   `History Key`=%d",$row_test2['History Key']);
-                mysql_query($sql);
-            }
+        $sql=sprintf("select `History Key` from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
+        $result_test2=mysql_query($sql);
+        while ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            $sql=sprintf("delete from `Customer History Bridge`  where   `History Key`=%d",$row_test2['History Key']);
+            mysql_query($sql);
+        }
 
         $sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
         mysql_query($sql);
@@ -277,11 +277,11 @@ function delete_old_data() {
 
         $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
         mysql_query($sql);
-        
-        
+
+
         $sql=sprintf("delete from `Search Full Text Dimension`  where   `Subject`='Order' and `Subject Key`=%d",$row_test['Order Key']);
         mysql_query($sql);
-          
+
 
         $sql=sprintf("delete from `Order Invoice Bridge` where `Order Key`=%d   ",$row_test['Order Key']);
         mysql_query($sql);
@@ -295,12 +295,12 @@ function delete_old_data() {
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
         $sql=sprintf("delete from `Order Invoice Bridge` where `Invoice Key`=%d   ",$row_test['Invoice Key']);
         mysql_query($sql);
-	
-	$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$row_test['Invoice Key']);
-	 mysql_query($sql);
-	 
-	 $sql=sprintf("delete from `Invoice Tax Dimension` where `Invoice Key`=%d",$row_test['Invoice Key']);
-	 mysql_query($sql);
+
+        $sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$row_test['Invoice Key']);
+        mysql_query($sql);
+
+        $sql=sprintf("delete from `Invoice Tax Dimension` where `Invoice Key`=%d",$row_test['Invoice Key']);
+        mysql_query($sql);
 
         $sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Invoice Key`=%d   ",$row_test['Invoice Key']);
         mysql_query($sql)  ;
@@ -437,9 +437,9 @@ function adjust_invoice($invoice,$order,$continue=true) {
 
     foreach($adjust_transactions as $adjust_data) {
         $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-		     		     prepare_mysql($order->id),
+                     prepare_mysql($order->id),
 
-		     prepare_mysql($order->data['Order Date']),
+                     prepare_mysql($order->data['Order Date']),
 
                      $invoice->id,
                      prepare_mysql($invoice->data['Invoice Date']),
@@ -480,7 +480,7 @@ function adjust_invoice($invoice,$order,$continue=true) {
 
 
     if ($diff_net!=0 or  $diff_tax!=0 or $total_diff!=0 and $continue) {
-      if (adjust_invoice($invoice,$order,false))
+        if (adjust_invoice($invoice,$order,false))
             return;
         $diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
         $diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
@@ -498,7 +498,7 @@ function adjust_invoice($invoice,$order,$continue=true) {
 }
 function get_data($header_data) {
     global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$packer_data,$parcels,$parcel_type,$editor;
-   
+
     $shipping_net=round($header_data['shipping']+$extra_shipping,2);
     $charges_net=round($header_data['charges'],2);
     $payment_method=parse_payment_method($header_data['pay_method']);
@@ -509,9 +509,9 @@ function get_data($header_data) {
 
 function create_order($data) {
     global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions;
- 
-   
-   $order_data=array(
+
+
+    $order_data=array(
                     'type'=>'system',
                     'Customer Key'=>$customer_key,
                     'Order Original Data MIME Type'=>'application/vnd.ms-excel',
@@ -523,28 +523,28 @@ function create_order($data) {
                     'Order Public ID'=>$data['order id'],
                     'Order Date'=>$date_order,
                     'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
-		    //     'Order Ship To Key'=>(array_key_exists('Order Ship To Key',$data)?$data['Order Ship To Key']:false)
-		     );
-   // print_r($order_data);
-   //if(isset($data['Order Ship To Key']))
-   //    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
-   
+                    //     'Order Ship To Key'=>(array_key_exists('Order Ship To Key',$data)?$data['Order Ship To Key']:false)
+                );
+    // print_r($order_data);
+    //if(isset($data['Order Ship To Key']))
+    //    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
 
-   
-   
+
+
+
     $order=new Order('new',$order_data);
-    
-    if ($header_data['collection']=='Yes'){
-      $order->update_order_is_for_collection('Yes');
-    }else{
-      $order-> update_ship_to($data['Order Ship To Key']);
-      
+
+    if ($header_data['collection']=='Yes') {
+        $order->update_order_is_for_collection('Yes');
+    } else {
+        $order-> update_ship_to($data['Order Ship To Key']);
+
     }
 
 
     $discounts_map=array();
-    
 
+//print_r($data_dn_transactions);
 
     foreach($data_dn_transactions as $ddt_key=>$transaction) {
 //print_r($transaction);
@@ -570,7 +570,7 @@ function create_order($data) {
                       'Metadata'=>$store_code.$order_data_id,
                   );
 
-	    //  print_r($data);
+            //  print_r($data);
             $order->skip_update_after_individual_transaction=true;
             $transaction_data=$order->add_order_transaction($data);
             if ($transaction_data['updated'])
@@ -599,7 +599,7 @@ function create_order($data) {
                       'Current Payment State'=>'Waiting Payment',
                       'Metadata'=>$store_code.$order_data_id,
                   );
-	    //   print_r($data);
+            //   print_r($data);
 
             $order->skip_update_after_individual_transaction=true;
             $transaction_data=$order->add_order_transaction($data);
@@ -642,12 +642,12 @@ function create_order($data) {
     $order->update_charges_amount($charges_data);
 
 
-   
+
 
     $dn=$order->send_to_warehouse($date_order);
 
 
-    
+
 
     return $order;
 
@@ -673,8 +673,10 @@ function send_order($data,$data_dn_transactions) {
     $skus_to_pick_data=array();
 
 
+    $_picked_qty=array();
+    $_out_of_stock_qty=array();
     foreach($data_dn_transactions as $key=>$value) {
-      // print_r($value);
+     //   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
         $sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d",$value['otf_key']);
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
@@ -683,19 +685,35 @@ function send_order($data,$data_dn_transactions) {
         } else {
             exit("==============\n  $key\n $sql    Error no itf-otf map\n");
         }
-
         if (  $value['Shipped Quantity']>0) {
-            $dn->set_as_picked($itf,round($value['Shipped Quantity'],8),$date_order);
+            if (array_key_exists($itf, $_picked_qty))
+                $_picked_qty[$itf]+=round($value['Shipped Quantity'],8);
+            else
+                $_picked_qty[$itf]=round($value['Shipped Quantity'],8);
         }
-        if ( $value['No Shipped Due Out of Stock']>0) {
 
-            $dn->set_as_out_of_stock($itf,round($value['No Shipped Due Out of Stock'],8),$date_order);
+        if ( $value['No Shipped Due Out of Stock']>0) {
+            if (array_key_exists($itf, $_out_of_stock_qty))
+                $_out_of_stock_qty[$itf]+=round($value['No Shipped Due Out of Stock'],8);
+            else
+                $_out_of_stock_qty[$itf]=round($value['No Shipped Due Out of Stock'],8);
         }
 
     }
 
 
-  
+
+     foreach($_picked_qty as $itf=>$_qty){
+     $dn->set_as_picked($itf,$_qty,$date_order);
+     }
+
+  foreach($_out_of_stock_qty as $itf=>$_qty){
+     $dn->set_as_out_of_stock($itf,$_qty,$date_order);
+     }
+
+ 
+
+
 
     $dn->update_picking_percentage();
 
@@ -704,17 +722,17 @@ function send_order($data,$data_dn_transactions) {
         $staff_key=$packer_data['id'][0];
     }
     $dn->start_packing($staff_key,$date_order);
-   
+
     foreach($data_dn_transactions as $key=>$value) {
         $dn->set_as_packed($value['itf'],round($value['Shipped Quantity'],8),$date_order);
     }
     $dn->update_packing_percentage();
-   
+
     $dn->set_parcels($parcels,$parcel_type);
-    
- $dn->ready_to_ship();
- 
-   
+
+    $dn->ready_to_ship();
+
+
     if (!($tipo_order==6 or $tipo_order==7)) {
         if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
 
@@ -736,7 +754,7 @@ function send_order($data,$data_dn_transactions) {
             }
 
 
-$_invoice_data=  array(
+            $_invoice_data=  array(
                                  'Invoice Metadata'=>$store_code.$order_data_id,
                                  'Invoice Shipping Net Amount'=>array(
                                                                    'Amount'=>$shipping_net,
@@ -901,14 +919,14 @@ function create_post_order($data,$data_dn_transactions) {
         }
 
         // exit("$store_code.$order_data_id\n");
-                          
+
         $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type'],$store_code.$order_data_id);
-        if($parent_order->error){
-          print "Parent order found but still delivery note ";
-        create_post_order_with_out_order($data);
-        return;
+        if ($parent_order->error) {
+            print "Parent order found but still delivery note ";
+            create_post_order_with_out_order($data);
+            return;
         }
-        
+
 
         foreach($post_data as $post_transaction) {
             $transaction_data=$dn->add_orphan_transactions($post_transaction);
@@ -1087,47 +1105,47 @@ function create_refund($data,$header_data,$data_dn_transactions) {
         if ($row=mysql_fetch_assoc($res)) {
             $net=$factor*($transaction['gross amount']-$transaction['discount amount']);
             $tax=$net*$tax_category_object->data['Tax Category Rate'];
-            
+
             $net_items=$net;
             $net_shipping=0;
             $net_charges=0;
             $tax_items=$tax;
             $tax_shipping=0;
             $tax_charges=0;
-            
+
             $otf_component_items=$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'];
             $otf_component_shipping=$row['Invoice Transaction Shipping Amount'];
             $otf_component_charges=$row['Invoice Transaction Charges Amount'];
             $otf_component_sum=$otf_component_items+$otf_component_shipping+$otf_component_charges;
-            if($otf_component_sum!=0){
-            
-            $net_items=round($net*($otf_component_items/$otf_component_sum),2);
-            $net_shipping=round($net*($otf_component_shipping/$otf_component_sum),2);
-            $net_charges=round($net*($otf_component_charges/$otf_component_sum),2);
+            if ($otf_component_sum!=0) {
+
+                $net_items=round($net*($otf_component_items/$otf_component_sum),2);
+                $net_shipping=round($net*($otf_component_shipping/$otf_component_sum),2);
+                $net_charges=round($net*($otf_component_charges/$otf_component_sum),2);
             }
-            
-             $otf_component_items=$row['Invoice Transaction Item Tax Amount'];
+
+            $otf_component_items=$row['Invoice Transaction Item Tax Amount'];
             $otf_component_shipping=$row['Invoice Transaction Shipping Tax Amount'];
             $otf_component_charges=$row['Invoice Transaction Charges Tax Amount'];
             $otf_component_sum=$otf_component_items+$otf_component_shipping+$otf_component_charges;
-            if($otf_component_sum!=0){
-            
-            $tax_items=round($tax*($otf_component_items/$otf_component_sum),2);
-            $tax_shipping=round($tax*($otf_component_shipping/$otf_component_sum),2);
-            $tax_charges=round($tax*($otf_component_charges/$otf_component_sum),2);
+            if ($otf_component_sum!=0) {
+
+                $tax_items=round($tax*($otf_component_items/$otf_component_sum),2);
+                $tax_shipping=round($tax*($otf_component_shipping/$otf_component_sum),2);
+                $tax_charges=round($tax*($otf_component_charges/$otf_component_sum),2);
             }
-            
-            
+
+
             $refund_transaction_data=array(
                                          'Order Transaction Fact Key'=>$row['Order Transaction Fact Key'],
                                          'Invoice Transaction Net Refund Items'=>$net_items,
                                          'Invoice Transaction Net Refund Shipping'=>$net_shipping,
                                          'Invoice Transaction Net Refund Charges'=>$net_charges,
                                          'Invoice Transaction Net Refund Amount'=>$net,
-                                           'Invoice Transaction Tax Refund Items'=>$tax_items,
+                                         'Invoice Transaction Tax Refund Items'=>$tax_items,
                                          'Invoice Transaction Tax Refund Shipping'=>$tax_shipping,
                                          'Invoice Transaction Tax Refund Charges'=>$tax_charges,
-                                         
+
                                          'Invoice Transaction Tax Refund Amount'=>$tax,
                                          'Refund Metadata'=>$store_code.$order_data_id
 
@@ -1336,22 +1354,22 @@ function ci_get_tax_code($header_data) {
 
 //print_r($header_data);
 
- $tax_rates=array();
+    $tax_rates=array();
     $tax_names=array();
-$sql=sprintf("select * from `Tax Category Dimension` ");
-$res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
- $tax_rates[$row['Tax Category Code']]=$row['Tax Category Rate'];
-    $tax_names[$row['Tax Category Code']]=$row['Tax Category Name'];
-}
+    $sql=sprintf("select * from `Tax Category Dimension` ");
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $tax_rates[$row['Tax Category Code']]=$row['Tax Category Rate'];
+        $tax_names[$row['Tax Category Code']]=$row['Tax Category Name'];
+    }
 
-  
+
     $tax_code='UNK';
     $tax_description='Unknown';
     $tax_rate=0;
-    
-    
-    
+
+
+
     if ($header_data['total_net']==0) {
         $tax_code='EX';
         $tax_description='';
@@ -1367,7 +1385,7 @@ while($row=mysql_fetch_assoc($res)){
             ///print "$_tax_code => $_tax_rate --->$tax_rate\n ";
             $upper=1.02*$_tax_rate;
             $lower=0.98*$_tax_rate;
-            
+
             //print " $_tax_rate  low($lower) $tax_rate up($upper)\n";
             if ($tax_rate>=$lower and $tax_rate<=$upper) {
                 $tax_code=$_tax_code;
@@ -1394,17 +1412,17 @@ while($row=mysql_fetch_assoc($res)){
 }
 
 function uk_get_tax_code($header_data) {
- 
- $tax_rates=array();
-    $tax_names=array();
-$sql=sprintf("select * from `Tax Category Dimension` ");
-$res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
- $tax_rates[$row['Tax Category Code']]=$row['Tax Category Rate'];
-    $tax_names[$row['Tax Category Code']]=$row['Tax Category Name'];
-}
 
-     $tax_code='UNK';
+    $tax_rates=array();
+    $tax_names=array();
+    $sql=sprintf("select * from `Tax Category Dimension` ");
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $tax_rates[$row['Tax Category Code']]=$row['Tax Category Rate'];
+        $tax_names[$row['Tax Category Code']]=$row['Tax Category Name'];
+    }
+
+    $tax_code='UNK';
     $tax_description='No Tax';
     $tax_rate=0;
     if ($header_data['total_net']==0) {
@@ -1780,7 +1798,7 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true) {
     if ($header_data['date_order']=='1899-12-30')
         $header_data['date_order']='';
 
-  
+
 
 
     $datetime_updated=date("Y-m-d H:i:s",$filedate);
@@ -3880,134 +3898,166 @@ function parse_company_person($posible_company_name,$posible_contact_name) {
 
 }
 
-function is_shipping_supplier($data){
-global $editor;
+function is_shipping_supplier($data) {
+    global $editor;
 
-  //  if(preg_match('/^(per post|Pacel Force|Airmail|Amtrak.*|1st Class Post|Amstrak|via Frans Maas|Fist class post|DBL|apc|post|interlink|parcel\s*force|ups|fedex|royal\s*mail|by post|printmovers|1st class|first class|frans mass|frans maas|apc to collect|post . standart parcel|post . 2 parcels.*|post office|schenker|parcel force worldwide|amtrak|percel porce|parceline|post 1st|dfds transport|dpd|dbl pallet|tnt|interlink\s*express?|amtrack|post 1at class|post \- sing for|dvs|.*royal mail.*|Parce Force|Parcel Force Wordwide|Roayl Mail|Post 1st Class|Parcel Line|dbl|POST SIGNED FOR|Parcelforce.*|AMRAK|Post Sign For|post .*|FedEx .*|dbl|Parcel Force .*|DSV pallet|Hastings Freight|Amtrak|apc .*|dpd .*|dbl|Parcel F orce Sat Del|Mc Grath Freigth|Parcel Porce)$/i',_trim($data['notes'])))
-   if(preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='_OWN';
-  }elseif(preg_match('/^(Via Post Office|Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='RoyalM';
-  } elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide|Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='PForce';
-  } elseif(preg_match('/^(DSV.*|frans maas|frans mass|via Frans Maas)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='DSV';
-  }elseif(preg_match('/^(Amtrac|Amstrak|Amtrak.*|amtrak|amtrack|AMRAK)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='DSV';
-  }elseif(preg_match('/^(dpd|parcel line|dpd .*|Parceline)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='DPD';
-  }elseif(preg_match('/^(interlink.*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='ILink';
-  }elseif(preg_match('/^(tnt)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='TNT';
-  }elseif(preg_match('/^(fedex.*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='Fedex';
-  }elseif(preg_match('/^(ups)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='UPS';
-  }elseif(preg_match('/^(dfds.*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='DFDS';
-  }elseif(preg_match('/^(Mc Grath Freigth)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='McGF';
-  }elseif(preg_match('/^(Hastings Freight)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='HastFre';
-  }elseif(preg_match('/^(apc|apc .*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='APC';
-  }elseif(preg_match('/^(dbl|dbl .*)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='APC';
-  }elseif(preg_match('/^(Future Fowarding)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='FutFo';
-  }elseif(preg_match('/^(Printmovers)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='PrintM';
-  }elseif(preg_match('/^(Schenker)$/i',_trim($data['notes']))){
-    $data['notes']='';
-    $data['shipper_code']='Schenker';
-  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil|Give to Malcom)$/i',_trim($data['notes']))){
-   
-    $data['shipper_code']='_Other';
-  }
-  
+    //  if(preg_match('/^(per post|Pacel Force|Airmail|Amtrak.*|1st Class Post|Amstrak|via Frans Maas|Fist class post|DBL|apc|post|interlink|parcel\s*force|ups|fedex|royal\s*mail|by post|printmovers|1st class|first class|frans mass|frans maas|apc to collect|post . standart parcel|post . 2 parcels.*|post office|schenker|parcel force worldwide|amtrak|percel porce|parceline|post 1st|dfds transport|dpd|dbl pallet|tnt|interlink\s*express?|amtrack|post 1at class|post \- sing for|dvs|.*royal mail.*|Parce Force|Parcel Force Wordwide|Roayl Mail|Post 1st Class|Parcel Line|dbl|POST SIGNED FOR|Parcelforce.*|AMRAK|Post Sign For|post .*|FedEx .*|dbl|Parcel Force .*|DSV pallet|Hastings Freight|Amtrak|apc .*|dpd .*|dbl|Parcel F orce Sat Del|Mc Grath Freigth|Parcel Porce)$/i',_trim($data['notes'])))
+    if (preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='_OWN';
+    }
+    elseif(preg_match('/^(Via Post Office|Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='RoyalM';
+    }
+    elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide|Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='PForce';
+    }
+    elseif(preg_match('/^(DSV.*|frans maas|frans mass|via Frans Maas)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='DSV';
+    }
+    elseif(preg_match('/^(Amtrac|Amstrak|Amtrak.*|amtrak|amtrack|AMRAK)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='DSV';
+    }
+    elseif(preg_match('/^(dpd|parcel line|dpd .*|Parceline)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='DPD';
+    }
+    elseif(preg_match('/^(interlink.*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='ILink';
+    }
+    elseif(preg_match('/^(tnt)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='TNT';
+    }
+    elseif(preg_match('/^(fedex.*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='Fedex';
+    }
+    elseif(preg_match('/^(ups)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='UPS';
+    }
+    elseif(preg_match('/^(dfds.*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='DFDS';
+    }
+    elseif(preg_match('/^(Mc Grath Freigth)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='McGF';
+    }
+    elseif(preg_match('/^(Hastings Freight)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='HastFre';
+    }
+    elseif(preg_match('/^(apc|apc .*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='APC';
+    }
+    elseif(preg_match('/^(dbl|dbl .*)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='APC';
+    }
+    elseif(preg_match('/^(Future Fowarding)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='FutFo';
+    }
+    elseif(preg_match('/^(Printmovers)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='PrintM';
+    }
+    elseif(preg_match('/^(Schenker)$/i',_trim($data['notes']))) {
+        $data['notes']='';
+        $data['shipper_code']='Schenker';
+    }
+    elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil|Give to Malcom)$/i',_trim($data['notes']))) {
 
-
- if(preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='_OWN';
-  }elseif(preg_match('/^(Via Post Office|Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='RoyalM';
-  } elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide|Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes2']))){
-   // exit("s".$data['notes2']."xxxxxxx");
-   $data['notes2']='';
-    $data['shipper_code']='PForce';
-  } elseif(preg_match('/^(DSV.*|frans maas|frans mass|via Frans Maas)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='DSV';
-  }elseif(preg_match('/^(Amtrac|Amstrak|Amtrak.*|amtrak|amtrack|AMRAK)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='DSV';
-  }elseif(preg_match('/^(dpd|parcel line|dpd .*|Parceline)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='DPD';
-  }elseif(preg_match('/^(interlink.*)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='ILink';
-  }elseif(preg_match('/^(tnt)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='TNT';
-  }elseif(preg_match('/^(fedex.*)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='Fedex';
-  }elseif(preg_match('/^(ups)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='UPS';
-  }elseif(preg_match('/^(dfds.*)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='DFDS';
-  }elseif(preg_match('/^(Mc Grath Freigth)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='McGF';
-  }elseif(preg_match('/^(Hastings Freight)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='HastFre';
-  }elseif(preg_match('/^(apc|apc .*)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='APC';
-  }elseif(preg_match('/^(dbl|dbl .*)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='APC';
-  }elseif(preg_match('/^(Future Fowarding)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='FutFo';
-  }elseif(preg_match('/^(Printmovers)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='PrintM';
-  }elseif(preg_match('/^(Schenker)$/i',_trim($data['notes2']))){
-    $data['notes2']='';
-    $data['shipper_code']='Schenker';
-  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil|Give to Malcom)$/i',_trim($data['notes2']))){
-   
-    $data['shipper_code']='_Other';
-  }
-  
+        $data['shipper_code']='_Other';
+    }
 
 
 
+    if (preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='_OWN';
+    }
+    elseif(preg_match('/^(Via Post Office|Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='RoyalM';
+    }
+    elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide|Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes2']))) {
+        // exit("s".$data['notes2']."xxxxxxx");
+        $data['notes2']='';
+        $data['shipper_code']='PForce';
+    }
+    elseif(preg_match('/^(DSV.*|frans maas|frans mass|via Frans Maas)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='DSV';
+    }
+    elseif(preg_match('/^(Amtrac|Amstrak|Amtrak.*|amtrak|amtrack|AMRAK)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='DSV';
+    }
+    elseif(preg_match('/^(dpd|parcel line|dpd .*|Parceline)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='DPD';
+    }
+    elseif(preg_match('/^(interlink.*)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='ILink';
+    }
+    elseif(preg_match('/^(tnt)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='TNT';
+    }
+    elseif(preg_match('/^(fedex.*)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='Fedex';
+    }
+    elseif(preg_match('/^(ups)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='UPS';
+    }
+    elseif(preg_match('/^(dfds.*)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='DFDS';
+    }
+    elseif(preg_match('/^(Mc Grath Freigth)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='McGF';
+    }
+    elseif(preg_match('/^(Hastings Freight)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='HastFre';
+    }
+    elseif(preg_match('/^(apc|apc .*)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='APC';
+    }
+    elseif(preg_match('/^(dbl|dbl .*)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='APC';
+    }
+    elseif(preg_match('/^(Future Fowarding)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='FutFo';
+    }
+    elseif(preg_match('/^(Printmovers)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='PrintM';
+    }
+    elseif(preg_match('/^(Schenker)$/i',_trim($data['notes2']))) {
+        $data['notes2']='';
+        $data['shipper_code']='Schenker';
+    }
+    elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil|Give to Malcom)$/i',_trim($data['notes2']))) {
+
+        $data['shipper_code']='_Other';
+    }
 
 
 
@@ -4016,22 +4066,26 @@ global $editor;
 
 
 
- $the_supplier_data=array(
-			  'editor'=>$editor
-			  ,'Supplier Name'=>$data['shipper_code']
-			  ,'Supplier Code'=>$data['shipper_code']
-			  );
- if($data['shipper_code']!='' and $data['shipper_code']!='_OWN' and $data['shipper_code']!='_Other'){
 
-     //print $data['shipper_code']."<---\n";
-     $supplier=new Supplier('code',$data['shipper_code']);
-     if(!$supplier->id){
-       
-       $supplier=new Supplier('find',$the_supplier_data,'create');
-     }
-     //exit;
-   }
-  return $data;
+
+
+
+    $the_supplier_data=array(
+                           'editor'=>$editor
+                                    ,'Supplier Name'=>$data['shipper_code']
+                                                     ,'Supplier Code'=>$data['shipper_code']
+                       );
+    if ($data['shipper_code']!='' and $data['shipper_code']!='_OWN' and $data['shipper_code']!='_Other') {
+
+        //print $data['shipper_code']."<---\n";
+        $supplier=new Supplier('code',$data['shipper_code']);
+        if (!$supplier->id) {
+
+            $supplier=new Supplier('find',$the_supplier_data,'create');
+        }
+        //exit;
+    }
+    return $data;
 
 
 }

@@ -41,8 +41,8 @@ class Auth {
         $this->log_page=$page;
         switch ($this->log_page) {
         case 'staff':
-            $this->user_type="'Administrator','Staff'";
-            $this->where_user_type=" and `User Type` in ('Administrator','Staff')";
+            $this->user_type="'Administrator','Staff','Warehouse'";
+            $this->where_user_type=" and `User Type` in ('Administrator','Staff','Warehouse')";
             break;
         case 'customer':
             $this->user_type="'Customer'";

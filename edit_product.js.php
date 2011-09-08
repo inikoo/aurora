@@ -396,7 +396,7 @@ part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
   
     var oTD= oTR.insertCell(2);
     Dom.setStyle(oTD,'text-align','right');
-    oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
+    oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="display:none;cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
     oTR= oTbl.insertRow(-1);
       oTR.id="sup_tr2_"+sku;
   var oTD= oTR.insertCell(0);
@@ -438,10 +438,7 @@ dialog_part_list.hide()
 
 
 
-function add_part(){
 
-dialog_part_list.show()
-}
 
 function init(){
 
@@ -492,12 +489,14 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     Event.addListener('save_edit_product_weight', "click", save_edit_weight);
     Event.addListener('reset_edit_product_weight', "click", reset_edit_weight);
 
-    
-    dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list", {fixedcenter:true,visible : false,close:true,underlay: "none",draggable:false});
+ 
+    dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_part_list.render();
-    Event.addListener("add_part", "click", add_part);
+    Event.addListener("add_part", "click",dialog_part_list.show,dialog_part_list , true);
 
     
+  
+
     
     var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
     product_name_oACDS.queryMatchContains = true;
@@ -599,7 +598,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['product']['history']['order']?>",
+							    key: "<?php echo$_SESSION['state']['product']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['product']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -696,7 +695,7 @@ var tableid=1;
      
 
                    
-	    this.table1.filter={key:'sku',value:''};
+	    this.table1.filter={key:'used_in',value:''};
 
 
 
@@ -729,13 +728,14 @@ YAHOO.util.Event.onContentReady("rppmenu1", function () {
 	 oMenu.subscribe("show", oMenu.focus);
     });
 
+
+
 YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+	 var oMenu1 = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu1.render();
+	 oMenu1.subscribe("show", oMenu1.focus);
+	
     });
-
-
 
 function close_change_part_dialog(){
 

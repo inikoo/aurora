@@ -1150,21 +1150,28 @@ if(isset( $_REQUEST['tableid']))
     $tableid=0;
  
  
+   if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+    } else
+        $number_results=$conf['nr'];
 
 
-  $_SESSION['state']['location']['parts']=
-    array(
-	  'order'=>$order,
-	  'order_dir'=>$order_direction,
-	  //'nr'=>$number_results,
-	  // 'sf'=>$start_from,
-	  'where'=>$where,
-	  'f_field'=>$f_field,
-	  'f_value'=>$f_value,
-	  //  'from'=>$from,
-	  //  'to'=>$to,
-	  //  'elements'=>$elements
-	  );
+	  
+	  
+	   $_SESSION['state']['location']['parts']['order']=$order;
+	  $_SESSION['state']['location']['parts']['order_dir']=$order_direction;
+	  $_SESSION['state']['location']['parts']['where']=$where;
+	  $_SESSION['state']['location']['parts']['f_field']=$f_field;
+	  $_SESSION['state']['location']['parts']['f_value']=$f_value;
+	  $_SESSION['state']['location']['parts']['nr']=$number_results;
+	  $_SESSION['state']['location']['parts']['sf']=$start_from;
+	  
+	  
     $_order=$order;
    $_dir=$order_direction;
    $filter_msg='';
@@ -1184,8 +1191,7 @@ if(isset( $_REQUEST['tableid']))
 //     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
   
-  $start_from=0;
-  $number_results=99999999;
+ 
   
   
 
@@ -1232,13 +1238,13 @@ if(isset( $_REQUEST['tableid']))
 
 
 
-   $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  ");
+   $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  limit $start_from,$number_results ");
 
 
   $adata=array();
   
   $res = mysql_query($sql);
- // print $sql;
+  
   while($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
     

@@ -6,8 +6,12 @@
 </div>
 
 <div class="top_row">
-<h2>{t}Administration Account{/t}</h2>
+
 <table>
+<tr>
+<td colspan="5"><h2>{t}Administration Account{/t}</h2></td>
+</tr>
+
 <tr>
     <th style="width:100px">{t}Handle{/t}</th>
     <th style="width:200px">{t}Login Count{/t}</th>
@@ -22,6 +26,26 @@
     <td style="text-align:center">{$root->get('Failed Login Count')}</td>
     <td >{$root->get('Last Failed Login')}</td>
  </tr>
+
+<tr>
+<td colspan="5"><h2>{t}Warehouse Account{/t}</h2></td>
+</tr>
+
+<tr>
+    <th style="width:100px">{t}Handle{/t}</th>
+    <th style="width:200px">{t}Login Count{/t}</th>
+    <th style="width:200px">{t}Last Login{/t}</th>
+    <th style="width:220px">{t}Failed Login Count{/t}</th>
+    <th style="width:200px">{t}Last Failed Login{/t}</th>
+</tr>
+<tr>
+    <td style="text-align:center"><a href='user.php?id={$warehouse_user->id}'>{$warehouse_user->get('User Handle')}</a></td>
+    <td style="text-align:center">{$warehouse_user->get('Login Count')}</td>
+    <td>{$warehouse_user->get('Last Login')}</td>
+    <td style="text-align:center">{$warehouse_user->get('Failed Login Count')}</td>
+    <td >{$warehouse_user->get('Last Failed Login')}</td>
+ </tr>
+
 
 </table>
 </div>

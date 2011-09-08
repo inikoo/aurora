@@ -3,7 +3,7 @@
 //Copyright (c) 2009 LW
 //$connect_to_external=true;
 include_once('common.php');
-$sql=sprintf("select * from `Deal Dimension`D where D.`Deal Trigger`='Family' and D.`Deal Trigger Key`= %d ",$_SESSION['state']['family']['id']);
+$sql=sprintf("select * from `Deal Dimension`D where D.`Deal Trigger`='Family' and D.`Deal Trigger Key`= %d ",$_REQUEST['id']);
 $res=mysql_query($sql);
 $deal_data="";
 while($row=mysql_fetch_array($res)){
@@ -24,68 +24,16 @@ print $deal_data;
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var family_id=<?php echo$_SESSION['state']['family']['id']?>;
+var family_id=<?php echo $_REQUEST['id']?>;
 
-var scope_key=<?php echo$_SESSION['state']['family']['id']?>;
+var scope_key=<?php echo $_REQUEST['id']?>;
 var scope='family';
 var scope_edit_ar_file='ar_edit_assets.php';
 var scope_key_name='id';
-var store_key=<?php echo$_SESSION['state']['store']['id']?>;
+var store_key=<?php echo $_REQUEST['store_key']?>;
 
 
-var validate_scope_metadata={
-    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
-    ,'family_page_html_head':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
-    ,'family_page_header':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
-,'family_page_content':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
-};
 
-var validate_scope_data={
-    'family':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
-	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
-		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
-	,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-			 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
-			 ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_family_special_char&store_key='+store_key+'&query='}
-	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'description','ar':false}
-    }
-    ,'family_page_html_head':{
-	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
-		 ,'name':'family_page_html_head_url','ar':false
-		 
-	}
-	,'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
-		 ,'name':'family_page_html_head_title','ar':false
-		 
-	}
-	
-	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_html_head_keywords','ar':false}
-    }
-,'family_page_header':{
-	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
-		 ,'name':'family_page_header_store_title','ar':false
-		 
-	}
-	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_subtitle','ar':false}
-	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_slogan','ar':false}
-	,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_resume','ar':false}
-	
-    }
-,'family_page_content':{
-	
-	'presentation_template_data':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_content_presentation_template_data','ar':false}
-	
-    }
-
-
-};
 function validate_family_page_content_presentation_template_data(query){validate_general('family_page_content','presentation_template_data',unescape(query));}
 
 
@@ -94,8 +42,11 @@ function validate_family_page_header_subtitle(query){validate_general('family_pa
 function validate_family_page_header_slogan(query){validate_general('family_page_header','slogan',unescape(query));}
 function validate_family_page_header_resume(query){validate_general('family_page_header','resume',unescape(query));}
 
+function validate_family_page_properties_url(query){validate_general('family_page_properties','url',unescape(query));}
+function validate_family_page_properties_link_title(query){validate_general('family_page_properties','link_title',unescape(query));}
 
-function validate_family_page_html_head_url(query){validate_general('family_page_html_head','url',unescape(query));}
+
+function validate_family_page_properties_page_code(query){validate_general('family_page_properties','page_code',unescape(query));}
 
 function validate_family_page_html_head_title(query){validate_general('family_page_html_head','title',unescape(query));}
 function validate_family_page_html_head_keywords(query){validate_general('family_page_html_head','keywords',unescape(query));}
@@ -132,6 +83,10 @@ function save_edit_family_page_html_head(){save_edit_general('family_page_html_h
 
 function reset_edit_family_page_content(){ reset_edit_general('family_page_content');}
 function save_edit_family_page_content(){save_edit_general('family_page_content');}
+
+
+function reset_edit_family_page_properties(){ reset_edit_general('family_page_properties');}
+function save_edit_family_page_properties(){save_edit_general('family_page_properties');}
 
 
 function post_item_updated_actions(branch,r){
@@ -181,9 +136,18 @@ function change_block(e){
 		recordIndex = datatable.getRecordIndex(record);
 
 
+						
+			if(column.object=='family_page_properties')	
+					request_page=	'ar_edit_sites.php';			
+
+			else
+		request_page=	'ar_edit_assets.php';			
+						
+						
+						
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
-						'ar_edit_assets.php', {
+						request_page, {
 						    success:function(o) {
 							//	alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -1096,7 +1060,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description","picks","notes","delete","part_sku"
 
 			 ]};
- this.table5 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+
+        this.table5 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource5
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
@@ -1115,9 +1080,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     dir: "<?php echo $_SESSION['state']['product']['parts']['order_dir']?>"
 							 },
 							 dynamicData : true
-							 
 						     }
-						     
 						     );
 	    
 	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
@@ -1131,9 +1094,80 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 	    this.table5.filter={key:'<?php echo $_SESSION['state']['product']['parts']['f_field']?>',value:'<?php echo $_SESSION['state']['product']['parts']['f_value']?>'};
 
+   var tableid=6; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				         ,{key:"go", label:"", width:20,action:"none"}
+				       ,{key:"code",label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"store_title",label:"<?php echo _('Header Title')?>", width:400,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				    			       
+				       ];
+				       
+	 
+				       
+				       
+	    //?tipo=customers&tid=0"
+	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=family_page_list&site_key="+Dom.get('site_key').value+"&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=6");
+	// alert("ar_edit_sites.php?tipo=family_page_list&site_key="+Dom.get('site_key').value+"&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=6")
+	// alert("ar_edit_sites.php?tipo=family_page_list&site_key="+Dom.get('site_key').value+"family_key="+Dom.get('family_key').value+"&tableid=6");
+	 //this.dataSource6 =  new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&tableid=4");
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+	
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"go","code","store_title"
+
+			 ]};
+
+        this.table6 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource6
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    :<?php echo $_SESSION['state']['family']['pages']['nr']?> ,containers : 'paginator6', alpartysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo $_SESSION['state']['family']['pages']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['family']['pages']['order_dir']?>"
+							 },
+							 dynamicData : true
+						     }
+						     );
+	    
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 
-
+	    this.table6.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table6.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table6.subscribe("cellClickEvent", onCellClick);
+		    
+	    this.table6.filter={key:'<?php echo $_SESSION['state']['family']['pages']['f_field']?>',value:'<?php echo $_SESSION['state']['family']['pages']['f_value']?>'};
 
 
 
@@ -1216,12 +1250,123 @@ function show_add_product_dialog(){
 
 }
 
+function new_family_page(){
 
+
+var request='tipo=new_family_page&family_key='+family_id+'&site_key='+Dom.get('site_key').value
+
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_sites.php', {
+						    success:function(o) {
+						
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+								        window.location = "edit_family.php?id=<?php echo$_REQUEST['id']?>"
+							    }else{
+						
+                                        alert(r.msg)								
+								
+							    }
+						
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
+
+
+}
 
 
 function init(){
 
 
+
+ validate_scope_metadata={
+    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_REQUEST['id']?>}
+    
+    
+     ,'family_page_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+    ,'family_page_html_head':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+    ,'family_page_header':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+,'family_page_content':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+};
+
+ validate_scope_data={
+    'family':{
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
+	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
+	,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+			 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
+			 ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_family_special_char&store_key='+store_key+'&query='}
+	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'description','ar':false}
+    }
+    ,'family_page_properties':{
+	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+		 ,'name':'family_page_properties_url','ar':false
+		 
+	}
+	,'page_code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]
+		 ,'name':'family_page_properties_page_code'
+		 ,'ar':'find','ar_request':'ar_sites.php?tipo=is_page_store_code&site_key='+Dom.get('site_key').value+'&query='
+	},
+	'link_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Link Title')?>'}]
+		 ,'name':'family_page_properties_link_title','ar':false
+		 
+	}
+    }
+     ,'family_page_html_head':{
+	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+		 ,'name':'family_page_html_head_url','ar':false
+		 
+	}
+	,'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+		 ,'name':'family_page_html_head_title','ar':false
+		 
+	}
+	
+	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_html_head_keywords','ar':false}
+    }
+,'family_page_header':{
+	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+		 ,'name':'family_page_header_store_title','ar':false
+		 
+	}
+	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_subtitle','ar':false}
+	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_slogan','ar':false}
+	,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_resume','ar':false}
+	
+    }
+,'family_page_content':{
+	
+	'presentation_template_data':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_content_presentation_template_data','ar':false}
+	
+    }
+
+
+};
+
+
+
+    YAHOO.util.Event.addListener('new_family_page', "click", new_family_page);
 
 
    var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
@@ -1283,6 +1428,7 @@ YAHOO.util.Event.addListener(ids, "click",change_view)
 
  YAHOO.util.Event.addListener('reset_edit_family', "click", reset_edit_family);
     YAHOO.util.Event.addListener('save_edit_family', "click", save_edit_family);
+    
  YAHOO.util.Event.addListener('reset_edit_family_page_html_head', "click", reset_edit_family_page_html_head);
     YAHOO.util.Event.addListener('save_edit_family_page_html_head', "click", save_edit_family_page_html_head);
  YAHOO.util.Event.addListener('reset_edit_family_page_header', "click", reset_edit_family_page_header);
@@ -1290,6 +1436,10 @@ YAHOO.util.Event.addListener(ids, "click",change_view)
 
 YAHOO.util.Event.addListener('reset_edit_family_page_content', "click", reset_edit_family_page_content);
     YAHOO.util.Event.addListener('save_edit_family_page_content', "click", save_edit_family_page_content);
+    
+    YAHOO.util.Event.addListener('reset_edit_family_page_properties', "click", reset_edit_family_page_properties);
+    YAHOO.util.Event.addListener('save_edit_family_page_properties', "click", save_edit_family_page_properties);
+    
 
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_code_oACDS.queryMatchContains = true;
@@ -1315,12 +1465,27 @@ var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_description_oAutoComp.minQueryLength = 0; 
     family_description_oAutoComp.queryDelay = 0.1;
 
- var family_page_html_head_url_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_html_head_url);
-    family_page_html_head_url_oACDS.queryMatchContains = true;
-    var family_page_html_head_url_oAutoComp = new YAHOO.widget.AutoComplete("family_page_html_head_url","family_page_html_head_url_Container", family_page_html_head_url_oACDS);
-    family_page_html_head_url_oAutoComp.minQueryLength = 0; 
-    family_page_html_head_url_oAutoComp.queryDelay = 0.1;
+
+
+ var family_page_properties_page_code_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_properties_page_code);
+    family_page_properties_page_code_oACDS.queryMatchContains = true;
+    var family_page_properties_page_code_oAutoComp = new YAHOO.widget.AutoComplete("family_page_properties_page_code","family_page_properties_page_code_Container", family_page_properties_page_code_oACDS);
+    family_page_properties_page_code_oAutoComp.minQueryLength = 0; 
+    family_page_properties_page_code_oAutoComp.queryDelay = 0.1;
+
+
+ var family_page_properties_url_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_properties_url);
+    family_page_properties_url_oACDS.queryMatchContains = true;
+    var family_page_properties_url_oAutoComp = new YAHOO.widget.AutoComplete("family_page_properties_url","family_page_properties_url_Container", family_page_properties_url_oACDS);
+    family_page_properties_url_oAutoComp.minQueryLength = 0; 
+    family_page_properties_url_oAutoComp.queryDelay = 0.1;
     
+    
+     var family_page_properties_link_title_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_properties_link_title);
+    family_page_properties_link_title_oACDS.queryMatchContains = true;
+    var family_page_properties_link_title_oAutoComp = new YAHOO.widget.AutoComplete("family_page_properties_link_title","family_page_properties_link_title_Container", family_page_properties_link_title_oACDS);
+    family_page_properties_link_title_oAutoComp.minQueryLength = 0; 
+    family_page_properties_link_title_oAutoComp.queryDelay = 0.1;
     
     var family_page_html_head_title_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_html_head_title);
     family_page_html_head_title_oACDS.queryMatchContains = true;
