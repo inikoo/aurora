@@ -1,18 +1,21 @@
 {include file='header.tpl'}
-<div id="bd"  style="padding:0px">
+<div id="bd"  style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 <div style="padding:0 20px">
+
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
   <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
 
-    <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
+    <h1><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </h1>
     {if $product->get('Product Record Type')=='Historic'}<h2>{t}Historic Product{/t}</h2>{/if}
 
 
     
-<div class="" id="block_info"  style="width:890px">
+<div class="" id="block_info"  style="width:890px;position:relative">
+
+
       <div   style="clear:left;padding:0;width:100%">
 
 	  <div id="photo_container" style="margin-top:10px;float:left">
@@ -46,17 +49,14 @@
 		<tr><td>{$product->get('Product Record Type')}</td></tr>
 		    
 		     <tr >
-		      <td>
-		      
-		      <span id="web_status"   style="cursor:pointer">{$product->get('Product Web State')}</span> 
-			    <img id="web_status_error" onclick="sincronize_all()" style="{if !$web_status_error}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"src="art/icons/exclamation.png" title="{$web_status_error_title}"/></td><td  class="aright">
-			 <img id="no_sincro_pages" title="{$data.nosincro_pages_why}" onclick="manual_check()" style="{if $data.sincro_pages==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer" src="art/icons/page_error.png"/> 
-			 <img id="no_sincro_db" title="{$data.nosincro_db_why}" onclick="sincronizar()" src="art/icons/database_error.png" style="{if $data.sincro_db==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"/>  
-			 <span  id="online"  >{if $num_links>0}{t}Online{/t} ({$fnum_links}) {else}{t}Offline{/t}{/if}</span></td>
-		     </tr>
-		     <tr style="border-bottom:1px solid #5f84ae;">
-		       <td colspan=2><span id="edit_web_messages"></span></td>
-		     </tr>
+		      <td>{t}Sale Type{/t}:</td>
+		      <td  class="aright">{$product->get_formated_sales_type() }</td>
+		</tr>
+		     <tr >
+		      <td>{t}Web Status{/t}:</td>
+		      <td  class="aright">{$product->get_formated_web_state() }</td>
+		</tr>
+		 
 		</table>
 		<table    class="show_info_product">
 		    <tr>
@@ -106,7 +106,8 @@
 		  </tr>
 		  
 		    {if $product->get('Product Next Supplier Shipment')   }<tr><td rowspan="2" style="font-size:75%">{$product->get('Product Next Supplier Shipment')}</td></tr>{/if}
-		   
+		   		    {if $product->get('Product Availability Type')=='Discontinued'   }<tr><td rowspan="2" style="font-size:75%">{t}Discontinued{/t}</td></tr>{/if}
+
 		</table>
 		
 		
@@ -329,7 +330,7 @@
    {/if}
  </div>
  <div  id="block_customers" class="data_table"  style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-     {if $view_customers} 
+   
      
       <table    class="show_info_product" style="width:250px">
       <tr >
@@ -377,7 +378,7 @@
    <span id="table_title" class="clean_table_title">{t}Customer who order this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
   <div  id="table1"   class="data_table_container dtable btable "> </div>
-  {/if}
+ 
   </div>
 
 
@@ -399,4 +400,67 @@
 </div>
 
 </div>{include file='footer.tpl'}
+
+<div id="rppmenu0" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu0" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="rppmenu1" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu1" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="rppmenu2" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},2)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu2" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
 

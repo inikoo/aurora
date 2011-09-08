@@ -264,7 +264,7 @@ class Store extends DB_Table {
         case('Losing Contacts With Orders'):
             return number($this->data['Store '.$key]);
         case('Potential Customers'):
-                return number($this->data['Store Active Contacts']-$this->data['Store Active Contacts With Orders']);
+            return number($this->data['Store Active Contacts']-$this->data['Store Active Contacts With Orders']);
         case('Total Users'):
             return number($this->data['Store Total Users']);
         case('All To Pay Invoices'):
@@ -485,10 +485,10 @@ class Store extends DB_Table {
         case('fax'):
             $this->update_field('Store Fax',$a1);
             break;
-		case('address'):
+        case('address'):
             $this->update_field('Store Address',$a1);
             break;
-		case('marketing_description'):
+        case('marketing_description'):
             $this->update_field('Short Marketing Description',$a1);
             break;
         case('name'):
@@ -634,7 +634,7 @@ class Store extends DB_Table {
 
 
 
-        $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Store Key`=%d",$this->id);
+        $sql=sprintf("select sum(if(`Product Stage`='New',1,0)) as new,sum(if(`Product Stage`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Availability Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Store Key`=%d",$this->id);
 
 //print $sql;
         $result=mysql_query($sql);
@@ -746,237 +746,6 @@ class Store extends DB_Table {
 
     }
 
-    function update_customers_data_old() {
-
-        $current_from=strtotime($this->data['Store Valid From']);
-
-        $sql="select min(`Customer First Contacted Date`) as ffrom ,count(*) as number   from `Customer Dimension` as C   where `Customer Store Key`=".$this->id;
-// print "C: $current_from $sql";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $from=strtotime($row['ffrom']);
-            //print "-->".$row['ffrom']."\n" ;
-            if (($from<$current_from or !$current_from  )and $row['number']>0 and $row['ffrom']!='') {
-                $_from=date("Y-m-d H:i:s",$from);
-                $this->data['Store Valid From']=$_from;
-
-            }
-        }
-
-
-//print "$current_from \n ".$this->data['Store Valid From'];
-
-
-        $sql=sprintf("select count(*) as num ,sum(IF(`Customer Orders`>0,1,0)) as customers,sum(IF(`New Served Customer`='Yes',1,0)) as new_served,sum(IF(`New Customer`='Yes',1,0)) as new_contact,sum(IF(`Active Customer`='Yes'   ,1,0)) as active, sum(IF(`Active Customer`='No'  and `Actual Customer`='Yes',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d",$this->id);
-        // print "$sql\n";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store Total Customer Contacts']=$row['num'];
-            $this->data['Store New Customer Contacts']=$row['new_contact'];
-            $this->data['Store Total Customers']=$row['customers'];
-            $this->data['Store Active Customers']=$row['active'];
-            $this->data['Store New Customers']=$row['new_served'];
-            $this->data['Store Lost Customers']=$row['lost'];
-        } else {
-            $this->data['Store Total Customer Contacts']=0;
-            $this->data['Store New Customer Contacts']=0;
-            $this->data['Store Total Customers']=0;
-            $this->data['Store Active Customers']=0;
-            $this->data['Store New Customers']=0;
-            $this->data['Store Lost Customers']=0;
-
-        }
-
-
-
-        $sql=sprintf("select count(*) as lost from `Customer Dimension` where`Active Customer`='No'  and `Actual Customer`='Yes' and `Customer Store Key`=%d and `Customer Lost Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 year")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Year Lost Customers']=$row['lost'];
-        } else {
-            $this->data['Store 1 Year Lost Customers']=0;
-        }
-        $sql=sprintf("select count(*) as lost from `Customer Dimension` where`Active Customer`='No'  and `Actual Customer`='Yes' and `Customer Store Key`=%d and `Customer Lost Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-3 months")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Quarter Lost Customers']=$row['lost'];
-        } else {
-            $this->data['Store 1 Quarter Lost Customers']=0;
-        }
-        $sql=sprintf("select count(*) as lost from `Customer Dimension` where`Active Customer`='No'  and `Actual Customer`='Yes' and `Customer Store Key`=%d and `Customer Lost Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 month")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Month Lost Customers']=$row['lost'];
-        } else {
-            $this->data['Store 1 Month Lost Customers']=0;
-        }
-        $sql=sprintf("select count(*) as lost from `Customer Dimension` where`Active Customer`='No'  and `Actual Customer`='Yes' and `Customer Store Key`=%d and `Customer Lost Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 week")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Week Lost Customers']=$row['lost'];
-        } else {
-            $this->data['Store 1 Week Lost Customers']=0;
-        }
-
-
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where`Active Customer`='Yes'  and `Customer Store Key`=%d and `Customer First Order Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 year")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Year New Customers']=$row['new'];
-        } else {
-            $this->data['Store 1 Year New Customers']=0;
-        }
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where`Active Customer`='Yes'  and `Customer Store Key`=%d and `Customer First Order Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 quarter")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Quarter New Customers']=$row['new'];
-        } else {
-            $this->data['Store 1 Quarter New Customers']=0;
-        }
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where`Active Customer`='Yes'  and `Customer Store Key`=%d and `Customer First Order Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 month")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Month New Customers']=$row['new'];
-        } else {
-            $this->data['Store 1 Month New Customers']=0;
-        }
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where`Active Customer`='Yes'  and `Customer Store Key`=%d and `Customer First Order Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 week")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Week New Customers']=$row['new'];
-        } else {
-            $this->data['Store 1 Week New Customers']=0;
-        }
-
-
-
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 year")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Year New Customers Contacts']=$row['new'];
-        } else {
-            $this->data['Store 1 Year New Customers Contacts']=0;
-        }
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-3 months")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Quarter New Customers Contacts']=$row['new'];
-        } else {
-            $this->data['Store 1 Quarter New Customers Contacts']=0;
-        }
-
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 month")))
-                    );
-
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Month New Customers Contacts']=$row['new'];
-        } else {
-            $this->data['Store 1 Month New Customers Contacts']=0;
-        }
-
-
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 week")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Week New Customers Contacts']=$row['new'];
-        } else {
-            $this->data['Store 1 Week New Customers Contacts']=0;
-        }
-
-
-        $sql=sprintf("select count(*) as new from `Customer Dimension` where `Customer Store Key`=%d and `Customer First Contacted Date`>=%s ",
-                     $this->id,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("-1 day")))
-                    );
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Store 1 Day New Customers Contacts']=$row['new'];
-        } else {
-            $this->data['Store 1 Day New Customers Contacts']=0;
-        }
-
-
-        $sql=sprintf("update `Store Dimension` set `Store Valid From`=%s,`Store Total Customer Contacts`=%d , `Store New Customer Contacts`=%d ,`Store Total Customers`=%d,`Store Active Customers`=%d,`Store New Customers`=%d , `Store Lost Customers`=%d ,
-                     `Store 1 Year New Customers`=%d,
-                     `Store 1 Quarter New Customers`=%d,
-                     `Store 1 Month New Customers`=%d,
-                     `Store 1 Week New Customers`=%d,
-                     `Store 1 Year Lost Customers`=%d,
-                     `Store 1 Quarter Lost Customers`=%d,
-                     `Store 1 Month Lost Customers`=%d,
-                     `Store 1 Week Lost Customers`=%d,
-                     `Store 1 Year New Customers Contacts`=%d,
-                     `Store 1 Quarter New Customers Contacts`=%d,
-                     `Store 1 Month New Customers Contacts`=%d,
-                     `Store 1 Week New Customers Contacts`=%d,
-                     `Store 1 Day New Customers Contacts`=%d
-                     where `Store Key`=%d  ",
-                     prepare_mysql( $this->data['Store Valid From']),
-                     $this->data['Store Total Customer Contacts'],
-                     $this->data['Store New Customer Contacts'],
-                     $this->data['Store Total Customers'],
-                     $this->data['Store Active Customers'],
-                     $this->data['Store New Customers'],
-                     $this->data['Store Lost Customers'],
-                     $this->data['Store 1 Year New Customers'],
-                     $this->data['Store 1 Quarter New Customers'],
-                     $this->data['Store 1 Month New Customers'],
-                     $this->data['Store 1 Week New Customers'],
-                     $this->data['Store 1 Year Lost Customers'],
-                     $this->data['Store 1 Quarter Lost Customers'],
-                     $this->data['Store 1 Month Lost Customers'],
-                     $this->data['Store 1 Week Lost Customers'],
-                     $this->data['Store 1 Year New Customers Contacts'],
-                     $this->data['Store 1 Quarter New Customers Contacts'],
-                     $this->data['Store 1 Month New Customers Contacts'],
-                     $this->data['Store 1 Week New Customers Contacts'],
-                     $this->data['Store 1 Week New Customers Contacts'],
-                     $this->id
-                    );
-        mysql_query($sql);
-        //print "\n$sql\n";
-
-
-
-
-
-    }
 
 
     function update_families() {
@@ -1172,10 +941,11 @@ class Store extends DB_Table {
 
         switch ($interval) {
 
-  
+
 
 
         case 'Last Month':
+		case 'last_m':
             $db_interval='Last Month';
             $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
             $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
@@ -1186,6 +956,7 @@ class Store extends DB_Table {
             break;
 
         case 'Last Week':
+		case 'last_w':
             $db_interval='Last Week';
 
 
@@ -1206,6 +977,7 @@ class Store extends DB_Table {
             break;
 
         case 'Yesterday':
+		case 'yesterday':
             $db_interval='Yesterday';
             $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
             $to_date=date('Y-m-d 00:00:00',strtotime('today'));
@@ -1244,7 +1016,7 @@ class Store extends DB_Table {
 
             break;
         case 'Today':
-
+		case 'today':
             $db_interval='Today';
             $from_date=date('Y-m-d 00:00:00');
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1268,12 +1040,14 @@ class Store extends DB_Table {
             //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
             break;
         case '3 Year':
+		case '3y':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
             $from_date_1yb=false;
             $to_1yb=false;
             break;
         case '1 Year':
+		case '1y':		
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1286,24 +1060,28 @@ class Store extends DB_Table {
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Quarter':
+		case '1q':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Month':
+		case '1m':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '10 Day':
+		case '10d':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Week':
+		case '1w':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1315,7 +1093,7 @@ class Store extends DB_Table {
             break;
         }
 
-         setlocale(LC_ALL, 'en_GB');
+        setlocale(LC_ALL, 'en_GB');
 
         //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
@@ -1429,11 +1207,16 @@ class Store extends DB_Table {
 // print "$sql\n";
             mysql_query($sql);
         }
-
+		
+		return array(substr($from_date, -19,-9), date("Y-m-d"));
 
     }
 
-
+	function get_from_date($period){
+		return $this->update_sales_from_invoices($period);
+		
+	}
+	
     function update_customer_activity_interval() {
 
 
@@ -1471,8 +1254,8 @@ class Store extends DB_Table {
     }
 
 
-function update_email_campaign_data(){
- $sql=sprintf("select count(*) as email_campaign from `Email Campaign Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
+    function update_email_campaign_data() {
+        $sql=sprintf("select count(*) as email_campaign from `Email Campaign Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
 
         $res=mysql_query($sql);
         $sites=array();
@@ -1480,12 +1263,12 @@ function update_email_campaign_data(){
             $email_campaign=$row['email_campaign'];
         }
 
-    $sql=sprintf('update `Store Dimension` set `Store Email Campaigns`=%d where `Store Key`=%d',
-$email_campaign,
-$this->id
-);
+        $sql=sprintf('update `Store Dimension` set `Store Email Campaigns`=%d where `Store Key`=%d',
+                     $email_campaign,
+                     $this->id
+                    );
 
-}
+    }
 
     function create_site($data) {
 
@@ -1517,20 +1300,59 @@ $this->id
 
 
 
-    function get_page_data() {
-        $data=array();
-        $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
-        print "$sql\n";
+
+
+    function get_email_credentials_data($type) {
+        $credentials=array();
+        $sql=sprintf("select * from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
+                     prepare_mysql($type),
+                     $this->id
+                    );
+                    
         $res=mysql_query($sql);
-        if ($row=mysql_fetch_assoc($res)) {
-            $data=$row;
-            $data['Page Options']=unserialize($data['Page Options']);
+        while ($row=mysql_fetch_assoc($res)) {
+            $credentials[$row['Email Credentials Key ']]=$row;
         }
 
 
-
-        return $data;
+        return $credentials;
 
     }
+
+
+function get_formated_email_credentials($type){
+
+    $credentials=$this->get_email_credentials_data($type);
+   
+    $formated_credentials='';
+    foreach($credentials as $credential){
+        $formated_credentials.=','.$credential['Email Address'];
+    }
+    
+    $formated_credentials=preg_replace('/^,/','',$formated_credentials);
+    return $formated_credentials;
+    
+
+}
+
+
+function get_email_credential_key($type){
+
+ $sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
+                     prepare_mysql($type),
+                     $this->id
+                    );
+                
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            return $row['Email Credentials Key'];
+        }else{
+        
+            return false;
+        }
+
+
+}
+
 
 }

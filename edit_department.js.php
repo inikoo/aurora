@@ -11,37 +11,6 @@ var scope_key=<?php echo$_SESSION['state']['department']['id']?>;
 var scope='department';
 var store_key=<?php echo$_SESSION['state']['store']['id']?>;
 
-var validate_scope_metadata={
-    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>},
-    'family':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_id','key':<?php echo$_SESSION['state']['department']['id']?>}
-
-};
-
-var validate_scope_data={
-    'department':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'name'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+store_key+'&query='}
-	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
-		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}},
-	'family':{
-	'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Name'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'family_name'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
-	,'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Code'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
-		 ,'name':'family_code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
-	,'special_char':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Special Characteristic'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'family_special_char'
-		,'ar':false,'ar_request':false}
-	,'description':{'changed':false,'validated':false,'required':false,'group':1,'type':'textarea','dbname':'Product Family Description'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Description')?>'}]
-		 ,'name':'family_description','ar':false,'ar_request':false}	 
-		 }
-		 
-};
-
 
 
 
@@ -579,12 +548,51 @@ function validate_family_special_char(query){
  validate_general('family','special_char',unescape(query));
 }
 
+
+function validate_department_page_content_presentation_template_data(query){validate_general('department_page_content','presentation_template_data',unescape(query));}
+
+
+function validate_department_page_header_store_title(query){validate_general('department_page_header','store_title',unescape(query));}
+function validate_department_page_header_subtitle(query){validate_general('department_page_header','subtitle',unescape(query));}
+function validate_department_page_header_slogan(query){validate_general('department_page_header','slogan',unescape(query));}
+function validate_department_page_header_resume(query){validate_general('department_page_header','resume',unescape(query));}
+
+function validate_department_page_properties_url(query){validate_general('department_page_properties','url',unescape(query));}
+function validate_department_page_properties_link_title(query){validate_general('department_page_properties','link_title',unescape(query));}
+
+
+function validate_department_page_properties_page_code(query){validate_general('department_page_properties','page_code',unescape(query));}
+
+function validate_department_page_html_head_title(query){validate_general('department_page_html_head','title',unescape(query));}
+function validate_department_page_html_head_keywords(query){validate_general('department_page_html_head','keywords',unescape(query));}
+
+
+
 function reset_edit_department(){
  reset_edit_general('department');
 }
 function save_edit_department(){
  save_edit_general('departmenty');
 }
+
+
+function reset_edit_department_page_header(){ reset_edit_general('department_page_header');}
+function save_edit_department_page_header(){save_edit_general('department_page_header');}
+
+function reset_edit_department_page_html_head(){ reset_edit_general('department_page_html_head');}
+function save_edit_department_page_html_head(){save_edit_general('department_page_html_head');}
+
+function reset_edit_department_page_content(){ reset_edit_general('department_page_content');}
+function save_edit_department_page_content(){save_edit_general('department_page_content');}
+
+
+function reset_edit_department_page_properties(){ reset_edit_general('department_page_properties');}
+function save_edit_department_page_properties(){save_edit_general('department_page_properties');}
+
+
+
+
+
 
 function post_new_create_actions(branch,r){
 
@@ -613,7 +621,133 @@ newvalue=r.newvalue;
  
 }
 
+
+
+
+function new_department_page(){
+
+
+var request='tipo=new_department_page&department_key='+department_id+'&site_key='+Dom.get('site_key').value
+
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_sites.php', {
+						    success:function(o) {
+						
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+								        window.location = "edit_department.php?id=<?php echo$_SESSION['state']['department']['id']?>"
+							    }else{
+						
+                                        alert(r.msg)								
+								
+							    }
+						
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
+
+
+}
+
+
 function init(){
+
+ validate_scope_metadata={
+    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>},
+    'family':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_id','key':<?php echo$_SESSION['state']['department']['id']?>},
+      'department_page_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value},
+    'department_page_html_head':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value},
+    'department_page_header':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value},
+'department_page_content':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value},
+
+};
+
+ validate_scope_data={
+    'department':{
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+store_key+'&query='}
+	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}},
+	'family':{
+	'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Name'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'family_name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
+	,'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Code'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
+		 ,'name':'family_code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
+	,'special_char':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Special Characteristic'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'family_special_char'
+		,'ar':false,'ar_request':false}
+	,'description':{'changed':false,'validated':false,'required':false,'group':1,'type':'textarea','dbname':'Product Family Description'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Description')?>'}]
+		 ,'name':'family_description','ar':false,'ar_request':false}	 
+		 }
+
+ ,'department_page_properties':{
+	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+		 ,'name':'department_page_properties_url','ar':false
+		 
+	},
+	'link_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Link Title')?>'}]
+		 ,'name':'department_page_properties_link_title','ar':false
+		 
+	}
+	,'page_code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]
+		 ,'name':'department_page_properties_page_code'
+		 ,'ar':'find','ar_request':'ar_sites.php?tipo=is_page_store_code&site_key='+Dom.get('site_key').value+'&query='
+	}
+	
+    }
+     ,'department_page_html_head':{
+	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+		 ,'name':'department_page_html_head_url','ar':false
+		 
+	}
+	,'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+		 ,'name':'department_page_html_head_title','ar':false
+		 
+	}
+	
+	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_html_head_keywords','ar':false}
+    }
+,'department_page_header':{
+	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+		 ,'name':'department_page_header_store_title','ar':false
+		 
+	}
+	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_header_subtitle','ar':false}
+	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_header_slogan','ar':false}
+	,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_header_resume','ar':false}
+	
+    }
+,'department_page_content':{
+	
+	'presentation_template_data':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_content_presentation_template_data','ar':false}
+	
+    }
+
+		 
+};
+
+
 
 //   var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
  //   YAHOO.util.Event.addListener(ids, "click", select_layout);
@@ -622,6 +756,21 @@ function init(){
  	//YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
 
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
+
+
+ YAHOO.util.Event.addListener('reset_edit_department_page_html_head', "click", reset_edit_department_page_html_head);
+
+    YAHOO.util.Event.addListener('save_edit_department_page_html_head', "click", save_edit_department_page_html_head);
+
+
+ YAHOO.util.Event.addListener('reset_edit_department_page_header', "click", reset_edit_department_page_header);
+    YAHOO.util.Event.addListener('save_edit_department_page_header', "click", save_edit_department_page_header);
+
+YAHOO.util.Event.addListener('reset_edit_department_page_content', "click", reset_edit_department_page_content);
+    YAHOO.util.Event.addListener('save_edit_department_page_content', "click", save_edit_department_page_content);
+    
+    YAHOO.util.Event.addListener('reset_edit_department_page_properties', "click", reset_edit_department_page_properties);
+    YAHOO.util.Event.addListener('save_edit_department_page_properties', "click", save_edit_department_page_properties);
 
 
 
@@ -655,6 +804,76 @@ var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_family_code);
     var family_special_char_oAutoComp = new YAHOO.widget.AutoComplete("family_special_char","family_special_char_Container", family_special_char_oACDS);
     family_special_char_oAutoComp.minQueryLength = 0; 
     family_special_char_oAutoComp.queryDelay = 0.1;
+
+
+
+ var department_page_properties_page_code_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_properties_page_code);
+    department_page_properties_page_code_oACDS.queryMatchContains = true;
+    var department_page_properties_page_code_oAutoComp = new YAHOO.widget.AutoComplete("department_page_properties_page_code","department_page_properties_page_code_Container", department_page_properties_page_code_oACDS);
+    department_page_properties_page_code_oAutoComp.minQueryLength = 0; 
+    department_page_properties_page_code_oAutoComp.queryDelay = 0.1;
+
+
+ var department_page_properties_url_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_properties_url);
+    department_page_properties_url_oACDS.queryMatchContains = true;
+    var department_page_properties_url_oAutoComp = new YAHOO.widget.AutoComplete("department_page_properties_url","department_page_properties_url_Container", department_page_properties_url_oACDS);
+    department_page_properties_url_oAutoComp.minQueryLength = 0; 
+    department_page_properties_url_oAutoComp.queryDelay = 0.1;
+    
+     var department_page_properties_link_title_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_properties_link_title);
+    department_page_properties_link_title_oACDS.queryMatchContains = true;
+    var department_page_properties_link_title_oAutoComp = new YAHOO.widget.AutoComplete("department_page_properties_link_title","department_page_properties_link_title_Container", department_page_properties_link_title_oACDS);
+    department_page_properties_link_title_oAutoComp.minQueryLength = 0; 
+    department_page_properties_link_title_oAutoComp.queryDelay = 0.1;
+    
+    
+    var department_page_html_head_title_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_html_head_title);
+    department_page_html_head_title_oACDS.queryMatchContains = true;
+    var department_page_html_head_title_oAutoComp = new YAHOO.widget.AutoComplete("department_page_html_head_title","department_page_html_head_title_Container", department_page_html_head_title_oACDS);
+    department_page_html_head_title_oAutoComp.minQueryLength = 0; 
+    department_page_html_head_title_oAutoComp.queryDelay = 0.1;
+
+    var department_page_html_head_keywords_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_html_head_keywords);
+    department_page_html_head_keywords_oACDS.queryMatchContains = true;
+    var department_page_html_head_keywords_oAutoComp = new YAHOO.widget.AutoComplete("department_page_html_head_keywords","department_page_html_head_keywords_Container", department_page_html_head_keywords_oACDS);
+    department_page_html_head_keywords_oAutoComp.minQueryLength = 0; 
+    department_page_html_head_keywords_oAutoComp.queryDelay = 0.1;
+
+
+ var department_page_header_store_title_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_header_store_title);
+    department_page_header_store_title_oACDS.queryMatchContains = true;
+    var department_page_header_store_title_oAutoComp = new YAHOO.widget.AutoComplete("department_page_header_store_title","department_page_header_store_title_Container", department_page_header_store_title_oACDS);
+    department_page_header_store_title_oAutoComp.minQueryLength = 0; 
+    department_page_header_store_title_oAutoComp.queryDelay = 0.1;
+    
+ var department_page_header_subtitle_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_header_subtitle);
+    department_page_header_subtitle_oACDS.queryMatchContains = true;
+    var department_page_header_subtitle_oAutoComp = new YAHOO.widget.AutoComplete("department_page_header_subtitle","department_page_header_subtitle_Container", department_page_header_subtitle_oACDS);
+    department_page_header_subtitle_oAutoComp.minQueryLength = 0; 
+    department_page_header_subtitle_oAutoComp.queryDelay = 0.1;
+var department_page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_header_slogan);
+    department_page_header_slogan_oACDS.queryMatchContains = true;
+    var department_page_header_slogan_oAutoComp = new YAHOO.widget.AutoComplete("department_page_header_slogan","department_page_header_slogan_Container", department_page_header_slogan_oACDS);
+    department_page_header_slogan_oAutoComp.minQueryLength = 0; 
+    department_page_header_slogan_oAutoComp.queryDelay = 0.1;
+
+    var department_page_header_resume_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_header_resume);
+    department_page_header_resume_oACDS.queryMatchContains = true;
+    var department_page_header_resume_oAutoComp = new YAHOO.widget.AutoComplete("department_page_header_resume","department_page_header_resume_Container", department_page_header_resume_oACDS);
+    department_page_header_resume_oAutoComp.minQueryLength = 0; 
+    department_page_header_resume_oAutoComp.queryDelay = 0.1;
+    
+
+    
+    var department_page_content_presentation_template_data_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_content_presentation_template_data);
+    
+    department_page_content_presentation_template_data_oACDS.queryMatchContains = true;
+    var department_page_content_presentation_template_data_oAutoComp = new YAHOO.widget.AutoComplete("department_page_content_presentation_template_data","department_page_content_presentation_template_data_Container", department_page_content_presentation_template_data_oACDS);
+    department_page_content_presentation_template_data_oAutoComp.minQueryLength = 0; 
+    department_page_content_presentation_template_data_oAutoComp.queryDelay = 0.1;
+
+
+
 
  
     function mygetTerms(query) {multireload();};

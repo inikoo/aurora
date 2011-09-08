@@ -72,7 +72,7 @@ class Image  {
 
 
     function get_data($tipo='id',$id) {
-        $sql=sprintf("select `Image Key`,`Image Original`,`Image Thumbnail`,`Image Small`,`Image Large`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` from `Image Dimension` where `Image Key`=%d ",$id);
+        $sql=sprintf("select `Image Key`,`Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` from `Image Dimension` where `Image Key`=%d ",$id);
 
         $result=mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
@@ -224,8 +224,8 @@ class Image  {
             //else
             //    $this->name.='.'.$this->format;
 
-            $news_imgfile = fread(fopen($filename, "r"), filesize($filename));
-            $image_blob=addslashes($news_imgfile);
+            //$news_imgfile = fread(fopen($filename, "r"), filesize($filename));
+            $image_blob=$this->getImageData($this->im);
 
             $image_data=array(
                             'Image Width' => $this->im_x,
@@ -236,7 +236,7 @@ class Image  {
                         //    'Image URL'=>$name,
                             'Image Original Filename'=>$this->original_name,
                             'Image File Format'=>$this->format,
-                            'Image Original'=>$image_blob
+                            'Image Data'=>$image_blob
                         );
 
 
@@ -252,7 +252,7 @@ class Image  {
             $values='values(';
             foreach($image_data as $key=>$value) {
                 $keys.="`$key`,";
-                if ($key=='Image Original')
+                if ($key=='Image Data')
                     $values.="'".addslashes($value)."',";
                 elseif ($key=='Image Original Filename')
                     $values.=prepare_mysql($value,false).",";
@@ -285,9 +285,11 @@ class Image  {
 
                             );
                 mysql_query($sql);
-            } else {
+            }
+             else {
                 $this->error=true;
                 $this->msg='Can not insert the image '.mysql_error();
+                return;
             }
 
 
@@ -320,10 +322,10 @@ class Image  {
        // $name=$this->path.'thumbnails/'.$this->checksum.'.'.$this->format;
         //$this->saveImage($this->resized_im,$name);
         $image_blob=$this->getImageData($this->resized_im);
-        $sql=sprintf("update `Image Dimension` set `Image Thumbnail`='%s' where `Image Key`=%d ",addslashes($image_blob),$this->id);
+        $sql=sprintf("update `Image Dimension` set `Image Thumbnail Data`='%s' where `Image Key`=%d ",addslashes($image_blob),$this->id);
       
         mysql_query($sql);
-        $this->data['Image Thumbnail']=$image_blob;
+        $this->data['Image Thumbnail Data']=$image_blob;
     }
 
 
@@ -436,7 +438,7 @@ return $image_data;
     function create_small() {
     
      if($this->im_x<320 or $this->im_y<280){
-         $sql=sprintf("update `Image Dimension` set `Image Small`=NULL where `Image Key`=%d"
+         $sql=sprintf("update `Image Dimension` set `Image Small Data`=NULL where `Image Key`=%d"
                 
                      ,$this->id
                     );
@@ -463,12 +465,12 @@ return $image_data;
         
           $image_blob=$this->getImageData($this->resized_im);
         
-        $sql=sprintf("update `Image Dimension` set `Image Small`='%s' where `Image Key`=%d"
+        $sql=sprintf("update `Image Dimension` set `Image Small Data`='%s' where `Image Key`=%d"
                      ,addslashes($image_blob)
                      ,$this->id
                     );
         mysql_query($sql);
-        $this->data['Image Small']=$image_blob;
+        $this->data['Image Small Data']=$image_blob;
 
     }
 
@@ -479,7 +481,7 @@ return $image_data;
     
     
     if($this->im_x<800 or $this->im_y<600){
-      $sql=sprintf("update `Image Dimension` set `Image Large`=NULL where `Image Key`=%d"
+      $sql=sprintf("update `Image Dimension` set `Image Large Data`=NULL where `Image Key`=%d"
                     
                      ,$this->id
                     );
@@ -505,12 +507,12 @@ return $image_data;
         
         $image_blob=$this->getImageData($this->resized_im);
         
-        $sql=sprintf("update `Image Dimension` set `Image Large`='%s' where `Image Key`=%d"
+        $sql=sprintf("update `Image Dimension` set `Image Large Data`='%s' where `Image Key`=%d"
                      ,addslashes($image_blob)
                      ,$this->id
                     );
         mysql_query($sql);
-        $this->data['Image Large']=$image_blob;
+        $this->data['Image Large Data']=$image_blob;
 
     }
 
@@ -580,13 +582,7 @@ return $image_data;
         $num_subjects=count($this->subjects);
 
         if ($num_subjects==0 or $force) {
-            unlink($this->data['Image URL']);
-            if ($this->data['Image Thumbnail URL']!='')
-                unlink($this->data['Image Thumbnail URL']);
-            if ($this->data['Image Small URL']!='')
-                unlink($this->data['Image Small URL']);
-            if ($this->data['Image Large URL']!='')
-                unlink($this->data['Image Large URL']);
+          
 
             $sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
             // print $sql;
@@ -603,6 +599,9 @@ return $image_data;
     }
 
 
-
+    function get_url(){
+    
+        return "image.php?id=".$this->id;
+    }
 
 }

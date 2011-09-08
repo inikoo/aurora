@@ -56,9 +56,8 @@ $user_staff=new User($id);
 // print($user_staff->data['User Type']);  //User Type is not selected
 
 
-    $_SESSION['state']['user']['id']=$user_staff->id;
-
-$block_view=$_SESSION['state']['user']['block_view'];
+   
+$block_view=$_SESSION['state']['staff_user']['block_view'];
 $smarty->assign('block_view',$block_view);
 
 if ($modify) {
@@ -68,15 +67,14 @@ if ($modify) {
 
 
 $smarty->assign('general_options_list',$general_options_list);
-$smarty->assign('search_label',_('Customers'));
-$smarty->assign('search_scope','customers');
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','users');
 
 
 
 
 $title=_('Staff User');
 $smarty->assign('user_class',$user_staff);
-$smarty->assign('staff_user',$user);
 
 
 $smarty->assign('title', $title);

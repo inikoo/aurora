@@ -1459,13 +1459,30 @@ return $delivery_notes;
  
  function pay_full_amount($data){
  $this->data['Invoice Paid Date']=$data['Invoice Paid Date'];
-   $sql = sprintf ( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Invoice Key`=%d and `Consolidated`='No' "
+ 
+ $sql=sprintf("select `Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+ $this->id);
+ 
+ $res=mysql_query($sql);
+ 
+while($row=mysql_fetch_assoc($res)){
+  $sql = sprintf ( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Order Transaction Fact Key`=%d "
    ,prepare_mysql($data['Payment Method'])
    ,prepare_mysql($this->data['Invoice Paid Date'])
-   ,$this->id);
-    //print "$sql\n";
+   ,$row['Order Transaction Fact Key']);
+ 
    mysql_query ( $sql );
 
+    $sql=sprintf ( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
+   ,$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items']
+   ,$row['Order Transaction Fact Key']);
+ 
+   mysql_query ( $sql );
+//print "$sql\n";
+}
+ 
+ 
+ 
      $sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
 		,prepare_mysql($this->data['Invoice Main Payment Method'])
 		,prepare_mysql($this->data['Invoice Paid Date'])
@@ -1597,9 +1614,31 @@ function add_refund_no_product_transaction($refund_transaction_data) {
  
  function add_refund_transaction($refund_transaction_data){
  
- $sql=sprintf("update `Order Transaction Fact` set `Refund Metadata`=%s,`Refund Key`=%d, `Invoice Transaction Net Refund Amount`=%f, `Invoice Transaction Tax Refund Amount`=%f  ,`Invoice Transaction Outstanding Refund Net Balance`=%f ,`Invoice Transaction Outstanding Refund Tax Balance`=%f where `Order Transaction Fact Key`=%d ",
+    
+ 
+ 
+ $sql=sprintf("update `Order Transaction Fact` set `Refund Metadata`=%s,`Refund Key`=%d, 
+
+ `Invoice Transaction Net Refund Items`=%f,
+ `Invoice Transaction Net Refund Shipping`=%f,
+ `Invoice Transaction Net Refund Charges`=%f,
+ `Invoice Transaction Tax Refund Items`=%f,
+ `Invoice Transaction Tax Refund Shipping`=%f,
+ `Invoice Transaction Tax Refund Charges`=%f,
+
+ `Invoice Transaction Net Refund Amount`=%f,
+  `Invoice Transaction Tax Refund Amount`=%f  ,
+  `Invoice Transaction Outstanding Refund Net Balance`=%f ,`Invoice Transaction Outstanding Refund Tax Balance`=%f where `Order Transaction Fact Key`=%d ",
  prepare_mysql($refund_transaction_data['Refund Metadata']),
  $this->id,
+  $refund_transaction_data['Invoice Transaction Net Refund Items'],
+   $refund_transaction_data['Invoice Transaction Net Refund Shipping'],
+  $refund_transaction_data['Invoice Transaction Net Refund Charges'],
+  $refund_transaction_data['Invoice Transaction Tax Refund Items'],
+  $refund_transaction_data['Invoice Transaction Tax Refund Shipping'],
+  $refund_transaction_data['Invoice Transaction Tax Refund Charges'],
+
+ 
   $refund_transaction_data['Invoice Transaction Net Refund Amount'],
    $refund_transaction_data['Invoice Transaction Tax Refund Amount'],
     $refund_transaction_data['Invoice Transaction Net Refund Amount'],
@@ -1609,6 +1648,7 @@ function add_refund_no_product_transaction($refund_transaction_data) {
  );
  mysql_query($sql);
  //print $sql;
+ //print "$sql\n";
  $this->update_refund_totals();
  }
  

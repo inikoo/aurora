@@ -57,7 +57,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'parts.php?warehouse_id='.$wa
 }else{
 $general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Warehouse'));
 $general_options_list[]=array('tipo'=>'url','url'=>'locations.php','label'=>_('Locations'));
-$general_options_list[]=array('tipo'=>'url','url'=>'parts.php','label'=>_('Parts'));
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php','label'=>_('Parts'));
 
 }
 

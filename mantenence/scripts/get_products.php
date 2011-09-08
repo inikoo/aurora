@@ -73,10 +73,10 @@ $editor=array(
 
 //$csv_file='order_uk_tmp.csv';
 $csv_file='gb.csv';
-//print '/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file;
+print '/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file;
 
 //exit;
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -531,13 +531,12 @@ foreach($__cols as $cols){
 
 
 
-
        $data=array(
          'editor'=>$editor,
 		  'product sales type'=>'Public Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
-		  'product web state'=>'Online Auto',
+		  'Product Web Configuration'=>'Online Auto',
 		  'product store key'=>$store_key,
 		  'product currency'=>'GBP',
 		  'product locale'=>'en_GB',
@@ -557,65 +556,66 @@ foreach($__cols as $cols){
 		    );
 
 
-//print_r($data);
-       if(array_key_exists($code,$codigos)){
-	 print "Product: $code is duplicated\n";
-	 continue;
-       }
-       
-       $codigos[$code]=1;
+ //print_r($data);
+   if (array_key_exists($code,$codigos)) {
+    print "Product: $code is duplicated\n";
+    continue;
+}
 
-       $product=new Product('find',$data,'create');
-       
+$codigos[$code]=1;
 
-       if($product->new_id){
-	 $scode=_trim($cols[$map['supplier_product_code']]);
-	 $supplier_code=$cols[$map['supplier_code']];
-	 update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
-	 
-	 $old_pids=$product->set_duplicates_as_historic($date);
-	 if(count($old_pids)>0){
-	   $sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID` in (".join(",",$old_pids).")  ";
-	   
-	   $res=mysql_query($sql);
-	   $skus='';
-	   if ($row=mysql_fetch_array($res)) {
-	     $skus= $row['skus'];
-	   }
-	   
-	   if($skus!=''){
-	     $sql="update `Part Dimension` set `Part Status`='Not In Use',`Part Valid To`=".prepare_mysql($date)." where `Part SKU` in (".$skus.") ";
-	     if(!mysql_query($sql)){
-	       exit("$sql\nError\n");
-	     }
-	     
-	   }
-	 }
+$product=new Product('find',$data,'create');
 
 
- }
-       
-     $product->change_current_key($product->id);
-     //print_r($cols);
-     //print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
-     
-     $product->update_rrp('Product RRP',$rrp);
+if ($product->new_id) {
+    $scode=_trim($cols[$map['supplier_product_code']]);
+    $supplier_code=$cols[$map['supplier_code']];
+    update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
 
-     
+    $old_pids=$product->set_duplicates_as_historic($date);
+    if (count($old_pids)>0) {
+        $sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID` in (".join(",",$old_pids).")  ";
+
+        $res=mysql_query($sql);
+        $skus='';
+        if ($row=mysql_fetch_array($res)) {
+            $skus= $row['skus'];
+        }
+
+        if ($skus!='') {
+            $sql="update `Part Dimension` set `Part Status`='Not In Use',`Part Valid To`=".prepare_mysql($date)." where `Part SKU` in (".$skus.") ";
+            if (!mysql_query($sql)) {
+                exit("$sql\nError\n");
+            }
+
+        }
     }
-     
-  }else{
+
+
+}
+
+$product->change_current_key($product->id);
+//print_r($cols);
+//print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
+
+$product->update_rrp('Product RRP',$rrp);
+
+
+
+}
+
+} else {
 
     $new_family=true;
-    
+
     // print "Col $column\n";
     //print_r($cols);
-    if($cols[$map['code']]!='' and $cols[$map['description']]!=''  and $cols[$map['code']]!='SHOP-Fit' and $cols[$map['code']]!='RDS-47' and $cols[$map['code']]!='ISH-94' and $cols[$map['code']]!='OB-108' and !preg_match('/^DB-/',$cols[$map['code']])  and !preg_match('/^pack-/i',$cols[$map['code']])  ){
-      $fam_code=$cols[$map['code']];
-      $fam_name=_trim( mb_convert_encoding($cols[$map['description']], "UTF-8", "ISO-8859-1,UTF-8"));
-      $fam_position=$column;
+    if ($cols[$map['code']]!='' and $cols[$map['description']]!=''  and $cols[$map['code']]!='SHOP-Fit' and $cols[$map['code']]!='RDS-47' and $cols[$map['code']]!='ISH-94' and $cols[$map['code']]!='OB-108' and !preg_match('/^DB-/',$cols[$map['code']])  and !preg_match('/^pack-/i',$cols[$map['code']])  ) {
+        $fam_code=$cols[$map['code']];
+        $fam_name=_trim( mb_convert_encoding($cols[$map['description']], "UTF-8", "ISO-8859-1,UTF-8"));
+        $fam_position=$column;
 
-      
+
     }
     
     if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[$map['description']]))){

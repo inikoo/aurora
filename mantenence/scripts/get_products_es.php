@@ -583,7 +583,7 @@ $description='Rose Garden (Red)';
 		    'product sales type'=>'Public Sale',
 		    'product type'=>'Normal',
 		    'product record type'=>'Normal',
-		    'product web state'=>'Online Auto',
+		    'Product Web Configuration'=>'Online Auto',
 
 		    'product code'=>$code,
 		    'product price'=>sprintf("%.2f",$price),

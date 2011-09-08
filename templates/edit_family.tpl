@@ -3,6 +3,8 @@
 {include file='assets_navigation.tpl'}
 
 
+<input type='hidden' id="family_key" value="{$family->id}">
+
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
 </div>
@@ -17,16 +19,10 @@
     <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
   </ul>
  <div class="tabbed_container" > 
-    <div id="info_name" style="margin-left:20px;float:left;width:260px;{if !($edit=='discounts' or $edit=='pictures')  }display:none{/if}">
-	<table    class="show_info_product">
-	  <tr>
-	    <td>{t}Family Code{/t}:</td><td  class="aright">{$family->get('Product Family Code')}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}Family Name{/t}:</td><td  class="aright">{$family->get('Product Family Name')}</td>
-	  </tr>
-	</table>
-      </div>
+   
+      
+      
+      
     <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
     
@@ -39,16 +35,17 @@
 
 
 
-    <table styel="clear:both" class="edit" border=1>
-      <tr><td class="label" style="width:200px">{t}Family Code{/t}:</td><td>
-	 <div  style="width:15em" >
+    <table style="clear:both;width:800px" class="edit">
+      <tr>
+      <td class="label" style="width:100px">{t}Family Code{/t}:</td><td>
+	 <div   >
 
 	      <input  
 		 id="code" 
 		 changed=0 
 		 type='text' 
 		 class='text' 
-		 style="width:15em" 
+		  
 		 MAXLENGTH="16" 
 		 value="{$family->get('Product Family Code')}" 
 		 ovalue="{$family->get('Product Family Code')}"  
@@ -60,14 +57,14 @@
 
 	  </tr>
 	  <tr><td class="label">{t}Family Name{/t}:</td><td>
-	      <div  style="width:30em" >
+	      <div   >
 		<input   
 		   id="name" 
 		  
 		   changed=0 
 		   type='text'  
 		   MAXLENGTH="255" 
-		   style="width:30em"  
+		     
 		   class='text' 
 		   value="{$family->get('Product Family Name')}"  
 		   ovalue="{$family->get('Product Family Name')}"  
@@ -78,13 +75,13 @@
 	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
 	  <tr><td class="label">{t}Family Char{/t}:</td><td>
-	      <div  style="width:30em" >
+	      <div   >
 		<input   
 		   id="special_char" 
 		 
 		   type='text'  
 		   MAXLENGTH="255" 
-		   style="width:30em"  
+		     
 		   class='text' 
 		   value="{$family->get('Product Family Special Characteristic')}"  
 		   ovalue="{$family->get('Product Family Special Characteristic')}"  
@@ -95,12 +92,12 @@
 	     <td id="special_char_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
       <tr style="height:80px"><td class="label">{t}Description{/t}:</td><td>
-	      <div  style="width:30em" >
+	      <div   >
 		<textarea   
 		   id="description" 
 		   name="description" 
 		   rows="5"
-		   style="width:30em"  
+		     
 		   class='text' 
 		   value="{$family->get('Product Family Description')}"  
 		   ovalue="{$family->get('Product Family Description')}"  
@@ -113,15 +110,18 @@
 	  </tr>
     </table>
     </div>
+    
      <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
-{include file='edit_images_splinter.tpl'}
-</div>
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
+          {include file='edit_images_splinter.tpl'}
+     </div>
+    
+    
+    <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>
 	   <table class="edit" >
-	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text'  MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255"   class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
@@ -146,69 +146,129 @@
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
 
       <div class="general_options" style="float:right">
-	     <span style="margin-right:10px;{if $family->get('Product Family Page Key')}display:none{/if}"  onclick="" id="web_create" class="state_details">{t}Create Page{/t}</span>
-	  
+	     <span style="margin-right:10px;"   id="new_family_page" class="state_details" >{t}Create Page{/t}</span>
+	        <span style="margin-right:10px;{if $number_of_pages<=1}display:none{/if}" " id="page_list" class="state_details"><a href="edit_family.php?id={$family->id}">{t}Page List{/t} ({$number_of_pages})</a></span>
+
 	   </div>
 	
-
-	{if $family->get('Product Family Page Key')}
-
 	
-	   <table class="edit"  id="edit_family_page"  page_key={$family->get('Product Family Page Key')}    >
-	     <tr class="title"><td colspan="2">{t}Page Properties{/t} [HTML HEAD]
+	
+		<input type='hidden' id="site_key" value="{$site_key}">
+				<input type='hidden' id="page_key" value="{$page_key}">
 
 
 
-	     </td></tr>
-	     <tr><td class="label">{t}URL{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_html_head_url"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
-		   <div id="family_page_html_head_url_msg"></div>
-		   <div id="family_page_html_head_url_Container" style="" ></div>
+<div   class="data_table" style="clear:both;{if $page_key}display:none{/if}" >
+	  <span class="clean_table_title">{t}Pages{/t}</span> 
+	  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+   {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
+	  <div  id="table6"  style="font-size:90%" class="data_table_container dtable btable "> </div>
+	</div>
+
+	   <table class="edit"  id="edit_family_page"  style="width:100%;clear:both;{if !$page_key}display:none{/if}" page_key="{$page_key}"   >
+	     <tr class="title"><td colspan="2">{t}Page Properties{/t}
+	     </td>
+	     <td>
+	      <div class="general_options" style="float:right">
+		   
+		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_properties" class="state_details">{t}Save{/t}</span>
+		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_properties" class="state_details">{t}Reset{/t}</span>
+		   
+      </div>
+	     </td>
+	     
+	     </tr>
+
+  <tr><td width="180px" class="label">{t}Page Code{/t}:</td>
+	     <td>
+		 <div   >     
+		   <input  id="family_page_properties_page_code"   value="{$page_data.PageCode}" ovalue="{$page_data.PageCode}"  />
+		   
+		   <div id="family_page_properties_page_code_Container" style="" ></div>
 		 </div>
-	       </td><td>
-		 <div class="general_options" style="float:right">
+	       </td><td><div id="family_page_properties_page_code_msg"></div></td></tr>
+
+	     <tr><td width="180px" class="label">{t}URL{/t}:</td>
+	     <td>
+		 <div   >
+		   <input  id="family_page_properties_url"   value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
+		   
+		   <div id="family_page_properties_url_Container" style="" ></div>
+		 </div>
+	       </td><td><div id="family_page_properties_url_msg"></div>
+      </td></tr>
+
+
+<tr><td width="180px" class="label">{t}Link Title{/t}:</td>
+	     <td>
+		 <div   >
+		   <input  id="family_page_properties_link_title"   value="{$page_data.PageShortTitle}" ovalue="{$page_data.PageShortTitle}"  />
+		   
+		   <div id="family_page_properties_link_title_Container" style="" ></div>
+		 </div>
+	       </td><td><div id="family_page_properties_link_title_msg"></div>
+      </td></tr>
+
+
+<tr><td class="label">{t}Page Type{/t}:</td>
+ <td>
+ <table>
+ <tr><td class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.PageStoreType=="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
+ 
+
+ </table>
+ 
+	
+	
+
+    </td></tr>
+
+<tbody id="tbody_html_head"  style="{if $page_data.PageStoreType=="External Content and HTML HEAD"}display:none{/if}">
+
+	     <tr class="title"><td colspan="2">{t}Page Properties{/t} [HTML HEAD]
+	     </td><td>
+	     	 <div class="general_options" style="float:right">
 		   
 		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_html_head" class="state_details">{t}Save{/t}</span>
 		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_html_head" class="state_details">{t}Reset{/t}</span>
 		   
       </div>
+	     
+	     </td></tr>
 
-      </td></tr>
+
+
+
 	     <tr><td class="label">{t}Title{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_html_head_title"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
-		   <div id="family_page_html_head_title_msg"></div>
+		 <div   >
+		   <input  id="family_page_html_head_title"    value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
+		   
 		   <div id="family_page_html_head_title_Container" style="" ></div>
 		 </div>
-	       </td><td>
-		
-
-      </td></tr>
+	       </td><td><div id="family_page_html_head_title_msg"></div> </td></tr>
 	    
 	     <tr><td class="label">{t}Keywords{/t}:</td>
 	       <td>
-		 <div  style="width:30em" >
-		   <textarea  id="family_page_html_head_keywords"  style="width:30em" MAXLENGTH="24" value="{$page_data.PageKeywords}" ovalue="{$page_data.PageKeywords}"  >{$page_data.PageKeywords}</textarea>
-		   <div id="family_page_html_head_keywords_msg"></div>
+		 <div  style="height:60px" >
+		   <textarea  id="family_page_html_head_keywords"  value="{$page_data.PageKeywords}" ovalue="{$page_data.PageKeywords}"  >{$page_data.PageKeywords}</textarea>
+		   
 		   <div id="family_page_html_head_keywords_Container" style="" ></div>
 		 </div>
 		 
 		 
-	     </td></tr>
+	     </td><td><div id="family_page_html_head_keywords_msg"></div></td></tr>
 
 
-<tr class="title"><td colspan="2">Content (Header)</td></tr>
 
 
-	     <tr><td class="label">{t}Title{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_header_store_title"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageStoreTitle}" ovalue="{$family->get('Page Store Title')}"  />
-		   <div id="family_page_header_store_title_msg"></div>
-		   <div id="family_page_header_store_title_Container" style="" ></div>
-		 </div>
-	       </td>
-	       <td>
+
+  </tbody>
+
+
+
+
+<tr class="title"><td colspan="2">Content (Header)</td>
+   <td>
 		 <div class="general_options" style="float:right">
 		   
 		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_header" class="state_details">{t}Save{/t}</span>
@@ -217,33 +277,58 @@
 		 </div>
 		 
 	       </td>
+</tr>
+
+
+	     <tr><td class="label">{t}Title{/t}:</td><td>
+		 <div   >
+		   <input  id="family_page_header_store_title"   value="{$page_data.PageStoreTitle}" ovalue="{$page_data.PageStoreTitle}"  />
+		   
+		   <div id="family_page_header_store_title_Container" style="" ></div>
+		 </div>
+	       </td><td><div id="family_page_header_store_title_msg"></div></td>
+	    
 	       
 	     </tr>
 	     <tr><td class="label">{t}Subtitle{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_header_subtitle"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageStoreSubtitle}" ovalue="{$page_data.PageStoreSubtitle}"  />
-		   <div id="family_page_header_subtitle_msg"></div>
+		 <div   >
+		   <input  id="family_page_header_subtitle"   value="{$page_data.PageStoreSubtitle}" ovalue="{$page_data.PageStoreSubtitle}"  />
+		   
 		   <div id="family_page_header_subtitle_Container" style="" ></div>
 		 </div>
 		 
-	     </td></tr>
+	     </td><td><div id="family_page_header_subtitle_msg"></div></td></tr>
 	     <tr style="display:none"><td class="label">{t}Slogan{/t}:</td><td>
-		 <div  style="width:15em" >
-		 <input  id="family_page_header_slogan"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageStoreSlogan}" ovalue="{$page_data.PageStoreSlogan}"  />
+		 <div   >
+		 <input  id="family_page_header_slogan"   value="{$page_data.PageStoreSlogan}" ovalue="{$page_data.PageStoreSlogan}"  />
 		 <div id="family_page_header_slogan_msg"></div>
 		 <div id="family_page_header_slogan_Container" style="" ></div>
 		 </div>
 	     </td></tr>
 	     <tr style="display:none"><td class="label">{t}Short Introduction{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_header_resume"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageStoreResume}" ovalue="{$page_data.PageStoreResume}"  />
+		 <div   >
+		   <input  id="family_page_header_resume"   value="{$page_data.PageStoreResume}" ovalue="{$page_data.PageStoreResume}"  />
 		   <div id="family_page_header_resume_msg"></div>
 		   <div id="family_page_header_resume_Container" style="" ></div>
 		 </div>
 	     </td></tr>
-	     <tr class="title"><td colspan="2">Content</td></tr>
-
-<tr  style="display:none" ><td class="label">{t}Offers{/t}:<td>
+	     
+	     
+	   <tbody id="tbody_content"  style="{if $page_data.PageStoreType=="External Content and HTML HEAD"}display:none{/if}">
+	     
+	     
+	     <tr class="title"><td colspan="2">Content</td>
+	     <td>
+		 <div class="general_options" style="float:right">
+		   
+		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_content" class="state_details">{t}Save{/t}</span>
+		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_content" class="state_details">{t}Reset{/t}</span>
+		   
+		 </div>
+		 
+	       </td>
+	     </tr>
+        <tr id="tr_offers" style="display:none" ><td class="label">{t}Offers{/t}:<td>
     <table class="options" style="float:left" >
       
       <td  {if $currency_type=='original'}class="selected"{/if} id="original"  >{t}Auto{/t}</td>
@@ -253,7 +338,8 @@
   </table>
 
 </td></tr>
-<tr  style="display:none" ><td class="label">{t}New Products{/t}:<td>
+        
+        <tr id="tr_new_products" style="display:none" ><td class="label">{t}New Products{/t}:<td>
      <table class="options" style="float:left" >
     
        <td  {if $currency_type=='original'}class="selected"{/if} id="original"  >{t}New Products{/t}</td>
@@ -264,20 +350,11 @@
   </table>
 
 </td></tr>
-<tr><td></td><td></td>
-<td>
-		 <div class="general_options" style="float:right">
-		   
-		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_content" class="state_details">{t}Save{/t}</span>
-		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_content" class="state_details">{t}Reset{/t}</span>
-		   
-		 </div>
-		 
-	       </td>
-</tr>
+
+
 
 	     <tr><td spancols=2 class="label">{t}Family Description{/t}:<br/>HTML/Smarty</td><td>
-		 <div  style="width:15em" >
+		 <div style="height:200px"  >
 		 <textarea  id="family_page_content_presentation_template_data"  style="width:450px" rows="10"  value="{$page_data.ProductPresentationTemplateData}" ovalue="{$page_data.ProductPresentationTemplateData}"  >{$page_data.ProductPresentationTemplateData}</textarea>
 		 <div id="family_page_content_presentation_template_data_msg"></div>
 		 <div id="family_page_content_presentation_template_data_Container" style="" ></div>
@@ -291,6 +368,7 @@
 
 
 <tr class="title"><td>Layout</td></tr>
+
  <tr><td></td></tr>
  
    <tr style="display:none"  ><td class="label">{t}Header Block Layout{/t}:</td>
@@ -328,25 +406,30 @@
     </td></tr>
 
   </tr>
-  <tbody id="layout_slideshow_options" style="{if $page_data.ProductSlideshowLayout=="No"}display:none{/if}">
+  
+  
+  
+  </tbody>
+  
+  <tbody id="layout_slideshow_options" style="{if $page_data.ProductSlideshowLayout=="No" or $page_data.PageStoreType=="External Content and HTML HEAD"   }display:none{/if}">
     <tr class="title"><td>{t}Slideshow Layout{/t}</td></tr>
     <tr><td class="label">{t}Products{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_slideshow.png"/></div></td>
     
    </tr>    
   </tbody>  
-    <tbody id="layout_thumbnails_options" style="{if $page_data.ProductThumbnailsLayout=="No"}display:none{/if}">
+    <tbody id="layout_thumbnails_options" style="{if $page_data.ProductThumbnailsLayout=="No"   or $page_data.PageStoreType=="External Content and HTML HEAD" }display:none{/if}">
     <tr class="title"><td>{t}Thumbnails Layout{/t}</td></tr>
     <tr><td class="label">{t}Products{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_thumbnails.png"/></div></td>
     
    </tr>  
      </tbody>  
-  <tbody id="layout_lists_options" style="{if $page_data.ProductListLayout=="No"}display:none{/if}">
+  <tbody id="layout_lists_options" style="{if $page_data.ProductListLayout=="No"   or $page_data.PageStoreType=="External Content and HTML HEAD" }display:none{/if}">
   <tr class="title"><td>{t}List Layout{/t}</td></tr>
     <tr><td class="label">{t}Products{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_list.png"/></div></td>
     
    </tr> 
      </tbody>  
-      <tbody id="layout_manual_options" style="{if $page_data.ProductManualLayout=="No"}display:none{/if}">
+      <tbody id="layout_manual_options" style="{if $page_data.ProductManualLayout=="No"  or $page_data.PageStoreType=="External Content and HTML HEAD" }display:none{/if}">
     <tr class="title"><td>{t}Handmade Product Layout{/t}</td></tr>
     
     <tr><td class="label">{t}HTML files{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_manual.png"/></div></td><td>
@@ -550,7 +633,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
       </tbody>  
     
    </table>
-{/if}
+
 
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
@@ -587,9 +670,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	    <div  id="dmenu" style="width:30em;position:relative;left:22.6em;bottom:17px;display:none ">
 	      <input name="dmenu_input" id="dmenu_input" type='text'  SIZE="32" MAXLENGTH="20" class='text' />
 	      <div id="dmenu_container"></div></div>
-
-
-</td></tr>
+        </td></tr>
 
 	    <tr>
 	      <td colspan="2">
@@ -634,7 +715,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
 	    <tr><td colspan="2">
 		<div id="new_part_container"  class=""  style="border:1px solid #ccc">
-		  <table border=1 class="edit" >
+		  <table class="edit" >
 		    
 		    <tr><td class="label" style="width:7em">{t}Part{/t}:</td>
 		      <td  style="text-align:left">
@@ -690,21 +771,19 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
 
 	  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	    <tr><td  {if $view=='view_state'}class="selected"{/if} id="view_state" >{t}State{/t}</td>
-	      {if $view_stock}<td {if $view=='view_name'}class="selected"{/if}  id="view_name"  >{t}Name{/t}</td>{/if}
-	      {if $view_sales}<td  {if $view=='view_price'}class="selected"{/if}  id="view_price"  >{t}Price{/t}</td>{/if}
+	    <tr>
+	        <td  {if $view=='view_state'}class="selected"{/if} id="view_state" >{t}State{/t}</td>
+	        <td {if $view=='view_name'}class="selected"{/if}  id="view_name"  >{t}Name{/t}</td>
+	        <td  {if $view=='view_price'}class="selected"{/if}  id="view_price"  >{t}Price{/t}</td>
 	    </tr>
 	  </table>
 	  
 	  
 	  
 	  
-	  <div  class="clean_table_caption"  style="clear:both;">
-	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-	  </div>
-	  <div  id="table0"   class="data_table_container dtable btable "> </div>
+   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+
+	  <div  id="table0"  style="font-size:90%" class="data_table_container dtable btable "> </div>
 	</div>
 
       </div>
@@ -745,5 +824,9 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
     </ul>
   </div>
 </div>
+
+
+
+
 
 {include file='footer.tpl'}

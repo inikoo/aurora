@@ -53,17 +53,17 @@ class Site extends DB_Table {
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->id=$this->data['Site Key'];
-            
-            if($this->data['Site Logo Data']!='')
-            $this->data['Site Logo Data']=unserialize($this->data['Site Logo Data']);
-            if($this->data['Site Header Data']!='')
-            $this->data['Site Header Data']=unserialize($this->data['Site Header Data']);
-            if($this->data['Site Content Data']!='')
-            $this->data['Site Content Data']=unserialize($this->data['Site Content Data']);
-            if($this->data['Site Footer Data']!='')
-            $this->data['Site Footer Data']=unserialize($this->data['Site Footer Data']);
-            if($this->data['Site Layout Data']!='')
-            $this->data['Site Layout Data']=unserialize($this->data['Site Layout Data']);
+
+            if ($this->data['Site Logo Data']!='')
+                $this->data['Site Logo Data']=unserialize($this->data['Site Logo Data']);
+            if ($this->data['Site Header Data']!='')
+                $this->data['Site Header Data']=unserialize($this->data['Site Header Data']);
+            if ($this->data['Site Content Data']!='')
+                $this->data['Site Content Data']=unserialize($this->data['Site Content Data']);
+            if ($this->data['Site Footer Data']!='')
+                $this->data['Site Footer Data']=unserialize($this->data['Site Footer Data']);
+            if ($this->data['Site Layout Data']!='')
+                $this->data['Site Layout Data']=unserialize($this->data['Site Layout Data']);
 
         }
 
@@ -97,23 +97,23 @@ class Site extends DB_Table {
         }
 
 
-        
+
 
 
         $sql=sprintf("select `Site Key` from `Site Dimension` where `Site Name`=%s and `Site Store Key`=%d ",
-            
-        prepare_mysql($raw_data['Site Name']),
-        $raw_data['Site Store Key']
-            
-        );
-        
+
+                     prepare_mysql($raw_data['Site Name']),
+                     $raw_data['Site Store Key']
+
+                    );
+
         $res=mysql_query($sql);
-        if($row=mysql_fetch_assoc($res)){
-             $this->found=true;
-        $this->found_key=$row['Site Key'];
-        $this->get_data('id',$this->found_key);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->found=true;
+            $this->found_key=$row['Site Key'];
+            $this->get_data('id',$this->found_key);
         }
-        
+
 
         if ($create and !$this->found) {
             $this->create($raw_data);
@@ -127,13 +127,13 @@ class Site extends DB_Table {
 //print_r($raw_data);
 
         $data=$this->base_data();
-     
-       
-       foreach($raw_data as $key=>$value) {
+
+
+        foreach($raw_data as $key=>$value) {
             if (array_key_exists($key,$data))
-                
-                
-                
+
+
+
                 if (is_array($value))
                     $data[$key]=serialize($value);
                 else
@@ -142,7 +142,7 @@ class Site extends DB_Table {
 
         }
 
-  
+
 
         $keys='(';
         $values='values(';
@@ -160,8 +160,8 @@ class Site extends DB_Table {
             $this->id=mysql_insert_id();
             $this->get_data('id',$this->id);
 
-           
-$this->create_site_page_sections();
+
+            $this->create_site_page_sections();
 
 
 
@@ -176,29 +176,29 @@ $this->create_site_page_sections();
 
 
 
-function create_site_page_sections(){
- $sections=getEnumValues('Page Store Dimension', 'Page Store Section');
+    function create_site_page_sections() {
+        $sections=getEnumValues('Page Store Dimension', 'Page Store Section');
 
- foreach($sections as $section){
-    $sql=sprintf("INSERT INTO `Page Store Section Dimension` (
-`Page Store Section Key` ,
-`Site Key` ,
-`Page Store Section Code` ,
-`Page Store Section Logo Data` ,
-`Page Store Section Header Data` ,
-`Page Store Section Content Data` ,
-`Page Store Section Footer Data` ,
-`Page Store Section Layout Data`
-)
-VALUES (
-NULL , %s, %s, NULL , NULL , NULL , NULL , NULL
-);
- ",$this->id,prepare_mysql($section));
- 
-mysql_query($sql);
+        foreach($sections as $section) {
+            $sql=sprintf("INSERT INTO `Page Store Section Dimension` (
+                         `Page Store Section Key` ,
+                         `Site Key` ,
+                         `Page Store Section Code` ,
+                         `Page Store Section Logo Data` ,
+                         `Page Store Section Header Data` ,
+                         `Page Store Section Content Data` ,
+                         `Page Store Section Footer Data` ,
+                         `Page Store Section Layout Data`
+                         )
+                         VALUES (
+                         NULL , %s, %s, NULL , NULL , NULL , NULL , NULL
+                         );
+                         ",$this->id,prepare_mysql($section));
+
+            mysql_query($sql);
 //print $sql;
-}
-}
+        }
+    }
 
 
 
@@ -253,7 +253,7 @@ mysql_query($sql);
         $page_data['Page Parent Key']=$this->data['Site Store Key'];
         $page_data['Page Site Key']=$this->id;
 
- $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+        $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
         $page_data['Page Store Section Key']=$page_section->id;
 
         $page=new Page('find',$page_data,'create');
@@ -273,10 +273,10 @@ mysql_query($sql);
             $product_layouts=$data['Product Layouts'];
         else
             $product_layouts=array('List'=>array('Display'=>true,'Type'=>'Auto'));
-        if(isset($data['Showcases Layout']))
-        $showcases_layout=$data['Showcases Layout'];
+        if (isset($data['Showcases Layout']))
+            $showcases_layout=$data['Showcases Layout'];
         else
-         $showcases_layout='';
+            $showcases_layout='';
         $page_data=array(
                        'Page Site Key'=>$this->id,
                        'Page Code'=>'index',
@@ -294,21 +294,21 @@ mysql_query($sql);
                        'Page Store Product Layouts'=>$product_layouts
                    );
 
-        if(array_key_exists('Page Store Header Data',$data)){
+        if (array_key_exists('Page Store Header Data',$data)) {
             $page_data['Page Store Header Data']=$data['Page Store Header Data'];
         }
-        if(array_key_exists('Page Store Footer Data',$data)){
+        if (array_key_exists('Page Store Footer Data',$data)) {
             $page_data['Page Store Footer Data']=$data['Page Store Footer Data'];
         }
-        if(array_key_exists('Page Store Content Data',$data)){
+        if (array_key_exists('Page Store Content Data',$data)) {
             $page_data['Page Store Content Data']=$data['Page Store Content Data'];
         }
-        if(array_key_exists('Page Store Layout Data',$data)){
+        if (array_key_exists('Page Store Layout Data',$data)) {
             $page_data['Page Store Layout Data']=$data['Page Store Layout Data'];
-        }   
-        if(array_key_exists('Page Store Logo Data',$data)){
+        }
+        if (array_key_exists('Page Store Logo Data',$data)) {
             $page_data['Page Store Logo Data']=$data['Page Store Logo Data'];
-        }   
+        }
         $page_data['Page Store Section']='Front Page Store';
         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
         $page_data['Page Store Section Key']=$page_section->id;
@@ -331,7 +331,7 @@ mysql_query($sql);
 
     }
 
- function add_cataloge_page($data) {
+    function add_cataloge_page($data) {
 
         $store= new Store($this->data['Site Store Key']);
 
@@ -344,10 +344,10 @@ mysql_query($sql);
             $product_layouts=$data['Product Layouts'];
         else
             $product_layouts=array('List'=>array('Display'=>true,'Type'=>'Auto'));
-        if(isset($data['Showcases Layout']))
-        $showcases_layout=$data['Showcases Layout'];
+        if (isset($data['Showcases Layout']))
+            $showcases_layout=$data['Showcases Layout'];
         else
-         $showcases_layout='';
+            $showcases_layout='';
         $page_data=array(
                        'Page Site Key'=>$this->id,
                        'Page Code'=>'SD_'.$store->data['Store Code'],
@@ -366,7 +366,7 @@ mysql_query($sql);
                    );
 
         $page_data['Page Store Section']='Store Catalogue';
-         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+        $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
         $page_data['Page Store Section Key']=$page_section->id;
         $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
         $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
@@ -379,7 +379,7 @@ mysql_query($sql);
 //print_r($page_data);
         $page=new Page('find',$page_data,'create');
 
-       
+
 
     }
 
@@ -388,13 +388,13 @@ mysql_query($sql);
 
         $department=new Department($data['Page Parent Key']);
         $store=new Store($department->data['Product Department Store Key']);
-        
-      $index_page=$this->get_page_object('index');
+
+        $index_page=$this->get_page_object('index');
 //if(!is_object($page)){
 
 //}
-        
-  //        print_r($page->data);
+
+        //        print_r($page->data);
 //exit;
         if (!array_key_exists('Showcases',$data)) {
 
@@ -470,7 +470,7 @@ mysql_query($sql);
                    );
 
         $page_data['Page Store Section']='Department Catalogue';
-         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+        $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
         $page_data['Page Store Section Key']=$page_section->id;
         $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
         $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
@@ -492,10 +492,9 @@ mysql_query($sql);
 
     function add_family_page($data) {
 
-$family=new Family($data['Page Parent Key']);
+        $family=new Family($data['Page Parent Key']);
         $store=new Store($family->data['Product Family Store Key']);
-        //$store_page_data=$store->get_page_data();
- $index_page=$this->get_page_object('index');
+        $index_page=$this->get_page_object('index');
         //      print_r($store_page_data);
 
         if (!array_key_exists('Showcases',$data)) {
@@ -546,15 +545,17 @@ $family=new Family($data['Page Parent Key']);
             $showcases_layout=$data['Showcases Layout'];
 
 
-
+if(!isset($data['Page Code']) or !$data['Page Code']){
+$data['Page Code']=$this->get_unique_family_page_code($family);
+}
 
 
 
         $page_data=array(
-                       'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$family->data['Product Family Code'],
+                       'Page Code'=>$data['Page Code'],
                        'Page Source Template'=>'',
                        'Page Site Key'=>$this->id,
-                       'Page URL'=>'family.php?code='.$family->data['Product Family Code'],
+                       'Page URL'=>$data['Page URL'],
                        'Page Source Template'=>'pages/'.$store->data['Store Code'].'/family.tpl',
                        'Page Description'=>'Family Showcase Page',
                        'Page Title'=>$family->data['Product Family Name'],
@@ -572,7 +573,7 @@ $family=new Family($data['Page Parent Key']);
 
 
         $page_data['Page Store Section']='Family Catalogue';
-         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+        $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
         $page_data['Page Store Section Key']=$page_section->id;
         $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
         $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
@@ -585,13 +586,19 @@ $family=new Family($data['Page Parent Key']);
 
 
         $page=new Page('find',$page_data,'create');
+
+
+
+$this->new_page=$page->new;
+$this->msg=$page->msg;
+$this->error=$page->error;
+
 //print_r($page);
 //exit;
-        $sql=sprintf("update `Product Family Dimension` set `Product Family Page Key`=%d  where `Product Family Key`=%d",$page->id,$family->id);
-        mysql_query($sql);
+      
 
     }
-  function base_data() {
+    function base_data() {
 
 
         $data=array();
@@ -602,65 +609,65 @@ $family=new Family($data['Page Parent Key']);
         }
         if (mysql_num_rows($result) > 0) {
             while ($row = mysql_fetch_assoc($result)) {
-                if (!in_array($row['Field'],$this->ignore_fields)){
+                if (!in_array($row['Field'],$this->ignore_fields)) {
                     $data[$row['Field']]=$row['Default'];
-                    if(preg_match('/ Data$/',$row['Field'])){
-                         $data[$row['Field']]='a:0:{}';
+                    if (preg_match('/ Data$/',$row['Field'])) {
+                        $data[$row['Field']]='a:0:{}';
                     }
-                    
-                    }
+
+                }
             }
         }
-        
+
         return $data;
     }
 
-function get_page_object($tipo,$key=false){
- $page=false;
-switch ($tipo) {
-    case 'index':
-        $page=New Page('id',$this->data['Site Index Page Key']);
-        break;
-    case 'department':
-    $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d ",
-    $key
-    
-    );
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
-        $page=New Page('id',$row['Page Key']);
-     }
-     break;
-        case 'family':
-    $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d ",
-    $key
-    
-    );
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
-        $page=New Page('id',$row['Page Key']);
-     }
-     break;
-   
-}
-return $page;
-}
+    function get_page_object($tipo,$key=false) {
+        $page=false;
+        switch ($tipo) {
+        case 'index':
+            $page=New Page('id',$this->data['Site Index Page Key']);
+            break;
+        case 'department':
+            $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d ",
+                         $key
 
-function get_data_for_smarty(){
+                        );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                $page=New Page('id',$row['Page Key']);
+            }
+            break;
+        case 'family':
+            $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d ",
+                         $key
+
+                        );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                $page=New Page('id',$row['Page Key']);
+            }
+            break;
+
+        }
+        return $page;
+    }
+
+    function get_data_for_smarty() {
 
 //print_r($this->data);
 
-$data['logo']=$this->data['Site Logo Data']['Image Source'];
+        $data['logo']=$this->data['Site Logo Data']['Image Source'];
 
 
-       $header_style='';
+        $header_style='';
         if ($this->data['Site Header Data'] and array_key_exists('style',$this->data['Site Header Data']))
             foreach($this->data['Site Header Data']['style'] as $key=>$value) {
             $header_style.="$key:$value;";
         }
         $data['header_style']=$header_style;
-       
-       $footer_style='';
+
+        $footer_style='';
         if ($this->data['Site Footer Data'] and array_key_exists('style',$this->data['Site Footer Data']))
             foreach($this->data['Site Footer Data']['style'] as $key=>$value) {
             $footer_style.="$key:$value;";
@@ -669,13 +676,53 @@ $data['logo']=$this->data['Site Logo Data']['Image Source'];
 
 
 
-return $data;
-}
+        return $data;
+    }
 
-function get_page_section_object($code){
-$page_section=new PageStoreSection('code',$code,$this->id);
-return $page_section;
-}
+    function get_page_section_object($code) {
+        $page_section=new PageStoreSection('code',$code,$this->id);
+        return $page_section;
+    }
+
+    function get_unique_family_page_code($family){
+    
+        for ($i = 2; $i <= 200; $i++) {
+        
+            if($i<=100){
+                $suffix=$i;
+            }else{
+                $suffix=uniqid('', true);
+            }
+        
+            if(!$this->is_family_page_code($family->data['Product Family Code'].$suffix))
+                return $family->data['Product Family Code'].$suffix;
+        }
+    
+        return $suffix;
+    }
+
+
+
+
+function is_family_page_code($query){
+    
+       $sql=sprintf("select PS.`Page Code`,PS.`Page Key` from `Page Store Dimension`  PS where `Page Site Key`=%d and `Page Code`=%s  "
+                 ,$this->id
+                 ,prepare_mysql($query)
+                );
+
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        return true;
+    
+    
+    }else{
+        return false;
+    }
+    
+    
+    }
 
 }
 ?>

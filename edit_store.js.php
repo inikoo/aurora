@@ -102,7 +102,7 @@ newvalue=r.newvalue;
 
 
 function change_block(e){
-        var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website"]; 
+        var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website","communications"]; 
 
 	
 	if(this.id=='pictures'  ){
@@ -119,7 +119,7 @@ function change_block(e){
 	Dom.get('d_charges').style.display='none';
 	Dom.get('d_discounts').style.display='none';
 	Dom.get('d_campaigns').style.display='none';
-
+Dom.get('d_communications').style.display='none';
 	Dom.get('d_shipping').style.display='none';
 	Dom.get('d_'+this.id).style.display='';
 	Dom.removeClass(ids,'selected');
@@ -639,7 +639,7 @@ function show_add_department_dialog(){
 
 
 function init(){
-    var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website"]; 
+    var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website","communications"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);

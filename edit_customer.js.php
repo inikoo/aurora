@@ -1313,6 +1313,8 @@ $custom_value['lable']
     var customer_main_contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Contact_Name","Customer_Main_Contact_Name_Container", customer_main_contact_name_oACDS);
     customer_main_contact_name_oAutoComp.minQueryLength = 0; 
     customer_main_contact_name_oAutoComp.queryDelay = 0.1;
+	
+
 
   var customer_Tax_Number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
     customer_Tax_Number_oACDS.queryMatchContains = true;

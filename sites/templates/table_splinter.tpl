@@ -1,1 +1,0 @@
-../../templates/table_splinter.tpl

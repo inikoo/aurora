@@ -37,7 +37,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
 		    this.dataSource0.responseSchema = {
-			resultsList: "resultset.data", 
+			resultsList: "resultset.data", 			
 			metaFields: {
 		       rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
@@ -148,7 +148,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								 
 								 ,sortedBy : {
-								   Key: "<?php echo$_SESSION['state']['part']['transactions']['order']?>",
+								   key: "<?php echo$_SESSION['state']['part']['transactions']['order']?>",
 								    dir: "<?php echo$_SESSION['state']['part']['transactions']['order_dir']?>"
 								  }
 								 ,dynamicData : true
@@ -171,73 +171,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    };
     });
 
-var manual_check=function(){
-    var request='ar_assets.php?tipo=sincro_pages';
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		//alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);	
-		if(r.ok){
-		    Dom.get('no_sincro_pages').style.visibility='hidden';
-		    Dom.get('no_sincro_pages').setAttribute('title','');
-		    Dom.get('edit_web_messages').innerHTML=r.msg;
-	
-		}else
-		    Dom.get('edit_web_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	    
-	});
-}
-
-var  change_web_status =function(tipo){
-    var request='ar_assets.php?tipo=ep_update&key=web_status'+'&value='+escape(tipo);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		//	alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.ok){
-		    Dom.get('web_status').innerHTML=r.web_status;
-		    if(r.web_status_error==1){
-			Dom.get('web_status_error').style.visibility='visible';
-			Dom.get('web_status_error').setAttribute('title',r.web_status_error);
-		    }else
-			Dom.get('web_status_error').style.visibility='hidden';
-
-		     if(!r.same){
-			 Dom.get('no_sincro_pages').style.visibility='visible';
-			 Dom.get('no_sincro_db').style.visibility='visible';
-		     }
-		     Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
-		}
-
-		Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
-		var request='ar_xml.php?tipo=sincronize';
-		YAHOO.util.Connect.asyncRequest('POST',request ,{
-			success:function(o) {
-			    				 alert(o.responseText)
-			    var r =  YAHOO.lang.JSON.parse(o.responseText);
-			    if(r.ok){
-				Dom.get('no_sincro_db').style.visibility='hidden';
-				Dom.get('edit_web_messages').innerHTML=r.msg;
-				
-			    }else
-				Dom.get('edit_web_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-			}
-			
-		    });
 
 
-
-
-
-
-
-
-	    }
-	    
-	    });
-
-      }
 
 var change_snapshot_granularity=function(e){
      var table=tables.table0;
@@ -268,10 +203,28 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-view&value='+this.id ,{});
 }
 
+function change_sales_period(){
+  tipo=this.id;
+ 
+  ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week','parts_period_yeartoday','parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
+
+ Dom.removeClass(ids,"selected")
+ Dom.addClass(this,"selected")
+   period=this.getAttribute('period');
+ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-parts-period&value='+period ,{});
+
+Dom.setStyle(['info_all','info_three_year','info_year','info_six_month','info_quarter','info_month','info_ten_day','info_week','info_yeartoday','info_monthtoday','info_weektoday','info_today'],'display','none')
+
+
+Dom.setStyle(['info2_all','info2_three_year','info2_year','info2_six_month','info2_quarter','info2_month','info2_ten_day','info2_week','info2_yeartoday','info2_monthtoday','info2_weektoday','info2_today'],'display','none')
+Dom.setStyle(['info_'+period,'info2_'+period],'display','')
+
+}
+
 
 function init(){
 
-init_search('part');
+init_search('parts');
 Event.addListener(['description','sales','transactions','history','purchase_orders'], "click",change_block);
 
 
@@ -291,8 +244,8 @@ Event.addListener(ids, "click", change_snapshot_granularity);
 
 
 
-
-
+ ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week','parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
+ YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 
 
   

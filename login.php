@@ -11,6 +11,7 @@
  
  Version 2.0
 */
+
 include_once('app_files/key.php');
 include_once('aes.php');
 include_once('set_locales.php');
@@ -35,7 +36,7 @@ $js_files=array(
 		'sha256.js.php',
 		'js/aes.js',
 		'login.js.php',
-		'config.js.php?store_key=1'
+//		'config.js.php?store_key=1'
 		);
 
 

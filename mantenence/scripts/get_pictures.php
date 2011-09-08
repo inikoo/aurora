@@ -95,6 +95,14 @@ foreach($pics as $key=>$value){
 
  //    print_r($data);
 $image=new Image('find',$data,'create');
+
+if(!$image->id){
+
+print_r($image);
+exit;
+
+}
+
  //    print_r($image);
     // exit;
      $product->add_image($image->id,'principal');

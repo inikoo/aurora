@@ -8,7 +8,7 @@
       <li id="individual" class="show"  > {t}Individual{/t}</li>
       <li id="shelf" class="show" > {t}Shelf{/t}</li>
       <li id="rack" class="show" > {t}Pallet Rack{/t}</li>
-      <li id="floor" class="show"   > {t}Floor Space{/t}</li>
+      <li id="floor" class="show" style="display:none"  > {t}Floor Space{/t}</li>
     </ul>
   </div>
   

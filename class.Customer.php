@@ -87,6 +87,13 @@ class Customer extends DB_Table {
     }
 
 
+	function is_user_customer($data){
+		$sql=sprintf("select * from `User Dimension` where `User Parent Key`=%d and `User Type`='Customer' ", $data);
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result, MYSQL_ASSOC))
+			return array(true, $row);
+	}
+	
     function prepare_force_create($data) {
 
         if (array_key_exists('Customer Main Plain Email',$data)) {

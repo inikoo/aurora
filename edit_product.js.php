@@ -7,8 +7,11 @@ print 'var number_regex="'.$number_regex.'";';
 
 $parts=preg_split('/\,/',$_REQUEST['parts']);
 
+
+
 $_parts='';
 foreach($parts as $part){
+    if($part)
     $_parts.="'sku$part':{sku : $part, new:false, deleted:false } ,";
 }
 $_parts=preg_replace("/\,$/","",$_parts);
@@ -23,6 +26,8 @@ var Dom   = YAHOO.util.Dom;
 var product_pid='<?php echo $_REQUEST['pid']?>';
 var scope='product';
 var scope_key=product_pid;
+
+var dialog_part_list;
 
 var Editor_change_part;
 
@@ -129,15 +134,7 @@ function change_block(e){
  	var block_ids = ["d_description","d_pictures","d_prices","d_parts","d_dimat","d_config","d_web"]; 
 
  
-	if(this.id=='pictures'){
-	    Dom.get('info_name').style.display='';
-	}else
-	    Dom.get('info_name').style.display='none';
-
-	if(this.id=='xprices'){
-	    Dom.get('info_price').style.display='';
-	}else
-	    Dom.get('info_price').style.display='none';
+	
 	
 	Dom.setStyle(block_ids,'display','none');
 		Dom.setStyle('d_'+this.id,'display','');
@@ -205,7 +202,7 @@ part_render_save_buttons();
 }
 
 function save_part(){
-alert("x")
+
 
 key=Dom.get("product_part_items").getAttribute("product_part_key");
 
@@ -215,12 +212,12 @@ part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 
 }
 json_value = YAHOO.lang.JSON.stringify(part_list);
- var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value
+ var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+product_pid;
 		alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-			//	alert(o.responseText);
+				alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				  
@@ -356,101 +353,19 @@ select_part(data)
 
 }
 
-function select_part(data){
-//Dom.get('part_search').value='';
-//Dom.get('part_search_results').style.display='none';
-//Dom.get('the_part_dialog').setAttribute('sku',data.sku);
-//Dom.get('part_sku0').innerHTML=data.fsku;
-//Dom.get('part_description0').innerHTML=data.description;
-//Dom.get('the_part_dialog').style.display='';
-//var new_email_container = Dom.get('email_mould').cloneNode(true);
+function select_part(oArgs){
+
+sku=tables.table1.getRecord(oArgs.target).getData('sku')
 
 
-}
-
-function close_add_part_dialog() {
-    
-    Editor_add_part.cfg.setProperty('visible',false);
-}
-
-var part_selected=function(){
-
-    var data = {
-	"info":newProductData[0]
-	,"sku":newProductData[1]
-	,"usedin":newProductData[2]
-    }; 
-    
-  
-   alert("xx")
-
-}
-
-
-function cancel_new_part(){
-Dom.get('the_part_dialog').setAttribute('sku','');
-Dom.get('part_sku0').innerHTML='';
-Dom.get('part_description0').innerHTML='';
-Dom.get('pickers_note0').value='';
-Dom.get('parts_per_product0').value=1;
-
-
-Dom.get('the_part_dialog').style.display='none';
-}
-
-function add_part(sku){
-  x= Dom.getX('add_part');
-   y= Dom.getY('add_part');
-   Dom.setX('Editor_add_part', x-490);
-   Dom.setY('Editor_add_part', y);
-   Dom.get('add_part_input').focus();
-   Editor_add_part.show();
-}
-YAHOO.util.Event.onContentReady("add_part_input", function () {
-  
-  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
-    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
-    new_loc_oDS.responseSchema = {
-resultsList : "data"
-        ,
- fields : ["info","sku","description","usedin","formated_sku"]
-    };
-    var new_loc_oAC = new YAHOO.widget.AutoComplete("add_part_input", "add_part_container", new_loc_oDS);
-  
-  
-  new_loc_oAC.generateRequest = function(sQuery) {
-
-     return "?tipo=find_part&query=" + sQuery ;
-
-    };
-    new_loc_oAC.forceSelection = true;
-    new_loc_oAC.itemSelectEvent.subscribe(add_part_selected);
-    
-});
-
-
-function add_part_selected(sType, aArgs) {
-
-    var part_data= aArgs[2];
-    var data = {
-
-"sku":
-        part_data[1]
-,"formated_sku":
-        part_data[4]
-,"description":
-        part_data[2]        
-    };
-   
-
-sku=data['sku'];
-formated_sku=data['formated_sku'];
+formated_sku=tables.table1.getRecord(oArgs.target).getData('formated_sku')
 parts_per_product=1;
 note='';
-description=data['description'];
+description=tables.table1.getRecord(oArgs.target).getData('description')
 
 
 part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
+
 
 
 
@@ -461,7 +376,6 @@ part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
     oTR= oTbl.insertRow(-1);
     
                
-
     
     oTR.id='part_list'+sku;
   
@@ -475,16 +389,14 @@ part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
  
     var oTD= oTR.insertCell(1);
     Dom.addClass(oTD,'sku');
-    oTD.innerHTML='<span>'+formated_sku+'</span>';
-    Dom.setStyle(oTD, 'width', '120px');
+    oTD.innerHTML='<span class="id">'+formated_sku+'</span> '+description;
+    //Dom.setStyle(oTD, 'width', '120px');
         
-    var oTD= oTR.insertCell(2);
-    Dom.addClass(oTD,'description');
-    Dom.setStyle(oTD, 'width', '350px');
-    oTD.innerHTML=description;
+   oTD.colSpan = 2;
   
-    var oTD= oTR.insertCell(3);
-    oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
+    var oTD= oTR.insertCell(2);
+    Dom.setStyle(oTD,'text-align','right');
+    oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="display:none;cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
     oTR= oTbl.insertRow(-1);
       oTR.id="sup_tr2_"+sku;
   var oTD= oTR.insertCell(0);
@@ -511,11 +423,17 @@ part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
    oTD.innerHTML='<input id="pickers_note'+sku+'" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="'+note+'" ovalue="'+note+'" >';
 
 part_render_save_buttons();
-Dom.get('add_part_input').value='';
-close_add_part_dialog();
 
-   
-};
+
+dialog_part_list.hide()
+}
+
+
+
+
+
+
+
 
 
 
@@ -523,8 +441,31 @@ close_add_part_dialog();
 
 
 function init(){
-Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});
-    Editor_change_part.render();
+
+
+   Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+ 
+ 
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+  oACDS.table_id=0;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+ 
+ var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+  oACDS1.table_id=1;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+ 
+
+ init_search('products_store');
+ 
+//Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});
+ //   Editor_change_part.render();
     
     
     
@@ -532,9 +473,6 @@ Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px
 YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
 
-
-Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visible:false,underlay: "none",draggable:false});
-    Editor_add_part.render();
 
 
 
@@ -551,10 +489,14 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
     Event.addListener('save_edit_product_weight', "click", save_edit_weight);
     Event.addListener('reset_edit_product_weight', "click", reset_edit_weight);
 
+ 
+    dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_part_list.render();
+    Event.addListener("add_part", "click",dialog_part_list.show,dialog_part_list , true);
+
     
-    
-    
-    
+  
+
     
     var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
     product_name_oACDS.queryMatchContains = true;
@@ -656,7 +598,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['product']['history']['order']?>",
+							    key: "<?php echo$_SESSION['state']['product']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['product']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -674,8 +616,96 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
 
 
+
+
+
+var tableid=1;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+		      		{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
+			     	,{key:"status", label:"",width:20, sortable:false,className:"aleft"}
+                   
+					];
+		    
+		      
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=part_list&tableid=1");
+		      
+		      
+		      
+		      
+	
+		      
+		      
+		      
+		      
+		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource1.connXhrMode = "queueRequests";
+		      	    this.dataSource1.table_id=tableid;
+
+		      this.dataSource1.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			  rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
+			  },
+			  
+			  fields: [
+				  "sku","description","used_in","status","formated_sku"
+				   ]};
+		      
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource1
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								   
+								   ,sortedBy : {
+								      key: "formated_sku",
+								       dir: ""
+								   }
+								   ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+                   
+                   this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
+       this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
+      this.table1.subscribe("rowClickEvent", select_part);
+     
+
+                   
+	    this.table1.filter={key:'used_in',value:''};
+
+
+
+
+
 };
     });
+
+
+
 
 YAHOO.util.Event.onDOMReady(init);
 
@@ -692,6 +722,21 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
     });
 
 
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu1 = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu1.render();
+	 oMenu1.subscribe("show", oMenu1.focus);
+	
+    });
+
 function close_change_part_dialog(){
 
 Dom.get('change_part').value='';
@@ -702,10 +747,12 @@ Dom.setStyle('change_part_confirmation','display','none');
 }
 
 function change_part_selected(sType, aArgs){
-//alert("caca")
-remove_part(Dom.get('change_part_sku').value)
-add_part_selected(sType, aArgs);
-close_change_part_dialog();
+alert("caca")
+//remove_part(Dom.get('change_part_sku').value)
+//add_part_selected(sType, aArgs);
+//close_change_part_dialog();
+
+
 //alert("s")
 
 //var myAC = aArgs[0]; // reference back to the AC instance 
@@ -764,6 +811,35 @@ resultsList : "data"
 function remove_part(sku){
 
 part_list['sku'+sku].deleted=true;
-Dom.setStyle(['part_list'+sku,'sup_tr2_'+sku,'sup_tr3_'+sku],'display','none');
+Dom.setStyle(['part_list'+sku+'_label1','part_list'+sku+'_label2'],'opacity',0.6);
+Dom.setStyle(['part_list'+sku+'_label2'],'text-decoration','line-through');
+
+
+Dom.setStyle(['sup_tr2_'+sku,'sup_tr3_'+sku],'opacity',0.4);
+Dom.setStyle(['part_list'+sku+'_controls'],'display','none');
+Dom.setStyle(['part_list'+sku+'_controls2'],'display','');
+
+
+
+Dom.setStyle(['add_part'],'display','');
+
+
+
+part_render_save_buttons();
+}
+
+
+function unremove_part(sku){
+
+part_list['sku'+sku].deleted=false;
+Dom.setStyle(['part_list'+sku+'_label1','part_list'+sku+'_label2'],'opacity',1);
+Dom.setStyle(['part_list'+sku+'_label2'],'text-decoration','none');
+
+
+Dom.setStyle(['sup_tr2_'+sku,'sup_tr3_'+sku],'opacity',1);
+Dom.setStyle(['part_list'+sku+'_controls'],'display','');
+Dom.setStyle(['part_list'+sku+'_controls2'],'display','none');
+
+
 part_render_save_buttons();
 }

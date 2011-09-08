@@ -1,32 +1,81 @@
 <?php
 require_once 'common.php';
+if(!isset($_REQUEST['id'])){
+  $id=-1;
+}else
+  $id=$_REQUEST['id'];
 
-if(!isset($_REQUEST['id']))
-  $id=1;
- else
-   $id=$_REQUEST['id'];
+
+if(isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/',$_REQUEST['size']))
+$size=$_REQUEST['size'];
+else
+$size='original';
 
 
-$sql=sprintf("select `Image Filename` as filename,`Image File Format` as format from `Image Dimension` where `Image Key`=%d",$id);
 
+
+$sql=sprintf("select * from `Image Dimension` where `Image Key`=%d",$id);
 $result = mysql_query($sql);
-//print $sql;
 if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-  $format=$row['format'];
-  $filename=$row['filename'];
-  //  $filename=$myconf['images_dir'].'original/'.$filename.'_orig.'.$format;
-  //   print "$filename $format" ;
-  //print "caca";
-  if($format=='jpg'){
-    //print "caca";
-    $format='jpeg';
-    header('Content-Type: image/'.$format);
-    header('Content-Disposition: inline; filename='.$filename);
-   
-    $im = @imagecreatefromjpeg($filename);
-    //print $im;
-    imagejpeg($im); 
+ header('Content-type: image/jpeg');
+  header('Content-Disposition: inline; filename='.$row['Image Original Filename']);
+  //readfile($row['Attachment Filename']);
+ // echo  $row['Image Data'];  
+  //echo  $row['Image Small Data'] ;
+
+if($size=='original'){
+    echo $row['Image Data'];
+}elseif($size=='large'){
+    if(!$row['Image Large Data'])
+         echo $row['Image Data'];
+    else
+        echo $row['Image Large Data'];
+}elseif($size=='small'){
+    if(!$row['Image Small Data'])
+         echo $row['Image Data'];
+    else
+        echo  $row['Image Small Data'] ;
+  }elseif($size=='thumbnail' or $size=='tiny'){
+  echo  $row['Image Thumbnail Data'];  
+  
+  }else{
+   echo $row['Image Data'];
+  
   }
- }
+
+  
+}else{
+  
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
+		 'common.css',
+		 'container.css',
+		 'button.css',
+		 'table.css',
+		 'css/dropdown.css'
+		 );
+$js_files=array(
+		$yui_path.'utilities/utilities.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'dragdrop/dragdrop-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable.js',
+		$yui_path.'container/container-min.js',
+		$yui_path.'menu/menu-min.js',
+		'js/php.default.min.js',
+		'js/common.js',
+		
+		'js/dropdown.js'
+		);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+   $smarty->display('forbidden.tpl');
+   
+}
 
 ?>

@@ -449,7 +449,7 @@ class supplierproduct extends DB_Table {
     }
     function get_parts() {
         $parts=array();
-        $sql=sprintf("select `Part SKU`,`Supplier Product Units Per Part`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+        $sql=sprintf("select SPPL.`Part SKU`,`Supplier Product Units Per Part`,`Part Unit`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
                      $this->pid
                     );
 	//print $sql;
@@ -459,7 +459,7 @@ class supplierproduct extends DB_Table {
             $parts[$row['Part SKU']]=array(
                                          'Part_SKU'=>$row['Part SKU'],
                                          'Supplier_Product_Units_Per_Part'=>$row['Supplier Product Units Per Part'],
-                                         //'Supplier Product Unit'=>$row['Supplier Product Unit'],
+                                         'Part_Unit'=>$row['Part Unit'],
                                          'part'=>new Part($row['Part SKU']),
                                          'Parts_Per_Supplier_Product_Unit'=>1/$row['Supplier Product Units Per Part'],
                                      );
@@ -1187,10 +1187,10 @@ class supplierproduct extends DB_Table {
     }
     function get_historic_keys() {
         $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d ",
-                    $this->id
+                    $this->pid
 
                     );
-        //print $sql;            
+       // print $sql;            
         $res=mysql_query($sql);
         $historic_keys=array();
         while ($row=mysql_fetch_array($res)) {
@@ -1198,6 +1198,15 @@ class supplierproduct extends DB_Table {
         }
         return $historic_keys;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     function upload_sales() {
         $this->load('parts');
         // total
@@ -1262,7 +1271,7 @@ class supplierproduct extends DB_Table {
                      ,prepare_mysql($this->data['Supplier Product Code'])
 
                     );
-     //    print "$sql\n";
+     //   print "$sql\n";
       //  exit;
         if (!mysql_query($sql))
             exit("error con not uopdate product part when loading sales");
@@ -1739,6 +1748,13 @@ class supplierproduct extends DB_Table {
 
 
     }
+    
+    
+    
+    
+    
+    
+    
     function get_formated_unit() {
 
         switch ($this->data['Supplier Product Unit Type']) {

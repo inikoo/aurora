@@ -1548,7 +1548,7 @@ $yeartoday=YTD();
     function update_product_data() {
 
 
-        $sql=sprintf("select     sum(if(`Product Record Type`='Discontinuing',1,0)) as to_be_discontinued , sum(if(`Product Record Type`='Historic',1,0)) as historic ,  sum(if(`Product Record Type` in ('Normal','New','Discontinuing') ,1,0)) as for_sale ,   sum(if(`Product Record Type`='In process',1,0)) as in_process ,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
+        $sql=sprintf("select     sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`>0   ,1,0)) as to_be_discontinued , sum(if(`Product Record Type`='Historic',1,0)) as historic ,  sum(if(`Product Sales Type` in ('Public Sale') ,1,0)) as for_sale ,   sum(if(`Product Stage`='In process',1,0)) as in_process ,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`<=0,1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
         //  print $sql;
 
 	
@@ -1619,7 +1619,7 @@ $yeartoday=YTD();
 
 	if($for_sale==0){
 	  if($in_process>0 and $discontinued==0)
-	    $record_type='In Processs';
+	    $record_type='InProcesss';
 	  else
 	    $record_type='Discontinued';
 	}else{
@@ -1682,7 +1682,7 @@ $yeartoday=YTD();
 
 
             $products[]=array(
-                            'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Record Type']!='Discontinued'?date('Y-m-d H:i:s'):$row['Product Valid To']));
+                            'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Sales Type']!='Not for Sale'?date('Y-m-d H:i:s'):$row['Product Valid To']));
         }
         //print "$min_date $max_date\n";
         //print_r($products);
@@ -1868,7 +1868,7 @@ function add_image($image_key,$args='') {
 
     }
     function load_images_slidesshow() {
-        $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
             //  print $sql;
         $res=mysql_query($sql);
         $this->images_slideshow=array();
@@ -1879,7 +1879,7 @@ function add_image($image_key,$args='') {
                 $ratio=$row['Image Width']/$row['Image Height'];
             else
                 $ratio=1;
-            $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+            $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
         }
 
     }
@@ -1911,29 +1911,13 @@ function add_image($image_key,$args='') {
     }
 
 
-    function get_page_data() {
-    
-        $data=array();
-        $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Family Page Key']);
-        // print $sql;
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res,MYSQL_ASSOC)) {
-            $data=$row;
-                return $data;
-
-        }else
-        return array();
-
-
-
-
-    }
 
 
 
 
 
-function has_layout($type){
+
+function has_layout_old_to_delete($type){
 
 
 if(!$this->data['Family Page Key'])

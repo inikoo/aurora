@@ -1,6 +1,32 @@
 var audit_dialog;
+var add_stock_dialog;
+
 var Editor_lost_items;
 var  Editor_move_items;
+
+
+
+
+function over_can_pick(o){
+
+if(o.getAttribute('can_pick')=='No')
+o.src="art/icons/box.png";
+else
+o.src="art/icons/basket.png";
+
+}
+
+function out_can_pick(o){
+
+if(o.getAttribute('can_pick')=='No')
+o.src="art/icons/basket.png";
+else
+o.src="art/icons/box.png";
+
+}
+
+
+
 
 function set_all_lost() {
     Dom.get('qty_lost').value=Dom.get('lost_max_value').innerHTML;
@@ -17,7 +43,7 @@ function save_lost_items() {
     location_key=Dom.get('lost_location_key').value;
     sku=Dom.get('lost_sku').value;
     var json_value = YAHOO.lang.JSON.stringify(data);
-    var request='ar_edit_warehouse.php?tipo=lost_stock&values=' + encodeURIComponent(json_value);
+    var request='ar_edit_warehouse.php?tipo=lost_stock&values=' + my_encodeURIComponent(json_value);
 
 
     YAHOO.util.Connect.asyncRequest('POST',request , {
@@ -64,13 +90,18 @@ success:function(o) {
                     Dom.get("part_location_move_items_"+sku+"_"+location_key).style.display='';
                 }
 
-                if (Dom.get('stock').innerHTML!=undefined)
+           //     if (Dom.get('stock').innerHTML!=undefined)
                     Dom.get('stock').innerHTML=r.stock;
 
 
 
 
+table_id=1
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
 
+    var request='&tableid='+table_id;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
             } else if (r.action=='error') {
@@ -88,7 +119,9 @@ function audit(sku,location_key) {
     Dom.get("audit_sku").value=sku;
 
     var pos = Dom.getXY('part_location_audit_'+sku+'_'+location_key);
-    audit_dialog.show();
+  
+  pos[0]=pos[0]-280
+  audit_dialog.show();
     Dom.setXY('Editor_audit', pos);
 Dom.get('qty_audit').focus();
 
@@ -109,6 +142,24 @@ function lost(sku,location_key) {
     Dom.get('qty_lost').focus();
     Editor_lost_items.show();
 }
+
+
+function add_stock_part_location(sku,location_key) {
+
+
+
+    Dom.get("add_stock_location_key").value=location_key;
+    Dom.get("add_stock_sku").value=sku;
+
+    var pos = Dom.getXY('part_location_add_stock_'+sku+'_'+location_key);
+  
+  pos[0]=pos[0]-260
+  add_stock_dialog.show();
+    Dom.setXY('Editor_add_stock', pos);
+Dom.get('qty_add_stock').focus();
+
+}
+
 
 function delete_part_location(sku,location_key) {
 
@@ -179,60 +230,142 @@ function move(sku,location_key) {
     Editor_move_items.show();
 
 }
-function save_audit() {
 
-    location_key=Dom.get("audit_location_key").value;
-    sku=Dom.get("audit_sku").value;
+function save_add_stock() {
 
-    qty=Dom.get('qty_audit').value;
-    ar_file='ar_edit_warehouse.php';
-    var request='tipo=edit_part_location'+'&key=qty&newvalue=' + encodeURIComponent(qty) +'&location_key='+location_key+'&part_sku='+sku;
-    //alert(request);
-    YAHOO.util.Connect.asyncRequest(
-        'POST',
-    ar_file, {
+
+  var data=new Object();
+    data['qty']=Dom.get('qty_add_stock').value;
+    data['note']=Dom.get('note_add_stock').value;
+    data['location_key']=Dom.get('add_stock_location_key').value
+    data['part_sku']=Dom.get('add_stock_sku').value;
+    
+    var json_value = YAHOO.lang.JSON.stringify(data);
+    var request='ar_edit_warehouse.php?tipo=add_stock&values=' + my_encodeURIComponent(json_value);
+
+   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //alert(o.responseText);
-            var r = YAHOO.lang.JSON.parse(o.responseText);
+            alert(o.responseText);
+            var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-
-              
-                
-                  Dom.get('part_location_quantity_'+sku+'_'+location_key).setAttribute('quantity',r.qty);
-                Dom.get('part_location_quantity_'+sku+'_'+location_key).innerHTML=r.formated_qty;
-                
-                
-                if (r.newvalue<=0) {
-                    Dom.get("part_location_lost_items_"+sku+"_"+location_key).style.display='none';
+                  Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).setAttribute('quantity',r.qty);
+                Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).innerHTML=r.formated_qty;
+                     if (r.newvalue<=0) {
+                    Dom.get("part_location_lost_items_"+r.sku+"_"+r.location_key).style.display='none';
                 } else {
-                    Dom.get("part_location_lost_items_"+sku+"_"+location_key).style.display='';
+                    Dom.get("part_location_lost_items_"+r.sku+"_"+r.location_key).style.display='';
 
                 }
 
                 if (r.newvalue==0) {
-                    Dom.get("part_location_delete_"+sku+"_"+location_key).style.display='';
+                    Dom.get("part_location_delete_"+r.sku+"_"+r.location_key).style.display='';
 
                 } else {
-                    Dom.get("part_location_delete_"+sku+"_"+location_key).style.display='none';
+                    Dom.get("part_location_delete_"+r.sku+"_"+r.location_key).style.display='none';
 
                 }
 
 
 
                 if (r.stock==0) {
-                    Dom.get("part_location_move_items_"+sku+"_"+location_key).style.display='none';
+                    Dom.get("part_location_move_items_"+r.sku+"_"+r.location_key).style.display='none';
 
                 } else {
 
-                    Dom.get("part_location_move_items_"+sku+"_"+location_key).style.display='';
+                    Dom.get("part_location_move_items_"+r.sku+"_"+r.location_key).style.display='';
                 }
 
 
-                if (Dom.get('stock').innerHTML!=undefined)
-                    Dom.get('stock').innerHTML=r.stock;
+              //  if (Dom.get('stock').innerHTML!=undefined)
+               //   alert(r.stock)
+                  Dom.get('stock').innerHTML=r.stock;
+
+                 close_add_stock_dialog();
+table_id=1
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    var request='&tableid='+table_id;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
-                close_audit_dialog();
+
+            } else {
+                alert(r.msg);
+                callback();
+            }
+        },
+failure:function(o) {
+            alert(o.statusText);
+            callback();
+        },
+scope:this
+    },
+    request
+
+    );
+
+}
+
+
+function save_audit() {
+
+
+  var data=new Object();
+    data['qty']=Dom.get('qty_audit').value;
+    data['note']=Dom.get('note_audit').value;
+    data['location_key']=Dom.get('audit_location_key').value
+    data['part_sku']=Dom.get('audit_sku').value;
+    
+    sku=Dom.get('lost_sku').value;
+    var json_value = YAHOO.lang.JSON.stringify(data);
+    var request='ar_edit_warehouse.php?tipo=audit_stock&values=' + my_encodeURIComponent(json_value);
+
+   YAHOO.util.Connect.asyncRequest('POST',request , {
+success:function(o) {
+            //alert(o.responseText);
+            var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                  Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).setAttribute('quantity',r.qty);
+                Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).innerHTML=r.formated_qty;
+                     if (r.newvalue<=0) {
+                    Dom.get("part_location_lost_items_"+r.sku+"_"+r.location_key).style.display='none';
+                } else {
+                    Dom.get("part_location_lost_items_"+r.sku+"_"+r.location_key).style.display='';
+
+                }
+
+                if (r.newvalue==0) {
+                    Dom.get("part_location_delete_"+r.sku+"_"+r.location_key).style.display='';
+
+                } else {
+                    Dom.get("part_location_delete_"+r.sku+"_"+r.location_key).style.display='none';
+
+                }
+
+
+
+                if (r.stock==0) {
+                    Dom.get("part_location_move_items_"+r.sku+"_"+r.location_key).style.display='none';
+
+                } else {
+
+                    Dom.get("part_location_move_items_"+r.sku+"_"+r.location_key).style.display='';
+                }
+
+
+              //  if (Dom.get('stock').innerHTML!=undefined)
+               //   alert(r.stock)
+                  Dom.get('stock').innerHTML=r.stock;
+
+                 close_audit_dialog();
+table_id=1
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    var request='&tableid='+table_id;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+
 
 
             } else {
@@ -253,8 +386,16 @@ scope:this
 }
 function close_audit_dialog() {
     Dom.get('qty_audit').value='';
+    Dom.get('note_audit').value='';
     audit_dialog.hide();
 }
+
+function close_add_stock_dialog() {
+    Dom.get('qty_add_stock').value='';
+    Dom.get('note_add_stock').value='';
+    add_stock_dialog.hide();
+}
+
 function close_lost_dialog() {
     Dom.get('qty_lost').value='';
     Dom.get('lost_why').value='';
@@ -304,17 +445,56 @@ function create_part_location_tr(tag,r) {
 
     var oTD= oTR.insertCell(2);
     Dom.addClass(oTD,'button');
-    oTD.innerHTML='<img  id="part_location_audit_'+sku+'_'+location_key+'" src="art/icons/eye.png" alt="audit" onClick="audit('+sku+','+location_key+')" />';
+    oTD.innerHTML='<img  id="part_location_audit_'+sku+'_'+location_key+'" src="art/icons/note_edit.png"  title="<?php echo _('audit')?>" alt="<?php echo _('audit')?>" onClick="audit('+sku+','+location_key+')" />';
 
     var oTD= oTR.insertCell(3);
     Dom.addClass(oTD,'button');
-    oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_delete_'+sku+'_'+location_key+'"  id="part_location_delete_'+sku+'_'+location_key+'" src="art/icons/cross_bw.png" alt="delete" onClick="delete_part_location('+sku+','+location_key+')" /><img id="part_location_lost_items_'+sku+'_'+location_key+'" src="art/icons/bin.png" alt="{t}lost{/t}" onClick="lost('+sku+','+location_key+')" />';
+    oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_delete_'+sku+'_'+location_key+'"  id="part_location_delete_'+sku+'_'+location_key+'" src="art/icons/cross_bw.png" title="<?php echo _('delete')?>"  alt="<?php echo _('delete')?>" onClick="delete_part_location('+sku+','+location_key+')" /><img id="part_location_lost_items_'+sku+'_'+location_key+'" src="art/icons/package_delete.png" alt="{t}lost{/t}" onClick="lost('+sku+','+location_key+')" />';
 
     var oTD= oTR.insertCell(4);
     Dom.addClass(oTD,'button');
-    oTD.innerHTML='<img sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_move_items_'+sku+'_'+location_key+'"  src="art/icons/arrow_out.png" alt="{t}move{/t}" onClick="move('+sku+','+location_key+')" />';
+    oTD.innerHTML='<img sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_move_items_'+sku+'_'+location_key+'"  src="art/icons/package_go.png" alt="{t}move{/t}" onClick="move('+sku+','+location_key+')" />';
 
 
+
+}
+
+function save_can_pick(sku,location_key){
+
+   ar_file='ar_edit_warehouse.php';
+   
+   request=ar_file+'?tipo=part_location_update_can_pick&sku='+sku+'&location_key='+location_key+'&can_pick='+Dom.get('part_location_can_pick_'+sku+'_'+location_key).getAttribute('can_pick');
+  
+   
+    YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+success: function (o) {
+//alert(o.responseText)
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+            
+            
+       
+           if(r.can_pick=='Yes'){
+                Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','No');
+             Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).src="art/icons/basket.png";
+            }else{
+                         Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).src="art/icons/box.png";
+
+                            Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','Yes');
+
+            }
+            
+            }
+           
+        },
+failure: function (o) {
+            alert(o.statusText);
+        },
+scope:this
+    }
+    );
 
 }
 
@@ -396,6 +576,14 @@ success:function(o) {
 
 
 
+
+                 close_move_dialog();
+table_id=1
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    var request='&tableid='+table_id;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
               
@@ -556,7 +744,7 @@ function add_location_selected(sType, aArgs) {
 
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            alert(o.responseText);
+           // alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='added') {
                 close_add_location_dialog();
@@ -611,13 +799,13 @@ success:function(o) {
 };
 
 
-
-
 function init() {
 
 audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:false,underlay: "none",draggable:false});
     audit_dialog.render();
 
+add_stock_dialog = new YAHOO.widget.Dialog("Editor_add_stock", {  visible : true,close:false,underlay: "none",draggable:false});
+    add_stock_dialog.render();
 
 
 Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {close:false,visible:false,draggable:false});

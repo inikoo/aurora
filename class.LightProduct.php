@@ -1,4 +1,3 @@
-
 <?php
 /*
   
@@ -7,7 +6,7 @@
   Copyright (c) 2011, Inikoo
 
 */
-$logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
+
 
 class LightProduct{
   
@@ -17,42 +16,51 @@ class LightProduct{
   var $url;
   var $user_id;
   var $method;
+  var $match=true;
   
-    function __construct($arg1) {
+    function __construct($arg1,$arg2=false) {
     
    
-        $this->get_data('code',$arg1);
+        return $this->get_data('code',$arg1,$arg2);
 
 
     }
 
-    function get_data($tag,$id) {
+    function get_data($tag,$id,$id2=false) {
         if ($tag=='id')
             $sql=sprintf("select * from `Product Dimension` where `Product Key`=%s",prepare_mysql($id));
         elseif($tag=='code')
-			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s",prepare_mysql($id));
+			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($id),$id2);
        
         
         else
             return false;
+			
+		
+		
         $result=mysql_query($sql);
-
+		
+		if(!mysql_num_rows($result))
+			$this->match=false;
+		
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $this->id=$this->data['Product ID'];
 			$this->locale=$this->data['Product Locale'];
         }
+
+		
     }
  
  
 
  
-	function get_full_order_form($type){
+	function get_full_order_form($type,$data=false){
 		switch($type){
 			case 'ecommerce':
-				require("../app_files/checkoutConf.php");
-				$this->url=$ecommerce_url;				
-				$this->user_id=$username;
-				$this->method=$method;
+				
+				$this->url=$data['ecommerce_url'];				
+				$this->user_id=$data['username'];
+				$this->method=$data['method'];
 			break;
 			
 			default:
@@ -80,7 +88,7 @@ class LightProduct{
 		$discontinued='Discontinued';
 		  }
 
-		  if ($this->data['Product Web State']=='Online Force Out of Stock') {
+		  if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
 		$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
 		  } else {
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
@@ -93,7 +101,7 @@ class LightProduct{
 											   <input type="hidden" name="return" value="%s">
 											   <input type="hidden" name="discountpr" value="1,%.2f">
 											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-											   <input type="hidden" name="nocart">  
+											   <input type="hidden" name="nnocart">  
 											   <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>'
 							   ,$this->url
 							   ,addslashes($this->user_id)
@@ -111,9 +119,9 @@ class LightProduct{
 											   <input type="hidden" name="userid" value="%s">
 											   <input type="hidden" name="product" value="%s %sx %s">
 											   <input type="hidden" name="return" value="%s">
-											   <input type="hidden" name="price" value="%.2f">
+											   <input type="hidden" name="discountpr" value="1,%.2f">
 											   <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-											   <input type="hidden" name="nocart"> 
+											   <input type="hidden" name="nnocart"> 
 											   
 											   <button id="SC" style="margin-left:10px">%s</button>'
 							   ,$this->url
@@ -147,7 +155,7 @@ $_SESSION['logged_in']=1;
 
 	}
 
-	function get_order_list_form(){
+	function get_order_list_form($data=false){
 	   
 		$data=$this->data;
 		if ($this->locale=='de_DE') {
@@ -180,7 +188,7 @@ $_SESSION['logged_in']=1;
 
 
 
-		  if ($this->data['Product Web State']=='Online Force Out of Stock') {
+		  if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
 		$form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
 				 // ,$this->get_formated_price($this->locale)
 				  ,$this->data['Product Code']
@@ -189,7 +197,8 @@ $_SESSION['logged_in']=1;
 				  ,$out_of_stock
 				  );
 		  } else {
-		$form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
+		$form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="dis
+		price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
 				  //,money_locale($this->data['Product Price'],$this->locale,$currency)
 				  ,$this->data['Product Code'].' '.money_locale($this->data['Product Price'],$this->locale,$currency).''
 				  ,$counter
@@ -209,6 +218,62 @@ $_SESSION['logged_in']=1;
 		  }
 
 		  return $form."\n";
+
+
+	}
+	
+	
+	function get_info(){
+
+		if ($this->locale=='de_DE') {
+		$out_of_stock='nicht vorrv§tig';
+		$discontinued='ausgelaufen';
+		  }if ($this->locale=='de_DE') {
+		$out_of_stock='nicht vorrv§tig';
+		$discontinued='ausgelaufen';
+		  }
+		elseif($this->locale=='es_ES') {
+		$out_of_stock='Fuera de Stock';
+		$discontinued='Fuera de Stock';
+		  }
+
+		  elseif($this->locale=='fr_FR') {
+		$out_of_stock='Rupture de stock';
+		$discontinued='Rupture de stock';
+		  }
+		  else {
+		$out_of_stock='Out of Stock';
+		$discontinued='Discontinued';
+		  }
+
+		  if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
+		$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+		  } else {
+		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
+		
+			
+			
+					$_form=sprintf('<input type="hidden" name="product" value="%s %sx %s">'
+							   ,addslashes($this->data['Product Code'])
+							   ,addslashes($this->data['Product Units Per Case'])
+							   ,clean_accents(addslashes($this->data['Product Name']))
+							   );
+		  }
+
+		  $_SESSION['logged_in']=1;
+		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span style="color:#444;font-style: italic;">Please login to see wholesale prices</span>%s</div>'
+				,$this->data['Product Code']
+				,$this->data['Product Units Per Case']
+				,$this->data['Product Name']
+				//,$this->get_formated_price($this->locale)
+				//,$this->get_formated_rrp($this->locale)
+				,(isset($_SESSION['logged_in'])?$_form:'')
+
+
+				);
+
+		  //print $form;exit;
+		  return $form;
 
 
 	}

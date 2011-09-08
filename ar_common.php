@@ -75,8 +75,8 @@ function prepare_values($data,$value_names) {
             //$tmp=preg_replace('/\\\"/','"',$json);
             //$tmp=preg_replace('/\\\\\"/','"',$tmp);
             //$tmp=preg_replace('/\'/',"\'",$tmp);
-
-
+            
+  
             $raw_data=json_decode($tmp, true);
 
             if (is_array($raw_data)) {

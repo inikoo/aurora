@@ -68,13 +68,21 @@ function  change_supplier_products_view(e,data){
 	
 	var table=tables['table'+data.table_id];
 	
+	
+	
+	
+	
+	
+	
+	
 	table.hideColumn('required');
 	table.hideColumn('provided');
 
 	table.hideColumn('profit');
     table.hideColumn('stock');
 	table.hideColumn('stock_until');
-
+	table.hideColumn('description');
+	
 
 
 
@@ -89,7 +97,7 @@ function  change_supplier_products_view(e,data){
 	
 	    Dom.get('supplier_products_period_options').style.display='none';
 	    Dom.get('supplier_products_avg_options').style.display='none';
-	    table.showColumn('gmroi');
+	    table.showColumn('description');
 	}else if(tipo=='stock'){
 	table.showColumn('formated_record_type');
 	    table.showColumn('stock');

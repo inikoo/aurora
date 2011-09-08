@@ -26,14 +26,6 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
 $_SESSION['state']['family']['id']=$family_id;
 
 $family=new Family($family_id);
-$tmp_page_data=$family->get_page_data();
-$page_data=array();
-foreach($tmp_page_data as $key=>$value){
-  $page_data[preg_replace('/\s/','',$key)]=$value;
-  
-}
-
-$smarty->assign('page_data',$page_data);
 
 
 
@@ -103,7 +95,7 @@ $css_files=array(
 		 'container.css',
 		 'button.css',
 		 'table.css',
-		  'css/dropdown.css'
+		  
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -134,7 +126,7 @@ $js_files=array(
  
     // $js_files[]='upload_files.js.php';
 
-  $js_files[]='edit_family.js.php';
+  $js_files[]='edit_family.js.php?id='.$family->id.'&store_key='.$store->id;
   $smarty->assign('yui_path',$yui_path);
 
   
@@ -285,6 +277,60 @@ $units_tipo=array(
 
 $smarty->assign('units_tipo',$units_tipo);
   $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
+
+
+$smarty->assign('view',$_SESSION['state']['family']['products']['edit_view']);
+
+
+$number_of_sites=0;
+$site_key=0;
+$number_of_pages=0;
+$page_key=0;
+
+$sql=sprintf("select count(*) as num, `Site Key` from `Site Dimension` where `Site Store Key`=%d ",
+$family->data['Product Family Store Key']);
+
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$number_of_sites=$row['num'];
+if($number_of_sites==1)
+$site_key=$row['Site Key'];
+
+}
+
+$sql=sprintf("select count(*) as num, `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d ",
+$family->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$number_of_pages=$row['num'];
+if($number_of_pages==1)
+$page_key=$row['Page Key'];
+
+}
+
+
+
+
+if( isset(  $_REQUEST['page_key']) and is_numeric($_REQUEST['page_key'])){
+
+$page_key=$_REQUEST['page_key'];
+
+}
+
+if($page_key){
+$page=new Page($page_key);
+//print_r($page);exit;
+foreach($page->data as $key=>$value){
+  $page_data[preg_replace('/\s/','',$key)]=$value;
+  
+}
+
+$smarty->assign('page_data',$page_data);
+}
+$smarty->assign('number_of_sites',$number_of_sites);
+$smarty->assign('site_key',$site_key);
+$smarty->assign('number_of_pages',$number_of_pages);
+$smarty->assign('page_key',$page_key);
 
   $smarty->display('edit_family.tpl');
 

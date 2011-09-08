@@ -22,7 +22,7 @@ for($x = 0 ; $x < mysql_num_rows($resultID) ; $x++){
     $xml_output .= "\t\t<name>" . $row['Product Short Description'] . "</name>"; 
     
        $xml_output .= "\t\t<status>" . $row['Product Sales Type'] . "</status>"; 
-       $xml_output .= "\t\t<web>" . $row['Product Web State'] . "</web>";
+       $xml_output .= "\t\t<web>" . $row['Product Web Configuration'] . "</web>";
        $xml_output .= "\t\t<sales>" . $row['Product Total Invoiced Gross Amount'] . "</sales>";     
        $xml_output .= "\t\t<profit>" . $row['Product Total Profit'] . "</profit>";
  $xml_output .= "\t</product>\n"; 

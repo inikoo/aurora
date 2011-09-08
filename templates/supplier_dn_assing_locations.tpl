@@ -21,7 +21,7 @@
     </div>
     
     
-    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')}</h1>
+    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')}  ({$supplier_dn->get('Supplier Delivery Note Current State')})</h1>
     <table border=0 style="">
       <tr><td>{t}Supplier Delivery Note Key{/t}:</td><td class="aright">{$supplier_dn->get('Supplier Delivery Note Key')}</td></tr>
       <tr><td>{t}Supplier{/t}:</td><td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td></tr>
@@ -60,13 +60,7 @@
   
   <div id="list_options0"> 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      
-      
-
-      
-     
-     
-    </div>
+      </div>
 
   
   <div  class="clean_table_caption"  style="clear:both;">
@@ -78,6 +72,8 @@
 </div>
 
 </div> 
+
+</div>
 
 <div id="filtermenu0" class="yuimenu">
   <div class="bd">
@@ -131,14 +127,26 @@
 
 
 <div id="place_sku" class="nicebox">
-<div class="bd" style="width:400px">
-<h2>{t}Stock Placing for{/t} <span id="place_sku_label"></span></h2>
+<div class="bd" style="width:350px;height:120px;padding:10px">
 <div id="place_sku_msg"></div>
-<table>
+<table style="margin-top:10px;border-top:1px solid #ccc">
 <tr><td style="width:80px">{t}Quantity{/t}</td><td><input style="width:40px" id="place_sku_qty" value="" type="text"></td>
-<td class="label">{t}Location{/t}</td><td><input id="place_sku_location" /></td>
+<td class="label">{t}Location{/t}</td><td>
+<input id="place_location_key" value="" type="hidden" />
+<div style="z-index:1000;width:140px" >
+<input id="place_sku_location" value="" />
+
+			  <div style="z-index:1000" id="place_sku_location_container"></div>
+			</div>
+
+</td>
 </tr>
 </table>
+<span id="place_sku_label"></span>
+
+<div style="width:90%;text-align:right">
+<button onClick="save_place_sku()" >{t}Save{/t}</button>
+</div>
 </div>
 </div>
 

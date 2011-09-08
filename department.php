@@ -71,6 +71,7 @@ $smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
 //$smarty->assign('restrictions',$_SESSION['state']['department']['restrictions']);
 
 
+$smarty->assign('store_key',$store->id);
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
@@ -401,6 +402,27 @@ $smarty->assign('csv_export_options',$csv_export_options);
 //{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
 
 // -----------------------------------------------export csv code ends here------------------------
+
+
+
+
+
+$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0);
+
+
+
+$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Main Department Key`=%d group by  `Product Family Record Type`   ",$department->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Product Family Record Type']]=$row['num'];
+}
+
+
+
+
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['department']['families']['elements']);
+
 
   $smarty->display('department.tpl');
  

@@ -12,6 +12,8 @@
  Version 2.0
 */
 include_once('common.php');
+include_once('class.Location.php');
+
 include_once('class.Product.php');
 include_once('assets_header_functions.php');
 $page='product';
@@ -143,18 +145,6 @@ $smarty->assign('search_scope','products');
 $block_view=$_SESSION['state']['product']['block_view'];
 $smarty->assign('block_view',$block_view);
 
-
-
-
-
-
-
-
-
-
-
-
-
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
@@ -200,10 +190,6 @@ $smarty->assign('family_period_title',$family_period_title[$family_period]);
 // //print_r($hide);
 
 
-
-
-
-
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 $smarty->assign('store_id',$store->id);
@@ -229,16 +215,9 @@ if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
 $smarty->assign('general_options_list',$general_options_list);
 
-
-
-
-
-
-
-
 $web_status_error=false;
 $web_status_error_title='';
- if($product->get('Product Web State')=='Online For Sale'){
+ if($product->get('Product Web Configuration')=='Online For Sale'){
    if(!($product->get('Product Availability')>0)){
      $web_status_error=true;
      $web_status_error_title=_('This product is out of stock');
@@ -248,17 +227,15 @@ $web_status_error_title='';
        $web_status_error=true;
        $web_status_error_title=_('This product is not for sale on the webpage');
    }
- }
+}
 
 $smarty->assign('web_status_error',$web_status_error);
 $smarty->assign('web_status_error_title',$web_status_error_title);
 
 
 
-
 $smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
-
 
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
@@ -321,6 +298,8 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('paginator_menu1',$paginator_menu);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 
 $smarty->display('product.tpl');

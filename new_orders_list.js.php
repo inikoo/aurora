@@ -262,7 +262,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [ 
-				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"id", label:"<?php echo $customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 					   {key:"last_date", label:"<?php echo _('Last Updated')?>", <?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:115,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"customer",label:"<?php echo _('Customer')?>", <?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"state", label:"<?php echo _('Status')?>", <?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
@@ -315,7 +315,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'last_date',
 			 'customer',
 			 'total_amount',
-			 "state"
+			 'state'
 			 ]};
 
 		
@@ -413,7 +413,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      Key: "wregion_code",
+								      key: "wregion_code",
 								       dir: ""
 								   }
 								   ,dynamicData : true

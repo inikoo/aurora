@@ -73,7 +73,7 @@ function previous_info_period(){
 
 YAHOO.util.Event.addListener(window, "load", function() {
 	      tables = new function() {
-		  <?php if($user->can_view('orders'))  {?>
+		
 		      
 		      
 		      var tableid=0;
@@ -94,13 +94,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.dataSource0.responseSchema = {
 			  resultsList: "resultset.data", 
 			  metaFields: {
-			      rowsPerPage:"resultset.records_perpage",
-			      rtext:"resultset.rtext",
-			      sort_key:"resultset.sort_key",
-			      sort_dir:"resultset.sort_dir",
-			      tableid:"resultset.tableid",
-			      filter_msg:"resultset.filter_msg",
-			      totalRecords: "resultset.total_records"
+			     
+			     
+			      
+			      
+			          rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"			
+			      
+			      
+			      
+			      
+			      
+			      
+			      
 			  },
 			
 			  fields: [
@@ -122,7 +134,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								       })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['orders']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -135,8 +147,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      
 		    
 		      
-		      <?php } ?>
-		<?php if($user->can_view('customers')){?>
+		   
 		      var tableid=1;
 		      var tableDivEL="table"+tableid;
 		      
@@ -156,18 +167,22 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.dataSource1.responseSchema = {
 			  resultsList: "resultset.data", 
 			  metaFields: {
-			    rowsPerPage:"resultset.records_perpage",
-			    rtext:"resultset.rtext",
-			    sort_key:"resultset.sort_key",
-			    sort_dir:"resultset.sort_dir",
-			    tableid:"resultset.tableid",
-			    filter_msg:"resultset.filter_msg",
-			    totalRecords: "resultset.total_records"
+			       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"			
+			   
 			  },
 			  
 			  fields: [
 				  "customer","dispatched","nodispatched","charged","to_dispatch","orders"
 				   ]};
+		      
+		     
 		      
 		      this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 							       this.dataSource1, {
@@ -184,7 +199,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['customers']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -195,7 +210,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		    <?php } ?>
+		  
 
  var tableid=3;
 		      var tableDivEL="table"+tableid;
@@ -218,13 +233,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.dataSource3.responseSchema = {
 			  resultsList: "resultset.data", 
 			  metaFields: {
-			    rowsPerPage:"resultset.records_perpage",
-			    rtext:"resultset.rtext",
-			    sort_key:"resultset.sort_key",
-			    sort_dir:"resultset.sort_dir",
-			    tableid:"resultset.tableid",
-			    filter_msg:"resultset.filter_msg",
-			    totalRecords: "resultset.total_records"
+			  
+			      rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"			
+			  
 			  },
 			  
 			  fields: [
@@ -246,7 +264,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['code_timeline']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -279,55 +297,7 @@ var manual_check=function(){
 	});
 }
 
-var  change_web_status =function(tipo){
-    var request='ar_assets.php?tipo=ep_update&key=web_status'+'&value='+escape(tipo);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		//	alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.ok){
-		    Dom.get('web_status').innerHTML=r.web_status;
-		    if(r.web_status_error==1){
-			Dom.get('web_status_error').style.visibility='visible';
-			Dom.get('web_status_error').setAttribute('title',r.web_status_error);
-		    }else
-			Dom.get('web_status_error').style.visibility='hidden';
 
-		     if(!r.same){
-			 Dom.get('no_sincro_pages').style.visibility='visible';
-			 Dom.get('no_sincro_db').style.visibility='visible';
-		     }
-		     Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
-		}
-
-		Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
-		var request='ar_xml.php?tipo=sincronize';
-		YAHOO.util.Connect.asyncRequest('POST',request ,{
-			success:function(o) {
-			    				 alert(o.responseText)
-			    var r =  YAHOO.lang.JSON.parse(o.responseText);
-			    if(r.ok){
-				Dom.get('no_sincro_db').style.visibility='hidden';
-				Dom.get('edit_web_messages').innerHTML=r.msg;
-				
-			    }else
-				Dom.get('edit_web_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-			}
-			
-		    });
-
-
-
-
-
-
-
-
-	    }
-	    
-	    });
-
-      }
 
 function init(){
  init_search('products_store');
@@ -356,13 +326,42 @@ YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 	     YAHOO.util.Event.addListener("web_status", "click", oMenu.show, null, oMenu);
     });
 
-   
-
-
-
-
-    
-
 
 }
  YAHOO.util.Event.onDOMReady(init);
+ 
+  YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {  trigger: "filter_name2"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });  
+    
+ YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });  
+
+ YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });  

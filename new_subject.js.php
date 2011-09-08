@@ -141,10 +141,11 @@ function validate_form(){
       
 	 valid_form=true;
 	for (item in validate_data ){
-	    //	    alert(item+' '+validate_data[item].required+' '+validate_data[item].validated)
 	    if(validate_data[item].required==true && validate_data[item].validated==false){
 		valid_form=false;
 		
+			    //	    alert(item+' '+validate_data[item].required+' '+validate_data[item].validated)
+
 	    }
 	    if(validate_data[item].inputed==true && validate_data[item].validated==false){
 	//	valid_form=false;

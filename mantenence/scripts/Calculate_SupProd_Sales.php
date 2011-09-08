@@ -38,7 +38,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Supplier Product Dimension` ";
+$sql="select * from `Supplier Product Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sp=new SupplierProduct('pid',$row['Supplier Product Key']);
