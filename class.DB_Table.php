@@ -215,7 +215,7 @@ abstract class DB_Table {
             $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
 
-        //print "$sql\n";
+      
         mysql_query($sql);
         $affected=mysql_affected_rows();
         if ($affected==-1) {
@@ -230,7 +230,7 @@ abstract class DB_Table {
         }
         else {
 
-            // print "updateeddd!!!!  $field $value\n";
+            
 
             $this->data[$field]=$value;
             $this->msg.=" $field "._('Record updated').", \n";
@@ -243,11 +243,11 @@ abstract class DB_Table {
                 $save_history=false;
 
             if (
-                preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
+                preg_match('/part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
                 and !$this->new
                 and $save_history
             ) {
-                // print "xxxxxxxx2";
+              
                 $history_data=array(
                                   'Indirect Object'=>$field,
                                   'old_value'=>$old_value,
@@ -448,7 +448,7 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Metadata'])
                     );
 
-          // print $sql;
+        //   print $sql;
         // print_r($raw_data);
         //dsdfdffd();
         mysql_query($sql);

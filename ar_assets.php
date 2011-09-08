@@ -14,6 +14,8 @@
 
 require_once 'common.php';
 //require_once 'stock_functions.php';
+require_once 'class.Store.php';
+
 require_once 'class.Product.php';
 require_once 'class.Department.php';
 require_once 'class.Family.php';
@@ -44,7 +46,7 @@ case('new_list'):
                              'store_id'=>array('type'=>'key'),
                              'list_name'=>array('type'=>'string'),
                              'list_type'=>array('type'=>'enum',
-							 'valid values regex'=>'/static|Dynamic/i'
+                                                'valid values regex'=>'/static|Dynamic/i'
                                                )
                          ));
 
@@ -130,8 +132,6 @@ case('is_product_code'):
                          ));
     is_product_code($data);
     break;
-
-
 case('charges'):
     list_charges();
     break;
@@ -141,9 +141,6 @@ case('campaigns'):
 case('deals'):
     list_deals();
     break;
-
-
-
 case('product_server'):
     list_products_with_same_code();
     break;
@@ -168,1301 +165,50 @@ case('product_code_timeline'):
 case('product_categories'):
     list_product_categories();
     break;
-
 case('part_transactions'):
     part_transactions();
     break;
-case('order_received'):
-case('order_expected'):
-case('order_checked'):
-case('order_cancelled'):
-case('order_consolidated'):
-    $data=array(
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'done_by'=>(!isset($_REQUEST['done_by'])?$LU->getProperty('auth_user_id'):json_decode(preg_replace('/\\\"/','"',$_REQUEST['done_by']),true)),
-              'date'=>$_REQUEST['date'],
-              'time'=>$_REQUEST['time']
-          );
-
-
-
-    $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
-    if (!$order->id) {
-        $response= array('state'=>400,'msg'=>_('Error: Order not found'));
-        echo json_encode($response);
-        exit;
-    }
-    $_tipo=preg_replace('/^order\_/','date_',$tipo);
-    $_tipo2=preg_replace('/^order\_/','',$tipo);
-    $res=$order->set($_tipo,$data);
-
-    if ($res['ok']) {
-        $order->load('supplier');
-        $response= array('state'=>200,'date'=>$order->data['dates'][$_tipo2],'title'=>$order->supplier->data['code']."<br/>"._('Purchase Order')." ".$order->id." (".$order->data['status'].")",);
-
-
-    } else {
-        $response= array('state'=>400,'msg'=>$res['msg']);
-    }
-    echo json_encode($response);
-
-    break;
-
-
-case('order_submit'):
-    $data=array(
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'sdate'=>$_REQUEST['date'],
-              'stime'=>$_REQUEST['time']
-          );
-    $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
-    if (!$order->id) {
-        $response= array('state'=>400,'msg'=>_('Error: Order not found'));
-        echo json_encode($response);
-        exit;
-    }
-    $res=$order->set('date_submited',$data);
-    $res_bis=array('ok'=>true);
-
-    if ($_REQUEST['edate']!='' and $res['ok']) {
-        $res_bis=$order->set('date_expected',array('date'=>$_REQUEST['edate'],'user_id'=>$LU->getProperty('auth_user_id'),'history'=>false));
-        // print_r( $res_bis);
-    }
-    if ($res['ok']) {
-        $order->load('supplier');
-        $response= array(
-                       'state'=>200,
-                       'date_submited'=>$order->data['dates']['submited'],
-                       'ts_submited'=>$order->data['date_submited'],
-                       'title'=>$order->supplier->data['code']."<br/>"._('Purchase Order')." ".$order->id." (".$order->data['status'].")",
-                       'ts_expected'=>$order->data['date_expected'],
-                       'date_expected'=>$order->data['dates']['expected']
-                                       //		      'msg'=>print_r($res_bis)
-                   );
-        if ($_REQUEST['tipo_order']=='po')
-            $_SESSION['state']['po']['new']='';
-    } else {
-        $response= array('state'=>400,'msg'=>$res['msg']);
-    }
-    echo json_encode($response);
-
-    break;
-
-case('order_add_item'):
-    $data=array(
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'product_id'=>$_REQUEST['product_id'],
-              'qty'=>$_REQUEST['qty']
-          );
-    $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
-    if (!$order->id) {
-        $response= array('state'=>400,'msg'=>_('Error: Order not found'));
-        echo json_encode($response);
-        exit;
-    }
-    $res=$order->add_item($data);
-    if ($res['ok']) {
-        $response= array('state'=>200,'data'=>$order->data,'item_data'=>$res['item_data']);
-    } else {
-        $response= array('state'=>400,'msg'=>$res['msg']);
-    }
-    echo json_encode($response);
-
-    break;
-case('order_item_checked'):
-    $data=array(
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'product_id'=>$_REQUEST['product_id'],
-              'qty'=>$_REQUEST['qty']
-          );
-    $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
-    if (!$order->id) {
-        $response= array('state'=>400,'msg'=>_('Error: Order not found'));
-        echo json_encode($response);
-        exit;
-    }
-    $res=$order->item_checked($data);
-    if ($res['ok']) {
-        $response= array('state'=>200,'data'=>$order->data,'item_data'=>$res['item_data']);
-    } else {
-        $response= array('state'=>400,'msg'=>$res['msg']);
-    }
-    echo json_encode($response);
-
-    break;
-case('sincro_pages'):
-    $product=new product($_SESSION['state']['product']['id']);
-    $product->save($tipo,array('user_id'=>$LU->getProperty('auth_user_id')));
-    $response= array(
-                   'ok'=>true,
-                   'msg'=>_('Pages checked')
-               );
-    echo json_encode($response);
-    break;
-    break;
-case('ep_update'):
-    $data[]=array(
-                'key'=>$_REQUEST['key'],
-                'value'=>$_REQUEST['value']
-            );
-    //     print_r($data);
-    if (isset($_REQUEST['sup_cost']))
-        $data[0]['sup_cost']=$_REQUEST['sup_cost'];
-    if (isset($_REQUEST['sup_code']))
-        $data[0]['sup_code']=$_REQUEST['sup_code'];
-    if (isset($_REQUEST['image_id']))
-        $data[0]['image_id']=$_REQUEST['image_id'];
-    if (isset($_REQUEST['price']))
-        $data[0]['price']=$_REQUEST['price'];
-    if (isset($_REQUEST['odim']))
-        $data[0]['odim']=$_REQUEST['odim'];
-    if (isset($_REQUEST['oweight']))
-        $data[0]['oweight']=$_REQUEST['oweight'];
-
-    if ($_REQUEST['key']=='img_new') {
-        if ($_FILES['testFile']['tmp_name']=='') {
-            $response= array(
-                           'ok'=>false,
-                           'msg'=>_('No file')
-                       );
-            echo json_encode($response);
-            break;
-        }
-
-        $target_path = "uploads/".$_REQUEST["PHPSESSID"].'_'.date('U');
-        if (move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
-
-        }
-        $data[0]['value']=$target_path;
-
-    }
-
-    $product=new product($_SESSION['state']['product']['id']);
-    $_res=$product->update($data);
-    // print_r($_res);
-    $res=$_res[$_REQUEST['key']];
-    if ($res['ok']) {
-        $res['msg']=$product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
-
-        if ($_REQUEST['key']=='units') {
-
-            if ($_res['price']['ok'])
-                $res['msg'].='; '.$product->save('price',array('user_id'=>$LU->getProperty('auth_user_id')));
-            else
-                $res['msg'].='; '.$_res['price']['msg'];
-
-            if ($_res['oweight']['ok'])
-                $res['msg'].='; '.$product->save('oweight',array('user_id'=>$LU->getProperty('auth_user_id')));
-            else
-                $res['msg'].='; '.$_res['oweight']['msg'];
-
-            if ($_res['odim']['ok'])
-                $res['msg'].='; '.$product->save('odim',array('user_id'=>$LU->getProperty('auth_user_id')));
-            else
-                $res['msg'].='; '.$_res['odim']['msg'];
-        }
-
-    }
-
-
-    if ($res['ok']) {
-        $response= array(
-                       'ok'=>true,
-                       'msg'=>$res['msg']
-                   );
-
-        if ($_REQUEST['key']=='web_status') {
-            $response['same']=$res['same'];
-            $response['web_status']=$_web_status[$product->get('web_status')];
-
-            $web_status_error=0;
-            $web_status_error_title='';
-            if ($product->get('web_status')=='onsale') {
-                if (!($product->get('stock')>0)) {
-                    $web_status_error=1;
-                    $web_status_error_title=_('This product is out of stock');
-                }
-            } else {
-                if ($product->get('stock')>0) {
-                    $web_status_error=1;
-                    $web_status_error_title=_('This product is not for sale on the webpage');
-                }
-            }
-            $response['web_status_error']=$web_status_error;
-            $response['web_status_error_title']=$web_status_error_title;
-        }
-
-        if ($_REQUEST['key']=='img_new') {
-            $response['data']=$product->get('new_image');
-            if ($product->get('num_images')==1)
-                $response['is_principal']=1;
-            else
-                $response['is_principal']=0;
-        }
-        if ($_REQUEST['key']=='supplier_new') {
-            $response['data']=$product->supplier[$product->new_supplier];
-            $response['currency']=$myconf['currency_symbol'];
-            $response['thousand_sep']=$myconf['thousand_sep'];
-            $response['decimal_point']=$myconf['decimal_point'];
-
-            $response['units_tipo_name']=$product->data['units_tipo_name'];
-        }
-
-
-        if ($_REQUEST['key']=='img_delete') {
-            $response['new_principal']=$product->new_principal_img;
-        }
-
-    } else
-        $response= array(
-                       'ok'=>false,
-                       'msg'=>$res['msg']
-                   );
-
-    echo json_encode($response);
-    break;
-case('pml_change_max_units'):
-    $data[]=array(
-                'key'=>$_REQUEST['key'],
-                'value'=>$_REQUEST['value'],
-                'p2l_id'=>$_REQUEST['p2l_id']
-            );
-
-    $product=new product($_SESSION['state']['product']['id']);
-    $_res=$product->update($data);
-    $res=$_res[$_REQUEST['key']];
-
-    if ($res['ok']) {
-        $res['msg']=$product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
-        $response= array(
-                       'ok'=>true,
-                       'msg'=>$res['msg'],
-                       'max_units'=>$product->get('max_units_per_location',array('id'=>$_REQUEST['p2l_id']))
-                   );
-    } else
-        $response= array(
-                       'ok'=>false,
-                       'msg'=>$res['msg']
-                   );
-
-    echo json_encode($response);
-    break;
-case('pml_change_location'):
-    $data=array(
-
-              'p2l_id'=>$_REQUEST['id'],
-              'new_location_name'=>$_REQUEST['new_location_name'],
-              'msg'=>$_REQUEST['msg'],
-
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'tipo'=>'change_location'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                       'data'=>$res[1],
-                       'new_location_id'=>$res[2]
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-case('pml_unlink'):
-    $data=array(
-              'tipo'=>'unlink', 'user_id'=>$LU->getProperty('auth_user_id')
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-case('pml_link'):
-    $data=array(
-              'product_id'=>$_REQUEST['product_id'], 'user_id'=>$LU->getProperty('auth_user_id'),
-              'tipo'=>'link'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-    if ($res['ok'])
-        $response= array(
-                       'state'=>200,
-                       'master_id'=>$res['master_id'],
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res['msg']
-                   );
-    echo json_encode($response);
-    break;
-
-case('pml_change_qty'):
-    $data=array(
-              'p2l_id'=>$_REQUEST['id'],
-              'qty'=>$_REQUEST['qty'],
-              'msg'=>$_REQUEST['msg'],
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'tipo'=>'change_qty'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                       'data'=>$res[1],
-                       'stock'=>$res[2],
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-case('pml_increse_picking_rank'):
-    $data=array(
-
-              'product2location_id'=>$_REQUEST['id'],
-              'rank'=>'-1',
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'tipo'=>'set_picking_rank'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                       'data'=>$res[1]
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-case('pml_swap_picking'):
-    $data=array(
-
-              'p2l_id'=>$_REQUEST['id'],
-              'action'=>$_REQUEST['action'],
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'tipo'=>'swap_picking'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                       'data'=>$res[1]
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-case('pml_desassociate_location'):
-
-
-    $id=$_REQUEST['id'];
-    $part_location=new PartLocation(array('LocationPart'=>$id));
-    $data=array(
-              'date'=>'',
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'note'=>$_REQUEST['msg']
-          );
-
-    $response= array(
-                   'state'=>200,
-                   'data'=>''
-               );
-
-
-    echo json_encode($response);
-    break;
-
-
-
-case('pml_new_location'):
-
-    if (isset($_REQUEST['product_id']))
-        $product_id=$_REQUEST['product_id'];
-    else
-        $product_id=$_SESSION['state']['product']['id'];
-
-
-    if (isset($_REQUEST['location_id'])) {
-        $sql=sprintf("select name from location where id=%d",$_REQUEST['location_id']);
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $location_name=$row['name'];
-        }
-
-    } else
-        $location_name=$_REQUEST['location_name'];
-
-    $data=array(
-              //    'product_id'=>$product_id,
-              'location_name'=>$location_name,
-              'is_primary'=>($_REQUEST['is_primary']=='true'?true:false),
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'can_pick'=>($_REQUEST['can_pick']=='true'?true:false),
-              'tipo'=>'associate_location'
-          );
-    $product=new product($product_id);
-    $res=$product->update_location($data);
-
-    if ($data['can_pick']) {
-        $tipo_img='art/icons/basket.png';
-        if ($data['is_primary'])
-            $row=1;
-        else
-            $row=$res[1]['num_physical'];
-    } else {
-        $row=$res[1]['num_physical'];
-        $tipo_img='art/icons/basket_delete.png';
-    }
-
-    if ($res[0]) {
-        // calculate the numer of products on this location
-        $location=new Location($res[2]);
-
-        $response= array(
-                       'where'=>$row,
-                       'state'=>200,
-                       'data'=>$res[1],
-                       'name'=>$res[3],
-                       'tipo'=>$_location_tipo[$res[4]],
-                       'picking_rank'=>$res[5],
-                       'tipo_rank'=>$res[6],
-                       'can_pick'=>$res[8],
-                       'rank_img'=>$tipo_img,
-                       'id'=>$res[2],
-                       'pl_id'=>$res[7],
-                       'num_products'=>$location->get('num_produts'),
-                       'stock'=>$location->get('has_stock')
-                   );
-    } else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-
-
-case('pml_damaged_stock'):
-    $data=array(
-
-              'from'=>$_REQUEST['from'],
-              'qty'=>$_REQUEST['qty'],
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'message'=>$_REQUEST['message'],
-              'tipo'=>'damaged_stock'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                       'data'=>$res[1]
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-    echo json_encode($response);
-    break;
-
-case('pml_move_stock'):
-    $data=array(
-
-              'from'=>$_REQUEST['from'],
-              'to'=>$_REQUEST['to'],
-              'qty'=>$_REQUEST['qty'],
-              'user_id'=>$LU->getProperty('auth_user_id'),
-              'tipo'=>'move_stock'
-          );
-    $product=new product($_SESSION['state']['product']['id']);
-    $res=$product->update_location($data);
-
-    if ($res[0])
-        $response= array(
-                       'state'=>200,
-                       'data'=>$res[1]
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>$res[1]
-                   );
-
-
-
-    echo json_encode($response);
-
-
-    break;
-case('pml_move_multiple_stocks'):
-    $_data=preg_replace('/\\\"/','"',$_REQUEST['data']);
-    $_data=json_decode($_data,true);
-    $to_name=$_REQUEST['toname'];
-    $ok=true;
-    $error_msg='';
-
-    foreach($_data as $id=>$value) {
-
-        $data=array(
-                  'qty'=>$value['qty'],
-                  'from_id'=>$id,
-                  'to_name'=>$to_name,
-                  'user_id'=>$LU->getProperty('auth_user_id'),
-                  'tipo'=>'move_stock_to'
-              );
-
-
-
-        $product=new product($value['product_id']);
-        $res=$product->update_location($data);
-
-        if (!$res[0]) {
-
-            $ok=false;
-            $error_msg.='; '.$res[1];
-        }
-    }
-
-    if ($ok)
-        $response= array(
-                       'state'=>200,
-                       'data'=>''
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>_('Some errors ocurred').$error_msg
-                   );
-
-
-
-    echo json_encode($response);
-
-
-    break;
-
-case('pml_audit_stocks'):
-    $_data=preg_replace('/\\\"/','"',$_REQUEST['data']);
-    $_data=json_decode($_data,true);
-
-    $ok=true;
-
-
-
-    foreach($_data as $id=>$value) {
-
-
-        $part_location=new PartLocation(array('LocationPart'=>$id));
-        $msg=($_REQUEST['msg1']!=''?'; '.$_REQUEST['msg1']:'').($_REQUEST['msg2']!=''?'; '.$_REQUEST['msg2']:'').($value['msg']!=''?'; '.$value['msg']:'');
-        $msg=preg_replace('/^\;\s*/','',$msg);
-        $data=array(
-                  'qty'=>$value['qty']
-                        ,'note'=>$msg
-                                ,'user key'=>$LU->getProperty('auth_user_id')
-                                            ,'date'=>''
-                                                    ,'options'=>''
-              );
-        $part_location->audit($data);
-
-        //      $data=array(
-        // 	       'qty'=>$value['qty'],
-//  	       'msg'=>$msg,
-//  	       'LocationPart'=>$id,
-//  	       'user_id'=>$LU->getProperty('auth_user_id'),
-//  	       'tipo'=>'change_qty'
-//  	       );
-
-
-//    $product=new product($value['product_id']);
-//    $res=$product->update_location($data);
-//    $error_msg='';
-//    if(!$res[0]){
-//      $ok=false;
-//      $error_msg=';'.$res[1];
-//    }
-
-    }
-    // if($ok)
-    $response= array(
-                   'state'=>200,
-                   'data'=>''
-               );
-//   else
-//      $response= array(
-// 		      'state'=>400,
-// 		      'msg'=>_('Some errors ocurred')
-// 		      );
-
-
-
-    echo json_encode($response);
-
-
-    break;
-case('pml_multiple_damaged'):
-    $_data=preg_replace('/\\\"/','"',$_REQUEST['data']);
-    $_data=json_decode($_data,true);
-
-    $ok=true;
-
-
-    foreach($_data as $id=>$value) {
-
-        $msg=($_REQUEST['msg1']!=''?$_REQUEST['msg1'].';':'').$value['msg'];
-        $msg=preg_replace('/^\s*/','',$msg);
-        $data=array(
-                  'qty'=>$value['qty'],
-                  'message'=>$msg,
-                  'from'=>$id,
-                  'user_id'=>$LU->getProperty('auth_user_id'),
-                  'tipo'=>'damaged_stock'
-              );
-
-
-
-        $product=new product($value['product_id']);
-        $res=$product->update_location($data);
-        $error_msg='';
-        if (!$res[0]) {
-            $ok=false;
-            $error_msg=';'.$res[1];
-        }
-
-    }
-
-    if ($ok)
-        $response= array(
-                       'state'=>200,
-                       'data'=>''
-                   );
-    else
-        $response= array(
-                       'state'=>400,
-                       'msg'=>_('Some errors ocurred')
-                   );
-
-
-
-    echo json_encode($response);
-
-
-    break;
-
-case('products_name'):
-
-    if (!isset($_REQUEST['query']) or $_REQUEST['query']=='') {
-        $response= array(
-                       'state'=>400,
-                       'data'=>array()
-                   );
-        echo json_encode($response);
-        return;
-    }
-
-
-    if (isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id'])) {
-
-        if ($_REQUEST['except']=='location') {
-
-            $sql=sprintf("select product.id as product_id,description,product.code,product2location.id as id,0 as qty from product left join product2location on (product.id=product_id) where product.code like   '%s%%'   and (select count(*) from product2location as p2l  where location_id=%s and p2l.product_id=product.id)=0   order by ncode ",addslashes($_REQUEST['query']),$_REQUEST['except_id']);
-            $_data=array();
-            $res=mysql_query($sql);
-            while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                $_data[]= array(
-                              'scode'=>$data['code']
-                                      ,'code'=>sprintf('<a href="product_manage_stock.php?id=%d">%s</a>',$data['product_id'],$data['code'])
-                                              ,'description'=>$data['description']
-                                                             ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
-                                                                            ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['id'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['id'],$data['product_id'])
-                                                                                           ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
-                                                                                                      ,'_qty_move'=>'<input id="qm'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-                                                                                                                   ,'_qty_change'=>'<input id="qc'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-                                                                                                                                  ,'_qty_damaged'=>'<input id="qd'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-                                                                                                                                                  ,'note'=>'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
-                                                                                                                                                          ,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
-                                                                                                                                                                    ,'product_id'=>$data['product_id']
-                          );
-            }
-            $response= array(
-                           'state'=>200,
-                           'data'=>$_data
-                       );
-            echo json_encode($response);
-
-
-            break;
-
-
-
-        }
-
-    }
-// else{
-
-
-//      $sql=sprintf("select code from product where code like   '%s%%'  order by ncode ",$_REQUEST['query']);
-//    }
-//    //   print $sql;
-//    $res=mysql_query($sql);
-//    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-//      $data[]=array('code'=>$row['code']);
-//    }
-
-
-//    $response= array(
-// 		    'state'=>200,
-// 		    'data'=>$data
-// 		    );
-//    echo json_encode($response);
-
-
-    break;
-
-
 case('find_part'):
-
     find_part();
-
-
-
-
-
-
-
     break;
-
-
-case('locations_name'):
-
-    if (!isset($_REQUEST['query']) or $_REQUEST['query']=='') {
-        $response= array(
-                       'state'=>400,
-                       'data'=>array()
-                   );
-        echo json_encode($response);
-        return;
-    }
-
-
-    if (isset($_REQUEST['all']) and $_REQUEST['all']==1)
-        $sql=sprintf("select name from location where name like '%s%%' ",$_REQUEST['query']);
-    elseif(isset($_REQUEST['except_location'])) {
-        $sql=sprintf("select * from location where name like '%s%%' and id!=%d  ",$_REQUEST['query'],$_REQUEST['except_location']);
-    }
-    else {
-
-        if (!isset($_REQUEST['product_id']))
-            $product_id=$_SESSION['state']['product']['id'];
-        else
-            $product_id=$_REQUEST['product_id'];
-        $sql=sprintf("select * from location where name like '%s%%' and (select count(*) from product2location where location_id=location.id and product_id=%d)=0   ",$_REQUEST['query'],$product_id);
-    }
-    //   print $sql;
-    $result=mysql_query($sql);
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $data[]=array('name'=>$row['name']);
-    }
-
-
-    $response= array(
-                   'state'=>200,
-                   'data'=>$data
-               );
-    echo json_encode($response);
-
-
-    break;
-
-case('update_product'):
-    if (!isset($_REQUEST['product_id'])) {
-        $response=array('state'=>400,'msg'=>_('Error'));
-        echo json_encode($response);
-        break;
-    }
-
-    include_once('class.product.php');
-    $product_id=$_REQUEST['product_id'];
-
-    $values=array();
-    foreach($_REQUEST as $key=>$value) {
-        if (preg_match('/^v_.*/i',$key)) {
-            $key=preg_replace('/^v_/','',$key);
-            $values[$key]=$value;
-        }
-    }
-    $product=New product($product_id);
-    $product->read('product_info');
-
-    $result=  $product->update($values);
-
-
-    $response= array(
-                   'state'=>200,
-                   'res'=>$result
-               );
-    echo json_encode($response);
-
-
-    break;
-
-case('editproductdetails'):
-
-    $description=addslashes($_REQUEST['editor']);
-    $product_id=$_REQUEST['product_id'];
-    if ($description=='') {
-        $response= array(
-                       'state'=>400,
-                       'desc'=>_('Nothing to add')
-                   );
-        echo json_encode($response);
-        break;
-    }
-    $sql=sprintf("update product set description_med='%s' where id=%d",$description,$product_id);
-
-    mysql_query($sql);
-    //   print $_REQUEST['editor'];
-    $response= array(
-                   'state'=>200
-               );
-    echo json_encode($response);
-    break;
-case('changepic'):
-    $new_id=$_REQUEST['new_id'];
-
-
-    $sql=sprintf("select filename,format,id,product_id,caption from image where id=%d",$new_id);
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $caption=$row['caption'];
-        $product_id=$row['product_id'];
-        $new_src='images/med/'.$row['filename'].'_med.'.$row['format'];
-        $sql=sprintf("update image set principal=0 where product_id=%d",$product_id);
-        mysql_query($sql);
-        $sql=sprintf("update image set principal=1 where id=%d",$new_id);
-        //     print $sql;
-        mysql_query($sql);
-
-        $sql=sprintf("select filename,id,format from image where product_id=%d and principal=0 limit 5",$product_id);
-        $res2 = mysql_query($sql);
-        $other_img_src=array('','','','','');
-        $other_img_id=array(0,0,0,0,0);
-        $num_others=0;
-        while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-            $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
-            $other_img_id[$num_others]=$row2['id'];
-            $num_others++;
-        }
-        $response= array(
-                       'state'=>200,
-                       'new_src'=>$new_src,
-                       'new_id'=>$new_id,
-                       'other_img'=>$other_img_src,
-                       'other_img_id'=>$other_img_id,
-                       'others'=>$num_others,
-                       'caption'=>$caption
-                   );
-        echo json_encode($response);
-        break;
-    }
-    $response=array('resultset'=>
-                                array(
-                                    'state'=>400,
-                                    'msg'=>_('Error')
-                                )
-                   );
-    echo json_encode($response);
-    break;
-
-case('uploadpic'):
-
-    $id=$_SESSION['state']['product']['id'];
-
-    $product= new Product($id);
-    $product->load('images');
-    $code=$product->get('code');
-    $target_path = "uploads/".$_REQUEST["PHPSESSID"].'_'.date('U');
-    if (move_uploaded_file($_FILES['testFile']['tmp_name'], $target_path)) {
-        $im = @imagecreatefromjpeg($target_path);
-        if ($im) {
-            $w = imagesx($im);
-            $h = imagesy($im);
-
-            if ($h > 0) {
-                $r = $w/$h;
-                $s=filesize($target_path);
-                $c=md5_file($target_path);
-
-
-
-                //   print "$images $w $h $s $c";
-                $images=$product->get('num_images');
-                //	     print $images;
-                imagejpeg($im,'app_files/images/original/'.$code.'_'.$images.'_orig.jpg');
-
-                $med_maxh=130;
-                $med_maxw=190;
-                $tb_maxh=21;
-                $tb_maxw=30;
-
-
-                if ($r>1.4615) {
-                    $med_w=$med_maxw;
-                    $med_h=$med_w/$r;
-                    $tb_w=$tb_maxw;
-                    $tb_h=$tb_w/$r;
-
-                } else {
-
-                    $med_h=$med_maxh;
-                    $med_w=$med_h*$r;
-                    $tb_h=$tb_maxh;
-                    $tb_w=$tb_h*$r;
-                }
-
-
-
-                return;
-                $im_med = imagecreatetruecolor($med_w, $med_h);
-                imagecopyresampled($im_med, $im, 0, 0, 0, 0, $med_w, $med_h, $w, $h);
-                imagejpeg($im_med,$this->image_path.'med/'.$code.'_'.$images.'_med.jpg');
-                $im_tb = imagecreatetruecolor($tb_w, $tb_h);
-                imagecopyresampled($im_tb, $im, 0, 0, 0, 0, $tb_w, $tb_h, $w, $h);
-                imagejpeg($im_tb,$this->image_path.'tb/'.$code.'_'.$images.'_tb.jpg');
-
-            }
-        }
-    }
-
-
-break;
-
-
-
-
 case('families'):
     list_families();
-
-
     break;
-
 case('stores'):
     list_stores();
     break;
-
 case('departments'):
     list_departments();
-
     break;
-
 case('product'):
-
 case('products'):
     list_products();
-
     break;
 case('parts'):
     list_parts();
-
     break;
-
-
-
-case('withsupplier_po'):
-    if (!$LU->checkRight(SUP_VIEW))
-        exit;
-
-    $conf=$_SESSION['state']['po']['items'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
-    else
-        $where=$conf['where'];
-
-
-    if (isset( $_REQUEST['id']))
-        $supplier_id=$_REQUEST['id'];
-    else
-        $supplier_id=$_SESSION['state']['supplier']['id'];
-
-    if (isset( $_REQUEST['po_id']))
-        $po_id=$_REQUEST['po_id'];
-    else
-        $po_id=$_SESSION['state']['po']['id'];
-
-
-    $all_products_supplier=false;
-
-
-    if (isset( $_REQUEST['all_products_supplier'])) {
-        $all_products_supplier=$_REQUEST['all_products_supplier'];
-
-    } else
-        $all_products_supplier=$conf['all_products_supplier'];
-
-    $all_products=false;
-    if (isset( $_REQUEST['all_products'])) {
-        $all_products=$_REQUEST['all_products'];
-
-    } else
-        $all_products=$conf['all_products'];
-
-
-    if ($all_products_supplier)
-        $all_products=false;
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-    $filter_msg='';
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_order=$order;
-    $_dir=$order_direction;
-
-
-
-
-    $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'all_products_supplier'=>$all_products_supplier,'all_products'=>$all_products);
-    $_SESSION['state']['supplier']['id']=$supplier_id;
-
-
-
-    if ($all_products_supplier)
-        $where=$where.' and `Supplier Key`='.$supplier_id;
-    elseif($all_products)
-    $all_products_supplier=true;
-    else {
-        $f_value='';
-        $where=$where.' and `Purchase Order Key`='.$po_id;
-
-    }
-
-
-    $wheref='';
-    if (($f_field=='p.code' or $f_field=='sup_code') and $f_value!='')
-        $wheref.=" and  p.code  like '".addslashes($f_value)."%'";
-    if (($f_field=='sup_code') and $f_value!='')
-        $wheref.=" and  sup_code like '".addslashes($f_value)."%'";
-
-
-
-
-
-    if ($all_products_supplier)
-        $sql="select count(*) as total from `Supplier Product Dimension` $where $wheref ";
-    else
-        $sql="select count(*) as total from `Purchase Order Transaction Fact` $where $wheref ";
-
-
-    //   print $sql;
-
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-        $total=$row['total'];
-    }
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        if ($all_products_supplier)
-            $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
-        else
-            $sql="select count(*) as total from `Purchase Order Transaction Fact`  $where $wheref ";
-        $res = mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-        }
-
-    }
-    if ($all_products_supplier)
-        $rtext=$total_records." ".ngettext('products','products',$total_records);
-    else
-        $rtext=$total_records." ".ngettext('products in po','products in po',$total_records);
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-    $filter_msg='';
-
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
-        case('sup_code'):
-        case('p.code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b> ";
-            break;
-        }
-    }
-    elseif($filtered>0) {
-        switch ($f_field) {
-        case('p.code'):
-        case('sup_code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code')." <b>".$f_value."*</b>";
-            break;
-
-        }
-    }
-    else
-        $filter_msg='';
-
-
-    if ($all_products_supplier) {
-        $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
-
-        // $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,''),IFNULL(qty-damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department
-        //from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-
-    } else {
-
-        $sql="select *  from `Purchase Order Transaction Fact` POTF left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=POTF.`Supplier Product Key`)   $where $wheref ";
-
-        // $sql=sprintf("select   (qty-damaged) as useful,  damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department
-        //from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
-
-    }
-
-    $res = mysql_query($sql);
-    $data=array();
-    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-        if ($all_products_supplier) {
-            if ($row['po_data']!='') {
-                list($expected_price,$expected_qty,$price,$qty,$damaged,$useful)=preg_split('/\|/',$row['po_data']);
-            } else {
-                $expected_price='';
-                $expected_qty='';
-                $price='';
-                $qty='';
-                $damaged='';
-                $useful='';
-
-            }
-
-        } else {
-            $expected_price=$row['Purchase Order Amount'];
-            $expected_qty=$row['Purchase Order Quantity'];
-            $price=$row['price'];
-            $qty=$row['qty'];
-            $damaged=$row['damaged'];
-            $useful=$row['useful'];
-        }
-
-
-        $diff=$qty-$expected_qty;
-        if ($diff>0)
-            $diff='+'.$diff;
-
-        //($row['punits']!=1?number($row['stock']:''))
-
-        $code='<a tabindex="2" href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
-
-
-
-        $data[]=array(
-                    'id'=>$row['id'],
-                    'p2s_id'=>$row['p2s_id'],
-
-                    'condicion'=>$row['condicion'],
-                    'price_unit'=>"(".money($row['price_unit']).")",
-                    'price_outer'=>money($row['price_outer']),
-                    'stock'=>($row['stock']==''?'': ($row['stock']==0?0:     number($row['stock']).($row['punits']!=1?"(".number($row['stock']* $row['punits'] ).")":'')   )),
-                    'code'=>$code,
-                    'sup_code'=>$row['sup_code'],
-                    'qty'=>"<span  style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> ['.($qty==''?'':number($qty,1)).']',
-                    'expected_qty_edit'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($expected_qty==''?'':number($expected_qty/$row['punits'],1)).'</span> <input type="text" value="'.($expected_qty==''?'':number($expected_qty,1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
-                    'expected_qty'=>"<span  style='color:#777'>".(($expected_qty=='' or $row['punits']==1)?'':number($expected_qty/$row['punits'],1)).'</span> [<span id="eqty'.$row['p2s_id'].'"  onClick="eqty(this,'.$row['p2s_id'].','.$row['punits'].')">'.($expected_qty==''?'':number($expected_qty,1))."</span>]",
-                    'diff'=>'<span id="diff'.$row['p2s_id'].'">'.$diff.'</span>',
-                    'qty_edit'=>"<span id='ocqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> <input type="text" value="'.($qty==''?'':number($qty,1)).'" onchange="value_checked(this,'.$row['p2s_id'].','.$row['punits'].','.($all_products?1:0).')" size="3"  id="qc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'"  prodid="'.$row['id'].'"   class="aright" />',
-                    'damaged_edit'=>"<span id='do".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($damaged/$row['punits'],1)).'</span> <input type="text" value="'.($damaged==''?'':number($damaged,1)).'" onchange="value_damaged(this,'.$row['p2s_id'].','.$row['punits'].')" size="3"  id="du'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
-                    'description'=>number($row['punits'])."x ".$row['description'],
-                    'group_id'=>$row['group_id'],
-                    'department_id'=>$row['department_id'],
-                    'fam'=>$row['fam'],
-                    'department'=>$row['department'],
-                    'delete'=>'<img src="art/icons/link_delete.png"/>',
-                    'price'=>"<span>".($qty==''?'':money($price))."</span>",
-                    'usable'=>'<span id="uo'.$row['p2s_id'].'">'.($row['punits']==1?'':number($useful/$row['punits'])).'</span> [<span id="uu'.$row['p2s_id'].'">'.number($useful)."</span>]",
-                    'expected_price'=>"<span id='ep".$row['p2s_id']."'>".($expected_qty==''?'':money($expected_price))."</span>"
-                );
-    }
-
-
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                      'sort_key'=>$_order,
-                                      'rtext'=>$rtext,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-                                     )
-                   );
-    echo json_encode($response);
-    break;
-
-
-
 case('plot_daily_part_stock_history'):
+    plot_daily_part_stock_history();
+    break;
+case('part_stock_history'):
+case('stock_history'):
+    part_stock_history();
+    break;
+case('part_location_info'):
+    $data=prepare_values($_REQUEST,array(
+                             'sku'=>array('type'=>'key'),
+                         ));
+    part_location_info($data);
+    break;
+default:
+
+    $response=array('state'=>404,'msg'=>_('Operation not found'));
+    echo json_encode($response);
+
+}
+
+function plot_daily_part_stock_history() {
+
     if (isset($_REQUEST['sku'])) {
         $part_sku=$_REQUEST['sku'];
     } else
@@ -1490,23 +236,6 @@ case('plot_daily_part_stock_history'):
                    );
 
     echo json_encode($response);
-
-    break;
-
-case('part_stock_history'):
-case('stock_history'):
-    part_stock_history();
-
-
-    break;
-
-
-
-default:
-
-    $response=array('state'=>404,'msg'=>_('Operation not found'));
-    echo json_encode($response);
-
 }
 
 function list_departments() {
@@ -1627,23 +356,23 @@ function list_departments() {
     $_SESSION['state'][$conf_table]['departments']['period']=$period;
     $_SESSION['state'][$conf_table]['departments']['avg']=$avg;
 
- if(count($user->stores)==0)
-    $where="where false";
-    else{
+    if (count($user->stores)==0)
+        $where="where false";
+    else {
 
-    switch ($parent) {
-    case('store'):
-        if (in_array($store_id,$user->stores))
-            $where=sprintf("where  `Product Department Store Key`=%d",$store_id);
-        else
-            $where=sprintf("where  false");
-        break;
-    default:
+        switch ($parent) {
+        case('store'):
+            if (in_array($store_id,$user->stores))
+                $where=sprintf("where  `Product Department Store Key`=%d",$store_id);
+            else
+                $where=sprintf("where  false");
+            break;
+        default:
 
-        $where=sprintf("where `Product Department Store Key` in (%s)",join(',',$user->stores));
+            $where=sprintf("where `Product Department Store Key` in (%s)",join(',',$user->stores));
 
+        }
     }
-}
 
     $filter_msg='';
     $wheref=wheref_departments($f_field,$f_value);
@@ -2984,10 +1713,6 @@ function list_departments() {
         $adata[]=array(
 
                      'code'=>_('Total'),
-
-
-
-
                      'families'=>$tfamilies,
                      'active'=>number($sum_active),
                      'sales'=>$tsall,
@@ -3043,7 +1768,7 @@ function list_products() {
     global $user;
     $display_total=false;
 
-if (isset( $_REQUEST['list_key']))
+    if (isset( $_REQUEST['list_key']))
         $list_key=$_REQUEST['list_key'];
     else
         $list_key=false;
@@ -3084,12 +1809,15 @@ if (isset( $_REQUEST['list_key']))
         $view=$conf['view'];
 
 
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
+
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
+
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
@@ -3117,8 +1845,8 @@ if (isset( $_REQUEST['list_key']))
         $awhere=$conf['where'];
 
 
-		
-		
+
+
     if (isset( $_REQUEST['f_field']))
         $f_field=$_REQUEST['f_field'];
     else
@@ -3169,16 +1897,44 @@ if (isset( $_REQUEST['list_key']))
     else
         $mode=$conf['mode'];
 
-    if (isset( $_REQUEST['restrictions']))
-        $restrictions=$_REQUEST['restrictions'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
     else
-        $restrictions=$conf['restrictions'];
+        $elements=$conf['elements'];
 
-	if(isset( $_REQUEST['store_id'])    ){
-		$store=$_REQUEST['store_id'];     
-		$_SESSION['state']['products']['store']=$store;
-	}else
-		$store=$_SESSION['state']['products']['store'];
+
+    if (isset( $_REQUEST['elements_discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_discontinued'];
+
+    }
+    if (isset( $_REQUEST['elements_nosale'])) {
+        $elements['NoSale']=$_REQUEST['elements_nosale'];
+    }
+    if (isset( $_REQUEST['elements_sale'])) {
+        $elements['Sale']=$_REQUEST['elements_sale'];
+    }
+
+
+    if (isset( $_REQUEST['elements_private'])) {
+        $elements['Private']=$_REQUEST['elements_private'];
+    }
+    if (isset( $_REQUEST['elements_historic'])) {
+        $elements['Historic']=$_REQUEST['elements_historic'];
+    }
+
+
+
+
+
+
+
+
+
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['products']['store']=$store;
+    } else
+        $store=$_SESSION['state']['products']['store'];
 
 
     //$_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
@@ -3194,7 +1950,7 @@ if (isset( $_REQUEST['list_key']))
     $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
     $_SESSION['state'][$conf_table]['products']['avg']=$avg;
     $_SESSION['state'][$conf_table]['products']['period']=$period;
-    $_SESSION['state'][$conf_table]['products']['restrictions']=$restrictions;
+    $_SESSION['state'][$conf_table]['products']['elements']=$elements;
     $_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
 
@@ -3205,39 +1961,39 @@ if (isset( $_REQUEST['list_key']))
     // $_SESSION['state'][$conf_table]['parent']=$parent;
 
     $table='`Product Dimension`';
-	$where_type='';
-	$where_interval='';
-	$where='where true';
-	
-	/*
-	if(count($user->stores)==0)
-	$where="where false";
-	else{
-		$where.=sprintf(" and `Product Store Key` in (%s) ",join(',',$user->stores));
-	}
-*/
-	if ($awhere) {
+    $where_type='';
+    $where_interval='';
+    $where='where true';
 
-		$tmp=preg_replace('/\\\"/','"',$awhere);
-		$tmp=preg_replace('/\\\\\"/','"',$tmp);
-		$tmp=preg_replace('/\'/',"\'",$tmp);
+    /*
+    if(count($user->stores)==0)
+    $where="where false";
+    else{
+    	$where.=sprintf(" and `Product Store Key` in (%s) ",join(',',$user->stores));
+    }
+    */
+    if ($awhere) {
 
-		$raw_data=json_decode($tmp, true);
-		$raw_data['store_key']=$store;
-		list($where,$table)=product_awhere($raw_data);
+        $tmp=preg_replace('/\\\"/','"',$awhere);
+        $tmp=preg_replace('/\\\\\"/','"',$tmp);
+        $tmp=preg_replace('/\'/',"\'",$tmp);
 
-		$where_type='';
-		$where_interval='';
-	}
+        $raw_data=json_decode($tmp, true);
+        $raw_data['store_key']=$store;
+        list($where,$table)=product_awhere($raw_data);
 
-    if($list_key) {
+        $where_type='';
+        $where_interval='';
+    }
+
+    if ($list_key) {
         $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
 
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
             $awhere=false;
             if ($customer_list_data['List Type']=='Static') {
-				
+
                 $table='`List Product Bridge` PB left join `Product Dimension` P  on (PB.`Product ID`=P.`Product ID`)';
                 $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
 
@@ -3253,7 +2009,7 @@ if (isset( $_REQUEST['list_key']))
 
                 $raw_data['store_key']=$store;
                 list($where,$table)=product_awhere($raw_data);
-				
+
 
 
             }
@@ -3262,7 +2018,7 @@ if (isset( $_REQUEST['list_key']))
             exit("error");
         }
     }
-	$where.=$where_type;
+    $where.=$where_type;
     switch ($parent) {
     case('store'):
         $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['products']['store']);
@@ -3282,7 +2038,7 @@ if (isset( $_REQUEST['list_key']))
 
 
     }
-	
+
 
     $group='';
     /*    switch($mode){ */
@@ -3297,23 +2053,23 @@ if (isset( $_REQUEST['list_key']))
     /*      break; */
     /*    } */
 
-    switch ($restrictions) {
-    case('forsale'):
-        $where.=sprintf(" and `Product Sales Type`!='Not For Sale'  ");
-        break;
-    case('editable'):
-        $where.=sprintf(" and `Product Record Type`!='Discontinued'  ");
-        break;
-    case('notforsale'):
-        $where.=sprintf(" and `Product Sales Type` in ('Not For Sale')  ");
-        break;
-    case('discontinued'):
-        $where.=sprintf(" and `Product Record Type` in ('Discontinued')  ");
-        break;
-    case('all'):
 
-        break;
+    $_elements='';
+
+
+
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
     }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Product Main Type` in ('.$_elements.')' ;
+    }
+
+
 
 
     $filter_msg='';
@@ -3336,7 +2092,7 @@ if (isset( $_REQUEST['list_key']))
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $table  $where $wheref";
-     //print $sql;
+    //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3484,7 +2240,7 @@ if (isset( $_REQUEST['list_key']))
         $order='`Product Sales Type`';
     }
     elseif($order=='web') {
-        $order='`Product Web State`';
+        $order='`Product Web Configuration`';
     }
     elseif($order=='stock_state') {
         $order='`Product Availability State`';
@@ -3672,16 +2428,16 @@ if (isset( $_REQUEST['list_key']))
 
     }
 
-	if($list_key){}
-		//$table='';
-	else
-		$table="`Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
-   
+    if ($list_key) {}
+    //$table='';
+    else
+        $table="`Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+
     $sql="select  * from  $table $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 
 
-	
-     //print $sql;exit;
+
+    //print $sql;exit;
     $res = mysql_query($sql);
     $adata=array();
 
@@ -3713,7 +2469,7 @@ if (isset( $_REQUEST['list_key']))
 
         $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
         //$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
-		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Product Store Key']);
+        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Product Store Key']);
 
         if ($percentages) {
             if ($period=='all') {
@@ -4251,30 +3007,80 @@ if (isset( $_REQUEST['list_key']))
         }
 
         $type=$row['Product Sales Type'];
-        if ($row['Product Record Type']=='In Process')
+        if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
 
-        switch ($row['Product Web State']) {
-        case('Online Force Out of Stock'):
-            $web_state=_('Out of Stock');
+
+
+
+
+
+        switch ($row['Product Main Type']) {
+        case('Historic'):
+            $web_state=_('Historic Product').' ('._('Offline').')';
             break;
-        case('Online Auto'):
-            $web_state=_('Auto');
+        case('Private'):
+            $web_state=_('Private Sale').' ('._('Offline').')';
             break;
-        case('Unknown'):
-            $web_state=_('Unknown');
-        case('Offline'):
-            $web_state=_('Offline');
+        case('NoSale'):
+            $web_state=_('Not for Sale').' ('._('Offline').')';
+        case('Discontinued'):
+            $web_state=_('Discontinued').' ('._('Offline').')';
             break;
-        case('Online Force Hide'):
-            $web_state=_('Hide');
-            break;
-        case('Online Force For Sale'):
-            $web_state=_('Sale');
-            break;
+        case('Sale'):
+
+
+            switch ($row['Product Web Configuration']) {
+            case('Online Force Out of Stock'):
+                $formated_web_configuration=_('Force out of stock');
+                break;
+            case('Offline'):
+                $formated_web_configuration=_('Force Offline');
+                break;
+            case('Online Force For Sale'):
+                $formated_web_configuration=_('Force Online');
+                break;
+            default:
+                $formated_web_configuration='('._('Auto').')';
+            }
+
+            switch ($row['Product Web State']) {
+            case('Out of Stock'):
+                $_web_state='<span class=="out_of_stock">'._('Out of Stock').'</span>';
+                break;
+            case('For Sale'):
+                $_web_state='<span class=="online">'._('Online').'</span>';
+                break;
+            case('Discontinued'):
+                $_web_state=_('Discontinued');
+            case('Offline'):
+                $_web_state=_('Offline');
+            default:
+                $_web_state=$row['Product Web State'];
+
+
+                break;
+
+
+            }
+
+
+            $web_state=$_web_state.' '.$formated_web_configuration;
+
+        break;
         default:
-            $web_state=$row['Product Web State'];
+            $web_state='?';
         }
+
+
+
+
+
+
+
+
+
+
         include_once('locale.php');
         global $locale_product_record_type;
 
@@ -4282,8 +3088,8 @@ if (isset( $_REQUEST['list_key']))
         $stock_forecast=interval($row['Product Available Days Forecast']);
 
 
-        //		print_r($locale_product_record_type);
-        $record_type=$locale_product_record_type[$row['Product Record Type']];
+
+        $record_type=$row['Product Record Type'];
 
         $adata[]=array(
                      'store'=>$store,
@@ -4315,7 +3121,7 @@ if (isset( $_REQUEST['list_key']))
 
                  );
     }
-
+    mysql_free_result($res);
 
     if ($total<=$number_results) {
 
@@ -4362,8 +3168,14 @@ if (isset( $_REQUEST['list_key']))
         $adata[]=array();
 
     }
+
     $total_records=ceil($total/$number_results)+$total;
     $number_results++;
+
+    if ($start_from==0)
+        $record_offset=0;
+    else
+        $record_offset=$start_from+1;
 
 
     $response=array('resultset'=>
@@ -4389,11 +3201,11 @@ if (isset( $_REQUEST['list_key']))
 }
 
 function list_parts() {
-    $conf=$_SESSION['state']['parts']['table'];
+    $conf=$_SESSION['state']['warehouse']['parts'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
     else
-        $view=$_SESSION['state']['parts']['view'];
+        $view=$_SESSION['state']['warehouse']['parts']['view'];
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -4451,32 +3263,50 @@ function list_parts() {
     if (isset( $_REQUEST['avg']))
         $avg=$_REQUEST['avg'];
     else
-        $avg=$_SESSION['state']['parts']['avg'];
-    $_SESSION['state']['parts']['avg']=$avg;
+        $avg=$_SESSION['state']['warehouse']['parts']['avg'];
+    $_SESSION['state']['warehouse']['parts']['avg']=$avg;
 
 
     if (isset( $_REQUEST['period']))
         $period=$_REQUEST['period'];
     else
-        $period=$_SESSION['state']['parts']['period'];
-    $_SESSION['state']['parts']['period']=$period;
+        $period=$_SESSION['state']['warehouse']['parts']['period'];
+    $_SESSION['state']['warehouse']['parts']['period']=$period;
 
 
     if (isset( $_REQUEST['percentage']))
         $percentage=$_REQUEST['percentage'];
     else
-        $percentage=$_SESSION['state']['parts']['percentage'];
-    $_SESSION['state']['parts']['percentage']=$percentage;
+        $percentage=$_SESSION['state']['warehouse']['parts']['percentage'];
+    $_SESSION['state']['warehouse']['parts']['percentage']=$percentage;
+
+
+
+
+
+    $elements=$conf['elements'];
+    if (isset( $_REQUEST['elements_InUse'])) {
+        $elements['In Use']=$_REQUEST['elements_InUse'];
+
+    }
+    if (isset( $_REQUEST['elements_NotInUse'])) {
+        $elements['Not In Use']=$_REQUEST['elements_NotInUse'];
+    }
+
+
+
+
 
     //$_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-    $_SESSION['state']['parts']['table']['order']=$order;
-    $_SESSION['state']['parts']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['parts']['table']['nr']=$number_results;
-    $_SESSION['state']['parts']['table']['sf']=$start_from;
-    $_SESSION['state']['parts']['table']['where']=$where;
-    $_SESSION['state']['parts']['table']['f_field']=$f_field;
-    $_SESSION['state']['parts']['table']['f_value']=$f_value;
+    $_SESSION['state']['warehouse']['parts']['order']=$order;
+    $_SESSION['state']['warehouse']['parts']['order_dir']=$order_direction;
+    $_SESSION['state']['warehouse']['parts']['nr']=$number_results;
+    $_SESSION['state']['warehouse']['parts']['sf']=$start_from;
+    $_SESSION['state']['warehouse']['parts']['where']=$where;
+    $_SESSION['state']['warehouse']['parts']['f_field']=$f_field;
+    $_SESSION['state']['warehouse']['parts']['f_value']=$f_value;
+    $_SESSION['state']['warehouse']['parts']['elements']=$elements;
 
 
     $filter_msg='';
@@ -4488,7 +3318,30 @@ function list_parts() {
     if (!is_numeric($number_results))
         $number_results=25;
 
-    $where.="  ";
+    $where="where true  ";
+
+
+
+
+
+    $_elements='';
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Part Status` in ('.$_elements.')' ;
+    }
+
+
+
+
+
+
+
 
     $_order=$order;
     $_dir=$order_direction;
@@ -4500,7 +3353,8 @@ function list_parts() {
     $wheref.=" and  `Part XHTML Description` like '%".addslashes($f_value)."%'";
     elseif($f_field=='supplied_by' and $f_value!='')
     $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-
+    elseif($f_field=='sku' and $f_value!='')
+    $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(*) as total from `Part Dimension`  $where $wheref";
 
@@ -4514,14 +3368,14 @@ function list_parts() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Part Dimension`  $where ";
+        $sql="select count(*) as total_without_filters from `Part Dimension`  $where ";
 
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
         }
 
     }
@@ -4536,6 +3390,10 @@ function list_parts() {
         $rtext_rpp=' '._('(Showing all)');
     if ($total==0 and $filtered>0) {
         switch ($f_field) {
+        case('sku'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+            break;
+
         case('used_in'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
             break;
@@ -4551,6 +3409,10 @@ function list_parts() {
 
 
         switch ($f_field) {
+        case('sku'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+            break;
+
         case('used_in'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
             break;
@@ -4586,7 +3448,7 @@ function list_parts() {
 
     else if ($order=='margin') {
         if ($period=='all')
-            $order=' `Part Total Margin` ';
+            $order=' `Part Total Acc Margin` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Margin` ';
         elseif($period=='quarter')
@@ -4595,7 +3457,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Margin` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Margin` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Margin` ';
         elseif($period=='yeartoday')
@@ -4604,11 +3465,10 @@ function list_parts() {
         $order=' `Part 6 Month Acc Margin` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Margin` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
 
     } else if ($order=='sold') {
         if ($period=='all')
-            $order=' `Part Total Sold` ';
+            $order=' `Part Total Acc Sold` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Sold` ';
         elseif($period=='quarter')
@@ -4617,7 +3477,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Sold` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Sold` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Sold` ';
         elseif($period=='yeartoday')
@@ -4626,11 +3485,10 @@ function list_parts() {
         $order=' `Part 6 Month Acc Sold` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Sold` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
 
     } else if ($order=='money_in') {
         if ($period=='all')
-            $order=' `Part Total Sold Amount` ';
+            $order=' `Part Total Acc Sold Amount` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Sold Amount` ';
         elseif($period=='quarter')
@@ -4639,7 +3497,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Sold Amount` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Sold Amount` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Sold Amount` ';
         elseif($period=='yeartoday')
@@ -4648,10 +3505,9 @@ function list_parts() {
         $order=' `Part 6 Month Acc Sold Amount` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Sold Amount` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='profit_sold') {
         if ($period=='all')
-            $order=' `Part Total Profit When Sold` ';
+            $order=' `Part Total Acc Profit When Sold` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Profit When Sold` ';
         elseif($period=='quarter')
@@ -4660,7 +3516,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Profit When Sold` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Profit When Sold` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Profit When Sold` ';
         elseif($period=='yeartoday')
@@ -4669,10 +3524,9 @@ function list_parts() {
         $order=' `Part 6 Month Acc Profit When Sold` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Profit When Sold` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='avg_stock') {
         if ($period=='all')
-            $order=' `Part Total AVG Stock` ';
+            $order=' `Part Total Acc AVG Stock` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc AVG Stock` ';
         elseif($period=='quarter')
@@ -4684,7 +3538,7 @@ function list_parts() {
 
     } else if ($order=='avg_stockvalue') {
         if ($period=='all')
-            $order=' `Part Total AVG Stock Value` ';
+            $order=' `Part Total Acc AVG Stock Value` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc AVG Stock Value` ';
         elseif($period=='quarter')
@@ -4696,7 +3550,7 @@ function list_parts() {
 
     } else if ($order=='keep_days') {
         if ($period=='all')
-            $order=' `Part Total Keeping Days` ';
+            $order=' `Part Total Acc Keeping Days` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Keeping Days` ';
         elseif($period=='quarter')
@@ -4705,7 +3559,6 @@ function list_parts() {
         $order=' `Part 1 Month Acc Keeping Days` ';
         elseif($period=='week')
         $order=' `Part 1 Week Acc Keeping Days` ';
-// ---------------------------Start for : 3Y,YTD,6M,10D--------------------------
         elseif($period=='three_year')
         $order=' `Part 3 Year Acc Keeping Days` ';
         elseif($period=='yeartoday')
@@ -4714,10 +3567,9 @@ function list_parts() {
         $order=' `Part 6 Month Acc Keeping Days` ';
         elseif($period=='ten_day')
         $order=' `Part 10 Day Acc Keeping Days` ';
-// ---------------------------End for : 3Y,YTD,6M,10D----------------------------
     } else if ($order=='outstock_days') {
         if ($period=='all')
-            $order=' `Part Total Out of Stock Days` ';
+            $order=' `Part Total Acc Out of Stock Days` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc Out of Stock Days` ';
         elseif($period=='quarter')
@@ -4729,7 +3581,7 @@ function list_parts() {
 
     } else if ($order=='unknown_days') {
         if ($period=='all')
-            $order=' `Part Total Unknown Stock Days` ';
+            $order=' `Part Total Acc Unknown Stock Days` ';
         elseif($period=='year')
         $order=' `Part 1 Year Unknown Stock Days` ';
         elseif($period=='quarter')
@@ -4741,7 +3593,7 @@ function list_parts() {
 
     } else if ($order=='gmroi') {
         if ($period=='all')
-            $order=' `Part Total GMROI` ';
+            $order=' `Part Total Acc GMROI` ';
         elseif($period=='year')
         $order=' `Part 1 Year Acc GMROI` ';
         elseif($period=='quarter')
@@ -4758,28 +3610,33 @@ function list_parts() {
 
 
     $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-    //          print $sql;
+//      print $sql;
     $adata=array();
     $result=mysql_query($sql);
+
+    // print "$period $avg";
+
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
 
         if ($period=='all') {
             if ($avg=='totals') {
-                $sold=number($data['Part Total Sold']);
-                $given=number($data['Part Total Given']);
-                $sold_amount=money($data['Part Total Sold Amount']);
-                $abs_profit=money($data['Part Total Absolute Profit']);
-                $profit_sold=money($data['Part Total Profit When Sold']);
+                $sold=number($data['Part Total Acc Sold']);
+                $given=number($data['Part Total Acc Given']);
+                $sold_amount=money($data['Part Total Acc Sold Amount']);
+                $abs_profit=money($data['Part Total Acc Absolute Profit']);
+                $profit_sold=money($data['Part Total Acc Profit When Sold']);
             } else {
 
                 if ($avg=='month')
-                    $factor=$data['Part Total Keeping Days']/30.4368499;
+                    $factor=$data['Part Total Acc Keeping Days']/30.4368499;
                 elseif($avg=='month_eff')
-                $factor=($data['Part Total Keeping Days']-$data['Part Total Out of Stock Days'])/30.4368499;
+                $factor=($data['Part Total Acc Keeping Days']-$data['Part Total Acc Out of Stock Days'])/30.4368499;
                 elseif($avg=='week')
-                $factor=$data['Part Total Keeping Days']/7;
+                $factor=$data['Part Total Acc Keeping Days']/7;
                 elseif($avg=='week_eff')
-                $factor=($data['Part Total Keeping Days']-$data['Part Total Out of Stock Days'])/7;
+                $factor=($data['Part Total Acc Keeping Days']-$data['Part Total Acc Out of Stock Days'])/7;
                 else
                     $factor=1;
                 if ($factor==0) {
@@ -4789,26 +3646,25 @@ function list_parts() {
                     $abs_profit=money(0);
                     $profit_sold=money(0);
                 } else {
-                    $sold=number($data['Part Total Sold']/$factor);
-                    $given=number($data['Part Total Given']/$factor);
-                    $sold_amount=money($data['Part Total Sold Amount']/$factor);
-                    $abs_profit=money($data['Part Total Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part Total Profit When Sold']/$factor);
+                    $sold=number($data['Part Total Acc Sold']/$factor);
+                    $given=number($data['Part Total Acc Given']/$factor);
+                    $sold_amount=money($data['Part Total Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part Total Acc Absolute Profit']/$factor);
+                    $profit_sold=money($data['Part Total Acc Profit When Sold']/$factor);
                 }
             }
 
             if ($given!=0)
                 $sold="$sold ($given)";
-            $margin=percentage($data['Part Total Margin'],1);
-            $avg_stock=number($data['Part Total AVG Stock']);
-            $avg_stockvalue=money($data['Part Total AVG Stock Value']);
-            $keep_days=number($data['Part Total Keeping Days'],0);
-            $outstock_days=percentage($data['Part Total Out of Stock Days'],$data['Part Total Keeping Days']);
-            $unknown_days=percentage($data['Part Total Unknown Stock Days'],$data['Part Total Keeping Days']);
-            $gmroi=number($data['Part Total GMROI'],0);
+            $margin=percentage($data['Part Total Acc Margin'],1);
+            $avg_stock=number($data['Part Total Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part Total Acc AVG Stock Value']);
+            $keep_days=number($data['Part Total Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part Total Acc Out of Stock Days'],$data['Part Total Acc Keeping Days']);
+            $unknown_days=percentage($data['Part Total Acc Unknown Stock Days'],$data['Part Total Acc Keeping Days']);
+            $gmroi=number($data['Part Total Acc GMROI'],0);
 
         }
-// ----------------------------------Start for 3 year--------------------------
         elseif($period=='three_year') {
 
 
@@ -4860,7 +3716,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for 3 year----------------------------
         elseif($period=='year') {
 
 
@@ -4912,9 +3767,6 @@ function list_parts() {
 
 
         }
-
-
-// ----------------------------------Start for yeartoday--------------------------
         elseif($period=='yeartoday') {
 
 
@@ -4966,9 +3818,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for yeartoday----------------------------
-
-// ----------------------------------Start for 6 month--------------------------
         elseif($period=='six_month') {
 
 
@@ -5020,9 +3869,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for 6 month----------------------------
-
-
         elseif($period=='quarter') {
 
 
@@ -5072,11 +3918,6 @@ function list_parts() {
             $gmroi=number($data['Part 1 Quarter Acc GMROI'],0);
 
         }
-
-
-
-
-
         elseif($period=='month') {
 
 
@@ -5130,9 +3971,6 @@ function list_parts() {
 
 
         }
-
-
-// ----------------------------------Start for 10 day--------------------------
         elseif($period=='ten_day') {
 
 
@@ -5184,10 +4022,6 @@ function list_parts() {
 
 
         }
-// ----------------------------------End for 10 day----------------------------
-
-
-
         elseif($period=='week') {
 
 
@@ -5315,6 +4149,10 @@ function list_products_with_same_code() {
         $order_dir=$conf['order_dir'];
 
 
+
+
+
+
     $code=$_SESSION['state']['product']['server']['tag'];
     $where=sprintf('where `Product Code`=%s  ',prepare_mysql($code));
     $wheref='';
@@ -5333,11 +4171,12 @@ function list_products_with_same_code() {
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $id=sprintf("<a href='product.php?pid=%d'>%05d</a>",$row['Product ID'],$row['Product ID']);
+        $store=sprintf("<a href='product.php?pid=%d'>%s</a>",$row['Product Store Key'],$row['Store Code']);
         $adata[]=array(
-                     'id'=>$id
-                          ,'description'=>$row['Product XHTML Short Description']
-                                         ,'store'=>$row['Store Name']
-                                                  ,'parts'=>$row['Product XHTML Parts']
+                     'id'=>$id,
+                     'description'=>$row['Product XHTML Short Description'],
+                     'store'=>$store,
+                     'parts'=>$row['Product XHTML Parts']
                  );
 
     }
@@ -5461,18 +4300,22 @@ function list_families() {
     }
 
 
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
+
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
+
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
         }
     } else
         $number_results=$conf['nr'];
+
 
 
     if (isset( $_REQUEST['o']))
@@ -5535,10 +4378,10 @@ function list_families() {
     else
         $tableid=0;
 
-    if (isset( $_REQUEST['restrictions']))
-        $restrictions=$_REQUEST['restrictions'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
     else
-        $restrictions=$conf['restrictions'];
+        $elements=$conf['elements'];
 
     $filter_msg='';
 
@@ -5561,17 +4404,18 @@ function list_families() {
     $_SESSION['state'][$conf_table]['families']['avg']=$avg;
 
     $_SESSION['state'][$conf_table]['families']['mode']=$mode;
-    $_SESSION['state'][$conf_table]['families']['restrictions']=$restrictions;
+    $_SESSION['state'][$conf_table]['families']['elements']=$elements;
     $_SESSION['state'][$conf_table]['families']['parent']=$parent;
 
     //  $where.=" and `Product Department Key`=".$id;
+//print $conf_table;
+//print_r($_SESSION['state'][$conf_table]['families']);
+    if (count($user->stores)==0)
+        $where="where false";
+    else {
 
- if(count($user->stores)==0)
-    $where="where false";
-    else{
-
-    $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
-}
+        $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+    }
 
     switch ($parent) {
     case('store'):
@@ -5588,18 +4432,24 @@ function list_families() {
 
     }
 
-    switch ($restrictions) {
-    case('for_sale'):
-        $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type` in ("New","Normal","Discontinuing") ');
-        break;
-    case('for_sale_and_discontinued'):
-        $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type`!="In Process" ');
-        break;
-    case('discontinued'):
-        $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type`="Discontinued"  ');
-        break;
-    default:
+
+    $_elements='';
+
+
+
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
     }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Product Family Record Type` in ('.$_elements.')' ;
+    }
+
+
+
 
 
 
@@ -5768,7 +4618,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// ---------------------------------------Start for families 3 year-----------------------------------------
     elseif($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5781,8 +4630,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// ---------------------------------------Ends for families 3 year-----------------------------------------
-// ---------------------------------------Start for families YearToDay-----------------------------------------
     elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5795,7 +4642,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// ---------------------------------------Ends for families YearToDay-----------------------------------------
     elseif($period=='year') {
 
         $sum_total_sales=0;
@@ -5812,7 +4658,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Start for families 6 month -----------------------------------------
     elseif($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5825,7 +4670,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Ends for families 6 month -----------------------------------------
     elseif($period=='quarter') {
 
         $sum_total_sales=0;
@@ -5842,7 +4686,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-
     elseif($period=='month') {
 
         $sum_total_sales=0;
@@ -5859,7 +4702,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Start for families 10 days -----------------------------------------
     elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5872,7 +4714,6 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-// --------------------------------------- Ends for families 10 days -----------------------------------------
     elseif($period=='week') {
         $sum_families=0;
         $sum_total_sales=0;
@@ -6336,9 +5177,9 @@ function list_families() {
 
                  );
     }
+    mysql_free_result($res);
 
-
-    if ($total<=$number_results) {
+    if ($total<=$number_results and $total>1) {
 
 
         if ($percentages) {
@@ -6367,10 +5208,15 @@ function list_families() {
 
     } else {
         $adata[]=array();
-
     }
     $total_records=ceil($total/$number_results)+$total;
     $number_results++;
+
+    if ($start_from==0)
+        $record_offset=0;
+    else
+        $record_offset=$start_from+1;
+
     $response=array('resultset'=>
                                 array(
                                     'state'=>200,
@@ -6492,10 +5338,10 @@ function list_stores() {
     $_SESSION['state']['stores']['stores']['f_field']=$f_field;
     $_SESSION['state']['stores']['stores']['f_value']=$f_value;
 
-    if(count($user->stores)==0)
-    $where="where false";
+    if (count($user->stores)==0)
+        $where="where false";
     else
-    $where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
+        $where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
     $filter_msg='';
     $wheref=wheref_stores($f_field,$f_value);
 
@@ -6767,8 +5613,6 @@ function list_stores() {
         mysql_free_result($result);
 
     }
-
-
     elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -6817,7 +5661,6 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
-
     elseif($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -8145,12 +6988,12 @@ function list_customers_per_store() {
 
     //  print_r($_SESSION['tables']['families_list']);
 
- if(count($user->stores)==0)
-    $where="where false";
-    else{
+    if (count($user->stores)==0)
+        $where="where false";
+    else {
 
-    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-}
+        $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+    }
     $filter_msg='';
     $wheref='';
     if ($f_field=='name' and $f_value!='')
@@ -8232,8 +7075,8 @@ function list_customers_per_store() {
     $order='`Store Lost Contacts`';
     elseif($order=='losing_contacts')
     $order='`Store Losing Contacts`';
-   
-   elseif($order=='contacts_with_orders')
+
+    elseif($order=='contacts_with_orders')
     $order='`Store Contacts`';
     elseif($order=='active_contacts_with_orders')
     $order='active';
@@ -8243,20 +7086,20 @@ function list_customers_per_store() {
     $order='`Store Lost Contacts`';
     elseif($order=='losing_contacts_with_orders')
     $order='`Store Losing Contacts`';
-   
+
     else
         $order='`Store Code`';
 
 
 
 
-    $sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,(`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
+    $sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,`Store Total Users`, (`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
          `Store Contacts With Orders`,(`Store Active Contacts With Orders`+`Store Losing Contacts With Orders`)as active_with_orders,`Store New Contacts With Orders`,`Store Lost Contacts With Orders`,`Store Losing Contacts With Orders` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
- 
 
 
- 
- $res = mysql_query($sql);
+
+
+    $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
 
@@ -8303,6 +7146,7 @@ function list_customers_per_store() {
         $active_contacts_with_orders=number($row['active_with_orders']);
         $losing_contacts_with_orders=number($row['Store Losing Contacts With Orders']);
         $lost_contacts_with_orders=number($row['Store Lost Contacts With Orders']);
+        $total_users=$row['Store Total Users'];
 
         //  $contacts_with_orders=number($row['contacts_with_orders']);
         // $active_contacts=number($row['active_contacts']);
@@ -8343,9 +7187,11 @@ function list_customers_per_store() {
                      'new_contacts_with_orders'=>$new_contacts_with_orders,
                      'lost_contacts_with_orders'=>$lost_contacts_with_orders,
                      'losing_contacts_with_orders'=>$losing_contacts_with_orders,
+                     'users'=>$total_users
 
 
                  );
+
     }
     mysql_free_result($res);
 
@@ -8393,13 +7239,14 @@ function list_customers_per_store() {
                  'new_contacts_with_orders'=>$total_new_contacts_with_orders,
                  'lost_contacts_with_orders'=>$total_lost_contacts_with_orders,
                  'losing_contacts_with_orders'=>$total_losing_contacts_with_orders,
+                 'users'=>$total_users
 
-                 //               'customers'=>$sum_total,
-                 //             'active'=>$sum_active,
-                 //           'new'=>$sum_new,
-                 //         'lost'=>$sum_lost,
-                 //
-                 //     'new_contacts'=>$sum_new_contacts
+                         //               'customers'=>$sum_total,
+                         //             'active'=>$sum_active,
+                         //           'new'=>$sum_new,
+                         //         'lost'=>$sum_lost,
+                         //
+                         //     'new_contacts'=>$sum_new_contacts
              );
 
 
@@ -8521,11 +7368,11 @@ function list_marketing_per_store() {
 
     //  print_r($_SESSION['tables']['families_list']);
 
- if(count($user->stores)==0)
-    $where="where false";
-    else{
-    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-}
+    if (count($user->stores)==0)
+        $where="where false";
+    else {
+        $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+    }
 
 
     $filter_msg='';
@@ -8615,7 +7462,7 @@ function list_marketing_per_store() {
         $order='`Store Code`';
 
     $total_customers=0;
-   
+
 
 
 
@@ -8634,36 +7481,36 @@ function list_marketing_per_store() {
         $adata[]=array(
                      'code'=>$code,
                      'name'=>$name,
-                      'ecampaigns'=>number($row['Store Email Campaigns']) ,                   
-                      'newsletters'=>number($row['Store Newsletters'])                    
+                     'ecampaigns'=>number($row['Store Email Campaigns']) ,
+                     'newsletters'=>number($row['Store Newsletters'])
 
 
                  );
     }
     mysql_free_result($res);
-/*
-    if ($percentages) {
-        $sum_total='100.00%';
-        $sum_active='100.00%';
-        $sum_new='100.00%';
-        $sum_lost='100.00%';
-        $sum_contacts='100.00%';
-        $sum_new_contacts='100.00%';
-    } else {
-        $sum_total=number($total_customers);
-        $sum_active=number($total_active);
-        $sum_new=number($total_new);
-        $sum_lost=number($total_lost);
-        $sum_contacts=number($total_contacts);
-        $sum_new_contacts=number($total_new_contacts);
-    }
+    /*
+        if ($percentages) {
+            $sum_total='100.00%';
+            $sum_active='100.00%';
+            $sum_new='100.00%';
+            $sum_lost='100.00%';
+            $sum_contacts='100.00%';
+            $sum_new_contacts='100.00%';
+        } else {
+            $sum_total=number($total_customers);
+            $sum_active=number($total_active);
+            $sum_new=number($total_new);
+            $sum_lost=number($total_lost);
+            $sum_contacts=number($total_contacts);
+            $sum_new_contacts=number($total_new_contacts);
+        }
 
-*/
+    */
     $adata[]=array(
                  'name'=>'',
                  'code'=>_('Total'),
-              
-                
+
+
              );
 
 
@@ -8782,11 +7629,11 @@ function list_orders_per_store() {
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
- if(count($user->stores)==0)
-    $where="where false";
-    else{
-    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-}
+    if (count($user->stores)==0)
+        $where="where false";
+    else {
+        $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+    }
     $filter_msg='';
     $wheref='';
     if ($f_field=='name' and $f_value!='')
@@ -9309,7 +8156,7 @@ function list_invoices_per_store() {
 }
 
 function list_delivery_notes_per_store() {
-global $user;
+    global $user;
     $conf=$_SESSION['state']['stores']['delivery_notes'];
 
     if (isset( $_REQUEST['sf']))
@@ -9402,13 +8249,13 @@ global $user;
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
-  //  $where="where true  ";
+    //  $where="where true  ";
 
- if(count($user->stores)==0)
-    $where="where false";
-    else{
-    $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-}
+    if (count($user->stores)==0)
+        $where="where false";
+    else {
+        $where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+    }
 
 
     $filter_msg='';
@@ -9484,18 +8331,18 @@ global $user;
     $order='`Store Name`';
 
 
- $total_dn=0;
-        $total_dn_ready_to_pick=0;
-        $total_dn_packing=0;
-        $total_dn_picking=0;
-        $total_dn_ready=0;
-        $total_dn_send=0;
-        $total_dn_returned=0;
-        $total_dn_orders=0;
-        $total_dn_shortages=0;
-        $total_dn_replacements=0;
-        $total_dn_donations=0;
-        $total_dn_samples=0;
+    $total_dn=0;
+    $total_dn_ready_to_pick=0;
+    $total_dn_packing=0;
+    $total_dn_picking=0;
+    $total_dn_ready=0;
+    $total_dn_send=0;
+    $total_dn_returned=0;
+    $total_dn_orders=0;
+    $total_dn_shortages=0;
+    $total_dn_replacements=0;
+    $total_dn_donations=0;
+    $total_dn_samples=0;
 
 
     $sql="select `Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send, `Store Returned Delivery Notes`as dn_returned from `Store Dimension`  $where     ";
@@ -10654,6 +9501,8 @@ function is_family_name($data) {
 }
 
 function is_family_code($data) {
+
+
     if (!isset($data['query']) or !isset($data['store_key']) ) {
         $response= array(
                        'state'=>400,
@@ -10867,7 +9716,8 @@ function part_transactions() {
         $where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Adjust') ";
         break;
     default:
-
+        $where.="and `Inventory Transaction Type`!='Audit' ";
+        break;
         break;
     }
 
@@ -10950,6 +9800,9 @@ function part_transactions() {
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
         $qty=$data['Inventory Transaction Quantity'];
+
+
+
         if ($qty>0) {
             $qty='+'.$qty;
         }
@@ -11173,27 +10026,27 @@ function part_stock_history() {
 
 
 
-    switch ($type) {
-    case 'month':
-         $date=strftime("%m/%Y", strtotime($data['Date']));
-        break;
-    case 'day':
-       $date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
-        break;
-    default:
-        $date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
-        break;
-    }
+        switch ($type) {
+        case 'month':
+            $date=strftime("%m/%Y", strtotime($data['Date']));
+            break;
+        case 'day':
+            $date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+            break;
+        default:
+            $date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
+            break;
+        }
 
         $adata[]=array(
 
                      'date'=>$date,
-                            'locations'=>$data['locations'],
-                                         'quantity'=>number($data['Quantity On Hand']),
-                                                     'value'=>money($data['Value At Cost']),
-                                                              'sold_qty'=>number($data['Quantity Sold']),
-                                                                          'in_qty'=>number($data['Quantity In']),
-                                                                                    'lost_qty'=>number($data['Quantity Lost'])
+                     'locations'=>$data['locations'],
+                     'quantity'=>number($data['Quantity On Hand']),
+                     'value'=>money($data['Value At Cost']),
+                     'sold_qty'=>number($data['Quantity Sold']),
+                     'in_qty'=>number($data['Quantity In']),
+                     'lost_qty'=>number($data['Quantity Lost'])
                  );
     }
 
@@ -11223,7 +10076,7 @@ function new_products_list($data) {
                  $store_id
                 );
     $res=mysql_query($sql);
-	
+
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $response=array('resultset'=>
                                     array(
@@ -11381,7 +10234,7 @@ function list_products_lists() {
     $_SESSION['state']['products']['list']['f_field']=$f_field;
     $_SESSION['state']['products']['list']['f_value']=$f_value;
 
-   
+
 
     $where=' where `List Scope`="Product"';
     if (in_array($store,$user->stores)) {
@@ -11505,6 +10358,25 @@ function list_products_lists() {
                                      )
                    );
     echo json_encode($response);
+}
+
+
+function part_location_info($data) {
+
+    $part=new Part($data['sku']);
+
+
+    $data=array(
+              'description'=>'<span class="id">'.$part->get_sku().'</span><br/>'.$part->data['Part XHTML Description'].'<br/>'._('Sold as').': '.$part->data['Part XHTML Currently Used In']
+          );
+
+    $response= array('state'=>200,'data'=>$data);
+    echo json_encode($response);
+    return;
+
+
+
+
 }
 
 

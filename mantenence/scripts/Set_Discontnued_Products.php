@@ -51,7 +51,7 @@ while($row=mysql_fetch_array($result)   ){
 
      
 
-      $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s,`Product Record Type`=%s,`Product Web State`=%s ,`Product To Be Discontinued`=%s where `Product ID`=%s"
+      $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s,`Product Record Type`=%s,`Product Web Configuration`=%s ,`Product To Be Discontinued`=%s where `Product ID`=%s"
 		   ,prepare_mysql($state)
 		   ,prepare_mysql($record_state)
 		   ,prepare_mysql($web_state)
@@ -76,7 +76,7 @@ while($row=mysql_fetch_array($result)   ){
     $discontinued_state='Yes';
     $web_state='Offline';
     $record_state='Normal';
-     $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s,`Product Record Type`=%s,`Product Web State`=%s ,`Product To Be Discontinued`=%s where `Product ID`=%s"
+     $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s,`Product Record Type`=%s,`Product Web Configuration`=%s ,`Product To Be Discontinued`=%s where `Product ID`=%s"
 		  ,prepare_mysql($state)
 		  ,prepare_mysql($record_state)
 		  ,prepare_mysql($web_state)

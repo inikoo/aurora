@@ -5,7 +5,7 @@ include_once('class.CompanyArea.php');
 
 
 
-if(!($user->can_view('orders')    ) ){
+if(!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) ){
   header('Location: index.php?cannot_view');
    exit;
 }
@@ -46,7 +46,7 @@ $smarty->assign('view','warehouse_orders');
 $smarty->assign('from',$_SESSION['state']['orders']['from']);
 $smarty->assign('to',$_SESSION['state']['orders']['to']);
 
-$smarty->assign('box_layout','yui-t0');
+
 
 
 $css_files=array(
@@ -130,8 +130,8 @@ $smarty->assign('packers',$packers_data);
 //print_r($pickers_data);
 
 $tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
-$smarty->assign('filter2',$tipo_filter2);
-$smarty->assign('filter_value2',($_SESSION['state']['orders']['ready_to_pick_dn']['f_value']));
+$smarty->assign('filter0',$tipo_filter2);
+$smarty->assign('filter_value0',($_SESSION['state']['orders']['ready_to_pick_dn']['f_value']));
 $filter_menu2=array(
 		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
 		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
@@ -139,10 +139,10 @@ $filter_menu2=array(
 		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
 		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
 		   );
-$smarty->assign('filter_menu2',$filter_menu2);
-$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
-$paginator_menu2=array(10,25,50,100,500);
-$smarty->assign('paginator_menu2',$paginator_menu2);
+$smarty->assign('filter_menu0',$filter_menu2);
+$smarty->assign('filter_name0',$filter_menu2[$tipo_filter2]['label']);
+$paginator_menu0=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu0);
 
 $csv_export_options0=array(
                             'description'=>array(
@@ -175,8 +175,42 @@ $csv_export_options0=array(
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols',2);
+$smarty->assign('export_csv_table_cols',0);
 $smarty->assign('csv_export_options',$csv_export_options0);
+
+$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'Others'=>0,'Restock'=>0);
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') ");
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $elements_number['ReadytoPick']=$row['num'];
+}
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved') ");
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $elements_number['ReadytoShip']=$row['num'];
+}
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked') ");
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $elements_number['ReadytoPack']=$row['num'];
+}
+
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') ");
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $elements_number['Others']=$row['num'];
+}
+
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') ");
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $elements_number['Restock']=$row['num'];
+}
+
+
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);
+
 
 
 $smarty->display('warehouse_orders.tpl');

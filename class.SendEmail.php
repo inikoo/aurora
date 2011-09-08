@@ -18,6 +18,10 @@ class SendEmail extends DB_Table{
 	function smtp($type, $data){
 		
 		
+		
+		if(!isset($data['attachement']))
+		    $data['attachement']=array();
+		
 		$this->message_object=new smtp_message_class;
 		$this->message_object->localhost="localhost";   /* This computer address */
 		$this->message_object->smtp_host="localhost";   /* SMTP server address */
@@ -50,6 +54,7 @@ class SendEmail extends DB_Table{
 		
 		
 		switch($type){
+		    case 'Plain':
 			case 'plain':
 				$sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
 				$result=mysql_query($sql);
@@ -232,10 +237,13 @@ class SendEmail extends DB_Table{
 					
 					return true;
 				}
-				else
-					return false;
-			
-			
+				else{
+					$this->error=true;
+					$this->msg="Cretentials not found";
+				return false;
+				}
+				
+			case 'HTML':
 			case 'html':
 			/*
 				$data=array(
@@ -247,7 +255,9 @@ class SendEmail extends DB_Table{
 					'bcc'=>''
 				);
 			*/
+			
 				$sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
+				
 				$result=mysql_query($sql);
 				if($row=mysql_fetch_array($result)){
 					
@@ -372,11 +382,13 @@ class SendEmail extends DB_Table{
 
 					$this->message_object->SetEncodedHeader("Subject",$this->subject);
 
+					
 					if(isset($data['html']) and $data['html'])
 						$html_msg=$data['html'];
 					else
 						$html_msg='';
-						
+					
+					
 					$this->html_message=$html_msg;
 					$this->message_object->CreateQuotedPrintableHTMLPart($this->html_message,"",$this->html_part);
 
@@ -388,6 +400,7 @@ class SendEmail extends DB_Table{
 				 *  messages assuming that HTML messages are spam.
 				 */
 					$this->text_message=$this->message;
+					
 					$this->message_object->CreateQuotedPrintableTextPart($this->message_object->WrapText($this->text_message),"",$this->text_part);
 
 				/*
@@ -397,9 +410,13 @@ class SendEmail extends DB_Table{
 				 *  mail programs will show that part and not the text version part.
 				 */
 					$this->alternative_parts=array(
+						
 						$this->text_part,
 						$this->html_part
+						
 					);
+					
+					
 					$this->message_object->AddAlternativeMultipart($this->alternative_parts);
 					
 					
@@ -430,11 +447,15 @@ class SendEmail extends DB_Table{
 
 					foreach($image_attachment as $single_image)
 						$this->message_object->AddFilePart($single_image);		
-						
+					
 					return true;
 				}
-				else
+				else{
+					
+					$this->error=true;
+					$this->msg="Cretentials not found";
 					return false;
+				}
 			
 			break;
 		}
@@ -442,14 +463,14 @@ class SendEmail extends DB_Table{
 	}
 
 	
-	function smtp_mail($to,$subject,$message,$additional_headers="",$additional_parameters=""){
+	function smtp_mailxxxx($to,$subject,$message,$additional_headers="",$additional_parameters=""){
 
 		return($this->message_object->Mail($to,$subject,$message,$additional_headers,$additional_parameters));
 		//return($this->message_object->Send());//($to,$subject,$message,$additional_headers,$additional_parameters));
 	}
 	
 	function send(){
-	
+	//print_r($this->message_object);	
 		$error=$this->message_object->Send();
 		for($recipient=0,Reset($this->message_object->invalid_recipients);$recipient<count($this->message_object->invalid_recipients);Next($this->message_object->invalid_recipients),$recipient++)
 			$response= "Invalid recipient: ".Key($this->message_object->invalid_recipients)." Error: ".$this->message_object->invalid_recipients[Key($this->message_object->invalid_recipients)]."\n";
@@ -458,7 +479,7 @@ class SendEmail extends DB_Table{
 		else
 			$response=  array('state'=>200,'msg'=>'ok');
 
-		echo $response;
+		//e$response;
 		return $response;
 	}
 	

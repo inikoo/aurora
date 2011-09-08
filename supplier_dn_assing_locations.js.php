@@ -200,22 +200,172 @@ function close_dialog(tipo){
   
 } 
 
+function close_dialog(tipo){
+    switch(tipo){
+   
+case('delete'):
+	delete_dialog.hide();
 
+	break;
+    }
+  
+} 
+
+
+
+YAHOO.util.Event.onContentReady("place_sku_location", function () {
+ 
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
+    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+    new_loc_oDS.responseSchema = {resultsList : "data",fields :["code","key","stock"]};
+    var new_loc_oAC = new YAHOO.widget.AutoComplete("place_sku_location", "place_sku_location_container", new_loc_oDS);
+  new_loc_oAC.maxResultsDisplayed = 4;
+  
+  
+
+  new_loc_oAC.generateRequest = function(sQuery) {
+
+        
+      return "?tipo=find_location&query=" + sQuery ;
+    };
+    new_loc_oAC.forceSelection = true;
+    new_loc_oAC.itemSelectEvent.subscribe(location_selected);
+ 
+ 
+  
+  
+});
+
+
+  
+  function location_selected(sType, aArgs) {
+
+    var locData= aArgs[2];
+    var data = {
+"location_code":
+        locData[0]
+,"location_key":
+        locData[1]
+,"stock":
+        locData[2]
+    };
+   
+   
+  
+   Dom.get('place_location_key').value=data["location_key"];
+   
+   
+};
+
+  
+  function save_place_sku(){
+  
+  
+key=Dom.get("product_part_items").getAttribute("product_part_key");
+
+for(part_key in part_list){
+part_list[part_key].ppp=Dom.get('parts_per_product'+part_list[part_key].sku).value;
+part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
+
+}
+json_value = YAHOO.lang.JSON.stringify(part_list);
+ var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+product_pid;
+		alert(request);
+		  
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				  
+				  if(r.new){
+				   window.location.reload( true );
+		location.href='edit_product.php?pid='+r.newvalue+'&new';		  
+				  }else if(r.changed){
+				  
+				  if(r.newvalue['Product Part Key']!= undefined){
+				  window.location.reload( true );
+				  return;
+				  }
+				  
+				    for (sku in  r.newvalue.items){
+				  
+				  if(r.newvalue.items[sku]['Product Part List Note']!= undefined)
+				  
+				   
+				        Dom.get('pickers_note'+sku).value=r.newvalue.items[sku]['Product Part List Note'];
+				         Dom.get('pickers_note'+sku).setAttribute('ovalue',r.newvalue.items[sku]['Product Part List Note']);
+			
+				    
+				    
+				    }
+				  
+				  }
+				    reset_part(key)
+
+
+				}else{
+				  
+				    
+				}
+				
+			    }
+			    
+			});
+
+
+
+  
+  }
+  
 
 function place(o){
 
+
+Dom.get('place_sku_qty').value=o.getAttribute('qty');
  var y=(Dom.getY(o))
     var x=(Dom.getX(o))
     x=x-440;
     y=y-30
     Dom.setX('place_sku', x)
     Dom.setY('place_sku', y)
-  
-   // var user_id=o.getAttribute('user_id');
-   // var user_name=o.getAttribute('user_name');
-   // Dom.get("place_sku_alias").setAttribute('user_id',user_id);
-   // Dom.get("place_sku_alias").innerHTML=user_name;
-    place_sku.show();
+    
+    
+var ar_file='ar_assets.php';
+	request='tipo=part_location_info&sku='+ o.getAttribute('sku');
+	//	alert(ar_file+'?'+request)
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						//alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						Dom.get('place_sku_label').innerHTML=r.data.description
+						   place_sku.show();
+						    
+						} else {
+						    alert(r.msg);
+						    //	callback();
+						}
+					    },
+						failure:function(o) {
+						alert(o.statusText);
+						// callback();
+					    },
+						scope:this
+						},
+					request
+				    
+					);  
+
+
+
+
+
+
+
+   
 
 }
 
@@ -285,7 +435,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier_dn']['products']['nr']?>,containers : 'paginator', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -296,7 +446,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 
 							     ,sortedBy : {
 								 key: "sku",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 dir: "<?php echo$_SESSION['state']['supplier_dn']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -310,7 +460,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -331,7 +481,7 @@ var select_staff=function(o,e){
 var checked_order_save=function(o){
  var staff_key=Dom.get('checked_by').value;
     var request='ar_edit_porders.php?tipo=set_dn_as_checked&id='+escape(dn_key)+'&staff_key='+escape(staff_key);
-    alert(request)
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {

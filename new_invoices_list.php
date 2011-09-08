@@ -1,10 +1,13 @@
 <?php
 include_once('common.php');
 
+
 if (!$user->can_view('customers') ) {
     header('Location: index.php');
     exit;
 }
+
+
 
 
 if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
@@ -21,6 +24,28 @@ if (! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
+if(isset($_REQUEST['period'])){
+	list($period_from, $period_to)=$store->get_from_date($_REQUEST['period']);
+	
+	$smarty->assign('period_from',$period_from);
+	$smarty->assign('period_to',$period_to);
+}
+
+if(isset($_REQUEST['auto']) && $_REQUEST['auto']==1)
+	$auto=1;
+else
+	$auto=0;
+	
+$smarty->assign('auto',$auto);	
+
+
+if(isset($_REQUEST['cat_key']))
+	$category_key=$_REQUEST['cat_key'];
+else
+	$category_key=0;
+	
+$smarty->assign('category_key',$category_key);	
+
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
@@ -71,6 +96,18 @@ $paid_status=array(
 					   'no'=>array('name'=>_('No')) 
                    );
 $smarty->assign('paid_status',$paid_status);
+
+
+$sql=sprintf("select `Category Key`,`Category Name` from `Category dimension` where `Category Subject`='Invoice'");
+$result=mysql_query($sql);
+
+$category=array();
+while($row=mysql_fetch_array($result)){
+	$category[$row['Category Key']]=array('name'=>$row['Category Name']);
+}
+
+
+$smarty->assign('category',$category);
 
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','orders');
@@ -210,6 +247,8 @@ $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customers_
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('options_box_width','550px');
 
+
+//print_r($_SESSION['state']['orders']['invoices']);
 
 $smarty->display('new_invoices_list.tpl');
 ?>

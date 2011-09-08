@@ -4,6 +4,9 @@
 <div style="padding:0 20px">
 {include file='users_navigation.tpl'}
 
+
+<input id="user_key" value="{$user_class->id}" type="hidden"/>
+
 <div id="no_details_title" style="clear:left;">
     <h1>{t}Staff User{/t}: {$user_class->get('User Alias')}</h1>
 </div>
@@ -70,7 +73,8 @@
 <div style="padding:0 20px">
 		
 		
-
+ <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+</div>
 	
  <div id="block_login_history" style="{if $block_view!='login_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
@@ -97,7 +101,7 @@
 
 
 
-<div id="change_staff_password" style="display:nonex;position:absolute;xleft:-100px;xtop:-150px;background:#fff;padding:10px 20px 20px 20px;border:1px solid#777;font-size:90%">
+<div id="change_staff_password" style="display:none;position:absolute;xleft:-100px;xtop:-150px;background:#fff;padding:10px 20px 20px 20px;border:1px solid#777;font-size:90%">
   <div class="bd" >
 	<input type="hidden" name="change_staff_password_alias" id="change_staff_password_alias" value="{$user_id}">
     <h2 >{t}Change Password for{/t} <span>{$user_name}</span></h2>

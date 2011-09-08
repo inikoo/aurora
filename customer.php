@@ -34,6 +34,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 $customer=new customer($customer_id);
 
 
+
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
 exit;
@@ -121,6 +122,24 @@ $smarty->assign('js_files',$js_files);
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
+
+list($customer_type, $login_stat)=$customer->is_user_customer($customer_id);
+$_login_stat=array();
+
+if($customer_type){
+	
+	foreach($login_stat as $key=>$value){
+
+	if($key=='User Last Login' || $key=='User Last Failed Login'){
+		$value=strftime("%a %e %b %y %H:%M", strtotime($value." +00:00"));
+	}
+
+	$_login_stat[preg_replace('/\s/','',$key)]=$value;
+	}
+}
+
+$smarty->assign('login_stat',$_login_stat);
+$smarty->assign('customer_type',$customer_type);
 
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');

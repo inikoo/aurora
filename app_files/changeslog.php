@@ -3321,7 +3321,7 @@ ALTER TABLE `Order Dimension` CHANGE `Order Ship To City Code` `Order Ship To To
 CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
 //xxxxxxxxxxxxxxxxxxxx
-
+//{imap.gmail.com:993/imap/ssl/novalidate-cert}
 
 ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,ADD INDEX ( `Email Content Key` ) ;
 
@@ -3352,6 +3352,239 @@ CREATE TABLE `Email Queue Attachement Dimension` (
 PRIMARY KEY ( `Attachement Key` )
 
 ) ENGINE = MYISAM;
+
+from here to inikoo(machne)
+
+ALTER TABLE `MasterKey Dimension` CHANGE `Handle` `User Key` MEDIUMINT NOT NULL ;
+ALTER TABLE `Image Dimension` CHANGE `Image URL` `Image Data` LONGBLOB NOT NULL ,
+CHANGE `Image Thumbnail URL` `Image Thumbnail Data` LONGBLOB NULL DEFAULT NULL ,
+CHANGE `Image Small URL` `Image Small Data` LONGBLOB NULL DEFAULT NULL ,
+CHANGE `Image Large URL` `Image Large Data` LONGBLOB NULL DEFAULT NULL ;
+
+ALTER TABLE `Part Dimension` CHANGE `Part 1 Day Acc Required` `Part Today Acc Required` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Provided` `Part Today Acc Provided` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Lost` `Part Today Acc Lost` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Broken` `Part Today Acc Broken` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Adquired` `Part Today Acc Adquired` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Sold` `Part Today Acc Sold` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Given` `Part Today Acc Given` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Sold Amount` `Part Today Acc Sold Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 1 Day Acc Absolute Profit` `Part Today Acc Absolute Profit` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+ALTER TABLE `Part Dimension` CHANGE `Part 1 Day Acc Profit When Sold` `Part Today Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+CHANGE `Part 1 Day Acc Absolute Profit After Storing` `Part Today Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+CHANGE `Part 1 Day Acc Profit When Sold After Storing` `Part Today Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+CHANGE `Part 1 Day Acc Margin` `Part Today Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+CHANGE `Part 1 Day Acc AVG Stock` `Part Today Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+CHANGE `Part 1 Day Acc AVG Stock Value` `Part Today Acc AVG Stock Value` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+CHANGE `Part 1 Day Acc Keeping Days` `Part Today Acc Keeping Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 1 Day Acc Out of Stock Days` `Part Today Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+CHANGE `Part 1 Day Acc Unknown Stock Days` `Part Today Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+CHANGE `Part 1 Day Acc GMROI` `Part Today Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+
+   ALTER TABLE `Part Dimension` 
+  ADD `Part Week To Day Acc Required` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Provided` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Lost` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Broken` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Adquired` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Sold` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Given` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Week To Day Acc Absolute Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Week To Day Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc AVG Stock Value`  DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Keeping Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Week To Day Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+  
+  
+     ALTER TABLE `Part Dimension` 
+  ADD `Part Month To Day Acc Required` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Provided` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Lost` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Broken` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Adquired` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Sold` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Given` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Month To Day Acc Absolute Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Month To Day Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc AVG Stock Value`  DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Keeping Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Month To Day Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+  
+     ALTER TABLE `Part Dimension` 
+  ADD `Part Yesterday Acc Required` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Provided` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Lost` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Broken` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Adquired` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Sold` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Given` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Yesterday Acc Absolute Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Yesterday Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc AVG Stock Value`  DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Keeping Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Yesterday Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+  
+     ALTER TABLE `Part Dimension` 
+  ADD `Part Last Month Acc Required` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Provided` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Lost` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Broken` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Adquired` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Sold` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Given` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Last Month Acc Absolute Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Last Month Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc AVG Stock Value`  DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Keeping Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Month Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+  
+     ALTER TABLE `Part Dimension` 
+  ADD `Part Last Week Acc Required` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Provided` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Lost` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Broken` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Adquired` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Sold` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Given` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Last Week Acc Absolute Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Last Week Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc AVG Stock Value`  DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Keeping Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Last Week Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+
+ALTER TABLE `Part Dimension` DROP `Part Total Required`, DROP `Part Total Provided`, DROP `Part Total Lost`, DROP `Part Total Broken`, DROP `Part Total Adquired`, DROP `Part Total Sold`, DROP `Part Total Given`, DROP `Part Total Sold Amount`, DROP `Part Total Absolute Profit`, DROP `Part Total Profit When Sold`, DROP `Part Total Absolute Profit After Storing`, DROP `Part Total Profit When Sold After Storing`, DROP `Part Total Margin`;
+
+
+  ALTER TABLE `Part Dimension` 
+  ADD `Part Total Acc Required` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Provided` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Lost` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Broken` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Adquired` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Sold` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Given` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Total Acc Absolute Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00', 
+  ADD `Part Total Acc Profit When Sold` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Absolute Profit After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Profit When Sold After Storing` DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Margin` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc AVG Stock` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc AVG Stock Value`  DECIMAL(12,2) NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Keeping Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0', 
+  ADD `Part Total Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+  
+  ALTER TABLE `Order Transaction Fact` ADD `Invoice Transaction Net Refund Items` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Outstanding Tax Balance` ,
+ADD `Invoice Transaction Net Refund Shipping` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Refund Items` ,
+ADD `Invoice Transaction Net Refund Charges` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Refund Shipping` ,
+ADD `Invoice Transaction Tax Refund Items` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Net Refund Charges` ,
+ADD `Invoice Transaction Tax Refund Shipping` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Tax Refund Items` ,
+ADD `Invoice Transaction Tax Refund Charges` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00' AFTER `Invoice Transaction Tax Refund Shipping`;
+
+
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `MasterKey Dimension` ADD `IP` VARCHAR( 64 ) NOT NULL ;
+
+ALTER TABLE `Part Dimension` CHANGE `Part 10 day Acc Required` `Part 10 Day Acc Required` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Provided` `Part 10 Day Acc Provided` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Lost` `Part 10 Day Acc Lost` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Broken` `Part 10 Day Acc Broken` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Adquired` `Part 10 Day Acc Adquired` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Sold` `Part 10 Day Acc Sold` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Given` `Part 10 Day Acc Given` FLOAT NOT NULL DEFAULT '0';
+
+ALTER TABLE `Part Dimension` CHANGE `Part 10 day Acc Sold Amount` `Part 10 Day Acc Sold Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Absolute Profit` `Part 10 Day Acc Absolute Profit` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Profit When Sold` `Part 10 Day Acc Profit When Sold` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Absolute Profit After Storing` `Part 10 Day Acc Absolute Profit After Storing` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Profit When Sold After Storing` `Part 10 Day Acc Profit When Sold After Storing` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+
+ALTER TABLE `Part Dimension` CHANGE `Part 10 day Acc Margin` `Part 10 Day Acc Margin` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc AVG Stock` `Part 10 Day Acc AVG Stock` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc AVG Stock Value` `Part 10 Day Acc AVG Stock Value` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00',
+CHANGE `Part 10 day Acc Keeping Days` `Part 10 Day Acc Keeping Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Out of Stock Days` `Part 10 Day Acc Out of Stock Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc Unknown Stock Days` `Part 10 Day Acc Unknown Stock Days` FLOAT NOT NULL DEFAULT '0',
+CHANGE `Part 10 day Acc GMROI` `Part 10 Day Acc GMROI` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Image Dimension` ADD `Image Public` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Image Public` ) ;
+
+
+ALTER TABLE `Purchase Order Transaction Fact` DROP `Purchase Order Line`,DROP `Supplier Delivery Note Line`,DROP `Supplier Invoice Line`;
+ALTER TABLE `Purchase Order Transaction Fact` ADD `Purchase Order Transaction Fact Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
+
+ALTER TABLE `Supplier Product Dimension` DROP INDEX `Supplier Product Code` ;
+ALTER TABLE `Supplier Product Dimension` ADD INDEX ( `Supplier Product Current Key` ) ;
+
+ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Description` ,ADD `Supplier Product XHTML Store As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Store As` ,ADD `Supplier Product Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product XHTML Store As` ,ADD `Supplier Product XHTML Sold As` VARCHAR( 1024 ) NOT NULL AFTER `Supplier Product Sold As` ;
+ALTER TABLE `Supplier Product Dimension` CHANGE `Supplier Product Store As` `Supplier Product Store As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product XHTML Store As` `Supplier Product XHTML Store As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product Sold As` `Supplier Product Sold As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Supplier Product XHTML Sold As` `Supplier Product XHTML Sold As` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+ALTER TABLE `Supplier Delivery Note Item Part Bridge` CHANGE `Supplier Delivery Note Line` `Purchase Order Transaction Fact Key` MEDIUMINT( 5 ) UNSIGNED NOT NULL ;
+
+ALTER TABLE `Site Dimension` ADD `Site Secret Key` VARCHAR( 255 ) NOT NULL;
+ALTER TABLE `Site Dimension` ADD `Site URL` VARCHAR( 255 ) NOT NULL AFTER `Site Name`;
+ALTER TABLE `Product Dimension` DROP `Product Sales State DELETEME` ;
+ALTER TABLE `Product Dimension` CHANGE `Product Web State` `Product Web Configuration` ENUM( 'Online Force Out of Stock', 'Online Auto', 'Offline', 'Unknown', 'Online Force For Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Product Dimension` CHANGE `Product Web Configuration` `Product Web Configuration` ENUM( 'Online Force Out of Stock', 'Online Auto', 'Offline', 'Online Force For Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Online Auto';
+ALTER TABLE `Store Dimension` ADD `Store Web Days Until Remove Discontinued Products` SMALLINT( 90 ) NULL ;
+ALTER TABLE `Product Dimension` DROP `Product To Be Discontinued` ;
+ALTER TABLE `Email Credentials Dimension` DROP `Customer Communication` ;
+ALTER TABLE `Email Credentials Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Customer Communications', 'Newsletters', 'Marketing Email', 'Site Registration', 'Inikoo' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Order Transaction Fact` CHANGE `Invoice Transaction Tax Refund Items` `Invoice Transaction Tax Refund Items` DECIMAL( 12, 6 ) NOT NULL DEFAULT '0.00';
+
+ALTER TABLE `Product Dimension` CHANGE `Product Record Type` `Product Record Type` ENUM( 'Normal', 'Historic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Product Dimension` CHANGE `Product Type` `Product Type` ENUM( 'Normal', 'Fuzzy' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Product Dimension` ADD `Product Availability Type` ENUM( 'Normal', 'Discontinued' ) NOT NULL AFTER `Product Sales Type` ,ADD INDEX ( `Product Availability Type` ) ;
+ALTER TABLE `Product Dimension` ADD `Product Stage` ENUM( 'In Process', 'New', 'Normal' ) NOT NULL AFTER `Product Record Type` ,ADD INDEX ( `Product Stage` ) ;
+ALTER TABLE `Product Dimension` CHANGE `Product Sales Type` `Product Sales Type` ENUM( 'Public Sale', 'Private Sale', 'Not for Sale', 'Discontinued Public Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Product Dimension` ADD `Product Web State` ENUM( 'For Sale', 'Out of Stock', 'Discontinued', 'Offline' ) NOT NULL AFTER `Product Web Configuration` , ADD INDEX ( `Product Web State` ) ;
+ALTER TABLE `Product Dimension` CHANGE `Product Web State` `Product Web State` ENUM( 'For Sale', 'Out of Stock', 'Discontinued', 'Offline' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Offline';
+ALTER TABLE `Part Dimension` ADD `Part Available` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Part Status` , ADD INDEX ( `Part Available` ) ;
+ALTER TABLE `Product Dimension` CHANGE `Product Sales Type` `Product Sales Type` ENUM( 'Public Sale', 'Private Sale', 'Not for Sale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+ALTER TABLE `Product Dimension` ADD `Product Main Type` ENUM( 'Historic', 'Discontinued', 'Private', 'NoSale', 'Sale' ) NOT NULL AFTER `Product Availability Type` ,ADD INDEX ( `Product Main Type` ); 
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'In Process', 'Normal', 'Discontinuing', 'Discontinued' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'InProcess', 'Normal', 'Discontinuing', 'Discontinued' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+ALTER TABLE `Site Dimension` CHANGE `Site Secret Key` `Site Secret Key` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Type` ENUM( 'External Content and HTML HEAD' ) NOT NULL DEFAULT 'External Content and HTML HEAD' AFTER `Page Parent Key` ,ADD INDEX ( `Page Store Type` ); 
+ALTER TABLE `Page Store Dimension` ADD UNIQUE (`Page Site Key` ,`Page Code`);
+ALTER TABLE `Part Dimension` ADD `Part Current On Hand Stock` FLOAT NOT NULL DEFAULT '0' AFTER `Part Current Stock`;
+ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM( 'Customer', 'Staff', 'Supplier', 'Administrator', 'Warehouse' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 */
 

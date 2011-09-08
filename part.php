@@ -14,6 +14,8 @@
 
 include_once('common.php');
 //include_once('stock_functions.php');
+include_once('class.Location.php');
+
 include_once('class.Part.php');
 
 $view_sales=false;
@@ -37,12 +39,21 @@ $smarty->assign('view_customers',$view_cust);
 $page='part';
 $smarty->assign('page',$page);
 
+/*
 $parts_period=$_SESSION['state']['parts']['period'];
-$parts_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+print $parts_period;
+
+$parts_period_title=array(
+            'three_year'=>_('Last 3 Years'),
+            'year'=>_('Last Year'),
+            'quarter'=>_('Last Quarter'),
+            'month'=>_('Last Month'),
+            'week'=>_('Last Week'),
+            'all'=>_('All'));
 
 $smarty->assign('parts_period',$parts_period);
 $smarty->assign('parts_period_title',$parts_period_title[$parts_period]);
-
+*/
 
 
 $css_files=array(
@@ -51,7 +62,8 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
                $yui_path.'container/assets/skins/sam/container.css',
-               'button.css'
+               'button.css',
+                'css/part_locations.css'
            );
 
 include_once('Theme.php');
@@ -77,12 +89,13 @@ $js_files=array(
 
 
 $smarty->assign('search_label',_('Parts'));
-$smarty->assign('search_scope','part');
+$smarty->assign('search_scope','parts');
 
 
 
 
-
+$smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
+$smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
 
 $smarty->assign('view',$_SESSION['state']['part']['view']);
@@ -105,6 +118,14 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
 }
 
 $subject_id=$part->id;
+
+if(!$part->id){
+header('Location: warehouse.php?msg=part_not_found');
+exit;
+
+}
+
+
 $warehouse_key=0;
 
 

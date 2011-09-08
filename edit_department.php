@@ -89,6 +89,7 @@ $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
+			$yui_path.'uploader/uploader.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'history/history-min.js',
@@ -209,6 +210,65 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
   $smarty->assign('title', _('Editing').': '.$department->get('Product Department Code'));
+  
+  
+  
+  
+  
+  
+  $number_of_sites=0;
+$site_key=0;
+$number_of_pages=0;
+$page_key=0;
+
+$sql=sprintf("select count(*) as num, `Site Key` from `Site Dimension` where `Site Store Key`=%d ",
+$department->data['Product Department Store Key']);
+
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$number_of_sites=$row['num'];
+if($number_of_sites==1)
+$site_key=$row['Site Key'];
+
+}
+
+$sql=sprintf("select count(*) as num, `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d ",
+$department->id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$number_of_pages=$row['num'];
+if($number_of_pages==1)
+$page_key=$row['Page Key'];
+
+}
+
+
+
+
+if( isset(  $_REQUEST['page_key']) and is_numeric($_REQUEST['page_key'])){
+
+$page_key=$_REQUEST['page_key'];
+
+}
+
+if($page_key){
+$page=new Page($page_key);
+//print_r($page);exit;
+foreach($page->data as $key=>$value){
+  $page_data[preg_replace('/\s/','',$key)]=$value;
+  
+}
+
+$smarty->assign('page_data',$page_data);
+}
+$smarty->assign('number_of_sites',$number_of_sites);
+$smarty->assign('site_key',$site_key);
+$smarty->assign('number_of_pages',$number_of_pages);
+$smarty->assign('page_key',$page_key);
+  
+  
+  
+  
   $smarty->display('edit_department.tpl');
 
 ?>

@@ -306,6 +306,7 @@ case('changesalesplot'):
  case('orders'):
    if(!$user->can_view('orders'))
      exit();
+	 
 list_orders();
 
  
@@ -458,6 +459,7 @@ if(!$user->can_view('orders'))
 
 
 function list_orders(){
+
 
 
 if (isset( $_REQUEST['list_key']))
@@ -645,28 +647,25 @@ if(isset( $_REQUEST['where']))
 
 
 
- 
+
 
     if ($awhere) {
-
-
-
         $tmp=preg_replace('/\\\"/','"',$awhere);
         $tmp=preg_replace('/\\\\\"/','"',$tmp);
         $tmp=preg_replace('/\'/',"\'",$tmp);
 
         $raw_data=json_decode($tmp, true);
         $raw_data['store_key']=$store;
-//print_r( $raw_data);exit;
+		//print_r( $raw_data);exit;
         list($where,$table)=orders_awhere($raw_data);
-
-  $where_type='';
-  $where_interval='';
+		
+		$where_type='';
+		$where_interval='';
     }
     
     
     
- 
+
    
     
     
@@ -675,7 +674,7 @@ if(isset( $_REQUEST['where']))
   $where_interval='';
 
         $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
-
+//print $sql;
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
             $awhere=false;
@@ -1006,7 +1005,7 @@ $sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order
     }
     mysql_free_result($result);
 
-///print_r($dataid);//
+//print_r($adata);
 
 
     $response=array('resultset'=>
@@ -2223,362 +2222,7 @@ $date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
 }
 
 function list_invoices(){
- /*
-    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
-      $conf=$_SESSION['state']['report']['sales'];
-    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales_week')
-      $conf=$_SESSION['state']['report_sales_week']['invoices'];  
-    else
-      $conf=$_SESSION['state']['orders']['invoices'];
-      
-      
-      
-    if(isset( $_REQUEST['sf']))
-      $start_from=$_REQUEST['sf'];
-    else
-      $start_from=$conf['sf'];
-    if(isset( $_REQUEST['nr']))
-      $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-    
-    if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-
-if(isset( $_REQUEST['where']))
-  $where=stripslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-  
-  if(isset( $_REQUEST['invoice_type']))
-  $type=stripslashes($_REQUEST['invoice_type']);
-   else
-     $type=$conf['invoice_type'];
-  
-  
- if(isset( $_REQUEST['from']))
-    $from=$_REQUEST['from'];
- else{
-   if(isset($_REQUEST['saveto'])    )
-     $from=$conf['from'];
-   else
-     $from=$_SESSION['state']['orders']['from'];
- }
-
-  if(isset( $_REQUEST['to']))
-    $to=$_REQUEST['to'];
-  else{
-    if(isset($_REQUEST['saveto']))
-      $to=$conf['to'];
-    else
-      $to=$_SESSION['state']['orders']['to'];
-  }
-
-   if(isset( $_REQUEST['view']))
-    $view=$_REQUEST['view'];
-   else{
-     if(isset($_REQUEST['saveto']))
-       $view=$conf['view'];
-     else
-       $view=$_SESSION['state']['orders']['view'];
-
-   }
-   if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
-//print $where;
-
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-        
-   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales'){
-     
-     $_SESSION['state']['report']['sales']['order']=$order;
-     $_SESSION['state']['report']['sales']['order_dir']=$order_direction;
-     $_SESSION['state']['report']['sales']['nr']=$number_results;
-     $_SESSION['state']['report']['sales']['sf']=$start_from;
-     $_SESSION['state']['report']['sales']['where']=$where;
-     $_SESSION['state']['report']['sales']['f_field']=$f_field;
-     $_SESSION['state']['report']['sales']['f_value']=$f_value;
-     $_SESSION['state']['report']['sales']['to']=$to;
-     $_SESSION['state']['report']['sales']['from']=$from;
-
-if(isset($_REQUEST['store_key'])){
-$store=$_REQUEST['store_key'];
-$_SESSION['state']['report']['sales']['store']=$store;
-}else
-$store=$_SESSION['state']['report']['sales']['store'];
-
-    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-    
-   }
-    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales_week'){
-     
-     $_SESSION['state']['report_sales_week']['invoices']['order']=$order;
-     $_SESSION['state']['report_sales_week']['invoices']['order_dir']=$order_direction;
-     $_SESSION['state']['report_sales_week']['invoices']['nr']=$number_results;
-     $_SESSION['state']['report_sales_week']['invoices']['sf']=$start_from;
-     $_SESSION['state']['report_sales_week']['invoices']['where']=$where;
-     $_SESSION['state']['report_sales_week']['invoices']['f_field']=$f_field;
-     $_SESSION['state']['report_sales_week']['invoices']['f_value']=$f_value;
-     $_SESSION['state']['report_sales_week']['invoices']['to']=$to;
-     $_SESSION['state']['report_sales_week']['invoices']['from']=$from;
-
-if(isset($_REQUEST['store_key'])){
-$store=$_REQUEST['store_key'];
-$_SESSION['state']['report_sales_week']['store']=$store;
-}else
-$store=$_SESSION['state']['report_sales_week']['store'];
-
-    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-    
-   }
-   else{
-      if(isset( $_REQUEST['store_id'])    ){
-     $store=$_REQUEST['store_id'];
-     $_SESSION['state']['orders']['store']=$store;
-   }else
-     $store=$_SESSION['state']['orders']['store'];
-
-
-   
-     
-       
-     $_SESSION['state']['orders']['invoices']['order']=$order;
-     $_SESSION['state']['orders']['invoices']['order_dir']=$order_direction;
-     $_SESSION['state']['orders']['invoices']['nr']=$number_results;
-     $_SESSION['state']['orders']['invoices']['sf']=$start_from;
-     $_SESSION['state']['orders']['invoices']['where']=$where;
-     $_SESSION['state']['orders']['invoices']['f_field']=$f_field;
-     $_SESSION['state']['orders']['invoices']['f_value']=$f_value;
-    
-     $_SESSION['state']['orders']['invoices']['invoice_type']=$type;
-     
-     
-     $_SESSION['state']['orders']['view']=$view;
-     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-    
-     if($date_interval['error']){
-       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
-     }else{
-       $_SESSION['state']['orders']['from']=$date_interval['from'];
-       $_SESSION['state']['orders']['to']=$date_interval['to'];
-     }
-   
-   
-   }
-
-   
- if(is_numeric($store)){
-     $where.=sprintf(' and `Invoice Store Key`=%d ',$store);
-   }
-
-
-switch ($type) {
-    case 'paid':
-        $where.=' and `Invoice Paid`="Yes"';
-        break;
-    case 'to_pay':
-        $where.=' and `Invoice Paid`!="Yes"';
-        break;
-    case 'invoices':
-        $where.=' and `Invoice Title`="Invoice"';
-        break;        
-    case 'refunds':
-        $where.=' and `Invoice Title`="Refund"';
-        break;
-    default:
- if(!isset($_REQUEST['saveto']) or $_REQUEST['saveto']!='report_sales'){   
-    $_SESSION['state']['orders']['invoices']['invoice_type']='all';
-    }
-        break;
-}
-
-
-   $where.=$date_interval['mysql'];
-   
-   $wheref='';
-
-  if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
-  else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
-   elseif($f_field=='customer_name' and $f_value!='')
-    $wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
-  elseif( $f_field=='public_id' and $f_value!='')
-    $wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
-   
-else if($f_field=='maxvalue' and is_numeric($f_value) )
-    $wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
-  else if($f_field=='minvalue' and is_numeric($f_value) )
-    $wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
-   
-
-
-   
-
-   
-  $sql="select count(*) as total from `Invoice Dimension`   $where $wheref ";
-  // print $sql ;
-  $res=mysql_query($sql);
-  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $total=$row['total'];
-  }
-  mysql_free_result($res);
-  if($where==''){
-    $filtered=0;
-     $total_records=$total;
-  }else{
-    
-      $sql="select count(*) as total from `Invoice Dimension`  $where";
-       $res=mysql_query($sql);
-  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-	$total_records=$row['total'];
-	$filtered=$total_records-$total;
-      }
-      mysql_free_result($res);
-  }
-  $rtext=$total_records." ".ngettext('invoice','invoices',$total_records);
-  if($total_records>$number_results)
-    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-   else
-    $rtext_rpp=_("Showing all invoices");
-
-  $filter_msg='';
-
-     switch($f_field){
-     case('public_id'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>)";
-       break;
-     case('customer_name'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with customer')." <b>".$f_value."*</b>)";
-       break;  
-     case('minvalue'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>)";
-       break;  
-   case('maxvalue'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with max value of')." <b>".money($f_value)."*</b>)";
-       break;  
- case('max'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').")";
-       break;  
-     }
-
-
-
-   
-   $_order=$order;
-   $_dir=$order_direction;
-
-   
-   if($order=='date')
-     $order='`Invoice Date`';
-   else if($order=='last_date')
-     $order='`Invoice Last Updated Date`';
-   else if($order=='id')
-     $order='`Invoice File As`';
-   else if($order=='state')
-     $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
-   else if($order=='total_amount')
-     $order='`Invoice Total Amount`';
-     
-     else if($order=='items')
-     $order='`Invoice Items Net Amount`';
-     else if($order=='shipping')
-     $order='`Invoice Shipping Net Amount`';
-  
-      else if($order=='day_of_week')
-     $order='  `Invoice Date`';
-else if($order=='customer')
-     $order='`Invoice Customer Name`';
- else if($order=='state')
-   $order='`Invoice Has Been Paid In Full`';
-else if($order=='net')
-     $order='`Invoice Total Net Amount`';
-  $sql="select `Invoice Items Net Amount`,`Invoice Shipping Net Amount`,`Invoice Currency`,`Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  // print $sql;
-
-   $data=array();
-
-   
-   $res=mysql_query($sql);
-   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-     $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
-     $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
-     if($row['Invoice Has Been Paid In Full']=='Yes')
-       $state=_('Paid');
-     else
-       $state=_('No Paid');
-
-     $data[]=array(
-		   'id'=>$order_id
-		   ,'customer'=>$customer
-		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
-            ,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date']))
-        		   ,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
-		   ,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
-		   ,'shipping'=>money($row['Invoice Shipping Net Amount'],$row['Invoice Currency'])
-		   ,'items'=>money($row['Invoice Items Net Amount'],$row['Invoice Currency'])
-
-		   ,'state'=>$state
-		   ,'orders'=>$row['Invoice XHTML Orders']
-		   ,'dns'=>$row['Invoice XHTML Delivery Notes']
-		   );
-   }
-mysql_free_result($res);
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data,
-			 'rtext'=>$rtext,
-			 'rtext_rpp'=>$rtext_rpp,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   */
+ 
 
     global $myconf,$user;
 
@@ -2644,6 +2288,8 @@ mysql_free_result($res);
         $store=$_SESSION['state']['orders']['store'];
 
 
+	
+	
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
@@ -2727,11 +2373,31 @@ mysql_free_result($res);
             exit("error");
         }
     }
+
     else {
         $where_type='';
     }
-
-
+/*
+	if(isset($_REQUEST['splinter'])){
+		$category_key=$_REQUEST['cat_key'];
+		
+		//print_r($category_keys);
+		$sql=sprintf("select `Subject Key` from `Category Bridge` where `Subject`='Invoice' and `Category Key`=%d",$category_key); 
+		$result=mysql_query($sql);
+		$invoices=array();
+		
+		while($row=mysql_fetch_array($result)){
+			$invoices[]=$row['Subject Key'];
+		}
+		//print $sql;exit;
+		//print_r($invoices);//exit;
+		$invoice_key = join(',',$invoices);  
+		$where.=sprintf(" and `Invoice Key` in ($invoice_key)");
+		//print $table;
+		//print $where;
+		
+	}
+	*/
 	$where_interval='';
 	/*
 	if($from & $to){
@@ -2747,8 +2413,9 @@ mysql_free_result($res);
     $currency='';
 
      $where_stores=sprintf(' and  false');
-
-    if (is_numeric($store) and in_array($store,$user->stores)) {
+	 //if(isset($_REQUEST['splinter']))
+		//$where_stores=sprintf(' and  true');
+    if (is_numeric($store) and in_array($store,$user->stores) and !isset($_REQUEST['splinter'])) {
         $where_stores=sprintf(' and  `Invoice Store Key`=%d ',$store);
         $store=new Store($store);
         $currency=$store->data['Store Currency Code'];
@@ -2758,7 +2425,7 @@ mysql_free_result($res);
 	}
 
 
-    if(isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  ){
+    if(isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  and !isset($_REQUEST['splinter'])){
     	$where_stores=sprintf('and `Invoice Store Key` in (%s)  ',join(',',$user->stores));      			       
     }
 
@@ -2804,10 +2471,11 @@ mysql_free_result($res);
     }
 
 
-
+	//print $where_type;
+	
     $sql="select count(Distinct I.`Invoice Key`) as total from $table   $where $wheref $where_type $where_interval";
 
-
+	//print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2940,13 +2608,14 @@ mysql_free_result($res);
     $sql="select   * from  $table   $where $wheref  $where_type $where_interval group by I.`Invoice Key` order by $order $order_direction limit $start_from,$number_results";
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;exit;
+    
+	//print $sql;exit;
     $adata=array();
 
 
 
     $result=mysql_query($sql);
-     //print $sql;exit;
+    // print $sql;
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
      $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
@@ -2995,6 +2664,7 @@ mysql_free_result($res);
                                      )
                    );
     echo json_encode($response);   
+	
 }
 
 

@@ -3,7 +3,7 @@
 
 <div style="padding:0 20px">
 
-{include file='assets_navigation.tpl'}
+{include file='suppliers_navigation.tpl'}
 
 <div style="clear:left;">
   <h1>{t}Suppliers{/t}</h1>
@@ -31,8 +31,7 @@
 
 <div id="block_suppliers" style="{if $block_view!='suppliers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 <div class="data_table" style="clear:both">
-   <span class="clean_table_title">{t}Suppliers List{/t}</span>
-<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="suppliers" >{t}Export (CSV){/t}</span>
+   <span class="clean_table_title">{t}Suppliers List{/t}  <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $suppliers_view=='general'}class="selected"{/if} id="suppliers_general" >{t}General{/t}</td>
@@ -48,7 +47,6 @@
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
 </div>
-
 <div id="block_porders" style="{if $block_view!='porders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 </div>
 <div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -57,8 +55,7 @@
 </div>
 <div id="block_sproducts" style="{if $block_view!='sproducts'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 <div class="data_table" style="clear:both;">
-    <span class="clean_table_title">{t}Supplier Products{/t}</span>
-    <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier_products" >{t}Export (CSV){/t}</span>
+    <span class="clean_table_title">{t}Supplier Products{/t} <img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
      <table  style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
@@ -119,5 +116,29 @@
     </ul>
   </div>
 </div>
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="suppliers-table-csv_export" export_options=$csv_export_options }
+
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+
+
 {include file='footer.tpl'}

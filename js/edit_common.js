@@ -157,6 +157,9 @@ validate_scope(branch);
 
 
 var CellEdit = function (callback, newValue) {
+
+//alert("xxxx")
+
     var record = this.getRecord(),
                  column = this.getColumn(),
                           oldValue = this.value,
@@ -176,6 +179,14 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_suppliers.php';
     else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';
+     else if (column.object=='new_porder'  )
+        ar_file='ar_edit_porders.php';    
+     else if (column.object=='family_page_properties'  )
+        ar_file='ar_edit_site.php';    
+    
+    
+    
+        
     else if (column.object=='ind_staff' || column.object=='ind_positions' || column.object=='ind_department')
         ar_file='ar_edit_staff.php';
       else if (column.object=='subcategory')
@@ -184,15 +195,15 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-
+///alert(request)
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-          //alert(o.responseText);
+              //       alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText)
-           
+
 
             if (r.state == 200) {
 
@@ -317,6 +328,7 @@ var highlightEditableCell = function(oArgs) {
             this.highlightRow(target);
         break;
     case('add_object'):
+     case('check_all_object'):
     case('remove_object'):
     case('edit_object'):
     case('edit_object'):
@@ -452,7 +464,7 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
- //  alert(validate_scope_metadata[branch]['type']+' '+branch+' :: '+item+' -- '+query)
+  // alert(branch+' :: '+item+' -- '+query)
     if (validate_scope_metadata[branch]['type']=='new') {  
         validate_general_new(branch,item,query)
     } else {
@@ -725,11 +737,11 @@ function save_edit_general(branch) {
 	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
 	   }
 	   
-	  // alert(request);
+	//  alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-				//alert(o.responseText);
+				alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
                         validate_scope_data[branch][r.key].changed=false;
@@ -864,7 +876,7 @@ return;
 	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
- alert(o.responseText);
+ //alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if(r.msg!=undefined){

@@ -31,12 +31,12 @@ date_default_timezone_set('UTC');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension`  ";
+$sql="select * from `Part Dimension` where `Part SKU`=32333 ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
 
-$part->update_estimated_future_cost();
+//$part->update_estimated_future_cost();
 
   /*
   //Get  status
@@ -69,7 +69,14 @@ $part->update_estimated_future_cost();
   */
   $part->load('used in');
   $part->load('supplied by');
-  $part->load('sales');
+  
+  $part->update_picking_location();
+  
+//$part->update_up_today_sales();
+//$part->update_interval_sales();
+//$part->update_last_period_sales();
+  
+
   
  // if(!isset($argv[1])){
     

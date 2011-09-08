@@ -479,6 +479,7 @@ record_index=Dom.get('record_index').value;
 
  function init(){
      
+      init_search('locations');
      
     area_dialog = new YAHOO.widget.Dialog("area_dialog", {visible : false,close:true,underlay: "none",draggable:false});
     area_dialog.render();

@@ -3,7 +3,7 @@
 <div id="bd" >
 {include file='users_navigation.tpl'}
 
-
+<input type="hidden" id="store_key" value="{$store_key}">
 
   <div id="yui-main">
    

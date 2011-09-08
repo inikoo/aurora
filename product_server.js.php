@@ -9,9 +9,10 @@ include_once('common.php');
 		      var tableDivEL="table"+tableid;
 		      var ColumnDefs = [
 					{key:"id", label:"<?php echo _('Product ID')?>", width:90,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"store", label:"<?php echo _('Store')?>", width:120,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"description", label:"<?php echo _('Description')?>", sortable:true, width:240,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"parts", label:"<?php echo _('Parts')?>",width:120,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"store", label:"<?php echo _('Store')?>", width:30,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+										,{key:"parts", label:"<?php echo _('Parts')?>",width:100,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+					,{key:"description", label:"<?php echo _('Description')?>", sortable:true, width:400,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					];
 		      
@@ -50,7 +51,7 @@ include_once('common.php');
 								       })
 								   
 								   ,sortedBy : {
-								      Key: "<?php echo $_SESSION['state']['product']['server']['order']?>",
+								      key: "<?php echo $_SESSION['state']['product']['server']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['server']['order_dir']?>"
 								   }
 								   ,dynamicData : true

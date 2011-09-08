@@ -12,8 +12,7 @@
  Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('class.Store.php');
-include_once('class.Warehouse.php');
+
 
 class User extends DB_Table {
 
@@ -150,6 +149,10 @@ class User extends DB_Table {
             }
 
         }
+		if ($base_data['User Type']=='Customer') {
+			$sql=sprintf("update `Store Dimension` set `Store Total Users`=`Store Total Users`+1 where `Store Key`=%d",$base_data['User Site Key']);
+			mysql_query($sql);
+        }
 
         $keys='(';
         $values='values(';
@@ -160,6 +163,7 @@ class User extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
+        //print $sql;
         if (mysql_query($sql)) {
 
             $user_id=mysql_insert_id();
@@ -167,6 +171,10 @@ class User extends DB_Table {
             $this->new=true;
             $this->msg= _('User added susesfully');
             $this->get_data('id',$user_id);
+			
+			
+			
+			
             return;
         } else {
             $this->error=true;
@@ -190,10 +198,11 @@ class User extends DB_Table {
         $sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
 
                     );
-        //elseif($key=='Staff')
-        //   $sql=sprintf("select * from  `User Dimension` where  `User Type`='Staff'"
+     elseif($key=='Warehouse')
+        $sql=sprintf("select * from  `User Dimension` where  `User Type`='Warehouse'"
 
-//		   );
+                    );
+   
         else
             $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
 
@@ -912,6 +921,124 @@ class User extends DB_Table {
 
         return $list;
     }
+
+	
+	function forgot_password(){
+	
+	
+
+		//global $secret_key,$public_url;
+		
+		$sql=sprintf("select `Site Secret Key`,`Site URL` from `Site Dimension` where `Site Store Key`=%s", $this->data['User Site Key']);
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result)){
+			$secret_key=$row['Site Secret Key'];
+			$url=$row['Site URL'];
+		}
+		
+		
+		
+		
+			
+		$user_key=$this->data['User Key'];
+
+
+		if($user_key){
+
+
+		$user=new User($user_key);
+		$customer=new Customer($this->data['User Parent Key']);
+
+
+
+		$email_credential_key=1;
+
+
+
+		$signature_name='';
+		$signature_company='';
+
+		$master_key=$user_key.'x'.generatePassword(6,10);
+
+
+
+
+		$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
+		prepare_mysql($master_key),
+		$user_key,
+		prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
+		prepare_mysql(ip())
+		);
+
+		mysql_query($sql);
+
+
+
+		//json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$user_key ));
+		//$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store_key,256));
+
+
+
+		$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
+
+
+		$plain_message=$customer->get('greetings')."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
+
+
+		$html_message=$customer->get('greetings')."<br/>We received request to reset the password associated with this email account.<br><br>
+		If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
+		<b>Click the link below to reset your password</b>
+		<br><br>
+		<a href=\"".$url."?p=".$encrypted_secret_data."\">".$url."?p=".$encrypted_secret_data."</a>
+		<br></br>
+		If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
+		<br><br>
+		Thank you";
+
+
+
+		//$to='rulovico@gmail.com';
+		$to='migara@inikoo.com';
+			$data=array(
+				'type'=>'HTML',
+				'subject'=>	'Reset your password',
+				'plain'=>$plain_message,
+				'email_credentials_key'=>$email_credential_key,
+				'to'=>$to,
+				'html'=>$html_message,
+			
+			);
+			
+
+			
+			
+			$send_email=new SendEmail();
+			
+			$send_email->smtp('HTML', $data);
+
+			$result=$send_email->send();
+			
+			if($result['msg']=='ok'){
+			 $response=array('state'=>200,'result'=>'send');
+				echo json_encode($response);
+				exit;
+			
+			}else{
+			print_r($result);
+			 $response=array('state'=>200,'result'=>'error');
+				echo json_encode($response);
+				exit;
+			}
+
+
+		}
+		else{
+		   $response=array('state'=>200,'result'=>'handle_not_found');
+				echo json_encode($response);
+				exit;
+		}
+
+	}
 
 
 }

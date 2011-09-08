@@ -918,15 +918,23 @@ class Order extends DB_Table {
                 $total_quantity=$quantity+$bonus_quantity;
 
 
-		//	print "**** $total_quantity\n";
+			  //    print "\n**** $old_quantity $old_bonus_quantity   ;  ($quantity_set,$bonus_quantity_set) ; QTY    $quantity ==     $total_quantity\n";
 		
                 if ($total_quantity==0) {
+                
+                   
+                
                     $this->delete_transaction($row['Order Transaction Fact Key']);
                     $otf_key=0;
                 } else {
+
+                    
+                    
                     $product=new Product('id',$data['Product Key']);
                     $gross=$total_quantity*$product->data['Product History Price'];
                     $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
+
+
 
                     $sql = sprintf ( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
                                      $estimated_weight ,
@@ -940,7 +948,7 @@ class Order extends DB_Table {
                                    );
                     mysql_query($sql);
                     $otf_key=$row['Order Transaction Fact Key'];
-		    // print "$sql\n";
+		         //    print "$sql  $otf_key  \n";
 		    //    exit;
                 }
 

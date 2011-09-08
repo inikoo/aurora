@@ -101,8 +101,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         // print "$sql\n";
         $result3=mysql_query($sql);
         $num = mysql_num_rows($result3);
-        if ($num!=1)
-            exit ("no ideal product");
+        if ($num!=1){
+            print "\n$sql";
+        exit ("no ideal product");
+
+        }
 
         if ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
             $part_sku=$row3['Part SKU'];

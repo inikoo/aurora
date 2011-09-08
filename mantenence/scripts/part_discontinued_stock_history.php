@@ -38,7 +38,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 $where='and   `Part XHTML Currently Used In` like "%lebt%"';
-$where='and `Part SKU`=33557';
+$where='and `Part SKU`=35932';
 $where='';
 $sql=sprintf('select count(*) as num  from `Part Dimension`  where `Part Status`="Not In Use" %s ',$where);
 $res=mysql_query($sql);
@@ -95,7 +95,7 @@ while ($row=mysql_fetch_array($res)) {
         $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc ,`Event Order` desc ",$part->sku,$location_key);
         $last_itf_date='none';
         $res3=mysql_query($sql);
-        //print "$sql\n";
+  //      print "$sql\n";
         if ($row3=mysql_fetch_array($res3)) {
             if ($row3['Inventory Transaction Type']=='Disassociate') {
                 $sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Disassociate') and `Date`=%s and `Location Key`=%d  "
@@ -126,15 +126,34 @@ while ($row=mysql_fetch_array($res)) {
             $first_itf_date=($row3['Date']);
         }
         //print "$sql\n";
-        //print "R: $first_audit_date $first_itf_date \n ";
+    //    print "R: $first_audit_date : $first_itf_date \n ";
+        
+        
+        
+        
         if ($first_audit_date=='none' and $first_itf_date=='none') {
-            print "\nError1 : Part ".$part->sku." ".$part->data['Part XHTML Currently Used In']."  \n";
-            return;
+
+
+            $sql=sprintf('select count(*) as num from `Inventory Transaction Fact` where  `Part SKU`=%d  ' ,$part->sku);
+            $res10=mysql_query($sql);
+
+            $transactions=0;
+            if ($row10=mysql_fetch_array($res10)) {
+                $transactions=$row10['num'];
+            }
+
+            if ($transactions==0) {
+               print "no transactions\n";
+               continue ;
+            } else {
+                print "\nError1 : Part ".$part->sku." ".$part->data['Part XHTML Currently Used In']."  \n";
+                return;
+            }
         }
-        elseif(!$first_audit_date) {
+        elseif($first_audit_date=='none') {
             $first_date=$first_itf_date;
         }
-        elseif(!$first_itf_date) {
+        elseif($first_itf_date='none') {
             $first_date=$first_audit_date;
         }
         else {
@@ -145,13 +164,13 @@ while ($row=mysql_fetch_array($res)) {
 
         }
 
-        //print "caca";
+        
         $part_location_data=array(
                                 'Part SKU'=>$part->sku,
                                 'Location Key'=>$location_key,
                                 'Date'=>$first_date);
 
-        //print_r($part_location_data);
+      //  print_r($part_location_data);
         $part_location=new PartLocation('find',$part_location_data
                                         ,'create');
 
@@ -224,15 +243,15 @@ while ($row=mysql_fetch_array($res)) {
         $intervals=$part_location->get_history_intervals();
         $intervals[count($intervals)-1]['To']=date("Y-m-d",strtotime($last_date));
         foreach($intervals as $interval) {
-       
-        $from=$interval['From'];
-       $to=($interval['To']?$interval['To']:date('Y-m-d',strtotime('now -1 day')));
-     //  print "$from $to\n";
-       $part_location->update_stock_history_interval($from,$to);
+
+            $from=$interval['From'];
+            $to=($interval['To']?$interval['To']:date('Y-m-d',strtotime('now -1 day')));
+            print "$from $to\n";
+            $part_location->update_stock_history_interval($from,$to);
         }
 
 
-          //print_r($intervals);
+        //print_r($intervals);
         $part_location->disassociate($data);
         $part->update_valid_to($last_date);
 

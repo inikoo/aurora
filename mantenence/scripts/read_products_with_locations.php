@@ -39,9 +39,9 @@ date_default_timezone_set('UTC');
 
 
 
-$sql=sprintf("select * from aw_old.product where code='abp-21'   order by code   ");
+$sql=sprintf("select * from aw_old.product    order by code  ");
 
-$sql=sprintf("select * from aw_old.product  order by code   ");
+//$sql=sprintf("select * from aw_old.product  order by code   ");
 $result=mysql_query($sql);
 while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $product_code=$row2['code'];
@@ -78,8 +78,10 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
         $product=new Product('code_store',$product_code,1);
-        if ($product->data['Product Record Type']=='Discontinued' or $product->data['Product Record Type']=='Historic')
+        if ($product->data['Product Record Type']=='Historic'){
             continue;
+        }    
+            
         //  print "Product  ".$product->data['Product Record Type']." \n";
 
 
@@ -97,6 +99,7 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                     print"Product has more than ne sku\n";
                     print_r($part_skus);
                     print $product->code."\n";
+                     print $product->pid."\n";
                     exit('error');
                 }
             }
@@ -163,6 +166,10 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
         }
+        else{
+        
+            print "Ups no product if or location id\n";
+        }
   
     }
     mysql_free_result($result2xxx);
@@ -170,127 +177,5 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 mysql_free_result($result);
 
-$sql=sprintf("select * from aw_old.location where product_id=0;  ");
-$result=mysql_query($sql);
-while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-$location_code=$row2['code'];
-
-if (!preg_match('/^\d+[a-z]\d+$/i',$location_code))
-continue;
-if (!preg_match('/^\d+\-\d+\-\d+$/',$location_code))
-continue;
-if (preg_match('/^\d+\-\d+\-\d+$/',$location_code))
-            $used_for='Storing';
-        // $location=new Location('code',$location_code);
-        //  if(!$location->id){
-        $location_data=array(
-                           'Location Warehouse Key'=>1,
-                           'Location Warehouse Area Key'=>1,
-                           'Location Code'=>$location_code,
-                           'Location Mainly Used For'=>$used_for
-                       );
-        $location=new Location('find',$location_data,'create');
-}
-mysql_free_result($result);
-
-
-/*
-
-                if (false) {
-                    switch ($num_associated) {
-                    case 1:
-                        if ($associated[0]==1) {
-                            //   print "+++++++++\n";
-                            $pl=new PartLocation($sku.'_1');
-
-
-                            $note=_('Part')." SKU".$part->data['Part SKU']." "._('associated with')." ".$location->data['Location Code'];
-                            if ($location->data['Location Distinct Parts']==0)
-                                $note.=" ("._("First part-location record").")"." ("._("First record of location been used").")";
-                            else
-                                $note.=" ("._("First part-location record").")";
-                            $data=array(
-                                      'user key'=>0,
-                                      'note_out'=>'',
-                                      'note_associate'=>'',
-                                      'note_in'=>$note,
-
-                                      'Destination Key'=>$location->id,
-                                      'Quantity To Move'=>'all'
-
-                                  );
-                            // EXIT;
-                            $pl->move_stock($data);
-
-
-                            $data=array(
-                                      'user key'=>0
-                                                 ,'note'=>_('Location now known')
-                                  );
-                            // print "Destroing \n";
-                            $pl->destroy($data);
-
-
-
-                            //$part->load('stock_history','last');
-                            //$part->load('stock');
-                            //$location->load('parts_data');
-                            //$unk=new Location(1);
-                            //$unk->load('parts_data');
-
-
-                        }
-                        elseif($associated[0]==$location->id) {
-                            print "************  sku ".$sku."  loc ".$location->id."  :) \n";
-                            $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id));
-
-                            //print_r($part_location);
-                            $part=new Part($sku);
-
-                            $part->load('calculate_stock_history','last');
-                            // print "caca\n";
-
-
-                            //  if($stock_old_db>0)
-                            //exit;
-                            break;
-                        }
-                        else {
-
-
-                            $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-                            // $part_location->associate();
-                            $part->load('calculate_stock_history','last');
-
-
-                            //  if($stock_old_db!=0)
-
-
-                            break;
-
-
-                        }
-                        break;
-                    case 0:
-                        $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-                        // $part_location->associate();
-                        $part->load('calculate_stock_history','last');
-
-                        break;
-                    default:
-                        //	   print_r($associated);
-
-                        $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-                        // $part_location->associate();
-                        $part->load('calculate_stock_history','last');
-                        // exit;
-                        break;
-
-                        // exit("todo b");
-                    }
-
-                }
-                
-                */
 
 ?>

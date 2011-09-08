@@ -7,6 +7,7 @@ var add_user_dialog;
 
 var  group_name=new Object;
 
+
 <?php
 
 $s='';
@@ -137,11 +138,12 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
-			     // , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Customer Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                              ,{key:"location", label:"<?php echo _('Location')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 ,{key:"name", label:"<?php echo _('Customer Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     ,{key:"alias", label:"<?php echo _('Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                 ,{key:"login", label:"<?php echo _('Last Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 ,{key:"count", label:"<?php echo _('Number of Logins')?>",width:130,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 //,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 //,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 
 			     
@@ -152,7 +154,8 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_users&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_users&tableid=0&store_key="+Dom.get('store_key').value);
+		//alert("ar_users.php?tipo=customer_users&tableid=0&store_key="+Dom.get('store_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -170,7 +173,7 @@ var active=function(el, oRecord, oColumn, oData){
 		
 		
 		fields: [
-			 "id","isactive","name","location","email","telephone","lang","tipo","active","alias"
+			 "id","isactive","name","login","email","telephone","lang","tipo","active","alias","count"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

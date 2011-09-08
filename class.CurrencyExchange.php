@@ -1,5 +1,4 @@
 <?php
-
 Class CurrencyExchange  {
 
   var $exchange=false;

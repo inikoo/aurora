@@ -111,6 +111,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'active',"stock_error","stock_value","outofstock","sales","profit","todo","discontinued","notforsale","codename"
 			 ]};
 	    
+	   
+	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
@@ -126,7 +128,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 Key: "<?php echo$_SESSION['state']['department']['families']['order']?>",
+									 key: "<?php echo$_SESSION['state']['department']['families']['order']?>",
 									  dir: "<?php echo$_SESSION['state']['department']['families']['order_dir']?>"
 								     }
 							   ,dynamicData : true
@@ -197,7 +199,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['store']['products']['nr']+1?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['department']['products']['nr']+1?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -207,8 +209,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['store']['products']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['store']['products']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['department']['products']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['department']['products']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 

@@ -61,6 +61,14 @@ class Page extends DB_Table {
                          $tag
                         );
 
+
+        }
+        elseif($tipo=='site_code') {
+            $sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`=%s and PS.`Page Site Key`=%d ",
+                         prepare_mysql($tag2),
+                         $tag
+                        );
+
         }
         else {
             $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
@@ -217,7 +225,7 @@ class Page extends DB_Table {
 
     function create($raw_data) {
 
-
+        $this->new=false;
         if (!isset($raw_data['Page Code']) or  $raw_data['Page Code']=='') {
 
             $raw_data['Page Code']=preg_replace('/\s/','',strtolower($raw_data['Page Section'].'_'.$raw_data['Page Short Title']));
@@ -364,6 +372,7 @@ class Page extends DB_Table {
         if (mysql_query($sql)) {
 
             $this->get_data('id',$this->id);
+            $this->new=true;
 
         } else {
             $this->error=true;
@@ -589,12 +598,19 @@ class Page extends DB_Table {
 
 
         switch ($field) {
+        case('page_code'):
+            $this->update_field('Page Code',$value,$options);
+            break;
         case('url'):
             $this->update_field('Page URL',$value,$options);
             break;
         case('title'):
             $this->update_field('Page Title',$value,$options);
             break;
+            
+           case('link_title'):
+            $this->update_field('Page Short Title',$value,$options);
+            break;    
         case('keywords'):
             $this->update_field('Page Keywords',$value,$options);
             break;
@@ -716,8 +732,8 @@ class Page extends DB_Table {
     function get_data_for_smarty($data) {
 
 
-$page_section=new PageStoreSection('code',$this->data['Page Store Section'],$this->data['Page Site Key']);
-$data=$page_section->get_data_for_smarty($data);
+        $page_section=new PageStoreSection('code',$this->data['Page Store Section'],$this->data['Page Site Key']);
+        $data=$page_section->get_data_for_smarty($data);
 
         $header_style=$data['header_style'];
         if ($this->data['Page Store Header Data'] and array_key_exists('style',$this->data['Page Store Header Data']))
@@ -725,14 +741,14 @@ $data=$page_section->get_data_for_smarty($data);
             $header_style.="$key:$value;";
         }
         $data['header_style']=$header_style;
-       
-       $footer_style=$data['footer_style'];
+
+        $footer_style=$data['footer_style'];
         if ($this->data['Page Store Footer Data'] and array_key_exists('style',$this->data['Page Store Footer Data']))
             foreach($this->data['Page Store Footer Data']['style'] as $key=>$value) {
             $footer_style.="$key:$value;";
         }
         $data['footer_style']=$footer_style;
-        
+
         $content_style=$data['content_style'];
         $showcases=array();
         if ($this->data['Page Store Content Data'] ) {
@@ -758,19 +774,60 @@ $data=$page_section->get_data_for_smarty($data);
             }
 
         }
-        
+
         $data['content_style']=$content_style;
         $data['showcases']=$showcases;
-         $data['resume']=$this->data['Page Store Resume'];
+        $data['resume']=$this->data['Page Store Resume'];
 
-         $data['slogan']=$this->data['Page Store Slogan'];
+        $data['slogan']=$this->data['Page Store Slogan'];
         $data['subtitle']=$this->data['Page Store Subtitle'];
 
         $data['title']=$this->data['Page Title'];
         return $data;
     }
 
+    function found_in() {
+       
 
+    switch ($this->data['Page Store Section']) {
+        case 'Family Catalogue':
+       
+       $sql=sprintf("select `Product Family Main Department Key` from  `Product Family Dimension` where `Product Family Key`=%d",
+       $this->data['Page Parent Key']);
+     
+       $res=mysql_query($sql);
+       if($row=mysql_fetch_assoc($res)){
+       $department_key=$row['Product Family Main Department Key'];
+       
+       }else
+          $department_key=0;
+       
+       $sql=sprintf('select `Page URL`,`Page Short Title` from  `Page Store Dimension` PS     left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`)  where `Page Store Section`="Department Catalogue" and PS.`Page Parent Key`=%d',
+       
+       $department_key
+       );
+       
+        $res=mysql_query($sql);
+        if($row=mysql_fetch_assoc($res)){
+         $found_in_label=$row['Page Short Title'];
+        $found_in_url=$row['Page URL'];
+        
+        }else{
+             $found_in_label="x";
+        $found_in_url="x";
+        }
+        
+            break;
+        default:
+             $found_in_label="";
+        $found_in_url="";
+            break;
+    }
+
+
+        return array($found_in_label,$found_in_url);
+
+    }
 
 }
 ?>

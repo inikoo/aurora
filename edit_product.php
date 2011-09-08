@@ -90,8 +90,9 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 $yui_path.'container/assets/skins/sam/container.css',
+		// $yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
+		 'container.css', 
 		  'text_editor.css',
 		 'common.css',
 		 'button.css',
@@ -127,7 +128,8 @@ $smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
 
 
-
+ $smarty->assign('search_label',_('Products'));
+    $smarty->assign('search_scope','products');
 
 $product_home="Products Home";
 
@@ -153,7 +155,7 @@ $_SESSION['state']['product']['shapes']=json_encode($_shape);
 $smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
 $smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
 
-$smarty->assign('currency',$product->data['Currency Symbol']);
+$smarty->assign('currency',$store->data['Store Currency Code']);
 
 
 
@@ -189,8 +191,9 @@ foreach($parts_info as $key=>$value){
 $_parts[$key]=$key;
 }
 
+
 $js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s',
-    $product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
+    $store->data['Store Currency Code'],$product->pid,join(',',$nodes->root),join(',',$_parts));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -209,18 +212,18 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-//while($row=mysql_fetch_array($res)){
-  //$tree=preg_split('/>/',$row['Category Position']);
-  //print $row['Category Key'];
-  //print_r($nodes->fetch($row['Category Key']));
-  //$cat_theme[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
-//}
-//mysql_free_result($res);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
-//$smarty->assign('cat_use',$cat_use);
-//$smarty->assign('cat_material',$cat_material);
-//$smarty->assign('cat_theme',$cat_theme);
+$smarty->assign('filter1','used_in');
+$smarty->assign('filter_value1','');
+$filter_menu=array(
+		   'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
+		   'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
 
+		   );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu['used_in']['label']);
 
 $smarty->display('edit_product.tpl');
 

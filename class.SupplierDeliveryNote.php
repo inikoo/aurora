@@ -189,89 +189,98 @@ class SupplierDeliveryNote extends DB_Table {
 
 
     function add_order_transaction($data) {
-        
-    
-    
+
+
+
         if ($this->data['Supplier Delivery Note Current State']=='In Process') {
-        
-        
-        
-        
-        
-            $sql=sprintf("select `Purchase Order Key`,`Purchase Order Line`,  `Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where (`Supplier Delivery Note Key`=%d or `Purchase Order Key` in (%s)) and `Supplier Product Key`=%d ",$this->id,$this->data['Supplier Delivery Note POs'],$data ['Supplier Product Key']);
-            $res=mysql_query($sql);
-            //print $sql;
-            if ($row=mysql_fetch_assoc($res)) {
-                
-                
-                
-          
-                
-                
-                if ($row['Purchase Order Line']) {
 
 
-                    $sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note Line`=%d ,`Supplier Delivery Note State`=%s where `Purchase Order Key`=%d and `Purchase Order Line`=%d "
-                                     ,$data ['qty']
-                                     ,prepare_mysql ($data ['qty_type'])
-                                     ,prepare_mysql ( $data ['date'] )
-                                     ,$this->get_next_line_number()
-                                     ,prepare_mysql('Inputted')
-                                     ,$row['Purchase Order Key']
-                                     ,$row['Purchase Order Line']
-                                   );
-                    //print "$sql";
-                    mysql_query($sql);
-                     $po=new PurchaseOrder($row['Purchase Order Key']);
-                      $po->update_state();
-                    
-                }elseif($row['Supplier Delivery Note Line']) {
-                $dn_state='Inputted';
-                
-             if ($data ['qty']==0) {
-            
-                    $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Invoice Key` IS NULL and   `Purchase Order Key` is NULL and `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
-                    mysql_query($sql);
-           
-                
-            }else{
-                $sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s  ,`Supplier Delivery Note State`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d "
-                                     ,$data ['qty']
-                                     ,prepare_mysql ($data ['qty_type'])
-                                     ,prepare_mysql ( $data ['date'] )
-                                     ,prepare_mysql($dn_state)
-                                     ,$this->id
-                                     ,$row['Supplier Delivery Note Line']
-                                   );
-                    //print "$sql";
-                    mysql_query($sql);
-}
-}
-}elseif($data ['qty']>0) {
-               
-               $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Line`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,%d,%d, %.6f,%s)   "
+
+
+            if (isset($data['Purchase Order Transaction Fact Key'])) {
+
+
+                $sql=sprintf("select `Purchase Order Key`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where (`Supplier Delivery Note Key`=%d or `Purchase Order Key` in (%s)) and `Purchase Order Transaction Fact Key`=%d ",
+                             $this->id,
+                             $this->data['Supplier Delivery Note POs'],
+                             $data ['Purchase Order Transaction Fact Key']);
+                $res=mysql_query($sql);
+                //   print "$sql\n";
+                if ($row=mysql_fetch_assoc($res)) {
+
+
+                    if ($row['Purchase Order Key']) {
+
+
+
+
+                        $sql = sprintf ( "update`Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=%d, `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note State`=%s where `Purchase Order Transaction Fact Key`=%d "
+                                         , $this->data ['Supplier Delivery Note Key']
+                                         ,$data ['qty']
+                                         ,prepare_mysql ($data ['qty_type'])
+                                         ,prepare_mysql ( $data ['date'] )
+                                         ,prepare_mysql('Inputted')
+                                         ,$row['Purchase Order Transaction Fact Key']
+                                       );
+                        //print "$sql";
+                        mysql_query($sql);
+                        $po=new PurchaseOrder($row['Purchase Order Key']);
+                        $po->update_state();
+
+                    } else {
+
+
+                        if ($data ['qty']==0) {
+
+                            $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Invoice Key` IS NULL and   `Purchase Order Key` is NULL and  `Purchase Order Transaction Fact Key`=%d ",$data ['Purchase Order Transaction Fact Key']);
+                            mysql_query($sql);
+
+
+                        } else {
+                            $sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s  ,`Supplier Delivery Note State`=%s  where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d "
+                                             ,$data ['qty']
+                                             ,prepare_mysql ($data ['qty_type'])
+                                             ,prepare_mysql ( $data ['date'] )
+                                             ,prepare_mysql($dn_state)
+                                             ,$this->id
+                                             ,$row['Purchase Order Transaction Fact Key']
+                                           );
+                            //print "$sql";
+                            mysql_query($sql);
+                        }
+
+                    }
+
+                }
+            } else {
+                if ($data ['qty']<0)
+                    return;
+                $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Supplier Product Historic Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,,%d, %.6f,%s)   "
                                  , prepare_mysql ( $data ['date'] )
                                  , $data ['Supplier Product Key']
+                                 , $data ['Supplier Product Historic Key']
                                  , prepare_mysql ( 'Found in Delivery Note' )
                                  , $this->data['Supplier Delivery Note Supplier Key' ]
                                  , $this->data ['Supplier Delivery Note Key']
-                                 , $data ['line_number']
 
                                  , $data ['qty']
                                  , prepare_mysql ( $data ['qty_type'] )
                                  ,prepare_mysql($this->data['Supplier Delivery Note Current State'])
 
                                );
-               // print "$sql";
+                // print "$sql";
 
                 mysql_query($sql);
+
+
             }
 
 
-  
-            
-         
-            
+
+
+
+
+
         } else {// Supplier Delivery Note Current Stat not In Process
 
 
@@ -295,10 +304,13 @@ class SupplierDeliveryNote extends DB_Table {
         if ($data ['Supplier Delivery Note Received Quantity']<0)
             $data ['Supplier Delivery Note Received Quantity']=0;
 
-        $sql=sprintf("select `Supplier Delivery Note Damaged Quantity`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d order by `Purchase Order Last Updated Date` desc "
+        $sql=sprintf("select `Supplier Delivery Note Damaged Quantity`,`Supplier Delivery Note Quantity`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d order by `Purchase Order Last Updated Date` desc "
                      ,$this->id
-                     ,$data['Supplier Product Key']
+                     ,$data['Purchase Order Transaction Fact Key']
                     );
+
+        //    print $sql;
+
         $res=mysql_query($sql);
         $sum_quantity=0;
         $sum_damaged_quantity=0;
@@ -306,7 +318,7 @@ class SupplierDeliveryNote extends DB_Table {
         $quantity_data=array();
 
         while ($row=mysql_fetch_array($res)) {
-            $quantity_data[$row['Supplier Delivery Note Line']]=$row['Supplier Delivery Note Quantity'];
+            $quantity_data[$row['Purchase Order Transaction Fact Key']]=$row['Supplier Delivery Note Quantity'];
             $sum_quantity+=$row['Supplier Delivery Note Quantity'];
             $sum_damaged_quantity+=$row['Supplier Delivery Note Damaged Quantity'];
 
@@ -371,28 +383,28 @@ class SupplierDeliveryNote extends DB_Table {
 
         }
 
-        foreach($quantity_data as $line=>$received_quantity) {
-            $sql = sprintf ("update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Received Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d"
+        foreach($quantity_data as $pofk=>$received_quantity) {
+            $sql = sprintf ("update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Received Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d"
                             ,$received_quantity
                             ,prepare_mysql ( $data ['Supplier Delivery Note Last Updated Date'] )
                             ,$this->id
-                            ,$line
+                            ,$pofk
                            );
             //print "$sql";
             mysql_query($sql);
         }
 
         $data=array(
-                  'Supplier Delivery Note Last Updated Date'=>$data ['Supplier Delivery Note Last Updated Date']
-                          ,'Supplier Product Key'=>$data['Supplier Product Key']
-                                                  ,'Supplier Delivery Note Damaged Quantity'=>$sum_damaged_quantity
-                                ,'Supplier Delivery Note Received Quantity'=>$received_quantity
+                  'Supplier Delivery Note Last Updated Date'=>$data ['Supplier Delivery Note Last Updated Date'],
+                  'Purchase Order Transaction Fact Key'=>$data['Purchase Order Transaction Fact Key'],
+                  'Supplier Delivery Note Damaged Quantity'=>$sum_damaged_quantity,
+                  'Supplier Delivery Note Received Quantity'=>$received_quantity
 
-                                                  
+
               );
         $damaged_data=$this->update_damaged_transaction($data);
 
-$this->update_affected_products();
+        $this->update_affected_products();
         return array('qty'=>$data ['Supplier Delivery Note Received Quantity'],'damaged_qty'=>$damaged_data['damaged_qty']);
 
     }
@@ -404,9 +416,9 @@ $this->update_affected_products();
         if ($data ['Supplier Delivery Note Damaged Quantity']<0)
             $data ['Supplier Delivery Note Damaged Quantity']=0;
 
-        $sql=sprintf("select `Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d order by `Purchase Order Last Updated Date` desc "
+        $sql=sprintf("select `Supplier Delivery Note Received Quantity`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d order by `Purchase Order Last Updated Date` desc "
                      ,$this->id
-                     ,$data['Supplier Product Key']
+                     ,$data['Purchase Order Transaction Fact Key']
                     );
         $res=mysql_query($sql);
         $sum_quantity=0;
@@ -416,8 +428,8 @@ $this->update_affected_products();
         $damaged_quantity_data=array();
 
         while ($row=mysql_fetch_array($res)) {
-            $quantity_data[$row['Supplier Delivery Note Line']]=$row['Supplier Delivery Note Received Quantity'];
-            $damaged_quantity_data[$row['Supplier Delivery Note Line']]=0;
+            $quantity_data[$row['Purchase Order Transaction Fact Key']]=$row['Supplier Delivery Note Received Quantity'];
+            $damaged_quantity_data[$row['Purchase Order Transaction Fact Key']]=0;
 
             $sum_quantity+=$row['Supplier Delivery Note Received Quantity'];
         }
@@ -463,12 +475,12 @@ $this->update_affected_products();
 
 
 
-        foreach($damaged_quantity_data as $line=>$damaged_quantity) {
-            $sql = sprintf ("update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Damaged Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d"
+        foreach($damaged_quantity_data as $potfk=>$damaged_quantity) {
+            $sql = sprintf ("update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Damaged Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d"
                             ,$damaged_quantity
                             ,prepare_mysql ( $data ['Supplier Delivery Note Last Updated Date'] )
                             ,$this->id
-                            ,$line
+                            ,$potfk
                            );
             //print "$sql";
             mysql_query($sql);
@@ -479,19 +491,6 @@ $this->update_affected_products();
 
     }
 
-
-    function get_next_line_number() {
-
-        $sql=sprintf("select MAX(`Supplier Delivery Note Line`) as max_line from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
-        $res=mysql_query($sql);
-
-        $line_number=1;
-        if ($row=mysql_fetch_array($res))
-            $line_number=(int) $row['max_line']+1;
-        return $line_number;
-
-
-    }
 
 
     function get_next_public_id($supplier_key) {
@@ -611,7 +610,7 @@ $this->update_affected_products();
             mysql_query($sql);
             $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Purchase Order Key` is NULL and `Supplier Invoice Key` IS NULL ",$this->id);
             mysql_query($sql);
-            $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=NULL ,`Supplier Delivery Note Line`=NULL,`Supplier Delivery Note Quantity`=0 , `Supplier Delivery Note Quantity Type`=NULL,`Supplier Delivery Note Last Updated Date`=NULL  where `Supplier Delivery Note Key`=%d  ",$this->id);
+            $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=NULL ,`Supplier Delivery Note Quantity`=0 , `Supplier Delivery Note Quantity Type`=NULL,`Supplier Delivery Note Last Updated Date`=NULL  where `Supplier Delivery Note Key`=%d  ",$this->id);
             mysql_query($sql);
 
 
@@ -646,28 +645,28 @@ $this->update_affected_products();
         mysql_query($sql);
         //print $sql;
 
-     $this->update_affected_products();
-     $this->update_affected_purchase_orders();
+        $this->update_affected_products();
+        $this->update_affected_purchase_orders();
     }
-    
-    
-    function update_affected_purchase_orders(){
-   $sql=sprintf("select `Purchase Order Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+
+
+    function update_affected_purchase_orders() {
+        $sql=sprintf("select `Purchase Order Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $po=new PurchaseOrder($row['Purchase Order Key']);
-           $po->update_state();
+            $po->update_state();
 
         }
 
 
-}
+    }
 
-    
-    
 
-function update_affected_products(){
-   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+
+
+    function update_affected_products() {
+        $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
@@ -681,7 +680,7 @@ function update_affected_products(){
         }
 
 
-}
+    }
 
 
     function mark_as_received($data) {
@@ -827,9 +826,9 @@ function update_affected_products(){
         $sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s `Supplier Delivery Note Current Dispatching State`='Submitted'  where `Supplier Delivery Note Key`=%d",prepare_mysql($data['Supplier Delivery Note Submitted Date']),$this->id);
         mysql_query($sql);
 
-    $this->update_affected_products();
-   //  $this->update_affected_purchase_orders();
-      
+        $this->update_affected_products();
+        //  $this->update_affected_purchase_orders();
+
     }
 
     function update_pos($raw_po_keys) {
@@ -859,7 +858,7 @@ function update_affected_products(){
         $supplier_product_keys=array();
         //print_r(preg_split('/\,/',$this->data['Supplier Delivery Note POs'] )) ;
         foreach(preg_split('/\,/',$this->data['Supplier Delivery Note POs']) as $po_key) {
-            $sql=sprintf("select `Purchase Order Line`,`Supplier Product Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  ",$po_key);
+            $sql=sprintf("select `Purchase Order Transaction Fact Key`,`Supplier Product Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  ",$po_key);
 
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
@@ -877,13 +876,13 @@ function update_affected_products(){
                 }
 
 
-                $supplier_product_keys[$row['Supplier Product Key']]=$row['Purchase Order Line'];
-                $items[$row['Purchase Order Line']]=array(
-                                                        'Supplier Product Key'=>$row['Supplier Product Key']
-                                                                               ,'Purchase Order Quantity'=>$row['Purchase Order Quantity']
-                                                                                                          ,'Purchase Order Quantity Type'=>$row['Purchase Order Quantity Type']
-                                                                                                                                          ,'Purchase Order Line'=>$row['Purchase Order Line']
-                                                                                                                                                                 ,'Purchase Order Key'=>$po_key
+                $supplier_product_keys[$row['Supplier Product Key']]=$row['Purchase Order Transaction Fact Key'];
+                $items[$row['Purchase Order Transaction Fact Key']]=array(
+                                                        'Supplier Product Key'=>$row['Supplier Product Key'],
+                                                        'Purchase Order Quantity'=>$row['Purchase Order Quantity'],
+                                                        'Purchase Order Quantity Type'=>$row['Purchase Order Quantity Type'],
+                                                        'Purchase Order Transaction Fact Key'=>$row['Purchase Order Transaction Fact Key'],
+                                                        'Purchase Order Key'=>$po_key
                                                     );
 
             }
@@ -891,22 +890,22 @@ function update_affected_products(){
         }
 
         foreach($items as $item) {
-            $line=$this->get_next_line_number();
-            $sql=sprintf("select `Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$item['Supplier Product Key']);
+          
+            $sql=sprintf("select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$item['Supplier Product Key']);
             $res=mysql_query($sql);
             // print $sql;
             if ($row=mysql_fetch_array($res)) {
-                if ($row['Supplier Delivery Note Line'])
-                    $line=$row['Supplier Delivery Note Line'];
+                if ($row['Purchase Order Transaction Fact Key'])
+                    $line=$row['Purchase Order Transaction Fact Key'];
             }
 
-            $sql=sprintf("update  `Purchase Order Transaction Fact` set `Supplier Delivery Note Line`=%d,`Supplier Delivery Note Key`=%d,`Supplier Delivery Note Quantity`=%f ,`Supplier Delivery Note Quantity Type`=%s where  `Purchase Order Key`=%d and `Purchase Order Line`=%d"
-                         ,$line
+            $sql=sprintf("update  `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=%d,`Supplier Delivery Note Quantity`=%f ,`Supplier Delivery Note Quantity Type`=%s where  `Purchase Order Key`=%d and `Purchase Order Transaction Fact Key`=%d"
+                     
                          ,$this->id
                          ,$item['Purchase Order Quantity']
                          ,prepare_mysql($item['Purchase Order Quantity Type'])
                          ,$item['Purchase Order Key']
-                         ,$item['Purchase Order Line']
+                         ,$item['Purchase Order Transaction Fact Key']
                         );
             mysql_query($sql);
             //  print $sql;
@@ -930,14 +929,14 @@ function update_affected_products(){
 
     function update_transaction_counted($data) {
 
-        $product_key=$data['Supplier Product Key'];
+       
         $value=$data['Supplier Delivery Note Counted'];
         $date=$data['Supplier Delivery Note Counted'];
 
 
-        $sql=sprintf("select `Supplier Delivery Note Damaged Quantity`,`Supplier Delivery Note Received Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
+        $sql=sprintf("select `Supplier Delivery Note Damaged Quantity`,`Supplier Delivery Note Received Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d  "
                      ,$this->id
-                     ,$product_key
+                     ,$data['Purchase Order Transaction Fact Key']
                     );
         $res=mysql_query($sql);
         $total_quantity=0;
@@ -952,12 +951,12 @@ function update_affected_products(){
         if ($damaged_total_quantity>0)
             $value='Yes';
 
-        $sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery Note Counted`=%s ,`Supplier Delivery Note Last Updated Date`=%s where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
+        $sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery Note Counted`=%s ,`Supplier Delivery Note Last Updated Date`=%s where `Supplier Delivery Note Key`=%d and `Purchase Order Transaction Fact Key`=%d  "
                      ,prepare_mysql($value)
                      ,prepare_mysql($date)
 
                      ,$this->id
-                     ,$product_key
+                     ,$data['Purchase Order Transaction Fact Key']
                     );
         mysql_query($sql);
         // print $sql;
@@ -993,7 +992,7 @@ function update_affected_products(){
 
         $parts=array();
 
-        $sql=sprintf("select `Supplier Delivery Note Received Location Key`,`Supplier Delivery Note Line`, `Supplier Product Key`,`Supplier Delivery Note Received Quantity`-`Supplier Delivery Note Damaged Quantity` as quantity from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
+        $sql=sprintf("select `Supplier Delivery Note Received Location Key`,`Purchase Order Transaction Fact Key`, `Supplier Product Key`,`Supplier Delivery Note Received Quantity`-`Supplier Delivery Note Damaged Quantity` as quantity from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
         $res=mysql_query($sql);
         // print $sql;
         while ($row=mysql_fetch_array($res)) {
@@ -1005,43 +1004,47 @@ function update_affected_products(){
                 if ($supplier_product->data['Supplier Product Part Convertion']=='1:1') {
                     $parts_data=$supplier_product->get_parts();
                     $part_data=array_shift($parts_data);
-                    $supplier_part_units_convertion=$supplier_product->units_convertion_factor($part_data['Supplier Product Unit']);
+                    
+                  //  print_r($part_data);
+                    
+                    $supplier_part_units_convertion=$supplier_product->units_convertion_factor($part_data['Part_Unit']);
                     if (!$supplier_part_units_convertion)
                         continue;
 
                     $quantity=$quantity*$supplier_part_units_convertion;
-                    $parts_quantity=$quantity/$part_data['Supplier Product Units Per Part'];
+                    $parts_quantity=$quantity/$part_data['Supplier_Product_Units_Per_Part'];
 
-                    if (array_key_exists($part_data['Part SKU'].'_'.$row['Supplier Delivery Note Received Location Key'],$parts)) {
+                    if (array_key_exists($part_data['Part_SKU'].'_'.$row['Supplier Delivery Note Received Location Key'],$parts)) {
 
 
-                        $parts[$part_data['Part SKU'].'_'.$row['Supplier Delivery Note Received Location Key']]['Quantity']+=$parts_quantity;
+                        $parts[$part_data['Part_SKU'].'_'.$row['Supplier Delivery Note Received Location Key']]['Quantity']+=$parts_quantity;
 
 
                     } else {
 
-                        $parts[$part_data['Part SKU'].'_'.$row['Supplier Delivery Note Received Location Key']]=array(
-                                    'Part SKU'=>$part_data['Part SKU'],
+                        $parts[$part_data['Part_SKU'].'_'.$row['Supplier Delivery Note Received Location Key']]=array(
+                                    'Part SKU'=>$part_data['Part_SKU'],
                                     'Quantity'=>$parts_quantity,
                                     'Location Key'=>$row['Supplier Delivery Note Received Location Key']
                                 );
                     }
 
 
-                    $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Deliver Note Part Assigned`='Yes' where  Supplier Delivery Note Key`=%d  and `Supplier Delivery Note Line`=%d  ",$this->id,$row['Supplier Delivery Note Line']);
+                    $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Deliver Note Part Assigned`='Yes' where `Purchase Order Transaction Fact Key`=%d  ",$row['Purchase Order Transaction Fact Key']);
                     mysql_query($sql);
 
-                    $notes=sprintf('SKUs to place: <button onClick="place(this)" id="%d"  >%s</button>',$part_data['Part SKU'],$parts_quantity);
-
+                    //$notes=sprintf('SKUs to place: <button class="place_sku" onClick="place(this)" id="%d"  >%s</button>',$part_data['Part_SKU'],$parts_quantity);
+                    $notes='';
                     $sql=sprintf('insert into `Supplier Delivery Note Item Part Bridge` values (%d,%d,%d,%f,"No",%s) '
                                  ,$this->id
-                                 ,$row['Supplier Delivery Note Line']
-                                 ,$part_data['Part SKU']
+                                 ,$row['Purchase Order Transaction Fact Key']
+                                 ,$part_data['Part_SKU']
+                                 
                                  ,$parts_quantity
-                                 ,prepare_mysql($notes)
+                                 ,prepare_mysql($notes,false)
                                 );
                     mysql_query($sql);
-
+                     //print "$sql\n";;       
 
 
                 }
@@ -1061,8 +1064,8 @@ function update_affected_products(){
             $part_location=new PartLocation('find',$part_location_data,'create');
             $part_location->add_stock(
                 array(
-                    'Quantity'=>$data['Quantity']
-                               ,'Origin'=>_('Supplier Delivery Note').' <a href="supplier_dn.php?id='.$this->id.'">'.$this->data['Supplier Delivery Note Public ID'].'</a>'
+                    'Quantity'=>$data['Quantity'],
+                               'Origin'=>_('Supplier Delivery Note').' <a href="supplier_dn.php?id='.$this->id.'">'.$this->data['Supplier Delivery Note Public ID'].'</a>'
                 )
             );
         }

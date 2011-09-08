@@ -1,12 +1,12 @@
-  <div id="Editor_audit" style="position:fixed;top:-200px">
+  <div id="Editor_audit" style="position:fixed;top:-200px;width:250px">
   <div style="display:none" class="hd">s</div>
   <div class="bd dt-editor">
   
     <table>
       <input type="hidden" id="audit_location_key" value=""/>
       <input type="hidden" id="audit_sku" value=""/>
-      <tr><td>{t}Audit Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_audit" /></td></tr>
-     
+      <tr><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_audit" /></td></tr>
+     <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_audit" /></td></tr>
     </table>
     <div class="yui-dt-button">
       <button onclick="save_audit();" class="yui-dt-default">{t}Save{/t}</button>
@@ -15,6 +15,26 @@
     
   </div>
 </div>
+
+
+ <div id="Editor_add_stock" style="position:fixed;top:-200px;width:250px">
+  <div style="display:none" class="hd">s</div>
+  <div class="bd dt-editor">
+  
+    <table>
+      <input type="hidden" id="add_stock_location_key" value=""/>
+      <input type="hidden" id="add_stock_sku" value=""/>
+      <tr><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_add_stock" /></td></tr>
+     <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_add_stock" /></td></tr>
+    </table>
+    <div class="yui-dt-button">
+      <button onclick="save_add_stock();" class="yui-dt-default">{t}Save{/t}</button>
+      <button onclick="close_add_stock_dialog()" >{t}Cancel{/t}</button>
+    </div>
+    
+  </div>
+</div>
+
 
 
 <div id="Editor_lost_items" style="position:fixed;top:-200px">

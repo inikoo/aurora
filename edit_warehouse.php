@@ -20,6 +20,8 @@ if(!$modify ){
 $edit=true;
 $warehouse=new warehouse($warehouse_id);
 
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Exit Edit'));
@@ -75,7 +77,7 @@ $js_files=array(
 		'js/edit_common.js',
 		'edit_warehouse_shelf.js.php',
 		'edit_warehouse.js.php',
-		'js/dropdown.js'
+		'js/search.js'
 		);
 
  

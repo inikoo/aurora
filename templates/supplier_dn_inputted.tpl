@@ -28,7 +28,7 @@
     </div>
     
     
-    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')}</h1>
+    <h1 style="padding:0px 0 10px 0;width:500px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')} ({$supplier_dn->get('Supplier Delivery Note Current State')})</h1>
     <table border=0 style="">
       <tr><td>{t}Supplier Delivery Note Key{/t}:</td><td class="aright">{$supplier_dn->get('Supplier Delivery Note Key')}</td></tr>
       <tr><td>{t}Supplier{/t}:</td><td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td></tr>
@@ -111,19 +111,21 @@
 
 <div id="received_dialog" style="padding:10px 15px">
   <div id="received_dialog_msg"></div>
-  <table>
-    <tr>
-      <td class="aright" style="width:100px"></td><td>
-	<div class="options" style="margin:0px 0;width:200px" id="received_method_container">
-      </td>
-    </tr>
+	<div class="options" style="margin:0px 0;width:200px" id="received_method_container"></div>
+  <table >
+
     <input type="hidden" id="date_type" value="now"/>
     <tr id="tr_manual_received_date">
-      <td class="aright">{t}Received Date{/t}:</td><td style="position:relative"><span style="position:absolute;left:200px" class="state_details" onClick="submit_date_manually()">{t}Modify{/t}</span>{t}Now{/t} </td>
+      <td class="aright" style="width:150px"><img src="art/icons/edit.gif" alt="{t}Edit{/t}"  onClick="submit_date_manually()" /> {t}Received Date{/t}:</td>
+      <td style="width:150px;padding-left:5px">{t}Now{/t}</td>
     </tr>
     <tbody style="display:none" id="tbody_manual_received_date">
       <tr>
-	<td class="aright">{t}Received Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
+	<td class="aright">{t}Received Date{/t}:</td>
+	<td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    />
+	<img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  
+	<div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
+	</td></tr>
       <tr><td class="aright">{t}Time{/t}:</td><td ><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
      
     </tbody>
@@ -131,26 +133,29 @@
     <tr >
         <input type="hidden" id="received_by" value="{$user_staff_key}"/>
 
-      <td class="aright">{t}Received By{/t}:</td><td style="position:relative"> <span id="get_receiver" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="received_by_alias">{$user}</span></td>
+      <td class="aright"><img src="art/icons/edit.gif" alt="{t}Edit{/t}"   id="get_receiver" />  {t}Received By{/t}:</td>
+      <td style="width:150px;padding-left:5px"><span id="received_by_alias">{$user}</span></td>
     </tr>
 
-    <input type="hidden" id="location_key" value="{$location_key}"/>
+    <input type="hidden" id="location_key" value="{$default_loading_location_key}"/>
 
 <tr>
-  <td class="aright">{t}Receiving Location{/t}</td>
-  <td style="position:relative">
-    <span id="get_location" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="location_code">{$location_code}</span>
+  <td class="aright"><img src="art/icons/edit.gif" alt="{t}Edit{/t}"   id="get_location" /> {t}Receiving Location{/t}:</td>
+  <td style="width:150px;padding-left:5px">
+    <span id="location_code">{$default_loading_location_code}</span>
   </td>
 </tr>
 
-    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('received')"  >Cancel</span>
+    <tr>
+    <td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
 	<span style="margin-left:50px" class="state_details" onClick="received_order_save(this)"  >Save</span>
     
     </td>
 </tr>
   </table>
+
 </div>
+
 
 <div id="staff_dialog" class="yuimenu options_list"  >
   <div class="bd">
