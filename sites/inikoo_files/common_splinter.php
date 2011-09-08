@@ -54,20 +54,20 @@ $session = new Session($max_session_time,1,100);
 
 $public_url=$myconf['public_url'];
 if (!isset($_SESSION['basket'])) {
-	if(!isset($_COOKIE['qty']))
-		$_SESSION['basket']=array('items'=>0,'total'=>0);
-	else
-		$_SESSION['basket']=array('items'=>$_COOKIE['qty'],'total'=>$_COOKIE['tot']);
-	
+    if (!isset($_COOKIE['qty']))
+        $_SESSION['basket']=array('items'=>0,'total'=>0);
+    else
+        $_SESSION['basket']=array('items'=>$_COOKIE['qty'],'total'=>$_COOKIE['tot']);
+
 }
 
 if (isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])) {
     $_SESSION['basket']['items']=$_REQUEST['qty'];
-	setcookie('qty', $_SESSION['basket']['items'], time()+60*60*2, "/");
+    setcookie('qty', $_SESSION['basket']['items'], time()+60*60*2, "/");
 }
 if (isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])) {
     $_SESSION['basket']['total']=$_REQUEST['tot'];
-	setcookie('tot', $_SESSION['basket']['total'], time()+60*60*2, "/");
+    setcookie('tot', $_SESSION['basket']['total'], time()+60*60*2, "/");
 }
 
 $site=new Site($myconf['site_key']);
@@ -152,11 +152,11 @@ elseif(isset($_REQUEST['p'])) {
         $_SESSION['customer_key']=$auth->get_user_parent_key();
 
 
-    }else{
-        
-      $_SESSION['logged_in']=0;
-    $logged_in=false;
-    $St=get_sk();
+    } else {
+
+        $_SESSION['logged_in']=0;
+        $logged_in=false;
+        $St=get_sk();
     }
 
 
@@ -176,11 +176,11 @@ elseif(isset($_COOKIE['user_handle'])) {
         $_SESSION['user_key']=$auth->get_user_key();
         $_SESSION['customer_key']=$auth->get_user_parent_key();
         //echo 'jj';
-    }else{
-    
-      $_SESSION['logged_in']=0;
-    $logged_in=false;
-    $St=get_sk();
+    } else {
+
+        $_SESSION['logged_in']=0;
+        $logged_in=false;
+        $St=get_sk();
     }
 }
 
@@ -280,8 +280,8 @@ function show_products($code,$options=false) {
     $code_list=array();
     $data=array();
 
-	$header=array('on'=>true);
-	$s = empty($secure) ? '' : $_SERVER["HTTPS"];
+    $header=array('on'=>true);
+    $s = empty($secure) ? '' : $_SERVER["HTTPS"];
     if (preg_match('/,/', $code)) {
         $code_list=explode(',', $code);
 
@@ -293,35 +293,35 @@ function show_products($code,$options=false) {
             }
         }
 
-		$code=$code_list[0];
-		
-		$sql=sprintf("select `Product Family Key` from `Product Dimension` where `Product Code`='%s'", $code);
-		//print $sql;
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result))
-			$family_key=$row['Product Family Key'];
-			
-		$sql=sprintf("select `Product Family Code` from `Product Family Dimension` where `Product Family Key`=%d", $family_key);
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result))
-			$family_code=$row['Product Family Code'];		
-			
-		/*
+        $code=$code_list[0];
+
+        $sql=sprintf("select `Product Family Key` from `Product Dimension` where `Product Code`='%s'", $code);
+        //print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result))
+            $family_key=$row['Product Family Key'];
+
+        $sql=sprintf("select `Product Family Code` from `Product Family Dimension` where `Product Family Key`=%d", $family_key);
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result))
+            $family_code=$row['Product Family Code'];
+
+        /*
         $price=$data[0]['Product Price'];
         foreach($data as $val) {
             if ($price>$val['Product Price'])
                 $price=$val['Product Price'];
         }
-		*/
-		$product=new LightFamily($family_code, $store_key);
+        */
+        $product=new LightFamily($family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
-			echo $product->get_product_in_family_with_order_form($data, $header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
+            echo $product->get_product_in_family_with_order_form($data, $header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
             return;
         } else {
             $options=array();
             //echo show_products_in_family_info($data, $options);
-			echo $product->get_product_in_family_no_price($data);
+            echo $product->get_product_in_family_no_price($data);
             return;
         }
     } else {
@@ -335,9 +335,9 @@ function show_products($code,$options=false) {
         return;
 
 
-    
 
-    
+
+
     if ($logged_in) {
         echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
     } else {
@@ -348,22 +348,35 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
+    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site;
+
     if (!isset($data['family']))
-        $code='';
+        $family_code='';
     else
-        $code=$data['family'];
-    //print_r( $data);
-    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title;
+        $family_code=$data['family'];
+
+
+
+    if (isset($data['page_code']))
+
+        $page_code=$data['page_code'];
+    else
+        $page_code=$family_code;
+
+$page=new Page('site_code',$site->id,$page_code);
+
+
+
     $see_also=array();
 
     if (!isset($data['found_in'])) {
-        list($found_in_label, $found_in_url)=found_in($code);
+        list($found_in_label, $found_in_url)=$page->found_in();
     } else {
         list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
     }
 
     if (!isset($data['see_also'])) {
-        $see_also=see_also($code);
+        $see_also=see_also($page_code);
     } else {
         $see_also_temp=explode(";", $data['see_also']);
         foreach($see_also_temp as $val) {
@@ -376,18 +389,11 @@ function set_parameters($data=false) {
 
 
 
-
-
     if (isset($data['header_title'])) {
         $header_title=$data['header_title'];
-    } else{
-		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`=%s", prepare_mysql($data['family']));
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result))
-			$header_title=$row['Product Family Name'];
-		else
-			$header_title="xxx";
-	}
+    } else {
+       $header_title=$page->data['Page Store Title'];
+    }
 
 
     if (isset($data['footer_description']))
@@ -520,16 +526,7 @@ function update_page_key_visit_log($page_key) {
 
 }
 
-function found_in($code) {
-    global $store_key;
 
-    $family=new LightFamily($code, $store_key);
-    //print_r($family);
-    if (!$family->id)
-        return;
-    return $family->get_found_in();
-
-}
 
 function see_also($code, $url="http://www.ancientwisdom.biz/forms/") {
     global $store_key;

@@ -218,8 +218,13 @@ if ($row=mysql_fetch_array($res)) {
 $nav_menu=array();
 if ($user->can_view('users'))
 	$nav_menu[] = array(_('Users'), 'users.php','users');
-else
+elseif($user->data['User Type']=='Staff')
 	$nav_menu[] = array(_('Profile'), 'user.php','users');
+ 
+if($user->data['User Type']=='Warehouse'){
+
+$nav_menu[] = array(_('Orders'), 'warehouse_orders.php','orders');
+}
  
  
 if ($user->can_view('staff'))
@@ -240,14 +245,14 @@ if ($user->can_view('warehouses')) {
 	else
 		$nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
 }
-//if ($user->can_view('marketing')) {
+if ($user->can_view('marketing')) {
 
   if (count($user->stores)==1) {
 		$nav_menu[] = array(_('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing');
 	} else
 		$nav_menu[] = array(_('Marketing'), 'marketing_server.php','marketing');
 
-//}
+}
  
  
 if ($user->can_view('stores')) {

@@ -73,7 +73,7 @@ $editor=array(
 
 //$csv_file='order_uk_tmp.csv';
 $csv_file='gb.csv';
-//print '/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file;
+print '/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file;
 
 //exit;
 //exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
@@ -556,7 +556,7 @@ foreach($__cols as $cols){
 		    );
 
 
- print_r($data);
+ //print_r($data);
    if (array_key_exists($code,$codigos)) {
     print "Product: $code is duplicated\n";
     continue;

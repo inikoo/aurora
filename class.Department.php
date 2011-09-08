@@ -1774,18 +1774,6 @@ function update_main_image(){
     mysql_query($sql);
   }
 
-function get_page_data(){
-  $data=array();
-  $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Department Page Key']);
-  // print $sql;
-  $res=mysql_query($sql);
-  if($row=mysql_fetch_array($res)){
-    $data=$row;
-  }
-  
-  return $data;
-
-}
 
  function update_sales_default_currency() {
         $this->data_default_currency=array();

@@ -16,14 +16,15 @@
 <div style="padding:0 20px;padding-bottom:30px">
 
 
-  <div  id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;padding-top:15px;">
+  <div  id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;">
 
-    <span class="clean_table_title">{t}Orders{/t}</span>
+
+<div style="clear:both;margin-top:20px">
+    <span class="clean_table_title">{t}Orders{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     
 	
     <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="dispatch_chooser" style="display:{if $view!='orders'}none{/if}">
-            <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders" >{t}Export (CSV){/t}</span> 
             <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='all_orders'}selected{/if}"  id="restrictions_all_orders" table_type="all_orders"  >{t}All Orders{/t} ({$store->get('Total Orders')})</span>
             <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dispatch=='in_process'}selected{/if}"  id="restrictions_orders_in_process" table_type="in_process"   >{t}In Process{/t} ({$store->get('Orders In Process')})</span>
             <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='dispatched'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="dispatched"  >{t}Dispatched{/t} ({$store->get('Dispatched Orders')})</span>
@@ -65,12 +66,14 @@
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
     <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
-  
+  </div>
   
   </div>
   
   
    <div  id="block_invoices"   class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
+   
+   <div style="clear:both;margin-top:20px">
     <span class="clean_table_title">{t}Invoices{/t} <img id="export_csv1"   tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
      <div id="table_type" class="table_type">
 
@@ -115,13 +118,16 @@
     
     <div  id="table1"   class="data_table_container dtable btable "> </div>
  
+ </div>
+ 
 </div>
 
  <div   id="block_dn"  class="data_table" style="{if $block_view!='dn'}display:none{/if};clear:both">
-    <span class="clean_table_title">{t}Delivery Note List{/t}</span>
+   
+   <div style="clear:both;margin-top:20px">
+   <span class="clean_table_title">{t}Delivery Note List{/t} <img id="export_csv2"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     
         <div style="font-size:90%"  id="dn_table_type" class="table_type">
-   <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="dn" >{t}Export (CSV){/t}</span>
             <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
             <img onClick="change_dn_view(this)" state="{$dn_view}"   style="cursor:pointer;float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
            <div id="dn_view_state_chooser"    style="{if $dn_view!='dn_state'}display:none{/if}">
@@ -171,7 +177,7 @@
    
     <div  id="table2"   class="data_table_container dtable btable "> </div>
  
-
+</div>
   
   
 </div>

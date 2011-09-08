@@ -39,7 +39,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql=sprintf("select * from aw_old.product    order by code   ");
+$sql=sprintf("select * from aw_old.product    order by code  ");
 
 //$sql=sprintf("select * from aw_old.product  order by code   ");
 $result=mysql_query($sql);
@@ -78,8 +78,10 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
         $product=new Product('code_store',$product_code,1);
-        if ($product->data['Product Record Type']=='Historic')
+        if ($product->data['Product Record Type']=='Historic'){
             continue;
+        }    
+            
         //  print "Product  ".$product->data['Product Record Type']." \n";
 
 
@@ -163,6 +165,10 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $primary=false;
 
 
+        }
+        else{
+        
+            print "Ups no product if or location id\n";
         }
   
     }

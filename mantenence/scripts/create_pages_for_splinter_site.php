@@ -49,6 +49,7 @@ global $myconf;
 
 delete_old_sites();
 
+
 $sql=sprintf("select `Store Key` from  `Store Dimension  ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
@@ -79,7 +80,8 @@ while ($row=mysql_fetch_array($res)) {
         $data['Page Store Resume']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume']:'');
         $data['Page Store Section']='Department Catalogue';
         $data['Showcases Layout']='Splited';
-
+        $data['Page Code']=$row['Product Department Code'];
+  $data['Page URL']='www.ancientwisdom.biz/'.strtolower($row['Product Department Code']);
         $site->add_department_page($data);
     }
 }
@@ -102,6 +104,8 @@ while ($row=mysql_fetch_array($res)) {
         $data['Page Store Resume']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume']:'');
         $data['Page Store Section']='Family Catalogue';
         $data['Showcases Layout']='Splited';
+         $data['Page Code']=$row['Product Family Code'];
+          $data['Page URL']='www.ancientwisdom.biz/forms/'.strtolower($row['Product Family Code']);
         $site->add_family_page($data);
     }
 }

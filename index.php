@@ -41,7 +41,7 @@ $smarty->assign('store_keys',join(',',$user->stores));
 
 $search_options_list=array();
 
-$search_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Search Customers'));
+//$search_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Search Customers'));
 //$search_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Products'));
 
 $smarty->assign('search_options_list',$search_options_list);

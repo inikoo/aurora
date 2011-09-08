@@ -10,6 +10,8 @@
 */
 
 include_once('common.php');
+include_once('class.Store.php');
+
 $general_options_list=array();
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -117,6 +119,9 @@ $number_staff=$row['num'];
 
 $root=new User('Administrator');
 $smarty->assign('root',$root);
+$warehouse_user=new User('Warehouse');
+$smarty->assign('warehouse_user',$warehouse_user);
+
 
 
 $smarty->assign('number_staff',$number_staff);

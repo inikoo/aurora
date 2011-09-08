@@ -198,10 +198,11 @@ class User extends DB_Table {
         $sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
 
                     );
-        //elseif($key=='Staff')
-        //   $sql=sprintf("select * from  `User Dimension` where  `User Type`='Staff'"
+     elseif($key=='Warehouse')
+        $sql=sprintf("select * from  `User Dimension` where  `User Type`='Warehouse'"
 
-//		   );
+                    );
+   
         else
             $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
 

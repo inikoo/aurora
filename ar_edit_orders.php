@@ -34,7 +34,7 @@ case('delete_order_list'):
                          ));
     delete_order_list($data);
     break;
-	
+
 case('delete_invoice_list'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -43,7 +43,7 @@ case('delete_invoice_list'):
                          ));
     delete_invoice_list($data);
     break;
-	
+
 case('delete_dn_list'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -70,7 +70,7 @@ case('new_list'):
     break;
 
 
-	
+
 case('new__invoice_list'):
     if (!$user->can_view('orders'))
         exit();
@@ -87,7 +87,7 @@ case('new__invoice_list'):
 
     new_invoices_list($data);
     break;
-	
+
 
 case('new_dn_list'):
     if (!$user->can_view('orders'))
@@ -186,7 +186,7 @@ case('pack_it'):
                          ));
 
     start_packing($data);
-    break;    
+    break;
 case('ready_to_pick_orders'):
     ready_to_pick_orders();
     break;
@@ -553,11 +553,6 @@ function transactions_to_process() {
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr'];
 
-        if ($start_from>0) {
-            $page=floor($start_from/$number_results);
-            $start_from=$start_from-$page;
-        }
-
     }      else
         $number_results=$conf['nr'];
 
@@ -572,12 +567,6 @@ function transactions_to_process() {
         $order_dir=$conf['order_dir'];
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-
-
-    /*  if (isset( $_REQUEST['where'])) */
-    /*         $where=addslashes($_REQUEST['where']); */
-    /*     else */
-    /*         $where=$conf['where']; */
 
 
     if (isset( $_REQUEST['f_field']))
@@ -614,26 +603,13 @@ function transactions_to_process() {
         $show_all=$_SESSION['state']['order']['show_all'];
 
 
-
-
-    //    print_r($_SESSION['state']['order']);
-
-
-    $_SESSION['state']['products']['table']=array(
-                                                'family_code'=>$family_code
-                                                              ,'order'=>$order
-                                                                       ,'order_dir'=>$order_direction
-                                                                                    ,'nr'=>$number_results
-                                                                                          ,'sf'=>$start_from
-                                                                                                //						 ,'where'=>$where
-                                                                                                ,'f_field'=>$f_field
-                                                                                                           ,'f_value'=>$f_value
-                                            );
-
-
-
-
-
+    $_SESSION['state']['products']['table']['family_code']=$family_code;
+    $_SESSION['state']['products']['table']['order']=$order;
+    $_SESSION['state']['products']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['products']['table']['nr']=$number_results;
+    $_SESSION['state']['products']['table']['sf']=$start_from;
+    $_SESSION['state']['products']['table']['f_field']=$f_field;
+    $_SESSION['state']['products']['table']['f_value']=$f_value;
 
 
     if (!$show_all) {
@@ -653,7 +629,7 @@ function transactions_to_process() {
         $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
     } else {
         $table=' `Product Dimension` P ';
-        $where=sprintf('where `Product Store Key`=%d  and `Product Sales Type`!="Not for Sale"   ',$store_key);
+        $where=sprintf('where `Product Store Key`=%d  and `Product Record Type`="Normal"    and `Product Main Type` in ("Private","Sale") ',$store_key);
         $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id);
 
 
@@ -764,7 +740,7 @@ function transactions_to_process() {
 
 
 
-    $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 // print $sql;
 
@@ -779,8 +755,10 @@ function transactions_to_process() {
         else
             $stock='?';
         $type=$row['Product Record Type'];
+        
         if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
+            
         switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
             $web_state=_('Out of Stock');
@@ -1168,21 +1146,6 @@ function ready_to_pick_orders() {
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-
-
-
-    //$_SESSION['state']['orders']['ready_to_pick_dn']=array(
-    //            'order'=>$order,
-    //            'order_dir'=>$order_direction,
-    //            'nr'=>$number_results,
-    //            'sf'=>$start_from,
-    //           'where'=>$where,
-    //           'f_field'=>$f_field,
-    //           'f_value'=>$f_value,
-
-
-    //      );
-
     $_SESSION['state']['orders']['ready_to_pick_dn']['order']=$order;
     $_SESSION['state']['orders']['ready_to_pick_dn']['order_dir']=$order_direction;
     $_SESSION['state']['orders']['ready_to_pick_dn']['nr']=$number_results;
@@ -1190,13 +1153,6 @@ function ready_to_pick_orders() {
     $_SESSION['state']['orders']['ready_to_pick_dn']['where']=$where;
     $_SESSION['state']['orders']['ready_to_pick_dn']['f_field']=$f_field;
     $_SESSION['state']['orders']['ready_to_pick_dn']['f_value']=$f_value;
-
-
-
-
-
-
-
 
     $where.=' and `Delivery Note State` not in ("Dispatched","Cancelled") ';
 
@@ -1211,12 +1167,6 @@ function ready_to_pick_orders() {
     $wheref.=" and  `Delivery Note Customer Name` like '".addslashes($f_value)."%'";
     elseif($f_field=='public_id' and $f_value!='')
     $wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
-
-
-
-
-
-
 
 
     $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
@@ -1245,7 +1195,7 @@ function ready_to_pick_orders() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=_("Showing all delivery notes");
+        $rtext_rpp=' ('._("Showing all").')';
 
     $filter_msg='';
 
@@ -1365,15 +1315,14 @@ function ready_to_pick_orders() {
         //$packer='';
 
         $data[]=array(
-                    'id'=>$row['Delivery Note Key']
-                         ,'public_id'=>$public_id
-                                      ,'customer'=>$row['Delivery Note Customer Name']
-                                                  // ,'wating_lap'=>$lap
-                                                  ,'weight'=>$w
-                                                            ,'picks'=>$picks
-                                                                     ,'date'=>$row['Delivery Note Date Created']
-                                                                             ,'operations'=>$operations
-                                                                                           ,'status'=>$status
+                    'id'=>$row['Delivery Note Key'],
+                    'public_id'=>$public_id,
+                    'customer'=>$row['Delivery Note Customer Name'],
+                    'weight'=>$w,
+                    'picks'=>$picks,
+                    'date'=>$row['Delivery Note Date Created'],
+                    'operations'=>$operations,
+                    'status'=>$status
                 );
     }
     mysql_free_result($res);
@@ -1536,22 +1485,22 @@ function start_packing($data) {
 
 
 
-function set_picking_aid_sheet_pending_as_picked($data){
-$dn_key=$data['dn_key'];
+function set_picking_aid_sheet_pending_as_picked($data) {
+    $dn_key=$data['dn_key'];
 
-  $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
-   $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
+    $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
+    $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
     // print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-      $todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
-      
-   $data=array(
-   'dn_key'=>$dn_key
-   
-   );
-      
-      
+        $todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
+
+        $data=array(
+                  'dn_key'=>$dn_key
+
+              );
+
+
     }
 
 }
@@ -1561,13 +1510,13 @@ $dn_key=$data['dn_key'];
 function picking_aid_sheet() {
     if (isset( $_REQUEST['dn_key']) and is_numeric( $_REQUEST['dn_key']))
         $order_id=$_REQUEST['dn_key'];
-    else{
-       
+    else {
+
         return;
-        }
-        
-     
-        
+    }
+
+
+
 
     $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
 
@@ -1614,7 +1563,7 @@ function picking_aid_sheet() {
                     'used_in'=>$row['Part XHTML Currently Used In'],
                     'quantity'=>number($row['Required']),
                     'location'=>$row['Part XHTML Picking Location'],
-                     'check_mark'=>'&#x2713;',
+                    'check_mark'=>'&#x2713;',
                     'add'=>'+',
                     'remove'=>'-',
                     'picked'=>$row['Picked'],
@@ -1625,7 +1574,8 @@ function picking_aid_sheet() {
                     'picked'=>$row['Picked'],
                     'out_of_stock'=>$row['Out of Stock'],
                     'not_found'=>$row['Not Found'],
-                    'no_picked_other'=>$row['No Picked Other']
+                    'no_picked_other'=>$row['No Picked Other'],
+                    'see_link'=>'xx<a href="xx">'._('pick aid sheet').'</a>'
                 );
     }
 
@@ -1748,11 +1698,11 @@ function pick_order($data) {
 
     $dn=new DeliveryNote($data['dn_key']);
     if ($data['key']=='quantity') {
-    
-  
+
+
         $transaction_data=$dn->set_as_picked($data['itf_key'],round($data['new_value'],8),date("Y-m-d H:i:s"),$data['picker_key']);
- 
-  $dn->update_picking_percentage();
+
+        $dn->update_picking_percentage();
         if (!$dn->error) {
 
             $response=array('state'=>200,
@@ -1784,52 +1734,52 @@ function update_no_dispatched($data) {
         echo json_encode($response);
     }
     $transaction_data=$dn->update_unpicked_transaction_data($data['itf_key'],array(
-                                              'Out of Stock'=>$data['out_of_stock'],
-                                              'Not Found'=>$data['not_found'],
-                                              'No Picked Other'=>$data['no_picked_other']
-                                          )
-                                         );
+                          'Out of Stock'=>$data['out_of_stock'],
+                          'Not Found'=>$data['not_found'],
+                          'No Picked Other'=>$data['no_picked_other']
+                      )
+                                                           );
     $dn->update_picking_percentage();
 
 
     if (!$dn->error) {
 
         if ($dn->updated) {
-        
-          $formated_todo='';
-        
-        if ($transaction_data['Pending']>0) {
-           $formated_todo=number($transaction_data['Pending']);
-        }
+
+            $formated_todo='';
+
+            if ($transaction_data['Pending']>0) {
+                $formated_todo=number($transaction_data['Pending']);
+            }
 
 
 
 
-        $notes='';
-        if ($transaction_data['Out of Stock']!=0) {
-            $notes.=_('Out of Stock').' '.number($transaction_data['Out of Stock']);
-        }
-        if ($transaction_data['Not Found']!=0) {
-            $notes.='<br/>'._('Not Found').' '.number($transaction_data['Not Found']);
-        }
-        if ($transaction_data['No Picked Other']!=0) {
-            $notes.='<br/>'._('Not picked (other)').' '.number($transaction_data['No Picked Other']);
-        }
-        
-        
+            $notes='';
+            if ($transaction_data['Out of Stock']!=0) {
+                $notes.=_('Out of Stock').' '.number($transaction_data['Out of Stock']);
+            }
+            if ($transaction_data['Not Found']!=0) {
+                $notes.='<br/>'._('Not Found').' '.number($transaction_data['Not Found']);
+            }
+            if ($transaction_data['No Picked Other']!=0) {
+                $notes.='<br/>'._('Not picked (other)').' '.number($transaction_data['No Picked Other']);
+            }
+
+
             $response=array('state'=>200,'result'=>'updated','new_value'=>$dn->new_value,
-              'todo'=>$transaction_data['Pending'],
+                            'todo'=>$transaction_data['Pending'],
                             'formated_todo'=>$formated_todo,
                             'notes'=>$notes,
                             'out_of_stock'=>$transaction_data['Out of Stock'],
                             'not_found'=>$transaction_data['Not Found'],
                             'no_picked_other'=>$transaction_data['No Picked Other'],
-                            
+
                             'picked'=>$transaction_data['Picked'],
                             'percentage_picked'=>$dn->get('Faction Picked'),
                             'number_picked_transactions'=>$dn->get_number_picked_transactions(),
                             'number_transactions'=>$dn->get_number_transactions()
-            );
+                           );
 
         } else {
             $response=array('state'=>200,'result'=>'no_change');
@@ -1910,7 +1860,7 @@ function new_dn_list($data) {
 
 
         $sql="select D.`Delivery Note Key` from $table  $where group by D.`Delivery Note Key`";
-          // print $sql;
+        // print $sql;
         $result=mysql_query($sql);
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -1938,7 +1888,7 @@ function new_dn_list($data) {
 
               );
     echo json_encode($response);
-	exit;
+    exit;
 }
 
 function new_invoices_list($data) {
@@ -2036,7 +1986,7 @@ function new_invoices_list($data) {
 
               );
     echo json_encode($response);
-	exit;
+    exit;
 }
 
 
@@ -2135,7 +2085,7 @@ function new_orders_list($data) {
 
               );
     echo json_encode($response);
-	exit;
+    exit;
 }
 
 function delete_order_list($data) {

@@ -94,7 +94,7 @@ Event.addListener(window, "load", function() {
 					 ];
 
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices&tableid=1");
-		alert("ar_orders.php?tipo=invoices&tableid=1");
+		//alert("ar_orders.php?tipo=invoices&tableid=1");
 	     this.dataSource1.table_id=tableid;
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";

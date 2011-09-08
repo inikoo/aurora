@@ -1,5 +1,6 @@
 <?php
 include_once('common.php');
+include_once('class.Store.php');
 
 if (!$user->can_view('customers') or count($user->stores)==0 ) {
 	
