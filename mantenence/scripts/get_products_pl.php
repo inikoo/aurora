@@ -407,7 +407,7 @@ $is_product=true;
 		'product record type'=>'Normal',
 		'Product Web Configuration'=>'Online Auto',
 
-		  
+		    'product stage'=>'Normal',
 		'product price'=>sprintf("%.2f",$price),
 		'product rrp'=>$rrp,
 		'product units per case'=>$units,

@@ -533,6 +533,7 @@ foreach($__cols as $cols){
 
        $data=array(
          'editor'=>$editor,
+         'product stage'=>'Normal',
 		  'product sales type'=>'Public Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
