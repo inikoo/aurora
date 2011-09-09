@@ -544,13 +544,8 @@ class product extends DB_Table {
             return md5($this->data['Product Description']);
             break;
         case('Parts SKU'):
-            $sql=sprintf("select `Part SKU` from `Product Part Dimension` PPD left join  `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`)   where PPD.`Product ID`=%d  and PPD.`Product part Most Recent`='Yes'  ;",$this->data['Product ID']);
-            $result=mysql_query($sql);
-            $parts=array();
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $parts[]=$row['Part SKU'];
-            }
-            return $parts;
+
+            return $this->get_current_part_skus();
             break;
 
         case('Unit Type'):
@@ -4796,10 +4791,10 @@ class product extends DB_Table {
                      ,$this->pid
                     );
 
-        //print $sql;
+        //print "$sql  **\n";
 
         $res=mysql_query($sql);
-        if ($row=mysql_fetch_assoc($res)) {
+        while ($row=mysql_fetch_assoc($res)) {
 
 
             $skus[$row['Part SKU']]=$row['Part SKU'];
