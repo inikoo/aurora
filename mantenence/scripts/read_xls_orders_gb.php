@@ -64,6 +64,8 @@ $do_refunds=false;
 $correct_partner=true;
 $force_update=false;
 
+$sql="update orders_data.orders set deleted='Yes'  where filename like '/mnt/c/Orders/%'  ";
+  mysql_query($sql);
 
 
 
@@ -112,6 +114,15 @@ foreach($orders_array as $order_index=>$order) {
     }
 
 }
+
+
+foreach($good_files_number as $order_index=>$order){
+
+   $filename=$good_files[$order_index];
+  $sql=sprintf("update orders_data.orders set deleted='No'   where  filename=%s",prepare_mysql($filename));
+  mysql_query($sql);
+}
+
 
 
 $cvs_repo='/data/orders_data/';
