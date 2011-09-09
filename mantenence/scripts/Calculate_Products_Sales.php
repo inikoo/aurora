@@ -35,7 +35,7 @@ while($row=mysql_fetch_array($result)   ){
 //$product=new Product('pid',37949);
 // $product->update_sales_data();
  // $product->update_full_search();
- // $product->update_parts();
+  $product->update_parts();
  //    $product->update_web_state();
   
   $product->update_main_type();

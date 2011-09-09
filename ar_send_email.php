@@ -82,7 +82,7 @@ $msg="<html>
 								'Content-Type'=>"automatic/name",
 								'Disposition'=>"attachment"	
 						);
-						
+		$files=array();				
 	//print_r($files);
 	
 	$data=array(
