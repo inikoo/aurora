@@ -579,7 +579,7 @@ $description='Rose Garden (Red)';
 		    'product store key'=>1,
 		    'product currency'=>'EUR',
 		    'product locale'=>'es_ES',
-		  
+		    'product stage'=>'Normal',
 		    'product sales type'=>'Public Sale',
 		    'product type'=>'Normal',
 		    'product record type'=>'Normal',

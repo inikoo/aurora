@@ -409,7 +409,7 @@ foreach($__cols as $cols){
 		'product store key'=>$store_key,
 		'product locale'=>'fr_FR',
 		'product currency'=>'EUR',
-
+  'product stage'=>'Normal',
 		'product sales type'=>'Public Sale',
 		'product type'=>'Normal',
 		'product record type'=>'Normal',
