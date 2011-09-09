@@ -3585,6 +3585,8 @@ ALTER TABLE `Page Store Dimension` ADD `Page Store Type` ENUM( 'External Content
 ALTER TABLE `Page Store Dimension` ADD UNIQUE (`Page Site Key` ,`Page Code`);
 ALTER TABLE `Part Dimension` ADD `Part Current On Hand Stock` FLOAT NOT NULL DEFAULT '0' AFTER `Part Current Stock`;
 ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM( 'Customer', 'Staff', 'Supplier', 'Administrator', 'Warehouse' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Credentials Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Customer Communications', 'Newsletters', 'Marketing Email', 'Site Registration', 'Bugs', 'Requests' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
 
 */
 
