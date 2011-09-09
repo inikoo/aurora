@@ -359,7 +359,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
 
 
-        $sql=sprintf("select $fields from $table $where  "
+        $sql=sprintf("select $fields from $table $where   group by C.`Customer Key` "
 
                     );
 
@@ -367,7 +367,6 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
 
 
-    //  print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
 
