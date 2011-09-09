@@ -3505,7 +3505,7 @@ function find_contact($the_data) {
 
 
 function email_in_other_customer($data){
-$email=$data['query'];
+$email=_trim($data['query']);
  $sql=sprintf('select `Customer Name`,`Customer Key` from `Email Dimension` E left join  `Email Bridge` B on (E.`Email Key`=B.`Email Key`) left join  `Customer Dimension` on (`Subject Key`=`Customer Key`)  where `Email`=%s  and `Subject Type`="Customer" and `Subject Key`!=%d and `Customer Store Key`=%d ',
                  prepare_mysql($email),
                  $data['customer_key'],
