@@ -8,6 +8,9 @@
     {foreach from=$css_files item=i }
     <link rel="stylesheet" href="{$i}" type="text/css" />
     {/foreach}	
+
+    <link rel="stylesheet" href="css/print.css" type="text/css" media="print"/>
+
     {foreach from=$js_files item=i }
     <script type="text/javascript" src="{$i}"></script>
     {/foreach}
