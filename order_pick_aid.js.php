@@ -282,24 +282,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"description",label:"<?php echo _('Description')?>", width:300,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"location",label:"<?php echo _('Location')?>", width:70,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-                       ,{key:"picked",label:"<?php echo _('Picked')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
-										,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
+                       //,{key:"picked",label:"<?php echo _('Picked')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
+					//					,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
 
-					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
-					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
+					//,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
+					//,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
 					
 
-					,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"out_of_stock",label:"", width:1,hidden:true}
-					,{key:"not_found",label:"", width:1,hidden:true}
-					,{key:"no_picked_other",label:"", width:1,hidden:true}
+					//,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					//,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					//,{key:"out_of_stock",label:"", width:1,hidden:true}
+					//,{key:"not_found",label:"", width:1,hidden:true}
+					//,{key:"no_picked_other",label:"", width:1,hidden:true}
 
 				   ];
 
 
 	    this.pick_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
-	    
+	    alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	   
 	    this.pick_aidDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.pick_aidDataSource.connXhrMode = "queueRequests";

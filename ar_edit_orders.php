@@ -1252,6 +1252,7 @@ function ready_to_pick_orders() {
     $data=array();
 
     $res = mysql_query($sql);
+	//print $sql;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         //  if($row['Order Last Updated Date']=='')
@@ -1308,12 +1309,13 @@ function ready_to_pick_orders() {
             $status=$row['Delivery Note State'];
             $public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
             $public_id=$row['Delivery Note ID'];
-
+			$public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
         }
         $operations.='</div>';
 
         //$packer='';
 
+		$see_link=sprintf("<a href='order_pick_aid.php?id=%d&off=true'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
         $data[]=array(
                     'id'=>$row['Delivery Note Key'],
                     'public_id'=>$public_id,
@@ -1322,7 +1324,8 @@ function ready_to_pick_orders() {
                     'picks'=>$picks,
                     'date'=>$row['Delivery Note Date Created'],
                     'operations'=>$operations,
-                    'status'=>$status
+                    'status'=>$status,
+					'see_link'=>$see_link
                 );
     }
     mysql_free_result($res);
@@ -1505,7 +1508,50 @@ function set_picking_aid_sheet_pending_as_picked($data) {
 
 }
 
+function assign_picker_temp($data) {
 
+    $dn=new DeliveryNote($data['dn_key']);
+    if (!$dn->id) {
+        $response=array(
+                      'state'=>400,
+                      'msg'=>'Unknown Delivery Note'
+                  );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $dn->assign_picker($data['staff_key']);
+    if ($dn->assigned) {
+        $response=array(
+                      'state'=>200,
+                      'action'=>'updated',
+                      'operations'=>$dn->operations,
+                      'dn_state'=>$dn->dn_state
+                  );
+
+
+
+    } else if ($dn->error) {
+        $response=array(
+                      'state'=>400,
+                      'msg'=>$dn->msg
+                  );
+
+
+
+    } else {
+        $response=array(
+                      'state'=>200,
+                      'action'=>'uncharged',
+
+                  );
+
+
+    }
+   // echo json_encode($response);
+
+}
 
 function picking_aid_sheet() {
     if (isset( $_REQUEST['dn_key']) and is_numeric( $_REQUEST['dn_key']))
@@ -1515,7 +1561,8 @@ function picking_aid_sheet() {
         return;
     }
 
-
+	$data=array('dn_key'=>$order_id, 'staff_key'=>1);
+	assign_picker_temp($data);
 
 
     $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
@@ -1529,7 +1576,7 @@ function picking_aid_sheet() {
     // print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
+//print_r($row);
         $formated_todo='';
         $todo=0;
         if ($row['Required']-$row['Picked']>0) {
