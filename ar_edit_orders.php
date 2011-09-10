@@ -1315,7 +1315,7 @@ function ready_to_pick_orders() {
 
         //$packer='';
 
-		$see_link=sprintf("<a href='order_pick_aid.php?id=%d&off=true'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
+		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
         $data[]=array(
                     'id'=>$row['Delivery Note Key'],
                     'public_id'=>$public_id,

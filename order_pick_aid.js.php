@@ -299,7 +299,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    this.pick_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
-	    alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
+	    //alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	   
 	    this.pick_aidDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.pick_aidDataSource.connXhrMode = "queueRequests";

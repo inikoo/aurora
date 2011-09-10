@@ -22,11 +22,7 @@ if(!$dn->id){
    exit;
 
 }
-if(isset($_REQUEST['off'])){
-	$off=true;
-}
-else
-	$off=false;
+
 	
 $smarty->assign('off',$off);
 
