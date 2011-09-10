@@ -22,7 +22,13 @@ if(!$dn->id){
    exit;
 
 }
-
+if(isset($_REQUEST['off'])){
+	$off=true;
+}
+else
+	$off=false;
+	
+$smarty->assign('off',$off);
 
 $number_transactions=$dn->get_number_transactions();
 $number_packed_transactions=$dn->get_number_packed_transactions();
