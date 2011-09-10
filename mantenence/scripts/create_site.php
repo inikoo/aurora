@@ -134,7 +134,7 @@ foreach($store_data as $store_code=>$xdata) {
 
 print_r($site_data);
 //print_r($data);
-//exit;
+exit;
 
 
     $site=$store->create_site($site_data);
