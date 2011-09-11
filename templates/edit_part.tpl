@@ -9,6 +9,8 @@
 </div>
 
 <ul class="tabs" id="chooser_ul">
+
+<li><span class="item {if $edit=='activation'}selected{/if}"  id="description">  <span> {t}Activation{/t}</span></span></li>
     <li><span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li><span class="item {if $edit=='products'}selected{/if}" id="products" > <span>{t}Products{/t}</span></span></li>
     <li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers" > <span>{t}Suppliers{/t}</span></span></li>
@@ -17,6 +19,11 @@
 
  
 <div class="tabbed_container" > 
+
+<div class="edit_block" {if $edit!="activation"}style="display:none"{/if}  id="d_activation">
+
+</div>
+
 <div class="edit_block" {if $edit!="products"}style="display:none"{/if}  id="d_products">
  
 
@@ -86,15 +93,18 @@
 </div>
 <div class="edit_block" {if $edit!="description"}style="display:none"{/if}"  id="d_description">
 
-<div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_unit" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_unit" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
+
 
 <table class="edit"  style="width:800px">
- <tr class="title"><td colspan=5>{t}Unit{/t}</td></tr>
+ <tr class="title"><td colspan=5>{t}Unit{/t}</td>
+ <td>
+ <div class="general_options" style="float:right">
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_unit" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_unit" class="state_details">{t}Reset{/t}</span>
+</div>
+ </td>
+ 
+ </tr>
 
 <tr><td style="width:120px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
