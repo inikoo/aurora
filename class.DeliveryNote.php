@@ -248,8 +248,12 @@ class DeliveryNote extends DB_Table {
 
         $this->create_header ();
 
-        if ($order)
-            $this->update_order_transaction_after_create_dn($order);
+        if ($order){
+ 
+ $this->update_order_transaction_after_create_dn($order);
+
+}
+
 
     }
 
@@ -1034,6 +1038,10 @@ class DeliveryNote extends DB_Table {
     }
 
     function cancel($note='',$date=false) {
+    
+    
+    //print_r($this->data);
+    
         $this->cancelled=false;
         if (preg_match('/Dispatched/',$this->data ['Delivery Note State'])) {
             $this->msg=_('Delivery Note can not be cancelled, because has already been dispatched');

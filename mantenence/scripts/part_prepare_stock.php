@@ -40,7 +40,10 @@ date_default_timezone_set('UTC');
 $where='where  `Part XHTML Currently Used In` like "%lebt%"';
 $where='and `Part SKU`=7';
 $where='';
+
+//$where='and `Part SKU`=12229';
 $sql=sprintf('select count(*) as num  from `Part Dimension` where true %s ',$where);
+
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
     $total=$row['num'];
@@ -48,8 +51,8 @@ while ($row=mysql_fetch_array($res)) {
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`   %s ',$where);
-
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where true   %s ',$where);
+//print $sql;
 $res=mysql_query($sql);
 $count=0;
 while ($row=mysql_fetch_array($res)) {

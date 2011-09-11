@@ -25,7 +25,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-$sql=sprintf("select id,code,stock  from aw_old.product  where   condicion=2   ");
+$sql=sprintf("select id,code,stock,condicion  from aw_old.product  where   condicion=2   ");
 $result2a=mysql_query($sql);
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 

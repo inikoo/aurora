@@ -4383,6 +4383,25 @@ function list_families() {
     else
         $elements=$conf['elements'];
 
+
+
+   if (isset( $_REQUEST['elements_family_discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_family_discontinued'];
+    }
+       if (isset( $_REQUEST['elements_family_discontinuing'])) {
+        $elements['Discontinuing']=$_REQUEST['elements_family_discontinuing'];
+    }
+  if (isset( $_REQUEST['elements_family_normal'])) {
+        $elements['Normal']=$_REQUEST['elements_family_normal'];
+    }
+     if (isset( $_REQUEST['elements_family_inprocess'])) {
+        $elements['InProcess']=$_REQUEST['elements_family_inprocess'];
+    }
+
+
+
+
+
     $filter_msg='';
 
 

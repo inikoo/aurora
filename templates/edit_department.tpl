@@ -89,11 +89,12 @@
    <div  id="d_families" class="edit_block" style="{if $edit!="families"}display:none{/if}"  >
      
 
-<div class="general_options" style="float:right">
-		<span  style="margin-right:10px;visibility:hidden"  id="save_new_family" onClick="save_new_general('family')" class="state_details">{t}Save New Family{/t}</span>
-  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_family" onClick="cancel_new_general('family')" class="state_details">{t}Cancel New Family{/t}</span>
+<div class="general_options" style="float:right;text-align:right">
 	    <span  style="margin-right:10px;"  id="show_new_family_dialog_button" onClick="show_new_family_dialog()" class="state_details">{t}Create New Family{/t}</span>
 	    <span  style="margin-right:10px;"  id="import_new_family" class="state_details">{t}Import Families (CSV){/t}</span>
+
+		<span  style="margin-right:10px;visibility:hidden"  id="save_new_family" onClick="save_new_general('family')" class="state_details">{t}Save New Family{/t}</span>
+  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_family"  class="state_details">{t}Cancel New Family{/t}</span>
 </div>
 
 
@@ -144,7 +145,7 @@
 	    </td>
 	     <td id="family_name_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>   
-        <tr>
+        <tr style="display:none">
         <td class="label">{t}Special Characteristic{/t}:</td><td>
 	      <div  style="width:30em" >
 		<input   
@@ -166,8 +167,8 @@
 	   </tr>   
         <tr>
         <td class="label">{t}Description{/t}:</td><td>
-	      <div  style="width:30em" >
-		<textarea   
+	      <div   >
+		<textarea   style="width:100%"
 		   id="family_description" 
 		  
 		  
