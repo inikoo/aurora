@@ -411,6 +411,7 @@ function edit_product() {
                     'sales_type'=>'Product Sales Type',
                     'unit_weight'=>'Product Net Weight Per Unit',
                     'outer_weight'=>'Product Gross Weight',
+					'family_key'=>'Product Family Key'
 
                 );
 
@@ -531,14 +532,15 @@ function edit_subcategory() {
 }
 
 function edit_family($data) {
+	//print $data['newvalue'];
     $family=new family($data['id']);
     global $editor;
     $family->editor=$editor;
-    $family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    $family->update_department($data['newvalue']);
 
 
     if ($family->updated) {
-        $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key']);
+        $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key'],'newdata'=>$family->new_data);
 
     } else {
         $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);

@@ -31,7 +31,7 @@ var scope='family';
 var scope_edit_ar_file='ar_edit_assets.php';
 var scope_key_name='id';
 var store_key=<?php echo $_REQUEST['store_key']?>;
-
+var dialog_family_list;
 
 
 function validate_family_page_content_presentation_template_data(query){validate_general('family_page_content','presentation_template_data',unescape(query));}
@@ -956,6 +956,80 @@ YAHOO.util.Event.addListener(window, "load", function() {
 // 	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 // 	    this.table1.subscribe("cellClickEvent", tmponCellClick);
 	    
+		
+		   var tableid=2; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+			 {key:"key", label:"",width:100,hidden:true}
+                    ,{key:"code", label:"<?php echo _('Code')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						
+			];
+		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=department_list&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		//alert("ar_quick_tables.php?tipo=family_list&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    	    this.dataSource2.table_id=tableid;
+
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "code",'name','key'
+			 ]};
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+      this.table2.subscribe("rowClickEvent", select_department);
+        this.table2.table_id=tableid;
+           this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'code',value:''};
+		
+		
     var tableid=4; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
@@ -1250,6 +1324,45 @@ function show_add_product_dialog(){
 
 }
 
+function select_department(oArgs){
+//alert('ss');
+
+department_key=tables.table2.getRecord(oArgs.target).getData('key');
+
+ dialog_family_list.hide();
+
+
+	var request = 'ar_edit_assets.php?tipo=edit_family&key=' + 'department_key' + '&newvalue=' + department_key+ '&id=' + family_id
+	 //alert(request);
+
+	YAHOO.util.Connect.asyncRequest('POST', request, {
+		success: function(o) {
+			//alert(o.responseText);
+			var r = YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {
+				
+				Dom.get('current_department_code').innerHTML=r.newdata['code'];
+
+
+
+				
+			} else {
+
+
+				}
+
+
+			
+		}
+
+
+		
+	});
+ 
+ 
+	
+}
+
 function new_family_page(){
 
 
@@ -1523,7 +1636,13 @@ var family_page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate
     family_page_header_resume_oAutoComp.minQueryLength = 0; 
     family_page_header_resume_oAutoComp.queryDelay = 0.1;
     
-
+ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+ oACDS2.table_id=2;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+ oAutoComp2.minQueryLength = 0; 
+YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
     
     var family_page_content_presentation_template_data_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_content_presentation_template_data);
     
@@ -1532,6 +1651,12 @@ var family_page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate
     family_page_content_presentation_template_data_oAutoComp.minQueryLength = 0; 
     family_page_content_presentation_template_data_oAutoComp.queryDelay = 0.1;
 
+	
+	    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_family_list.render();
+	
+	
+    Event.addListener("edit_family", "click", dialog_family_list.show,dialog_family_list , true);
 
 }
 

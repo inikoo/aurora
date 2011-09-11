@@ -308,7 +308,15 @@ $page_key=$row['Page Key'];
 
 }
 
-
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
 
 
 if( isset(  $_REQUEST['page_key']) and is_numeric($_REQUEST['page_key'])){
