@@ -196,7 +196,7 @@ class Site extends DB_Table {
                          ",$this->id,prepare_mysql($section));
 
             mysql_query($sql);
-//print $sql;
+
         }
     }
 

@@ -1536,19 +1536,23 @@ class PartLocation extends DB_Table {
 
 
 
-        $sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+        $sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
                      ,prepare_mysql($date)
                      ,$this->part_sku
                      ,$this->location_key
                     );
         $res=mysql_query($sql);
 //print "$sql\n\n";;
+//exit;
         $stock=0;
         $value=0;
         if ($row=mysql_fetch_array($res)) {
-            $stock=$row['stock'];
+            $stock=round($row['stock'],3);
             $value=$row['value'];
         }
+
+//print "$stock \n";
+
 
         return array($stock,$value);
 

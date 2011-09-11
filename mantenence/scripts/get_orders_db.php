@@ -118,7 +118,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
-//$sql="select * from  orders_data.orders where filename  like '%/128745.xls' order by filename";
+$sql="select * from  orders_data.orders where filename  like '%/19394.xls' order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
@@ -1480,13 +1480,21 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         case 1://Delivery Note
             print "DN";
             $data['Order Type']='Order';
+            
+            
+            
+            
             $order=create_order($data);
 
             if (strtotime('today -1 month')>strtotime($date_order)) {
                 $order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +1 month")));
             }
             if (strtotime('today -6 month')>strtotime($date_order)) {
+                  
+            
                 $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+                
+               // print $order->msg;//216249
             }
 
 

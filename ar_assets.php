@@ -4383,6 +4383,25 @@ function list_families() {
     else
         $elements=$conf['elements'];
 
+
+
+   if (isset( $_REQUEST['elements_family_discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_family_discontinued'];
+    }
+       if (isset( $_REQUEST['elements_family_discontinuing'])) {
+        $elements['Discontinuing']=$_REQUEST['elements_family_discontinuing'];
+    }
+  if (isset( $_REQUEST['elements_family_normal'])) {
+        $elements['Normal']=$_REQUEST['elements_family_normal'];
+    }
+     if (isset( $_REQUEST['elements_family_inprocess'])) {
+        $elements['InProcess']=$_REQUEST['elements_family_inprocess'];
+    }
+
+
+
+
+
     $filter_msg='';
 
 
@@ -9791,7 +9810,7 @@ function part_transactions() {
     $order=' `Date` desc , `Inventory Transaction Key` desc ';
     $order_direction=' ';
 
-    $sql="select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select  `Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 
 
     //print $sql;
@@ -9813,6 +9832,7 @@ function part_transactions() {
         switch ($data['Inventory Transaction Type']) {
         case 'Order In Process':
             $transaction_type='OIP';
+            $qty.='('.(-1*$data['Required']).')';
             break;
         default:
             $transaction_type=$data['Inventory Transaction Type'];

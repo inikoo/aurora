@@ -23,9 +23,9 @@
       <div style="border:0px solid #ddd;width:430px;float:right;xdisplay:none">
           
 	 <table border=0  style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
-	  
-	
-<tbody id="resend" style="">	   
+
+<tbody id="resend" style="display:none">
+
 		        <tr><td  class="aright" >{t}Picker{/t}:</td><td id="assigned_picker" key="{$delivery_note->get('Delivery Note Assigned Picker Key')}"  class="aright">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td></tr>
 
 	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_picked_transactions">{$number_picked_transactions}</span>/<span id="number_transactions">{$number_transactions}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Faction Picked')}</span></td></tr>
@@ -45,7 +45,7 @@
       </div>
     <div class="data_table"  style="clear:both">
 	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
-	<div id="table_type">
+	<div id="table_type" style="display:none">
 	  <span id="set_pending_as_picked" style="float:right;color:brown" class="table_type state_details ">{t}Set pending as Picked{/t}</span>
 	 
 	</div>

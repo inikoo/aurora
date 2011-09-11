@@ -544,7 +544,7 @@ function create_order($data) {
 
     $discounts_map=array();
 
-//print_r($data_dn_transactions);
+
 
     foreach($data_dn_transactions as $ddt_key=>$transaction) {
 //print_r($transaction);
@@ -642,10 +642,9 @@ function create_order($data) {
     $order->update_charges_amount($charges_data);
 
 
-
-
+if(count($data_dn_transactions)>0){
     $dn=$order->send_to_warehouse($date_order);
-
+}
 
 
 

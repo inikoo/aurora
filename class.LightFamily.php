@@ -93,7 +93,10 @@ class LightFamily {
 			
 
         $print_header=true;
-        $print_rrp=true;
+		$print_rrp=true;
+		if(isset($options['rrp'])){
+			$print_rrp=$options['rrp'];
+		}
         $print_price=true;
 
         switch ($type) {
@@ -720,10 +723,13 @@ class LightFamily {
 		}
 		else 
 			$range_where="";//"  true";
-			
+		$print_rrp=true;
+		if(isset($options['rrp'])){
+			$print_rrp=$options['rrp'];
+		}
 
         $print_header=true;
-        $print_rrp=true;
+        
         $print_price=true;
 
         switch ($type) {
@@ -796,11 +802,11 @@ class LightFamily {
 
 
 
-                    if ($row['rrp_avg']==$row['rrp_min']) {
-                        $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
-                        $print_rrp=false;
-                    } else
-                        $rrp_label='<br/><span class="rrp">RRP from '.$rrp.'</span>';
+						if ($row['rrp_avg']==$row['rrp_min']) {
+							$rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
+							$print_rrp=false;
+						} else
+							$rrp_label='<br/><span class="rrp">RRP from '.$rrp.'</span>';
 
 
 

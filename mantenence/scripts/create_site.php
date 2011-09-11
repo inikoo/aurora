@@ -134,11 +134,11 @@ foreach($store_data as $store_code=>$xdata) {
 
 print_r($site_data);
 //print_r($data);
-//exit;
+exit;
 
 
     $site=$store->create_site($site_data);
-    $site->create_site_page_sections();
+   // $site->create_site_page_sections();
     foreach($page_store_secton_data as $key=>$value){
             $page_section=$site->get_page_section_object($key);
             $page_section->update($value);

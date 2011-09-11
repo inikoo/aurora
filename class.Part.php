@@ -756,7 +756,7 @@ class part extends DB_Table {
         $res=mysql_query($sql);
         //print $sql;
         if ($row=mysql_fetch_array($res)) {
-            $stock=$row['stock'];
+            $stock=round($row['stock'],3);
             $value=$row['value'];
         }
 
