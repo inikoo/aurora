@@ -6,7 +6,7 @@
   <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
-
+<input type="hidden" id="store_key" value="{$store->get('Store Key')}"/>
     <h1><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </h1>
 
 
@@ -314,7 +314,7 @@
  
  <tr class="first"><td style="width:180px" class="label">{t}Family{/t}:</td>
    <td  style="text-align:left">
- {$product->get('Product Family Code')} <img id="edit_family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
+ <span id="current_family_code">{$product->get('Product Family Code')}</span> <img id="edit_family" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
    </td>
    <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
  </tr>
@@ -337,10 +337,22 @@
 {/foreach}
 
 
+
+
 </table>
 
  
 </div>
+
+ <div id="dialog_family_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Family List{/t}</span>
+            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+            <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
 
 </div>
 
