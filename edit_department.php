@@ -65,7 +65,8 @@ $general_options_list=array();
 
   $general_options_list[]=array('tipo'=>'url','url'=>'department.php','label'=>_('Exit Edit'));
 
-
+$smarty->assign('search_label',_('Products'));
+    $smarty->assign('search_scope','products');
   
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -98,6 +99,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/php.default.min.js',
 		'js/common.js',
+		'js/search.js',
 		'js/table_common.js',
 		'js/edit_common.js',
                 'js/csv_common.js',

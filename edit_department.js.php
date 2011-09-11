@@ -117,10 +117,22 @@ function show_new_family_dialog(){
         Dom.setStyle('save_new_family','visibility','visible');
         Dom.addClass('save_new_family','disabled');
 
- Dom.setStyle('show_new_family_dialog_button','display','none');
+ Dom.setStyle(['show_new_family_dialog_button','import_new_family'],'display','none');
 }
 
 
+function cancel_new_family(){
+ Dom.setStyle('new_family_dialog','display','none');
+        Dom.setStyle('cancel_new_family','visibility','hidden');
+        Dom.setStyle('save_new_family','visibility','hidden');
+        Dom.addClass('save_new_family','disabled');
+
+ Dom.setStyle(['show_new_family_dialog_button','import_new_family'],'display','');
+
+cancel_new_general('family');
+
+
+}
 
 
 function deal_term_save(deal_key){
@@ -661,7 +673,7 @@ var request='tipo=new_department_page&department_key='+department_id+'&site_key=
 
 
 function init(){
-
+init_search('products_store');
  validate_scope_metadata={
     'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>},
     'family':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_id','key':<?php echo$_SESSION['state']['department']['id']?>},
@@ -687,7 +699,7 @@ function init(){
 	,'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Code'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
 		 ,'name':'family_code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
-	,'special_char':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Special Characteristic'
+	,'special_char':{'changed':false,'validated':false,'required':false,'group':1,'type':'item','dbname':'Product Family Special Characteristic'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'family_special_char'
 		,'ar':false,'ar_request':false}
 	,'description':{'changed':false,'validated':false,'required':false,'group':1,'type':'textarea','dbname':'Product Family Description'
@@ -754,6 +766,9 @@ function init(){
 
 
  	//YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+
+
+ YAHOO.util.Event.addListener('cancel_new_family', "click", cancel_new_family);
 
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 

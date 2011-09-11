@@ -408,20 +408,13 @@ $smarty->assign('csv_export_options',$csv_export_options);
 
 
 $elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0);
-
-
-
 $sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Main Department Key`=%d group by  `Product Family Record Type`   ",$department->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $elements_number[$row['Product Family Record Type']]=$row['num'];
 }
-
-
-
-
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['department']['families']['elements']);
+$smarty->assign('elements_family_number',$elements_number);
+$smarty->assign('elements_family',$_SESSION['state']['department']['families']['elements']);
 
 
   $smarty->display('department.tpl');

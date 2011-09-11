@@ -731,6 +731,8 @@ class Order extends DB_Table {
             $sql = sprintf ( "update `Order No Product Transaction Fact` set `State`='Cancelled'  where `Order Key`=%d ", $this->id );
             mysql_query ( $sql );
 
+           
+
             foreach($this->get_delivery_notes_objects() as $dn) {
                 $dn->cancel($note,$date);
             }
@@ -1493,7 +1495,7 @@ class Order extends DB_Table {
 
     function get_delivery_notes_ids() {
         $sql=sprintf("select `Delivery Note Key` from `Order Transaction Fact` where `Order Key`=%d group by `Delivery Note Key`",$this->id);
-
+//print "$sql\n";
         $res = mysql_query ( $sql );
         $delivery_notes=array();
         while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {

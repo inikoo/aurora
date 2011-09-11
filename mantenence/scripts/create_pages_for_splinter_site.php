@@ -47,7 +47,23 @@ global $myconf;
 //include_once('pl_create_main_pages.php');
 
 
+$sql=sprintf("select * from  `Store Dimension  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
+    $site_data=array(
+   'Site Name'=>$row['Store Name'],
+     'Site URL'=>$row['Store URL'] 
+    );
+
+$store=new Store($row['Store Key']);
+ $site=$store->create_site($site_data);
+}
+
+
 delete_old_sites();
+
+
+
 
 
 $sql=sprintf("select `Store Key` from  `Store Dimension  ");

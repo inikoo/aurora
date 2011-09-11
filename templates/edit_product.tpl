@@ -122,7 +122,6 @@
 	
 
 </div>
-
 <div class="edit_block" {if $edit!="web"}style="display:none"{/if}  id="d_web">
   <table class="edit" >
 
@@ -133,7 +132,6 @@
     
   </table>
 </div>
-
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
 
 <input id="v_cost" value="{$product->get_cost_supplier()}" type="hidden"/>
@@ -179,7 +177,6 @@
 
   
 </div>
-
 <div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
 
 
@@ -221,36 +218,35 @@
 
 
 </div>
-
-
-
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
     {include file='edit_images_splinter.tpl'}
 </div>
 <div class="edit_block" {if $edit!="description"}style="display:none"{/if}"  id="d_description">
 
-<div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
 
-<table class="edit">
- <tr class="title"><td colspan=5>{t}Units{/t}</td></tr>
-<tr class="first"><td style="" class="label">{t}Units Per Outer{/t}:</td>
+<table class="edit" style="width:100%">
+ <tr class="title"><td colspan=5>{t}Units{/t}</td>
+ <td>
+ <div class="general_options" style="float:right">
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_units" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_units" class="state_details">{t}Reset{/t}</span>
+</div>
+
+ </td>
+ </tr>
+<tr class="first"><td style="width:180px" class="label">{t}Units Per Outer{/t}:</td>
    <td  style="text-align:left">
      <div   >
-       <input style="text-align:left;width:18em" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0">
+       <input style="text-align:left;" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0">
        <div id="Product_Units_Per_Case_Container" style="" ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
  </tr>
-<tr><td style="" class="label">{t}Units Type{/t}:</td>
+<tr><td style="width:180px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
 
-<select>
+<select   id="Product_Unit_Type"   >
 {foreach from=$unit_type_options key=value item=label}
    <option label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
 
@@ -267,34 +263,36 @@
 
 
 
-<div class="general_options" style="float:right">
-	
+
+
+<table class="edit" style="width:100%">
+ <tr class="title"><td colspan=2>{t}Name / Description{/t}</td>
+ <td>
+ <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
-
-<table class="edit">
- <tr class="title"><td colspan=5>{t}Name / Description{/t}</td></tr>
-<tr class="first"><td style="" class="label">{t}Product Name{/t}:</td>
+</div>
+ </td>
+ </tr>
+<tr class="first"><td style="width:180px" class="label">{t}Product Name{/t}:</td>
    <td  style="text-align:left">
      <div   >
-       <input style="text-align:left;width:18em" id="Product_Name" value="{$product->get('Product Name')}" ovalue="{$product->get('Product Name')}" valid="0">
+       <input style="text-align:left;" id="Product_Name" value="{$product->get('Product Name')}" ovalue="{$product->get('Product Name')}" valid="0">
        <div id="Product_Name_Container" style="" ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
  </tr>
-<tr><td style="" class="label">{t}Special Characteristic{/t}:</td>
+<tr><td style="width:180px" class="label">{t}Special Characteristic{/t}:</td>
    <td  style="text-align:left">
      <div   >
-       <input style="text-align:left;width:18em" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')}" ovalue="{$product->get('Product Special Characteristic')}" valid="0">
+       <input style="text-align:left;" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')}" ovalue="{$product->get('Product Special Characteristic')}" valid="0">
        <div id="Product_Special_Characteristic_Container" style="" ></div>
      </div>
    </td>
    <td id="Product_Special_Characteristic_msg" class="edit_td_alert"></td>
  </tr>
-<tr><td style="" class="label">{t}Product Description{/t}:</td>
+<tr><td style="width:180px" class="label">{t}Product Description{/t}:</td>
    <td  style="text-align:left">
      <div  style="height:100px;width:25em;position:relative;top:00px" >
 
@@ -308,8 +306,20 @@
 
 </table>
 
-<table class="edit">
+
+
+
+<table class="edit" style="width:100%">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
+ 
+ <tr class="first"><td style="width:180px" class="label">{t}Family{/t}:</td>
+   <td  style="text-align:left">
+ {$product->get('Product Family Code')} <img id="edit_family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
+   </td>
+   <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ 
  {foreach from=$categories item=cat key=cat_key name=foo  }
  <tr>
  
@@ -331,10 +341,6 @@
 
  
 </div>
-
-
-
-
 
 </div>
 

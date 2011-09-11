@@ -23,6 +23,8 @@ if(!$dn->id){
 
 }
 
+	
+$smarty->assign('off',$off);
 
 $number_transactions=$dn->get_number_transactions();
 $number_packed_transactions=$dn->get_number_packed_transactions();
