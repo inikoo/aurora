@@ -393,6 +393,7 @@ function edit_product() {
     $product->editor=$editor;
     
     $key=$_REQUEST['key'];
+    $_key=$key;
     $newvalue=$_REQUEST['newvalue'];
     
     $translator=array(
@@ -425,7 +426,7 @@ function edit_product() {
 
 
     if ($product->updated) {
-        $response= array('state'=>200,'newvalue'=>$product->new_value,'newdata'=>$product->new_data,'key'=>$key);
+        $response= array('state'=>200,'newvalue'=>$product->new_value,'newdata'=>$product->new_data,'key'=>$_key);
 
     } else {
         $response= array('state'=>400,'msg'=>$product->msg,'key'=>$key);

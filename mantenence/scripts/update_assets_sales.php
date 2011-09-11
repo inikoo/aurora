@@ -28,6 +28,30 @@ require_once '../../conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
+
+
+
+
+
+$sql="select * from `Product Family Dimension` ";
+
+//print $sql;
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $family=new Family($row['Product Family Key']);
+//  $family->update_sales_default_currency();
+  $family->update_product_data();
+  //$family->update_sales_data();
+ // print $row['Product Family Code']."        \r";
+ }
+
+mysql_free_result($result);
+
+
+
+
+
+/*
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -56,20 +80,6 @@ $department=new Department($row['Product Department Key']);
 
 //  print $department->data['Product Department Code']."\n";
  }
-mysql_free_result($result);
-
-$sql="select * from `Product Family Dimension` ";
-
-//print $sql;
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $family=new Family($row['Product Family Key']);
-  $family->update_sales_default_currency();
-  $family->update_product_data();
-  $family->update_sales_data();
- // print $row['Product Family Code']."        \r";
- }
-
 mysql_free_result($result);
 
  $sql="select `Product ID` from `Product Dimension` ";
@@ -106,6 +116,9 @@ $part->update_interval_sales();
 $part->update_last_period_sales();
 
 }
+*/
+
+
 
 
 ?>

@@ -133,9 +133,22 @@
 </div>
 <div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
    <div class="data_table" style="margin:0px;clear:both">
-    <span class="clean_table_title">{t}Families{/t}</span>
+    <span class="clean_table_title">{t}Families{/t} 
+           <img id="export_csv2"   tipo="families_in_department" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif">
 
-<span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
+    </span>
+
+<div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+            
+                <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinued}selected{/if} label_family_products_discontinued"  id="elements_family_discontinued" table_type="discontinued"   >{t}Discontinued{/t} (<span id="elements_family_discontinued_number">{$elements_family_number.Discontinued}</span>)</span>
+                <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinuing}selected{/if} label_family_products_discontinued"  id="elements_family_discontinuing" table_type="discontinuing"   >{t}Discontinuing{/t} (<span id="elements_family_discontinuing_number">{$elements_family_number.Discontinuing}</span>)</span>
+                <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.Normal}selected{/if} label_family_products_normal"  id="elements_family_normal" table_type="normal"   >{t}For Sale{/t} (<span id="elements_family_notes_number">{$elements_family_number.Normal}</span>)</span>
+                <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.InProcess}selected{/if} label_family_products_inprocess"  id="elements_family_inprocess" table_type="inprocess"   >{t}In Process{/t} (<span id="elements_family_notes_number">{$elements_family_number.InProcess}</span>)</span>
+
+        </div>
+     </div>
+
 <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 <span   style="float:right;margin-left:80px" class="state_details" state="{$family_show_percentages}"  id="show_percentages"  atitle="{if $family_show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $family_show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="family_view_options options" >

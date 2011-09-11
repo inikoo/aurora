@@ -264,6 +264,17 @@ $smarty->assign('csv_export_options',$csv_export_options);
 
 //{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
 
+
+$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0);
+$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension`  group by  `Product Family Record Type`   ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Product Family Record Type']]=$row['num'];
+}
+$smarty->assign('elements_family_number',$elements_number);
+//print_r($_SESSION['state']['store']['families']);
+$smarty->assign('elements_family',$_SESSION['state']['stores']['families']['elements']);
+
 $smarty->display('stores.tpl');
 
 ?>
