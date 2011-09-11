@@ -118,7 +118,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
-$sql="select * from  orders_data.orders where filename  like '%/19394.xls' order by filename";
+//$sql="select * from  orders_data.orders where filename  like '%/19394.xls' order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
