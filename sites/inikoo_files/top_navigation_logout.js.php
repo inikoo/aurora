@@ -1,6 +1,7 @@
+<?php global $path?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
-
+var path='<?php echo $_REQUEST["path"] ?>';
 var data={ 
     "Customer Type":''
     ,"Customer Name":''
@@ -93,7 +94,7 @@ data['ep']=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.
 Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
-     var request='../../inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
+     var request=path+'inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
 // alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -146,7 +147,7 @@ function check_email(){
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 
-     var request='../../inikoo_files/ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
+     var request=path+'inikoo_files/ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
  
 	//alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -208,7 +209,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='../../inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
+     var request=path+'inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
  // alert(request);
   Dom.setStyle('tr_forgot_password_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait','display','');
@@ -269,7 +270,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='../../inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
+     var request=path+'inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
  
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
@@ -331,8 +332,8 @@ function login(){
 
 //Dom.get('login_password').value='';
     //Dom.get('loginform').submit();
-     var request='../../inikoo_files/ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
-      //alert(request);
+     var request=path+'inikoo_files/ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
+     //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)
@@ -387,7 +388,7 @@ Dom.setStyle('dialog_register','display','none');
 }
 
 function show_register_part_2_dialog(){
-Dom.get('captcha').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random();
+Dom.get('captcha').src = path+'inikoo_files/securimage_show.php?height=40&' + Math.random();
 
 Dom.setStyle(['show_login_dialog','dialog_login','dialog_forgot_password','dialog_register'],'display','none');
 Dom.setStyle('dialog_register_part_2','display','block');
@@ -410,7 +411,7 @@ Dom.setStyle('dialog_email_in_db','display','none')
 
 
 function show_forgot_password_dialog(){
-Dom.get('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random();
+Dom.get('captcha2').src = path+'inikoo_files/securimage_show.php?height=40&' + Math.random();
 
 Dom.setStyle(['show_login_dialog','show_forgot_password_dialog','dialog_login','dialog_register','dialog_register_part_2'],'display','none');
 Dom.setStyle('dialog_forgot_password','display','block');
@@ -618,7 +619,7 @@ register()
 
 function show_email_in_db_dialog(){
 
-Dom.get('captcha3').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random();
+Dom.get('captcha3').src = path+'inikoo_files/securimage_show.php?height=40&' + Math.random();
 
 Dom.get('email_in_db').innerHTML=Dom.get('register_email').value;
 Dom.get('register_email').value='';

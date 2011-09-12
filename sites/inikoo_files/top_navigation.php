@@ -1,17 +1,20 @@
-<link rel="stylesheet" type="text/css" href="../../inikoo_files/css/top_navigation.css" />
-<link rel="stylesheet" type="text/css" href="../../inikoo_files/css/ui.css.php" />
+<?php
+global $width, $path;
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/ui.css.php?width=<?php echo $width?>" />
 <link href="../newmenubar-files/styles_wp36t.css" type="text/css" rel="stylesheet"/>
-<script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/utilities/utilities.js"></script>
-<script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
-<script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/json/json-min.js"></script>
-<script type="text/javascript" src="../../inikoo_files/external_libs/yui/2.9/build/element/element-min.js"></script>
-<script type="text/javascript" src="../../inikoo_files/js/common.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/utilities/utilities.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/json/json-min.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/element/element-min.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/common.js"></script>
 
-<script type="text/javascript" src="../../inikoo_files/js/sha256.js"></script>
-<script type="text/javascript" src="../../inikoo_files/js/aes.js"></script>
-<script type="text/javascript" src="../../inikoo_files/js/login.js"></script>
-<script type="text/javascript" src="../../inikoo_files/basket.js"></script>
-<script type="text/javascript" src="../../inikoo_files/js/top_navigation.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/sha256.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/aes.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/login.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/basket.js"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/top_navigation.js"></script>
 
 <?php 
 //print_r($_COOKIE);
@@ -19,9 +22,9 @@
 
 //echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
 if($logged_in){?>
-<script type="text/javascript" src="../../inikoo_files/top_navigation_login.js.php"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path ?>"></script>
 <?php }else{?>
-<script type="text/javascript" src="../../inikoo_files/top_navigation_logout.js.php"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path ?>"></script>
 <?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
@@ -29,24 +32,24 @@ if($logged_in){?>
 
 <?php include('conf/checkout.php');?>
 
-<div id="top_navigator" style="width:875px;vertical-align:bottom;">
+<div id="top_navigator" >
 <?php if($logged_in){?>
 
 <input type="hidden" id="user_key" value="{$user->id}">
 <div style="margin-left:10px;width:500px;float:left;text-align:left;xborder:1px solid red;">
  
-<img style="height:22px;vertical-align:-6px;" src="../../inikoo_files/art/basket.jpg"/>
+<img id="basket" src="<?php echo $path ?>inikoo_files/art/basket.jpg"/>
  Items: <span id="basket_items"><?php echo number($_SESSION['basket']['items'])?></span> Total: <span id="basket_total"><?php echo money($_SESSION['basket']['total'])?></span>  
- <span class="link" style="margin-left:15px;" id="see_basket"  link="<?php echo $ecommerce_basket.ecommerceURL() ?>" >See Basket</span> 
-  <span class="link" style="margin-left:10px;"  id="checkout" link="<?php echo $ecommerce_checkout?>">Check Out</span> 
+ <span class="link"  id="see_basket"  link="<?php echo $ecommerce_basket.ecommerceURL() ?>" >See Basket</span> 
+  <span class="link2"  id="checkout" link="<?php echo $ecommerce_checkout?>">Check Out</span> 
 
  
 </div>
 <span><?php print $customer->get_hello(); ?></span>
 
 
- <span style="margin-left:15px;" class="link" id="logout">Log Out</span>
-<img src="../../inikoo_files/art/gear.png" id="show_actions_dialog" style="cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;">
+ <span class="link" id="logout">Log Out</span>
+<img src="<?php echo $path ?>inikoo_files/art/gear.png" id="show_actions_dialog" >
 
 
 
@@ -54,7 +57,7 @@ if($logged_in){?>
 <?php }else{ ?>
 <button id="show_register_dialog">Register</button>
 <button id="show_login_dialog">Log In</button>
-<img src="../../inikoo_files/art/gear.png" style="visibility:hidden;height:22px;vertical-align:-6px;">
+<img src="<?php echo $path ?>inikoo_files/art/gear.png" class="gear">
 
 <?php   } ?>
 
@@ -104,7 +107,7 @@ Your password has been changed.
 <td colspan=2><span style="display:none" id="change_password_error_no_password">Write new password</span><span style="display:none" id="change_password_error_password_not_march">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short">Password is too short</span><span>
 </span><button id="submit_change_password">Submit Changes</button> 
 <button id="hide_change_password_dialog">Cancel</button></td></tr>
-<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
+<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
 
 
 
@@ -150,8 +153,8 @@ Your password has been changed.
 <table border=0 style="margin:0 auto;">
 <tr id="tr_email_in_db_captcha">
 <td class="label" style="text-align:left">
-<img id="captcha3" src="../../inikoo_files/art/x.png" alt="CAPTCHA Image" /> <br>
-<i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha3').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
+<img id="captcha3" src="<?php echo $path ?>inikoo_files/art/x.png" alt="CAPTCHA Image" /> <br>
+<i><a style="font-size:10px" href="#" onclick="document.getElementById('captcha3').src = '<?php echo $path ?>inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Different Image</a></i>
 </td>
 <td style="vertical-align:top">
 <span style="font-size:10px">input the letters shown on the left</span><br/>
@@ -165,7 +168,7 @@ Your password has been changed.
 <button id="hide_email_in_db_dialog">Cancel</button></td>
 </tr>
 
-<tr id="tr_forgot_password_wait2"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
+<tr id="tr_forgot_password_wait2"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
 <tr id="tr_forgot_password_send2" style="display:none" class="button" style=""><td colspan=2><p style="width:300px">An email has send to you with instructions how to access your account</p> <br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error2" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog3">Close</button></td></tr>
 
@@ -546,8 +549,8 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 
-<img id="captcha" src="../../inikoo_files/art/x.png" /> <br>
-<i><a href="#" onclick="document.getElementById('captcha').src = '../../inikoo_files/securimage_show.php?' + Math.random(); return false">Different Image</a></i>
+<img id="captcha" src="<?php echo $path ?>inikoo_files/art/x.png" /> <br>
+<i><a href="#" onclick="document.getElementById('captcha').src = '<?php echo $path ?>inikoo_files/securimage_show.php?' + Math.random(); return false">Different Image</a></i>
 
 </td>
 <td>
@@ -566,7 +569,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </td>
 </tr>
 
-<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td>
+<tr id="tr_register_part_2_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Creating your account</span></td>
 </tr>
 
 
@@ -590,8 +593,8 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 <tr >
 <td class="label" style="text-align:left;width:120px">
-<img id="captcha2"  src="../../inikoo_files/art/x.png" alt="CAPTCHA Image" />
-<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '../../inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
+<img id="captcha2"  src="<?php echo $path ?>inikoo_files/art/x.png" alt="CAPTCHA Image" />
+<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '<?php echo $path ?>inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
 </td>
 <td style="vertical-align:top">
 <span style="font-size:10px">input the letters shown on the left</span><br/>
@@ -604,7 +607,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 <td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
 </tr>
-<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="../../inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
+<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
 <tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
 <tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>

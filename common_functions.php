@@ -1189,17 +1189,17 @@ function customers_awhere($awhere) {
    foreach($where_data['invoice_option'] as $invoice_option) {
         switch ($invoice_option) {
         case 'less':
-            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`<'%d' ",$where_data['number_of_invoices_lower']);
+            $invoice_option_where.=sprintf(" and `Customer Orders`<'%d' ",$where_data['number_of_invoices_lower']);
             break;
         case 'equal':
-            $invoice_option_where.=sprintf(" and `Customer Has More Invoices Than`='%d'  ",$where_data['number_of_invoices_lower']);
+            $invoice_option_where.=sprintf(" and `Customer Orders`='%d'  ",$where_data['number_of_invoices_lower']);
             break;
         case 'more':
-            $invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  ",$where_data['number_of_invoices_lower']);
+            $invoice_option_where.=sprintf(" and  `Customer Orders`>'%d'  ",$where_data['number_of_invoices_lower']);
             break;
         
 		case 'between':
-			$invoice_option_where.=sprintf(" and  `Customer Has More Invoices Than`>'%d'  and `Customer Has More Invoices Than`<'%d'", $where_data['number_of_invoices_lower'], $where_data['number_of_invoices_upper']);
+			$invoice_option_where.=sprintf(" and  `Customer Orders`>'%d'  and `Customer Orders`<'%d'", $where_data['number_of_invoices_lower'], $where_data['number_of_invoices_upper']);
 			break;
 		}
     }
@@ -1208,6 +1208,31 @@ function customers_awhere($awhere) {
     if($invoice_option_where!=''){
     $where.="and ($invoice_option_where)";
     }
+	
+	$order_option_where='';
+   foreach($where_data['order_option'] as $order_option) {
+        switch ($order_option) {
+        case 'less':
+            $order_option_where.=sprintf(" and `Customer Orders`<'%d' ",$where_data['number_of_orders_lower']);
+            break;
+        case 'equal':
+            $order_option_where.=sprintf(" and `Customer Orders`='%d'  ",$where_data['number_of_orders_lower']);
+            break;
+        case 'more':
+            $order_option_where.=sprintf(" and  `Customer Orders`>'%d'  ",$where_data['number_of_orders_lower']);
+            break;
+        
+		case 'between':
+			$order_option_where.=sprintf(" and  `Customer Orders`>'%d'  and `Customer Orders`<'%d'", $where_data['number_of_orders_lower'], $where_data['number_of_orders_upper']);
+			break;
+		}
+    }
+    $order_option_where=preg_replace('/^\s*and/','',$order_option_where);
+	
+    if($order_option_where!=''){
+    $where.="and ($order_option_where)";
+    }
+	
 	
 	$sales_option_where='';
    foreach($where_data['sales_option'] as $sales_option) {
@@ -1255,7 +1280,7 @@ function customers_awhere($awhere) {
     $where.="and ($not_customers_which_where)";
     }
 *///print $table;print $where;
-
+//print $where; exit;
     return array($where,$table);
 	
 

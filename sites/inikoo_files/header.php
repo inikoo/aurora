@@ -1,11 +1,11 @@
 <?php 
 //global $found_in['url'];
 global $found_in_label, $found_in_url;
-global $see_also, $header_title;
+global $see_also, $header_title, $path;
 //print $found_in_url;
 
-$search_input=file_get_contents('../../inikoo_files/templates/search_input.html');
-$menubar=file_get_contents('../../inikoo_files/templates/menubar.html');
+$search_input=file_get_contents("$path".'inikoo_files/templates/search_input.html');
+$menubar=file_get_contents("$path".'inikoo_files/templates/menubar.html');
 //$title='Tibetan Bowls and Artefacts';
 $title=$header_title;
 $header_info='Please note this is a we supply wholesale we supply wholesale to the gift trade';
@@ -65,5 +65,6 @@ $see_also_data
 
 
 EOD;
-
+if($path="../")
+	$header="";
 ?>
