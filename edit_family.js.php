@@ -478,6 +478,40 @@ table.showColumn('sales_type');
 
 
 
+function delete_family(){
+Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','');
+Dom.setStyle('delete_family','display','none');
+}
+function cancel_delete_family(){
+Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','none');
+Dom.setStyle('delete_family','display','');
+}
+
+function save_delete_family(){
+
+
+var request='ar_edit_assets.php?tipo=delete_family&delete_type=delete&family_key=' + family_id
+	           
+	           Dom.setStyle('deleting','display','');
+	           	           Dom.setStyle(['save_delete_family','cancel_delete_family'],'display','none');
+alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+        location.href='family.php?id='+family_id;
+                                  }else{
+                                   Dom.setStyle('deleting','display','none');
+                                  Dom.get('delete_family_msg').innerHTML=r.msg
+                                  }
+   			}
+    });
+
+
+}
+
+
 
 function update_form(){
 
@@ -756,17 +790,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				 //  ,{key:"processing", label:"<?php echo _('Editing State')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Editing')?>","<?php echo _('Live')?>"],disableBtns:true})}
 				    ,{key:"sales_type", label:"",hidden:true,width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Public Sale')?>","<?php echo _('Private Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
-				    ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},
+				  
+				  ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
+				    {'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},
 				    {'value':"Online Force For Sale",'label':"<?php echo _('Force online')?><br/>"},
-				    {'label':'<?php echo _('Force out of stock')?><br/>','value':"Online Force Out of Stock"},
+				    {'label':"<?php echo _('Force out of stock')?><br/>",'value':"Online Force Out of Stock"},
 				    {'label':"<?php echo _('Force offline')?><br/>",'value':'Offline'},
-				     {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
-				      {'label':"<?php echo _('Not For Sale')?>",'value':'Not for Sale'}
+				    {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
+				    {'label':"<?php echo _('Not For Sale')?>",'value':'Not for Sale'}
 				    ],disableBtns:true})}
-//formatter: formater_web_configuration 
 				    ,{key:"formated_web_configuration" , label:"",hidden:true}
 
-				  //  ,{key:"web_state", label:"<?php echo _('Web Config')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["Online Auto":"<?php echo _('Auto')?>","<?php echo _('Force online')?>","<?php echo _('Force out of stock')?>","<?php echo _('Force offline')?>"],disableBtns:true})}
 
 
 				    ,{key:"sdescription", label:"<?php echo _('Special Characteristic')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_name'?'':'hidden:true,')?>width:285, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
@@ -1287,6 +1321,9 @@ var request='tipo=new_family_page&family_key='+family_id+'&site_key='+Dom.get('s
 
 
 function init(){
+     YAHOO.util.Event.addListener('delete_family', "click", delete_family);
+        YAHOO.util.Event.addListener('cancel_delete_family', "click", cancel_delete_family);
+        YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
 
 
 

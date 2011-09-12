@@ -26,20 +26,9 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 
-
-
+case('edit_part_custom_field'):
 case('edit_part_unit'):
-    $data=prepare_values($_REQUEST,array(
-                             'newvalue'=>array('type'=>'string'),
-                             'key'=>array('type'=>'string'),
-                             'okey'=>array('type'=>'string'),
-                             'sku'=>array('type'=>'key'),
-                         ));
-    edit_part($data);
-
-
-    break;
-
+case('edit_part'):
 case('edit_part_description'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
@@ -51,17 +40,7 @@ case('edit_part_description'):
 
 
     break;
-case('edit_part_custom_field'):
-    $data=prepare_values($_REQUEST,array(
-                             'newvalue'=>array('type'=>'string'),
-                             'key'=>array('type'=>'string'),
-                             'okey'=>array('type'=>'string'),
-                             'sku'=>array('type'=>'key'),
-                         ));
-    edit_part($data);
 
-
-    break;
 
 case('edit_part_list'):
     $data=prepare_values($_REQUEST,array(
@@ -72,6 +51,10 @@ case('edit_part_list'):
     edit_part_list($data);
     break;
 
+
+case('supplier_products_in_part'):
+    list_supplier_products_in_part();
+    break;
 case('products_in_part'):
     list_products_in_part();
     break;
@@ -114,7 +97,11 @@ case('upload_product_image'):
     upload_image();
     break;
 case('delete_family'):
-    delete_family();
+  $data=prepare_values($_REQUEST,array(
+                          'delete_type'=>array('type'=>'string'),
+                             'family_key'=>array('type'=>'key')
+                         ));
+    delete_family($data);
     break;
 case('delete_store'):
     delete_store();
@@ -163,8 +150,8 @@ case('new_department'):
     break;
 case('create_family'):
     $data=prepare_values($_REQUEST,array(
-                             'values'=>array('type'=>'json array')
-                                      ,'parent_key'=>array('type'=>'key')
+                             'values'=>array('type'=>'json array'),
+                             'parent_key'=>array('type'=>'key')
                          ));
     create_family($data);
     break;
@@ -185,8 +172,15 @@ case('edit_families'):
 case('edit_products'):
     list_products_for_edition();
     break;
+case('edit_supplier_product_part'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'sppl_key'=>array('type'=>'key'),
+                             'key'=>array('type'=>'string')
+                         ));
+    edit_supplier_product_part($data);
 
-
+    break;
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -281,29 +275,31 @@ function delete_part_new_product($sku) {
 }
 
 
-function delete_family() {
-    if (!isset($_REQUEST['id']))
-        return 'Error: no family specificated';
-    if (!is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0 )
-        return 'Error: wrong family id';
-    if (!isset($_REQUEST['delete_type'])  or !($_REQUEST['delete_type']=='delete' or $_REQUEST['delete_type']=='discontinue'  )  )
-        return 'Error: delete type no supplied';
+function delete_family($data) {
 
-    $id=$_REQUEST['id'];
+
+
+
+
+    if (!isset($data['delete_type'])  or !($data['delete_type']=='delete' or $data['delete_type']=='discontinue'  )  ){
+$response=array('state'=>400,'msg'=> 'Error: delete type no supplied');
+   echo json_encode($response);
+}
+    $id=$data['family_key'];
     $family=new Family($id);
 
-    if ($_REQUEST['delete_type']=='delete') {
+    if ($data['delete_type']=='delete') {
 
         $family->delete();
-    } else if ($_REQUEST['delete_type']=='discontinue') {
+    } else if ($data['delete_type']=='discontinue') {
         $family->discontinue();
     }
     if ($family->deleted) {
-        print 'Ok';
+          $response=array('state'=>200,'msg'=>$family->msg,'action'=>'deleted');
     } else {
-        print $family->msg;
+          $response=array('state'=>400,'msg'=>$family->msg);
     }
-
+   echo json_encode($response);
 }
 function delete_store() {
     if (!isset($_REQUEST['id']))
@@ -391,11 +387,11 @@ function edit_product() {
     $product=new product('pid',$_REQUEST['pid']);
     global $editor;
     $product->editor=$editor;
-    
+
     $key=$_REQUEST['key'];
     $_key=$key;
     $newvalue=$_REQUEST['newvalue'];
-    
+
     $translator=array(
                     'name'=>'Product Name',
                     'sdescription'=>'Product Special Characteristic',
@@ -418,10 +414,10 @@ function edit_product() {
         $key=$translator[$key];
     else
         $key=$key;
-        
-        
-        if($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale') )
-			$key='Product Sales Type';
+
+
+    if ($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale') )
+        $key='Product Sales Type';
     $product->update($key,stripslashes(urldecode($newvalue)));
 
 
@@ -991,11 +987,11 @@ function list_products_for_edition() {
         case('Online Force For Sale'):
             $formated_web_configuration=_('Force Online');
             break;
-	default:
-	 $formated_web_configuration=$row['Product Web Configuration'];
+        default:
+            $formated_web_configuration=$row['Product Web Configuration'];
         }
 
-   switch ($row['Product Web State']) {
+        switch ($row['Product Web State']) {
         case('Out of Stock'):
             $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
             break;
@@ -1006,29 +1002,29 @@ function list_products_for_edition() {
             $web_state=_('Discontinued');
         case('Offline'):
             $web_state=_('Offline');
-            default:
-             $web_state=$row['Product Web State'];
-            
-            
+        default:
+            $web_state=$row['Product Web State'];
+
+
             break;
-      
+
 
         }
-        
-        if($row['Product Sales Type']!='Public Sale'){
-       $web_configuration=$row['Product Sales Type'];
-        switch ($row['Product Sales Type']) {
-			    case 'Private Sale':
-			        $formated_web_configuration=_('Private Sale');
-			        break;
-			    default:
-			        $formated_web_configuration=_('Not For Sale');
-			        break;
-			}
-		}else{
-			
-			 $web_configuration=$row['Product Web Configuration'];
-		}
+
+        if ($row['Product Sales Type']!='Public Sale') {
+            $web_configuration=$row['Product Sales Type'];
+            switch ($row['Product Sales Type']) {
+            case 'Private Sale':
+                $formated_web_configuration=_('Private Sale');
+                break;
+            default:
+                $formated_web_configuration=_('Not For Sale');
+                break;
+            }
+        } else {
+
+            $web_configuration=$row['Product Web Configuration'];
+        }
 
         $adata[]=array(
                      'pid'=>$row['Product ID'],
@@ -1036,7 +1032,7 @@ function list_products_for_edition() {
                      'code_price'=>$row['Product Code'].($row['Product Units Per Case']!=1?' <span style="font-style: italic;">('.$row['Product Units Per Case'].'s)</span>':''),
                      //'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
                      'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="web_state">'.$web_state.'</span>',
- 
+
                      'name'=>$row['Product Name'],
                      'processing'=>$processing,
                      'sales_type'=>$sales_type,
@@ -2706,17 +2702,17 @@ function list_products_in_part() {
 
 
 
-   
-                $_dir=$order_direction;
-    $_order=$order;
+
+        $_dir=$order_direction;
+        $_order=$order;
 
 
-    $order='`Part SKU`';
+        $order='`Part SKU`';
 
 
-    $sql="select `Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
-    //print $sql;
-    $res = mysql_query($sql);
+        $sql="select `Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+        //print $sql;
+        $res = mysql_query($sql);
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
@@ -2772,6 +2768,219 @@ function list_products_in_part() {
     echo json_encode($response);
 }
 
+function list_supplier_products_in_part() {
+
+    $conf=$_SESSION['state']['part']['supplier_products'];
+
+
+    if (isset( $_REQUEST['sku']))
+        $sku=$_REQUEST['sku'];
+    else
+        $sku=$_SESSION['state']['part']['sku'];
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+    $_SESSION['state']['part']['supplier_products']['order']=$order;
+    $_SESSION['state']['part']['supplier_products']['order_dir']=$order_direction;
+    $_SESSION['state']['part']['supplier_products']['nr']=$number_results;
+    $_SESSION['state']['part']['supplier_products']['sf']=$start_from;
+    $_SESSION['state']['part']['supplier_products']['where']=$where;
+    $_SESSION['state']['part']['supplier_products']['f_field']=$f_field;
+    $_SESSION['state']['part']['supplier_products']['f_value']=$f_value;
+
+
+    if ($sku) {
+
+        $filter_msg='';
+
+        $wheref='';
+        $where=sprintf("where `Supplier Product Part Most Recent`='Yes' and  `Part SKU`=%d ",$sku);;
+
+        //    if ($f_field=='code' and $f_value!='')
+        //         $wheref.=sprintf(" and `Product Code`=%s   ",prepare_mysql($f_value));
+
+
+
+        $sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product Key`=PP.`Supplier Product Key`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where $wheref";
+        //  print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total=$row['total'];
+        }
+        mysql_free_result($result);
+
+        if ($wheref=='') {
+            $filtered=0;
+            $total_records=$total;
+        } else {
+            $sql="select count(*) as total `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product Key`=PP.`Supplier Product Key`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
+
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $total_records=$row['total'];
+                $filtered=$total_records-$total;
+            }
+            mysql_free_result($result);
+
+        }
+
+
+        $rtext=$total_records." ".ngettext('product','products',$total_records);
+        if ($total_records>$number_results)
+            $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+        else
+            $rtext_rpp=' ('._('Showing all').')';
+
+        if ($total==0 and $filtered>0) {
+            switch ($f_field) {
+            case('code'):
+                $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with this code ")." <b>".$f_value."*</b> ";
+                break;
+            case('description'):
+                $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with description like ")." <b>".$f_value."*</b> ";
+                break;
+            }
+        }
+        elseif($filtered>0) {
+            switch ($f_field) {
+            case('code'):
+                $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with code like')." <b>".$f_value."*</b>";
+                break;
+            case('description'):
+                $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with description like')." <b>".$f_value."*</b>";
+                break;
+            }
+        }
+        else
+            $filter_msg='';
+        /*  }else{//products parts for new product */
+
+        /*      $total=count($_SESSION['state']['new_product']['parts']); */
+        /*      $total_records=$total; */
+        /*      $filtered=0; */
+        /*    } */
+
+
+
+
+
+
+        $_dir=$order_direction;
+        $_order=$order;
+
+
+        $order='`Part SKU`';
+
+
+        $sql="select `Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key` from `Supplier Product Part List` L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product Key`=PP.`Supplier Product Key`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+        // print $sql;
+        $res = mysql_query($sql);
+        $total=mysql_num_rows($res);
+        $adata=array();
+        while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
+            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+
+            if ($row['Supplier Product Part In Use']=='Yes') {
+                $available_state='Available';
+            } else {
+                $available_state='No available';
+            }
+
+            $relation=$row['Supplier Product Units Per Part'].' &rarr; 1';
+            $adata[]=array(
+                         'sppl_key'=>$row['Supplier Product Part List Key'],
+                         'sku'=>$row['Part SKU'],
+                         'relation'=>$relation,
+                         'code'=>$row['Supplier Product Code'],
+                         'name'=>$row['Supplier Product Name'],
+                         'supplier'=>$row['Supplier Code'],
+                         'available'=>$row['Supplier Product Part In Use'],
+                         'available_state'=>$available_state
+                     );
+        }
+        mysql_free_result($res);
+
+    } else {
+        $adata=array();
+        if (isset($_SESSION['state']['new_product']['parts'])) {
+            foreach($_SESSION['state']['new_product']['parts'] as $values)
+            $adata[]=$values;
+        }
+        $rtext=_('Choose or create a part');
+        $rtext_rpp='';
+        $total_records=count($adata);
+        $filter_msg='';
+        $_dir=$order_direction;
+        $_order=$order;
+
+        if ($total_records>0) {
+            $rtext=$total_records." ".ngettext('part','parts',$total_records);
+        }
+
+    }
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
 
 function add_part_new_product($sku) {
 
@@ -2881,10 +3090,10 @@ function edit_part_list($data) {
 
 
 
-if(count($product->get_current_part_list())==0)
-    $value['confirm']='new';
-else
-	$value['confirm']='';
+    if (count($product->get_current_part_list())==0)
+        $value['confirm']='new';
+    else
+        $value['confirm']='';
 
     $product_part_key=$product->find_product_part_list($part_list_data);
 
@@ -2901,13 +3110,13 @@ else
         $data['product valid from']=$date;
         $product->create_key($data);
         $product->create_product_id($data);
-		
-		if(count($part_list_data)>0)	
-        $product->new_current_part_list($header_data,$part_list_data)  ;
+
+        if (count($part_list_data)>0)
+            $product->new_current_part_list($header_data,$part_list_data)  ;
 
         $product->set_duplicates_as_historic();
-		
-		
+
+
 
 
 
@@ -3001,6 +3210,47 @@ function edit_part($data) {
     echo json_encode($response);
     exit;
 
+
+}
+
+
+function edit_supplier_product_part($data) {
+
+    if ($data['key']=='available') {
+
+ if($data['newvalue']=='Yes'){
+ $available_state='Available';
+ }elseif($data['newvalue']=='Yes'){
+  $available_state='NO available';
+ }else{
+    $response= array('state'=>400,'msg'=>'not validn ','key'=>$data['key']);
+ 
+ }
+
+       
+        $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`=%s where `Supplier Product Part Key`=%d",
+                     prepare_mysql($data['newvalue']),
+                     $data['sppl_key']
+                    );
+        mysql_query($sql);
+        
+         $sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+                     $data['sppl_key']);
+        $res=mysql_query($sql);
+      
+        while ($row=mysql_fetch_assoc($res)) {
+       
+               $part=new Part($row['Part SKU']);
+        $part->update_availability();
+        }
+        
+       
+     
+        $response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'available_state'=>$available_state);
+        echo json_encode($response);
+        exit;
+
+    }
 
 }
 

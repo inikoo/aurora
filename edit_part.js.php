@@ -422,12 +422,45 @@ function validate_part_rrp(query) {
 }
 
 
+function save_status(key,value){
+
+
+
+
+
+
+
+var request='ar_edit_assets.php?tipo=edit_part&key=' + key+ '&newvalue=' + value +'&sku=' + part_sku+'&okey=' + key
+	//alert(request);return;
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				
+             
+				if(r.state==200){
+			
+                        
+ Dom.removeClass([r.key+' Not In Use',r.key+' In Use'],'selected');
+
+               Dom.addClass(r.key+' '+r.newvalue,'selected');
+
+            }else{
+                alert(r.msg)
+          
+            
+        }
+    }
+    });
+
+}
+
 
 
 function change_block(e) {
 
-	var ids = ["description", "pictures", "products", "suppliers"];
-	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers"];
+	var ids = ["description", "pictures", "products", "suppliers","activation"];
+	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers","d_activation"];
 
 
 
@@ -943,7 +976,7 @@ function add_part_selected(sType, aArgs) {
 
 function init() {
 
-	var ids = ["description", "pictures", "products", "suppliers"];
+	var ids = ["description", "pictures", "products", "suppliers","activation"];
 	Event.addListener(ids, "click", change_block);
 
 	Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {
@@ -1296,6 +1329,107 @@ function() {
 			
 		};
 
+
+
+function formater_available  (el, oRecord, oColumn, oData) {
+		
+		     el.innerHTML = oRecord.getData("available_state");
+	    }
+
+		var tableid = 2;
+		var tableDivEL = "table" + tableid;
+
+		var CustomersColumnDefs = [
+				    {key:"sppl_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
+		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 70,sortable: false,className: "aleft"}
+		,{key:"supplier",label: "<?php echo _('Supplier')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
+		,{key:"code",label: "<?php echo _('Code')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"name",label: "<?php echo _('Description')?>",width: 300,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+
+
+,{key:"available" ,formatter: formater_available , label:"<?php echo _('Availability')?>",width:100, sortable:false,className:"aright",object:'supplier_product_part',
+                    editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
+				    {'value':"Yes",'label':"<?php echo _('Available')?><br/>"},
+				    {'value':"No",'label':"<?php echo _('No available')?>"},
+				  
+				    ],disableBtns:true})}
+				    ,{key:"available_state" , label:"",hidden:true}
+
+
+
+		];
+
+		this.dataSource2 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid=2");
+		this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource2.connXhrMode = "queueRequests";
+		this.dataSource2.responseSchema = {
+			resultsList: "resultset.data",
+			metaFields: {
+				rowsPerPage: "resultset.records_perpage",
+				rtext: "resultset.rtext",
+				rtext_rpp: "resultset.rtext_rpp",
+				sort_key: "resultset.sort_key",
+				sort_dir: "resultset.sort_dir",
+				tableid: "resultset.tableid",
+				filter_msg: "resultset.filter_msg",
+				totalRecords: "resultset.total_records"
+
+				
+			},
+			fields: [
+			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key'
+			]
+			
+		};
+
+		this.table2 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs, this.dataSource2, {
+
+			renderLoopSize: 50,
+			generateRequest: myRequestBuilder,
+			paginator: new YAHOO.widget.Paginator({
+				rowsPerPage: <?php echo $_SESSION['state']['part']['products']['nr'] ?>,
+				containers: 'paginator2',
+				alwaysVisible: false,
+				pageReportTemplate: '(<?php echo _('Page ')?> {currentPage} <?php echo _('of ')?> {totalPages})',
+				previousPageLinkLabel: "<",
+				nextPageLinkLabel: ">",
+				firstPageLinkLabel: "<<",
+				lastPageLinkLabel: ">>",
+				rowsPerPageOptions: [10, 25, 50, 100, 250, 500]
+				,
+				template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+				
+			})
+
+			,
+			sortedBy: {
+				Key: "<?php echo $_SESSION['state']['part']['products']['order']?>",
+				dir: "<?php echo $_SESSION['state']['part']['products']['order_dir']?>"
+
+				
+			},
+			dynamicData: true
+
+
+			
+		}
+
+		);
+
+		this.table2.handleDataReturnPayload = myhandleDataReturnPayload;
+		this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+		this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+ this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table2.subscribe("cellClickEvent", onCellClick);
+
+		this.table2.filter = {
+			key: '<?php echo $_SESSION['state']['part']['products']['f_field']?>',
+			value: '<?php echo $_SESSION['state']['part']['products']['f_value']?>'
+			
+		};
 
 
 

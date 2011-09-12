@@ -39,7 +39,7 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
         foreach($current_part_skus as $_part_sku) {
             $part=new Part($_part_sku);
-            //$part->update_part_status('Not In Use');
+            //$part->update_status('Not In Use');
             
             $supplier_products=$part->get_supplier_products();
             
@@ -61,7 +61,7 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
             
              if($row2a['stock']=='' or $row2a['stock']<=0 ){
     
-    $part->update_part_status('Not In Use');
+    $part->update_status('Not In Use');
     }else{
     
     

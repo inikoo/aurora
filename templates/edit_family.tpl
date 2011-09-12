@@ -36,6 +36,40 @@
 
 
     <table style="clear:both;width:800px" class="edit">
+    
+    <tr>
+<td></td>
+<td style="text-align:right;color:#777;font-size:90%">
+<div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
+<h2>{t}Delete Family{/t}</h2>
+<p>
+{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
+</p>
+<p id="delete_family_msg"></p>
+<span id="cancel_delete_family"  style="cursor:pointer;display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
+<span id="save_delete_family"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
+<p id="deleting" style="display:none;">{t}Deleting family, wait please{/t}</p>
+</div>
+<span id="delete_family" class="state_details" style="{if $family->get_number_products()}display:none{/if}">{t}Delete Family{/t}</span>
+
+</td>
+<td>
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_family" class="state_details">{t}Reset{/t}</span>
+      </div>
+</td>
+</tr>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
       <tr>
       <td class="label" style="width:100px">{t}Family Code{/t}:</td><td>
 	 <div   >
@@ -535,7 +569,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	if (fileList != null) {
 	
 		uploader.setSimUploadLimit(parseInt(document.getElementById("simulUploads").value));
-		uploader.uploadAll("http://localhost/dw/upload_files.php", "POST", {type:"Family Page",'id':{/literal}{$family->get('Product Family Page Key')}{literal}}, "Filedata");
+		uploader.uploadAll("http://localhost/dw/upload_files.php", "POST", {type:"Family Page",'id':{/literal}{$page_key}{literal}}, "Filedata");
 
 	
 	}	

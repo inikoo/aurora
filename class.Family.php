@@ -221,6 +221,10 @@ class Family extends DB_Table {
         $base_data['Product Family Currency Code']=$store->data['Store Currency Code'];
 
 
+if($base_data['Product Family Special Characteristic']==''){
+$base_data['Product Family Special Characteristic']=$base_data['Product Family Name'];
+}
+
         $keys='(';
         $values='values(';
         foreach($base_data as $key=>$value) {
@@ -924,7 +928,8 @@ class Family extends DB_Table {
 
             break;
         case('Total Products'):
-            return $this->data['Product Family For Sale Products']+$this->data['Product Family In Process Products']+$this->data['Product Family Not For Sale Products']+$this->data['Product Family Discontinued Products']+$this->data['Product Family Unknown Sales State Products'];
+        
+            return $this->get_number_products();
             break;
 
         case('products'):
