@@ -1,10 +1,28 @@
+<?php
+global $width;
+$width=$_REQUEST['width'];
+if($width==1000){
+	$header_art="header1000.png";
+	$footer_art="footer1000.png";
+}
+else{
+	$header_art="header1.jpg";
+	$footer_art="footerbackground.png";
+}
+	
+//print $width;
+//print $image;
+?>
 body, html, div , table{	 font-family:"Arial", sans-serif; font-size:11.0px;font-weight: bold;  }
 table {border-collapse: collapse;}
 
-#header_container{position:absolute;top:24px;width:875px;}
+#header_container{position:absolute;top:24px;width:<?php echo $width ?>px;}
+
+
+
 
 #header{
-	background-image:url('../art/header1.jpg'); 
+	background-image:url('../art/<?php echo $header_art?>'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
 	color:black; 
@@ -54,11 +72,11 @@ text-align:center;
 }
 
 #footer{
-background-image:url('../art/footerbackground.png'); 
+background-image:url('../art/<?php echo $footer_art ?>'); 
 height:54px;
 
 bottom:0;
-width:875px;
+width:<?php echo $width ?>px;
 margin:auto auto;
 margin-bottom:10px
 }

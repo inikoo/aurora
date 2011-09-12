@@ -348,7 +348,17 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site;
+    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site, $width, $path;
+	
+    if (!isset($data['width']))
+        $width=875;
+    else
+        $width=$data['width'];
+
+	if (!isset($data['type']))
+        $path="../../";
+    else
+        $path="../";
 
     if (!isset($data['family']))
         $family_code='';
@@ -400,11 +410,19 @@ $page=new Page('site_code',$site->id,$page_code);
         $footer_description=$data['footer_description'];
 }
 
-function add_extra_header_content($data) {
+function add_extra_header_content($data, $type="child") {
+	global $path;
+	//print $path;
     $files=explode(",", $data);
-
+	/*
+	if($type=="parent")
+		$path="../inikoo_files/";
+	else
+		$path="../../inikoo_files/";
+		*/
+	//$path.="inikoo_files/";
     foreach($files as $file) {
-        $file="../../inikoo_files/".$file;
+        $file=$path."inikoo_files/".$file;
         include_once($file);
     }
 }
@@ -523,7 +541,6 @@ function update_page_key_visit_log($page_key) {
     global $user_click_key;
     $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
     mysql_query($sql);
-
 }
 
 
