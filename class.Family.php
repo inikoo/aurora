@@ -290,7 +290,35 @@ $base_data['Product Family Special Characteristic']=$base_data['Product Family N
             $this->id=$this->data['Product Family Key'];
 
     }
+	
+    function update_department($key) {
 
+        if (!is_numeric($key)) {
+            $this->error=true;
+            $this->msg='Key is not a number';
+            return;
+        }
+
+    
+		
+		//$old_family=new Department($this->data['Product Family Key']);
+		$new_department=new Department($key);
+		//print_r($new_department);
+        $sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=%d, `Product Family Main Department Code`='%s', `Product Family Main Department Name`='%s' where `Product Family Key`=%d", $key, $new_department->data['Product Department Code'], $new_department->data['Product Department Name'], $this->id);
+		
+	
+        mysql_query($sql);
+        if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+        
+		//$old_family->update_product_data();
+		$new_department->update_product_data();
+
+		$this->data['Product Family Key']=$key;
+        $this->new_value=$key;
+		$this->new_data=array('code'=>$new_department->data['Product Department Code'] );
+        $this->updated=true;		
+		
+    }
 
     function update_code($value) {
         if ($value==$this->data['Product Family Code']) {
@@ -1658,7 +1686,7 @@ $base_data['Product Family Special Characteristic']=$base_data['Product Family N
 
 
         mysql_query($sql);
-        print "$sql\n";
+        //print "$sql\n";
 
         $this->get_data('id',$this->id);
     }

@@ -4429,16 +4429,10 @@ function list_families() {
     //  $where.=" and `Product Department Key`=".$id;
 //print $conf_table;
 //print_r($_SESSION['state'][$conf_table]['families']);
-    if (count($user->stores)==0)
-        $where="where false";
-    else {
 
-        $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
-    }
 
     switch ($parent) {
     case('store'):
-
 
         $where.=sprintf(' and `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
@@ -4447,7 +4441,12 @@ function list_families() {
         $where.=sprintf(' and `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     default:
+		if (count($user->stores)==0)
+			$where="where false";
+		else {
 
+			$where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+		}
 
     }
 
@@ -4756,7 +4755,7 @@ function list_families() {
 
     $res = mysql_query($sql);
     $adata=array();
-    //  print "$sql";
+    //print "$sql";
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $code=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
         if ($percentages) {

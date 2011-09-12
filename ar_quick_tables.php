@@ -324,7 +324,7 @@ function department_list() {
 
 
     $adata=array();
-    $sql="select  `Product Department Name`,`Product Department Code` from `Product Department Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+    $sql="select  `Product Department Key`, `Product Department Name`,`Product Department Code` from `Product Department Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
     $res=mysql_query($sql);
@@ -332,7 +332,7 @@ function department_list() {
     while ($row=mysql_fetch_array($res)) {
 
         $adata[]=array(
-
+					'key'=>$row['Product Department Key'],
                      'name'=>$row['Product Department Name'],
                      'code'=>$row['Product Department Code'],
 
@@ -677,7 +677,7 @@ function family_list() {
 
 
     $adata=array();
-    $sql="select  `Product Family Name`,`Product Family Code` from `Product Family Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+    $sql="select  `Product Family Key`, `Product Family Name`,`Product Family Code` from `Product Family Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
     $res=mysql_query($sql);
@@ -685,7 +685,7 @@ function family_list() {
     while ($row=mysql_fetch_array($res)) {
 
         $adata[]=array(
-
+ 'key'=>$row['Product Family Key'],
                      'name'=>$row['Product Family Name'],
                      'code'=>$row['Product Family Code'],
 
