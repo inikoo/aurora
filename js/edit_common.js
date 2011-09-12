@@ -195,12 +195,12 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-///alert(request)
+ //   alert(request);return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-              //       alert(o.responseText);
+                  //  alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText)
 
@@ -212,6 +212,10 @@ success:function(o) {
                     data['sph_key']=r.sp_current_key;
                     data['cost']=r.newvalue;
                     datatable.updateRow(recordIndex,data);
+                }else if(r.key=='available' && column.object=='supplier_product_part'){
+                
+                	datatable.updateCell(record,'available_state',r.available_state);
+
                 }
 
                 callback(true, r.newvalue);
@@ -842,7 +846,7 @@ validate_scope_edit(branch)
 function save_new_general(branch) {
 
 if(Dom.hasClass('save_new_'+branch,'disabled')){
-//alert("new_"+branch+"_invalid_msg")
+
 if(Dom.get("new_"+branch+"_invalid_msg")!=undefined){
 
 Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
@@ -852,7 +856,7 @@ Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
 return;
 }
 
-//alert("within save new general");
+
     operation='create';
     var values=new Object();
 
@@ -873,7 +877,7 @@ return;
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	//alert(request);
+//	alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
  //alert(o.responseText);

@@ -2977,7 +2977,7 @@ $default_state=array(
                                              'order'=>'code',
                                              'order_dir'=>'',
                                              'sf'=>0,
-                                             'nr'=>15,
+                                             'nr'=>50,
                                              'where'=>'where true',
                                              'f_field'=>'id',
                                              'f_value'=>'','f_show'=>false,
@@ -2985,6 +2985,20 @@ $default_state=array(
                                              'to'=>'',
                                              'elements'=>array()
                                          ),
+                                         
+                                          'supplier_products'=>array(
+                                             'order'=>'code',
+                                             'order_dir'=>'',
+                                             'sf'=>0,
+                                             'nr'=>50,
+                                             'where'=>'where true',
+                                             'f_field'=>'id',
+                                             'f_value'=>'','f_show'=>false,
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'elements'=>array()
+                                         ),
+  
 
                               'stock_history'=>array(
                                                   'order'=>'date',
