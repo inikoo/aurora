@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
- {include file='contacts_navigation.tpl'}`
-
+ {include file='locations_navigation.tpl'}`
+<input type="hidden" id="location_key" value="{$location->id}"/>
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>
 </div>
@@ -11,25 +11,26 @@
 <div class="tabbed_container" > 
   <div id="description_block" style="{if $edit!='description'}display:none{/if}" >
     
-     <div style="float:right">
-	<span class="save" style="display:none" id="description_save" onclick="save('description')">{t}Save{/t}</span>
-	<span id="description_reset"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
-	</div>
-	
+
+
+
       <table style="margin:0;" class="edit" border=0>
-		<tr><td class="label">{t}Location Code{/t}:</td><td>
-			<input id="code" name="code" changed=0 type='text' class='text' MAXLENGTH="16" value="{$location->get('Location Code')}" ovalue="{$location->get('Location Code')}" />
-			<div id="Product_Units_Per_Case_Container" style="" ></div>
-			</td>
-			<td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
-		</tr>
-	  
- <td>
- <div class="general_options" style="float:right">
+	   <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_location_description" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_location_description" class="state_details">{t}Reset{/t}</span>
 </div>
- </td>
+	  
+	  
+		<tr><td class="label">{t}Location Code{/t}:</td><td>
+		<div>
+			<input id="Location_Code" changed=0 type='text' class='text' MAXLENGTH="16" value="{$location->get('Location Code')}" ovalue="{$location->get('Location Code')}" />
+			<div id="Location_Code_Container" style="" ></div>
+			</div>
+			</td>
+			<td style="width:200px" id="Location_Code_msg" class="edit_td_alert"></td>
+		</tr>
+	  
+
   
 	<tr><td class="label">{t}Used for{/t}:</td>
  
