@@ -4398,7 +4398,9 @@ function list_families() {
         $elements['InProcess']=$_REQUEST['elements_family_inprocess'];
     }
 
-
+  if (isset( $_REQUEST['elements_family_nosale'])) {
+        $elements['NoSale']=$_REQUEST['elements_family_nosale'];
+    }
 
 
 
