@@ -495,6 +495,9 @@ function update($key,$a1=false,$a2=false) {
 	case 'shape':
 		$this->update_shape($a1);
 		break;
+	case 'has_stock':
+		$this->update_stock($a1);
+		break;
 	}
 }
 
@@ -620,6 +623,36 @@ function update($key,$a1=false,$a2=false) {
         $this->new_value=$value;
 		$this->new_data=array('old_value'=>$old_value, 'type'=>'shape' );
         $this->msg=_('Location shape changed');
+        $this->updated=true;
+
+
+
+    }
+	
+	function update_stock($value) {
+        $value=_trim($value);
+        if ($value==$this->data['Location Has Stock']) {
+            $this->msg=_('Nothing to change');
+            $this->updated=false;
+            return;
+        }
+        if (!preg_match('/^(Yes|No|Unknown)$/',$value)) {
+            $this->msg=_('Wrong location stock');
+            $this->updated=false;
+            return;
+        }
+		
+		$old_value=$this->data['Location Has Stock'];
+        $sql=sprintf("update `Location Dimension` set `Location Has Stock`=%s where `Location Key`=%d"
+                     ,prepare_mysql($value)
+                     ,$this->id
+                    );
+          //print $sql; exit;
+        mysql_query($sql);
+        $this->data['Location Has Stock']=$value;
+        $this->new_value=$value;
+		$this->new_data=array('old_value'=>$old_value, 'type'=>'has_stock' );
+        $this->msg=_('Location stock changed');
         $this->updated=true;
 
 

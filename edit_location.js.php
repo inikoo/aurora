@@ -913,7 +913,7 @@ var request='ar_edit_assets.php?tipo=edit_location&values='+ jsonificated_values
 
 
 //var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	//alert(request);
+	alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 //alert(o.responseText)
@@ -932,6 +932,9 @@ var request='ar_edit_assets.php?tipo=edit_location&values='+ jsonificated_values
 				
 				Dom.removeClass('shape_'+r.new_data['old_value'],'selected');
 				Dom.addClass('shape_'+r.newvalue,'selected');
+            }else if(r.new_data['type']=='has_stock'){
+				Dom.removeClass('has_stock_'+r.new_data['old_value'],'selected');
+				Dom.addClass('has_stock_'+r.newvalue,'selected');
             }
         }
         

@@ -70,6 +70,14 @@ $shape_type_list=array(
 			  
 $smarty->assign('shape_type_list',$shape_type_list);
 
+
+$has_stock_list=array(
+                  'yes'=>array('name'=>_('Yes')),
+                  'no'=>array('name'=>_('No')),
+                  'unknown'=>array('name'=>_('Unknown'))
+              );
+			  
+$smarty->assign('has_stock_list',$has_stock_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
