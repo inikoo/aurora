@@ -40,7 +40,7 @@ case('edit_part_description'):
 
 
     break;
-<<<<<<< HEAD
+
 case('edit_location'):
     $data=prepare_values($_REQUEST,array(
                              'location_key'=>array('type'=>'key'),
@@ -58,8 +58,6 @@ case('edit_part_custom_field'):
                              'sku'=>array('type'=>'key'),
                          ));
     edit_part($data);
-=======
->>>>>>> 447b3332c1b67ba2c44a509090dfc81576b0ad92
 
 
 case('edit_part_list'):
