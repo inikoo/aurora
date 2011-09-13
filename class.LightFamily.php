@@ -95,9 +95,10 @@ class LightFamily {
         $print_header=true;
 		$print_rrp=true;
 		if(isset($options['rrp'])){
+			print 'ok';
 			$print_rrp=$options['rrp'];
 		}
-        $print_price=true;
+        //$print_price=true;
 
         switch ($type) {
         case 'ecommerce':
@@ -168,8 +169,11 @@ class LightFamily {
 
 
 
-
-                    if ($row['rrp_avg']==$row['rrp_min']) {
+					if($row['rrp_avg']<=0){
+						$rrp_label='';
+                        $print_rrp=false;
+					}
+                    elseif ($row['rrp_avg']==$row['rrp_min']) {
                         $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
                         $print_rrp=false;
                     } else
@@ -318,7 +322,7 @@ class LightFamily {
 
         $form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">
-                       <input class="button" name="Submit" type="submit"  value="Order">
+					   <input class="button" name="Submit" type="submit"  value="Order">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
                        '
                        ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
@@ -425,7 +429,11 @@ class LightFamily {
                                                           'Product Units Per Case'=>1,
                                                           'Product Unit Type'=>''),array('prefix'=>false));
 
-                        if ($row['avg']==$row['min'])
+                        if($row['rrp_avg']<=0){
+							$rrp_label='';
+							$print_rrp=false;
+						}		
+						if ($row['avg']==$row['min'])
                             $rrp_label='<br/>RRP: '.$rrp;
                         else
                             $rrp_label='<br/>RRP from '.$rrp;
@@ -609,7 +617,11 @@ class LightFamily {
                                                           'Product Units Per Case'=>1,
                                                           'Product Unit Type'=>''),array('prefix'=>false));
 
-                        if ($row['avg']==$row['min'])
+                        if($row['rrp_avg']<=0){
+							$rrp_label='';
+							$print_rrp=false;
+						}
+						elseif ($row['avg']==$row['min'])
                             $rrp_label='<br/>RRP: '.$rrp;
                         else
                             $rrp_label='<br/>RRP from '.$rrp;
@@ -801,8 +813,11 @@ class LightFamily {
 
 
 
-
-						if ($row['rrp_avg']==$row['rrp_min']) {
+						if($row['rrp_avg']<=0){
+							$rrp_label='';
+							$print_rrp=false;
+						}
+						elseif  ($row['rrp_avg']==$row['rrp_min']) {
 							$rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
 							$print_rrp=false;
 						} else
@@ -949,7 +964,7 @@ class LightFamily {
         }
 
         $form.=sprintf('<tr class="space"><td colspan="4">
-                       <input type="hidden" name="return" value="%s">
+                       <input type="hidden" name="return" value="%s">				   
                        <input class="button" name="Submit" type="submit"  value="Order">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
                        '
@@ -1047,10 +1062,17 @@ class LightFamily {
 	}
 
 	function get_see_also($code, $base_url){
+	
 		$department_codes=array();
 		$department_keys=array();
 		$see_also=array();
 		
+		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result));
+		$this_family_name=$row['Product Family Name'];
+
+		//print $this_family_name;
 		
 		$sql=sprintf("select `Product Family Main Department Code` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
 		$result=mysql_query($sql);
@@ -1080,13 +1102,15 @@ class LightFamily {
 		$department_keys = implode(',',$department_keys);
 		//print_r($department_keys);
 		
-		$sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Record Type`= 'Normal' and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
+		$sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and (`Product Family Record Type`= 'Normal' or `Product Family Record Type`= 'Discontinuing') and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
 		//print $sql;
 		$match='/'.strtolower($code).'/';
 		$result=mysql_query($sql);
 		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 			//if(!file_exists($base_url.strtolower($row['Product Family Code'])))
-			if(preg_match($match, strtolower(preg_replace('/\s/','',$row['Product Family Code']))))
+			if($this_family_name == $row['Product Family Name'])
+				$weight=0;
+			elseif(preg_match($match, strtolower(preg_replace('/\s/','',$row['Product Family Code']))))
 				$weight=10;
 			else
 				$weight=0;

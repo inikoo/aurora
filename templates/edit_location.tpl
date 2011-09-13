@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+ {include file='contacts_navigation.tpl'}`
 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>
@@ -17,39 +17,43 @@
 	</div>
 	
       <table style="margin:0;" class="edit" border=0>
-	<tr><td class="label">{t}Location Code{/t}:</td><td>
-	      <input  
-		 id="code" 
-	
-		 name="code" 
-		 changed=0 
-		 type='text' 
-		 class='text' 
-	
-		 MAXLENGTH="16" 
-		 value="{$location->get('Location Code')}" 
-		 ovalue="{$location->get('Location Code')}"  
-		 />
-	    </td>
-	  </tr>
+		<tr><td class="label">{t}Location Code{/t}:</td><td>
+			<input id="code" name="code" changed=0 type='text' class='text' MAXLENGTH="16" value="{$location->get('Location Code')}" ovalue="{$location->get('Location Code')}" />
+			<div id="Product_Units_Per_Case_Container" style="" ></div>
+			</td>
+			<td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
+		</tr>
+	  
+
+  
 	<tr><td class="label">{t}Used for{/t}:</td>
-	  <td>
-	    <div id="location_used_for" value="{$used_for}"  ovalue="{$used_for}"   prefix="used_for_" class="options" style="margin:5px 0">
-	    {foreach from=$used_for_list item=cat key=cat_id name=foo}
-	    <span {if $cat.selected}class="selected"{/if} name="{$cat_id}" onclick="radio_changed(this)" id="used_for_{$cat_id}">{$cat.name}</span>
+ 
+	<td>
+		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+		{foreach from=$used_for_list item=cat key=cat_id name=foo}
+		<span class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</span> 
 	    {/foreach}
-	    </div>
-	  </td>
+		
+		
+		</div>
+	</td>
+	
 	 </tr>
-	<tr xstyle="display:none"><td class="label">{t}Shape Type{/t}:</td>
-	  <td>
-	    <div id="location_shape_type" value="{$shape_type}" ovalue="{$shape_type}"  prefix="shape_type_"  class="options" style="margin:5px 0">
-	    {foreach from=$shape_type_list item=cat key=cat_id name=foo}
-	    <span {if $cat.selected}class="selected"{/if} name="{$cat_id}"   onclick="radio_changed(this);shape_type_changed();"  id="shape_type_{$cat_id}">{$cat.name}</span>
+	<tr><td class="label">{t}Shape{/t}:</td>
+
+	<td>
+		<div id="location_shape_type" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+		{foreach from=$shape_type_list item=cat key=cat_id name=foo}
+		<span class="{if $location->get('Location Shape Type')==$cat.name}selected{/if}" onclick="save_location('shape','{$cat.name}')" id="shape_{$cat.name}">{$cat.name}</span> 
 	    {/foreach}
-	    </div>
-	  </td>
+		
+		
+		</div>
+	</td>
+	
 	 </tr>
+	 
+
 	
 	</table>
   </div> 

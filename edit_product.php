@@ -43,6 +43,7 @@ if(!$product= new product('pid',$product_id))
 
 $store=new Store($product->data['Product Store Key']);
 
+//print_r($store);
 $smarty->assign('product',$product);
 $smarty->assign('store',$store);
 
@@ -192,8 +193,8 @@ $_parts[$key]=$key;
 }
 
 
-$js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s',
-    $store->data['Store Currency Code'],$product->pid,join(',',$nodes->root),join(',',$_parts));
+$js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s&store_key=%d',
+    $store->data['Store Currency Code'],$product->pid,join(',',$nodes->root),join(',',$_parts), $store->id);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -207,6 +208,16 @@ foreach($units_types as $units_type ){
 $smarty->assign('unit_type_options',$unit_type_options
                                 );
 $smarty->assign('unit_type',$product->data['Product Unit Type']);
+
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);

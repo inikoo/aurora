@@ -99,6 +99,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=departments&parent=store");
+		
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -376,7 +377,7 @@ function previous_info_period(){
 
 function change_family_elements(){
 
-ids=['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess'];
+ids=['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'];
 
 
 if(Dom.hasClass(this,'selected')){
@@ -419,7 +420,7 @@ request=request+'&'+ids[i]+'=0'
 
  function init(){
  
- Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess'], "click",change_family_elements);
+ Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);
 
  
   YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

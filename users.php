@@ -120,6 +120,7 @@ $number_staff=$row['num'];
 $root=new User('Administrator');
 $smarty->assign('root',$root);
 $warehouse_user=new User('Warehouse');
+if($warehouse_user->id)
 $smarty->assign('warehouse_user',$warehouse_user);
 
 

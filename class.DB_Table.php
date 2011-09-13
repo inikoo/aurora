@@ -119,11 +119,6 @@ abstract class DB_Table {
             $this->update_field($field,$value,$options);
         }
 
-
-
-
-
-
     }
 
     protected function translate_data($data,$options='') {

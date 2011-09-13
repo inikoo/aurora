@@ -128,6 +128,74 @@ class part extends DB_Table {
     }
 
 
+
+
+
+
+
+function update_status($value,$options){
+
+     $this->update_field('Part Status',$value,$options);
+
+if($value=='In Use'){
+
+
+}elseif($value=='Not In Use'){
+
+$locations=$this->get_location_keys();
+
+
+
+foreach($locations as $location_key){
+$part_location=new PartLocation($this->sku.'_'.$location_key);
+
+$part_location->disassociate();
+
+}
+
+}
+   $products=$this->get_product_ids();
+        foreach($products as $product_pid) {
+            $product=new Product ('pid',$product_pid);
+            $product->update_availability_type();
+
+        }
+
+
+}
+
+
+function update_field_switcher($field,$value,$options='') {
+   
+
+
+  switch ($field) {
+        case('Part Status'):
+            $this->update_status($value,$options);
+            break;
+     
+
+
+        $base_data=$this->base_data();
+
+
+         if(array_key_exists($field,$base_data)) {
+
+            if ($value!=$this->data[$field]) {
+                    $this->update_field($field,$value,$options);
+
+            }
+        }
+        elseif(preg_match('/^custom_field_part/i',$field)) {
+            $this->update_field($field,$value,$options);
+        }
+
+}
+
+    }
+
+
+
     function load($data_to_be_read,$args='') {
         switch ($data_to_be_read) {
         case('stock_history'):
@@ -931,14 +999,7 @@ class part extends DB_Table {
                     );
         mysql_query($sql);
         
-        if($this->data['Part Current Stock']<=0){
-              $sql=sprintf("update `Part Dimension`  set `Part Status`='Not In Use' where  `Part SKU`=%d   "
-                     ,prepare_mysql($availability)
-                     ,$this->id
-                    );
-        mysql_query($sql);
-        
-        }
+      
         
         
 
@@ -956,22 +1017,7 @@ class part extends DB_Table {
 
 
 
-    function update_part_status($value) {
-        $sql=sprintf("update `Part Dimension`  set `Part Status`=%s where  `Part SKU`=%d   "
-                     ,prepare_mysql($value)
-                     ,$this->id
-                    );
-        mysql_query($sql);
-
-        $products=$this->get_product_ids();
-        foreach($products as $product_pid) {
-            $product=new Product ('pid',$product_pid);
-            $product->update_availability_type();
-
-        }
-
-
-    }
+   
 
     function update_valid_to($date) {
         $this->data['Part Valid To']=$date;
