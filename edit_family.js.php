@@ -1432,12 +1432,25 @@ var request='tipo=new_family_page&family_key='+family_id+'&site_key='+Dom.get('s
 
 }
 
+function new_product_from_part(){
+
+}
+function new_product_from_scratch(){
+
+}
+
+
 
 function init(){
+
+dialog_new_product_choose = new YAHOO.widget.Dialog("dialog_new_product_choose", {context:["new_product_choose","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_new_product_choose.render();
+Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,dialog_new_product_choose , true);
+
+
      YAHOO.util.Event.addListener('delete_family', "click", delete_family);
         YAHOO.util.Event.addListener('cancel_delete_family', "click", cancel_delete_family);
         YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
-
 
 
  validate_scope_metadata={
@@ -1563,6 +1576,7 @@ function init(){
 	};
 
   
+    
 
     
     var ids = ["details","products","discounts","pictures","web"]; 
@@ -1589,7 +1603,7 @@ YAHOO.util.Event.addListener('reset_edit_family_page_content', "click", reset_ed
     
     YAHOO.util.Event.addListener('reset_edit_family_page_properties', "click", reset_edit_family_page_properties);
     YAHOO.util.Event.addListener('save_edit_family_page_properties', "click", save_edit_family_page_properties);
-    
+
 
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_code_oACDS.queryMatchContains = true;
@@ -1672,7 +1686,8 @@ var family_page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate
     var family_page_header_resume_oAutoComp = new YAHOO.widget.AutoComplete("family_page_header_resume","family_page_header_resume_Container", family_page_header_resume_oACDS);
     family_page_header_resume_oAutoComp.minQueryLength = 0; 
     family_page_header_resume_oAutoComp.queryDelay = 0.1;
-    
+  
+
  var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS2.queryMatchContains = true;
  oACDS2.table_id=2;

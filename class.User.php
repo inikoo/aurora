@@ -19,9 +19,10 @@ class User extends DB_Table {
 
     private $groups_read=false;
     private $rights_read=false;
+  
 
     function User($a1='id',$a2=false,$a3=false) {
-
+  
         $this->table_name='User';
         $this->ignore_fields=array(
                                  'User Key',
