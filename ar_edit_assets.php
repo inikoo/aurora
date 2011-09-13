@@ -51,6 +51,15 @@ case('edit_part_description'):
 
 
     break;
+case('edit_location'):
+    $data=prepare_values($_REQUEST,array(
+                             'location_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    edit_location($data);
+    break;
 case('edit_part_custom_field'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
@@ -2949,7 +2958,33 @@ else
 
 }
 
+function edit_location($data){
+//print_r($data);
+	$location=new Location($data['location_key']);
+    if (!$location->id) {
+        $response= array('state'=>400,'msg'=>'Location not found','key'=>'');
+        echo json_encode($response);
 
+        exit;
+    }
+	
+	$values=$data['values'];
+	
+	//print $values['okey'];
+	//print $values['value'];
+	
+	$location->update($values['okey'],stripslashes(urldecode($values['value'])), $data['location_key']);
+
+
+    if ($location->updated) {
+        $response= array('state'=>200,'newvalue'=>$location->new_value, 'msg'=>$location->msg, 'new_data'=>$location->new_data);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$location->msg,'key'=>'','msg'=>$location->msg);
+    }
+    echo json_encode($response);
+	
+}
 
 
 function edit_part($data) {
