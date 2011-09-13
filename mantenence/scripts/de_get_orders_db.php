@@ -1327,17 +1327,23 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $customer_done=false;
         $customer_posible_key=0;
-        if ($customer_key_from_order_data) {
-            print "use prev ";
-            $customer_posible_key=$customer_key_from_order_data;
-            $customer = new Customer($customer_key_from_order_data);
-            $customer_done=true;
-        } else if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-            $customer_posible_key=$act_data['act'];
-            $customer = new Customer($act_data['act']);
-            $customer_done=true;
-        }
-
+        
+        
+           if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+                print "inikko ";
+                $customer_posible_key=$act_data['act'];
+                $customer = new Customer($act_data['act']);
+                $customer_done=true;
+            }
+            elseif ($customer_key_from_order_data) {
+                print "use prev ";
+                $customer_posible_key=$customer_key_from_order_data;
+                $customer = new Customer($customer_key_from_order_data);
+                $customer_done=true;
+            }
+        
+        
+      
         if ($customer_posible_key) {
             if (!$customer->id) {
                 $sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
