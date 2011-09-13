@@ -26,7 +26,7 @@
     <td style="text-align:center">{$root->get('Failed Login Count')}</td>
     <td >{$root->get('Last Failed Login')}</td>
  </tr>
-
+{if $warehouse_user}
 <tr>
 <td colspan="5"><h2>{t}Warehouse Account{/t}</h2></td>
 </tr>
@@ -45,7 +45,7 @@
     <td style="text-align:center">{$warehouse_user->get('Failed Login Count')}</td>
     <td >{$warehouse_user->get('Last Failed Login')}</td>
  </tr>
-
+{/if}
 
 </table>
 </div>

@@ -467,7 +467,7 @@ function change_display_mode(name,label){
 
 function change_family_elements(){
 
-ids=['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess'];
+ids=['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'];
 
 
 if(Dom.hasClass(this,'selected')){
@@ -510,7 +510,7 @@ request=request+'&'+ids[i]+'=0'
 
 function init(){
 
- Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess'], "click",change_family_elements);
+ Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);
 
 
     ids=['details','stores','departments','families','products','deals'];

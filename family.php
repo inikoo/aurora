@@ -23,9 +23,18 @@ if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
     $family_id=$_SESSION['state']['family']['id'];
 else
     $family_id=$_REQUEST['id'];
+    
+ $family=new Family($family_id);
+ if(!$family->id){
+   header('Location: stores.php');
+    exit();
+ 
+ }
+ 
+    
 $_SESSION['state']['family']['id']=$family_id;
 
-$family=new Family($family_id);
+
 
 
 
@@ -91,7 +100,7 @@ $general_options_list=array();
 
 
 if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_family.php','label'=>_('Edit Family'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_family.php?id='.$family->id,'label'=>_('Edit Family'));
 
 
 $smarty->assign('general_options_list',$general_options_list);

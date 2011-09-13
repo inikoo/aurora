@@ -116,7 +116,7 @@ while ($row=mysql_fetch_array($res)) {
 
             foreach($current_part_skus as $_part_sku) {
                 $part=new Part($_part_sku);
-                $part->update_part_status('Not In Use');
+                $part->update_status('Not In Use');
                 // print "xxx";
                 $supplier_products=$part->get_supplier_products();
 

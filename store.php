@@ -310,7 +310,7 @@ $smarty->assign('options_box_width','550px');
 
 
 
-$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0);
+$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0,'NoSale'=>0);
 $sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Store Key`=%d group by  `Product Family Record Type`   ",$store->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
