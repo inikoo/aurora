@@ -62,7 +62,7 @@ validate_scope_data=
 
     'location_description':{
 	'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Code','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Location Code')?>'}]}
-	,'stock':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Stock_Value','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Stock Value')?>'}]}
+	//,'stock':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Stock_Value','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Stock Value')?>'}]}
 
 	,'radius':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Radius','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Radius')?>'}]}
 	,'deep':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Deep','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Depth')?>'}]}	
@@ -173,12 +173,7 @@ init_search('locations');
 	product_name_oAutoComp.minQueryLength = 0; 
 	product_name_oAutoComp.queryDelay = 0.1;
 	
-	
-	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_location_stock_value);
-	product_name_oACDS.queryMatchContains = true;
-	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Location_Stock_Value","Location_Stock_Value_Container", product_name_oACDS);
-	product_name_oAutoComp.minQueryLength = 0; 
-	product_name_oAutoComp.queryDelay = 0.1;
+
 	
 	
    

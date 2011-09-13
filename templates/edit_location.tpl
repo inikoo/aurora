@@ -152,15 +152,7 @@
 	
 	 </tr>
  
-     <tr><td style="width:180px" class="label">{t}Location Stock Value{/t}:</td>
-   <td  style="text-align:left">
-     <div   >
-       <input style="text-align:left;" id="Location_Stock_Value" value="{$location->get('Location Stock Value')}" ovalue="{$location->get('Location Stock Value')}" valid="0">
-       <div id="Location_Stock_Value_Container" style="" ></div>
-     </div>
-   </td>
-   <td style="width:200px" id="Location_Stock_Value_msg" class="edit_td_alert"></td>
- </tr> 	 
+
 	</table>
   </div> 
 
