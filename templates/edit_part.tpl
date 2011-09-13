@@ -10,7 +10,7 @@
 
 <ul class="tabs" id="chooser_ul">
 
-<li><span class="item {if $edit=='activation'}selected{/if}"  id="description">  <span> {t}Activation{/t}</span></span></li>
+<li><span class="item {if $edit=='activation'}selected{/if}"  id="activation">  <span> {t}Status{/t}</span></span></li>
     <li><span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li><span class="item {if $edit=='products'}selected{/if}" id="products" > <span>{t}Products{/t}</span></span></li>
     <li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers" > <span>{t}Suppliers{/t}</span></span></li>
@@ -22,6 +22,16 @@
 
 <div class="edit_block" {if $edit!="activation"}style="display:none"{/if}  id="d_activation">
 
+<table class="edit"  style="width:800px">
+ <td class="label" style="width:200px">{t}Keeping Status{/t}:</td>
+ <td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <span class="{if $part->get('Part Status')=='In Use'}selected{/if}" onclick="save_status('Part Status','In Use')" id="Part Status In Use">{t}Keeping{/t}</span> <span class="{if $part->get('Part Status')=='Not In Use'}selected{/if}"  onclick="save_status('Part Status','Not In Use')" id="Part Status Not In Use">{t}Not Keeping{/t}</span>
+   </div>
+ </td>
+ </tr>
+
+</table>
 </div>
 
 <div class="edit_block" {if $edit!="products"}style="display:none"{/if}  id="d_products">
@@ -34,12 +44,18 @@
   
 </div>
 <div class="edit_block" {if $edit!="suppliers"}style="display:none"{/if}  id="d_suppliers">
+
+  <span class="clean_table_title">{t}Suppliers{/t}</span>
+  {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
+
  
+ <div style="display:none">
  {t}Add new part{/t} 
   <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
-
+</div>
   
-  <table  class="edit" style="width:33em"  >
+  <table  class="edit" style="display:none;width:33em"  >
     <tbody id="new_part_form" style="display:none;background:#f1fdf2"  part_id="" >
       <tr class="top title">
 	<td style="width:18em" class="label" colspan=2>
@@ -86,7 +102,11 @@
       {/foreach}
     </tbody>
     
-  </table>	  
+  </table>
+  
+  
+  
+  
 </div>
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
     {include file='edit_images_splinter.tpl'}

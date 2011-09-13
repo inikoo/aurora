@@ -470,8 +470,6 @@ var request='ar_edit_contacts.php?tipo=edit_customer_send_post&key=' + key+ '&ne
 
 function save_comunications(key,value){
 
-
-
  var data_to_update=new Object;
  data_to_update[key]={'okey':key,'value':value}
 
@@ -505,9 +503,6 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
         }
     }
     });
-
-
-
 
 }
 

@@ -160,6 +160,20 @@
         </td>        
       </tr>
 	  
+	  <tr><td colspan="2"><b>{t}Customers with Order{/t}</b></td></tr>
+      <tr>
+        <td>{t}Number of Orders{/t}:</td>
+		<td>
+            <input id="number_of_orders_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="c" style="display:none">&rarr;</span> 
+			<input style="display:none" id="number_of_orders_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
+			<div id="order_condition_option" default_cat=""   class="options" style="margin:5px 0">
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_order_condition(this)" id="order_condition_{$cat_key}" parent="order_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
 	  
 	  <tr><td colspan="2"><b>{t}Customers with Invoice{/t}</b></td></tr>
       <tr>

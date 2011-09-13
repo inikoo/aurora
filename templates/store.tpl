@@ -352,7 +352,8 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
     </span>
  <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
-            
+                                        <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.NoSale}selected{/if} label_family_products_nosale"  id="elements_family_nosale" table_type="nosale"   >{t}No Sale{/t} (<span id="elements_family_nosale_number">{$elements_family_number.NoSale}</span>)</span>
+
                 <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinued}selected{/if} label_family_products_discontinued"  id="elements_family_discontinued" table_type="discontinued"   >{t}Discontinued{/t} (<span id="elements_family_discontinued_number">{$elements_family_number.Discontinued}</span>)</span>
                 <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinuing}selected{/if} label_family_products_discontinued"  id="elements_family_discontinuing" table_type="discontinuing"   >{t}Discontinuing{/t} (<span id="elements_family_discontinuing_number">{$elements_family_number.Discontinuing}</span>)</span>
                 <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.Normal}selected{/if} label_family_products_normal"  id="elements_family_normal" table_type="normal"   >{t}For Sale{/t} (<span id="elements_family_notes_number">{$elements_family_number.Normal}</span>)</span>

@@ -348,7 +348,17 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site;
+    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site, $width, $path;
+	
+    if (!isset($data['width']))
+        $width=875;
+    else
+        $width=$data['width'];
+
+	if (!isset($data['type']))
+        $path="../../";
+    else
+        $path="../";
 
     if (!isset($data['family']))
         $family_code='';
@@ -363,7 +373,7 @@ function set_parameters($data=false) {
     else
         $page_code=$family_code;
 
-$page=new Page('site_code',$site->id,$page_code);
+    $page=new Page('site_code',$site->id,$page_code);
 
 
 
@@ -392,7 +402,7 @@ $page=new Page('site_code',$site->id,$page_code);
     if (isset($data['header_title'])) {
         $header_title=$data['header_title'];
     } else {
-       $header_title=$page->data['Page Store Title'];
+        $header_title=$page->data['Page Store Title'];
     }
 
 
@@ -400,36 +410,24 @@ $page=new Page('site_code',$site->id,$page_code);
         $footer_description=$data['footer_description'];
 }
 
-function add_extra_header_content($data) {
+function add_extra_header_content($data, $type="child") {
+	global $path;
+	//print $path;
     $files=explode(",", $data);
-
+	/*
+	if($type=="parent")
+		$path="../inikoo_files/";
+	else
+		$path="../../inikoo_files/";
+		*/
+	//$path.="inikoo_files/";
     foreach($files as $file) {
-        $file="../../inikoo_files/".$file;
+        $file=$path."inikoo_files/".$file;
         include_once($file);
     }
 }
 
-function log_visit($session_key) {
-
-
-    global $user_click_key;
-    $user_click_key=0;
-    // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
-    $file = $_SERVER["PHP_SELF"];
-//echo $file;
-
-    $break = Explode('/', $file);
-    $cur_file = $break[count($break) - 1];
-    if (preg_match('/^ar\_/',$cur_file)) {
-        return;
-    }
-
-    if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)) {
-        return;
-    }
-
-// function to get the full url of the current page
-    function slfURL() {
+ function slfURL() {
         $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
         $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
         $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
@@ -451,13 +449,35 @@ function log_visit($session_key) {
         return substr($s1, 0, strpos($s1, $s2));
     }
 
+function log_visit($session_key) {
+
+
+    global $user_click_key;
+    $user_click_key=0;
+    // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
+    $file = $_SERVER["PHP_SELF"];
+//echo $file;
+
+    $break = Explode('/', $file);
+    $cur_file = $break[count($break) - 1];
+    if (preg_match('/^ar\_/',$cur_file)) {
+        return;
+    }
+
+    if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)) {
+        return;
+    }
+
+
+   
+
     $cur_fullurl=slfURL();
 //print "$cur_fullurl<br>";
     $break = Explode('/', $cur_fullurl);
     $cur_url = $break[count($break) - 1];
 //print $cur_url;
 
-
+$cur_url = slfURL();
 
 //echo $file;
     // print "current file : $cur_file <br>";           //current file name gets stored in $file
@@ -466,12 +486,8 @@ function log_visit($session_key) {
     $break = Explode('/', $purl);
     $prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
 
-    //$pos = strpos($prev_url, '?');
-
-    //$prev_file = substr($prev_url,0, $pos);
-    // print "previous file : $prev_file<br>";
-//echo("<br>");
-
+   
+$prev_url =$purl ;
 
 
     if (isset($user)) {
@@ -512,7 +528,7 @@ function log_visit($session_key) {
                   $prev_page_key
                  );
 
-    //print($sql1);
+   // print($sql1);
     mysql_query($sql1);
     $user_click_key= mysql_insert_id();
 
@@ -523,7 +539,6 @@ function update_page_key_visit_log($page_key) {
     global $user_click_key;
     $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
     mysql_query($sql);
-
 }
 
 

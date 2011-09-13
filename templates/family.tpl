@@ -14,6 +14,7 @@
 </div>
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
     <li style="display:none"> <span class="item {if $block_view=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
     <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals">  <span> {t}Offers{/t}</span></span></li>
@@ -23,57 +24,8 @@
 
 <div style="padding:0 20px">
   
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-
-
-
- <div id="photo_container" style="margin-top:0px;float:left">
-	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	     
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
-	      </div>
-	    </div>
-	    
-	    { if $num_images>1}
-	    <div style="width:160px;margin:auto;padding-top:5px"  >
-	      {foreach from=$images item=image  name=foo}
-	      {if $image.is_principal==0}
-	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
-	      {/if}
-	      {/foreach}
-	    </div>
-	    {/if}
-	    
-	    
-	  </div>
-<h2 style="margin:20px 0 0 0 ;padding:0">Family Information</h2>
-<div style="width:350px;float:left">
-  <table    class="show_info_product">
-
-    <tr >
-      <td>{t}Code{/t}:</td><td class="price">{$family->get('Product Family Code')}</td>
-    </tr>
-    <tr >
-      <td>{t}Name{/t}:</td><td>{$family->get('Product Family Name')}</td>
-    </tr>
-    <tr >
-      <td>{t}Description{/t}:</td><td>{$family->get('Product Family Special Characteristic')}</td>
-    </tr>
-   
-    <tr >
-      <td>{t}Similar{/t}:</td><td>{$family->get('Similar Families')}</td>
-    </tr>
-    <tr >
-      <td>{t}Categories{/t}:</td><td>{$family->get('Categories')}</td>
-    </tr>
-     <tr >
-      <td>{t}Web Page{/t}:</td><td>{$family->get('Web Page Links')}</td>
-    </tr>
-
-  </table>
-</div>
-<div style="width:300px;float:left;margin-left:20px">
+  <div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+  <div style="width:300px;float:left;margin-left:20px">
   <table    class="show_info_product">
       <tr >
 <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$department_period_title}</span></span>
@@ -217,6 +169,59 @@
   
   <div style="clear:both"></div>
 </div>
+  </div>
+  
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
+
+
+ <div id="photo_container" style="margin-top:0px;float:left">
+	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+	     
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+	      </div>
+	    </div>
+	    
+	    { if $num_images>1}
+	    <div style="width:160px;margin:auto;padding-top:5px"  >
+	      {foreach from=$images item=image  name=foo}
+	      {if $image.is_principal==0}
+	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
+	      {/if}
+	      {/foreach}
+	    </div>
+	    {/if}
+	    
+	    
+	  </div>
+<h2 style="margin:20px 0 0 0 ;padding:0">Family Information</h2>
+<div style="width:350px;float:left">
+  <table    class="show_info_product">
+
+    <tr >
+      <td>{t}Code{/t}:</td><td class="price">{$family->get('Product Family Code')}</td>
+    </tr>
+    <tr >
+      <td>{t}Name{/t}:</td><td>{$family->get('Product Family Name')}</td>
+    </tr>
+    <tr >
+      <td>{t}Record Type{/t}:</td><td>{$family->get('Product Family Record Type')}</td>
+    </tr>
+   
+    <tr >
+      <td>{t}Similar{/t}:</td><td>{$family->get('Similar Families')}</td>
+    </tr>
+    <tr >
+      <td>{t}Categories{/t}:</td><td>{$family->get('Categories')}</td>
+    </tr>
+     <tr >
+      <td>{t}Web Page{/t}:</td><td>{$family->get('Web Page Links')}</td>
+    </tr>
+
+  </table>
+</div>
+
 
 
 
@@ -232,17 +237,13 @@
      </span>
 	
 
-     <div id="table_type">
-     
-     </div>
+   
      
       <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
 
             <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Historic}selected{/if} label_family_products_changes"  id="elements_historic" table_type="historic"   >{t}Historic{/t} (<span id="elements_historic_number">{$elements_number.Historic}</span>)</span>
-            
-                        <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_family_products_discontinued"  id="elements_discontinued" table_type="discontinued"   >{t}Discontinued{/t} (<span id="elements_discontinued_number">{$elements_number.Discontinued}</span>)</span>
-
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_family_products_discontinued"  id="elements_discontinued" table_type="discontinued"   >{t}Discontinued{/t} (<span id="elements_discontinued_number">{$elements_number.Discontinued}</span>)</span>
             <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Private}selected{/if} label_family_products_private"  id="elements_private" table_type="private"   >{t}Private Sale{/t} (<span id="elements_private_number">{$elements_number.Private}</span>)</span>
             <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NoSale}selected{/if} label_family_products_nosale"  id="elements_nosale" table_type="nosale"   >{t}Not for Sale{/t} (<span id="elements_nosale_number">{$elements_number.NoSale}</span>)</span>
             <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Sale}selected{/if} label_family_products_sale"  id="elements_sale" table_type="sale"   >{t}Public Sale{/t} (<span id="elements_notes_number">{$elements_number.Sale}</span>)</span>

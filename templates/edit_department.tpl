@@ -93,8 +93,8 @@
 	    <span  style="margin-right:10px;"  id="show_new_family_dialog_button" onClick="show_new_family_dialog()" class="state_details">{t}Create New Family{/t}</span>
 	    <span  style="margin-right:10px;"  id="import_new_family" class="state_details">{t}Import Families (CSV){/t}</span>
 
-		<span  style="margin-right:10px;visibility:hidden"  id="save_new_family" onClick="save_new_general('family')" class="state_details">{t}Save New Family{/t}</span>
-  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_family"  class="state_details">{t}Cancel New Family{/t}</span>
+		<span  style="margin-right:10px;visibility:hidden"  id="save_new_family" class="state_details">{t}Save New Family{/t}</span>
+  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_family"  class="state_details">{t}Close New Family{/t}</span>
 </div>
 
 

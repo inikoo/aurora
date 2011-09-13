@@ -611,7 +611,7 @@ $current_part_skus=$product->get_current_part_skus();
 
 foreach($current_part_skus as $_part_sku){
 $part=new Part($_part_sku);
-$part->update_part_status('In Use');
+$part->update_status('In Use');
 }
 
 

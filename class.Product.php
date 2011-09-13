@@ -2009,7 +2009,7 @@ class product extends DB_Table {
         $this->msg="Nothing to change $key ";
         global $myconf;
 
-
+		//print $a1;
 
         switch ($key) {
         case('Product Sales Type'):
@@ -2035,6 +2035,9 @@ class product extends DB_Table {
             break;
         case('Product Net Weight Per Unit'):
             $this->update_net_weight_per_unit($a1);
+            break;
+        case('Product Family Key'):
+            $this->update_family_key($a1);
             break;
         case('web_configuration'):
             return $this->update_web_configuration($a1);
@@ -3983,6 +3986,35 @@ class product extends DB_Table {
     }
 
 
+    function update_family_key($key) {
+
+        if (!is_numeric($key)) {
+            $this->error=true;
+            $this->msg='Key is not a number';
+            return;
+        }
+
+    
+		
+		$old_family=new Family($this->data['Product Family Key']);
+		$new_family=new Family($key);
+		
+        $sql=sprintf("update `Product Dimension` set `Product Family Key`=%d, `Product Family Code`='%s', `Product Family Name`='%s' where `Product ID`=%d", $key, $new_family->data['Product Family Code'], $new_family->data['Product Family Name'], $this->pid);
+		
+	
+        mysql_query($sql);
+        if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+        
+		$old_family->update_product_data();
+		$new_family->update_product_data();
+
+		$this->data['Product Family Key']=$key;
+        $this->new_value=$key;
+		$this->new_data=array('code'=>$new_family->data['Product Family Code'] );
+        $this->updated=true;		
+		
+    }
+	
     function update_net_weight($weight) {
 
         if (!is_numeric($weight)) {
@@ -4605,7 +4637,7 @@ class product extends DB_Table {
             $row2=mysql_fetch_array($res2);
             print "Old SKU ".$sku." in ".$row2['num']." ITF rows (to be modified)\n";
             $sql=sprintf('select *  from `Inventory Transaction Fact` where  `Part SKU`=%d ',$sku);
-            print $sql;
+            //print $sql;
             $res2=mysql_query($sql);
             while ($row2=mysql_fetch_array($res2)) {
                 print " Old SKU ".$sku." in ".$row2['Date']." ITF rows (to be modified)\n";
@@ -5466,7 +5498,7 @@ class product extends DB_Table {
             $current_part_skus=$this->get_current_part_skus();
             foreach($current_part_skus as $sku) {
                 $part=new Part($sku);
-                if ($part->data['Part Available']=='No') {
+                if ( $part->data['Part Available']=='No'  or  ($part->data['Part Status']=='Not In Use')    ) {
                     $availability_type='Discontinued';
                 }
 

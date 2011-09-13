@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
- {include file='contacts_navigation.tpl'}
+
 <input type="hidden" value="{$customer->id}" id="customer_key"/>
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
@@ -156,9 +156,6 @@
       
 
    <table class="edit" border=0 style="clear:both;margin-bottom:40px;width:100%">
-
-
-
 <tr>
 <td></td>
 <td style="text-align:right;color:#777;font-size:90%">

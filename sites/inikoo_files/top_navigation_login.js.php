@@ -1,6 +1,7 @@
+<?php global $path?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
-
+var path='<?php echo $_REQUEST["path"] ?>';
 
 function change_password(){
 
@@ -23,7 +24,7 @@ var data={'user_key':user_key,'store_key':store_key,'site_key':site_key,'ep1':ep
   var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='../../inikoo_files/ar_register.php?tipo=change_password&values='+json_value;
+     var request=path+'inikoo_files/ar_register.php?tipo=change_password&values='+json_value;
 
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
