@@ -1092,7 +1092,7 @@ function init(){
 
 
 
-//  init_search('customers_store');
+  init_search('customers_store');
 
 
  
