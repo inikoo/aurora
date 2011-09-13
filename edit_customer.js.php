@@ -1088,10 +1088,14 @@ Dom.setStyle('tr_add_other_mobile','display','');
 }
 
 function init(){
-  init_search('customers_store');
 
 
 
+
+//  init_search('customers_store');
+
+
+ 
 dialog_other_field_label = new YAHOO.widget.Dialog("dialog_other_field_label", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_other_field_label.render();
 
@@ -1134,7 +1138,7 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     
      YAHOO.util.Event.addListener('save_edit_billing_data', "click", save_edit_billing_data);
     YAHOO.util.Event.addListener('reset_edit_billing_data', "click", reset_edit_billing_data);
-    
+  
     
         YAHOO.util.Event.addListener('delete_customer', "click", delete_customer);
         YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
