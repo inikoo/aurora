@@ -5498,7 +5498,7 @@ class product extends DB_Table {
             $current_part_skus=$this->get_current_part_skus();
             foreach($current_part_skus as $sku) {
                 $part=new Part($sku);
-                if ($part->data['Part Available']=='No') {
+                if ( $part->data['Part Available']=='No'  or  ($part->data['Part Status']=='Not In Use')    ) {
                     $availability_type='Discontinued';
                 }
 

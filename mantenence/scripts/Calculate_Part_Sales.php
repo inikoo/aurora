@@ -54,10 +54,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
     if($discontinued){
      
-      $part->update_part_status('Discontinued');
+      $part->update_status('Discontinued');
     
     }else
-      $part->update_part_status('In Use');
+      $part->update_status('In Use');
     
 
     

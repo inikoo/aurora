@@ -120,6 +120,19 @@ function show_new_family_dialog(){
  Dom.setStyle(['show_new_family_dialog_button','import_new_family'],'display','none');
 }
 
+function save_new_family(){
+save_new_general('family')
+
+
+
+
+}
+
+
+function post_new_create_actions(branch,response) {
+
+cancel_new_family();
+}
 
 function cancel_new_family(){
  Dom.setStyle('new_family_dialog','display','none');
@@ -769,6 +782,7 @@ init_search('products_store');
 
 
  YAHOO.util.Event.addListener('cancel_new_family', "click", cancel_new_family);
+ YAHOO.util.Event.addListener('save_new_family', "click", save_new_family);
 
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 

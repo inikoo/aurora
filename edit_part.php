@@ -50,18 +50,8 @@ $warehouse_key=0;
 
 
 
-if($warehouse_key){
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php?id='.$warehouse->id,'label'=>_('Warehouse'));
-$general_options_list[]=array('tipo'=>'url','url'=>'locations.php?warehouse_id='.$warehouse->id,'label'=>_('Locations'));
-$general_options_list[]=array('tipo'=>'url','url'=>'parts.php?warehouse_id='.$warehouse->id,'label'=>_('Parts'));
-}else{
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Warehouse'));
-$general_options_list[]=array('tipo'=>'url','url'=>'locations.php','label'=>_('Locations'));
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php','label'=>_('Parts'));
 
-}
-
-
+$general_options_list[]=array('tipo'=>'url','url'=>'part.php?sku='.$part->sku,'label'=>_('Exit Edit'));
 $smarty->assign('general_options_list',$general_options_list);
 
 

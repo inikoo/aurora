@@ -36,6 +36,40 @@
 
 
     <table style="clear:both;width:800px" class="edit">
+    
+    <tr>
+<td></td>
+<td style="text-align:right;color:#777;font-size:90%">
+<div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
+<h2>{t}Delete Family{/t}</h2>
+<p>
+{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
+</p>
+<p id="delete_family_msg"></p>
+<span id="cancel_delete_family"  style="cursor:pointer;display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
+<span id="save_delete_family"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
+<p id="deleting" style="display:none;">{t}Deleting family, wait please{/t}</p>
+</div>
+<span id="delete_family" class="state_details" style="{if $family->get_number_products()}display:none{/if}">{t}Delete Family{/t}</span>
+
+</td>
+<td>
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_family" class="state_details">{t}Reset{/t}</span>
+      </div>
+</td>
+</tr>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
       <tr>
       <td class="label" style="width:100px">{t}Family Code{/t}:</td><td>
 	 <div   >
@@ -108,6 +142,25 @@
 	    </td>
 	     <td id="description_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
+	  
+	  
+	  
+	  
+ <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
+ 
+ <tr class="first"><td style="width:180px" class="label">{t}Department{/t}:</td>
+   <td  style="text-align:left">
+ <span id="current_department_code">{$family->get('Product Family Main Department Code')}</span> <img id="edit_family" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
+   </td>
+   <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+
+
+
+	  
+	  
+	  
     </table>
     </div>
     
@@ -535,7 +588,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	if (fileList != null) {
 	
 		uploader.setSimUploadLimit(parseInt(document.getElementById("simulUploads").value));
-		uploader.uploadAll("http://localhost/dw/upload_files.php", "POST", {type:"Family Page",'id':{/literal}{$family->get('Product Family Page Key')}{literal}}, "Filedata");
+		uploader.uploadAll("http://localhost/dw/upload_files.php", "POST", {type:"Family Page",'id':{/literal}{$page_key}{literal}}, "Filedata");
 
 	
 	}	
@@ -637,12 +690,28 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
-	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_product_dialog" >
+	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;xdisplay:none"  id="new_product_dialog" >
 	  <div id="new_product_messages" class="messages_block"></div>
+<h2>New Product</h2>
+	  <table class="edit" style="width:100%" >
+	  
+	   <tr class="title"><td colspan=5>{t}Parts{/t}</td></tr>
+	<tr style="height:40px"><td style="vertical-align:middle" class="label">{t}Parts{/t}:</td><td style="vertical-align:middle">
+	    <span class="save" onclick="create_part()">Create Part</span>
+	    
+	    <span class="save"  onclick="assing_part()">Assign Part</span>
 
-	  <table class="edit" >
-	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td>
-		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/>  <span style="margin-left:20px;">{t}Family Char{/t}: {$family->get('Family Special Characeristic')}</span>	</td></tr>
+	    <span style="margin-left:10px;display:none" id="dmenu_label">{t}SKU/description{/t}:</span><span id="dmenu_position"></span>
+	    <div  id="dmenu" style="width:30em;position:relative;left:22.6em;bottom:17px;display:none ">
+	      <input name="dmenu_input" id="dmenu_input" type='text'  SIZE="32" MAXLENGTH="20" class='text' />
+	      <div id="dmenu_container"></div></div>
+        </td></tr>
+
+	  
+	  	   <tr class="title"><td colspan=5>{t}Description{/t}</td></tr>
+
+	    <tr><td class="label" style="width:160px">{t}Code{/t}:</td><td>
+		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/></td></tr>
     	<tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
 	    <tr><td class="label">{t}Special Char{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 	    <tr><td class="label">{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
@@ -661,52 +730,10 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	<tr><td class="label">{t}Price{/t}:</td><td>Per Outer: <input name="price" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="price_unit" id="nwe_price_unit"  type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 	<tr><td class="label">{t}Retail Price{/t}:</td><td>Per Outer:  <input name="rrp" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="rrp_unit" id="new_rrp_unit" type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 
-	<tr style="height:40px"><td style="vertical-align:middle" class="label">{t}Parts{/t}:</td><td style="vertical-align:middle">
-	    <span class="save" onclick="create_part()">Create Part</span>
-	    
-	    <span class="save"  onclick="assing_part()">Assign Part</span>
-
-	    <span style="margin-left:10px;display:none" id="dmenu_label">{t}SKU/description{/t}:</span><span id="dmenu_position"></span>
-	    <div  id="dmenu" style="width:30em;position:relative;left:22.6em;bottom:17px;display:none ">
-	      <input name="dmenu_input" id="dmenu_input" type='text'  SIZE="32" MAXLENGTH="20" class='text' />
-	      <div id="dmenu_container"></div></div>
-        </td></tr>
 
 	    <tr>
 	      <td colspan="2">
-		<div id="new_part_container"  class=""  style="padding-top:10px;border:1px solid #ccc;">
-		    <div class="general_options" style="float:right">
-
-		      <span style="margin-right:10px;display:none"  id="save_area" class="state_details">{t}Save{/t}</span>
-		      <span style="margin-right:10px;" id="close_add_area" class="state_details">{t}Close Dialog{/t}</span>
-		      
-		    </div>
-		  
-		  <table class="edit" >
-		    <tr><td class="label" style="width:7em">{t}Description{/t}:</td><td><input name="code" id="new_part_description"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
-    		    <tr><td class="label" >{t}Gross Weight{/t}:</td><td><input name="name"  id="new_name"     name="code" changed=0  type='text'  SIZE="6" MAXLENGTH="80" class='text' value=""   /> Kg</td></tr>
-		    <tr><td class="label">{t}Supplier{/t}:</td>
-		      <td  style="text-align:left">
-			<div  style="width:15em;position:relative;top:00px" >
-			  <input id="supplier" style="text-align:left;width:18em" type="text">
-			  <div id="supplier_container" style="" ></div>
-			</div>
-		      </td>
-		    </tr>
-		    <input id="supplier_key" value="1" type="hidden">
-		    <tr><td>
-		      </td><td>
-			<table border=0 class="edit">
-			  <tr><td class="label" style="width:4em">{t}Code{/t}:</td><td><input  id="supplier_product_code"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /></tr>
-			  <tr><td class="label">{t}Cost{/t}:</td><td><input  id="supplier_produc_cost"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /></tr>
-			  <tr><td class="label">{t}Name{/t}:</td><td><input  id="supplier_produc_name"  SIZE="12" type='text'  MAXLENGTH="20" class='text' /></tr>
-			  <tr><td class="label">{t}Description{/t}:</td><td><textarea  id="supplier_product_description"  SIZE="4" type='text'  MAXLENGTH="20" class='text' ></textarea></tr>
-			</table>
-			
-		      </td>
-		    </tr>
-		  </table>
-		  </div>
+	
 	      </td>
 	    </tr>
 	
@@ -749,26 +776,42 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  </table>
 	</div>
 
-	<div   class="data_table" >
+<div class="general_options" style="float:right;padding:0;margin:0;">
+<span class="state_details" id="new_product_choose"  >Add Product</span>
+<span  style="display:none" id="save_new_product" class="state_details">Save New Product</span>
+
+<span  style="display:none" id="cancel_add_product" class="state_details">Cancel</span>
+
+</div>
+
+
+
+
+	<div   class="data_table" style="clear:both">
 	  
 	  <span class="clean_table_title">{t}Products{/t}</span> 
 	  
-	  <table class="options" style="float:right;padding:0;margin:0;">
-	    <tr>
-	      <td  id="add_product">Add Product</td>
-	      <td  style="display:none" id="save_new_product">Save New Product</td>
-	      <td  style="display:none" id="cancel_add_product">Cancel</td>
-	    </tr>
-	  </table>
+	
+	  
+	  
+	  
+	   
+      <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Historic}selected{/if} label_family_products_changes"  id="elements_historic" table_type="historic"   >{t}Historic{/t} (<span id="elements_historic_number">{$elements_number.Historic}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_family_products_discontinued"  id="elements_discontinued" table_type="discontinued"   >{t}Discontinued{/t} (<span id="elements_discontinued_number">{$elements_number.Discontinued}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Private}selected{/if} label_family_products_private"  id="elements_private" table_type="private"   >{t}Private Sale{/t} (<span id="elements_private_number">{$elements_number.Private}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NoSale}selected{/if} label_family_products_nosale"  id="elements_nosale" table_type="nosale"   >{t}Not for Sale{/t} (<span id="elements_nosale_number">{$elements_number.NoSale}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Sale}selected{/if} label_family_products_sale"  id="elements_sale" table_type="sale"   >{t}Public Sale{/t} (<span id="elements_notes_number">{$elements_number.Sale}</span>)</span>
+
+        </div>
+     </div>
+	  
+	  
 	  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 	  
-     <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_discontinued"   click="change_multiple(this)"  >{t}discontinued{/t} ({$family->get_number_products_by_sales_type('Discontinued')})</span>
-	 <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_not_for_sale"   click="change_multiple(this)"  >{t}not for sale{/t} ({$family->get_number_products_by_sales_type('Not for Sale')})</span>
-	 <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_private"   click="change_multiple(this)"  >{t}private sale{/t} ({$family->get_number_products_by_sales_type('Private Sale')})</span>
-
-	 <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_public"   click="change_multiple(this)"  >{t}public sale{/t} ({$family->get_number_products_by_sales_type('Public Sale')})</span>
-     <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_none"   click="change_multiple(this)"  >{t}all{/t} ({$family->get_number_products()})</span>
-
+  
 
 	  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	    <tr>
@@ -788,20 +831,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
       </div>
 
-	  <table class="edit" style="width:100%">
- <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
- 
- <tr class="first"><td style="width:180px" class="label">{t}Department{/t}:</td>
-   <td  style="text-align:left">
- <span id="current_department_code">{$family->get('Product Family Main Department Code')}</span> <img id="edit_family" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
-   </td>
-   <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
- </tr>
- 
-
-
-
-</table>
+	 
 	  
  <div id="dialog_family_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
@@ -850,6 +880,55 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
   </div>
 </div>
 
+<div id="dialog_new_product_choose" style="padding:10px">
+  <div id="new_product_choose_msg"></div>
+  {t}Create new product{/t}:
+  <div class="general_options" >
+  <table  style="margin:10px">
+    <tr>
+        <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_product_from_part()" >{t}From a Part{/t}</span></td>
+           <td > <span class="unselectable_text state_details" onClick="new_product_from_scratch()" >{t}From Scratch{/t}</span></td>
+
+   </tr>
+  
+  </table>
+  </div>
+</div>
+
+	<div id="dialig_new_part"  class=""  style="padding:10px;">
+		<h2>New Part</h2>
+		    <div class="general_options" style="float:right">
+
+		      <span style="margin-right:10px;display:none"  id="save_area" class="state_details">{t}Save{/t}</span>
+		      <span style="margin-right:10px;" id="close_add_area" class="state_details">{t}Close Dialog{/t}</span>
+		      
+		    </div>
+		  
+		  <table class="edit" >
+		    <tr><td class="label" style="width:7em">{t}Description{/t}:</td><td><input name="code" id="new_part_description"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
+    		    <tr><td class="label" >{t}Gross Weight{/t}:</td><td><input name="name"  id="new_name"     name="code" changed=0  type='text'  SIZE="6" MAXLENGTH="80" class='text' value=""   /> Kg</td></tr>
+		    <tr><td class="label">{t}Supplier{/t}:</td>
+		      <td  style="text-align:left">
+			<div  style="width:15em;position:relative;top:00px" >
+			  <input id="supplier" style="text-align:left;width:18em" type="text">
+			  <div id="supplier_container" style="" ></div>
+			</div>
+		      </td>
+		    </tr>
+		    <input id="supplier_key" value="1" type="hidden">
+		    <tr><td>
+		      </td><td>
+			<table border=0 class="edit">
+			  <tr><td class="label" style="width:4em">{t}Code{/t}:</td><td><input  id="supplier_product_code"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /></tr>
+			  <tr><td class="label">{t}Cost{/t}:</td><td><input  id="supplier_produc_cost"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /></tr>
+			  <tr><td class="label">{t}Name{/t}:</td><td><input  id="supplier_produc_name"  SIZE="12" type='text'  MAXLENGTH="20" class='text' /></tr>
+			  <tr><td class="label">{t}Description{/t}:</td><td><textarea  id="supplier_product_description"  SIZE="4" type='text'  MAXLENGTH="20" class='text' ></textarea></tr>
+			</table>
+			
+		      </td>
+		    </tr>
+		  </table>
+		  </div>
 
 
 
