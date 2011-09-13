@@ -51,6 +51,8 @@ $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'location.php?id='.$location->id,'label'=>_('Exit Edit'));
 $smarty->assign('general_options_list',$general_options_list);
 
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 
 $used_for_list=array(
                   'picking'=>array('name'=>_('Picking')),
