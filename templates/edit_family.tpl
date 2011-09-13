@@ -895,7 +895,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
   </div>
 </div>
 
-	<div id="dialig_new_part"  class=""  style="padding:10px;">
+	<div id="dialog_new_part"  class=""  style="display:none;padding:10px;">
 		<h2>New Part</h2>
 		    <div class="general_options" style="float:right">
 
