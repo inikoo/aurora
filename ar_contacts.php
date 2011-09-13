@@ -1796,6 +1796,8 @@ function list_contacts() {
 function list_customers() {
 
 
+
+
     global $myconf,$user;
 
     $conf=$_SESSION['state']['customers']['table'];
@@ -2190,7 +2192,7 @@ function list_customers() {
 
 
     $result=mysql_query($sql);
-    // print $sql;
+     //print $sql;exit;
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 

@@ -192,6 +192,12 @@ function hide_invoice(){
 		Dom.get('number_of_invoices_upper').value=''
 }
 
+function hide_order(){
+		Dom.setStyle('number_of_orders_upper','display','none')
+		Dom.setStyle('c','display','none')
+		Dom.get('number_of_orders_upper').value=''
+}
+
 function hide_sales(){
 		Dom.setStyle('sales_upper','display','none')
 		Dom.setStyle('b','display','none')
@@ -238,6 +244,45 @@ function checkbox_changed_invoice_condition(o){
 	
 }
 
+function checkbox_changed_order_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_order();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_order();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_order();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='between'){
+		Dom.setStyle('number_of_orders_upper','display','')
+		Dom.setStyle('c','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+}
 
 
 function checkbox_changed_sales_condition(o){
@@ -1026,6 +1071,12 @@ not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customer
         invoice_condition_option_array[x]=invoice_option[x].getAttribute('cat');
     }
 	
+	order_option=Dom.getElementsByClassName('selected', 'span', 'order_condition_option');
+    order_condition_option_array= new Array();
+    for(x in order_option){
+        order_condition_option_array[x]=order_option[x].getAttribute('cat');
+    }
+	
 	sales_option=Dom.getElementsByClassName('selected', 'span', 'sales_option');
     sales_option_array= new Array();
     for(x in sales_option){
@@ -1040,6 +1091,7 @@ not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customer
     dont_allow:dont_allow_array,
 	customers_which:customers_which_array,
 	invoice_option:invoice_condition_option_array,
+	order_option:order_condition_option_array,
 	sales_option:sales_option_array,
 	//not_customers_which:not_customers_which_array,
 	geo_constraints:Dom.get('geo_constraints').value,
@@ -1058,6 +1110,8 @@ not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customer
 	lost_customer_to:Dom.get('v_calpop6').value,
 	number_of_invoices_upper:Dom.get('number_of_invoices_upper').value,
 	number_of_invoices_lower:Dom.get('number_of_invoices_lower').value,
+	number_of_orders_upper:Dom.get('number_of_orders_upper').value,
+	number_of_orders_lower:Dom.get('number_of_orders_lower').value,
 	sales_lower:Dom.get('sales_lower').value,
 	sales_upper:Dom.get('sales_upper').value
     }
@@ -1088,7 +1142,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }

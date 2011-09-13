@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+ {include file='contacts_navigation.tpl'}
 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>
