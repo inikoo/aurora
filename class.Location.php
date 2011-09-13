@@ -486,7 +486,20 @@ mysql_query($sql);
 
 
 }
+function update($key,$a1=false,$a2=false) {
+	switch ($key){
+	case 'used_for':
+		$this->update_used_for($a1);
+		break;
+	
+	case 'shape':
+		$this->update_shape($a1);
+		break;
+	}
+}
 
+
+	
     function update_max_weight($value) {
     list($value,$original_units)=parse_weight($value);
         if (!is_numeric($value)) {
@@ -564,14 +577,18 @@ mysql_query($sql);
             $this->updated=false;
             return;
         }
+		
+		$old_value=$this->data['Location Mainly Used For'];
+		
         $sql=sprintf("update `Location Dimension` set `Location Mainly Used For`=%s where `Location Key`=%d"
                      ,prepare_mysql($value)
                      ,$this->id
                     );
-        //  print $sql;
+          //print $sql; exit;
         mysql_query($sql);
         $this->data['Location Mainly Used For']=$value;
         $this->new_value=$value;
+		$this->new_data=array('old_value'=>$old_value, 'type'=>'used_for' );
         $this->msg=_('Location type changed');
         $this->updated=true;
 
@@ -579,6 +596,36 @@ mysql_query($sql);
 
     }
 
+	function update_shape($value) {
+        $value=_trim($value);
+        if ($value==$this->data['Location Shape Type']) {
+            $this->msg=_('Nothing to change');
+            $this->updated=false;
+            return;
+        }
+        if (!preg_match('/^(Box|Cylinder|Unknown)$/',$value)) {
+            $this->msg=_('Wrong location shape');
+            $this->updated=false;
+            return;
+        }
+		
+		$old_value=$this->data['Location Shape Type'];
+        $sql=sprintf("update `Location Dimension` set `Location Shape Type`=%s where `Location Key`=%d"
+                     ,prepare_mysql($value)
+                     ,$this->id
+                    );
+          //print $sql; exit;
+        mysql_query($sql);
+        $this->data['Location Shape Type']=$value;
+        $this->new_value=$value;
+		$this->new_data=array('old_value'=>$old_value, 'type'=>'shape' );
+        $this->msg=_('Location shape changed');
+        $this->updated=true;
+
+
+
+    }
+	
 function update_parts(){
             $sql=sprintf("select `Part SKU`,sum(`Quantity On Hand`) as qty from `Part Location Dimension`  where `Location Key`=%d  group by `Part SKU`"
                          ,$this->id

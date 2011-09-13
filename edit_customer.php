@@ -225,6 +225,7 @@ while ($row=mysql_fetch_assoc($res)) {
     $categories_value[$row['Category Key']]=$tmp_selected;
 
 }
+
 $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);
 
