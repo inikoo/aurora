@@ -84,7 +84,10 @@ case('edit_locations'):
 case('shelf_types'):
   list_shelf_types_for_edition();
   break;
+case('edit_location_description'):
 
+	edit_location_description();
+	break;
 case('edit_warehouse_area'):
   update_warehouse_area();
   break;
@@ -1511,6 +1514,57 @@ foreach($locations_data as $_data){
 
 }
 
+function edit_location_description(){
+	
 
+
+	$data=$_REQUEST;
+	$location=new Location($_REQUEST['location_key']);
+
+
+    if (!$location->id) {
+        $response= array('state'=>400,'msg'=>'Location not found');
+        echo json_encode($response);
+        exit;
+    }
+
+    $key_dic=array(
+                 'code'=>'Location Code',
+                 'radius'=>'Location Radius',
+                 'deep'=>'Location Deep',
+                 'height'=>'Location Height',
+                 'width'=>'Location Width',
+                 'volume'=>'Location Max Volume',
+                 'weight'=>'Location Max Weight',
+                 'slots'=>'Location Max Slots',
+                 'parts'=>'Location Distinct Parts'
+             );
+
+
+
+    if (array_key_exists($data['key'],$key_dic))
+        $key=$key_dic[$data['key']];
+    else
+        $key=$data['okey'];
+
+
+    $the_new_value=_trim($data['newvalue']);
+
+
+    $location->update(array($key=>$the_new_value));
+
+
+
+    if ($location->updated) {
+        $response= array('state'=>200,'action'=>'updated','newvalue'=>$location->new_value,'key'=>$data['okey']);
+    } else {
+        $response= array('state'=>400,'msg'=>$location->msg,'key'=>$data['okey']);
+    }
+    echo json_encode($response);
+    exit;
+
+
+
+}
 
 ?>

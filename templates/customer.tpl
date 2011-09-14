@@ -218,9 +218,12 @@
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
-	{if $customer_type}<li> <span class="item {if $view=='login_stat'}selected{/if}"  id="login_stat">  <span> {t}Login Status{/t}</span></span></li>{/if}
+	{if $customer_type}
+	<li> <span class="item {if $view=='login_stat'}selected{/if}"  id="login_stat">  <span> {t}Login Status{/t}</span></span></li>
+	{/if}
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Order Details{/t}</span></span></li>
+	
  </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
 

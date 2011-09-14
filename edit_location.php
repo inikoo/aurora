@@ -51,6 +51,8 @@ $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'location.php?id='.$location->id,'label'=>_('Exit Edit'));
 $smarty->assign('general_options_list',$general_options_list);
 
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 
 $used_for_list=array(
                   'picking'=>array('name'=>_('Picking')),
@@ -70,6 +72,14 @@ $shape_type_list=array(
 			  
 $smarty->assign('shape_type_list',$shape_type_list);
 
+
+$has_stock_list=array(
+                  'yes'=>array('name'=>_('Yes')),
+                  'no'=>array('name'=>_('No')),
+                  'unknown'=>array('name'=>_('Unknown'))
+              );
+			  
+$smarty->assign('has_stock_list',$has_stock_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -81,7 +91,8 @@ $css_files=array(
 		 //	 'container.css',
 		 'button.css',
 		 'table.css',
-		 		 'css/dropdown.css'
+		'css/dropdown.css',
+		'css/edit.css'
 
 		 );
 $js_files=array(
