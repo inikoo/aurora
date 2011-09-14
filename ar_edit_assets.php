@@ -115,8 +115,8 @@ case('upload_product_image'):
     upload_image();
     break;
 case('delete_family'):
-  $data=prepare_values($_REQUEST,array(
-                          'delete_type'=>array('type'=>'string'),
+    $data=prepare_values($_REQUEST,array(
+                             'delete_type'=>array('type'=>'string'),
                              'family_key'=>array('type'=>'key')
                          ));
     delete_family($data);
@@ -246,10 +246,10 @@ function create_department() {
         $response=array('state'=>400,'resp'=>_('Error'));
     echo json_encode($response);
 }
+
+
 function create_family($data) {
     global $editor;
-
-
 
     if (array_key_exists('Product Family Name',$data['values'])
             and  array_key_exists('Product Family Code',$data['values'])
@@ -261,12 +261,12 @@ function create_family($data) {
 
         $family=new Family('create',array(
 
-                               'Product Family Code'=>$data['values']['Product Family Code']
-                                                     ,'Product Family Name'=>$data['values']['Product Family Name']
-                                                                            ,'Product Family Description'=>$data['values']['Product Family Description']
-                                                                                                          ,'Product Family Special Characteristic'=>$data['values']['Product Family Special Characteristic']
-                                                                                                                  ,'Product Family Main Department Key'=>$department_key
-                                                                                                                                                        ,'editor'=>$editor
+                               'Product Family Code'=>$data['values']['Product Family Code'],
+                               'Product Family Name'=>$data['values']['Product Family Name'],
+                               'Product Family Description'=>$data['values']['Product Family Description'],
+                               'Product Family Special Characteristic'=>$data['values']['Product Family Special Characteristic'],
+                               'Product Family Main Department Key'=>$department_key,
+                               'editor'=>$editor
                            ));
         if (!$family->new) {
 
@@ -284,6 +284,9 @@ function create_family($data) {
     echo json_encode($response);
 }
 
+
+
+
 function delete_part_new_product($sku) {
 
     unset($_SESSION['state']['new_product']['parts'][$sku]);
@@ -299,10 +302,10 @@ function delete_family($data) {
 
 
 
-    if (!isset($data['delete_type'])  or !($data['delete_type']=='delete' or $data['delete_type']=='discontinue'  )  ){
-$response=array('state'=>400,'msg'=> 'Error: delete type no supplied');
-   echo json_encode($response);
-}
+    if (!isset($data['delete_type'])  or !($data['delete_type']=='delete' or $data['delete_type']=='discontinue'  )  ) {
+        $response=array('state'=>400,'msg'=> 'Error: delete type no supplied');
+        echo json_encode($response);
+    }
     $id=$data['family_key'];
     $family=new Family($id);
 
@@ -313,11 +316,11 @@ $response=array('state'=>400,'msg'=> 'Error: delete type no supplied');
         $family->discontinue();
     }
     if ($family->deleted) {
-          $response=array('state'=>200,'msg'=>$family->msg,'action'=>'deleted');
+        $response=array('state'=>200,'msg'=>$family->msg,'action'=>'deleted');
     } else {
-          $response=array('state'=>400,'msg'=>$family->msg);
+        $response=array('state'=>400,'msg'=>$family->msg);
     }
-   echo json_encode($response);
+    echo json_encode($response);
 }
 function delete_store() {
     if (!isset($_REQUEST['id']))
@@ -425,7 +428,7 @@ function edit_product() {
                     'sales_type'=>'Product Sales Type',
                     'unit_weight'=>'Product Net Weight Per Unit',
                     'outer_weight'=>'Product Gross Weight',
-					'family_key'=>'Product Family Key'
+                    'family_key'=>'Product Family Key'
 
                 );
 
@@ -546,7 +549,7 @@ function edit_subcategory() {
 }
 
 function edit_family($data) {
-	//print $data['newvalue'];
+    //print $data['newvalue'];
     $family=new family($data['id']);
     global $editor;
     $family->editor=$editor;
@@ -686,7 +689,40 @@ function edit_product_multi() {
 }
 
 function list_products_for_edition() {
-    $conf=$_SESSION['state']['products']['table'];
+
+
+
+    if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else
+        $parent='none';
+
+
+    if ($parent=='store') {
+        $conf=$_SESSION['state']['store']['products'];
+        $conf_table='store';
+    }
+    elseif ($parent=='department') {
+        $conf=$_SESSION['state']['department']['products'];
+        $conf_table='department';
+    }
+    elseif ($parent=='family') {
+        $conf=$_SESSION['state']['family']['products'];
+        $conf_table='family';
+    }
+    elseif ($parent=='none') {
+        $conf=$_SESSION['state']['stores']['products'];
+        $conf_table='stores';
+    }
+    else {
+
+        exit;
+    }
+
+
+
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -758,54 +794,60 @@ function list_products_for_edition() {
     else
         $mode=$conf['mode'];
 
-    if (isset( $_REQUEST['restrictions']))
-        $restrictions=$_REQUEST['restrictions'];
+
+
+
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
     else
-        $restrictions=$conf['restrictions'];
+        $elements=$conf['elements'];
 
 
+    if (isset( $_REQUEST['elements_discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_discontinued'];
 
-    switch ($parent) {
-    case('store'):
-        $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
-        break;
-    case('department'):
-        $where=sprintf(' left join `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
-        break;
-    case('family'):
-        $where=sprintf(' where `Product Family Key`=%d',$_SESSION['state']['family']['id']);
-        break;
-    case('none'):
-        $where=sprintf(' where true ');
-        break;
     }
-    $group='';
-//      switch($mode){
-//      case('same_code'):
-//        $where.=sprintf(" and `Product Most Recent`='Yes' ");
-//        break;
-//      case('same_id'):
-//        $group=' group by `Product ID`';
-//        break;
-//      }
-//
-    switch ($restrictions) {
-    case('for_public_sale'):
-        $where.=sprintf(" and `Product Sales Type`='Public Sale'  ");
-        break;
-    case('for_private_sale'):
-        $where.=sprintf(" and  `Product Sales Type`='Private Sale' ");
-        break;
-    case('not_for_sale'):
-        $where.=sprintf(" and `Product Sales Type` in ('Not For Sale')  ");
-        break;
-    case('discontinued'):
-        $where.=sprintf(" and `Product Sales Type` in ('Discontinued')  ");
-        break;
-    case('all'):
-
-        break;
+    if (isset( $_REQUEST['elements_nosale'])) {
+        $elements['NoSale']=$_REQUEST['elements_nosale'];
     }
+    if (isset( $_REQUEST['elements_sale'])) {
+        $elements['Sale']=$_REQUEST['elements_sale'];
+    }
+
+
+    if (isset( $_REQUEST['elements_private'])) {
+        $elements['Private']=$_REQUEST['elements_private'];
+    }
+    if (isset( $_REQUEST['elements_historic'])) {
+        $elements['Historic']=$_REQUEST['elements_historic'];
+    }
+
+
+
+
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['products']['store']=$store;
+    } else
+        $store=$_SESSION['state']['products']['store'];
+
+
+
+    $_SESSION['state'][$conf_table]['products']['order']=$order;
+    $_SESSION['state'][$conf_table]['products']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['products']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['products']['sf']=$start_from;
+    // $_SESSION['state'][$conf_table]['products']['where']=$awhere;
+    $_SESSION['state'][$conf_table]['products']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
+    $_SESSION['state'][$conf_table]['products']['avg']=$avg;
+    $_SESSION['state'][$conf_table]['products']['period']=$period;
+    $_SESSION['state'][$conf_table]['products']['elements']=$elements;
+    $_SESSION['state'][$conf_table]['products']['mode']=$mode;
+
+
+
 
 
     $filter_msg='';
@@ -814,14 +856,39 @@ function list_products_for_edition() {
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
+    $where=' where true ';
 
-    $_SESSION['state']['products']['table']=array(
-                                                'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
-                                            );
+    switch ($parent) {
+    case('store'):
+        $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['products']['store']);
+        break;
+    case('department'):
+        $where.=sprintf('  and `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
+        break;
+    case('family'):
+        if (isset($_REQUEST['parent_key']))
+            $parent_key=$_REQUEST['parent_key'];
+        else
+            $parent_key=$_SESSION['state']['family']['id'];
+
+        $where.=sprintf(' and `Product Family Key`=%d',$parent_key);
+        break;
+    default:
 
 
-    //  $where.=" and `Product Department Key`=".$id;
+    }
 
+    $_elements='';
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Product Main Type` in ('.$_elements.')' ;
+    }
 
 
     $filter_msg='';
@@ -3176,22 +3243,22 @@ function edit_part_list($data) {
 
 }
 
-function edit_location($data){
+function edit_location($data) {
 //print_r($data);
-	$location=new Location($data['location_key']);
+    $location=new Location($data['location_key']);
     if (!$location->id) {
         $response= array('state'=>400,'msg'=>'Location not found','key'=>'');
         echo json_encode($response);
 
         exit;
     }
-	
-	$values=$data['values'];
-	
-	//print $values['okey'];
-	//print $values['value'];
-	
-	$location->update($values['okey'],stripslashes(urldecode($values['value'])), $data['location_key']);
+
+    $values=$data['values'];
+
+    //print $values['okey'];
+    //print $values['value'];
+
+    $location->update($values['okey'],stripslashes(urldecode($values['value'])), $data['location_key']);
 
 
     if ($location->updated) {
@@ -3201,7 +3268,7 @@ function edit_location($data){
         $response= array('state'=>400,'msg'=>$location->msg,'key'=>'','msg'=>$location->msg);
     }
     echo json_encode($response);
-	
+
 }
 
 
@@ -3264,34 +3331,36 @@ function edit_supplier_product_part($data) {
 
     if ($data['key']=='available') {
 
- if($data['newvalue']=='Yes'){
- $available_state='Available';
- }elseif($data['newvalue']=='Yes'){
-  $available_state='NO available';
- }else{
-    $response= array('state'=>400,'msg'=>'not validn ','key'=>$data['key']);
- 
- }
+        if ($data['newvalue']=='Yes') {
+            $available_state='Available';
+        }
+        elseif($data['newvalue']=='Yes') {
+            $available_state='NO available';
+        }
+        else {
+            $response= array('state'=>400,'msg'=>'not validn ','key'=>$data['key']);
 
-       
+        }
+
+
         $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`=%s where `Supplier Product Part Key`=%d",
                      prepare_mysql($data['newvalue']),
                      $data['sppl_key']
                     );
         mysql_query($sql);
-        
-         $sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+
+        $sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
                      $data['sppl_key']);
         $res=mysql_query($sql);
-      
+
         while ($row=mysql_fetch_assoc($res)) {
-       
-               $part=new Part($row['Part SKU']);
-        $part->update_availability();
+
+            $part=new Part($row['Part SKU']);
+            $part->update_availability();
         }
-        
-       
-     
+
+
+
         $response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'available_state'=>$available_state);
         echo json_encode($response);
         exit;
@@ -3300,5 +3369,39 @@ function edit_supplier_product_part($data) {
 
 }
 
+function create_product($data) {
+    global $editor;
 
+    if (array_key_exists('Product Name',$data['values'])
+            and  array_key_exists('Product Code',$data['values'])
+            and  array_key_exists('Product Special Characteristic',$data['values'])
+            and  array_key_exists('Product Description',$data['values'])
+
+       ) {
+        $department_key=$data['parent_key'];
+
+        $product=new Product('create',array(
+
+                               'Product Code'=>$data['values']['Product Code'],
+                               'Product Name'=>$data['values']['Product Name'],
+                               'Product Description'=>$data['values']['Product Description'],
+                               'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
+                               'Product Main Department Key'=>$department_key,
+                               'editor'=>$editor
+                           ));
+        if (!$product->new) {
+
+            $response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->id);
+        } else {
+
+            $response=array('state'=>200,'msg'=>$product->msg,'action'=>'created');
+        }
+
+
+
+
+    } else
+        $response=array('state'=>400,'msg'=>_('Error'));
+    echo json_encode($response);
+}
 ?>

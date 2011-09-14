@@ -135,6 +135,7 @@ $smarty->assign('title',$product->get('Product Code'));
 $product_home="Products Home";
 
 
+$smarty->assign('store_key',$store->id);
 
 
 $smarty->assign('date',date('Y-m-d'));

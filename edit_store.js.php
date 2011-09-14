@@ -639,6 +639,10 @@ function show_add_department_dialog(){
 
 
 function init(){
+
+  init_search('products_store');
+
+
     var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website","communications"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);

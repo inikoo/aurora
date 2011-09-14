@@ -19,6 +19,7 @@ class Auth {
     private $status=false;
     private $use_cookies=false;
     var $authentication_type=false;
+    var $user_log_key=0;
     function Auth($ikey,$skey,$options='') {
         if (preg_match('/use( |\_)cookies?/i',$options))
             $this->use_cookies=true;
@@ -370,6 +371,8 @@ class Auth {
                      'NULL');
 
         mysql_query($sql);
+
+        $this->user_log_key=mysql_insert_id();
 
         $sql=sprintf("select count(*) as num from `User Log Dimension` where `User Key`=%d",$this->user_key);
         $res=mysql_query($sql);

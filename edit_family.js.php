@@ -34,35 +34,79 @@ var store_key=<?php echo $_REQUEST['store_key']?>;
 var dialog_family_list;
 
 
+function change_elements(){
+
+ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
+
+
+if(Dom.hasClass(this,'selected')){
+
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+
+}
+
+table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+  
+ // alert(request)
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
+
+
 function validate_family_page_content_presentation_template_data(query){validate_general('family_page_content','presentation_template_data',unescape(query));}
-
-
 function validate_family_page_header_store_title(query){validate_general('family_page_header','store_title',unescape(query));}
 function validate_family_page_header_subtitle(query){validate_general('family_page_header','subtitle',unescape(query));}
 function validate_family_page_header_slogan(query){validate_general('family_page_header','slogan',unescape(query));}
 function validate_family_page_header_resume(query){validate_general('family_page_header','resume',unescape(query));}
-
 function validate_family_page_properties_url(query){validate_general('family_page_properties','url',unescape(query));}
 function validate_family_page_properties_link_title(query){validate_general('family_page_properties','link_title',unescape(query));}
-
-
 function validate_family_page_properties_page_code(query){validate_general('family_page_properties','page_code',unescape(query));}
-
 function validate_family_page_html_head_title(query){validate_general('family_page_html_head','title',unescape(query));}
 function validate_family_page_html_head_keywords(query){validate_general('family_page_html_head','keywords',unescape(query));}
 
 
-function validate_code(query){
-   
- validate_general('family','code',unescape(query));
-}
+
+function validate_product_code(query){validate_general('product','product_code',unescape(query));}
+function validate_product_name(query){validate_general('product','product_name',unescape(query));}
+function validate_product_special_char(query){validate_general('product','product_special_char',unescape(query));}
+function validate_product_units(query){validate_general('product','product_units',unescape(query));}
+function validate_product_price(query){validate_general('product','product_price',unescape(query));}
+function validate_product_retail_price(query){validate_general('product','product_retail_price',unescape(query));}
+
+
+
+function validate_code(query){validate_general('family','code',unescape(query));}
 function validate_name(query){
  validate_general('family','name',unescape(query));
 }
 function validate_special_char(query){
  validate_general('family','special_char',unescape(query));
 }
-
 function validate_description(query){
    
  validate_general('family','description',unescape(query));
@@ -77,14 +121,10 @@ function save_edit_family(){
 }
 function reset_edit_family_page_header(){ reset_edit_general('family_page_header');}
 function save_edit_family_page_header(){save_edit_general('family_page_header');}
-
 function reset_edit_family_page_html_head(){ reset_edit_general('family_page_html_head');}
 function save_edit_family_page_html_head(){save_edit_general('family_page_html_head');}
-
 function reset_edit_family_page_content(){ reset_edit_general('family_page_content');}
 function save_edit_family_page_content(){save_edit_general('family_page_content');}
-
-
 function reset_edit_family_page_properties(){ reset_edit_general('family_page_properties');}
 function save_edit_family_page_properties(){save_edit_general('family_page_properties');}
 
@@ -126,7 +166,7 @@ function change_block(e){
    
 }
 
- var CellEdit = function (callback, newValue) {
+var CellEdit = function (callback, newValue) {
 
 
 		var record = this.getRecord(),
@@ -205,19 +245,6 @@ function change_block(e){
 
 
 
-
-
-
-
-function new_product_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_code").value!='')
-	Dom.get("add_new_product").style.display='';
-    else
-	Dom.get("add_new_product").style.display='';
-
-
-}
-
 function deal_term_save(deal_key){
 deal_save(deal_key,'term');
 }
@@ -276,9 +303,6 @@ function deal_term_reset(deal_key){
     Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
     Dom.get('deal_term_reset'+deal_key).style.visibility='hidden';
 }
-
-
-
 function deal_term_changed(deal_key){
     var data=deal_data[deal_key]['terms'];
     old_value=Dom.get('deal_term'+deal_key).getAttribute('ovalue');
@@ -339,8 +363,6 @@ function old_deal_allowance_save(item,deal_key){
 			    
 	    });
 	}
-
-
 function deal_allowance_changed(deal_key){
     var data=deal_data[deal_key]['allowances'];
         old_value=Dom.get('deal_allowance'+deal_key).getAttribute('ovalue');
@@ -380,15 +402,7 @@ function deal_allowance_changed(deal_key){
 
 
 
-
-
-var description_num_changed=0;
-var description_partrnings= new Object();
-var description_errors= new Object();
-
-
-
-  var change_view=function(e){
+var change_view=function(e){
 	
 	var table=tables['table0'];
 	var tipo=this.id;
@@ -422,6 +436,7 @@ var description_errors= new Object();
 	    table.hideColumn('state_info');
 		table.hideColumn('smallname');
 		table.hideColumn('sales_type');
+		table.hideColumn('web_configuration');
 
 
 
@@ -441,12 +456,12 @@ var description_errors= new Object();
 	    }
 	     else if(tipo=='view_state'){
 		 table.showColumn('code');
-		table.showColumn('processing');
-		table.showColumn('sales_state');
-		table.showColumn('web_state');
-		table.showColumn('state_info');
+	//	table.showColumn('processing');
+		//table.showColumn('sales_state');
+		table.showColumn('web_configuration');
+		//table.showColumn('state_info');
 		table.showColumn('smallname');
-table.showColumn('sales_type');
+//table.showColumn('sales_type');
 
 	    }
 	    
@@ -486,7 +501,6 @@ function cancel_delete_family(){
 Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','none');
 Dom.setStyle('delete_family','display','');
 }
-
 function save_delete_family(){
 
 
@@ -513,258 +527,13 @@ alert(request);
 
 
 
-function update_form(){
-
-    
-    if(editing=='description'){
-	this_errors=description_errors;
-	this_num_changed=description_num_changed
-
-    }
-
-    if(this_num_changed>0){
-	Dom.get(editing+'_save').style.display='';
-	Dom.get(editing+'_reset').style.display='';
-
-    }else{
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-    }
-    Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
-
-    // Dom.get(editing+'_save_div').style.display='';
-    errors_div=Dom.get(editing+'_errors');
-    // alert(errors);
-    errors_div.innerHTML='';
 
 
-    for (x in this_errors)
-	{
-	    // alert(errors[x]);
-	    Dom.get(editing+'_save').style.display='none';
-	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
-	}
-
-
-
-
-}
-
-
-//function create_part(){
-//    var part_description=Dom.get('new_name').value;
-//    if(part_description=='')
-//	part_description='??';
-//    var part_used_in=Dom.get('new_code').value;
-//    if(part_used_in=='')
-//	part_used_in='??';
-
-
-//    var data={sku:'TBC',description:part_description,usedin:part_used_in,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
-//    tables.table1.addRow(data, 0);
-//}
-
-function edit_family_changed(o){
-    var ovalue=o.getAttribute('ovalue');
-    var name=o.name;
-    if(ovalue!=o.value){
-	if(name=='code'){
-	    if(o.value==''){
-		description_errors.code="<?php echo _("The family code can not be empty")?>";
-	    }else if(o.value.lenght>16){
-		description_errors.code="<?php echo _("The product code can not have more than 16 characters")?>";
-	    }else
-		delete description_errors.code;
-	}
-	if(name=='name'){
-	    if(o.value==''){
-		description_errors.name="<?php echo _("The family name can not be empty")?>";
-	    }else if(o.value.lenght>255){
-		description_errors.name="<?php echo _("The product code can not have more than 255  characters")?>";
-	    }else
-		delete description_errors.name;
-	}
-	if(name=='special_char'){
-	    if(o.value==''){
-		description_errors.special_char="<?php echo _("The family special characteristic can not be empty")?>";
-	    }else
-		delete description_errors.special_char;
-	}
-
-
-	if(o.getAttribute('changed')==0){
-	    description_num_changed++;
-	    o.setAttribute('changed',1);
-	}
-    }else{
-	if(o.getAttribute('changed')==1){
-	    description_num_changed--;
-	    o.setAttribute('changed',0);
-	}
-    }
-    update_form();
-}
-
-function reset(tipo){
-
-    if(tipo=='description'){
-	tag='name';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-	tag='code';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-	tag='special_char';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-
-	description_num_changed=0;
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
-	description_partrnings= new Object();
-	description_errors= new Object();
-	
-    }
-    update_form();
-}
-
-function save(tipo){
-
-    if(tipo=='description'){
-	var keys=new Array("code","name","special_char");
-	for (x in keys)
-	    {
-		 key=keys[x];
-		 element=Dom.get(key);
-		if(element.getAttribute('changed')==1){
-
-		    newValue=element.value;
-		    oldValue=element.getAttribute('ovalue');
-		    
-		    var request='ar_edit_assets.php?tipo=edit_family&key=' + key+ '&newvalue=' + 
-			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-			'&id='+family_id;
-		  
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-				alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				    var element=Dom.get(r.key);
-				    element.getAttribute('ovalue',r.newvalue);
-				    element.value=r.newvalue;
-				    element.setAttribute('changed',0);
-				    description_num_changed--;
-				    var table=tables.table1;
-				    var datasource=tables.dataSource1;
-				    var request='';
-				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-				    if(r.key=='name')
-					Dom.get('title_name').innerHTML=r.newvalue;
-				    
-				     if(r.key=='code')
-					Dom.get('title_code').innerHTML=r.newvalue;
-				    
-
-
-				}else{
-				    Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
-				    
-				}
-				update_form();	
-			    }
-			    
-			});
-		}
-	    }
-	
-    }
-
-}
-
-
-function new_family_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
-	Dom.get("add_new_family").style.display='';
-    }else
-	Dom.get("add_new_family").style.display='none';
-}
-
-
-function save_new_family(){
-
-    var msg_div='add_family_messages';
-
-    var code=Dom.get('new_code').value;
-    var name=Dom.get('new_name').value;
-    var description=Dom.get('new_description').innerHTML;
-    var request='ar_edit_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.state==200){
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-		    Dom.get(msg_div).innerHTML='';
-		}else
-		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	    
-	    });
-
-}
 
  function formater_web_configuration  (el, oRecord, oColumn, oData) {
 		
 		     el.innerHTML = oRecord.getData("formated_web_configuration");
 	    }
-
-var tmponCellClick = function(oArgs) {
-		var target = oArgs.target,
-		column = this.getColumn(target),
-		record = this.getRecord(target);
-		switch (column.action) {
-		case 'delete':
-		    this.deleteRow(target);
-		    break;
-		default:
-
-		    this.onEventShowCellEditor(oArgs);
-		    break;
-		}
-	    };    var highlightEditableCell = function(oArgs) {
-		var target = oArgs.target;
-		column = this.getColumn(target);
-
-		switch (column.action) {
-		case 'delete':
-		    this.highlightRow(target);
-		default:
-		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-			this.highlightCell(target);
-		    }
-		}
-	    };
-
-	      var unhighlightEditableCell = function(oArgs) {
-		var target = oArgs.target;
-		column = this.getColumn(target);
-
-		switch (column.action) {
-		case 'delete':
-		    this.unhighlightRow(target);
-		default:
-		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-			this.unhighlightCell(target);
-		    }
-		}
-	    };
 
 
 
@@ -948,47 +717,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 
 
-
-		
-
-// 	    var tableid=1; // Change if you have more the 1 table
-// 	    var tableDivEL="table"+tableid;
-// 	    var OrdersColumnDefs = [ 
-// 				    {key:"sku", label:"SKU", width:100, action:"none",isPrimaryKey:true}
-// 				    ,{key:"description", label:"<?php echo _('Description')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-// 				    ,{key:"usedin", label:"<?php echo _('Used in')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-// 				    ,{key:"partsperpick", label:"<?php echo _('Parts/Pick')?>",width:70,className:"aleft"}
-// 				    ,{key:"notes", label:"<?php echo _('Notes to Pickers')?>",width:180,className:"aleft"}
-// 				    ,{key:"delete", label:"",width:20,className:"aleft",action:"delete",object:'tmp_partlist'}
-
-
-
-// 				     ];
-
-// 	    this.dataSource1 = new YAHOO.util.DataSource(YAHOO.util.Dom.get("table_parts_list")); 
-// 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE; 
-// 	    this.dataSource1.responseSchema = {
-// 		fields: [
-// 			 "sku",
-// 			 "description",
-// 			 'usedin','partsperpick','notes','delete'
-// 			 ]};
-	    
-// 	    this.table1 = new YAHOO.widget.DataTable("parts_list_container", OrdersColumnDefs,
-// 						     this.dataSource1, {
-// 								     sortedBy : {
-// 									 key: "sku",
-// 									 dir: "desc"
-// 								     },
-// 								     MSG_EMPTY:"<?php echo _('Please assign a part')?>"
-// 						     }
-// 						     );
-
-
-
-// 	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
-// 	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-// 	    this.table1.subscribe("cellClickEvent", tmponCellClick);
 	    
 		
 		   var tableid=2; 
@@ -1283,12 +1011,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-function cancel_add_product(){
-    Dom.get('new_code').value='';
-    Dom.get('new_name').value='';
-    
-    hide_add_product_dialog(); 
-}
+
 
 function select_layout(e){
 
@@ -1344,7 +1067,6 @@ function hide_add_product_dialog(){
     Dom.get('save_new_product').style.display='none';
     Dom.get('cancel_add_product').style.display='none';
 }
-
 function show_add_product_dialog(){
     
     Dom.get('new_product_dialog').style.display='';
@@ -1439,13 +1161,39 @@ function new_product_from_scratch(){
 
 }
 
+function show_new_product_dialog(){
+    Dom.setStyle('new_product_dialog','display','');
+        Dom.setStyle('cancel_new_product','visibility','visible');
+        Dom.setStyle('save_new_product','visibility','visible');
+        Dom.addClass('save_new_product','disabled');
+
+ Dom.setStyle(['show_new_product_dialog_button','import_new_product'],'display','none');
+}
+
+function save_new_product(){
+save_new_general('product')
+}
+
+function cancel_new_product(){
+ Dom.setStyle('new_product_dialog','display','none');
+        Dom.setStyle('cancel_new_product','visibility','hidden');
+        Dom.setStyle('save_new_product','visibility','hidden');
+        Dom.addClass('save_new_product','disabled');
+
+ Dom.setStyle(['show_new_product_dialog_button','import_new_product'],'display','');
+
+cancel_new_general('product');
+
+
+}
 
 
 function init(){
+Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
 
-dialog_new_product_choose = new YAHOO.widget.Dialog("dialog_new_product_choose", {context:["new_product_choose","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_new_product_choose.render();
-Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,dialog_new_product_choose , true);
+//dialog_new_product_choose = new YAHOO.widget.Dialog("dialog_new_product_choose", {context:["new_product_choose","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+//dialog_new_product_choose.render();
+//Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,dialog_new_product_choose , true);
 
 
      YAHOO.util.Event.addListener('delete_family', "click", delete_family);
@@ -1454,17 +1202,49 @@ Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,
 
 
  validate_scope_metadata={
-    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_REQUEST['id']?>}
-    
-    
-     ,'family_page_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+     'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'famiy_key','key':<?php echo$_REQUEST['id']?>}
+
+    ,'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_REQUEST['id']?>}
+        ,'family_page_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
     ,'family_page_html_head':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
     ,'family_page_header':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
 ,'family_page_content':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
 };
 
+var product_code_validated=false;
+if(Dom.get('product_code').value!=''){
+product_code_validated=true;
+}
+
  validate_scope_data={
-    'family':{
+ 
+ 	'product':{
+	'product_name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Name'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}],'name':'product_name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_name&store_key='+store_key+'&query='}
+	
+	,'product_code':{'changed':false,'validated':product_code_validated,'required':true,'group':1,'type':'item','dbname':'Product Code'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
+		 ,'name':'product_code','ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+store_key+'&query='}
+	,'product_special_char':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Special Characteristic'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'product_special_char'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_special_char&family_key='+family_id+'&query='}
+
+	,'product_units':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Product Units Per Case'
+		,'validation':[{'regexp':"[\\d]+",'invalid_msg':'<?php echo _('Invalid Number')?>'}],'name':'product_units'
+		,'ar':false,'ar_request':false}
+		 
+		,'product_price':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Price'
+		,'validation':[{'regexp':"[\\.\\d]+",'invalid_msg':'<?php echo _('Invalid Price')?>'}],'name':'product_price'
+		,'ar':false,'ar_request':false}
+		 	,'product_retail_price':{'changed':false,'validated':false,'required':false,'group':1,'type':'item','dbname':'Product RRP'
+		,'validation':[{'regexp':"[\\.\\d]+",'invalid_msg':'<?php echo _('Invalid Price')?>'}],'name':'product_retail_price'
+		,'ar':false,'ar_request':false}
+		 	 
+		 
+		 }
+ 
+    ,'family':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
 		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
@@ -1526,7 +1306,7 @@ Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,
 
 
 };
-
+ init_search('products_store');
 
 
     YAHOO.util.Event.addListener('new_family_page', "click", new_family_page);
@@ -1540,43 +1320,7 @@ Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
  
-    part_selected= function(sType, aArgs) {
-	var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
-	//	    Dom.get("part_sku").value = oData[1];
-	
-	var ar_file='ar_edit_assets.php';
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-							    var table=tables['table5'];
-							    var datasource=tables['dataSource5'];
-							    var request='';
-							    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-							    
-							} else {
-							    alert(r.msg);
-							    
-							}
-						    },
-							failure:function(o) {
-							alert(o.statusText);
-							
-						    },
-							scope:this
-							},
-						'tipo=add_part_new_product&sku='+oData['sku']
-						
-					    );  
-
-	    
-	};
-
-  
-    
+   
 
     
     var ids = ["details","products","discounts","pictures","web"]; 
@@ -1590,9 +1334,17 @@ Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,
 ids=['view_name','view_price','view_state'];
 YAHOO.util.Event.addListener(ids, "click",change_view)
 
+
+
+
+
+ YAHOO.util.Event.addListener('cancel_new_product', "click", cancel_new_product);
+    YAHOO.util.Event.addListener('save_new_product', "click", save_new_product);
+
+
  YAHOO.util.Event.addListener('reset_edit_family', "click", reset_edit_family);
     YAHOO.util.Event.addListener('save_edit_family', "click", save_edit_family);
-    
+   
  YAHOO.util.Event.addListener('reset_edit_family_page_html_head', "click", reset_edit_family_page_html_head);
     YAHOO.util.Event.addListener('save_edit_family_page_html_head', "click", save_edit_family_page_html_head);
  YAHOO.util.Event.addListener('reset_edit_family_page_header', "click", reset_edit_family_page_header);
@@ -1604,6 +1356,43 @@ YAHOO.util.Event.addListener('reset_edit_family_page_content', "click", reset_ed
     YAHOO.util.Event.addListener('reset_edit_family_page_properties', "click", reset_edit_family_page_properties);
     YAHOO.util.Event.addListener('save_edit_family_page_properties', "click", save_edit_family_page_properties);
 
+var product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
+    product_code_oACDS.queryMatchContains = true;
+    var product_code_oAutoComp = new YAHOO.widget.AutoComplete("product_code","product_code_Container", product_code_oACDS);
+    product_code_oAutoComp.minQueryLength = 0; 
+    product_code_oAutoComp.queryDelay = 0.1;
+
+
+var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
+    product_name_oACDS.queryMatchContains = true;
+    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("product_name","product_name_Container", product_name_oACDS);
+    product_name_oAutoComp.minQueryLength = 0; 
+    product_name_oAutoComp.queryDelay = 0.1;
+
+var product_special_char_oACDS = new YAHOO.util.FunctionDataSource(validate_product_special_char);
+    product_special_char_oACDS.queryMatchContains = true;
+    var product_special_char_oAutoComp = new YAHOO.widget.AutoComplete("product_special_char","product_special_char_Container", product_special_char_oACDS);
+    product_special_char_oAutoComp.minQueryLength = 0; 
+    product_special_char_oAutoComp.queryDelay = 0.1;
+
+var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_units","product_units_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+
+var product_price_oACDS = new YAHOO.util.FunctionDataSource(validate_product_price);
+    product_price_oACDS.queryMatchContains = true;
+    var product_price_oAutoComp = new YAHOO.widget.AutoComplete("product_price","product_price_Container", product_price_oACDS);
+    product_price_oAutoComp.minQueryLength = 0; 
+    product_price_oAutoComp.queryDelay = 0.1;
+    
+    var product_retail_price_oACDS = new YAHOO.util.FunctionDataSource(validate_product_retail_price);
+    product_retail_price_oACDS.queryMatchContains = true;
+    var product_retail_price_oAutoComp = new YAHOO.widget.AutoComplete("product_retail_price","product_retail_price_Container", product_retail_price_oACDS);
+    product_retail_price_oAutoComp.minQueryLength = 0; 
+    product_retail_price_oAutoComp.queryDelay = 0.1;
+    
 
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_code_oACDS.queryMatchContains = true;
@@ -1735,19 +1524,3 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 
 
- //var dmenu_data;
-
-
- //var dmenu_selected=function(){
- //    var data = {
- //	"sku":dmenu_data[1]
- //	,"description":dmenu_data[2]
- //	,"usedin":dmenu_data[3]
- //  }; 
- //       Dom.get("dmenu_input").value='';
-
- //  var row={sku:data.sku,description:data.description,usedin:data.usedin,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
- //   tables.table1.addRow(row, 0);
-
- //     alert(tables.table1);
- //}
