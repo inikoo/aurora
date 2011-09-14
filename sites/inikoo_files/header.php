@@ -65,6 +65,6 @@ $see_also_data
 
 
 EOD;
-if($path="../")
+if($path=="../")
 	$header="";
 ?>
