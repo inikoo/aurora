@@ -224,6 +224,9 @@ function show_add_store_dialog(){
 }
 
 function init(){
+
+  init_search('products');
+
      var ids = ["description","stores"]; 
      YAHOO.util.Event.addListener(ids, "click", change_block);
      YAHOO.util.Event.addListener('add_store', "click", show_add_store_dialog);

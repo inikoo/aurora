@@ -3589,7 +3589,7 @@ ALTER TABLE `Email Credentials Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Custo
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'InProcess', 'Normal', 'Discontinuing', 'Discontinued', 'Private', 'NoSale' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'InProcess', 'Normal', 'Discontinuing', 'Discontinued', 'NoPublic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 ALTER TABLE `User Log Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
-
+ALTER TABLE `User Click Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `User Key` ;
 */
 
 ?>
