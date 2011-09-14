@@ -120,6 +120,30 @@ $js_files=array(
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
+//print_r($customer);
+
+
+$other_email=$customer->get_other_emails_data();
+//print_r($email);
+$registered_email=array();
+$unregistered_email=array();
+
+foreach($other_email as $email){
+	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
+	//print $sql;
+	$result=mysql_query($sql);
+	if(mysql_num_rows($result)){
+		$registered_email[]=$email['email'];
+	}
+	else
+		$unregistered_email[]=$email['email'];
+	
+}
+
+print_r($registered_email);
+print_r($unregistered_email);
+$smarty->assign('registered_email',$registered_email);
+$smarty->assign('unregistered_email',$unregistered_email);
 
 $general_options_list=array();
 
