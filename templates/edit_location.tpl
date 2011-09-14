@@ -14,7 +14,7 @@
 
 
 
-      <table style="margin:0;" class="edit" border=0>
+      <table style="margin:0; width:100%" class="edit" border=0>
 
 
 	
@@ -22,7 +22,7 @@
 
 	   		<tr><td class="label">{t}Used for{/t}:</td>
  
-	<td  colspan=5>
+	<td colspan=5>
 		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0;display:inline;">
 		{foreach from=$used_for_list item=cat key=cat_id name=foo}
 		<span class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</span> 
@@ -106,7 +106,7 @@
    </td>
    <td style="width:200px" id="Location_Width_msg" class="edit_td_alert"></td>
  </tr> 		
-  <tr style="display:none"><td style="width:180px" class="label">{t}Location Max Weight{/t}:</td>
+  <tr ><td style="width:180px" class="label">{t}Location Max Weight{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Max_Weight" value="{$location->get('Location Max Weight')}" ovalue="{$location->get('Location Max Weight')}" valid="0">
@@ -116,7 +116,7 @@
    <td style="width:200px" id="Location_Max_Weight_msg" class="edit_td_alert"></td>
  </tr> 
 
-  <tr style="display:none"><td style="width:180px" class="label">{t}Location Max Volume{/t}:</td>
+  <tr ><td style="width:180px" class="label">{t}Location Max Volume{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Max_Volume" value="{$location->get('Location Max Volume')}" ovalue="{$location->get('Location Max Volume')}" valid="0">
@@ -126,7 +126,7 @@
    <td style="width:200px" id="Location_Max_Volume_msg" class="edit_td_alert"></td>
  </tr> 	 
  
-   <tr style="display:none"><td style="width:180px" class="label">{t}Location Max Slots{/t}:</td>
+   <tr ><td style="width:180px" class="label">{t}Location Max Slots{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Max_Slots" value="{$location->get('Location Max Slots')}" ovalue="{$location->get('Location Max Slots')}" valid="0">
