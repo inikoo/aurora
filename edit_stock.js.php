@@ -137,7 +137,7 @@ function lost(sku,location_key) {
     x= Dom.getX('part_location_lost_items_'+sku+'_'+location_key);
     y= Dom.getY('part_location_lost_items_'+sku+'_'+location_key);
 
-    Dom.setX('Editor_lost_items', x-28);
+    Dom.setX('Editor_lost_items', x-258);
     Dom.setY('Editor_lost_items', y-4);
     Dom.get('qty_lost').focus();
     Editor_lost_items.show();
@@ -209,6 +209,8 @@ function move(sku,location_key) {
     Dom.get('this_location').innerHTML=Dom.get('part_location_move_items_'+sku+'_'+location_key).getAttribute('location');
     Dom.get('move_stock_left').innerHTML=qty;
     Dom.get('move_stock_left').setAttribute('ovalue',qty);
+     Dom.get('move_stock_right').setAttribute('ovalue',0);
+    
     Dom.get('move_this_location_key').value=location_key;
 
 
@@ -223,7 +225,7 @@ function move(sku,location_key) {
     y= Dom.getY('part_location_move_items_'+sku+'_'+location_key);
 
 
-    Dom.setX('Editor_move_items', x-46);
+    Dom.setX('Editor_move_items', x-256);
     Dom.setY('Editor_move_items', y-4);
  Dom.get('location_move_to_input').focus();
 
@@ -245,7 +247,7 @@ function save_add_stock() {
 
    YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            alert(o.responseText);
+            //alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                   Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).setAttribute('quantity',r.qty);
@@ -434,7 +436,7 @@ function create_part_location_tr(tag,r) {
     oTR.id='part_location_tr_'+sku+'_'+location_key;
 
     var oTD= oTR.insertCell(0);
-    oTD.innerHTML=  '<a href="location.php?id='+location_key+'">'+location_code+'</a>';
+    oTD.innerHTML=  '<a href="location.php?id='+location_key+'">'+location_code+'</a>  <img style="cursor:pointer" sku_formated="'+sku+'" location="'+location_code+'" id="part_location_can_pick_'+sku+'_'+location_key+'"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  can_pick="Yes"   src="art/icons/box.png" title="<?php echo _('Can pick')?>"  alt="<?php echo _('Can Pick')?>"   onClick="save_can_pick('+sku+','+location_key+')" /> ';
 
 
     var oTD= oTR.insertCell(1);
@@ -447,11 +449,16 @@ function create_part_location_tr(tag,r) {
     Dom.addClass(oTD,'button');
     oTD.innerHTML='<img  id="part_location_audit_'+sku+'_'+location_key+'" src="art/icons/note_edit.png"  title="<?php echo _('audit')?>" alt="<?php echo _('audit')?>" onClick="audit('+sku+','+location_key+')" />';
 
-    var oTD= oTR.insertCell(3);
+   var oTD= oTR.insertCell(3);
     Dom.addClass(oTD,'button');
-    oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_delete_'+sku+'_'+location_key+'"  id="part_location_delete_'+sku+'_'+location_key+'" src="art/icons/cross_bw.png" title="<?php echo _('delete')?>"  alt="<?php echo _('delete')?>" onClick="delete_part_location('+sku+','+location_key+')" /><img id="part_location_lost_items_'+sku+'_'+location_key+'" src="art/icons/package_delete.png" alt="{t}lost{/t}" onClick="lost('+sku+','+location_key+')" />';
+    oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_add_stock_'+sku+'_'+location_key+'"  src="art/icons/lorry.png" title="<?php echo _('add stock')?>"  alt="<?php echo _('add stock')?>" onClick="add_stock_part_location('+sku+','+location_key+')" />';
+
 
     var oTD= oTR.insertCell(4);
+    Dom.addClass(oTD,'button');
+    oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'"   id="part_location_delete_'+sku+'_'+location_key+'" src="art/icons/cross_bw.png" title="<?php echo _('delete')?>"  alt="<?php echo _('delete')?>" onClick="delete_part_location('+sku+','+location_key+')" /><img id="part_location_lost_items_'+sku+'_'+location_key+'" src="art/icons/package_delete.png" alt="{t}lost{/t}" onClick="lost('+sku+','+location_key+')" />';
+
+    var oTD= oTR.insertCell(5);
     Dom.addClass(oTD,'button');
     oTD.innerHTML='<img sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_move_items_'+sku+'_'+location_key+'"  src="art/icons/package_go.png" alt="{t}move{/t}" onClick="move('+sku+','+location_key+')" />';
 
@@ -499,6 +506,10 @@ scope:this
 }
 
 
+function change_move_flow(){
+
+}
+
 function save_move_items() {
 
     var data=new Object();
@@ -513,9 +524,18 @@ function save_move_items() {
         data['to_key']=Dom.get('move_this_location_key').value;
     }
 
+
+
+if(data['from_key']<=0 || data['to_key']<=0   || data['qty']<=0){
+    return;
+}
+
+
+
+
     var json_value = YAHOO.lang.JSON.stringify(data);
     var request='ar_edit_warehouse.php?tipo=move_stock&values=' + encodeURIComponent(json_value);
-
+//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
             //alert(o.responseText);
@@ -641,10 +661,20 @@ function move_stock_left() {
         move_qty_changed();
     }
 }
+function roundNumber(num, dec) {
+	var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+	return result;
+}
+
+
 function move_qty_changed() {
     var _qty_change=Dom.get('move_qty').value;
     if (_qty_change=='')_qty_change=0;
     var qty_change=parseFloat(_qty_change+' '+qty_change);
+
+
+
+
 
     if (isNaN(qty_change))
         return;
@@ -655,6 +685,9 @@ function move_qty_changed() {
         return;
     } else
         Dom.removeClass('move_qty','error');
+
+
+
 
     left_old_value=parseFloat(Dom.get("move_stock_left").getAttribute('ovalue'));
     right_old_value=parseFloat(Dom.get("move_stock_right").getAttribute('ovalue'));
@@ -673,8 +706,9 @@ function move_qty_changed() {
             qty_change=right_old_value;
         } else
             Dom.removeClass('move_qty','error');
-        left_value=left_old_value+qty_change;
-        right_value=right_old_value-qty_change;
+            
+        left_value=roundNumber(left_old_value+qty_change,3);
+        right_value=roundNumber(right_old_value-qty_change,3);
 
 
     }

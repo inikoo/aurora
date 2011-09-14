@@ -1,6 +1,6 @@
 {include file='header.tpl'}
-<div id="bd" style="padding:0">
-<div style="padding: 0 20px">
+<div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
+<div style="padding: 0 20px;">
 {include file='locations_navigation.tpl'}
 
 
@@ -11,9 +11,9 @@
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 
-<div class="" id="block_info"  style="margin-top:20px;width:900px">
+<div class="" id="block_info"  style="margin-top:20px;width:900px;">
 
-  <div id="photo_container" style="float:left;margin-top:0px">
+  <div id="photo_container" style="float:left;margin-top:0px;">
     <div style="border:1px solid #ddd;padding-top:10;width:220px;text-align:center;margin:0 10px 0 0px">
       <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;;margin: 10px 0 10px 9px">
 	<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
@@ -26,12 +26,14 @@
     </div>
   </div>
 
-  <div style="width:340px;float:left;margin-left:10px">
+  <div style="width:340px;float:left;margin-left:10px;">
   
     <table    class="show_info_product" >
       <td class="aright">
 	
 	<tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
+		<tr><td>{t}Availability{/t}:</td><td>{$part->get('Part Available')}</td></tr>
+
     <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From Datetime')}</td></tr>
 	<tr><td>{t}Sold as{/t}:</td><td>{$part->get('Part XHTML Currently Used In')}</td></tr>
 	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
@@ -52,7 +54,7 @@
 		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
 <tr>
-		    <td>{t}Available for{/t}:</td><td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
+		    <td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td><td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
 		  </tr>
 		   
 		  
@@ -67,10 +69,7 @@
 			<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
 			<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode}
 			</a> 
-			
-						<img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  {if $location.CanPick=='Yes'}can_pick="No"  src="art/icons/basket.png"{else} can_pick="Yes"   src="art/icons/box.png"{/if} alt="{t}can_pick{/t}"   onClick="save_can_pick({$location.PartSKU},{$location.LocationKey})" />
-
-			
+				<img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  {if $location.CanPick=='Yes'}can_pick="No"  src="art/icons/basket.png"{else} can_pick="Yes"   src="art/icons/box.png"{/if} alt="{t}can_pick{/t}"   onClick="save_can_pick({$location.PartSKU},{$location.LocationKey})" />
 			</td>
 		     <td class="quantity"  id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}"  >{$location.FormatedQuantityOnHand}</td>
 		     <td class="button"   ><img  id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onClick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
@@ -106,7 +105,7 @@
   </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
- <div id="block_transactions" class="data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
+ <div id="block_transactions" class="block data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
     <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
      <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
@@ -126,7 +125,7 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
 <div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
- <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+ <div id="block_history" class="block data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
     <span   class="clean_table_title">{t}Stock History{/t}</span>
 
 
@@ -164,7 +163,7 @@
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
- <div id="block_description" class="data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+ <div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
  
  <h2 style="clear:both">{t}Unit Details{/t}</h2>
 
@@ -221,7 +220,7 @@
  
  
  </div>
- <div id="block_sales" class="data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+ <div id="block_sales" class="block ata_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
   
   <div   style="margin-top:20px;width:900px">
 
@@ -555,7 +554,7 @@
 </div>
   
   </div>
- <div id="block_purchase_orders" class="data_table" style="{if $view!='purchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
+ <div id="block_purchase_orders" class="block data_table" style="{if $view!='purchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
 
 </div>
 </div>
