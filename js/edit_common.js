@@ -701,7 +701,7 @@ function post_item_updated_actions(branch,r) {
 }
 
 function save_edit_general(branch) {
-  
+  //alert('xx');
   operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
@@ -741,11 +741,11 @@ function save_edit_general(branch) {
 	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
 	   }
 	   
-	  alert(request);
+	  //alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-				alert(o.responseText);
+				//alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
                         validate_scope_data[branch][r.key].changed=false;
