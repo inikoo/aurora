@@ -18,30 +18,30 @@ function validate_location_code(query){
 validate_general('location_description','code',unescape(query));
 }
 function validate_location_radius(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','radius',unescape(query));
 }
 function validate_location_deep(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','deep',unescape(query));
 }
 function validate_location_height(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','height',unescape(query));
 }
 function validate_location_width(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','width',unescape(query));
 }
 
 function validate_location_max_weight(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','weight',unescape(query));
 }
 
 function validate_location_max_volume(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','volume',unescape(query));
 }
 function validate_location_max_slots(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','slots',unescape(query));
 }
 function validate_location_distinct_parts(query){
-validate_general('location_description','code',unescape(query));
+validate_general('location_description','parts',unescape(query));
 }
 
 
@@ -74,8 +74,9 @@ validate_scope_data=
 
 
 	,'slots':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Max_Slots','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
-	,'parts':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Distinct_Parts','ar':false,'validation':[{'regexp':"\\.+",'invalid_msg':'<?php echo _('Invalid Unit Type')?>'}]}	
-
+	,'parts':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Distinct_Parts','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid parts')?>'}]}
+	,'stock_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'location_has_stock_type','ar':false}
+	
 	}
 
     };
@@ -113,7 +114,11 @@ init_search('locations');
     Event.addListener('save_edit_location_description', "click", save_location);
     Event.addListener('reset_edit_location_description', "click", reset_location);
 
-
+    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_location_code);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("location_has_stock_type","location_has_stock_type_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
     
     var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_location_code);
     product_units_oACDS.queryMatchContains = true;
@@ -172,12 +177,6 @@ init_search('locations');
 	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Location_Distinct_Parts","Location_Distinct_Parts_Container", product_name_oACDS);
 	product_name_oAutoComp.minQueryLength = 0; 
 	product_name_oAutoComp.queryDelay = 0.1;
-	
-
-	
-	
-   
-	
 	
 }
 
