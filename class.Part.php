@@ -981,15 +981,16 @@ function update_field_switcher($field,$value,$options='') {
         $availability='No';
 
         $supplier_products=$this->get_supplier_products();
-        if (count($supplier_products)>0) {
-            $availability='Yes';
-        }
+       // if (count($supplier_products)>0) {
+         //   $availability='Yes';
+       // }
 
         //TODO meka it work if you have more that 2 suppliers, for now all parts are 1-1 (1-n,n-1) are treated as production
-        foreach($supplier_products as $supplier_product) {
+       
+       foreach($supplier_products as $supplier_product) {
 
-            if ($supplier_product['Supplier Product Part In Use']=='No')
-                $availability='No';
+            if ($supplier_product['Supplier Product Part In Use']=='Yes')
+                $availability='Yes';
         }
 
 
