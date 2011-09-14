@@ -82,7 +82,7 @@ $css_files=array(
 		 'container.css',
 		 'button.css',
 		 'table.css',
-		 'css/dropdown.css'
+		 'css/edit.css'
 		 );
 include_once('Theme.php');
 $js_files=array(
@@ -126,6 +126,7 @@ $smarty->assign('images',$images);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('store_key',$store->id);
 
 
  $store_order='`Product Department Code`';

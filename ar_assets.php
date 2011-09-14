@@ -128,10 +128,27 @@ case('is_family_special_char'):
 
 case('is_product_code'):
     $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
                              'query'=>array('type'=>'string')
                          ));
     is_product_code($data);
     break;
+  case('is_product_name'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_product_name($data);
+    break;  
+    
+    case('is_product_special_char'):
+    $data=prepare_values($_REQUEST,array(
+                             'family_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_product_special_char($data);
+    break;
+    
 case('charges'):
     list_charges();
     break;
@@ -1772,6 +1789,9 @@ function list_products() {
         $list_key=$_REQUEST['list_key'];
     else
         $list_key=false;
+        
+        
+        
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
@@ -2041,23 +2061,8 @@ function list_products() {
 
 
     $group='';
-    /*    switch($mode){ */
-    /*    case('same_code'): */
-    /*       $db_table='`Product Same Code Dimension`'; */
-    /*      break; */
-    /*    case('same_id'): */
-    /*      $where.=sprintf("  "); */
-    /*      break; */
-    /*    case('history'): */
-
-    /*      break; */
-    /*    } */
-
 
     $_elements='';
-
-
-
     foreach($elements as $_key=>$_value) {
         if ($_value)
             $_elements.=','.prepare_mysql($_key);
@@ -10397,6 +10402,159 @@ function part_location_info($data) {
 
 
 
+
+}
+
+function is_product_name($data) {
+    if (!isset($data['query']) or !isset($data['store_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $store_key=$data['store_key'];
+
+    $sql=sprintf("select `Product ID`,`Product Code` from `Product Dimension` where  `Product Store Key`=%d and  `Product Name`=%s  "
+                 ,$store_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another product (<a href="product.php?pid=%d">%s</a>) already has this name'
+                     ,$data['Product ID']
+                     ,$data['Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_product_code($data) {
+
+
+    if (!isset($data['query']) or !isset($data['store_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $store_key=$data['store_key'];
+
+    $sql=sprintf("select `Product ID`,`Product Name`,`Product Code` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  "
+                 ,$store_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Product <a href="product.php?pid=%d">%s</a> already has this code (%s)'
+                     ,$data['Product ID']
+                     ,$data['Product Name']
+                     ,$data['Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_product_special_char($data) {
+    if (!isset($data['query']) or !isset($data['family_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $family_key=$data['family_key'];
+
+    $sql=sprintf("select `Product ID`,`Product Code` from `Product Dimension` where  `Product Family Key`=%d and  `Product Special Characteristic`=%s  "
+                 ,$family_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another product (<a href="product.php?pid=%d">%s</a>) has the same special characteristic'
+                     ,$data['Product ID']
+                     ,$data['Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
 
 }
 
