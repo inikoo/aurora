@@ -18,10 +18,35 @@
     <li> <span class="item {if $edit=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
     <li> <span class="item {if $edit=='merge'}selected{/if}"  id="merge">  <span> {t}Merge{/t}</span></span></li>
-
+	{if $site_customer}
+	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password">  <span> {t}User Site{/t}</span></span></li>
+	{/if}
   </ul>
   
  <div class="tabbed_container" > 
+ <div  class="edit_block" style="{if $edit!="password"}display:none{/if};min-height:260px"  id="d_password">
+ 
+
+
+   <table class="edit" border=0  style="width:700px">
+    <tr class="title"><td colspan=5>{t}Reset Password{/t}</td></tr>
+   <tr>
+   <td style="width:200px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
+   <td style="width:200px">
+   
+   
+   <div>
+       <input type="button" class="button" id="forget_password" value="Send"/>
+   
+   </div>
+   
+   </td>
+  
+   </tr>
+   </table>
+ </div>
+ 
+ 
    <div  class="edit_block" style="{if $edit!="merge"}display:none{/if};min-height:260px"  id="d_merge">
    
    <table class="edit" border=0  style="width:700px">
