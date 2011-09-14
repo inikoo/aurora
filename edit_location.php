@@ -91,7 +91,8 @@ $css_files=array(
 		 //	 'container.css',
 		 'button.css',
 		 'table.css',
-		 		 'css/dropdown.css'
+		'css/dropdown.css',
+		'css/edit.css'
 
 		 );
 $js_files=array(

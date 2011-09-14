@@ -486,8 +486,20 @@ mysql_query($sql);
 
 
 }
+
+/*
 function update($key,$a1=false,$a2=false) {
-	switch ($key){
+
+//print_r($key);
+
+foreach($key as $a=>$b){
+	$_key=$a;
+	$value=$b;
+}
+
+	$sql=sprintf("");
+
+	switch ($_key){
 	case 'used_for':
 		$this->update_used_for($a1);
 		break;
@@ -499,9 +511,10 @@ function update($key,$a1=false,$a2=false) {
 		$this->update_stock($a1);
 		break;
 	}
+
 }
 
-
+*/
 	
     function update_max_weight($value) {
     list($value,$original_units)=parse_weight($value);
