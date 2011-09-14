@@ -19,10 +19,10 @@
 
 	
 
-	 <tr class="title"><td colspan="6">{t}{/t}</td></tr>   
+
 	   		<tr><td class="label">{t}Used for{/t}:</td>
  
-	<td>
+	<td  colspan=5>
 		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0;display:inline;">
 		{foreach from=$used_for_list item=cat key=cat_id name=foo}
 		<span class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</span> 
@@ -33,7 +33,7 @@
 	 </tr> 
 	   
 	   
-	 <tr class="title"><td colspan=5>{t}{/t}</td></tr> 
+	 <tr class="title"><td colspan=5>{t}Parameters{/t}</td></tr> 
 	<div class="general_options" style="float:right">
 		<span  style="margin-right:10px;visibility:hidden"  id="save_edit_location_description" class="state_details">{t}Save{/t}</span>
 		<span style="margin-right:10px;visibility:hidden" id="reset_edit_location_description" class="state_details">{t}Reset{/t}</span>
