@@ -3300,6 +3300,7 @@ function edit_part($data) {
     else
         $key=$data['okey'];
 
+		
     $the_new_value=_trim($data['newvalue']);
 
     if (preg_match('/^custom_field_part/i',$key)) {
