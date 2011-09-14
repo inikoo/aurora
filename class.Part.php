@@ -169,30 +169,31 @@ function update_field_switcher($field,$value,$options='') {
    
 
 
-  switch ($field) {
+	switch ($field) {
         case('Part Status'):
             $this->update_status($value,$options);
             break;
      
+	}
+
+	$base_data=$this->base_data();
+	//print_r($base_data);
+	//print $field;
+	if(array_key_exists($field,$base_data)) {
+	
+		if ($value!=$this->data[$field]) {
+		//		print 'ss';
+			$this->update_field($field,$value,$options);
+
+		}
+	}
+	elseif(preg_match('/^custom_field_part/i',$field)) {
+		$this->update_field($field,$value,$options);
+	}
 
 
-        $base_data=$this->base_data();
-
-
-         if(array_key_exists($field,$base_data)) {
-
-            if ($value!=$this->data[$field]) {
-                    $this->update_field($field,$value,$options);
-
-            }
-        }
-        elseif(preg_match('/^custom_field_part/i',$field)) {
-            $this->update_field($field,$value,$options);
-        }
-
+	
 }
-
-    }
 
 
 
