@@ -44,6 +44,7 @@ abstract class DB_Table {
                     $data[$row['Field']]=$row['Default'];
             }
         }
+		//print_r($data);
         return $data;
     }
 
@@ -90,6 +91,7 @@ abstract class DB_Table {
 
             if (is_string($value))
                 $value=_trim($value);
+				   
             $this->update_field_switcher($key,$value,$options);
 
 
@@ -100,7 +102,7 @@ abstract class DB_Table {
     }
 
     protected function update_field_switcher($field,$value,$options='') {
-   
+
 
         $base_data=$this->base_data();
 
@@ -209,7 +211,7 @@ abstract class DB_Table {
         else
             $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
-
+		//print $sql;
       
         mysql_query($sql);
         $affected=mysql_affected_rows();

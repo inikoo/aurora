@@ -121,7 +121,6 @@ $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
 
-
 $general_options_list=array();
 
  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
@@ -133,7 +132,8 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
 $smarty->assign('general_options_list',$general_options_list);
 
-
+list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
+$smarty->assign('site_customer',$site_customer);
 $smarty->assign('customer_type',$customer->data['Customer Type']);
 $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
 $css_files[]='css/edit_address.css';
