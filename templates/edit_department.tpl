@@ -39,15 +39,15 @@
 
 
     <table border=0 styel="clear:both" class="edit">
-      <tr><td class="label" >{t}Department Code{/t}:</td><td>
-	 <div  style="width:15em" >
+      <tr><td style="width:160px" class="label" >{t}Department Code{/t}:</td><td>
+	 <div  >
 
 	      <input  
 		 id="code" 
 		 changed=0 
 		 type='text' 
 		 class='text' 
-		 style="width:15em" 
+		 
 		 MAXLENGTH="16" 
 		 value="{$department->get('Product Department Code')}" 
 		 ovalue="{$department->get('Product Department Code')}"  
@@ -59,14 +59,14 @@
 
 	  </tr>
 	  <tr><td class="label">{t}Department Name{/t}:</td><td>
-	      <div  style="width:30em" >
+	      <div   >
 		<input   
 		   id="name" 
 		  
 		   changed=0 
 		   type='text'  
 		   MAXLENGTH="255" 
-		   style="width:30em"  
+		     
 		   class='text' 
 		   value="{$department->get('Product Department Name')}"  
 		   ovalue="{$department->get('Product Department Name')}"  
@@ -105,18 +105,17 @@
 
     <div     style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_family_dialog" >
       <div id="new_family_messages" class="messages_block"></div>
-    <table >
+    <table class="edit" style="width:100%">
         <tr><td></td><td  id="new_family_dialog_msg"></td></tr>
 
-        <tr><td class="label" >{t}Family Code{/t}:</td><td>
-	 <div  style="width:15em" >
+        <tr><td style="width:160px" class="label" >{t}Family Code{/t}:</td><td>
+	 <div  >
 
 	      <input  
 		 id="family_code" 
 		 changed=0 
 		 type='text' 
 		 class='text' 
-		 style="width:15em" 
 		 MAXLENGTH="16" 
 		 value="" 
 		 ovalue=""  
@@ -128,14 +127,14 @@
 
 	  </tr>
 	  <tr><td class="label">{t}Family Name{/t}:</td><td>
-	      <div  style="width:30em" >
+	      <div   >
 		<input   
 		   id="family_name" 
 		  
 		   changed=0 
 		   type='text'  
 		   MAXLENGTH="255" 
-		   style="width:30em"  
+		     
 		   class='text' 
 		   value=""  
 		   ovalue=""  
@@ -147,14 +146,14 @@
 	  </tr>   
         <tr style="display:none">
         <td class="label">{t}Special Characteristic{/t}:</td><td>
-	      <div  style="width:30em" >
+	      <div   >
 		<input   
 		   id="family_special_char" 
 		  
 		   changed=0 
 		   type='text'  
 		   MAXLENGTH="255" 
-		   style="width:30em"  
+		     
 		   class='text' 
 		   value=""  
 		   ovalue=""  

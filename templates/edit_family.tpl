@@ -1,14 +1,19 @@
 {include file='header.tpl'}
 <div id="bd" >
+<div>
 {include file='assets_navigation.tpl'}
+<div class="branch"> 
+ <span ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
+ </div>
 
-
-<input type='hidden' id="family_key" value="{$family->id}">
 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
 </div>
+</div>
 
+
+<input type='hidden' id="family_key" value="{$family->id}">
 
 <div id="msg_div"></div>
   <ul class="tabs" id="chooser_ul" style="clear:both">
@@ -690,31 +695,171 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
-	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;xdisplay:none"  id="new_product_dialog" >
-	  <div id="new_product_messages" class="messages_block"></div>
-<h2>New Product</h2>
-	  <table class="edit" style="width:100%" >
+      
+      
+      <div class="general_options" style="float:right;text-align:right">
+	    <span  style="margin-right:10px;"  id="show_new_product_dialog_button" onClick="show_new_product_dialog()" class="state_details">{t}Create New Product{/t}</span>
+	    <span  style="margin-right:10px;"  id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span>
+
+		<span  style="margin-right:10px;visibility:hidden"  id="save_new_product" class="state_details">{t}Save New Product{/t}</span>
+  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_product"  class="state_details">{t}Close New Product{/t}</span>
+</div>
+      
+      
+      
 	  
+	
+	  
+	  <div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;padding-top:0;clear:both;display:none"  id="new_product_dialog" >
+	    <h2>New Product</h2>
+	  <div id="new_product_dialog_msg" style="display:none" class="messages_block"></div>
+
+	   <table class="edit" style="width:100%" border=1 >
+	  <tbody  style="display:none" >
 	   <tr class="title"><td colspan=5>{t}Parts{/t}</td></tr>
 	<tr style="height:40px"><td style="vertical-align:middle" class="label">{t}Parts{/t}:</td><td style="vertical-align:middle">
 	    <span class="save" onclick="create_part()">Create Part</span>
 	    
 	    <span class="save"  onclick="assing_part()">Assign Part</span>
 
-	    <span style="margin-left:10px;display:none" id="dmenu_label">{t}SKU/description{/t}:</span><span id="dmenu_position"></span>
-	    <div  id="dmenu" style="width:30em;position:relative;left:22.6em;bottom:17px;display:none ">
-	      <input name="dmenu_input" id="dmenu_input" type='text'  SIZE="32" MAXLENGTH="20" class='text' />
-	      <div id="dmenu_container"></div></div>
+
         </td></tr>
 
 	  
 	  	   <tr class="title"><td colspan=5>{t}Description{/t}</td></tr>
+</tbody>
 
-	    <tr><td class="label" style="width:160px">{t}Code{/t}:</td><td>
-		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/></td></tr>
-    	<tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
-	    <tr><td class="label">{t}Special Char{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
-	    <tr><td class="label">{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
+
+    <tr><td style="width:160px" class="label" >{t}Product Code{/t}:</td><td>
+	 <div >
+
+	      <input  
+	       style="width:100%"
+		 id="product_code" 
+		 changed=0 
+		 type='text' 
+		 class='text' 
+		 MAXLENGTH="16" 
+		 value="{$family->get_next_product_code()}" 
+		 ovalue=""  
+		 />
+		 <div id="product_code_Container" style="" ></div>
+         </div>
+	    </td>
+	     <td id="product_code_msg" class="edit_td_alert" style="width:300px"></td>
+
+	  </tr>
+	  <tr><td class="label">{t}Product Name{/t}:</td><td>
+	      <div   >
+		<input   
+		style="width:100%"
+		   id="product_name" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		     
+		   class='text' 
+		   value=""  
+		   ovalue=""  
+		   />
+		<div id="product_name_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="product_name_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>   
+        <tr >
+        <td class="label">{t}Special Characteristic{/t}:</td><td>
+	      <div   >
+		<input   
+		style="width:100%"
+		   id="product_special_char" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		     
+		   class='text' 
+		   value=""  
+		   ovalue=""  
+		   />
+		<div id="product_special_char_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="product_special_char_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>  
+
+
+
+    <tr >
+        <td class="label">{t}Units Per Case{/t}:</td><td>
+	      <div   >
+		<input   
+		
+		   id="product_units" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		     
+		   class='text' 
+		   value="1"  
+		   ovalue="1"  
+		   />
+		<div id="product_units_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="product_units_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>  
+
+
+
+    <tr >
+        <td class="label">{t}Price Per Unit{/t}:</td><td>
+	      <div   >
+		<input   
+		   id="product_price" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		     
+		   class='text' 
+		   value=""  
+		   ovalue=""  
+		   />
+		<div id="product_price_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="product_price_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>  
+
+
+
+  <tr >
+        <td class="label">{t}Retail Price{/t}:</td><td>
+	      <div   >
+		<input   
+		   id="product_retail_price" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		     
+		   class='text' 
+		   value=""  
+		   ovalue=""  
+		   />
+		<div id="product_retail_price_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="product_retail_price_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>  
+
+
+
+
+	   <tr style="display:none"><td class="label">{t}Type of Unit{/t}:</td><td>
 		
 <div class="options" style="margin:5px 0;display:inline">
   {foreach from=$units_tipo item=unit_tipo key=part_id }
@@ -727,63 +872,20 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	      <option value="{$tipo_id}">{$tipo}</option>
 	      {/foreach}
 	</select></td></tr>
-	<tr><td class="label">{t}Price{/t}:</td><td>Per Outer: <input name="price" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="price_unit" id="nwe_price_unit"  type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
-	<tr><td class="label">{t}Retail Price{/t}:</td><td>Per Outer:  <input name="rrp" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="rrp_unit" id="new_rrp_unit" type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 
-
-	    <tr>
-	      <td colspan="2">
 	
-	      </td>
-	    </tr>
+</table>
+
+
+	  
 	
 
 
 
-	    <tr><td colspan="2">
-		<div id="new_part_container"  class=""  style="border:1px solid #ccc">
-		  <table class="edit" >
-		    
-		    <tr><td class="label" style="width:7em">{t}Part{/t}:</td>
-		      <td  style="text-align:left">
-			<div  style="width:20em;position:relative;top:00px" >
-			  <input id="part" style="text-align:left;width:23em" type="text">
-			  <div id="part_container" style="" ></div>
-			</div>
-		      </td>
-		    </tr>
-		    <input id="part_sku" value="" type="hidden">
-		  </table>
-		</div>
-	    </td></tr>
-	    
-	    
-	    <tr><td colspan="2">
-		<div id="part_list"  class="data_table" >
-		  <span class="clean_table_title">{t}Part List{/t}</span> 
-		   <div  class="clean_table_caption"  style="clear:both;">
-		     <div style="float:left;"><div id="table_info5" class="clean_table_info"><span id="rtext5"></span> <span class="rtext_rpp" id="rtext_rpp5"></span> <span class="filter_msg"  id="filter_msg5"></span></div></div>
-		     <div class="clean_table_filter" style="display:none" id="clean_table_filter5"><div class="clean_table_info"><span id="filter_name5">{$filter_name5}</span>: <input style="border-bottom:none" id='f_input5' value="{$filter_value0}" size=10/><div id='f_container5'></div></div></div>
-		     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator5"></span></div></div>
-		   </div>
-		  
-		  <div  id="table5"   class="data_table_container dtable btable "></div>
-		</div>
-	</td></tr>
 
 
-    
-	  </table>
+
 	</div>
-
-<div class="general_options" style="float:right;padding:0;margin:0;">
-<span class="state_details" id="new_product_choose"  >Add Product</span>
-<span  style="display:none" id="save_new_product" class="state_details">Save New Product</span>
-
-<span  style="display:none" id="cancel_add_product" class="state_details">Cancel</span>
-
-</div>
-
 
 
 
@@ -820,28 +922,25 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	        <td  {if $view=='view_price'}class="selected"{/if}  id="view_price"  >{t}Price{/t}</td>
 	    </tr>
 	  </table>
-	  
+	  </div>
 	  
 	  
 	  
    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
 	  <div  id="table0"  style="font-size:90%" class="data_table_container dtable btable "> </div>
-	</div>
+
+
+
+
+
+
 
       </div>
 
 	 
 	  
- <div id="dialog_family_list">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-        <div id="the_table" class="data_table" >
-            <span class="clean_table_title">{t}Family List{/t}</span>
-            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-            <div  id="table2"   class="data_table_container dtable btable "> </div>
-        </div>
-    </div>
- </div>
+ 
  
  </div>
 
@@ -880,7 +979,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
   </div>
 </div>
 
-<div id="dialog_new_product_choose" style="padding:10px">
+<div id="dialog_new_product_choose" style="padding:10px;display:none">
   <div id="new_product_choose_msg"></div>
   {t}Create new product{/t}:
   <div class="general_options" >
@@ -931,6 +1030,14 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 		  </div>
 
 
-
+<div id="dialog_family_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Family List{/t}</span>
+            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+            <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
 
 {include file='footer.tpl'}
