@@ -1,7 +1,7 @@
 <?php
 function add_customer($data) {
     //Timer::timing_milestone('begin');
-    
+
 
 
 
@@ -45,8 +45,7 @@ function add_customer($data) {
         $data['Customer Main Contact Key']=$contact->id;
         unset($contact);
 
-    } 
-    else {//Company
+    } else {//Company
         $data['Customer Company Name']=$data['Customer Name'];
 
         $contact=new Contact();
@@ -54,10 +53,10 @@ function add_customer($data) {
 
         $contact_data=array();
         foreach($data as $key=>$val) {
-        
-         if ($key=='Customer Name') {
-             continue;
-            } 
+
+            if ($key=='Customer Name') {
+                continue;
+            }
             if ($key=='Customer Main Contact Name') {
                 $_key='Contact Name';
             } else {
@@ -67,10 +66,10 @@ function add_customer($data) {
             if (preg_match('/telephone|fax/i',$key)) {
                 $val='';
             }
-        
+
             $contact_data[$_key]=$val;
         }
-        
+
         $contact->create($contact_data);
         $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
 
@@ -93,7 +92,7 @@ function add_customer($data) {
         $company->create($company_data,$address_data,'use contact '.$contact->id);
         $data['Customer Main Contact Key']=$contact->id;
         $data['Customer Company Key']=$company->id;
-		unset($company);
+        unset($company);
     }
 
 
@@ -101,8 +100,8 @@ function add_customer($data) {
     $customer=new Customer();
     $customer->editor=$data['editor'];
     $customer->create($data);
-	
-	//print_r ($data);
+
+    //print_r ($data);
 
 
     if ($customer->new) {
@@ -114,9 +113,9 @@ function add_customer($data) {
         $customer->update_activity();
         $store->update_customers_data();
 
-       // print_r($data);
+        // print_r($data);
 
-        
+
         foreach($data as $data_key=>$data_value) {
 
             if (preg_match('/^cat\d+$/i',$data_key)) {
@@ -124,26 +123,26 @@ function add_customer($data) {
                 $category_key=preg_replace('/^cat/i','',$data_key);
                 //  print"$category_key\n";
 
-                if(!is_numeric($data_value)){
+                if (!is_numeric($data_value)) {
                     $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Parent Key`=%d and `Category Name`=%s ",
-                    $category_key,
-                    prepare_mysql($data_value)
-                    );
+                                 $category_key,
+                                 prepare_mysql($data_value)
+                                );
                     //print $sql;
                     $res=mysql_query($sql);
-                    if($row=mysql_fetch_assoc($res)){
-                    $data_value=$row['Category Key'];
+                    if ($row=mysql_fetch_assoc($res)) {
+                        $data_value=$row['Category Key'];
                     }
                 }
 
-                if($data_value){
-                $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
-                             $data_value,
+                if ($data_value) {
+                    $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
+                                 $data_value,
 
-                             $customer->id
-                            );
-                mysql_query($sql);
-                // print($sql);
+                                 $customer->id
+                                );
+                    mysql_query($sql);
+                    // print($sql);
                 }
             }
         }
@@ -429,48 +428,81 @@ function is_company($name,$locale='en_GB') {
 
 
 
+function unique_concecutive_list_suffix($store_key) {
 
+    $suffix=uniqid('', true);
+
+    $sql=sprintf('select count(*) as num from `List Dimension` where `List Use Type`="CSV Import" and `List Store Key`=%d ',
+                 $store_key
+                );
+
+    $num=0;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        $num= (float) $row['num'];
+    }
+
+    $num++;
+    $top_limit=$num+500;
+    $top_soft_limit=$num+490;
+
+    for ($i = $num; $i <= $top_limit; $i++) {
+
+        if ($i<$top_soft_limit) {
+            $suffix=$i;
+        } else {
+            $suffix=uniqid('', true);
+        }
+    //    print "i: $i $suffix  \n";
+
+        $sql=sprintf('select count(*) as num from `List Dimension` where `List Name`=%s and `List Store Key`=%d ',
+                     prepare_mysql(_('CSV Imported')." ".$suffix),
+                     $store_key);
+
+      //  print "$sql \n";
+
+        $res2=mysql_query($sql);
+        if ($row2=mysql_fetch_assoc($res2)) {
+            if ($row2['num']==0)
+                return $suffix;
+        }
+
+
+    }
+
+    return $suffix;
+
+
+}
 
 function new_imported_csv_customers_list($store_key) {
 
- 
 
 
-    $sql=sprintf('select count(*) as num from `List Dimension` where `List Use Type`="CSV Import" and `List Store Key`=%d ',
-    $store_key
-    );
-    
-    $num=0;
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
-        $num= (float) $row['num'];
-    }
-    
-$num++;
 
 
     $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Use Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NULL,NOW())",
                       $store_key,
-                      prepare_mysql(_('CSV Imported')." ".number($num)),
+                      prepare_mysql(_('CSV Imported')." ".unique_concecutive_list_suffix($store_key)),
                       prepare_mysql('Static'),
                       prepare_mysql('CSV Import'),
                       prepare_mysql(json_encode(array()))
 
                      );
     mysql_query($list_sql);
-   // print "$list_sql";
+    // print "$list_sql";
     $customer_list_key=mysql_insert_id();
 
-return $customer_list_key;
+    return $customer_list_key;
 
 
 
-    }
+}
 
 
 
 
-    
+
 
 
 
