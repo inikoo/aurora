@@ -385,10 +385,6 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $elements_number[$row['Product Main Type']]=$row['num'];
 }
-
-
-
-
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
 

@@ -4,7 +4,7 @@ table.edit input.number{ padding-right:4px;text-align:right; }
 table.edit input{ padding-left:4px;text-align:left; }
 
 
-table.edit td.label{ text-align:right; }
+table.edit td.label{ text-align:right;}
 table.edit td.left{ text-align:left }
 table.edit tr.no_validated td.label { background:url('../art/icons/exclamation.png') no-repeat;;background-position:5px 3px;color:#720000  }
 table.edit tr.no_validated  input{color:red}
@@ -39,7 +39,7 @@ table.form_state td{text-align:center;border-top:1px solid #ccc}
 table.form_state td.aright{text-align:right}
 table.form_state td.aleft{text-align:left}
 .disabled{cursor:default;color:#999;text-decoration:line-through}
-.disabled:hover{color:#777}
+div.general_options span.disabled:hover,.disabled:hover{color:#777;text-decoration:line-through}
 
 .edit_td_alert{font-size:80%;color:red}
 .edit_td_alert a{color:red;text-decoration:underline}

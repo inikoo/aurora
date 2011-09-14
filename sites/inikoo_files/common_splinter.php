@@ -22,7 +22,7 @@ require_once "class.LightProduct.php";
 require_once "class.LightFamily.php";
 
 
-
+$user_log_key=0;
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$default_DB_link) {
@@ -130,10 +130,14 @@ if ($logout) {
     // exit;
 
     $_SESSION['logged_in']=0;
+    
+    
+    $sql=sprintf("select ``");
+    
+    
     $logged_in=false;
     $St=get_sk();
-}
-elseif(isset($_REQUEST['p'])) {
+}elseif(isset($_REQUEST['p'])) {
 
 
     $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
@@ -160,8 +164,7 @@ elseif(isset($_REQUEST['p'])) {
     }
 
 
-}
-elseif(isset($_COOKIE['user_handle'])) {
+}elseif(isset($_COOKIE['user_handle'])) {
     $auth=new Auth(IKEY,SKEY);
     $auth->set_use_cookies();
     //$auth->use_cookies=true;
@@ -216,7 +219,7 @@ if ($logged_in ) {
 
 }
 
-log_visit($session->id);
+log_visit($session->id,$user_log_key);
 
 
 
@@ -266,14 +269,14 @@ function show_products($code,$options=false) {
 
 
 
-    $conf= array('ecommerce_url_multi'=>$ecommerce_url_multi
-                                       ,'username'=>$username
-                                                   ,'method'=>$method
-                                                             ,'secure'=>(empty($secure) ? '' : $_SERVER["HTTPS"])
-                                                                       ,'_port'=>$_SERVER["SERVER_PORT"]
-                                                                                ,'_protocol'=>$_SERVER["SERVER_PROTOCOL"]
-                                                                                             ,'url'=>$_SERVER['REQUEST_URI']
-                                                                                                    ,'server'=>$_SERVER['SERVER_NAME']
+    $conf= array('ecommerce_url_multi'=>$ecommerce_url_multi,
+                                       'username'=>$username,
+                                                   'method'=>$method,
+                                                             'secure'=>(empty($secure) ? '' : $_SERVER["HTTPS"]),
+                                                                       '_port'=>$_SERVER["SERVER_PORT"],
+                                                                                '_protocol'=>$_SERVER["SERVER_PROTOCOL"],
+                                                                                             'url'=>$_SERVER['REQUEST_URI'],
+                                                                                                    'server'=>$_SERVER['SERVER_NAME']
                 );
 
 
@@ -449,7 +452,7 @@ function add_extra_header_content($data, $type="child") {
         return substr($s1, 0, strpos($s1, $s2));
     }
 
-function log_visit($session_key) {
+function log_visit($session_key,$user_log_key) {
 
 
     global $user_click_key;
@@ -509,7 +512,9 @@ $prev_url =$purl ;
     $sql1=sprintf("INSERT INTO `User Click Dimension` (
 
                   `User Key` ,
+                  `User Log Key`,
                   `URL` ,
+                  
                   `Page Key` ,
                   `Date` ,
                   `Previous Page` ,
@@ -517,9 +522,10 @@ $prev_url =$purl ;
                   `Previous Page Key`
                   )
                   VALUES (
-                  %d,%s, %d,%s, %s, %d,%d
+                  %d,%s,%s, %d,%s, %s, %d,%d
                   );",
                   $user_key,
+                  prepare_mysql($user_log_key),
                   prepare_mysql($cur_url),
                   $page_key,
                   prepare_mysql($date),

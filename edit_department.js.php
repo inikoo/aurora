@@ -122,10 +122,6 @@ function show_new_family_dialog(){
 
 function save_new_family(){
 save_new_general('family')
-
-
-
-
 }
 
 
