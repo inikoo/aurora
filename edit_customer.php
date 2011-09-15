@@ -120,7 +120,30 @@ $js_files=array(
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
+//print_r($customer);
 
+
+$other_email=$customer->get_other_emails_data();
+//print_r($email);
+$registered_email=array();
+$unregistered_email=array();
+
+foreach($other_email as $email){
+	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
+	//print $sql;
+	$result=mysql_query($sql);
+	if(mysql_num_rows($result)){
+		$registered_email[]=$email['email'];
+	}
+	else
+		$unregistered_email[]=$email['email'];
+	
+}
+
+//print_r($registered_email);
+//print_r($unregistered_email);
+$smarty->assign('registered_email',$registered_email);
+$smarty->assign('unregistered_email',$unregistered_email);
 
 $general_options_list=array();
 
@@ -133,7 +156,8 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
 $smarty->assign('general_options_list',$general_options_list);
 
-
+list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
+$smarty->assign('site_customer',$site_customer);
 $smarty->assign('customer_type',$customer->data['Customer Type']);
 $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
 $css_files[]='css/edit_address.css';
@@ -200,7 +224,7 @@ $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
-$js_files[]=sprintf('edit_customer.js.php?id=%d',$customer->id);
+$js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%d',$customer->id,count($registered_email),count($unregistered_email));
 
 
 $smarty->assign('css_files',$css_files);

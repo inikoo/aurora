@@ -301,6 +301,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
+$number_parts=$product->get_number_of_parts();
+$smarty->assign('number_parts',$number_parts);
 
 $smarty->display('product.tpl');
 ?>

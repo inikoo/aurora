@@ -8,6 +8,9 @@
 }
 
 $customer=new Customer($_REQUEST['id']);
+
+print "var forgot_count='".$_REQUEST['forgot_count']."';";
+print "var register_count='".$_REQUEST['register_count']."';";
 print "var customer_id='".$customer->id."';";
 print "var store_id='".$customer->data['Customer Store Key']."';";
 
@@ -155,15 +158,15 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-   var ids = ["details","company","delivery","categories","communications","merge"]; 
-    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications","d_merge"]; 
+   var ids = ["details","company","delivery","categories","communications","merge", "password"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications","d_merge", "d_password"]; 
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
-	
+	//alert('ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id);
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id ,{});
 	
    
@@ -173,8 +176,8 @@ Dom.addClass(this,'selected');
 }
 
 function change_to_delivery_block(){
- var ids = ["details","company","delivery","categories","communications"]; 
-    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications"]; 
+ var ids = ["details","company","delivery","categories","communications", "password"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications", "d_password"]; 
 
 
 Dom.setStyle(block_ids,'display','none');
@@ -186,6 +189,31 @@ Dom.addClass('delivery','selected');
 
 }
 
+function forget_password(){
+var url ='http://'+ window.location.host + window.location.pathname;
+var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url
+Dom.get('password_msg').innerHTML='Sending';
+Dom.get('password_msg').style.display='';
+	            alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.get('password_msg').innerHTML="Email Sent"
+				Dom.get('password_msg').style.display='';
+	
+
+            }
+			else{
+				Dom.get('password_msg').innerHTML=r.msg;
+				Dom.get('password_msg').style.display='';
+			}
+   			}
+    });
+}
 
 function validate_customer_tax_number(query){
   original_query= query;
@@ -1087,6 +1115,35 @@ Dom.setStyle('display_add_other_mobile','display','none');
 Dom.setStyle('tr_add_other_mobile','display','');
 }
 
+function register(){
+	alert('block');
+	
+
+var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url
+
+	            alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.get('password_msg').innerHTML="Email Sent"
+				Dom.get('password_msg').style.display='';
+	
+
+            }
+			else{
+				Dom.get('password_msg').innerHTML=r.msg;
+				Dom.get('password_msg').style.display='';
+			}
+   			}
+    });
+	
+}
+
+
 function init(){
 
 
@@ -1108,8 +1165,34 @@ dialog_comment.render();
     Event.addListener("display_add_other_telephone", "click", display_add_other_telephone , true);
     Event.addListener("display_add_other_mobile", "click", display_add_other_mobile , true);
     Event.addListener("display_add_other_fax", "click", display_add_other_fax , true);
+	
+<?php 
+	echo 'var ids = ["forget_password_main"';
+	for($i=0; $i<$_REQUEST['forgot_count']; $i++){
+		echo ', "forget_password_'.$i.'"';
+	}
+	echo '];';
+	
 
+?>
+	Event.addListener(ids, "click", forget_password , true);
+	
+<?php 
 
+	echo 'var ids_show = [';
+	for($i=0; $i<$_REQUEST['register_count']; $i++){
+		echo ' "register_'.$i.'",';
+	}
+	echo '];';
+	
+
+?>
+
+	//var ids_show = ["show_register_block_0", ""];
+
+	Event.addListener(ids_show, "click", register , true);
+	
+	
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);
     customer_merge_oACDS.queryMatchContains = true;
     var customer_merge_oAutoComp = new YAHOO.widget.AutoComplete("customer_b_id","customer_b_id_Container", customer_merge_oACDS);
@@ -1122,7 +1205,7 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
-    var ids = ["details","company","delivery","categories","communications","merge"]; 
+    var ids = ["details","company","delivery","categories","communications","merge", "password"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener( "delivery2",  "click",change_to_delivery_block);
     
@@ -1384,6 +1467,7 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
     var customer_merge_oAutoComp = new YAHOO.widget.AutoComplete("customer_b_id","customer_b_id_Container", customer_merge_oACDS);
     customer_merge_oAutoComp.minQueryLength = 0; 
     customer_merge_oAutoComp.queryDelay = 0.1;
+
 
 
 }

@@ -975,7 +975,7 @@ function add_part_selected(sType, aArgs) {
 
 
 function init() {
-
+init_search('parts');
 	var ids = ["description", "pictures", "products", "suppliers","activation"];
 	Event.addListener(ids, "click", change_block);
 

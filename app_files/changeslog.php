@@ -3590,6 +3590,8 @@ ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Prod
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM( 'InProcess', 'Normal', 'Discontinuing', 'Discontinued', 'NoPublic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 ALTER TABLE `User Log Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
 ALTER TABLE `User Click Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `User Key` ;
+ALTER TABLE `Part Dimension` ADD `Part Main State` ENUM( 'Keeping', 'LastStock', 'Discontinued', 'NotKeeping' ) NULL DEFAULT NULL AFTER `Part Available` ,ADD INDEX ( `Part Main State` ) ;
+
 */
 
 ?>

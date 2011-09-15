@@ -1,4 +1,6 @@
 <?php include_once('common.php')?>
+
+var auto= <?php echo$_REQUEST['auto']?>;
 location_draw_width=300;
 location_draw_height=300;
 
@@ -124,11 +126,9 @@ function shape_type_changed(){
 
 
 function get_block(){
-
     Dom.get('welcome').innerHTML='<?php echo _('Adding new location')?>';
     Dom.get('the_chooser').style.display='none';
     Dom.get('block_'+this.id).style.display='';
-	
 }
 
 
@@ -181,6 +181,37 @@ function save_add_location(){
 		
 		    window.location='location.php?r=nl&id='+r.location_key;
 		
+		    //reset_location_data();
+		    //var table=tables['table0']
+		    //var datasource=tables['dataSource0'];    
+		    //datasource.sendRequest('',table.onDataReturnInitializeTable, table);
+		    
+		    
+		}else if(r.action=='error'){
+		    alert(r.msg);
+		}
+			    
+
+			
+	    }
+	});
+
+}
+
+function save_add_location_return(){
+
+    get_location_data();
+    var json_value = YAHOO.lang.JSON.stringify(individual_location_data);
+    var request='ar_edit_warehouse.php?tipo=new_location&values=' + encodeURIComponent(json_value); 
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+	  //alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.action=='created'){
+		
+		//new_location.php?warehouse_id=1
+		    window.location='new_location.php?warehouse_id=1&auto=1';
 		    //reset_location_data();
 		    //var table=tables['table0']
 		    //var datasource=tables['dataSource0'];    
@@ -343,13 +374,19 @@ function isometric_transformation(path3d){
 
 function init(){
 
+init_search('locations');
 
-
-
+if(auto==1){
+    Dom.get('welcome').innerHTML='<?php echo _('Adding new location')?>';
+    Dom.get('the_chooser').style.display='none';
+    Dom.get('block_individual').style.display='';
+}
+	
     var ids = ["individual","shelf","rack","floor"]; 
     YAHOO.util.Event.addListener(ids, "click", get_block);
 
     YAHOO.util.Event.addListener('add_location', "click", save_add_location);
+	YAHOO.util.Event.addListener('add_location_and_add_other', "click", save_add_location_return);
 
     var waDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
      waDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
