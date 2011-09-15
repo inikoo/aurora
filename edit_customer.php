@@ -140,8 +140,8 @@ foreach($other_email as $email){
 	
 }
 
-print_r($registered_email);
-print_r($unregistered_email);
+//print_r($registered_email);
+//print_r($unregistered_email);
 $smarty->assign('registered_email',$registered_email);
 $smarty->assign('unregistered_email',$unregistered_email);
 
@@ -224,7 +224,7 @@ $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
-$js_files[]=sprintf('edit_customer.js.php?id=%d',$customer->id);
+$js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%d',$customer->id,count($registered_email),count($unregistered_email));
 
 
 $smarty->assign('css_files',$css_files);
