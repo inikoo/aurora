@@ -1,7 +1,13 @@
-<?php global $path?>
+<?php global $path;
+if($_REQUEST['path']==1)
+	$_path="../";
+elseif($_REQUEST['path']==2)
+	$_path="../../";
+
+?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
-var path='<?php echo $_REQUEST["path"] ?>';
+var path='<?php echo $_path ?>';
 
 function change_password(){
 

@@ -1,5 +1,10 @@
 <?php
 global $width, $path;
+
+if($path=="../../")
+	$path_id=2;
+elseif($path=="../../")
+	$path_id=1;
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/ui.css.php?width=<?php echo $width?>" />
@@ -22,9 +27,9 @@ global $width, $path;
 
 //echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
 if($logged_in){?>
-<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path ?>"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>"></script>
 <?php }else{?>
-<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path ?>"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path_id ?>"></script>
 <?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
