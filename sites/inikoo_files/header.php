@@ -41,7 +41,7 @@ $header=<<<EOD
 
 <div id="header_container" >
 
-<div id="header" $style>
+<div id="header" >
 
 
 <div style="height:55px;color:#800000">
