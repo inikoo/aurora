@@ -2,12 +2,20 @@
 global $width;
 $width=$_REQUEST['width'];
 if($width==1000){
-	$header_art="header1000c.png";
+	$header_art="header1000d.png";
 	$footer_art="footer1000.png";
+	$header_table_width=1000;
+	$header_table_found_in=130;
+	$header_table_search=505;
+	$header_table_see_also=365;
 }
 else{
 	$header_art="header1.jpg";
 	$footer_art="footerbackground.png";
+	$header_table_width=875;
+	$header_table_found_in=130;
+	$header_table_search=380;
+	$header_table_see_also=365;
 }
 
 
@@ -123,41 +131,23 @@ table.footer_table{
 }
 
 
-table.header_table{
-	width:100%;
+table.zheader_table{
+	xwidth:100%;
 
 	
 }
 
 
- .header_table td.found_in{
-	background-image:url('../art/found_in.png'); 
-	background-repeat:no-repeat; 
-	background-position:center bottom; 
-	width:128px;
-	padding-top:5px;padding-bottom:10px;
-	text-align:center;
-	
-}
 
- .header_table span{
+
+ .zheader_table span{
  
  margin-left:15px;
  width:600px;
  ;padding-left:10px;
  }
 
-.header_table td.search{
-	vertical-align:bottom;text-align:center
-}
-.header_table td.see_also{
-	background-image:url('../art/see_also.png'); 
-	background-repeat:no-repeat; 
-	background-position:center bottom; 
-	width:401px;padding-top:5px;padding-bottom:10px;padding-left:10px;padding-right:-10px;
-	
-	
-}
+
 
 
 .product_list td{padding:4px 5px 4px 10px;}
@@ -183,3 +173,36 @@ table.header_table{
 
 
 .form td{padding:1px 5px 1px 10px;}
+
+
+
+
+table.header_table{
+	width:<?php echo $header_table_width?>px;
+
+	
+}
+ .header_table td#found_in{
+	background-image:url('../art/found_in.png'); 
+	background-repeat:no-repeat; 
+	background-position:center bottom; 
+	width:<?php echo $header_table_found_in?>px;
+	padding-top:5px;padding-bottom:10px;
+	text-align:center;
+	
+}
+
+.header_table td#search{
+	vertical-align:bottom;text-align:center;
+	width:<?php echo $header_table_search?>px;
+}
+.header_table td#see_also{
+	background-image:url('../art/see_also.png'); 
+	background-repeat:no-repeat; 
+	background-position:center bottom; 
+	width:<?php echo $header_table_see_also?>px;padding-top:5px;padding-bottom:10px;padding-left:20px;padding-right:10px;
+	
+	
+}
+
+span.see_also{margin-left:10px}
