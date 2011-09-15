@@ -27,7 +27,7 @@ $i=0;
 $see_also_data="";
 if(isset($see_also)){
 foreach($see_also as $key=>$value){
-$see_also_data.="<span><a href='".$value."'>".$key."</a></span>";
+$see_also_data.="<span class='see_also'><a href='".$value."'>".$key."</a></span>";
 	if($i++>1) break;
 }
 }
@@ -55,11 +55,11 @@ $header=<<<EOD
 <a href="http://www.ancientwisdom.biz"><span id="aw_link"></span></a>
 <table  class="header_table" >
 <tr>
-<td class="found_in">$found_in</td>
-<td >$search_input</td>
-<td rowspan="3" class="see_also">
+<td id="found_in">$found_in</td>
+<td id="search_input"  >$search_input</td>
+<td id="see_also" class="see_also">
 
-<span><b>See also:</b>$see_also_data</span>
+<span id="see_also_label">See also:</span> $see_also_data
 
 
 </td>
