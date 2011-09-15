@@ -361,7 +361,7 @@ function login(){
 			
 
 		},failure:function(o){
-		    alert(o)
+		   
 		}
 	    
 	    });
