@@ -1,7 +1,14 @@
-<?php global $path?>
+<?php global $path;
+
+if($_REQUEST['path']=='1')
+	$_path="../";
+elseif($_REQUEST['path']=='2')
+	$_path="../../";
+
+?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
-var path='<?php echo $_REQUEST["path"] ?>';
+var path='<?php echo $_path ?>';
 var data={ 
     "Customer Type":''
     ,"Customer Name":''
@@ -210,14 +217,14 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request=path+'inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
- alert(request);
+ //alert(request);
   Dom.setStyle('tr_forgot_password_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait','display','');
 
   
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');
@@ -333,7 +340,7 @@ function login(){
 //Dom.get('login_password').value='';
     //Dom.get('loginform').submit();
      var request=path+'inikoo_files/ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
-     alert(request);
+     //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)
