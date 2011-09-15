@@ -1115,9 +1115,31 @@ Dom.setStyle('display_add_other_mobile','display','none');
 Dom.setStyle('tr_add_other_mobile','display','');
 }
 
-function show_register_block(){
+function register(){
 	alert('block');
-	Dom.get('register_block_'+this).style.display='';
+	
+
+var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url
+
+	            alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.get('password_msg').innerHTML="Email Sent"
+				Dom.get('password_msg').style.display='';
+	
+
+            }
+			else{
+				Dom.get('password_msg').innerHTML=r.msg;
+				Dom.get('password_msg').style.display='';
+			}
+   			}
+    });
 	
 }
 
@@ -1159,7 +1181,7 @@ dialog_comment.render();
 
 	echo 'var ids_show = [';
 	for($i=0; $i<$_REQUEST['register_count']; $i++){
-		echo ' "show_register_block_'.$i.'",';
+		echo ' "register_'.$i.'",';
 	}
 	echo '];';
 	
@@ -1168,7 +1190,7 @@ dialog_comment.render();
 
 	//var ids_show = ["show_register_block_0", ""];
 
-	Event.addListener(ids_show, "click", show_register_block , true);
+	Event.addListener(ids_show, "click", register , true);
 	
 	
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);

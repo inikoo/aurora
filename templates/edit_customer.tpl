@@ -19,7 +19,7 @@
     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
     <li> <span class="item {if $edit=='merge'}selected{/if}"  id="merge">  <span> {t}Merge{/t}</span></span></li>
 	{if $site_customer}
-	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password" style="display:none">  <span> {t}User Site{/t}</span></span></li>
+	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password" style="display:">  <span> {t}User Site{/t}</span></span></li>
 	{/if}
   </ul>
   
@@ -57,18 +57,9 @@
    <td style="width:200px">{t}{$email}{/t}</td>
    <td style="width:200px">
    <div>
-       <span style="cursor:pointer" id="show_register_block_{$key}">&#8623;</span>
+       <input type="button" class="button" id="register_{$key}" value="Register"/>
    </div></td>
    </tr>
-   
-   <tr>
-   <div id="register_block_{$key}" style="display:none">
-	Hello {$key}
-   </div>
-   </tr>
-   
-   
-   
    
    {/foreach}
    
