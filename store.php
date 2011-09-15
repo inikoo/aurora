@@ -320,6 +320,16 @@ $smarty->assign('elements_family_number',$elements_number);
 //print_r($_SESSION['state']['store']['families']);
 $smarty->assign('elements_family',$_SESSION['state']['store']['families']['elements']);
 
+$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
+$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Store Key`=%d group by `Product Main Type`",$store->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Product Main Type']]=$row['num'];
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
+
+
 
 $smarty->display('store.tpl');
 
