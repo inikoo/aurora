@@ -24,6 +24,7 @@
   </ul>
   
  <div class="tabbed_container" > 
+ {if $site_customer}
  <div  class="edit_block" style="{if $edit!="password"}display:none{/if};min-height:260px"  id="d_password">
  
 
@@ -33,19 +34,29 @@
    <tr>
    <td style="width:200px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
    <td style="width:200px">
-   
-   
    <div>
        <input type="button" class="button" id="forget_password" value="Send"/>
-   
-   </div>
-   
-   </td>
-  
+   </div></td>
    </tr>
+   <tr><td><span id="password_msg" style="display:"></span></td></tr>
+   
+	{foreach from=$unregistered_email item=email key=key name=foo  }
+	   <tr>
+   <td style="width:200px">{t}Send an Email: ({$email}){/t}</td>
+   <td style="width:200px">
+   <div>
+       <input type="button" class="button" id="forget_password_{$key}" value="Send"/>
+   </div></td>
+   </tr>
+   <tr><td><span id="password_msg" style="display:"></span></td></tr>
+   {/foreach}
+   
+   
+   
+   
    </table>
  </div>
- 
+ {/if}
  
    <div  class="edit_block" style="{if $edit!="merge"}display:none{/if};min-height:260px"  id="d_merge">
    
