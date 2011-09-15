@@ -19,7 +19,7 @@
     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
     <li> <span class="item {if $edit=='merge'}selected{/if}"  id="merge">  <span> {t}Merge{/t}</span></span></li>
 	{if $site_customer}
-	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password">  <span> {t}User Site{/t}</span></span></li>
+	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password" style="display:">  <span> {t}User Site{/t}</span></span></li>
 	{/if}
   </ul>
   
@@ -29,18 +29,17 @@
  
 
 
-   <table class="edit" border=0  style="width:700px">
+   <table class="edit" border=0  style="width:100%">
     <tr class="title"><td colspan=5>{t}Reset Password{/t}</td></tr>
    <tr>
-   <td style="width:200px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
+   <td style="width:400px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" id="forget_password" value="Send"/>
-   </div></td>
-   </tr>
-   <tr><td><span id="password_msg" style="display:"></span></td></tr>
-   
-	{foreach from=$unregistered_email item=email key=key name=foo  }
+       <input type="button" class="button" id="forget_password_main" value="Send"/>
+   </div></td><td>
+	<span id="password_msg" style="display:"></span></td></tr>
+    
+	{foreach from=$registered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}Send an Email: ({$email}){/t}</td>
    <td style="width:200px">
@@ -48,9 +47,21 @@
        <input type="button" class="button" id="forget_password_{$key}" value="Send"/>
    </div></td>
    </tr>
-   <tr><td><span id="password_msg" style="display:"></span></td></tr>
+   <tr><td><span id="password_msg_{$key}" style="display:"></span></td></tr>
    {/foreach}
    
+   
+   <tr class="title"><td colspan=5>{t}Register Email{/t}</td></tr>
+   	{foreach from=$unregistered_email item=email key=key name=foo  }
+	   <tr>
+   <td style="width:200px">{t}{$email}{/t}</td>
+   <td style="width:200px">
+   <div>
+       <input type="button" class="button" id="register_{$key}" value="Register"/>
+   </div></td>
+   </tr>
+   
+   {/foreach}
    
    
    

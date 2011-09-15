@@ -70,13 +70,13 @@ class LightFamily {
 			if(strtolower($options['order_by']) == 'price')
 				$order_by='`Product RRP`';
 			elseif(strtolower($options['order_by']) == 'code')
-				$order_by='`Product Code`';
+				$order_by='`Product Code File As`';
 			elseif(strtolower($options['order_by']) == 'name')
 				$order_by='`Product Name`';
 			else
-				$order_by=true;
+				$order_by='`Product Code File As`';
 		else
-			$order_by=true;
+			$order_by='`Product Code File As`';
 			
 		if(isset($options['limit']))
 			$limit='limit '.$options['limit'];
@@ -342,13 +342,13 @@ class LightFamily {
 			if(strtolower($options['order_by']) == 'price')
 				$order_by='`Product RRP`';
 			elseif(strtolower($options['order_by']) == 'code')
-				$order_by='`Product Code`';
+				$order_by='`Product Code File As`';
 			elseif(strtolower($options['order_by']) == 'name')
 				$order_by='`Product Name`';
 			else
-				$order_by=true;
+				$order_by='`Product Code File As`';
 		else
-			$order_by=true;
+			$order_by='`Product Code File As`';
 			
 		if(isset($options['limit']))
 			$limit='limit '.$options['limit'];
@@ -530,13 +530,13 @@ class LightFamily {
 			if(strtolower($options['order_by']) == 'price')
 				$order_by='`Product RRP`';
 			elseif(strtolower($options['order_by']) == 'code')
-				$order_by='`Product Code`';
+				$order_by='`Product Code File As`';
 			elseif(strtolower($options['order_by']) == 'name')
 				$order_by='`Product Name`';
 			else
-				$order_by=true;
+				$order_by='`Product Code File As`';
 		else
-			$order_by=true;
+			$order_by='`Product Code File As`';
 			
 		if(isset($options['limit']))
 			$limit='limit '.$options['limit'];
@@ -715,13 +715,13 @@ class LightFamily {
 			if(strtolower($options['order_by']) == 'price')
 				$order_by='`Product RRP`';
 			elseif(strtolower($options['order_by']) == 'code')
-				$order_by='`Product Code`';
+				$order_by='`Product Code File As`';
 			elseif(strtolower($options['order_by']) == 'name')
 				$order_by='`Product Name`';
 			else
-				$order_by=true;
+				$order_by='`Product Code File As`';
 		else
-			$order_by=true;
+			$order_by='`Product Code File As`';
 			
 		if(isset($options['limit']))
 			$limit='limit '.$options['limit'];

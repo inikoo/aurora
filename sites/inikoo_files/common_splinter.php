@@ -353,10 +353,15 @@ function set_parameters($data=false) {
 
     global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site, $width, $path;
 	
-    if (!isset($data['width']))
-        $width=875;
-    else
-        $width=$data['width'];
+	$width=875;
+	  if(isset($data['width']))
+		 $width=$data['width'];
+	   if(isset($data['w']))
+		 $width=$data['w'];
+	   if(isset($data['width']))
+		 $width=$data['width'];
+	
+  
 
 	if (!isset($data['type']))
         $path="../../";
