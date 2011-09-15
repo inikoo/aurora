@@ -111,12 +111,12 @@
 		</table>
 		
 		
-		<table class="show_info_product" style="{if $product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%"  >
+		<table  class="show_info_product" style="{if $product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%"  >
 		  <tr><td>{t}Parts{/t}:</td><td class="aright">{$product->get('Product XHTML Parts')}</td></tr>
 		  <tr>
-		    <td>{t}Locations{/t}:</td><td class="aleft">
+		    <td>{t}Locations{/t}:</td><td>
 		      {foreach from=$product->get_part_locations(true) item=part_location name=foo }
-		      <tr><td><a href="part.php?sku={$part.sku}">{$part_location.PartFormatedSKU}</a></td><td style="padding-left:10px"> <a href="location.php?id={$part_location.LocationKey}"><b>{$part_location.LocationCode}</b></a> ({$part_location.QuantityOnHand})</td></tr>
+		      <tr><td style="{if $number_parts<=1}visibility:hidden{/if};padding-right:10px" ><a href="part.php?sku={$part_location.PartSKU}">{$part_location.PartFormatedSKU}</a></td><td class="aright"> <a href="location.php?id={$part_location.LocationKey}"><b>{$part_location.LocationCode}</b></a> ({$part_location.QuantityOnHand})</td></tr>
 		      {/foreach}
 		</table>
 		

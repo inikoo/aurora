@@ -49,6 +49,8 @@ $warehouse_key=0;
 
 
 
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
 
 $general_options_list[]=array('tipo'=>'url','url'=>'part.php?sku='.$part->sku,'label'=>_('Exit Edit'));
@@ -86,7 +88,8 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		// $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+
 		 $yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
 		  'text_editor.css',
@@ -113,7 +116,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'js/common.js',
 		'js/search.js',
-		 'js/dropdown.js',
+	
 		'js/table_common.js',
 		'js/upload_image.js',
 		'js/edit_common.js',

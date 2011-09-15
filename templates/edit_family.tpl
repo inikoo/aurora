@@ -155,7 +155,7 @@
  
  <tr class="first"><td style="width:180px" class="label">{t}Department{/t}:</td>
    <td  style="text-align:left">
- <span id="current_department_code">{$family->get('Product Family Main Department Code')}</span> <img id="edit_family" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
+ <span id="current_department_code">{$family->get('Product Family Main Department Code')}</span> <img id="edit_family_department" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s>
    </td>
    <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
  </tr>

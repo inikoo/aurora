@@ -2,6 +2,14 @@
 include_once('common.php');
 include_once('class.Warehouse.php');
 
+
+if(isset($_REQUEST['auto']))
+	$auto=1;
+else
+	$auto=0;
+	
+
+
 $smarty->assign('box_layout','yui-t0');
 $warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
 
@@ -19,8 +27,14 @@ $css_files=array(
 
 include_once('Theme.php');
 
+$general_options_list=array();
+
+$general_options_list[]=array('tipo'=>'url','url'=>'http://localhost/kaktus/edit_warehouse.php','label'=>_('Back'));
 
 
+$smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -36,7 +50,8 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
 		'js/raphael.js',
-		'new_location.js.php'
+		'new_location.js.php?auto='.$auto,
+		'js/search.js'
 		
 		);
 

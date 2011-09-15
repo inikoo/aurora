@@ -448,7 +448,7 @@ global $store;
         }
 
     }
-
+print $user_key;
     if ($user_key) {
 
 
@@ -459,8 +459,8 @@ global $store;
 
         $email_credential_key=$store->get_email_credential_key('Site Registration');
 
-		
-
+		//print $email_credential_key=1;
+//print_r($store);
         $signature_name='';
         $signature_company='';
 
@@ -480,9 +480,6 @@ global $store;
 
 
 
-//json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$user_key ));
-//$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store_key,256));
-
 
 
         $encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
@@ -501,22 +498,25 @@ global $store;
                       <br><br>
                       Thank you";
 
-
-
-//$to='rulovico@gmail.com';
+$files=array();	
         $to=$login_handle;
         $data=array(
-                
-                  'subject'=>	'Reset your password',
+				  'type'=>'HTML',
+                  'subject'=>'Reset your password',
                   'plain'=>$plain_message,
                   'email_credentials_key'=>$email_credential_key,
                   'to'=>$to,
                   'html'=>$html_message,
-
+					'attachement'=>$files
               );
-
+		if(isset($data['plain']) && $data['plain']){
+			$data['plain']=$data['plain'];
+		}
+		else
+			$data['plain']=null;
+			
         $send_email=new SendEmail();
-        $send_email->smtp('HTML', $data);
+        $send_email->smtp('plain', $data);
         $result=$send_email->send();
 
 		//print_r($result);

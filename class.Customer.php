@@ -501,6 +501,34 @@ class Customer extends DB_Table {
         return $this->data['Customer Name'];
     }
 
+	    function get_greetings($locale=false) {
+
+        if ($locale) {
+
+            if (preg_match('/^es_/',$locale)) {
+                $unknown_name='A quien corresponda';
+                $greeting_prefix='Estimado';
+            } else {
+                $unknown_name='To whom it corresponds';
+                $greeting_prefix='Dear';
+            }
+
+
+
+        } else{
+            $unknown_name='To whom it corresponds';
+             $greeting_prefix='Dear';
+        }
+        if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
+            return $unknown_name;
+        $greeting=$greeting_prefix.' '.$this->data['Customer Main Contact Name'];
+        if ($this->data['Customer Type']=='Company') {
+            $greeting.=', '.$this->data['Customer Name'];
+        }
+        return $greeting;
+
+    }
+	
     function get_data($tag,$id) {
         if ($tag=='id')
             $sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));

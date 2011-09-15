@@ -2,16 +2,15 @@
 global $width;
 $width=$_REQUEST['width'];
 if($width==1000){
-	$header_art="header1000.png";
+	$header_art="header1000c.png";
 	$footer_art="footer1000.png";
 }
 else{
 	$header_art="header1.jpg";
 	$footer_art="footerbackground.png";
 }
-	
-//print $width;
-//print $image;
+
+
 ?>
 body, html, div , table{	 font-family:"Arial", sans-serif; font-size:11.0px;font-weight: bold;  }
 table {border-collapse: collapse;}
@@ -82,6 +81,7 @@ margin-bottom:10px
 }
 
 
+
 #div2{
 display:none;position:absolute;top:50px;padding:0;margin-left:730px;font-family:"Arial", sans-serif; font-weight:700; font-size:11.0px; 
         line-height:1.27; color:#ffffff; text-align:center;
@@ -140,7 +140,12 @@ table.header_table{
 	
 }
 
- .header_table span{margin-left:15px}
+ .header_table span{
+ 
+ margin-left:15px;
+ width:600px;
+ ;padding-left:10px;
+ }
 
 .header_table td.search{
 	vertical-align:bottom;text-align:center
@@ -149,8 +154,9 @@ table.header_table{
 	background-image:url('../art/see_also.png'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
-	width:401px;padding-top:5px;padding-bottom:10px;
-	text-align:center;
+	width:401px;padding-top:5px;padding-bottom:10px;padding-left:10px;padding-right:-10px;
+	
+	
 }
 
 

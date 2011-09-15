@@ -80,7 +80,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         continue;
  if(preg_match('/italy/i',$row['notes']) and $row['tipo']==1)
         continue;
-        
+   if(preg_match('/replacement/i',$row['notes']) and $row['tipo']==1)
+        continue;
+       if(preg_match('/shortage/i',$row['notes']) and $row['tipo']==1)
+        continue;          
         
     //print $row['user']."\n";
     $user=new User('handle',$row['user'],'Staff');

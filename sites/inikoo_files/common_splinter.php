@@ -351,12 +351,22 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site, $width, $path;
+    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image;
 	
-    if (!isset($data['width']))
-        $width=875;
-    else
-        $width=$data['width'];
+	if(isset($data['header_image']))
+		$header_image=$data['header_image'];
+
+	//print $header_image;
+	
+	$width=875;
+	  if(isset($data['width']))
+		 $width=$data['width'];
+	   if(isset($data['w']))
+		 $width=$data['w'];
+	   if(isset($data['width']))
+		 $width=$data['width'];
+	
+  
 
 	if (!isset($data['type']))
         $path="../../";
