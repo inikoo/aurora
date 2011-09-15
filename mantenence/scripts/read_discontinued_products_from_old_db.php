@@ -77,9 +77,9 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 
     /*
-    $sql=sprintf("select `Product Code` from `Product Dimension` group by `Product Code`");
-    $res_code=mysql_query($sql);
-    while($row_c=mysql_fetch_array($res_code)){
+  $sql=sprintf("select `Product Code` from `Product Dimension` group by `Product Code`");
+$res_code=mysql_query($sql);
+while ($row_c=mysql_fetch_array($res_code)) {
       $code=$row_c['Product Code'];
       $sql=sprintf("select `Product ID`, `Product Code`,`Product Valid To`,`Product Record Type` from `Product Dimension` where `Product Store Key`=1 and `Product Code`=%s and `Product Record Type`!='Historic' order by  `Product Valid To` desc",prepare_mysql($code));
       $res=mysql_query($sql);
