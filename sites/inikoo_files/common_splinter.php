@@ -366,7 +366,7 @@ function set_parameters($data=false) {
 	   if(isset($data['width']))
 		 $width=$data['width'];
 	
-  
+
 
 	if (!isset($data['type']))
         $path="../../";
