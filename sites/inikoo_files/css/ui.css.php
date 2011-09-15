@@ -9,9 +9,8 @@ else{
 	$header_art="header1.jpg";
 	$footer_art="footerbackground.png";
 }
-	
-//print $width;
-//print $image;
+
+
 ?>
 body, html, div , table{	 font-family:"Arial", sans-serif; font-size:11.0px;font-weight: bold;  }
 table {border-collapse: collapse;}
