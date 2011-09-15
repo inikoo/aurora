@@ -38,7 +38,7 @@
 
 
 
-    <table border=0 styel="clear:both" class="edit">
+    <table border=0 style="clear:both;width:100%" class="edit">
       <tr><td style="width:160px" class="label" >{t}Department Code{/t}:</td><td>
 	 <div  >
 

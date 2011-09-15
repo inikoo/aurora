@@ -136,7 +136,15 @@ case('edit_family'):
 
     edit_family($data);
     break;
+case('edit_family_department'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
 
+    edit_family_department($data);
+    break;
 case('edit_product_advanced'):
     edit_product_multi();
     break;
@@ -548,8 +556,14 @@ function edit_subcategory() {
     echo json_encode($response);
 }
 
-function edit_family($data) {
+
+
+
+
+function edit_family_department($data) {
     //print $data['newvalue'];
+    
+  
     $family=new family($data['id']);
     global $editor;
     $family->editor=$editor;
@@ -558,6 +572,27 @@ function edit_family($data) {
 
     if ($family->updated) {
         $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key'],'newdata'=>$family->new_data);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+}
+
+
+function edit_family($data) {
+    //print $data['newvalue'];
+    
+  
+    $family=new family($data['id']);
+    global $editor;
+    $family->editor=$editor;
+  
+ 
+
+ $family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    if ($family->updated) {
+        $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key']);
 
     } else {
         $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
@@ -3335,8 +3370,9 @@ function edit_supplier_product_part($data) {
         if ($data['newvalue']=='Yes') {
             $available_state='Available';
         }
-        elseif($data['newvalue']=='Yes') {
-            $available_state='NO available';
+        elseif($data['newvalue']=='No
+        ') {
+            $available_state='No available';
         }
         else {
             $response= array('state'=>400,'msg'=>'not validn ','key'=>$data['key']);

@@ -655,7 +655,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:500,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
 
@@ -1088,7 +1088,7 @@ department_key=tables.table2.getRecord(oArgs.target).getData('key');
  dialog_family_list.hide();
 
 
-	var request = 'ar_edit_assets.php?tipo=edit_family&key=' + 'department_key' + '&newvalue=' + department_key+ '&id=' + family_id
+	var request = 'ar_edit_assets.php?tipo=edit_family_department&key=' + 'department_key' + '&newvalue=' + department_key+ '&id=' + family_id
 	 //alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -1493,11 +1493,11 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     family_page_content_presentation_template_data_oAutoComp.queryDelay = 0.1;
 
 	
-	    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["edit_family_department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_family_list.render();
 	
 	
-    Event.addListener("edit_family", "click", dialog_family_list.show,dialog_family_list , true);
+    Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
 
 }
 

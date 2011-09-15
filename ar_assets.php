@@ -3290,14 +3290,22 @@ function list_parts() {
 
 
     $elements=$conf['elements'];
-    if (isset( $_REQUEST['elements_InUse'])) {
-        $elements['In Use']=$_REQUEST['elements_InUse'];
-
+    
+   
+    
+    if (isset( $_REQUEST['elements_Keeping'])) {
+        $elements['Keeping']=$_REQUEST['elements_Keeping'];
     }
-    if (isset( $_REQUEST['elements_NotInUse'])) {
-        $elements['Not In Use']=$_REQUEST['elements_NotInUse'];
+    if (isset( $_REQUEST['elements_NotKeeping'])) {
+        $elements['NotKeeping']=$_REQUEST['elements_NotKeeping'];
     }
 
+    if (isset( $_REQUEST['elements_Discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_Discontinued'];
+    }
+  if (isset( $_REQUEST['elements_LastStock'])) {
+        $elements['LastStock']=$_REQUEST['elements_LastStock'];
+    }
 
 
 
@@ -3338,7 +3346,7 @@ function list_parts() {
     if ($_elements=='') {
         $where.=' and false' ;
     } else {
-        $where.=' and `Part Status` in ('.$_elements.')' ;
+        $where.=' and `Part Main State` in ('.$_elements.')' ;
     }
 
 

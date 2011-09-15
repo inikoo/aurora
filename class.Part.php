@@ -133,28 +133,62 @@ class part extends DB_Table {
 
 
 
-function update_status($value,$options){
-
-     $this->update_field('Part Status',$value,$options);
-
-if($value=='In Use'){
-
-
-}elseif($value=='Not In Use'){
-
-$locations=$this->get_location_keys();
 
 
 
-foreach($locations as $location_key){
-$part_location=new PartLocation($this->sku.'_'.$location_key);
 
-$part_location->disassociate();
+    function update_main_state() {
+        if ($this->data['Part Status']=='In Use') {
 
-}
+            if ($this->data['Part Available']=='Yes') {
+                $this->data['Part Main State']='Keeping';
+            } else {
+                $this->data['Part Main State']='Last Stock';
+            }
 
-}
-   $products=$this->get_product_ids();
+        } else {
+            if ($this->data['Part Available']=='Yes') {
+                $this->data['Part Main State']='Not Keeping';
+            } else {
+                $this->data['Part Main State']='Discontinued';
+            }
+        }
+
+        $sql=sprintf("update `Part Dimension`  set `Part Main State`=%s where  `Part SKU`=%d   "
+                     ,prepare_mysql($this->data['Part Main State'])
+                     ,$this->id
+                    );
+        mysql_query($sql);
+
+
+    }
+
+
+
+    function update_status($value,$options) {
+
+        $this->update_field('Part Status',$value,$options);
+
+        if ($value=='In Use') {
+
+
+        } elseif($value=='Not In Use') {
+
+            $locations=$this->get_location_keys();
+
+
+
+            foreach($locations as $location_key) {
+                $part_location=new PartLocation($this->sku.'_'.$location_key);
+
+                $part_location->disassociate();
+
+            }
+
+        }
+        $this->update_main_state();
+        
+        $products=$this->get_product_ids();
         foreach($products as $product_pid) {
             $product=new Product ('pid',$product_pid);
             $product->update_availability_type();
@@ -162,38 +196,38 @@ $part_location->disassociate();
         }
 
 
-}
+    }
 
 
-function update_field_switcher($field,$value,$options='') {
-   
+    function update_field_switcher($field,$value,$options='') {
 
 
-	switch ($field) {
+
+        switch ($field) {
         case('Part Status'):
             $this->update_status($value,$options);
             break;
-     
-	}
 
-	$base_data=$this->base_data();
-	//print_r($base_data);
-	//print $field;
-	if(array_key_exists($field,$base_data)) {
-	
-		if ($value!=$this->data[$field]) {
-		//		print 'ss';
-			$this->update_field($field,$value,$options);
+        }
 
-		}
-	}
-	elseif(preg_match('/^custom_field_part/i',$field)) {
-		$this->update_field($field,$value,$options);
-	}
+        $base_data=$this->base_data();
+        //print_r($base_data);
+        //print $field;
+        if (array_key_exists($field,$base_data)) {
+
+            if ($value!=$this->data[$field]) {
+                //		print 'ss';
+                $this->update_field($field,$value,$options);
+
+            }
+        }
+        elseif(preg_match('/^custom_field_part/i',$field)) {
+            $this->update_field($field,$value,$options);
+        }
 
 
-	
-}
+
+    }
 
 
 
@@ -834,11 +868,11 @@ function update_field_switcher($field,$value,$options='') {
         return array($stock,$value);
 
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 
     function get_stock($date) {
         $stock=0;
@@ -933,8 +967,8 @@ function update_field_switcher($field,$value,$options='') {
         }
         return $products;
     }
-    
-     function get_all_product_ids() {
+
+    function get_all_product_ids() {
         $sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d  group by `Product ID`",$this->data['Part SKU']);
         // print $sql;
         $result=mysql_query($sql);
@@ -944,8 +978,8 @@ function update_field_switcher($field,$value,$options='') {
         }
         return $products;
     }
-    
-    
+
+
 
     function update_stock() {
         //print_r($this->get_current_stock());
@@ -982,15 +1016,16 @@ function update_field_switcher($field,$value,$options='') {
         $availability='No';
 
         $supplier_products=$this->get_supplier_products();
-        if (count($supplier_products)>0) {
-            $availability='Yes';
-        }
+        // if (count($supplier_products)>0) {
+        //   $availability='Yes';
+        // }
 
         //TODO meka it work if you have more that 2 suppliers, for now all parts are 1-1 (1-n,n-1) are treated as production
+
         foreach($supplier_products as $supplier_product) {
 
-            if ($supplier_product['Supplier Product Part In Use']=='No')
-                $availability='No';
+            if ($supplier_product['Supplier Product Part In Use']=='Yes')
+                $availability='Yes';
         }
 
 
@@ -999,10 +1034,10 @@ function update_field_switcher($field,$value,$options='') {
                      ,$this->id
                     );
         mysql_query($sql);
-        
-      
-        
-        
+
+
+$this->update_main_state();
+
 
         $products=$this->get_product_ids();
         foreach($products as $product_pid) {
@@ -1018,7 +1053,7 @@ function update_field_switcher($field,$value,$options='') {
 
 
 
-   
+
 
     function update_valid_to($date) {
         $this->data['Part Valid To']=$date;
@@ -2455,15 +2490,15 @@ function update_field_switcher($field,$value,$options='') {
 
             if ($row2=mysql_fetch_array($res2)) {
 
-               // $status='No';
-               // if ($to=='')
+                // $status='No';
+                // if ($to=='')
                 //    $status='Yes';
 
                 $sql=sprintf("update `Product Part Dimension` set `Product Part Valid From`=%s , `Product Part Valid To`=%s  where `Product Part Key`=%d"
                              ,prepare_mysql($from)
                              ,prepare_mysql($to)
 
-                          //   ,prepare_mysql($status)
+                             //   ,prepare_mysql($status)
                              ,$row2['Product Part Key']
                             );
 //print "$sql\n";

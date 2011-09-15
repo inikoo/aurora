@@ -220,6 +220,14 @@ $smarty->assign('export_csv_table_cols',8);
 $smarty->assign('csv_export_options',$csv_export_options);
 
 
+$elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
+$sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension`  group by  `Part Main State`   ",$department->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Part Main State']]=$row['num'];
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['parts']['table']['elements']);
 
 
 
