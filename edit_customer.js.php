@@ -196,8 +196,15 @@ var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer
 	            alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
+				Dom.get('password_msg').innerHTML="Email Sent"
+				dom.get('password_msg').style.display='';
+	
 
-                                  }
+            }
+			else{
+				Dom.get('password_msg').innerHTML=r.msg;
+				dom.get('password_msg').style.display='';
+			}
    			}
     });
 }
@@ -1124,7 +1131,8 @@ dialog_comment.render();
     Event.addListener("display_add_other_mobile", "click", display_add_other_mobile , true);
     Event.addListener("display_add_other_fax", "click", display_add_other_fax , true);
 	
-	Event.addListener("forget_password", "click", forget_password , true);
+	var ids = ["individual","shelf","rack","floor"]; 
+	Event.addListener(ids, "click", forget_password , true);
 
 
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);

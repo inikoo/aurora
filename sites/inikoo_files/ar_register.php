@@ -433,7 +433,7 @@ global $store;
 //print_r($_SESSION);
 
     $securimage = new Securimage();
-    if (!$securimage->check($data['values']['captcha_code']) == false) {
+    if ($securimage->check($data['values']['captcha_code']) == false) {
 
         $response=array('state'=>200,'result'=>'capture_false');
         echo json_encode($response);
