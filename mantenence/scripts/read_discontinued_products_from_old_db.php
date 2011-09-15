@@ -5,6 +5,8 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
+include_once('../../class.PartLocation.php');
+
 include_once('../../class.SupplierProduct.php');
 date_default_timezone_set('UTC');
 
@@ -48,12 +50,12 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
                 $supplier_product['Supplier Product Key']
                 );
                 mysql_query($sql);
-                print "$sql\n";
+                //print "$sql\n";
                 $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='No' where `Supplier Product Part Key`=%d",
                 $supplier_product['Supplier Product Part Key']
                 );
                 mysql_query($sql);
-                print "$sql\n";
+              //  print "$sql\n";
                 
             }
             
