@@ -1,7 +1,13 @@
 <?php 
 //global $found_in['url'];
 global $found_in_label, $found_in_url;
-global $see_also, $header_title, $path;
+global $see_also, $header_title, $path, $header_image;
+
+//print $header_image;
+if($header_image)
+$style='style="background-image:url(\''.$path.'art/'.$header_image.'\')"'; 
+else
+$style='';
 //print $found_in_url;
 
 $search_input=file_get_contents("$path".'inikoo_files/templates/search_input.html');
@@ -35,7 +41,7 @@ $header=<<<EOD
 
 <div id="header_container" >
 
-<div id="header">
+<div id="header" $style>
 
 
 <div style="height:55px;color:#800000">
