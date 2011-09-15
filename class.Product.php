@@ -15,6 +15,7 @@ include_once('class.Deal.php');
 include_once('class.SupplierProduct.php');
 include_once('class.Part.php');
 include_once('class.Store.php');
+include_once('class.Family.php');
 include_once('common_store_functions.php');
 
 /* class: product
@@ -5489,6 +5490,10 @@ class product extends DB_Table {
         $sql=sprintf("update `Product Dimension` set `Product Main Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Main Type']),$this->pid);
         // print "$sql\n";
         mysql_query($sql);
+        
+        $family=new Family($this->data['Product Family Key']);
+        $family->update_product_data();
+        
     }
 
     function update_availability_type() {
