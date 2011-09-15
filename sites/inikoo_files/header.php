@@ -51,9 +51,9 @@ $header=<<<EOD
 <tr>
 <td class="found_in">$found_in</td>
 <td >$search_input</td>
-<td rowspan="2" class="see_also"><span><b>See also:</b></span> 
+<td rowspan="3" class="see_also">
 
-$see_also_data
+<span><b>See also:</b>$see_also_data</span>
 
 
 </td>
