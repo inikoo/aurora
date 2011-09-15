@@ -448,7 +448,7 @@ global $store;
         }
 
     }
-print $user_key;
+
     if ($user_key) {
 
 
