@@ -45,7 +45,8 @@
 <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
 	
 	<table style="margin:5px 0px ;width:700px"  border=0 class="edit">
-	 <tr class="title"><td >{t}Type of Product{/t}</td></tr>
+	<tbody style="display:none" >
+	<tr class="title"><td >{t}Type of Product{/t}</td></tr>
 	 <tr>
 	   
 	    
@@ -58,6 +59,7 @@
 	    </td>
 	    
 	  </tr>
+	  </tbody>
 </table>
 
 
@@ -421,7 +423,7 @@
 {include file='footer.tpl'}
 
 <div id="dialog_part_list">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:650px">
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Parts{/t}</span>
             {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}

@@ -691,7 +691,7 @@ var tableid=1;
 		      		{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
-			     	,{key:"status", label:"",width:20, sortable:false,className:"aleft"}
+			     	,{key:"status", label:"",width:70, sortable:false,className:"aleft"}
                    
 					];
 		    

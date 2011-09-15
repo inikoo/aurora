@@ -4843,6 +4843,11 @@ class product extends DB_Table {
         return $skus;
     }
 
+
+    function get_number_of_parts(){
+        return count($this->get_current_part_skus());
+    }
+
     function get_current_part_list($options=false) {
 
         $part_list=array();

@@ -80,9 +80,7 @@ color:red;
 #yui-main{clear:both}
 
 #hd span{margin:0 0px}
-#bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 20px 40px 20px;
-height:auto !important;
-height:490px;}
+#bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 20px 40px 20px;height:auto !important;height:490px;}
 
 #footer{ font-size:77%;text-align:center;margin-top:5px;color:#777;margin-bottom:100px}
 
@@ -725,4 +723,6 @@ div.todo {;padding:20px}
 .sticky_note {border:1px solid #BAB84E;background:#EDEB82;float:left;width:300px;padding:0;margin-left:20px}
 
 
+#bd.out_of_stock{background-image:url('art/out_of_stock.png');;background-repeat:repeat-x;}
+#bd.discontinued{background-image:url('art/discontinued_gradient.png');;background-repeat:repeat-x;}
 
