@@ -47,8 +47,7 @@ $header=<<<EOD
 <div style="height:55px;color:#800000">
 <h1>$title</h1>
 </div>
-<div style="margin-left:172px" id="menu_bar">$menubar
-</div>
+<div id="menu_bar">$menubar</div>
 
 <div id="header_slogans"><span id="slogan2">Giftware sourced worldwide</span></div>
 <div id="div2">Please note this is a <br/> Trade Only Site </div>
@@ -57,10 +56,13 @@ $header=<<<EOD
 <tr>
 <td id="found_in">$found_in</td>
 <td id="search_input"  >$search_input</td>
+
 <td id="see_also" class="see_also">
+<table>
+<td><span id="see_also_label">See also:</span></td>
+<td>$see_also_data</td>
 
-<span id="see_also_label">See also:</span> $see_also_data
-
+</table>
 
 </td>
 </tr>

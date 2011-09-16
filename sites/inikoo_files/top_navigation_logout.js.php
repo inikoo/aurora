@@ -236,6 +236,10 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 			        
 			            Dom.setStyle('tr_forgot_password_wait','display','none');
 			            Dom.setStyle('tr_forgot_password_not_found','display','');
+			            
+			            Dom.get('captcha_code2').value='';
+			            Dom.get('captcha2').src = path+'inikoo_files/securimage_show.php?height=40&' + Math.random();
+			            
 
 			      }else if(r.result=='capture_false'){
 		        
@@ -517,6 +521,7 @@ Dom.removeClass('forgot_password_handle','error');
 
 if( Dom.get('captcha_code2').value==''){
 Dom.addClass(['captcha_code2'],'error');
+
 error=true;
 }else{
 Dom.removeClass(['captcha_code2'],'error');

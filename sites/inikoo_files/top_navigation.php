@@ -174,7 +174,7 @@ Your password has been changed.
 </tr>
 
 <tr id="tr_forgot_password_wait2"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
-<tr id="tr_forgot_password_send2" style="display:none" class="button" style=""><td colspan=2><p style="width:300px">An email has send to you with instructions how to access your account</p> <br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog2">Close</button></td></tr>
+<tr id="tr_forgot_password_send2" style="display:none" class="button" style=""><td colspan=2><p style="width:300px">An email has been sent to you with instructions how to access your account</p> <br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error2" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog3">Close</button></td></tr>
 
 
@@ -613,7 +613,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 <td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
 </tr>
 <tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
-<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has send to you with instructions how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
+<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has been send to you with instructions on how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
 <tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
 <tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>
 
