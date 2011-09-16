@@ -464,7 +464,7 @@ global $store;
         $signature_name='';
         $signature_company='';
 
-        $master_key=$user_key.'x'.generatePassword(6,10);
+        $master_key=$user_key.generatePassword(2,10);
 
 
 
@@ -485,14 +485,18 @@ global $store;
         $encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
 
 
-        $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
+$formated_url=preg_replace('/^http\:\\/\\//','',$url);
+
+        $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$formated_url."?p=".$encrypted_secret_data."\n\n Once you have returned to our website, you will be asked to choose a new password.\n\nThank you \n\n".$signature_name."\n".$signature_company;
+
+
 
 
         $html_message=$customer->get_greetings()."<br/>We received request to reset the password associated with this email account.<br><br>
                       If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
                       <b>Click the link below to reset your password</b>
                       <br><br>
-                      <a href=\"".$url."?p=".$encrypted_secret_data."\">".$url."?p=".$encrypted_secret_data."</a>
+                      <a href=\"".$url."?p=".$encrypted_secret_data."\">".$formated_url."?p=".$encrypted_secret_data."</a>
                       <br></br>
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>

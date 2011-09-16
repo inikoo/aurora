@@ -3465,10 +3465,13 @@ function generatePassword($length=9, $strength=0) {
         $vowels .= "AEUI";
     }
     if ($strength & 4) {
-        $consonants .= '2345678906789$%^&*(';
+       
+    $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
     }
     if ($strength & 8) {
-        $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
+        
+         $consonants .= '2345678906789$%^&*(';
+        
     }
 
     $password = '';
