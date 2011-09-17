@@ -277,8 +277,21 @@ function show_products($code,$options=false) {
 				$options['rrp']=true;
 		}
 	}
+	
+	if(isset($options['unit'])){
+		switch($options['unit']){
+			case 'false':
+			case false:
+			case 'off':
+				$options['unit']=false;
+				break;
+			default:
+				$options['unit']=true;
+		}
+	}
 
-print $options['rrp'];
+//print_r($options);
+
     $conf= array('ecommerce_url_multi'=>$ecommerce_url_multi,
                                        'username'=>$username,
                                                    'method'=>$method,
