@@ -1115,11 +1115,24 @@ Dom.setStyle('display_add_other_mobile','display','none');
 Dom.setStyle('tr_add_other_mobile','display','');
 }
 
-function register(){
-	alert('block');
+function register_email(o){
 	
+	email=Dom.get(o).getAttribute('email');
+	alert(email);
+	
+password='xxxxxxxxxxxxxx';
 
-var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url
+	data['Email']=Dom.get(o).getAttribute('email');
+	data['customer_id']=customer_id;
+	data['store_id']=store_id;
+	data['password']=password;
+	data['send_email']=true;
+
+	var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+  
+  
+  
+var request='ar_edit_users.php?tipo=create_user&values=' + json_value 
 
 	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -1127,17 +1140,8 @@ var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer
 	            success:function(o){
 					
 	            alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.get('password_msg').innerHTML="Email Sent"
-				Dom.get('password_msg').style.display='';
-	
 
-            }
-			else{
-				Dom.get('password_msg').innerHTML=r.msg;
-				Dom.get('password_msg').style.display='';
-			}
+
    			}
     });
 	
@@ -1176,7 +1180,7 @@ dialog_comment.render();
 
 ?>
 	Event.addListener(ids, "click", forget_password , true);
-	
+	/*
 <?php 
 
 	echo 'var ids_show = [';
@@ -1191,7 +1195,7 @@ dialog_comment.render();
 	//var ids_show = ["show_register_block_0", ""];
 
 	Event.addListener(ids_show, "click", register , true);
-	
+	*/
 	
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);
     customer_merge_oACDS.queryMatchContains = true;

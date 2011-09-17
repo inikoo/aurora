@@ -57,7 +57,7 @@
    <td style="width:200px">{t}{$email}{/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" id="register_{$key}" value="Register"/>
+       <input type="button" class="button" onclick="register_email(this)" email={$email} value="Register"/>
    </div></td>
    </tr>
    

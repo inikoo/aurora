@@ -205,8 +205,12 @@ table.header_table{
 	
 }
 
+
+
+
 span.see_also{margin-right:10px}
 .header_table  a{color:700000}
 .header_table  a:hover{color:770707}
 .header_table  a:visited{color:700070}
+
 
