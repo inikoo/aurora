@@ -73,7 +73,7 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 $sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code` like "%%-BN" ');
 $result=mysql_query($sql);
-print "$sql\n";
+//print "$sql\n";
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $product=new Product('pid',$row['Product ID']);
 

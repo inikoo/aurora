@@ -191,10 +191,13 @@
 </div> 
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     <div class="data_table" style="margin:0px;clear:both">
-        <span class="clean_table_title">{t}Products{/t}</span>
-        <span  id="export_csv3" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products" >{t}Export (CSV){/t}</span>
-        <a style="float:right;margin-left:20px"  class="table_type state_details"  href="export_xml.php" >{t}Export (XML){/t}</a>
-        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+        <span class="clean_table_title">{t}Products{/t} 
+          <img id="export_csv3"   tipo="products_in_stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif">
+          <img id="export_xml3"   tipo="products_in_stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (XML){/t}" alt="{t}Export (XML){/t}" src="art/icons/export_xml.gif">
+
+        </span>
+           
+       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
         <span style="float:right;margin-left:80px" class="state_details" state="{$product_show_percentages}"  id="show_percentages"  atitle="{if $product_show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $product_show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
         
         <table style="float:left;margin:0 0 0 0px ;padding:0"  class="product_view_options options" >
