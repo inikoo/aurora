@@ -266,9 +266,19 @@ function show_product($code) {
 function show_products($code,$options=false) {
     global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
 
+	if(isset($options['rrp'])){
+		switch($options['rrp']){
+			case 'false':
+			case false:
+			case 'off':
+				$options['rrp']=false;
+				break;
+			default:
+				$options['rrp']=true;
+		}
+	}
 
-
-
+print $options['rrp'];
     $conf= array('ecommerce_url_multi'=>$ecommerce_url_multi,
                                        'username'=>$username,
                                                    'method'=>$method,
