@@ -2,26 +2,31 @@
 function formated_rrp($data,$options=false) {
 
     $prefix=true;
+	$show_units=true;
     if (isset($options['prefix']))$prefix=$options['prefix'];
-
+	if (isset($options['show_unit']))$show_units=$options['show_unit'];
 
     $locale=$data['locale'];
 
+	if($data['Product Units Per Case']>1){
+		$show_units=true;
+	}
+	
     $rrp=money_locale($data['Product RRP']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
     if ($locale=="de_DE") {
-        return ($prefix?'UVP: ':'')."$rrp pro Stück";
+        return ($prefix?'UVP: ':'')."$rrp ".($show_units?_("pro Stück"):'');
     }
     elseif ($locale=="pl_PL") {
-        return ($prefix?'SCD: ':'')."$rrp za sztukę";
+        return ($prefix?'SCD: ':'')."$rrp ".($show_units?_("za sztukę"):'');
     }
     elseif ($locale=="es_ES") {
-        return ($prefix?'PVP: ':'')."$rrp und";
+        return ($prefix?'PVP: ':'')."$rrp ".($show_units?_(" und"):'');
     }
     elseif($locale=="fr_FR") {
-        return ($prefix?'PVC: ':'')."$rrp  /unité PVC";
+        return ($prefix?'PVC: ':'')."$rrp  ".($show_units?_("/unité PVC"):'');
     }
     else
-        return ($prefix?_("RRP").': ':'')."$rrp "._("each");
+        return ($prefix?_("RRP").': ':'')."$rrp ".($show_units?_("each"):'');
 
 }
 
