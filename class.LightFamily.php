@@ -177,7 +177,7 @@ class LightFamily {
                         $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
                         $print_rrp=false;
                     } else
-                        $rrp_label='<br/>span class="rrp">RRP from '.$rrp.'</span>';
+                        $rrp_label='<br/><span class="rrp">RRP from '.$rrp.'</span>';
 
 
 
@@ -186,7 +186,7 @@ class LightFamily {
                 }
             }
 
-            if ($print_price) {
+            if ($print_rrp) {
 
                 $sql=sprintf("select min(`Product Price`/`Product Units Per Case`) price_min, max(`Product Price`/`Product Units Per Case`) as price_max,avg(`Product Price`/`Product Units Per Case`)  as price_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
 
@@ -830,7 +830,7 @@ class LightFamily {
                 }
             }
 
-            if ($print_price) {
+            if ($print_rrp) {
 
                 $sql=sprintf("select min(`Product Price`/`Product Units Per Case`) price_min, max(`Product Price`/`Product Units Per Case`) as price_max,avg(`Product Price`/`Product Units Per Case`)  as price_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
 
