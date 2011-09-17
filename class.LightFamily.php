@@ -860,7 +860,10 @@ class LightFamily {
                 $sql=sprintf("select min(`Product Price`/`Product Units Per Case`) price_min, max(`Product Price`/`Product Units Per Case`) as price_max,avg(`Product Price`/`Product Units Per Case`)  as price_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') %s %s", $this->id,$range_where,$limit);
 
                 $res=mysql_query($sql);
+
                 if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+					
                     $price=$row['price_min'];
 
 
@@ -875,7 +878,8 @@ class LightFamily {
 
                     $price_label='<br/><span class="price">'.$price.'</span>';
 
-
+					if($row['price_min']==null)
+						$price_label='';
 
 
                 } else {
@@ -988,14 +992,18 @@ class LightFamily {
             $counter++;
         }
 
+		if($counter==1){
+			$form='Product is Discontinued';
+		}
+		else{
         $form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">				   
                        <input class="button" name="Submit" type="submit"  value="Order">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
                        '
                        ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
-
-
+		}
+		
 
         return $form;
     }
