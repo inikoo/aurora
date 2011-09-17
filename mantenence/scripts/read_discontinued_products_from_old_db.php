@@ -5,6 +5,8 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
+include_once('../../class.PartLocation.php');
+
 include_once('../../class.SupplierProduct.php');
 date_default_timezone_set('UTC');
 
@@ -48,12 +50,12 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
                 $supplier_product['Supplier Product Key']
                 );
                 mysql_query($sql);
-                print "$sql\n";
+                //print "$sql\n";
                 $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='No' where `Supplier Product Part Key`=%d",
                 $supplier_product['Supplier Product Part Key']
                 );
                 mysql_query($sql);
-                print "$sql\n";
+              //  print "$sql\n";
                 
             }
             
@@ -75,9 +77,9 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 
     /*
-    $sql=sprintf("select `Product Code` from `Product Dimension` group by `Product Code`");
-    $res_code=mysql_query($sql);
-    while($row_c=mysql_fetch_array($res_code)){
+  $sql=sprintf("select `Product Code` from `Product Dimension` group by `Product Code`");
+$res_code=mysql_query($sql);
+while ($row_c=mysql_fetch_array($res_code)) {
       $code=$row_c['Product Code'];
       $sql=sprintf("select `Product ID`, `Product Code`,`Product Valid To`,`Product Record Type` from `Product Dimension` where `Product Store Key`=1 and `Product Code`=%s and `Product Record Type`!='Historic' order by  `Product Valid To` desc",prepare_mysql($code));
       $res=mysql_query($sql);

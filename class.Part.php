@@ -165,7 +165,7 @@ class part extends DB_Table {
 
 
 
-    function update_status($value,$options) {
+    function update_status($value,$options='') {
 
         $this->update_field('Part Status',$value,$options);
 
@@ -1254,7 +1254,7 @@ $this->update_main_state();
     }
 
     function get_picking_location_historic($date) {
-        $sql=sprintf("select `Location Key` from `Inventory Spanshot Fact` where `Part SKU` in (%s) and `Location Type`='Picking'",$this->sku);
+        $sql=sprintf("select `Location Key` from `Inventory Spanshot Fact` where `Part SKU` in (%s) and `Location Type`='Picking'  ",$this->sku);
         $location_key=1;
         $res=mysql_query($sql);
 

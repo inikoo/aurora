@@ -174,7 +174,7 @@ table.zheader_table{
 
 .form td{padding:1px 5px 1px 10px;}
 
-
+#menu_bar{margin-left:172px}
 
 
 table.header_table{
@@ -205,6 +205,12 @@ table.header_table{
 	
 }
 
+
+
+
+span.see_also{margin-right:10px}
 .header_table  a{color:700000}
-.header_table  a:hover{color:770777}
+.header_table  a:hover{color:770707}
 .header_table  a:visited{color:700070}
+
+
