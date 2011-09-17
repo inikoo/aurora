@@ -191,15 +191,6 @@ class Auth {
 
 
 
-        if (preg_match('/^\d+/',$data,$match)) {
-
-            $user_key=$match[0];
-
-        } else {
-            // $this->log_failed_login();
-        }
-
-
 
         $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s and U.`User Key`=%d   ",
                      prepare_mysql($data),
