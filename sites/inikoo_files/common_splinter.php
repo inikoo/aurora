@@ -42,7 +42,7 @@ require_once 'conf/conf.php';
 $yui_path="external_libs/yui/2.9/build/";
 $pics_path='http://tunder/';
 
-$max_session_time=36000;
+$max_session_time=1000000;
 $session = new Session($max_session_time,1,100);
 //require('external_libs/Smarty/Smarty.class.php');
 //$smarty = new Smarty();
