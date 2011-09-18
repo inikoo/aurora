@@ -15,7 +15,7 @@
 require_once 'common.php';
 require_once 'class.User.php';
 require_once 'class.Staff.php';
-
+require_once 'ar_edit_common.php';
 $editor=array(
             'User Key'=>$user->id
         );
@@ -88,7 +88,12 @@ case('edit_staff_user'):
 
     break;
 
-
+case('create_user'):
+    $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+                         ));
+	create_user($data);
+	break;
 case ('add_user'):
 
     $data=array(
@@ -1105,5 +1110,71 @@ $password='';
     echo json_encode($response);
 }
 
+function create_user($data){
+
+	print_r($data);exit;
+
+//$handle,$customer_key,$site_key,$password, $send_email=true
+  global $site,$store;
+
+    include_once('class.User.php');
+
+
+    $sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
+                 $customer_key);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+
+
+        $data=array(
+                  'User Handle'=>$handle,
+                  'User Type'=>'Customer',
+                  'User Password'=>$password,
+                  'User Parent Key'=>$row['Customer Store Key'],
+                  'User Site Key'=>$site_key,
+                  'User Active'=>'Yes',
+                  'User Alias'=>$row['Customer Name'],
+                  'User Parent Key'=>$customer_key
+              );
+
+        $user=new user('new',$data);
+        if (!$user->id) {
+
+            return array(0,$user->msg);
+
+        } else {
+
+
+        $email_credential_key=$store->get_email_credential_key('Site Registration');
+
+            $welcome_email_subject="Thank you for your registration with ".$site->data['Site Name'];
+            $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
+            $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
+
+ $data=array(
+                
+                  'subject'=>$welcome_email_subject,
+                  'plain'=>$welcome_email_plain,
+                  'email_credentials_key'=>$email_credential_key,
+                  'to'=>$handle,
+                  'html'=>$welcome_email_html,
+
+              );
+
+		if($send_email){
+        $send_email=new SendEmail();
+        $send_email->smtp('HTML', $data);
+        $result=$send_email->send();
+		}
+
+
+            return array($user->id,$user->msg);
+        }
+    } else {
+        return array(0,'customer not found');
+
+    }
+}
 
 ?>

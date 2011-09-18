@@ -95,10 +95,18 @@ class LightFamily {
         $print_header=true;
 		$print_rrp=true;
 		if(isset($options['rrp'])){
-			print 'ok';
+			//print 'ok';
 			$print_rrp=$options['rrp'];
 		}
-        //$print_price=true;
+		
+		$show_unit=true;
+		if(isset($options['unit'])){
+			//print 'ok';
+			$show_unit=$options['unit'];
+		}
+		
+		
+        $print_price=true;
 
         switch ($type) {
         case 'ecommerce':
@@ -145,7 +153,7 @@ class LightFamily {
             $discontinued='Discontinued';
         }
 
-
+		
 
         $form=sprintf('<table class="product_list form" >' );
 
@@ -165,7 +173,7 @@ class LightFamily {
                     $rrp= $this->get_formated_rrp(array(
                                                       'Product RRP'=>$rrp,
                                                       'Product Units Per Case'=>1,
-                                                      'Product Unit Type'=>''),array('prefix'=>false));
+                                                      'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
 
 
 
@@ -177,7 +185,7 @@ class LightFamily {
                         $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
                         $print_rrp=false;
                     } else
-                        $rrp_label='<br/>span class="rrp">RRP from '.$rrp.'</span>';
+                        $rrp_label='<br/><span class="rrp">RRP from '.$rrp.'</span>';
 
 
 
@@ -245,7 +253,7 @@ class LightFamily {
                 $rrp= $this->get_formated_rrp(array(
                                                   'Product RRP'=>$row['Product RRP'],
                                                   'Product Units Per Case'=>$row['Product Units Per Case'],
-                                                  'Product Unit Type'=>$row['Product Unit Type']));
+                                                  'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
 
             } else {
                 $rrp='';
@@ -363,6 +371,13 @@ class LightFamily {
 		else 
 			$range_where="";//"  true";				
 		
+		
+		$show_unit=true;
+		if(isset($options['unit'])){
+			//print 'ok';
+			$show_unit=$options['unit'];
+		}
+		
         $print_header=true;
         $print_rrp=false;
         $print_register=true;
@@ -427,7 +442,7 @@ class LightFamily {
                         $rrp= $this->get_formated_rrp(array(
                                                           'Product RRP'=>$rrp,
                                                           'Product Units Per Case'=>1,
-                                                          'Product Unit Type'=>''),array('prefix'=>false));
+                                                          'Product Unit Type'=>''),array('prefix'=>false,'show_unit'=>$show_unit));
 
                         if($row['rrp_avg']<=0){
 							$rrp_label='';
@@ -470,7 +485,7 @@ class LightFamily {
                 $rrp= $this->get_formated_rrp(array(
                                                   'Product RRP'=>$row['Product RRP'],
                                                   'Product Units Per Case'=>$row['Product Units Per Case'],
-                                                  'Product Unit Type'=>$row['Product Unit Type']));
+                                                  'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
 
             } else {
                 $rrp='';
@@ -550,7 +565,11 @@ class LightFamily {
 		}
 		else 
 			$range_where="";//"  true";				
-		
+	    $show_unit=true;
+		if(isset($options['unit'])){
+			//print 'ok';
+			$show_unit=$options['unit'];
+		}
         $print_header=true;
         $print_rrp=false;
         $print_register=true;
@@ -615,7 +634,7 @@ class LightFamily {
                         $rrp= $this->get_formated_rrp(array(
                                                           'Product RRP'=>$rrp,
                                                           'Product Units Per Case'=>1,
-                                                          'Product Unit Type'=>''),array('prefix'=>false));
+                                                          'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
 
                         if($row['rrp_avg']<=0){
 							$rrp_label='';
@@ -658,7 +677,7 @@ class LightFamily {
                 $rrp= $this->get_formated_rrp(array(
                                                   'Product RRP'=>$row['Product RRP'],
                                                   'Product Units Per Case'=>$row['Product Units Per Case'],
-                                                  'Product Unit Type'=>$row['Product Unit Type']));
+                                                  'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
 
             } else {
                 $rrp='';
@@ -739,7 +758,13 @@ class LightFamily {
 		if(isset($options['rrp'])){
 			$print_rrp=$options['rrp'];
 		}
-
+		$show_unit=false;
+		if(isset($options['unit'])){
+			//print 'ok';
+			$show_unit=$options['unit'];
+		}
+		
+		
         $print_header=true;
         
         $print_price=true;
@@ -799,7 +824,7 @@ class LightFamily {
 
             if ($print_rrp) {
 
-                $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) rrp_min, max(`Product RRP`/`Product Units Per Case`) as rrp_max,avg(`Product RRP`/`Product Units Per Case`)  as rrp_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
+                $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) rrp_min, max(`Product RRP`/`Product Units Per Case`) as rrp_max,avg(`Product RRP`/`Product Units Per Case`)  as rrp_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') %s %s", $this->id,$range_where,$limit);
 
                 $res=mysql_query($sql);
                 if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -809,7 +834,7 @@ class LightFamily {
                     $rrp= $this->get_formated_rrp(array(
                                                       'Product RRP'=>$rrp,
                                                       'Product Units Per Case'=>1,
-                                                      'Product Unit Type'=>''),array('prefix'=>false));
+                                                      'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
 
 
 
@@ -832,10 +857,13 @@ class LightFamily {
 
             if ($print_price) {
 
-                $sql=sprintf("select min(`Product Price`/`Product Units Per Case`) price_min, max(`Product Price`/`Product Units Per Case`) as price_max,avg(`Product Price`/`Product Units Per Case`)  as price_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $this->id);
+                $sql=sprintf("select min(`Product Price`/`Product Units Per Case`) price_min, max(`Product Price`/`Product Units Per Case`) as price_max,avg(`Product Price`/`Product Units Per Case`)  as price_avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') %s %s", $this->id,$range_where,$limit);
 
                 $res=mysql_query($sql);
+
                 if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+					
                     $price=$row['price_min'];
 
 
@@ -850,7 +878,8 @@ class LightFamily {
 
                     $price_label='<br/><span class="price">'.$price.'</span>';
 
-
+					if($row['price_min']==null)
+						$price_label='';
 
 
                 } else {
@@ -888,7 +917,7 @@ class LightFamily {
                 $rrp= $this->get_formated_rrp(array(
                                                   'Product RRP'=>$row['Product RRP'],
                                                   'Product Units Per Case'=>$row['Product Units Per Case'],
-                                                  'Product Unit Type'=>$row['Product Unit Type']));
+                                                  'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
 
             } else {
                 $rrp='';
@@ -963,14 +992,18 @@ class LightFamily {
             $counter++;
         }
 
+		if($counter==1){
+			$form='Product is Discontinued';
+		}
+		else{
         $form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">				   
                        <input class="button" name="Submit" type="submit"  value="Order">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
                        '
                        ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
-
-
+		}
+		
 
         return $form;
     }
