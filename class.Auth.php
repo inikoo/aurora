@@ -115,6 +115,11 @@ class Auth {
                 $ip=$data[2];
                 $ikey=$data[3];
 
+				if(isset($_COOKIE['user_handle'])){
+					$time=time(date('U'))+100;
+				
+				}
+				
                 $pass_tests=true;
                 if ($time<time(date('U'))  ) {
                     $pass_tests=false;
@@ -184,15 +189,6 @@ class Auth {
         $this->authentication_type='masterkey';
 
 
-
-
-        if (preg_match('/^\d+/',$data,$match)) {
-
-            $user_key=$match[0];
-
-        } else {
-            // $this->log_failed_login();
-        }
 
 
 

@@ -95,7 +95,7 @@ class LightProduct{
 		
 			if($this->method=='reload'){
 			
-					$_form=sprintf('<form action="%s" method="post">
+					$_form=sprintf('<form action="%s" method="post" style="margin-top:2px">
 											   <input type="hidden" name="userid" value="%s">
 											   <input type="hidden" name="product" value="%s %sx %s">
 											   <input type="hidden" name="return" value="%s">
@@ -138,12 +138,19 @@ class LightProduct{
 		  }
 
 $_SESSION['logged_in']=1;
-		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>%s</div>'
+
+			if($this->data['Product RRP']>0)
+				$_rrp=sprintf("<span class=\"rrp\">%s</span>",$this->get_formated_rrp($this->locale));
+			else
+				$_rrp='';
+
+
+		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/>%s<br/>%s</div>'
 				,$this->data['Product Code']
 				,$this->data['Product Units Per Case']
 				,$this->data['Product Name']
 				,$this->get_formated_price($this->locale)
-				,$this->get_formated_rrp($this->locale)
+				,$_rrp
 				,(isset($_SESSION['logged_in'])?$_form:'')
 
 
