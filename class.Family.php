@@ -2529,7 +2529,7 @@ class Family extends DB_Table {
                 $probability=$number_common_orders/$orders;
                // print $family->id." $probability\n";
                 
-                if ($probability>0.001) {
+                if ($probability>0.000001) {
                     $sql=sprintf("insert into `Product Family Sales Correlation` values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f , `Samples`=%d  ",
                                  $this->id,
                                  $family->id,
