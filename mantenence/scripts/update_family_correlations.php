@@ -38,7 +38,7 @@ global $myconf;
 
 
 
-$sql="select * from `Product Family Dimension` limit 1";
+$sql="select * from `Product Family Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
