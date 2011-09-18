@@ -2505,7 +2505,7 @@ class Family extends DB_Table {
     function update_correlated_sales_families() {
         $orders=0;
 
-        $sql=sprintf("select count(DISTINCT `Order Key`) as num from  `Order Transaction Fact`  where `Product Family Key`=%d",
+        $sql=sprintf("select count(DISTINCT `Order Key`) as num from  `Order Transaction Fact`  where `Product Family Key`=%d  and `Order Quantity`>0 and `Order Transaction Type`='Order'",
                      $this->id);
         $res=mysql_query($sql);
         //print "$sql\n";
