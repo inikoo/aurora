@@ -432,9 +432,6 @@ function set_parameters($data=false) {
     }
 
 
-
-
-
     if (isset($data['header_title'])) {
         $header_title=$data['header_title'];
     } else {
