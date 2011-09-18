@@ -993,7 +993,7 @@ class LightFamily {
         }
 
 		if($counter==1){
-			$form='Product is Discontinued';
+			$form.='</td><tr><td>Product is Discontinued</td></tr>';
 		}
 		else{
         $form.=sprintf('<tr class="space"><td colspan="4">
