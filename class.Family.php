@@ -980,11 +980,7 @@ class Family extends DB_Table {
 
     }
 
-    /*
-       Method: add_product
-       Actualiza la tabla Product Dimension
-    */
-// JFA
+
 
     function add_product($product_id,$args=false) {
 
@@ -1000,6 +996,318 @@ class Family extends DB_Table {
             // print "$sql\n";
         }
     }
+
+
+
+
+    function update_up_today_sales() {
+        $this->update_sales_from_invoices('Today');
+        $this->update_sales_from_invoices('Week To Day');
+        $this->update_sales_from_invoices('Month To Day');
+        $this->update_sales_from_invoices('Year To Day');
+    }
+
+    function update_last_period_sales() {
+
+        $this->update_sales_from_invoices('Yesterday');
+        $this->update_sales_from_invoices('Last Week');
+        $this->update_sales_from_invoices('Last Month');
+    }
+
+
+    function update_interval_sales() {
+        $this->update_sales_from_invoices('3 Year');
+        $this->update_sales_from_invoices('1 Year');
+        $this->update_sales_from_invoices('6 Month');
+        $this->update_sales_from_invoices('1 Quarter');
+        $this->update_sales_from_invoices('1 Month');
+        $this->update_sales_from_invoices('10 Day');
+        $this->update_sales_from_invoices('1 Week');
+    }
+
+
+    function update_sales_from_invoices($interval) {
+
+        $to_date='';
+
+        switch ($interval) {
+
+
+
+
+        case 'Last Month':
+        case 'last_m':
+            $db_interval='Last Month';
+            $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+            $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+
+        case 'Last Week':
+        case 'last_w':
+            $db_interval='Last Week';
+
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+                $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+            } else {
+                return;
+            }
+
+
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            break;
+
+        case 'Yesterday':
+        case 'yesterday':
+            $db_interval='Yesterday';
+            $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+            $to_date=date('Y-m-d 00:00:00',strtotime('today'));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            break;
+
+        case 'Week To Day':
+        case 'wtd':
+            $db_interval='Week To Day';
+
+            $from_date=false;
+            $from_date_1yb=false;
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=$row['First Day'].' 00:00:00';
+                $lapsed_seconds=strtotime('now')-strtotime($from_date);
+
+            } else {
+                return;
+            }
+
+            $sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date_1yb=$row['First Day'].' 00:00:00';
+            }
+
+
+            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+
+
+
+            break;
+        case 'Today':
+        case 'today':
+            $db_interval='Today';
+            $from_date=date('Y-m-d 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+
+        case 'Month To Day':
+        case 'mtd':
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case 'Year To Day':
+        case 'ytd':
+            $db_interval='Year To Day';
+            $from_date=date('Y-01-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+        case '3 Year':
+        case '3y':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+            $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case '1 Year':
+        case '1y':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '6 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Quarter':
+        case '1q':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Month':
+        case '1m':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '10 Day':
+        case '10d':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Week':
+        case '1w':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+        default:
+            return;
+            break;
+        }
+
+        setlocale(LC_ALL, 'en_GB');
+
+        //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+
+        $this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=0;
+        $this->data["Product Family $db_interval Acc Invoiced Amount"]=0;
+        $this->data["Product Family $db_interval Acc Invoices"]=0;
+        $this->data["Product Family $db_interval Acc Profit"]=0;
+        //$this->data["Product Family DC $db_interval Acc Invoiced Amount"]=0;
+        //$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=0;
+        //$this->data["Product Family DC $db_interval Acc Profit"]=0;
+
+        $sql=sprintf("select count(distinct `Invoice Key`) as invoices,sum(`Invoice Transaction Total Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+        print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
+            $this->data["Product Family $db_interval Acc Invoiced Amount"]=$row["net"];
+            $this->data["Product Family $db_interval Acc Invoices"]=$row["invoices"];
+            $this->data["Product Family $db_interval Acc Profit"]=$row["profit"];
+            //$this->data["Product Family DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
+            //$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
+            //$this->data["Product Family DC $db_interval Acc Profit"]=$row["dc_profit"];
+        }
+
+        $sql=sprintf("update `Product Family Dimension` set
+                     `Product Family $db_interval Acc Invoiced Discount Amount`=%.2f,
+                     `Product Family $db_interval Acc Invoiced Amount`=%.2f,
+                     `Product Family $db_interval Acc Invoices`=%d,
+                     `Product Family $db_interval Acc Profit`=%.2f
+                     where `Product Family Key`=%d "
+                     ,$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]
+                     ,$this->data["Product Family $db_interval Acc Invoiced Amount"]
+                     ,$this->data["Product Family $db_interval Acc Invoices"]
+                     ,$this->data["Product Family $db_interval Acc Profit"]
+                     ,$this->id
+                    );
+
+        mysql_query($sql);
+        print "$sql\n\n";
+        exit;
+        /*
+                $sql=sprintf("update `Product Family Default Currency` set
+                             `Product Family DC $db_interval Acc Invoiced Discount Amount`=%.2f,
+                             `Product Family DC $db_interval Acc Invoiced Amount`=%.2f,
+                             `Product Family DC $db_interval Acc Profit`=%.2f
+                             where `Product Family Key`=%d "
+                             ,$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]
+                             ,$this->data["Product Family DC $db_interval Acc Invoiced Amount"]
+                             ,$this->data["Product Family DC $db_interval Acc Profit"]
+                             ,$this->id
+                            );
+
+                mysql_query($sql);
+
+        */
+
+        if ($from_date_1yb) {
+            $this->data["Product Family $db_interval Acc 1YB Invoices"]=0;
+            $this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+            $this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]=0;
+            $this->data["Product Family $db_interval Acc 1YB Profit"]=0;
+            //$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+            //$this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]=0;
+            //$this->data["Product Family DC $db_interval Acc 1YB Profit"]=0;
+
+            $sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Product Family Key`=%d and `Invoice Date`>%s and `Invoice Date`<%s" ,
+                         $this->id,
+                         prepare_mysql($from_date_1yb),
+                         prepare_mysql($to_1yb)
+                        );
+            // print "$sql\n\n";
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
+                $this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+                $this->data["Product Family $db_interval Acc 1YB Invoices"]=$row["invoices"];
+                $this->data["Product Family $db_interval Acc 1YB Profit"]=$row["profit"];
+                // $this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
+                //$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
+                //$this->data["Product Family DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+            }
+
+            $sql=sprintf("update `Product Family Dimension` set
+                         `Product Family $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                         `Product Family $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                         `Product Family $db_interval Acc 1YB Invoices`=%.2f,
+                         `Product Family $db_interval Acc 1YB Profit`=%.2f
+                         where `Product Family Key`=%d "
+                         ,$this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]
+                         ,$this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]
+                         ,$this->data["Product Family $db_interval Acc 1YB Invoices"]
+                         ,$this->data["Product Family $db_interval Acc 1YB Profit"]
+                         ,$this->id
+                        );
+
+            mysql_query($sql);
+            //print "$sql\n";
+
+            /*
+            $sql=sprintf("update `Product Family Default Currency` set
+                         `Product Family DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                         `Product Family DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                         `Product Family DC $db_interval Acc 1YB Profit`=%.2f
+                         where `Product Family Key`=%d "
+                         ,$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]
+                         ,$this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]
+                         ,$this->data["Product Family DC $db_interval Acc 1YB Profit"]
+                         ,$this->id
+                        );
+            // print "$sql\n";
+            mysql_query($sql);
+            */
+        }
+
+        return array(substr($from_date, -19,-9), date("Y-m-d"));
+
+    }
+
 
     function update_sales_data() {
 
@@ -1588,7 +1896,7 @@ class Family extends DB_Table {
                      sum(if(`Product Main Type`='NoSale',1,0) ) as not_for_sale,
                      sum(if(`Product Main Type`='Sale' ,1,0)) as public_sale,
                      sum(if(`Product Stage`='In process',1,0)) as in_process ,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
-       //  print $sql;
+        //  print $sql;
 //exit;
 
         $availability='No Applicable';
@@ -2177,6 +2485,69 @@ class Family extends DB_Table {
         //print "$sql\n";
 
 
+
+    }
+
+
+    function get_orders_keys() {
+        $orders_keys=array();
+        $sql=sprintf("select `Order Key` from  `Order Transaction Fact`  where `Product Family Key`=%d",
+                     $this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $orders_keys[$row['Order Key']]=$row['Order Key'];
+
+        }
+        return $orders_keys;
+
+    }
+
+    function update_correlated_sales_families() {
+        $orders=0;
+
+        $sql=sprintf("select count(DISTINCT `Order Key`) as num from  `Order Transaction Fact`  where `Product Family Key`=%d",
+                     $this->id);
+        $res=mysql_query($sql);
+        //print "$sql\n";
+        if ($row=mysql_fetch_assoc($res)) {
+            $orders=$row['num'];
+        }
+
+        if ($orders) {
+            $orders_keys=$this->get_orders_keys();
+            $sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Key`!=%d and `Product Family Store Key`=%d ",
+                         $this->id,
+                         $this->data['Product Family Store Key']
+                        );
+            $result=mysql_query($sql);
+            //print "$sql\n";
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+                $family=new Family($row['Product Family Key']);
+                $family_orders_keys=$family->get_orders_keys();
+                $common_orders=array_intersect_key($orders_keys,$family_orders_keys);
+                $number_common_orders=count($common_orders);
+                $probability=$number_common_orders/$orders;
+               // print $family->id." $probability\n";
+                
+                if ($probability>0.001) {
+                    $sql=sprintf("insert into `Product Family Sales Correlation` values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f , `Samples`=%d  ",
+                                 $this->id,
+                                 $family->id,
+                                 $probability,
+                                 $orders,
+                                 $probability,
+                                 $orders
+                                );
+                    mysql_query($sql);
+                 //    print "$sql\n";
+
+                }
+
+            }
+
+
+
+        }
 
     }
 

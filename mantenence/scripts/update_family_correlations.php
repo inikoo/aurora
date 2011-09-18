@@ -38,48 +38,13 @@ global $myconf;
 
 
 
-$sql="select * from `Product Family Dimension`";
+$sql="select * from `Product Family Dimension` limit 1";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
     $family=new Family($row['Product Family Key']);
-    $family->update_up_today_sales();
-    $family->update_interval_sales();
-    $family->update_last_period_sales();
-
-}
-
-
-
-$sql="select * from `Store Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-    $store=new Store($row['Store Key']);
-    $store->update_up_today_sales();
-    $store->update_customer_activity_interval();
-    $store->update_interval_sales();
-    $store->update_last_period_sales();
-
-}
-
-
-
-
-
-
-mysql_free_result($result);
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-    $category=new Category($row['Category Key']);
-    $category->update_invoice_category_up_today_sales();
-    $category->update_invoice_category_last_period_sales();
-    $category->update_invoice_category_interval_sales();
-
+    $family->update_correlated_sales_families();
+    print $family->id."\r";
 }
 
 
