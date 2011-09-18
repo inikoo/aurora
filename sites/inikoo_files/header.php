@@ -11,7 +11,14 @@ $style='';
 //print $found_in_url;
 
 $search_input=file_get_contents("$path".'inikoo_files/templates/search_input.html');
-$menubar=file_get_contents("$path".'inikoo_files/templates/menubar.html');
+
+if($path=='../')
+$menubar=file_get_contents("$path".'inikoo_files/templates/menubar2011_departments.html');
+
+else
+$menubar=file_get_contents("$path".'inikoo_files/templates/menubar2011.html');
+
+
 //$title='Tibetan Bowls and Artefacts';
 $title=$header_title;
 $header_info='Please note this is a we supply wholesale we supply wholesale to the gift trade';
@@ -73,6 +80,7 @@ $header=<<<EOD
 
 
 EOD;
-if($path=="../")
-	$header="";
+if($path=="../"){
+$header='';
+}
 ?>
