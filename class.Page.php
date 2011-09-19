@@ -786,7 +786,7 @@ class Page extends DB_Table {
         return $data;
     }
 
-    function found_in() {
+    function found_in_old() {
        
 
     switch ($this->data['Page Store Section']) {
@@ -826,6 +826,35 @@ class Page extends DB_Table {
 
 
         return array($found_in_label,$found_in_url);
+
+    }
+    
+    
+     function found_in() {
+       
+       $found_in=array();
+           $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
+      $this->id);
+     
+       $res=mysql_query($sql);
+       
+       while($row=mysql_fetch_assoc($res)){
+            $found_in_page=new Page($row['Page Store Found In Key']);
+            if($found_in_page->id){
+            $found_in[]=array(
+            'found_in_label'=>$found_in_page->data['Page Short Title'],
+            'found_in_url'=>$found_in_page->data['Page URL']
+            
+            );
+            }
+       
+       }
+       
+   //    print_r($found_in);
+
+  
+
+        return $found_in;
 
     }
 

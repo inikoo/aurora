@@ -23,7 +23,7 @@ require_once "class.LightFamily.php";
 
 
 $user_log_key=0;
-
+$found_in=array();
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$default_DB_link) {
     print "Error can not connect with database server\n";
@@ -374,7 +374,7 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in_url, $found_in_label, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image;
+    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image;
 	
 	if(isset($data['header_image']))
 		$header_image=$data['header_image'];
@@ -416,9 +416,9 @@ function set_parameters($data=false) {
     $see_also=array();
 
     if (!isset($data['found_in'])) {
-        list($found_in_label, $found_in_url)=$page->found_in();
+        $found_in=$page->found_in();
     } else {
-        list($found_in_label, $found_in_url)=explode(",", $data['found_in']);
+        $found_in=$data['found_in'];
     }
 
     if (!isset($data['see_also'])) {
