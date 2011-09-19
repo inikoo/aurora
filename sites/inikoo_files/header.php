@@ -25,12 +25,15 @@ $menubar=file_get_contents("$path".'inikoo_files/templates/menubar2011.html');
 $title=$header_title;
 $header_info='Please note this is a we supply wholesale we supply wholesale to the gift trade';
 
-$found_in['url']=$found_in_url;
-$found_in['label']=$found_in_label;
-if(isset($found_in['url']))
-$found_in="<a href='".$found_in['url']."'>".$found_in['label']."</a>";
-else
-$found_in='';
+$found_in_links='';
+
+
+
+foreach($found_in as $_found_in){
+$found_in_links.="<br/><a href='".$_found_in['found_in_url']."'>".$_found_in['found_in_label']."</a>";
+}
+$found_in_links=preg_replace('/^\<br\\/\>/','',$found_in_links);
+
 
 $i=0;
 $see_also_data="";
@@ -63,7 +66,7 @@ $header=<<<EOD
 <a href="http://www.ancientwisdom.biz"><span id="aw_link"></span></a>
 <table  class="header_table" >
 <tr>
-<td id="found_in">$found_in</td>
+<td id="found_in">$found_in_links</td>
 <td id="search_input"  >$search_input</td>
 
 <td id="see_also" class="see_also">
