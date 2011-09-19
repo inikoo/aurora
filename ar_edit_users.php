@@ -1113,6 +1113,12 @@ $password='';
 function create_user($data){
 
 	print_r($data);exit;
+	
+	$data['Email']=Dom.get(o).getAttribute('email');
+	$data['customer_id']=customer_id;
+	$data['store_id']=store_id;
+	$data['password']=password;
+	$data['send_email']=true;
 
 //$handle,$customer_key,$site_key,$password, $send_email=true
   global $site,$store;
