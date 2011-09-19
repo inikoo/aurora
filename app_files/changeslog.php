@@ -3591,13 +3591,21 @@ ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Prod
 ALTER TABLE `User Log Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
 ALTER TABLE `User Click Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `User Key` ;
 ALTER TABLE `Part Dimension` ADD `Part Main State` ENUM( 'Keeping', 'LastStock', 'Discontinued', 'NotKeeping' ) NULL DEFAULT NULL AFTER `Part Available` ,ADD INDEX ( `Part Main State` ) ;
-CREATE TABLE `dw`.`Product Family Sales Correlation` (
+CREATE TABLE `Product Family Sales Correlation` (
 `Family A Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Family B Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Correlation` FLOAT NOT NULL ,
 `Samples` MEDIUMINT UNSIGNED NOT NULL ,
 PRIMARY KEY ( `Family A Key` , `Family B Key` )
 ) ENGINE = MYISAM ;
+
+CREATE TABLE `Page Store Found In Bridge` (
+`Page Store Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Page Store Found In Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Page Store Key` , `Page Store Found In Key` )
+) ENGINE = MYISAM ;
+
+
 */
 
 ?>
