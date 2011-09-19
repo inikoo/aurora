@@ -176,10 +176,12 @@ class Auth {
 	}
 	
 	function unset_cookies($handle=false,$sk=false,$page=false,$page_key=false){
-		setcookie('user_handle', $handle, time()-3600, "/");
-		setcookie('sk', $sk, time()-3600, "/");
+		$res=setcookie('user_handle', $handle, time()-100000, "/");
+		setcookie('sk', $sk, time()-100000, "/");
 		//setcookie('page', $page, time()-3600, "/");
-		setcookie('page_key', $page_key, time()-3600, "/");
+		setcookie('page_key', $page_key, time()-100000, "/");
+	//print "xxxx $res X $handle xxxx";
+	
 	}
 	
 	
