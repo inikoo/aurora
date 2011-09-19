@@ -6,13 +6,13 @@ if($path=="../../"){
     $path_menu='../';
 }elseif($path=="../"){
 	$path_id=1;
-	  $path_menu='../';
+	  $path_menu='../forms/';
 }	
 	
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/ui.css.php?width=<?php echo $width?>" />
-<link href="<?php echo $path_menu ?>/menubar2011-files/styles_5lour.css" type="text/css" rel="stylesheet"/>
+<link href="<?php echo $path_menu ?>menubar2011-files/styles_5lour.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/utilities/utilities.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/dragdrop/dragdrop-min.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/json/json-min.js"></script>

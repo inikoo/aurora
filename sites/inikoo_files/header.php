@@ -1,7 +1,7 @@
 <?php 
 //global $found_in['url'];
 global $found_in_label, $found_in_url;
-global $see_also, $header_title, $path, $header_image;
+global $see_also, $header_title, $path, $header_image, $menubar;
 
 //print $header_image;
 if($header_image)
