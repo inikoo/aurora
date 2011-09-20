@@ -117,22 +117,57 @@ $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 
 if ($logout) {
     $auth=new Auth(IKEY,SKEY);
-//$auth->unset_cookies($_COOKIE['user_handle'],$_COOKIE['sk'],$_COOKIE['page'],$_COOKIE['page_key']);
-    $auth->unset_cookies();
-    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+ 
+    //$auth->unset_cookies();
+   
+
+
+
+   $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
     mysql_query($sql);
 
-    session_regenerate_id();
-    session_destroy();
-    unset($_SESSION);
+	
+    //session_regenerate_id();
+    //session_destroy();
+    //unset($_SESSION);
 
+	
+	
+	$_SESSION = array();
+
+
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+
+	 setcookie('sk', '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+	 setcookie('page_key', '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+    $resxx=setcookie('user_handle', '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+	
+	//print "xxx $resxx xxx";
+	
+}
+
+
+session_destroy();
+	
+	
+	
     // include_once 'login.php';
     // exit;
 
     $_SESSION['logged_in']=0;
     
     
-    $sql=sprintf("select ``");
+   session_regenerate_id();
     
     
     $logged_in=false;
@@ -165,6 +200,10 @@ if ($logout) {
 
 
 }elseif(isset($_COOKIE['user_handle'])) {
+
+//print_r($_COOKIE);
+
+
     $auth=new Auth(IKEY,SKEY);
     $auth->set_use_cookies();
     //$auth->use_cookies=true;
