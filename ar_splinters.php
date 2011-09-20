@@ -900,7 +900,7 @@ function list_customers() {
         $order='`Invoices`';
 
     else
-        $order='`Balance`';
+        $order=' net_balance ';
 
 
 
@@ -910,9 +910,9 @@ function list_customers() {
 
 
     if ($period=='all')
-        $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+        $sql="select  `Customer Net Balance`*`Invoice Currency Exchange` as  net_balance , `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
     else
-        $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+        $sql="select  sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)  as  net_balance , `Invoice Currency`,`Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices    from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 
 //print $sql;
@@ -943,7 +943,7 @@ function list_customers() {
                      'telephone'=>$data['Customer Main XHTML Telephone'],
                      'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
                      // 'total_payments'=>money($data['Customer Net Payments']),
-                     'net_balance'=>money($data['Balance']),
+                     'net_balance'=>money($data['net_balance']),
                      //'total_refunds'=>money($data['Customer Net Refunds']),
                      //'total_profit'=>money($data['Customer Profit']),
                      //'balance'=>money($data['Customer Outstanding Net Balance']),
