@@ -16,6 +16,10 @@ require_once 'common.php';
 require_once 'class.User.php';
 require_once 'class.Staff.php';
 require_once 'ar_edit_common.php';
+require_once 'class.User.php';
+require_once 'class.Site.php';
+require_once 'class.SendEmail.php';
+
 $editor=array(
             'User Key'=>$user->id
         );
@@ -1112,20 +1116,21 @@ $password='';
 
 function create_user($data){
 
-	print_r($data);exit;
+
+	$val=$data['values'];
 	
-	$data['Email']=Dom.get(o).getAttribute('email');
-	$data['customer_id']=customer_id;
-	$data['store_id']=store_id;
-	$data['password']=password;
-	$data['send_email']=true;
-
-//$handle,$customer_key,$site_key,$password, $send_email=true
-  global $site,$store;
-
     include_once('class.User.php');
 
-
+	$customer_key=$val['customer_id'];
+	$handle=$val['Email'];
+	$site_key=$val['store_id'];
+	$password=generate_password(10,10);
+	$send_email=$val['send_email'];
+	
+	$store=new store($site_key);
+	$site=new site($site_key);
+	
+	
     $sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
                  $customer_key);
     $res=mysql_query($sql);
@@ -1144,21 +1149,24 @@ function create_user($data){
                   'User Parent Key'=>$customer_key
               );
 
-        $user=new user('new',$data);
+        $user=new User('new',$data);
         if (!$user->id) {
-
-            return array(0,$user->msg);
+            $response=array(
+							'state'=>400,
+							'msg'=>'User not Created');
+			
+			echo json_encode($response);
 
         } else {
 
 
-        $email_credential_key=$store->get_email_credential_key('Site Registration');
+			$email_credential_key=$store->get_email_credential_key('Site Registration');
 
             $welcome_email_subject="Thank you for your registration with ".$site->data['Site Name'];
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 
- $data=array(
+			$data=array(
                 
                   'subject'=>$welcome_email_subject,
                   'plain'=>$welcome_email_plain,
@@ -1168,19 +1176,54 @@ function create_user($data){
 
               );
 
-		if($send_email){
-        $send_email=new SendEmail();
-        $send_email->smtp('HTML', $data);
-        $result=$send_email->send();
-		}
+			if($send_email){
+			$send_email=new SendEmail();
+			$send_email->smtp('HTML', $data);
+			$result=$send_email->send();
+			}
 
-
-            return array($user->id,$user->msg);
+			$response=array(
+				'state'=>200,
+				'user_key'=>$user->id,
+				'msg'=>'Email Sent');
+			echo json_encode($response);
         }
-    } else {
-        return array(0,'customer not found');
-
-    }
+	} else {
+			$response=array(
+				'state'=>400,
+				'msg'=>'Customer not Found');
+			echo json_encode($response);
+	}
 }
 
+
+function generate_password($length=9, $strength=0) {
+    $vowels = 'aeuy'.md5(mt_rand());
+    $consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
+    if ($strength & 1) {
+        $consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
+    }
+    if ($strength & 2) {
+        $vowels .= "AEUI";
+    }
+    if ($strength & 4) {
+        $consonants .= '2345678906789$%^&*(';
+    }
+    if ($strength & 8) {
+        $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
+    }
+
+    $password = '';
+    $alt = time() % 2;
+    for ($i = 0; $i < $length; $i++) {
+        if ($alt == 1) {
+            $password .= $consonants[(mt_rand() % strlen($consonants))];
+            $alt = 0;
+        } else {
+            $password .= $vowels[(mt_rand() % strlen($vowels))];
+            $alt = 1;
+        }
+    }
+    return $password;
+}
 ?>

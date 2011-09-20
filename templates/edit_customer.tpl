@@ -30,7 +30,9 @@
 
 
    <table class="edit" border=0  style="width:100%">
+
     <tr class="title"><td colspan=5>{t}Reset Password{/t}</td></tr>
+
    <tr>
    <td style="width:400px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
    <td style="width:200px">
@@ -50,8 +52,9 @@
    <tr><td><span id="password_msg_{$key}" style="display:"></span></td></tr>
    {/foreach}
    
-   
+   {if $unregistered_email} 
    <tr class="title"><td colspan=5>{t}Register Email{/t}</td></tr>
+   {/if}
    	{foreach from=$unregistered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}{$email}{/t}</td>
