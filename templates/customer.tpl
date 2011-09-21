@@ -628,6 +628,7 @@
 	<option value="none">None</option>
 	  <option value="gift focus">Gift Focus</option>
 	  <option value="garden" >Garden</option>
+	  <option value="Party2011" >Party2011</option>
 	</select>
     </td></tr>
 
