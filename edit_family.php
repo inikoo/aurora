@@ -324,6 +324,19 @@ $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
 
+$tipo_filter7='code';
+$filter_menu7=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'header'=>array('db_key'=>_('header'),'menu_label'=>_('Header'),'label'=>_('Header')),
+              );
+$smarty->assign('filter_name7',$filter_menu7[$tipo_filter7]['label']);
+$smarty->assign('filter_menu7',$filter_menu7);
+$smarty->assign('filter7',$tipo_filter7);
+$smarty->assign('filter_value7','');
+
+
+
+
 if ( isset(  $_REQUEST['page_key']) and is_numeric($_REQUEST['page_key'])) {
 
     $page_key=$_REQUEST['page_key'];
@@ -339,6 +352,7 @@ if ($page_key) {
     }
 
     $smarty->assign('page_data',$page_data);
+    $smarty->assign('page',$page);
 }
 $smarty->assign('number_of_sites',$number_of_sites);
 $smarty->assign('site_key',$site_key);
