@@ -193,7 +193,7 @@ class Auth {
 
         $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
                      prepare_mysql($data),
-                     prepare_mysql(date('Y-m-d H:i:s')),
+                     prepare_mysql(date('Y-m-d H:i:s'))
                    
                     );
 
