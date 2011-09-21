@@ -1119,7 +1119,7 @@ function register_email(o){
 	
 	email=Dom.get(o).getAttribute('email');
 	alert(email);
-	
+	var url ='http://'+ window.location.host + window.location.pathname;
 password='xxxxxxxxxxxxxx';
 
 	data['Email']=Dom.get(o).getAttribute('email');
@@ -1127,6 +1127,7 @@ password='xxxxxxxxxxxxxx';
 	data['store_id']=store_id;
 	data['password']=password;
 	data['send_email']=true;
+	data['url']=url;
 
 	var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
   
@@ -1144,6 +1145,9 @@ var request='ar_edit_users.php?tipo=create_user&values=' + json_value
 
    			}
     });
+	
+
+
 	
 }
 

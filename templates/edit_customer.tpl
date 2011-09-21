@@ -52,9 +52,9 @@
    <tr><td><span id="password_msg_{$key}" style="display:"></span></td></tr>
    {/foreach}
    
-   {if $unregistered_email} 
+
    <tr class="title"><td colspan=5>{t}Register Email{/t}</td></tr>
-   {/if}
+
    	{foreach from=$unregistered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}{$email}{/t}</td>
