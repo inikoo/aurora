@@ -74,6 +74,29 @@ if (isset($_REQUEST['edit'])) {
 }
 
 
+$sql=sprintf("select count(*) as num, `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d ",
+             $family->id);
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $number_of_pages=$row['num'];
+    if ($number_of_pages==1)
+        $page_key=$row['Page Key'];
+
+}
+
+
+$smarty->assign('page_key',$page_key);
+
+if ($page_key) {
+    $page=new Page($page_key);
+//print_r($page);exit;
+    foreach($page->data as $key=>$value) {
+        $page_data[preg_replace('/\s/','',$key)]=$value;
+
+    }
+
+    $smarty->assign('page_data',$page_data);
+}
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
@@ -123,8 +146,11 @@ $css_files=array(
                'container.css',
                'button.css',
                'table.css',
-               'css/dropdown.css'
+               'css/dropdown.css',
+			   'css/edit.css'
            );
+		   
+
 include_once('Theme.php');
 $js_files=array(
               $yui_path.'utilities/utilities.js',

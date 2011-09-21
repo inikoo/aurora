@@ -13,6 +13,7 @@
     <li style="display:none"> <span class="item {if $block_view=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
     <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals">  <span> {t}Offers{/t}</span></span></li>
+	<li> <span class="item {if $block_view=='web'}selected{/if}"  id="web">  <span> {t}Web Pages{/t}</span></span></li>
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -168,8 +169,6 @@
   
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
-
-
  <div id="photo_container" style="margin-top:0px;float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	     
@@ -220,6 +219,65 @@
 
 
 
+</div>
+
+
+<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+ 
+	   <table class="edit"  id="edit_family_page"  style="width:100%;clear:both;{if !$page_key}display:none{/if}" page_key="{$page_key}"   >
+	     <tr class="title"><td colspan="2">{t}Page Properties{/t}
+	     </td>
+	     <td>
+	      <div class="general_options" style="float:right">
+		   
+		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_properties" class="state_details">{t}Save{/t}</span>
+		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_properties" class="state_details">{t}Reset{/t}</span>
+		   
+      </div>
+	     </td>
+	     
+	     </tr>
+
+  <tr><td width="180px" class="label">{t}Page Code{/t}:</td>
+	     <td>
+		 <div   >     
+		   <span>{$page_data.PageCode}</span>
+		  
+		 </div>
+	       </td>
+		   </tr>
+
+	     <tr><td width="180px" class="label">{t}URL{/t}:</td>
+	     <td>
+		 <div   >
+		   		   <span>{$page_data.PageURL}</span>
+		 </div>
+	       </td></tr>
+
+
+<tr><td width="180px" class="label">{t}Link Title{/t}:</td>
+	     <td>
+		 <div   >
+		   <span>{$page_data.PageShortTitle}</span>
+
+		 </div>
+	       </td></tr>
+
+
+<tr><td class="label">{t}Page Type{/t}:</td>
+ <td>
+ <table>
+ <tr><td class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.PageStoreType=="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
+ 
+
+ </table>
+ 
+	
+	
+
+    </td></tr>
+	
+</table>	
 </div>
 
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -292,6 +350,11 @@
   
 </div>
 <div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+
+
+
+
+
 <div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
 
 </div>
