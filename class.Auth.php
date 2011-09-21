@@ -189,12 +189,12 @@ class Auth {
 
 
         $this->authentication_type='masterkey';
-$user_key=40;
 
-        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s and U.`User Key`=%d   ",
+
+        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
                      prepare_mysql($data),
                      prepare_mysql(date('Y-m-d H:i:s')),
-                     $user_key
+                   
                     );
 
        
@@ -204,7 +204,7 @@ $user_key=40;
     
      
      $this->status=true;
-            $this->user_key=$user_key;
+            $this->user_key=$row['User Parent Key'];
 
 
             $this->user_parent_key=$row['User Parent Key'];
