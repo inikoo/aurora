@@ -77,9 +77,9 @@ if (isset($_REQUEST['source']) && $_REQUEST['source'] =='db') {
     $no_of_maps_saved = numExportMapData($map_db_type);
 ## If maps exist in database ##
     if ($no_of_maps_saved > 0) {
-     
-      $exported_data = getExportMapData($map_db_type);
-        
+
+        $exported_data = getExportMapData($map_db_type);
+
     }
 ## If no map exists then assign "Default Export Fields" ##
     else {
@@ -87,23 +87,23 @@ if (isset($_REQUEST['source']) && $_REQUEST['source'] =='db') {
         if ($map_db_type == 'Customer') {
             $included_data=array();
 
-	    $included_data[] = 'C.`Customer Key`';
+            $included_data[] = 'C.`Customer Key`';
             $included_data[] = '`Customer Name`';
             $included_data[] = '`Customer Main Contact Name`';
             $included_data[] = '`Customer Main Plain Email`';
-	   
-            switch($map_type){
+           $included_data[] = '`Customer Main XHTML Address`';
+            switch ($map_type) {
             case('customers_list'):
-     
 
 
-               $exported_data = fetch_records_from_customers_list($included_data, $customers_list_id);
 
-            
+                $exported_data = fetch_records_from_customers_list($included_data, $customers_list_id);
+
+
             }
-                
-            
-            
+
+
+
             //$exported_data = exportDefaultMap($included_data, 'Customer Dimension');
             //print_r($my_exported_data);
         }
@@ -128,7 +128,7 @@ else {
     }
     elseif($map_type == 'customers_list') {
 
-     
+
 
         $exported_data = fetch_records_from_customers_list($my_exported_data, $customers_list_id);
         //print_r($exported_data);
@@ -164,45 +164,45 @@ else {
 ### EXPORT PART ===== COMMON CODES FOR BOTH NEW MAP & LOAD MAP FROM DB ###
 $filename = 'data_'.date("Ymd_Hmi").'.csv'; // Define the way of your exported file name here //
 
-  $data='';
-  header('Content-Type: application/csv; iso-8859-1');
-    header("Content-Disposition: attachment; filename=$filename");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-  $output = fopen('php://output', 'w');
-  
+$data='';
+header('Content-Type: application/csv; iso-8859-1');
+header("Content-Disposition: attachment; filename=$filename");
+header("Pragma: no-cache");
+header("Expires: 0");
+$output = fopen('php://output', 'w');
+
 foreach ($exported_data as $fields) {
- fputcsv($output, $fields);
+    fputcsv($output, $fields);
 }
 
-  /*
+/*
 $header_flag=1;
 for ($i=0; $i<count($exported_data); $i++) {
-    foreach($exported_data[$i] as $key=>$value) {
-        if (!isset($value) || $value == "") {
-            $value = ","; // Seperator Value
-            if (getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')) {
-                if ($header_flag==1) {
-                    $header .= $key.",";
-                }
-            }
-        } else {
-            $value = str_replace('"', '""', $value);
-            $value = $value.",";
-            if (getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')) {
-                if ($header_flag==1) {
-                    $header .= $key.",";
-                }
-            }
-        }
-        $line .= $value;
+  foreach($exported_data[$i] as $key=>$value) {
+      if (!isset($value) || $value == "") {
+          $value = ","; // Seperator Value
+          if (getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')) {
+              if ($header_flag==1) {
+                  $header .= $key.",";
+              }
+          }
+      } else {
+          $value = str_replace('"', '""', $value);
+          $value = $value.",";
+          if (getExportMapHeader($map_db_type) == 'yes' || (isset($_REQUEST['header']) && $_REQUEST['header']=='header')) {
+              if ($header_flag==1) {
+                  $header .= $key.",";
+              }
+          }
+      }
+      $line .= $value;
 
-    }
-    $header_flag++;
-    $data .= trim($line)."\n";
-    $line = '';
+  }
+  $header_flag++;
+  $data .= trim($line)."\n";
+  $line = '';
 }
-  */
+*/
 
 
 
@@ -214,8 +214,8 @@ unset($exported_data);
 //$data = str_replace("\r", "", $data);
 
 //if ($data == "") {
-  //$data = "no matching records found";
-    //}
+//$data = "no matching records found";
+//}
 
 
 
@@ -236,7 +236,7 @@ function getExportMapData($subject) {
            LIMIT 0 , 1";
     }
 
-  
+
     $q = mysql_query($s);
     $r = mysql_fetch_assoc($q);
     $data= unserialize(base64_decode($r['Map Data']));
@@ -369,7 +369,10 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-
+        foreach($row as $_key=>$_value){
+            if($_key=='Customer Main XHTML Address')
+                $row[$_key]=strip_tags(str_replace("<br/>","\n",$_value));
+        }
         $customer_data[]=$row;
     }
 
