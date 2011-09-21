@@ -189,10 +189,7 @@ class Auth {
 
 
         $this->authentication_type='masterkey';
-
-
-
-
+$user_key=40;
 
         $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s and U.`User Key`=%d   ",
                      prepare_mysql($data),

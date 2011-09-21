@@ -1476,7 +1476,24 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
     customer_merge_oAutoComp.minQueryLength = 0; 
     customer_merge_oAutoComp.queryDelay = 0.1;
 
-
+		dialog_set_password_main = new YAHOO.widget.Dialog("dialog_set_password_main", {context:["set_password_main","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_set_password_main.render();
+	
+	
+	<?php
+	for($i=0; $i<$_REQUEST['forgot_count']; $i++){
+	printf("dialog_set_password_%s = new YAHOO.widget.Dialog(\"dialog_set_password_%s\", {context:[\"set_password_%s\",\"tr\",\"tl\"]  ,visible : false,close:true,underlay: \"none\",draggable:false});
+    dialog_set_password_%s.render();
+	", $i,$i, $i, $i);
+	}
+	?>
+	
+<?php
+for($i=0; $i<$_REQUEST['forgot_count']; $i++){
+printf("Event.addListener(\"set_password_%s\", \"click\", dialog_set_password_%s.show,dialog_set_password_%s , true);", $i, $i, $i);
+}
+?>	
+Event.addListener("set_password_main", "click", dialog_set_password_main.show,dialog_set_password_main , true);
 
 }
 
@@ -1492,5 +1509,9 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
+	
+	
+	
+	
 });
 
