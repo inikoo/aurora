@@ -54,14 +54,20 @@ var CellEdit = function (callback, newValue) {
 		datatable = this.getDataTable(),
 		recordIndex = datatable.getRecordIndex(record);
 
-	//	alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
-	//				encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ //
-	//					myBuildUrl(datatable,record))
+		alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
+					encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ //
+					myBuildUrl(datatable,record))
 
+
+	if(column.object=='department_page_properties')	
+					request_page=	'ar_edit_sites.php';			
+
+			else
+		request_page=	'ar_edit_assets.php';			
 
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
-						'ar_edit_assets.php', {
+						request_page, {
 						    success:function(o) {
 								alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -543,6 +549,79 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 
 
+  var tableid=6; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				         ,{key:"go", label:"", width:20,action:"none"}
+				       ,{key:"code",label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"store_title",label:"<?php echo _('Header Title')?>", width:400,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department_page_properties'}
+				    	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_store'}		       
+				       ];
+				       
+	 
+				       
+				       
+	    //?tipo=customers&tid=0"
+	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=department_page_list&site_key="+Dom.get('site_key').value+"&parent=department&parent_key="+Dom.get('department_key').value+"&tableid=6");
+
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+	
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"go","code","store_title","delete"
+
+			 ]};
+
+        this.table6 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource6
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    :<?php echo $_SESSION['state']['department']['pages']['nr']?> ,containers : 'paginator6', alpartysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo $_SESSION['state']['department']['pages']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['department']['pages']['order_dir']?>"
+							 },
+							 dynamicData : true
+						     }
+						     );
+	    
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	    this.table6.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table6.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table6.subscribe("cellClickEvent", onCellClick);
+		    
+	    this.table6.filter={key:'<?php echo $_SESSION['state']['department']['pages']['f_field']?>',value:'<?php echo $_SESSION['state']['department']['pages']['f_value']?>'};
+
 
 
 
@@ -654,7 +733,7 @@ var request='tipo=new_department_page&department_key='+department_id+'&site_key=
 						'POST',
 						'ar_edit_sites.php', {
 						    success:function(o) {
-						
+						    alert(o.responseText)
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
@@ -775,7 +854,7 @@ init_search('products_store');
 
 
  	//YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
-
+  YAHOO.util.Event.addListener('new_department_page', "click", new_department_page);
 
  YAHOO.util.Event.addListener('cancel_new_family', "click", cancel_new_family);
  YAHOO.util.Event.addListener('save_new_family', "click", save_new_family);

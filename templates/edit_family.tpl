@@ -8,7 +8,7 @@
 
 
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
+    <h1><span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
 </div>
 </div>
 
@@ -272,7 +272,7 @@
 <tr><td class="label">{t}Page Type{/t}:</td>
  <td>
  <table>
- <tr><td class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.PageStoreType=="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.PageStoreType=="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
  
 
  </table>
@@ -311,7 +311,7 @@
 		 <div  style="height:60px" >
 		   <textarea  id="family_page_html_head_keywords"  value="{$page_data.PageKeywords}" ovalue="{$page_data.PageKeywords}"  >{$page_data.PageKeywords}</textarea>
 		   
-		   <div id="family_page_html_head_keywords_Container" style="" ></div>
+		   <div id="family_page_html_head_keywords_Container" ></div>
 		 </div>
 		 
 		 
@@ -349,7 +349,28 @@
 	    
 	       
 	     </tr>
-	     <tr><td class="label">{t}Subtitle{/t}:</td><td>
+	     
+	       <tr><td class="label">{t}Found In{/t}:</td>
+	       <td>
+	        <div style="float:right"  class="general_options"><span id="add_other_found_in_page" class="state_details">Add other page</span></div>
+	       <table >
+		    {foreach from=$page->found_in() item=found_in_page}
+               <tr><td style="padding:0">{$found_in_page.found_in_label}</td>
+               <td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+             
+               </tr>
+            {/foreach}
+	       </table>
+	      
+	       </td>
+	       <td></td>
+	       </td>
+	    
+	       
+	     </tr>
+	     
+	     
+	     <tr style="display:none"><td class="label">{t}Subtitle{/t}:</td><td>
 		 <div   >
 		   <input  id="family_page_header_subtitle"   value="{$page_data.PageStoreSubtitle}" ovalue="{$page_data.PageStoreSubtitle}"  />
 		   
@@ -1037,6 +1058,16 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
             <span class="clean_table_title">{t}Family List{/t}</span>
             {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
             <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ <div id="dialog_page_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Page List{/t}</span>
+            {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
+            <div  id="table7"   class="data_table_container dtable btable "> </div>
         </div>
     </div>
  </div>

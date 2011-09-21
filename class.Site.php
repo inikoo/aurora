@@ -446,13 +446,16 @@ class Site extends DB_Table {
 
 
 
+             if (!isset($data['Page Code']) or !$data['Page Code']) {
+            $data['Page Code']=$this->get_unique_department_page_code($department);
+        }
 
 
 
 
 
         $page_data=array(
-                       'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$department->data['Product Department Code'],
+                       'Page Code'=>$data['Page Code'],
                        'Page Site Key'=>$this->id,
                        'Page Source Template'=>'',
                        'Page URL'=>'department.php?code='.$department->data['Product Department Code'],
@@ -482,6 +485,9 @@ class Site extends DB_Table {
         $page_data['Page Parent Key']=$department->id;
 
         $page=new Page('find',$page_data,'create');
+             $this->new_page=$page->new;
+        $this->msg=$page->msg;
+        $this->error=$page->error;
 //print_r($page);
 //exit;
         //$sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d  where `Product Department Key`=%d",$page->id,$department->id);
@@ -545,9 +551,9 @@ class Site extends DB_Table {
             $showcases_layout=$data['Showcases Layout'];
 
 
-if(!isset($data['Page Code']) or !$data['Page Code']){
-$data['Page Code']=$this->get_unique_family_page_code($family);
-}
+        if (!isset($data['Page Code']) or !$data['Page Code']) {
+            $data['Page Code']=$this->get_unique_family_page_code($family);
+        }
 
 
 
@@ -589,13 +595,13 @@ $data['Page Code']=$this->get_unique_family_page_code($family);
 
 
 
-$this->new_page=$page->new;
-$this->msg=$page->msg;
-$this->error=$page->error;
+        $this->new_page=$page->new;
+        $this->msg=$page->msg;
+        $this->error=$page->error;
 
 //print_r($page);
 //exit;
-      
+
 
     }
     function base_data() {
@@ -684,44 +690,66 @@ $this->error=$page->error;
         return $page_section;
     }
 
-    function get_unique_family_page_code($family){
-    
+    function get_unique_family_page_code($family) {
+
+         if (!$this->is_page_store_code($family->data['Product Family Code']))
+                return $family->data['Product Family Code'];
+
         for ($i = 2; $i <= 200; $i++) {
-        
-            if($i<=100){
+
+            if ($i<=100) {
                 $suffix=$i;
-            }else{
+            } else {
                 $suffix=uniqid('', true);
             }
-        
-            if(!$this->is_family_page_code($family->data['Product Family Code'].$suffix))
+
+            if (!$this->is_page_store_code($family->data['Product Family Code'].$suffix))
                 return $family->data['Product Family Code'].$suffix;
         }
-    
+
         return $suffix;
     }
 
 
+ function get_unique_department_page_code($department) {
 
+   if (!$this->is_page_store_code($department->data['Product Department Code']))
+                return $department->data['Product Department Code'];
 
-function is_family_page_code($query){
-    
-       $sql=sprintf("select PS.`Page Code`,PS.`Page Key` from `Page Store Dimension`  PS where `Page Site Key`=%d and `Page Code`=%s  "
-                 ,$this->id
-                 ,prepare_mysql($query)
-                );
+        for ($i = 2; $i <= 200; $i++) {
 
-    $res=mysql_query($sql);
+            if ($i<=100) {
+                $suffix=$i;
+            } else {
+                $suffix=uniqid('', true);
+            }
 
-    if ($data=mysql_fetch_array($res)) {
-        return true;
-    
-    
-    }else{
-        return false;
+            if (!$this->is_page_store_code($department->data['Product Department Code'].$suffix))
+                return $department->data['Product Department Code'].$suffix;
+        }
+
+        return $suffix;
     }
-    
-    
+
+
+    function is_page_store_code($query) {
+
+        $sql=sprintf("select PS.`Page Code`,PS.`Page Key` from `Page Store Dimension`  PS where `Page Site Key`=%d and `Page Code`=%s  "
+                     ,$this->id
+                     ,prepare_mysql($query)
+                    );
+
+        $res=mysql_query($sql);
+
+        if ($data=mysql_fetch_array($res)) {
+            return true;
+
+
+        } else {
+            return false;
+        }
+
+
     }
 
 }

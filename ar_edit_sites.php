@@ -1,6 +1,6 @@
 <?php
 /*
- 
+
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -23,18 +23,55 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case('add_found_in_page'):
+ $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                               'found_in_key'=>array('type'=>'key'),
+                               'parent_key'=>array('type'=>'key'),
+                         ));
+
+    add_found_in_page($data);
 
 
+break;
+case('delete_found_in_page'):
+ $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                               'found_in_key'=>array('type'=>'key'),
+                                'parent_key'=>array('type'=>'key'),
+                         ));
+
+    delete_found_in_page($data);
+
+
+break;
+case('delete_page_store'):
+
+  $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             
+                         ));
+
+    delete_page_store($data);
+break;
+case('new_department_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'department_key'=>array('type'=>'key')
+                         ));
+
+    new_department_page($data);
+    break;
 
 
 case('new_family_page'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'site_key'=>array('type'=>'key'),
                              'family_key'=>array('type'=>'key')
                          ));
 
     new_family_page($data);
-break;
+    break;
 case('edit_page_layout'):
     edit_page_layout();
     break;
@@ -42,7 +79,7 @@ case('edit_family_page_html_head'):
 case('edit_family_page_header'):
 case('edit_family_page_content'):
 case('edit_family_page_properties'):
-require_once 'class.Family.php';
+    require_once 'class.Family.php';
 
 
     $data=prepare_values($_REQUEST,array(
@@ -57,7 +94,7 @@ case('edit_department_page_html_head'):
 case('edit_department_page_header'):
 case('edit_department_page_content'):
 case('edit_department_page_properties'):
-require_once 'class.Department.php';
+    require_once 'class.Department.php';
 
 
     $data=prepare_values($_REQUEST,array(
@@ -68,8 +105,9 @@ require_once 'class.Department.php';
 
     edit_page('department',$data);
     break;
-break;
+    break;
 case('family_page_list'):
+case('department_page_list'):
 case('store_pages'):
     list_pages_for_edition();
     break;
@@ -84,19 +122,19 @@ default:
 
 
 function  edit_page($subject,$data) {
-    
+
     global $editor;
- 
-    
-    
-    
+
+
+
+
     $page=new Page($data['id']);
-       $page->editor=$editor;
-    
-    
-    
-    
-    
+    $page->editor=$editor;
+
+
+
+
+
     $page->update_field_switcher($data['key'],stripslashes(urldecode($data['newvalue'])));
 
 
@@ -130,53 +168,76 @@ function edit_page_layout() {
 }
 
 
-function new_family_page($data){
-include_once('class.Family.php');
- $site=new Site($data['site_key']);
-  $family=new Family($data['family_key']);
-        $page_data=array();
-        $page_data['Page Parent Key']=$family->id;
-        $page_data['Page Store Slogan']='';
-        $page_data['Page Store Resume']='';
-        $page_data['Page Store Section']='Family Catalogue';
-        $page_data['Showcases Layout']='Splited';
-          $page_data['Page URL']='www.ancientwisdom.biz/forms/'.strtolower($family->data['Product Family Code']);
-        $site->add_family_page($page_data);
-        
-       if($site->new_page){
-         $response= array('state'=>200,'action'=>'created');
-       
-       }else{
-         $response= array('state'=>400,'msg'=>$site->msg);
-       
-       }
-         echo json_encode($response);
+function new_department_page($data) {
+    include_once('class.Department.php');
+    $site=new Site($data['site_key']);
+    $department=new Department($data['department_key']);
+    $page_data=array();
+    $page_data['Page Parent Key']=$department->id;
+    $page_data['Page Store Slogan']='';
+    $page_data['Page Store Resume']='';
+    $page_data['Page Store Section']='Department Catalogue';
+    $page_data['Showcases Layout']='Splited';
+    $page_data['Page URL']='www.ancientwisdom.biz/'.strtolower($department->data['Product Department Code']);
+    $site->add_department_page($page_data);
+
+    if ($site->new_page) {
+        $response= array('state'=>200,'action'=>'created');
+
+    } else {
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    }
+    echo json_encode($response);
+}
+
+function new_family_page($data) {
+    include_once('class.Family.php');
+    $site=new Site($data['site_key']);
+    $family=new Family($data['family_key']);
+    $page_data=array();
+    $page_data['Page Parent Key']=$family->id;
+    $page_data['Page Store Slogan']='';
+    $page_data['Page Store Resume']='';
+    $page_data['Page Store Section']='Family Catalogue';
+    $page_data['Showcases Layout']='Splited';
+    $page_data['Page URL']='www.ancientwisdom.biz/forms/'.strtolower($family->data['Product Family Code']);
+    $site->add_family_page($page_data);
+
+    if ($site->new_page) {
+        $response= array('state'=>200,'action'=>'created');
+
+    } else {
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    }
+    echo json_encode($response);
 }
 
 
 function list_pages_for_edition() {
+    if (isset( $_REQUEST['site_key'])) {
+        $site_key=$_REQUEST['site_key'];
+
+    } else
+        $site_key=$conf['site_key'];
 
 
-    $parent='store';
-
-    if ( isset($_REQUEST['parent']))
+    $parent='site';
+$parent_key=$site_key;
+ 
+ 
+ if ( isset($_REQUEST['parent']))
         $parent= $_REQUEST['parent'];
 
     if ($parent=='store')
-        $parent_key=$_REQUEST['parent_key']; 
-     if ($parent=='family')
-        $parent_key=$_REQUEST['parent_key']; 
-        
-    else
-        return;
+        $parent_key=$_REQUEST['parent_key'];
+    elseif ($parent=='family')
+        $parent_key=$_REQUEST['parent_key'];
+    elseif ($parent=='department')
+        $parent_key=$_REQUEST['parent_key'];
+ 
 
-
-
-   if (isset( $_REQUEST['site_key'])) {
-        $site_key=$_REQUEST['site_key'];
-     
-    } else
-        $site_key=$conf['site_key'];
 
 
 
@@ -193,7 +254,7 @@ function list_pages_for_edition() {
 
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr'];
-     
+
     } else
         $number_results=$conf['nr'];
 
@@ -231,29 +292,31 @@ function list_pages_for_edition() {
 
 
 
-$_SESSION['state'][$parent]['pages']['order']=$order;
-$_SESSION['state'][$parent]['pages']['order_dir']=$order_direction;
-$_SESSION['state'][$parent]['pages']['nr']=$number_results;
-$_SESSION['state'][$parent]['pages']['sf']=$start_from;
-$_SESSION['state'][$parent]['pages']['where']=$where;
-$_SESSION['state'][$parent]['pages']['f_field']=$f_field;
-$_SESSION['state'][$parent]['pages']['f_value']=$f_value;
-$_SESSION['state'][$parent]['pages']['parent_key']=$parent_key;
-$_SESSION['state'][$parent]['pages']['site_key']=$site_key;
+    $_SESSION['state'][$parent]['pages']['order']=$order;
+    $_SESSION['state'][$parent]['pages']['order_dir']=$order_direction;
+    $_SESSION['state'][$parent]['pages']['nr']=$number_results;
+    $_SESSION['state'][$parent]['pages']['sf']=$start_from;
+    $_SESSION['state'][$parent]['pages']['where']=$where;
+    $_SESSION['state'][$parent]['pages']['f_field']=$f_field;
+    $_SESSION['state'][$parent]['pages']['f_value']=$f_value;
+    $_SESSION['state'][$parent]['pages']['parent_key']=$parent_key;
+    $_SESSION['state'][$parent]['pages']['site_key']=$site_key;
 
 
-  
-  
-  
-  // print_r($_SESSION['tables']['families_list']);
+
+
+
+    // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
 
-    $where=' where `Page Type`="Store" ';
+    $where=sprintf(' where `Page Type`="Store" and `Page Site Key`=%d ',$site_key);
     if ($parent=='store')
         $where.=sprintf("and `Page Store Function` in ('Front Page Store','Search','Information','Unknown','Store Catalogue') and `Page Store Key`=%d ",$parent_key);
-  if ($parent=='family')
-        $where.=sprintf("and `Page Store Section`='Family Catalogue'   and `Page Parent Key`=%d ",$parent_key);
+    elseif ($parent=='family')
+    $where.=sprintf("and `Page Store Section`='Family Catalogue'   and `Page Parent Key`=%d ",$parent_key);
+    elseif ($parent=='department')
+    $where.=sprintf("and `Page Store Section`='Department Catalogue'   and `Page Parent Key`=%d ",$parent_key);
 
     $filter_msg='';
     $wheref='';
@@ -270,7 +333,7 @@ $_SESSION['state'][$parent]['pages']['site_key']=$site_key;
 
 
     $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
-    // print $sql;
+    
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -292,7 +355,7 @@ $_SESSION['state'][$parent]['pages']['site_key']=$site_key;
     }
 
 
-    $rtext=$total_records." ".ngettext('charge','charges',$total_records);
+    $rtext=$total_records." ".ngettext('page','pages',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -341,21 +404,22 @@ $_SESSION['state'][$parent]['pages']['site_key']=$site_key;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
- 
- 
- 
+
+
+
 
 
         $adata[]=array(
                      'id'=>$row['Page Key'],
                      'section'=>$row['Page Section'],
-                      'code'=>$row['Page Code'],
+                     'code'=>$row['Page Code'],
                      'store_title'=>$row['Page Store Title'],
-                     
-                     'go_page'=>sprintf("<a href='edit_page.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key']),
-                     
-                     'go'=>sprintf("<a href='edit_%s.php?id=%d&block=web&page_key=%d'><img src='art/icons/page_go.png' alt='go'></a>",$parent,$parent_key,$row['Page Key'])   
 
+                     'go_page'=>sprintf("<a href='edit_page.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key']),
+
+                     'go'=>sprintf("<a href='edit_%s.php?id=%d&block=web&page_key=%d'><img src='art/icons/page_go.png' alt='go'></a>",$parent,$parent_key,$row['Page Key']),
+                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />" 
+                     
                  );
     }
     mysql_free_result($res);
@@ -386,5 +450,64 @@ $_SESSION['state'][$parent]['pages']['site_key']=$site_key;
     echo json_encode($response);
 }
 
+function  delete_page_store($data){
+
+$page=new Page($data['id']);
+$page->delete();
+
+  if ($page->deleted) {
+        $response= array('state'=>200,'action'=>'deleted');
+
+    } else {
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    }
+    echo json_encode($response);
+
+}
 
 
+
+    function add_found_in_page($data){
+    
+    
+    $page_key=$data['id'];
+    $found_in_key=$data['found_in_key'];
+    $sql=sprintf("insert into `Page Store Found In Bridge` values (%d,%d)  ",
+    $page_key,
+    $found_in_key);
+           
+            mysql_query($sql);
+            
+          
+    
+
+   $response= array('state'=>200,'action'=>'created','parent_key'=>$data['parent_key'],'page_key'=>$page_key);
+    echo json_encode($response);  
+            
+    
+    }
+    
+    
+       function delete_found_in_page($data){
+    
+    
+    $page_key=$data['id'];
+    $found_in_key=$data['found_in_key'];
+    $sql=sprintf("delete from  `Page Store Found In Bridge` where `Page Store Key`=%d and `Page Store Found In Key`=%d   ",
+    $page_key,
+    $found_in_key);
+           
+           
+           
+            mysql_query($sql);
+            
+          
+        $response= array('state'=>200,'action'=>'deleted','parent_key'=>$data['parent_key'],'page_key'=>$page_key);
+
+  
+    echo json_encode($response);  
+            
+    
+    }
+    
