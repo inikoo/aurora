@@ -413,7 +413,7 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image;
+    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image, $page_code;
 	
 	if(isset($data['header_image']))
 		$header_image=$data['header_image'];
@@ -448,9 +448,9 @@ function set_parameters($data=false) {
     else
         $page_code=$family_code;
 
-    $page=new Page('site_code',$site->id,$page_code);
-
-
+	
+	
+	$page=new Page('site_code',$site->id,$page_code);
 
     $see_also=array();
 
@@ -524,7 +524,7 @@ function add_extra_header_content($data, $type="child") {
 function log_visit($session_key,$user_log_key) {
 
 
-    global $user_click_key;
+    global $user_click_key, $site, $page_code;
     $user_click_key=0;
     // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
     $file = $_SERVER["PHP_SELF"];
@@ -568,7 +568,10 @@ $prev_url =$purl ;
         $user_key=0;
     }
 
-    $page_key=0;
+
+	$page=new Page('site_code',$site->id,$page_code);
+
+    $page_key=$page->id;
     $date=date("Y-m-d H:i:s");
 
 

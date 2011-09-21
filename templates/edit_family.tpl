@@ -201,6 +201,7 @@
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
 	 </div>
       </div>
+	  
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
 
       <div class="general_options" style="float:right">

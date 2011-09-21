@@ -835,7 +835,7 @@ class Page extends DB_Table {
        $found_in=array();
            $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
       $this->id);
-     
+
        $res=mysql_query($sql);
        
        while($row=mysql_fetch_assoc($res)){
