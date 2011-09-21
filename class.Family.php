@@ -2582,7 +2582,7 @@ function update_similar_families(){
 		$see_also=array();
 		
 	
-		$this_family_name=$this->data['Product Family Name']
+		$this_family_name=$this->data['Product Family Name'];
       		
 		$department_codes[]=$this->data['Product Family Main Department Code'];
 		
