@@ -187,7 +187,7 @@ function register_customer($data) {
 
 function change_password($data) {
     global $user;
-    
+    print_r($data);
   //  print_r($data['values']);
   //  print "\n". $user->id;
     
