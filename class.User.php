@@ -460,7 +460,7 @@ class User extends DB_Table {
         }
 
         $sql=sprintf("update `User Dimension` set `User Password`=%s where `User Key`=%d",prepare_mysql($data),$this->id);
-		print $sql;
+		//print $sql;
         mysql_query($sql);
         $this->updated=true;
 
