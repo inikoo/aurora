@@ -44,7 +44,7 @@ if($logged_in){?>
 <div id="top_navigator" >
 <?php if($logged_in){?>
 
-<input type="hidden" id="user_key" value="<?php echo $user->id ?>"
+<input type="hidden" id="user_key" value="<?php echo $_SESSION['user_key']?>">
 <div style="margin-left:10px;width:500px;float:left;text-align:left;xborder:1px solid red;">
  
 <img id="basket" src="<?php echo $path ?>inikoo_files/art/basket.jpg"/>

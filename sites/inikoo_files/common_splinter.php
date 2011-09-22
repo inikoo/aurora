@@ -174,9 +174,20 @@ session_destroy();
     $St=get_sk();
 }elseif(isset($_REQUEST['p'])) {
 
-
     $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
 // print "$dencrypted_secret_data\n";
+/*
+	$sql=sprintf("select `User Key` from `Masterkey Dimension` where `Key`='%s'", $dencrypted_secret_data);
+
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result))
+		$user=new User($row['User Key']);
+	
+	if(isset($user)){
+		print_r($user);	
+		$_SESSION['user_key']=$user->id;
+}*/
+	
     $auth=new Auth(IKEY,SKEY);
 
     $auth->authenticate_from_masterkey($dencrypted_secret_data);
@@ -260,8 +271,10 @@ if ($logged_in ) {
 
 log_visit($session->id,$user_log_key);
 
-
-
+/*
+if(isset($user))
+print_r($user);	
+*/
 
 
 function show_footer() {

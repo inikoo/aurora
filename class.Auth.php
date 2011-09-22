@@ -204,7 +204,7 @@ class Auth {
     
      
      $this->status=true;
-            $this->user_key=$row['User Parent Key'];
+            $this->user_key=$row['User Key'];
 
 
             $this->user_parent_key=$row['User Parent Key'];

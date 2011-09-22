@@ -12,6 +12,8 @@ var path='<?php echo $_path ?>';
 function change_password(){
 
     var user_key=Dom.get('user_key').value;
+	
+	alert(user_key);
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 	
