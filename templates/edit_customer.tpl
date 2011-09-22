@@ -9,7 +9,7 @@
 
 <div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">{$recent_merges}</div>
 
-  <ul class="tabs" id="chooser_ul" style="clear:both">
+  <ul class="tabs" id="chooser_ul" styloe="clear:both">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Customer Details{/t}</span></span></li>
  {if $customer_type=='Company'}
     <li> <span class="item {if $edit=='company'}selected{/if}" style="display:none"  id="company">  <span> {t}Company Details{/t}</span></span></li>
@@ -794,6 +794,8 @@ Change Password
 <tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
 <tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="{$main_email.epwcp1}" type="hidden"/>
+<input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
+<input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
 <input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
 
 

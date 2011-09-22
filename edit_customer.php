@@ -44,7 +44,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
-print_r($customer);
+//print_r($customer);
 
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
@@ -125,14 +125,15 @@ $smarty->assign('customer',$customer);
 
 
 $other_email=$customer->get_other_emails_data();
-//print_r($email);
+
 $registered_email=array();
 $unregistered_email=array();
 
 foreach($other_email as $email){
 	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
-	//print $sql;
+
 	$result=mysql_query($sql);
+
 	if($row=mysql_fetch_array($result)){
 		$rnd=md5(rand()); 
 		$epwcp1=sprintf("%sinsecure_key%s",$row['User Key'],$rnd);
@@ -140,11 +141,11 @@ foreach($other_email as $email){
 									'epwcp1'=>$epwcp1,
 									'epwcp2'=>$rnd
 							);
-	}
-	else
-		$unregistered_email[]=array('email'=>$email['email'],									
-									'epwcp1'=>$epwcp1,
-									'epwcp2'=>$rnd
+	
+	}	else
+		$unregistered_email[]=array('email'=>$email['email']								
+									//'epwcp1'=>$epwcp1,
+									//'epwcp2'=>$rnd
 							);
 	
 }

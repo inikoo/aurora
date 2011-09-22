@@ -118,52 +118,52 @@ function submit_change_password(){
 var error=false;
 
 
-if(  Dom.get('change_password_password1').value=='' &&  Dom.get('change_password_password1').value==Dom.get('change_password_password2').value ){
-Dom.addClass(['change_password_password1','change_password_password2'],'error');
-error=true;
-Dom.setStyle('change_password_error_no_password','display','')
+	if(  Dom.get('change_password_password1').value=='' &&  Dom.get('change_password_password1').value==Dom.get('change_password_password2').value ){
+		Dom.addClass(['change_password_password1','change_password_password2'],'error');
+		error=true;
+		Dom.setStyle('change_password_error_no_password','display','')
 
-}else{
-Dom.removeClass(['change_password_password1','change_password_password2'],'error');
-Dom.setStyle('change_password_error_no_password','display','none')
+	}else{
+	Dom.removeClass(['change_password_password1','change_password_password2'],'error');
+	Dom.setStyle('change_password_error_no_password','display','none')
 
-}
-
-
-
-if(!error){
-if( Dom.get('change_password_password1').value!=Dom.get('change_password_password2').value ){
-Dom.addClass(['change_password_password1','change_password_password2'],'error');
-if(!error)
-Dom.setStyle('change_password_error_password_not_march','display','')
-error=true;
-
-}else{
-Dom.removeClass(['change_password_password1','change_password_password2'],'error');
-Dom.setStyle('change_password_error_password_not_march','display','none')
-
-}
-}
-if(!error){
-if(!error &&   Dom.get('change_password_password1').value.length<6){
-Dom.addClass(['change_password_password1'],'error');
-
-if(!error)
-    Dom.setStyle('change_password_error_password_too_short','display','')
-
-    
-error=true;
-}else{
-Dom.removeClass(['change_password_password1'],'error');
-    Dom.setStyle('change_password_error_password_too_short','display','none')
-
-}
-}
+	}
 
 
 
-if(!error)
-change_password()
+	if(!error){
+		if( Dom.get('change_password_password1').value!=Dom.get('change_password_password2').value ){
+			Dom.addClass(['change_password_password1','change_password_password2'],'error');
+			if(!error)
+				Dom.setStyle('change_password_error_password_not_march','display','')
+				error=true;
+
+		}else{
+			Dom.removeClass(['change_password_password1','change_password_password2'],'error');
+			Dom.setStyle('change_password_error_password_not_march','display','none')
+
+		}
+	}
+	if(!error){
+		if(!error &&   Dom.get('change_password_password1').value.length<6){
+			Dom.addClass(['change_password_password1'],'error');
+
+			if(!error)
+				Dom.setStyle('change_password_error_password_too_short','display','')
+
+			
+			error=true;
+		}else{
+			Dom.removeClass(['change_password_password1'],'error');
+			Dom.setStyle('change_password_error_password_too_short','display','none')
+
+		}
+	}
+
+
+
+	if(!error)
+	change_password()
 }
 
 
