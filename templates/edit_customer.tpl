@@ -795,8 +795,8 @@ Change Password
 <tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="{$main_email.epwcp1}" type="hidden"/>
 <input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
-<input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
-<input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
+<input id="user_key" value="{$main_email.user_key}" type="hidden"/>
+
 
 
 <tr  id="tr_change_password_buttons"  class="button space" >
