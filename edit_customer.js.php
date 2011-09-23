@@ -495,7 +495,7 @@ var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
   var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
+     var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
 alert(request);
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');

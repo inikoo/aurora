@@ -172,6 +172,7 @@
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="customers" {if $view_customers}display:none{/if} ><span>  {t}Customers{/t}</span></span></li>
    <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders"  {if $view_orders}display:none{/if}  >  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='timeline'}selected{/if}"  id="timeline">  <span> {t}History{/t}</span></span></li>
+	<li> <span class="item {if $block_view=='web_site'}selected{/if}"  id="web_site">  <span> {t}Web Site{/t}</span></span></li>
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -322,6 +323,23 @@
 
 
 </div>
+
+<div id="block_web_site" style="{if $block_view!='web_site'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
+<h2 style="clear:both">{t}Web Site Details{/t}</h2>
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+{if $web_site.available}
+		<tr ><td>{t}Page URL{/t}:</td><td>{$web_site.url}</td></tr>
+		<tr ><td>{t}Page Type{/t}:</td><td>{$web_site.type}</td></tr>
+{else}
+<tr ><td>{t}No web page exist{/t}:</td></tr>
+{/if}
+</table>
+</div>
+
+</div>
+
 <div  id="block_orders" class="data_table"  style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
  {if $view_orders} 
     <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
