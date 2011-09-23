@@ -3830,5 +3830,18 @@ function array_to_CSV($data)
         return($csv);
     }
 
+function aasort (&$array, $key) {
+		$sorter=array();
+		$ret=array();
+		reset($array);
+		foreach ($array as $ii => $va) {
+			$sorter[$ii]=$va[$key];
+		}
+		arsort($sorter);
+		foreach ($sorter as $ii => $va) {
+			$ret[$ii]=$array[$ii];
+		}
+		$array=$ret;
+	}
 
 ?>
