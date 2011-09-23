@@ -285,6 +285,27 @@ $tipo_filter=$_SESSION['state']['product']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['product']['customers']['f_value']);
 
+//print_r($product);
+$sql=sprintf("select * from `Product Page Bridge` where `Product ID`=%d", $product->pid);
+//print $sql;
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result)){
+	$page_key=$row['Page Key'];
+	$type=$row['Type'];
+	
+	$sql=sprintf("select `Page URL` from `Page Dimension` where `Page Key`=%d", $page_key);
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result))
+		$url=$row['Page URL'];
+	
+	$web_site=array('url'=>$url, 'type'=>$type, 'available'=>true);
+	
+}
+else
+	$web_site=array('available'=>false);
+	
+$smarty->assign('web_site',$web_site);	
+
 $filter_menu=array(
 		   'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
 		   'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),

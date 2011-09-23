@@ -1158,7 +1158,7 @@ class LightFamily {
 		}
 		
 		
-		$this->aasort($see_also,"weight");
+		aasort($see_also,"weight");
 
 		//$see_also_label=array();
 		$see_also_array=array();
