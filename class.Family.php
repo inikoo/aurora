@@ -2550,8 +2550,8 @@ class Family extends DB_Table {
                 $common_orders=array_intersect_key($orders_keys,$family_orders_keys);
                 $number_common_orders=count($common_orders);
                 $probability=$number_common_orders/$orders;
-               // print $family->id." $probability\n";
-                
+                // print $family->id." $probability\n";
+
                 if ($probability>0.000001) {
                     $sql=sprintf("insert into `Product Family Sales Correlation` values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f , `Samples`=%d  ",
                                  $this->id,
@@ -2562,7 +2562,7 @@ class Family extends DB_Table {
                                  $orders
                                 );
                     mysql_query($sql);
-                 //    print "$sql\n";
+                    //    print "$sql\n";
 
                 }
 
@@ -2575,65 +2575,44 @@ class Family extends DB_Table {
     }
 
 
-function update_similar_families(){
-	
-		$department_codes=array();
-		$department_keys=array();
-		$see_also=array();
-		
-	
-		$this_family_name=$this->data['Product Family Name'];
-      		
-		$department_codes[]=$this->data['Product Family Main Department Code'];
-		
-		$keys=array();
-		foreach($department_codes as $department_code) {
-			$keys[] = '\''.$department_code.'\'';
-		}
-		$department_codes = implode(',',$keys);
+    function update_similar_families() {
 
-	
-		$sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s)", $department_codes);
-		//print $sql;
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			$department_keys[]=$row['Product Department Key'];
-		}
-		
-		//print_r($department_keys);
-		
-		$department_keys = implode(',',$department_keys);
-		//print_r($department_keys);
-		
-		$sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
-		//print $sql;
-		$match='/'.strtolower($code).'/';
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			//if(!file_exists($base_url.strtolower($row['Product Family Code'])))
-			if($this_family_name == $row['Product Family Name'])
-				$weight=0;
-			elseif(preg_match($match, strtolower(preg_replace('/\s/','',$row['Product Family Code']))))
-				$weight=10;
-			else
-				$weight=0;
-			
-			//$temp='<a href="'.$base_url.strtolower($row['Product Family Code']).'">'.$row['Product Family Name'].'</a>';
-		//	$temp=$base_url.strtolower($row['Product Family Code']);
-				$see_also[]=array(
-				
-									'family_key'=>$row['Product Family Key'],
-									'weight'=>$weight);
-			
+        $department_codes=array();
+        $department_keys=array();
+        $see_also=array();
 
-		}
-		
-		
-		$this->aasort($see_also,"weight");
 
-	    print_r($see_alse);	
-	
-	}
+        $this_family_name=$this->data['Product Family Name'];
+
+
+        $department_keys=$this->data['Product Family Main Department Key'];
+        $department_codes=$this->data['Product Family Main Department Code'];
+        $code=$this->data['Product Family Code'];
+
+        $fingerprint=strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name']);
+
+        $sql=sprintf("select `Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'],
+        $department_keys);      
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            
+            $other_fingerprint=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
+            
+            
+            $see_also[]=array(
+
+                            'family_key'=>$row['Product Family Key'],
+                            'weight'=>$weight);
+
+
+        }
+
+
+        aasort($see_also,"weight");
+
+        print_r($see_also);
+
+    }
 
 
 }
