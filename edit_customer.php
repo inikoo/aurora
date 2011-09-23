@@ -109,6 +109,8 @@ $js_files=array(
               'edit_delivery_address_common.js.php',
               'js/edit_common.js',
               'js/validate_telecom.js',
+			  'js/aes.js',
+			  'js/sha256.js'
          
               // 'customer.js.php?id='.$customer->id
           );
@@ -139,7 +141,8 @@ foreach($other_email as $email){
 		$epwcp1=sprintf("%sinsecure_key%s",$row['User Key'],$rnd);
 		$registered_email[]=array('email'=>$email['email'],									
 									'epwcp1'=>$epwcp1,
-									'epwcp2'=>$rnd
+									'epwcp2'=>$rnd,
+									'user_key'=>$row['User Key']
 							);
 	
 	}	else
@@ -157,7 +160,8 @@ if($row=mysql_fetch_array($result)){
 	$epwcp1=sprintf("%sinsecure_key%s",$row['User Key'],$rnd);
 	$main_email=array('email'=>$customer->get('Customer Main Plain Email'),									
 						'epwcp1'=>$epwcp1,
-						'epwcp2'=>$rnd
+						'epwcp2'=>$rnd,
+						'user_key'=>$row['User Key']
 								);
 }
 							
