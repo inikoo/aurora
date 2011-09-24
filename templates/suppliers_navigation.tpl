@@ -1,4 +1,6 @@
-<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_suppliers.php">{t}here{/t}</a>.</span>
+<input type='hidden' id="supplier_id" value="{$supplier_id}">
+
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_suppliers.php{if $store_key}?supplier={$store_key}{/if}">{t}here{/t}</a>.</span>
 
 
 <table class="search"  border=0 style="{if $search_label==''}display:none{/if}">

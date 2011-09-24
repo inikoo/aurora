@@ -203,7 +203,7 @@ table_paginator0=new YAHOO.widget.Paginator({
 
 function init(){
 
-    init_search('suppliers');
+    init_search('supplier_products');
 
 ids=['suppliers','porders','sproducts','sinvoices','idn'];
     Event.addListener(ids, "click",change_block);

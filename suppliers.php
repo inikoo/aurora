@@ -77,7 +77,7 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('search_label',_('Search'));
-$smarty->assign('search_scope','suppliers');
+$smarty->assign('search_scope','supplier_products');
 
 //$smarty->assign('box_layout','yui-t4');
 //print_r($_SESSION['state']['suppliers']);

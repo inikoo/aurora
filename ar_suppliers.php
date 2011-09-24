@@ -1462,6 +1462,10 @@ if(isset( $_REQUEST['where']))
        $order='`Supplier Main Location`';
       elseif($order=='email')
        $order='`Supplier Main XHTML Email`';
+       
+         if($order=='sales')
+       $order='`Supplier Code`';
+       
         elseif($order=='pending_pos'){
                $order='`Supplier Open Purchase Orders`';
 
@@ -1471,7 +1475,7 @@ if(isset( $_REQUEST['where']))
 //        $order='Supplier Product XHTML Used In';
 
    $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
-   // print $sql;
+    //print $sql;
    $result=mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {

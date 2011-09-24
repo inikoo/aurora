@@ -2585,35 +2585,47 @@ class Family extends DB_Table {
         $this_family_name=$this->data['Product Family Name'];
 
 
-        $department_keys=$this->data['Product Family Main Department Key'];
-        $department_codes=$this->data['Product Family Main Department Code'];
+        $department_key=$this->data['Product Family Main Department Key'];
+
         $code=$this->data['Product Family Code'];
 
-        $fingerprint=strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name']);
+        $finger_print=strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name']);
 
-        $sql=sprintf("select `Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'],
-        $department_keys);      
+        $sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d",
+                     $this->data['Product Family Store Key'],
+                     $this->id);
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            
-            $other_fingerprint=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
-            
-            
-            $see_also[]=array(
 
-                            'family_key'=>$row['Product Family Key'],
-                            'weight'=>$weight);
+            $other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
+
+            $weight=sentence_similarity($finger_print,$other_finger_print)/100;
+
+            if (!$row['Product Family Main Department Key']==$department_key)
+                $weight=$weight/1.4;
 
 
+
+            if ($weight>0.000001) {
+                $sql=sprintf("insert into `Product Family Semantic Correlation` values (%d,%d,%f) ON DUPLICATE KEY UPDATE `Weight`=%f  ",
+                             $this->id,
+                             $row['Product Family Key'],
+                             $weight,
+
+                             $weight
+
+                            );
+                mysql_query($sql);
+
+
+            }
+
+
+
+
+           
         }
-
-
-        aasort($see_also,"weight");
-
-        print_r($see_also);
+}
 
     }
-
-
-}
-?>
+    ?>

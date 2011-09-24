@@ -44,7 +44,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
     $family=new Family($row['Product Family Key']);
     $family->update_similar_families();
-    exit;
+   
     print $family->id."\r";
 }
 
