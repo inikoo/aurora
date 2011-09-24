@@ -857,6 +857,9 @@ $default_state=array(
                                           'supplier_key'=>0,
                                           'supplier_code'=>'',
                                           'editing'=>'prices',
+                                          'supplier_product_key'=>0,
+                                          'block_view'=>'details',
+                                          
                                           'porders'=>array(
                                                         'order'=>'date',
                                                         'view'=>'general',
@@ -3543,6 +3546,7 @@ $default_state=array(
                                   'action_after_create'=>'continue',
                                   'plot'=>'sales_month',
                                   'orders_view'=>'pos',
+                                  'block_view'=>'products',
                                   'id'=>1,
                                   'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
                                   'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),

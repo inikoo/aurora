@@ -8,6 +8,24 @@ print sprintf("var pid=%s;",prepare_mysql($_SESSION['state']['supplier_product']
      var Event = YAHOO.util.Event;
   
      
+     
+     
+     function change_block(){
+ids=['details','sales','stock','purchase_orders','timeline']
+block_ids=['block_details','block_sales','block_stock','block_purchase_orders','block_timeline'];
+
+
+
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_product-block_view&value='+this.id ,{});
+}
+     
+     
+     
 YAHOO.util.Event.addListener(window, "load", function() {
 
 	tables = new function() {
@@ -23,7 +41,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 		
 		this.dataSource0 = new YAHOO.util.DataSource("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0");
-		alert("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0")
+	//	alert("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0")
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {
@@ -75,7 +93,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
  }});
 
 function init(){
-    
+  Event.addListener(['details','sales','stock','purchase_orders','timeline'], "click",change_block);
+
+  init_search('supplier_products_supplier');
+  
+  
 }
 
 

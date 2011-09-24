@@ -17,6 +17,8 @@ var submit_search_on_enter=function(e,tipo) {
 
 
 function init_search(type) {
+
+
     subject=type;
     switch (type) {
     case 'staff':
@@ -41,7 +43,8 @@ function init_search(type) {
         break;
     case 'products':
         subject='products';
-        search_scope='';
+        
+    search_scope='';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
         break;
     case 'locations':
@@ -61,19 +64,26 @@ function init_search(type) {
         break;
     case 'products_store':
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
-        var search_scope='store';
-          subject='products';
-      
+        search_scope='store';
+        subject='products';
+
         break;
     case 'parts':
         search_scope='parts';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
-    subject='parts';
+        subject='parts';
         break;
-    case 'suppliers':
-        search_scope='suppliers';
-        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_suppliers);
+    case 'supplier_products':
 
+        subject='supplier_products';
+        search_scope='';
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_supplier_products);
+        break;
+    case 'supplier_products_supplier':
+
+        var search_scope='supplier';
+        subject='supplier_products';
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_supplier_products_supplier);
         break;
     default:
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
@@ -84,6 +94,9 @@ function init_search(type) {
 
 
     store_name_oACDS.queryMatchContains = true;
+    
+
+    
     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(subject+"_search",subject+"_search_Container", store_name_oACDS);
 
     store_name_oAutoComp.minQueryLength = 0;
@@ -105,13 +118,11 @@ function init_search(type) {
     y= Dom.getY(subject+'_clean_search');
     Dom.setX(subject+"_search_results", x-500);
 
-
-
+//alert(subject+"_search_results xx")
 
     Dom.setY(subject+"_search_results", y+17);
 
     Dom.get(subject+"_search_results").style.display='none';
-
 
 
 
@@ -123,14 +134,15 @@ var submit_search=function(e,data) {
     if (typeof( data ) == 'string')
 var data={tipo:
           data,container:
-                  data};
+                  data
+                 };
 
     var q =Dom.get(data.container+'_search').value;
     if (q=='')
         return;
 
     var request='ar_search.php?tipo='+data.tipo+'&q='+my_encodeURIComponent(q);
-	//alert(request);
+    //alert(request);
 
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
@@ -147,6 +159,15 @@ success:function(o) {
                 Dom.get(data.container+'_search_msg').innerHTML=r.msg;
         }
     });
+}
+
+function search_supplier_products_supplier(query){
+search(query,'supplier_products','supplier');
+
+}
+
+function search_supplier_products(query){
+search(query,'supplier_products','all');
 }
 
 function search_part(query) {
@@ -213,7 +234,6 @@ function go_to_result() {
 function search(query,subject,search_scope) {
 
 
-
     var ar_file='ar_search.php';
 
     var request='tipo='+subject+'&q='+query+'&scope='+search_scope;
@@ -221,7 +241,7 @@ function search(query,subject,search_scope) {
         request=request+'&'+search_scope+'_id='+Dom.get(search_scope+'_id').value;
     }
 
-//alert('ar_search.php?'+request);//return;
+//alert('ar_search.php?'+request);return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
@@ -229,7 +249,7 @@ success:function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-               //   alert(subject+'_search_results')
+                //   alert(subject+'_search_results')
 
                 Dom.get(subject+'_search_results').removeChild(Dom.get(subject+'_search_results_table'));
                 oTbl=document.createElement("Table");
@@ -359,6 +379,18 @@ success:function(o) {
                                 var oTD= oTR.insertCell(-1);
                                 oTD.innerHTML=r.data[result_key ].store;
                             }
+                            var oTD= oTR.insertCell(-1);
+                            oTD.innerHTML=r.data[result_key ].image;
+                            var oTD= oTR.insertCell(-1);
+                            oTD.innerHTML=r.data[result_key ].code;
+                            var oTD= oTR.insertCell(-1);
+                            oTD.innerHTML=r.data[result_key ].description;
+
+                        }  else if (subject=='supplier_products') {
+                            oTR.setAttribute('key',r.data[result_key ].key);
+                            oTR.setAttribute('link',r.data[result_key ].link);
+
+                            
                             var oTD= oTR.insertCell(-1);
                             oTD.innerHTML=r.data[result_key ].image;
                             var oTD= oTR.insertCell(-1);

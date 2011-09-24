@@ -7,6 +7,7 @@
 
 <div style="padding:0px 20px;">
 
+
   {include file='contacts_navigation.tpl'}
 <div style="clear:left;"> 
  <span class="branch" ><a  href="customers.php">{t}Customers{/t}</a>&rarr; <a  href="customers.php?store={$store->id}">{$store->get('Store Name')}</a></span>
@@ -32,7 +33,7 @@
 
     <tr><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
-    <tr ><td id="take_order">{t}Take Order{/t}</td></tr>
+    <tr style="display:none" ><td id="take_order">{t}Take Order{/t}</td></tr>
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
     <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
     <tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>

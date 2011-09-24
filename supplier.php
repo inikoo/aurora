@@ -43,6 +43,9 @@ $smarty->assign('supplier_id',$supplier_id);
 
 $smarty->assign('orders_view',$_SESSION['state']['supplier']['orders_view']);
 
+$smarty->assign('block_view',$_SESSION['state']['supplier']['block_view']);
+
+
 $supplier=new Supplier($supplier_id);
 if (!$supplier->id) {
     header('Location: suppliers.php?msg=SNPF');
@@ -51,7 +54,7 @@ if (!$supplier->id) {
 
 
 $smarty->assign('search_label',_('Search'));
-$smarty->assign('search_scope','suppliers');
+$smarty->assign('search_scope','supplier_products');
 
 
 $general_options_list=array();
@@ -78,8 +81,9 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               //$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               	 $yui_path.'assets/skins/sam/autocomplete.css',
 
+       
                'common.css',
                'button.css',
                'container.css',
@@ -101,6 +105,7 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
               'js/common.js',
+              'js/search.js',
               'js/table_common.js',
                 'js/edit_common.js',
                 'js/csv_common.js'

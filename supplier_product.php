@@ -19,6 +19,7 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		  $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',
@@ -35,6 +36,7 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js',
+		'js/search.js',
 		'js/table_common.js',
 		);
 
@@ -67,8 +69,13 @@ $_SESSION['state']['supplier_product']['id']=$supplier_product->id;
 $modify=$user->can_edit('suppliers');
 $general_options_list=array();
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Product'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Supplier Product'));
 $smarty->assign('general_options_list',$general_options_list);
+
+
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','supplier_products');
+$smarty->assign('block_view',$_SESSION['state']['supplier_product']['block_view']);
 
 
 $smarty->assign('supplier_product',$supplier_product);

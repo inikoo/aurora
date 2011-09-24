@@ -1,14 +1,18 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-<div id="bd" >
+<div id="bd" style="padding:0px">
+
+<div style="padding:0 20px">
  {include file='suppliers_navigation.tpl'}
   <div class="branch"> 
   <span  ><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a  href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a></span>
   </div>
-<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
-    <h1>{t}Product{/t}: [{$supplier_product->get('Supplier Product Code')}] {$supplier_product->get('Supplier Product Name')}</h1>
-</div>
+  <h1><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </h1>
+  
+
 <div class="" id="block_info"  style="width:920px">
+
+
       <div   style="clear:left;padding:0;width:100%">
 
 	  <div id="photo_container" style="margin-top:10px;float:left">
@@ -61,37 +65,10 @@
 		    
 		</table>
 
- <table  class="show_info_product">
-		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$supplier_product->get('Formated Weight')}</td></tr>
-		    {if $data.dimension!=''}
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
-		    {/if}
-		     {if $data.oweight!=''}
-		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
-		    {/if}
-		    {if $data.odimension!=''}
-		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
-		    {/if}
-		  </table>
 
 
-		  <table  class="show_info_product">
-		    
 
-
-<tr>
-		      <td>{t}Categories{/t}:</td>
-		      <td>{$categories}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Material{/t}:</td>
-		      <td>{$materials}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Ingredients{/t}:</td>
-		      <td>{$ingredients}</td>
-		    </tr>
-		  </table>
+		 
 
 	 
 
@@ -107,9 +84,10 @@
 
 	
 		{$product_chain_diagram}
-		<div>{t}Parts{/t}</div>
+		
 		<table class="show_info_product" style="{if $supplier_product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%"  >
-		  {foreach from=$supplier_product->get_parts() item=part_data}
+		 <tr><td>{t}Parts{/t}:</td></tr>
+		 {foreach from=$supplier_product->get_parts() item=part_data}
 		  <tr>
 		    <td>1&rarr;{$part_data.Parts_Per_Supplier_Product_Unit}</td>
 		    <td><a href="part.php?sku={$part_data.part->sku}">{$part_data.part->get_sku()}</a></td>
@@ -130,13 +108,56 @@
       
       </div>
       <div style="clear:both"></div>
-      <div  id="block_orders" class="data_table" style="clear:both;margin:35px 0px">
+      
+      
+    
+     
+
+    </div> 
+
+</div>
+
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+     <li> <span class="item {if $block_view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
+     <li> <span class="item {if $block_view=='stock'}selected{/if}"  id="stock">  <span> {t}Stock{/t}</span></span></li>
+   <li> <span class="item {if $block_view=='purchase_orders'}selected{/if}"  id="purchase_orders"  >  <span> {t}Purchase Orders{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='timeline'}selected{/if}"  id="timeline">  <span> {t}History{/t}</span></span></li>
+
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
+
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
+    <div class="" style="width:280px;float:left;margin-right:20px">
+
+ <table  class="show_info_product">
+		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$supplier_product->get('Formated Weight')}</td></tr>
+		    {if $data.dimension!=''}
+		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
+		    {/if}
+		     {if $data.oweight!=''}
+		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
+		    {/if}
+		    {if $data.odimension!=''}
+		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
+		    {/if}
+		  </table>
+</div>
+
+</div>
+<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_stock" style="{if $block_view!='stock'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0" >
     <span id="table_title" class="clean_table_title">{t}Purchase Orders with this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
-     
 
-    </div> 
+
+</div>
 
 </div>{include file='footer.tpl'}

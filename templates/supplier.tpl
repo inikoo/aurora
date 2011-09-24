@@ -1,6 +1,6 @@
 {include file='header.tpl'}
-<div id="bd" >
-
+<div id="bd"  style="padding:0px">
+<div style="padding:0px 20px;">
  {include file='suppliers_navigation.tpl'}
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
   <h1>{t}Supplier{/t}: {$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>
@@ -27,39 +27,22 @@
   
   </div>
   
+ </div>
  
- 
-      
-      <table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;display:none" class="view_options">
-	  <tr style="border-bottom:1px solid #ddd">
-	    <th><img src="art/icons/information.png" title="{t}Supplier Details{/t}"/></th>
-	    <th><img src="art/icons/bricks.png" title="{t}Supplier Products{/t}"/></th>
-	    <th><img src="art/icons/page_paste.png" title="{t}Purchase Orders{/t}"/></th>
-	    <th><img src="art/icons/script.png" title="{t}History{/t}"/></th>
-	  </tr>
-	  <tr style="height:18px;border-bottom:1px solid #ddd">
-	    <td  id="change_view_details"  state="{$display.details}" block="details"  
-		 {if $display.details==0}title="{t}Show Supplier Details{/t}" atitle="{t}Hide Supplier Details{/t}"{else}atitle="Hide Supplier Details"  title="{t}Hide Supplier Details{/t}"{/if} >
-	      <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
+   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='products'}selected{/if}"  id="products">  <span> {t}Supplier Products{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='purchase_orders'}selected{/if}"  id="purchase_orders">  <span> {t}Purchase Orders{/t}</span></span></li>
 
-	    <td  id="change_view_products" state="{$display.products}" block="products"  
-		 {if $display.products==0} title="{t}Show Products{/t}" atitle="{t}Hide Products{/t}"{else} atitle="{t}Show Products{/t}" title="{t}Hide Products{/t}"{/if} >
-	      <img {if $display.products==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_products"  /></td>
-	    
-	    <td  state="{$display.po}" block="po"  id="change_view_po" 
-		 {if $display.po==0}title="{t}Show the Purchase Orders{/t}" atitle="{t}Hide the Purchase Orders{/t}" {else} atitle="{t}Show the Purchase Orders{/t}" title="{t}Hide the Purchase Orders{/t}" {/if} >
-	  <img {if $display.po==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_po"   /></td>
-	    
-	    <td  state="{$display.history}" block="history"   id="change_view_history" {if $display.history==0}title="{t}Show History{/t}" atitle="{t}Hide History{/t}"{else}atitle="{t}Show History{/t}" title="{t}Hide History{/t}"{/if} ><img {if $display.history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_history"   /></td>
-	    
 	
-	  </tr>
-	</table>
+ </ul>
+  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
       
-     
-
-       <div  id="info"  style="{if !$show_details}display:none;{/if};clear:left"   >
-	 <h2 style="font-size:150%;">{t}Supplier Details{/t}</h2>
+      
+      <div style="padding:0px 20px;">
+      
+      <div id="block_products" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+    <h2 style="font-size:150%;">{t}Supplier Details{/t}</h2>
 	
 	<div style="clear:both">
 	<div style="width:300px;float:left">
@@ -117,30 +100,25 @@
 
 <div style="{if !$show_details}display:none;{/if};clear:both"  id="plot"></div>
 </div>
-       </div>
-       
+   </div>
+      
+     
+ <div id="block_products" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+   
 
 
 
-  <div  id="block_pending" class="data_table" style="margin:25px 0px;{if $supplier->get('Supplier Open Purchase Orders')==0}display:none{/if}"    >
-    <span class="clean_table_title">{t}Pending Orders{/t}</span>
-         
 
-    <div id="list_options4"> 
-
-        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-    </div>
-
-
-
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span  id="rtext_rpp4" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
-      <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value}" size=10/><div id='f_container4'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
-    </div>
-    <div  id="table4"   class="data_table_container dtable btable "> </div>
+   
   </div>
-  <div  id="block_products" class="data_table" style="margin:25px 0px;clear:both">
+  
+  
+  
+  
+  
+  
+  
+  <div  id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     <div class="data_table" >
       <span class="clean_table_title">{t}Supplier Products{/t}</span>
       <div id="list_options0">
@@ -175,57 +153,18 @@
        </div>
        
 
-       <div style="border-bottom:0px solid #ccc;width:100%;text-align:right">
-<span id="pos" class="state_details {if $orders_view=='pos'}selected{/if}" style="margin-right:25px">{t}Purchase Orders{/t} ({$supplier->get('Purchase Orders')})</span>
-<span id="dns" class="state_details {if $orders_view=='dns'}selected{/if}"style="margin-right:25px">{t}Delivery Notes{/t} ({$supplier->get('Delivery Notes')})</span>
-<span id="invoices" class="state_details {if $orders_view=='invoices'}selected{/if}"> {t}Invoices{/t} ({$supplier->get('Invoices')})</span>
-</div>
+    
 
+   
 
-       <div  id="block_pos" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='pos'}display:none{/if}">
-	 <span class="clean_table_title">{t}Purchase Orders{/t}</span>
-	 {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
-	 <div  id="table1"   class="data_table_container dtable btable "> </div>
-       </div>
-
-       <div  id="block_dns" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='dns'}display:none{/if}">
-	 <span class="clean_table_title">{t}Supplier Delivery Notes{/t}</span>
-	 <div  class="clean_table_caption"  style="clear:both;">
-	   <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
-	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name3">{$filter_name}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value}" size=10/><div id='f_container3'></div></div></div>
-	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
-	 </div>
-	 <div  id="table3"   class="data_table_container dtable btable "> </div>
-       </div>
-
-     <div  id="block_invoices" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='invoices'}display:none{/if}">
-	 <span class="clean_table_title">{t}Supplier Invoices{/t}</span>
-	 <div  class="clean_table_caption"  style="clear:both;">
-	   <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
-	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name4">{$filter_name}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value}" size=10/><div id='f_container4'></div></div></div>
-	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
-	 </div>
-	 <div  id="table4"   class="data_table_container dtable btable "> </div>
-       </div>
-
-
-<div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}margin:25px 0px;">
-  <span class="clean_table_title">{t}History{/t}</span>
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info2" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg2"></span></div></div>
-    <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name2">{$filter_name}</span>: <input style="border-bottom:none" id='f_input2' value="{$filter_value}" size=10/><div id='f_container2'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-  </div>
-  <div  id="table2"   class="data_table_container dtable btable "> </div>
 </div>
 
 
 
-    </div>
-  </div>
-    <div class="yui-b">
-    </div>
 
+    
+  
+  
 </div> 
 
 
