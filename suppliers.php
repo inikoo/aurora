@@ -54,6 +54,8 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 $smarty->assign('suppliers_view',$_SESSION['state']['suppliers']['suppliers']['view']);
+$smarty->assign('suppliers_period',$_SESSION['state']['suppliers']['suppliers']['period']);
+
 $smarty->assign('supplier_products_view',$_SESSION['state']['suppliers']['supplier_products']['view']);
 $smarty->assign('supplier_products_period',$_SESSION['state']['suppliers']['supplier_products']['period']);
 $smarty->assign('supplier_products_avg',$_SESSION['state']['suppliers']['supplier_products']['avg']);

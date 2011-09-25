@@ -35,16 +35,37 @@
    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $suppliers_view=='general'}class="selected"{/if} id="suppliers_general" >{t}General{/t}</td>
+	  <td {if $suppliers_view=='contact'}class="selected"{/if}  id="suppliers_contact"  >{t}Contact{/t}</td>
+	
 	  <td {if $suppliers_view=='products'}class="selected"{/if}  id="suppliers_products"  >{t}Products{/t}</td>
-	  {if $view_stock}<td {if $suppliers_view=='stock'}class="selected"{/if}  id="suppliers_stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $suppliers_view=='sales'}class="selected"{/if}  id="suppliers_sales"  >{t}Sales{/t}</td>{/if}
+	  {if $view_stock}<td {if $suppliers_view=='stock'}class="selected"{/if}  id="suppliers_stock"  >{t}Parts Stock{/t}</td>{/if}
+	  {if $view_sales}<td  {if $suppliers_view=='sales'}class="selected"{/if}  id="suppliers_sales"  >{t}Parts Sales{/t}</td>{/if}
+	  {if $view_sales}<td  {if $suppliers_view=='profit'}class="selected"{/if}  id="suppliers_profit"  >{t}Profit{/t}</td>{/if}
+
 	</tr>
       </table>
-  
+      <table id="suppliers_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $suppliers_view!='sales' and  $suppliers_view!='profit'};display:none{/if}"  class="options_mini" >
+	<tr>
+	  <td class="option {if $suppliers_period=='all'}selected{/if}" period="all"  id="suppliers_period_all" >{t}All{/t}</td>
+	  <td class="option {if $suppliers_period=='three_year'}selected{/if}"  period="three_year"  id="suppliers_period_three_year"  >{t}3Y{/t}</td>
+	  <td class="option {if $suppliers_period=='year'}selected{/if}"  period="year"  id="suppliers_period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $suppliers_period=='six_month'}selected{/if}"  period="six_month"  id="suppliers_period_six_month"  >{t}6M{/t}</td>
+	  <td class="option {if $suppliers_period=='quarter'}selected{/if}"  period="quarter"  id="suppliers_period_quarter"  >{t}1Qtr{/t}</td>
+	  <td class="option {if $suppliers_period=='month'}selected{/if}"  period="month"  id="suppliers_period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $suppliers_period=='ten_day'}selected{/if}"  period="ten_day"  id="suppliers_period_ten_day"  >{t}10D{/t}</td>
+	  <td class="option {if $suppliers_period=='week'}selected{/if}" period="week"  id="suppliers_period_week"  >{t}1W{/t}</td>
+	  <td style="visibility:hidden"></td>
+	  	  <td  class="option {if $suppliers_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="suppliers_period_yeartoday"  >{t}YTD{/t}</td>	
+	  	  <td  class="option {if $suppliers_period=='monthtoday'}selected{/if}"  period="monthtoday"  id="suppliers_period_monthtoday"  >{t}MTD{/t}</td>	
+	  	  <td  class="option {if $suppliers_period=='weektoday'}selected{/if}"  period="weektoday"  id="suppliers_period_weektoday"  >{t}WTD{/t}</td>	
+
+	  
+	</tr>
+      </table>
  
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable" style="font-size:90%"> </div>
   </div>
 </div>
 <div id="block_porders" style="{if $block_view!='porders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -64,16 +85,23 @@
 	  <td class="option {if $supplier_products_view=='sales'}selected{/if}"  id="supplier_products_sales"  >{t}Sales{/t}</td>
 	</tr>
       </table>
-        <table id="supplier_products_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $supplier_products_view!='sales' };display:none{/if}"  class="options_mini" >
+      
+       <table id="supplier_products_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $supplier_products_view!='sales'};display:none{/if}"  class="options_mini" >
 	<tr>
-
 	  <td class="option {if $supplier_products_period=='all'}selected{/if}" period="all"  id="supplier_products_period_all" >{t}All{/t}</td>
+	  <td class="option {if $supplier_products_period=='three_year'}selected{/if}"  period="three_year"  id="supplier_products_period_three_year"  >{t}3Y{/t}</td>
 	  <td class="option {if $supplier_products_period=='year'}selected{/if}"  period="year"  id="supplier_products_period_year"  >{t}1Yr{/t}</td>
+	  <td class="option {if $supplier_products_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="supplier_products_period_yeartoday"  >{t}YTD{/t}</td>	
+	  <td class="option {if $supplier_products_period=='six_month'}selected{/if}"  period="six_month"  id="supplier_products_period_six_month"  >{t}6M{/t}</td>
 	  <td class="option {if $supplier_products_period=='quarter'}selected{/if}"  period="quarter"  id="supplier_products_period_quarter"  >{t}1Qtr{/t}</td>
 	  <td class="option {if $supplier_products_period=='month'}selected{/if}"  period="month"  id="supplier_products_period_month"  >{t}1M{/t}</td>
+	  <td class="option {if $supplier_products_period=='ten_day'}selected{/if}"  period="ten_day"  id="supplier_products_period_ten_day"  >{t}10D{/t}</td>
 	  <td class="option {if $supplier_products_period=='week'}selected{/if}" period="week"  id="supplier_products_period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
+
+      
+     
 
 
        <table  id="supplier_products_avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $supplier_products_view!='sales'};display:none{/if}"  class="options_mini" >
@@ -88,7 +116,7 @@
 
       
   
-    <div  id="table1"   class="data_table_container dtable btable"> </div>
+    <div  id="table1"   class="data_table_container dtable btable" style="font-size:90%"> </div>
   </div>
 </div>
 

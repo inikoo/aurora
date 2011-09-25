@@ -1479,14 +1479,17 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			   'Product Part Type'=>'Simple'
 			   );
 	
-			
-	
-	$product->new_current_part_list(array(),$part_list)  ;
-	$supplier_product->load('used in');
-	$product->load('parts');
-	$part->load('used in');
-	$part->load('supplied by');
-	$product->update_cost_supplier();
+
+
+  $product->new_current_part_list(array(),$part_list)  ;
+
+    $supplier_product->update_sold_as();
+    $supplier_product->update_store_as();
+    $product->update_parts();
+    $part->update_used_in();
+    $part->update_supplied_by();
+    $product->update_cost_supplier();
+
 
 }
 

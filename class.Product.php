@@ -1771,12 +1771,12 @@ class product extends DB_Table {
 
 
 
-        case('parts'):
-            $this->update_parts();
+       
+           
 
 
 
-            break;
+           
         case('avalilability'):
         case('stock'):
             $this->update_availability();
@@ -4751,7 +4751,7 @@ class product extends DB_Table {
         if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
-        $rnd_product->load('parts');
+        $rnd_product->update_parts();
         $rnd_product->load('sales');
 
 

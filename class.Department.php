@@ -431,14 +431,10 @@ var $external_DB_link=false;
         }
     }
 
-    /*
-        Function: delete
-        Funcion que permite eliminar registros en la tabla Product Department Dimension, cuidando la integridad referencial con los productos.
-    */
-// JFA
+
     function delete() {
         $this->deleted=false;
-        $this->load('products_info');
+        $this->update_product_data();
 
         if ($this->get('Total Products')==0) {
             $store=new Store($this->data['Product Department Store Key']);
@@ -460,99 +456,9 @@ var $external_DB_link=false;
         }
     }
 
-    /*
-        Method: load
-        Carga datos de la base de datos Product Dimension, Product Department Bridge, Product Family Dimension, Product Family Department Bridge, actualizando registros en la tabla Product Department Dimension
-    */
-// JFA
-
-    function load($tipo,$args=false) {
-        switch ($tipo) {
-
-        case('families'):
-            $sql=sprintf("select * from `Product Family Dimension` PFD  left join `Product Family Department Bridge` as B on (B.`Product Family Key`=PFD.`Product Family Key`) where `Product Deparment Key`=%d",$this->id);
-            //  print $sql;
-
-            $this->families=array();
-            $result=mysql_query($sql);
-            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                $this->families[$row['Product Family Key']]=$row;
-            }
-            break;
-
-        case('sales'):
-            $this->update_sales_data();
+ 
 
 
-            break;
-	case('products_info'):
-	  $this->update_product_data();
-	  break;
-
-        }
-
-    }
-
-    /*
-       Method: save
-       Actualiza registros de la tablas product_department, product_group, graba y actualiza datos en la tabla sales
-    */
-// JFA
-
-    function save($tipo) {
-        switch ($tipo) {
-        case('first_date'):
-
-            if (is_numeric($this->data['first_date'])) {
-                $sql=sprintf("update product_department set first_date=%s where id=%d",
-                             prepare_mysql(
-                                 date("Y-m-d H:i:s",strtotime('@'.$this->data['first_date'])))
-                             ,$this->id);
-            } else
-                $sql=sprintf("update product_group set first_date=NULL where id=%d",$this->id);
-
-            //     print "$sql;\n";
-            mysql_query($sql);
-
-            break;
-        case('sales'):
-            $sql=sprintf("select id from sales where tipo='dept' and tipo_id=%d",$this->id);
-            $res=mysql_query($sql);
-            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                $sales_id=$row['id'];
-            } else {
-                $sql=sprintf("insert into sales (tipo,tipo_id) values ('dept',%d)",$this->id);
-                mysql_query($sql);
-                $sales_id=$this->db->lastInsertID();
-
-            }
-            foreach($this->data['sales'] as $key=>$value) {
-                if (preg_match('/^aw/',$key)) {
-                    if (is_numeric($value))
-                        $sql=sprintf("update sales set %s=%f where id=%d",$key,$value,$sales_id);
-                    else
-                        $sql=sprintf("update sales set %s=NULL where id=%d",$key,$sales_id);
-                    mysql_query($sql);
-
-                }
-                if (preg_match('/^ts/',$key)) {
-                    $sql=sprintf("update sales set %s=%.2f where id=%d",$key,$value,$sales_id);
-                    // print "$sql\n";
-                    mysql_query($sql);
-                }
-
-            }
-
-            break;
-        }
-
-    }
-
-    /*
-       Function: get
-       Obtiene informacion de los diferentes estados de los productos en el departamento
-    */
-// JFA
 
     function get($key) {
 
@@ -611,7 +517,7 @@ var $external_DB_link=false;
         if ($product->id) {
             $sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$this->id);
             mysql_query($sql);
-            $this->load('products_info');
+            $this->update_product_data();
 
           
             if (preg_match('/principal/',$args)) {

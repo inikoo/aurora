@@ -114,13 +114,15 @@ class supplierproduct extends DB_Table {
 
 
 
-            }elseif($this->found_in_code) {
+            }
+            elseif($this->found_in_code) {
 
                 $this->get_data('pid',$this->pid);
                 $data['Supplier Product Key']=$this->pid;
                 $this->create_key($data);
 
-            }else {
+            }
+            else {
                 // print_r($data);
                 $this->create($data);
             }
@@ -243,10 +245,12 @@ class supplierproduct extends DB_Table {
             }
             elseif($key=='Supplier Product Units Per Case') {
                 $key='SPH Units Per Case';
-            }elseif($key=='Supplier Product Valid From'){
-            $key='SPH Valid From';
-            }elseif($key=='Supplier Product Valid To'){
-            $key='SPH Valid To';
+            }
+            elseif($key=='Supplier Product Valid From') {
+                $key='SPH Valid From';
+            }
+            elseif($key=='Supplier Product Valid To') {
+                $key='SPH Valid To';
             }
 
 
@@ -288,7 +292,7 @@ class supplierproduct extends DB_Table {
             //print $this->key."\n";
 
         } else {
-            print "$sql  Error can not create Product Supplier\n";
+            print "$sql  Error can not create Supplier Product\n";
             exit;
         }
 
@@ -355,7 +359,7 @@ class supplierproduct extends DB_Table {
             mysql_query($sql);
             $this->get_data('pid',$this->pid);
         } else {
-            print "$sql  Error can not create Product Supplier\n";
+            print "$sql  Error can not create Supplier Product\n";
             exit;
         }
 
@@ -384,47 +388,7 @@ class supplierproduct extends DB_Table {
     }
     function load($data_to_be_read,$args='') {
         switch ($data_to_be_read) {
-        case('used in'):
 
-            $used_in_products='';
-
-            $products=$this->get_products();
-            foreach( $products as $product ) {
-                $used_in_products.=sprintf(', <a href="product.php?pid=%d">%s</a>',$product['Product ID'],$product['Product Code']);
-            }
-            $used_in_products=preg_replace('/^, /','',$used_in_products);
-
-            $used_in_parts='';
-            $sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
-                         $this->pid
-                        );
-            $result=mysql_query($sql);
-            $num_parts=0;
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
-                $num_parts++;
-            }
-            $used_in_parts=preg_replace('/^, /','',$used_in_parts);
-
-            if ($num_parts==0)
-                $used_in_parts='';
-            else if ($num_parts==1)
-                $used_in_parts='(SKU:'.$used_in_parts.')';
-            else
-                $used_in_parts='(SKUs:'.$used_in_parts.')';
-
-            $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Used In`=%s where `Supplier Product Code`=%s and `Supplier Key`=%d"
-                         ,prepare_mysql(_trim($used_in_products.' '.$used_in_parts))
-                         ,prepare_mysql($this->code)
-                         ,$this->supplier_key
-                        );
-            //print "$sql\n";
-            if (!mysql_query($sql))
-                exit("$sql error can not update used in insuppiler product \n");
-
-            //exit;
-
-            break;
         case('parts'):
 
             $parts=$this->get_parts();
@@ -447,12 +411,25 @@ class supplierproduct extends DB_Table {
 
         }
     }
+
+    function get_part_skus() {
+        $part_skus=array();
+        $sql=sprintf("select SPPL.`Part SKU` from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+                     $this->pid
+                    );
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $part_skus[$row['Part SKU']]=$row['Part SKU'];
+        }
+        return $part_skus;
+    }
+
     function get_parts() {
         $parts=array();
         $sql=sprintf("select SPPL.`Part SKU`,`Supplier Product Units Per Part`,`Part Unit`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
                      $this->pid
                     );
-	//print $sql;
+
 
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1187,10 +1164,10 @@ class supplierproduct extends DB_Table {
     }
     function get_historic_keys() {
         $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d ",
-                    $this->pid
+                     $this->pid
 
                     );
-       // print $sql;            
+        // print $sql;
         $res=mysql_query($sql);
         $historic_keys=array();
         while ($row=mysql_fetch_array($res)) {
@@ -1198,16 +1175,353 @@ class supplierproduct extends DB_Table {
         }
         return $historic_keys;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    function upload_sales() {
+
+
+
+
+
+    function update_up_today_sales() {
+        $this->update_sales('All');
+        $this->update_sales('Today');
+        $this->update_sales('Week To Day');
+        $this->update_sales('Month To Day');
+        $this->update_sales('Year To Day');
+    }
+
+    function update_last_period_sales() {
+
+        $this->update_sales('Yesterday');
+        $this->update_sales('Last Week');
+        $this->update_sales('Last Month');
+    }
+
+    function update_interval_sales() {
+        $this->update_sales('3 Year');
+        $this->update_sales('1 Year');
+        $this->update_sales('6 Month');
+        $this->update_sales('1 Quarter');
+        $this->update_sales('1 Month');
+        $this->update_sales('10 Day');
+        $this->update_sales('1 Week');
+    }
+
+    function update_sales($interval) {
+        $to_date='';
+
+        switch ($interval) {
+
+
+        case 'All':
+        case 'Total':
+            $db_interval='Total';
+
+
+            $from_date=date('Y-m-d 00:00:00',strtotime($this->data['Supplier Product Valid From']));
+            $to_date=date('Y-m-d H:i:s');
+
+
+            break;
+
+        case 'Last Month':
+        case 'last_m':
+            $db_interval='Last Month';
+            $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+            $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+
+        case 'Last Week':
+        case 'last_w':
+            $db_interval='Last Week';
+
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+                $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+            } else {
+                return;
+            }
+
+
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            break;
+
+        case 'Yesterday':
+        case 'yesterday':
+            $db_interval='Yesterday';
+            $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+            $to_date=date('Y-m-d 00:00:00',strtotime('today'));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            break;
+
+        case 'Week To Day':
+        case 'wtd':
+            $db_interval='Week To Day';
+
+            $from_date=false;
+            $from_date_1yb=false;
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=$row['First Day'].' 00:00:00';
+                $lapsed_seconds=strtotime('now')-strtotime($from_date);
+
+            } else {
+                return;
+            }
+
+            $sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date_1yb=$row['First Day'].' 00:00:00';
+            }
+
+
+            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+
+
+
+            break;
+        case 'Today':
+        case 'today':
+            $db_interval='Today';
+            $from_date=date('Y-m-d 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+
+        case 'Month To Day':
+        case 'mtd':
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case 'Year To Day':
+        case 'ytd':
+            $db_interval='Year To Day';
+            $from_date=date('Y-01-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+        case '3 Year':
+        case '3y':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+            $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case '1 Year':
+        case '1y':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '6 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Quarter':
+        case '1q':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Month':
+        case '1m':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '10 Day':
+        case '10d':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Week':
+        case '1w':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+        default:
+            return;
+            break;
+        }
+
+        setlocale(LC_ALL, 'en_GB');
+
+
+        $this->data["Supplier Product $db_interval Acc Parts Profit"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Profit After Storing"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Cost"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Sold Amount"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Bought"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Required"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Dispatched"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts No Dispatched"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Sold"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Lost"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Broken"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Returned"]=0;
+        $this->data["Supplier Product $db_interval Acc Parts Margin"]=0;
+
+
+
+        $sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+                     from `Inventory Transaction Fact` ITF  where `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data["Supplier Product $db_interval Acc Parts Profit"]=-1.0*$row['profit'];
+            $this->data["Supplier Product $db_interval Acc Parts Profit After Storing"]=$this->data["Supplier Product $db_interval Acc Parts Profit"]-$row['cost_storing'];
+
+        }
+
+        $sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Supplier Product $db_interval Acc Parts Cost"]=$row['cost'];
+            $this->data["Supplier Product $db_interval Acc Parts Bought"]=$row['bought'];
+
+        }
+
+        $sql=sprintf("select sum(`Inventory Transaction Amount`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Supplier Product $db_interval Acc Parts Sold Amount"]=-1.0*$row['sold_amount'];
+            $this->data["Supplier Product $db_interval Acc Parts Sold"]=$row['sold'];
+            $this->data["Supplier Product $db_interval Acc Parts Dispatched"]=-1.0*$row['dispatched'];
+            $this->data["Supplier Product $db_interval Acc Parts Required"]=$row['required'];
+            $this->data["Supplier Product $db_interval Acc Parts No Dispatched"]=$row['no_dispatched'];
+
+
+        }
+
+        $sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Supplier Product $db_interval Acc Parts Broken"]=-1.*$row['broken'];
+
+        }
+
+
+        $sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Supplier Product $db_interval Acc Parts Lost"]=-1.*$row['lost'];
+
+        }
+
+        if ($this->data["Supplier Product $db_interval Acc Parts Sold Amount"]!=0)
+            $margin=$this->data["Supplier Product $db_interval Acc Parts Profit After Storing"]/$this->data["Supplier Product $db_interval Acc Parts Sold Amount"];
+        else
+            $margin=0;
+
+        $sql=sprintf("update `Supplier Product Dimension` set
+                     `Supplier Product $db_interval Acc Parts Profit`=%.2f,
+                     `Supplier Product $db_interval Acc Parts Profit After Storing`=%.2f,
+                     `Supplier Product $db_interval Acc Parts Cost`=%.2f,
+                     `Supplier Product $db_interval Acc Parts Sold Amount`=%.2f,
+                     `Supplier Product $db_interval Acc Parts Sold`=%f,
+                     `Supplier Product $db_interval Acc Parts Dispatched`=%f,
+                     `Supplier Product $db_interval Acc Parts Required`=%f,
+                     `Supplier Product $db_interval Acc Parts No Dispatched`=%f,
+                     `Supplier Product $db_interval Acc Parts Broken`=%f,
+                     `Supplier Product $db_interval Acc Parts Lost`=%f,
+                     `Supplier Product $db_interval Acc Parts Returned`=%f,
+                     `Supplier Product $db_interval Acc Parts Margin`=%f
+                     where `Supplier Product Key`=%d ",
+                     $this->data["Supplier Product $db_interval Acc Parts Profit"],
+                     $this->data["Supplier Product $db_interval Acc Parts Profit After Storing"],
+                     $this->data["Supplier Product $db_interval Acc Parts Cost"],
+                     $this->data["Supplier Product $db_interval Acc Parts Sold Amount"],
+                     $this->data["Supplier Product $db_interval Acc Parts Sold"],
+                     $this->data["Supplier Product $db_interval Acc Parts Dispatched"],
+                     $this->data["Supplier Product $db_interval Acc Parts Required"],
+                     $this->data["Supplier Product $db_interval Acc Parts No Dispatched"],
+                     $this->data["Supplier Product $db_interval Acc Parts Broken"],
+                     $this->data["Supplier Product $db_interval Acc Parts Lost"],
+                     $this->data["Supplier Product $db_interval Acc Parts Returned"],
+                     $margin,
+                     $this->id
+
+                    );
+
+        mysql_query($sql);
+        // print "$sql\n";
+
+    }
+
+
+
+
+
+    function upload_sales_old() {
         $this->load('parts');
         // total
         $sold=0;
@@ -1225,14 +1539,14 @@ class supplierproduct extends DB_Table {
         $historic_keys=join(',',$this->get_historic_keys());
 
 
-        if($historic_keys==''){
-        print_r($this);
+        if ($historic_keys=='') {
+            print_r($this);
             exit("Mega error Supplier Product with out historic key\n");
         }
 
 
         $sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product Key` in (%s)  "
-        ,$historic_keys);
+                     ,$historic_keys);
         //print_r($this->parts_sku);
         //   print "$sql\n";
         //exit;
@@ -1271,8 +1585,8 @@ class supplierproduct extends DB_Table {
                      ,prepare_mysql($this->data['Supplier Product Code'])
 
                     );
-     //   print "$sql\n";
-      //  exit;
+        //   print "$sql\n";
+        //  exit;
         if (!mysql_query($sql))
             exit("error con not uopdate product part when loading sales");
 
@@ -1477,9 +1791,9 @@ class supplierproduct extends DB_Table {
                      ,$this->data['Supplier Key']
                      ,prepare_mysql($this->data['Supplier Product Code'])
                     );
-         //                print "$sql\n";
-        
-       // exit;
+        //                print "$sql\n";
+
+        // exit;
         if (!mysql_query($sql))
             exit("error con not uopdate product part when loading sales");
 
@@ -1492,6 +1806,9 @@ class supplierproduct extends DB_Table {
 
 
     }
+
+
+
     function upload_current_key_sales() {
         $this->load('parts');
         // total
@@ -1748,13 +2065,13 @@ class supplierproduct extends DB_Table {
 
 
     }
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
     function get_formated_unit() {
 
         switch ($this->data['Supplier Product Unit Type']) {
@@ -2073,5 +2390,92 @@ class supplierproduct extends DB_Table {
         mysql_query($sql);
     }
 
+
+    function update_sold_as() {
+        $used_in_products='';
+        $raw_used_in_products='';
+
+        $part_skus=$this->get_part_skus();
+        if(count($part_skus)==0)
+            $part_skus=0;
+        else
+             $part_skus=join(',',$part_skus);
+
+            $sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU` in (%s)  order by `Product Code`,`Store Code`",$part_skus);
+        $result=mysql_query($sql);
+        //  print "$sql\n";
+        $used_in=array();
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            if (!array_key_exists($row['Product Code'],$used_in))
+                $used_in[$row['Product Code']]=array();
+            if (!array_key_exists($row['Store Code'],$used_in[$row['Product Code']]))
+                $used_in[$row['Product Code']][$row['Store Code']]=array();
+            $used_in[$row['Product Code']][$row['Store Code']][$row['Product ID']]=1;
+
+        }
+        // print_r($used_in);
+        foreach($used_in as $code=>$store_data) {
+            $raw_used_in_products.=' '.$code;
+            $used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>',$code,$code);
+            $used_in_products_2='';
+            foreach($store_data as $store_code=>$product_id_data) {
+                foreach($product_id_data as $product_id=>$tmp) {
+                    $used_in_products_2.=sprintf(',<a href="product.php?pid=%d">%s</a>',$product_id,$store_code);
+                }
+            }
+            $used_in_products_2=preg_replace('/^,/','',$used_in_products_2);
+            $used_in_products.=" ($used_in_products_2)";
+
+        }
+
+        //$used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
+        //$raw_used_in_products=' '.$row['Product Code'];
+
+        $used_in_products=preg_replace('/^, /','',$used_in_products);
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Sold As`=%s ,`Supplier Product Sold As`=%s  where `Supplier Product Key`=%d",
+        prepare_mysql(_trim($used_in_products)),
+        prepare_mysql(_trim($raw_used_in_products)),
+        $this->id);
+        //  print "$sql\n";
+        mysql_query($sql);
+    }
+
+    function update_store_as(){
+       $used_in_products='';
+
+           
+
+            $used_in_parts='';
+            $sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
+                         $this->pid
+                        );
+            $result=mysql_query($sql);
+            $num_parts=0;
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+                $used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+                $num_parts++;
+            }
+            $used_in_parts=preg_replace('/^, /','',$used_in_parts);
+
+            if ($num_parts==0)
+                $used_in_parts='';
+            else if ($num_parts==1)
+                $used_in_parts='SKU:'.$used_in_parts;
+            else
+                $used_in_parts='SKUs:'.$used_in_parts;
+
+            $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Store As`=%s where  `Product Supplier Key`=%d"
+                         ,prepare_mysql($used_in_parts)
+                        
+                         ,$this->id
+                        );
+            //print "$sql\n";
+            if (!mysql_query($sql))
+                exit("$sql error can not update used in insuppiler product \n");
+
+            //exit;
+
+    
+    }
 
 }

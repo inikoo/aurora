@@ -133,22 +133,22 @@ case('is_product_code'):
                          ));
     is_product_code($data);
     break;
-  case('is_product_name'):
+case('is_product_name'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                              'query'=>array('type'=>'string')
                          ));
     is_product_name($data);
-    break;  
-    
-    case('is_product_special_char'):
+    break;
+
+case('is_product_special_char'):
     $data=prepare_values($_REQUEST,array(
                              'family_key'=>array('type'=>'key'),
                              'query'=>array('type'=>'string')
                          ));
     is_product_special_char($data);
     break;
-    
+
 case('charges'):
     list_charges();
     break;
@@ -1789,9 +1789,9 @@ function list_products() {
         $list_key=$_REQUEST['list_key'];
     else
         $list_key=false;
-        
-        
-        
+
+
+
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
@@ -3072,7 +3072,7 @@ function list_products() {
 
             $web_state=$_web_state.' '.$formated_web_configuration;
 
-        break;
+            break;
         default:
             $web_state='?';
         }
@@ -3290,9 +3290,9 @@ function list_parts() {
 
 
     $elements=$conf['elements'];
-    
-   
-    
+
+
+
     if (isset( $_REQUEST['elements_Keeping'])) {
         $elements['Keeping']=$_REQUEST['elements_Keeping'];
     }
@@ -3303,7 +3303,7 @@ function list_parts() {
     if (isset( $_REQUEST['elements_Discontinued'])) {
         $elements['Discontinued']=$_REQUEST['elements_Discontinued'];
     }
-  if (isset( $_REQUEST['elements_LastStock'])) {
+    if (isset( $_REQUEST['elements_LastStock'])) {
         $elements['LastStock']=$_REQUEST['elements_LastStock'];
     }
 
@@ -4398,20 +4398,20 @@ function list_families() {
 
 
 
-   if (isset( $_REQUEST['elements_family_discontinued'])) {
+    if (isset( $_REQUEST['elements_family_discontinued'])) {
         $elements['Discontinued']=$_REQUEST['elements_family_discontinued'];
     }
-       if (isset( $_REQUEST['elements_family_discontinuing'])) {
+    if (isset( $_REQUEST['elements_family_discontinuing'])) {
         $elements['Discontinuing']=$_REQUEST['elements_family_discontinuing'];
     }
-  if (isset( $_REQUEST['elements_family_normal'])) {
+    if (isset( $_REQUEST['elements_family_normal'])) {
         $elements['Normal']=$_REQUEST['elements_family_normal'];
     }
-     if (isset( $_REQUEST['elements_family_inprocess'])) {
+    if (isset( $_REQUEST['elements_family_inprocess'])) {
         $elements['InProcess']=$_REQUEST['elements_family_inprocess'];
     }
 
-  if (isset( $_REQUEST['elements_family_nosale'])) {
+    if (isset( $_REQUEST['elements_family_nosale'])) {
         $elements['NoSale']=$_REQUEST['elements_family_nosale'];
     }
 
@@ -4456,12 +4456,12 @@ function list_families() {
         $where.=sprintf(' and `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     default:
-		if (count($user->stores)==0)
-			$where="where false";
-		else {
+        if (count($user->stores)==0)
+            $where="where false";
+        else {
 
-			$where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
-		}
+            $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+        }
 
     }
 
@@ -5466,7 +5466,6 @@ function list_stores() {
         $order='`Store 1 Month Acc Invoiced Amount`';
         elseif($period=='week')
         $order='`Store 1 Week Acc Invoiced Amount`';
-
         elseif($period=='yeartoday')
         $order='`Store YearToDay Acc Invoiced Amount`';
         elseif($period=='three_year')

@@ -335,7 +335,7 @@ class Store extends DB_Table {
 
     function delete() {
         $this->deleted=false;
-        $this->load('products_info');
+        $this->update_product_data();
 
         if ($this->get('Total Products')==0) {
             $sql=sprintf("delete from `Store Dimension` where `Store Key`=%d",$this->id);
@@ -388,13 +388,16 @@ class Store extends DB_Table {
 
 
             break;
-        case('products_info'):
-            $this->update_product_data();
-            $this->update_families();
-            break;
+      
         }
 
     }
+
+
+function update_children_data(){
+ $this->update_product_data();
+            $this->update_families();
+}
 
     function update_code($a1) {
 

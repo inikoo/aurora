@@ -3642,190 +3642,7 @@ ALTER TABLE `Supplier Dimension`
   DROP `Supplier 1 Week Acc Cost`,
   DROP `Supplier 1 Week Acc Parts Sold Amount`;
   
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 3 Year Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 3 Year Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 3 Year Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 3 Year Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 3 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 3 Year Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
 
- ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Year Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Year Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Year Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Year Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Year Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Year To Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Year To Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Year To Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Year To Day Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Year To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Year To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Month To Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Month To Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Month To Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Month To Day Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Month To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Month To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Week To Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Week To Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Week To Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Week To Day Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Week To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Week To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 6 Month Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 6 Month Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 6 Month Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 6 Month Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 6 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 6 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Quarter Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Quarter Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Quarter Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Quarter Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Quarter Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Quarter Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Month Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Month Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Month Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Month Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 10 Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 10 Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 10 Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 10 Day Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 10 Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 10 Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Week Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Week Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Week Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Week Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Week Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Week Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Today Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Today Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Today Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Today Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Today Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Today Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Yesterday Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Yesterday Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Yesterday Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Yesterday Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Yesterday Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Yesterday Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Last Month Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Last Month Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Last Month Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Last Month Acc Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Last Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Last Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
- 
- ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Year Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Year Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Year Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Year Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Year Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Year Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Year To Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Year To Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Year To Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Year To Day Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Year To Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Year To Day Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Month To Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Month To Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Month To Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Month To Day Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Month To Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Month To Day Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Week To Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Week To Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Week To Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Week To Day Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Week To Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Week To Day Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 6 Month Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 6 Month Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 6 Month Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 6 Month Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 6 Month Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 6 Month Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Quarter Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Quarter Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Quarter Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Quarter Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Quarter Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Quarter Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Month Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Month Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Month Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Month Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Month Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Month Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 10 Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 10 Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 10 Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 10 Day Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 10 Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 10 Day Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier 1 Week Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Week Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Week Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier 1 Week Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier 1 Week Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Today Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Today Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Today Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Today Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Today Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Today Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Yesterday Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Yesterday Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Yesterday Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Yesterday Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Yesterday Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Yesterday Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
-  ALTER TABLE `Supplier Dimension` ADD `Supplier Last Month Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Last Month Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Last Month Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Last Month Acc 1YB Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Last Month Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Last Month Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0';
-
- ALTER TABLE `Supplier Dimension` ADD `Supplier Total Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Total Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Total Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Total Parts Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Total Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Total Parts Returned` FLOAT NOT NULL DEFAULT '0';
 
 ALTER TABLE `Supplier Product Dimension`
   DROP `Supplier Product Total Parts Profit`,
@@ -3886,336 +3703,449 @@ ALTER TABLE `Supplier Product Dimension`
   DROP `Supplier Product 1 Week Acc Parts Broken`,
   DROP `Supplier Product 1 Week Acc Margin`;
   
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 3 Year Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 3 Year Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 3 Year Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 3 Year Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+  
+  
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 3 Year Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 3 Year Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 3 Year Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 3 Year Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 3 Year Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product 3 Year Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 3 Year Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 3 Year Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 3 Year Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 3 Year Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 3 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product 3 Year Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 3 Year Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 3 Year Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 3 Year Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 3 Year Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 3 Year Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 3 Year Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 1 Year Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Year Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Year Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Year Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 1 Year Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Year Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Year Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Year Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Year Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Year Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Year Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Year Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Year Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Year Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product 1 Year Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Year Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 1 Year Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Year Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Year Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Year Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Year Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Year To Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Year To Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Year To Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Year To Day Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Year To Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Year To Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Year To Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Year To Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Year To Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Year To Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Year To Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Year To Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Year To Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Year To Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Year To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Year To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Year To Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Year To Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Year To Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Year To Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Year To Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Year To Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Month To Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Month To Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Month To Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Month To Day Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Month To Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Month To Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Month To Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Month To Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Month To Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Month To Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Month To Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Month To Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Month To Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Month To Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Month To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Month To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Month To Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Month To Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Month To Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Month To Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Month To Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Month To Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Week To Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Week To Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Week To Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Week To Day Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Week To Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Week To Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Week To Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Week To Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Week To Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Week To Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Week To Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Week To Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Week To Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Week To Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Week To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Week To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Week To Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Week To Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Week To Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Week To Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Week To Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Week To Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 6 Month Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 6 Month Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 6 Month Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 6 Month Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 6 Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 6 Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 6 Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 6 Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 6 Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product 6 Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 6 Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 6 Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 6 Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 6 Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 6 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product 6 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 6 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 6 Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 6 Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 6 Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 6 Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 6 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 1 Quarter Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Quarter Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Quarter Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Quarter Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 1 Quarter Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Quarter Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Quarter Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Quarter Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Quarter Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Quarter Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Quarter Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Quarter Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Quarter Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Quarter Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Quarter Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product 1 Quarter Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Quarter Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 1 Quarter Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Quarter Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Quarter Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Quarter Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Quarter Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 1 Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 1 Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 10 Day Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 10 Day Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 10 Day Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 10 Day Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 10 Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 10 Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 10 Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 10 Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 10 Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product 10 Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 10 Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 10 Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 10 Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 10 Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 10 Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product 10 Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 10 Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 10 Day Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 10 Day Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 10 Day Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 10 Day Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 10 Day Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 1 Week Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Week Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Week Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Week Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 1 Week Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Week Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Week Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Week Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Week Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Week Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Week Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Week Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Week Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Week Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Week Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product 1 Week Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Week Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier 1 Week Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Week Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Week Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier 1 Week Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier 1 Week Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Today Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Today Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Today Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Today Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Today Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Today Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Today Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Today Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Today Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Today Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Today Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Today Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Today Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Today Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Today Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Today Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Today Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Today Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Today Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Today Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Today Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Today Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Yesterday Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Yesterday Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Yesterday Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Yesterday Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Yesterday Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Yesterday Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Yesterday Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Yesterday Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Yesterday Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Yesterday Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Yesterday Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Yesterday Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Yesterday Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Yesterday Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Yesterday Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Yesterday Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Yesterday Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Yesterday Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Yesterday Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Yesterday Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Yesterday Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Yesterday Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Last Week Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Week Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Week Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Week Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Last Week Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Week Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Week Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Week Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Week Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Week Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Week Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Week Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Last Week Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Last Week Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Last Week Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Last Week Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Last Week Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Week Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Last Month Acc Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Month Acc Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Month Acc Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Month Acc Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc Sold Amount` FLOAT NOT NULL DEFAULT '0',
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Last Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc Parts Provided` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc Margin` FLOAT NOT NULL DEFAULT '0';
+ADD `Supplier Product Last Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Last Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Last Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Last Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Last Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Last Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 1 Year Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Year Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Year Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Year Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Year Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Year To Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Year To Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Year To Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Year To Day Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Year To Day Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Month To Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Month To Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Month To Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Month To Day Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Month To Day Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 3 Year Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Week To Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Week To Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Week To Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Week To Day Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Week To Day Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 6 Month Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 6 Month Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 6 Month Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 6 Month Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 6 Month Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Total Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Total Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Total Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Total Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Total Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Supplier Dimension` 
+ADD `Supplier Total Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Total Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Total Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Total Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Total Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 1 Quarter Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Quarter Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Quarter Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
 
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 10 Day Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 10 Day Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 10 Day Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 10 Day Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 10 Day Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
 
 
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product 1 Week Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Week Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Week Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product 1 Week Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product 1 Week Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Today Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Today Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Today Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Today Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Today Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Yesterday Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Yesterday Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Yesterday Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Yesterday Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Yesterday Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Last Week Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Week Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Week Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Week Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Week Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Last Month Acc 1YB Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Month Acc 1YB Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Month Acc 1YB Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Last Month Acc 1YB Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Last Month Acc 1YB Margin` FLOAT NOT NULL DEFAULT '0';
-
-
-ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Total Parts Profit` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Total Parts Profit After Storing` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Total Cost` DECIMAL NOT NULL DEFAULT '0.00',
-ADD `Supplier Product Total Parts Used` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Sold Amount` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Parts Required` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Parts Provided` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Parts Lost` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Parts Broken` FLOAT NOT NULL DEFAULT '0',
-ADD `Supplier Product Total Margin` FLOAT NOT NULL DEFAULT '0';
 
 */
 
