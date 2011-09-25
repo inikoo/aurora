@@ -1436,8 +1436,8 @@ function update_data($to_update) {
             $department->update_sales_default_currency();
 
   $department->update_customers();
-  $department->load('sales');
-  $department->load('products_info');
+  $department->update_sales_data();
+  $department->update_product_data();
   $department->update_families();
         
         if (false) {

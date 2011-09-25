@@ -538,23 +538,23 @@ class Family extends DB_Table {
 
     function delete() {
         $this->deleted=false;
-        $this->load('products_info');
+        $this->update_product_data();
 
         if ($this->get('Total Products')==0) {
             $store=new Store($this->data['Product Family Store Key']);
-            $this->load('Department Key List');
+            $department_keys=$this->get_department_keys();
             $sql=sprintf("delete from `Product Family Dimension` where `Product Family Key`=%d",$this->id);
 
             if (mysql_query($sql)) {
 
                 $sql=sprintf("delete from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
                 mysql_query($sql);
-                foreach($this->department_keys as $dept_key) {
+                foreach($department_keys as $dept_key) {
 
                     $department=new Department($dept_key);
-                    $department->load('products_info');
+                    $department->update_product_data();
                 }
-                $store->load('products_info');
+                $store->update_product_data();
                 $this->deleted=true;
 
             } else {
@@ -570,23 +570,22 @@ class Family extends DB_Table {
         }
     }
 
-    /*
-        Method: load
-        Carga datos de la base de datos Product Dimension, Product Family Department Bridge, actualizando registros en la tabla Product Family Dimension
-    */
-// JFA
+   
+   function get_department_keys(){
+    $department_keys=array();
+            $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $department_keys[]=$row['Product Department Key'];
+            }
+   return $department_keys;
+   }
+   
 
     function load($tipo,$args=false) {
         switch ($tipo) {
 
-        case('Department Key List');
-            $this->department_keys=array();
-            $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $this->department_keys[]=$row['Product Department Key'];
-            }
-            break;
+    
         case('products'):
 
 
@@ -992,7 +991,7 @@ class Family extends DB_Table {
                          ,prepare_mysql($this->get('Product Family Name'))
                          ,$product->id);
             mysql_query($sql);
-            $this->load('products_info');
+            $this->update_product_data();
             // print "$sql\n";
         }
     }

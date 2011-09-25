@@ -254,7 +254,7 @@ foreach($__cols as $cols) {
         $codigos[$code]=1;
 
 
-      
+
 
 
 
@@ -419,7 +419,7 @@ foreach($__cols as $cols) {
                   //'deals'=>$deals
               );
         //     print_r($cols);
-     $uk_product=new Product('code_store',$code,1);
+        $uk_product=new Product('code_store',$code,1);
         if ($uk_product->id)
             $parts=$uk_product->get_current_part_skus();
         else {
@@ -433,7 +433,7 @@ foreach($__cols as $cols) {
         // print_r($data);
         //exit("DEBUG");
         $product=new Product('find',$data,'create');
-        
+
         if ($product->new) {
             $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
             if (isset($parts[0])) {
@@ -447,9 +447,9 @@ foreach($__cols as $cols) {
                              );
 
                 $product->new_current_part_list(array(),$part_list);
-                $product->load('parts');
+                $product->update_parts();
                 $part =new Part('sku',$parts[0]);
-                $part->load('used in');
+                $part->update_used_in();
             }
 
 

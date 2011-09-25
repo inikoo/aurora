@@ -434,9 +434,9 @@ $codigos[$code]=1;
  			   );
 	
  	$product->new_current_part_list(array(),$part_list);
- 	$product->load('parts');
+ 	$product->update_parts();
 	$part =new Part('sku',$parts[0]);
- 	$part->load('used in');
+ 	$part->update_used_in();
       }
 
    

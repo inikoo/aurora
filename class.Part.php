@@ -233,101 +233,7 @@ class part extends DB_Table {
 
     function load($data_to_be_read,$args='') {
         switch ($data_to_be_read) {
-        case('stock_history'):
-        case('calculate_stock_history'):
-            global $myconf;
-            $force='';
-            if (preg_match('/all/',$args))
-                $force='all';
-            if (preg_match('/last|audit/',$args))
-                $force='last';
-            if (preg_match('/continue/',$args))
-                $force='continue';
 
-
-            $part_sku=$this->data['Part SKU'];
-
-            if (isset($args) and $args=='today')
-                $min=strtotime('today');
-            else
-                $min=strtotime($myconf["data_from"]);
-
-
-            $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
-            print "$sql\n";
-            $resultxxx=mysql_query($sql);
-            while (($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC))) {
-                $skip=false;
-                $location_key=$rowxxx['Location Key'];
-                print 'find PL '.$location_key.'_'.$this->data['Part SKU']."\n";
-                $pl=new PartLocation($this->data['Part SKU'].'_'.$location_key);
-
-
-                if ($location_key==1) {
-                    if ($force=='all') {
-                        $_from=$this->data['Part Valid From'];
-                    }
-                    elseif($force=='last') {
-
-                        $_from=$pl->last_inventory_audit();
-                        //exit("Froim: $_from\n");
-                    }
-                    elseif($force=='continue') {
-                        $_from=$pl->last_inventory_date();
-                    }
-                    else {
-                        $_from=$pl->first_inventory_transacion();
-                    }
-                    //print "$_from\n";
-                    if (!$_from)
-                        $skip=true;
-                    $from=strtotime($_from);
-                } else {
-                    if ($force=='first')
-                        $_from=$pl->first_inventory_transacion();
-                    else
-                        $_from=$pl->last_inventory_audit();
-
-                    if (!$_from)
-                        $skip=true;
-                    $from=strtotime($_from);
-                }
-
-
-
-                if ($from<$min)
-                    $from=$min;
-
-                if ($this->data['Part Status']=='In Use') {
-                    $to=strtotime('today');
-                } else {
-                    $to=strtotime($this->data['Part Valid To']);
-                }
-
-
-                if ($from>$to) {
-                    print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
-                    continue;
-                }
-
-
-                if ($skip) {
-                    print "No trasactions: $part_sku $location_key \n";
-                    continue;
-                }
-
-                $from=date("Y-m-d",$from);
-                $to=date("Y-m-d",$to);
-                print "** Redo daily inv S: $part_sku L: $location_key  $from $to\n";
-                //  $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
-
-                $pl->redo_daily_inventory($from,$to);
-
-
-            }
-
-
-            break;
 
         case('locations'):
             $this->load_locations($args);
@@ -335,67 +241,6 @@ class part extends DB_Table {
 
             break;
 
-        case('stock'):
-            $a.=$a;
-            exit("error use update stock method  \n");
-            /*
-                if (!$this->current_locations_loaded)
-                    $this->load('locations');
-
-                $stock='';
-                $value='';
-                $neg_discrepancy_value='';
-                $neg_discrepancy='';
-                $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Stock Value`) as value, sum(`Negative Discrepancy`) as neg_discrepancy, sum(`Negative Discrepancy Value`) as neg_discrepancy_value from `Part Location Dimension` where  `Part SKU`=%d ",$this->data['Part SKU']);
-                //print $sql;
-                $result=mysql_query($sql);
-                if (($row=mysql_fetch_array($result, MYSQL_ASSOC))) {
-                    $stock=$row['stock'];
-                    $value=$row['value'];
-                    $neg_discrepancy_value=$row['neg_discrepancy_value'];
-                    $neg_discrepancy=$row['neg_discrepancy'];
-                }
-
-                if (!is_numeric($stock))
-                    $stock='NULL';
-                if (!is_numeric($value))
-                    $value='NULL';
-
-                $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s ,`Part Current Stock Negative Discrepancy`=%f ,`Part Current Stock Negative Discrepancy Value`=%f  where `Part SKU`=%d "
-                             ,$stock
-                             ,$value
-                             ,$neg_discrepancy
-                             ,$neg_discrepancy_value
-                             ,$this->id);
-
-                //print "$sql $stock $value $neg_discrepancy $neg_discrepancy_value \n";
-                // update products that depends of this part
-                if (!mysql_query($sql))
-                    exit("  errorcant not uopdate parts stock");
-
-
-                $this->data['Part Current Stock']=$stock;
-                $this->data['Part Current Stock Cost']=$value;
-                $this->data['Part Current Stock Negative Discrepancy']=$neg_discrepancy;
-                $this->data['Part Current Stock Negative Discrepancy Value']=$neg_discrepancy_value;
-
-                $this->load('used in list');
-
-                foreach($this->used_in_list as $product_id) {
-                    $product=new Product('pid',$product_id);
-                    if (!$product->id) {
-                        print_r($this->used_in_list);
-                        exit("Error can not load prodct $product_id\n");
-                    }
-
-                    $product->load('stock');
-
-                }
-
-            */
-
-
-            break;
         case('stock_data'):
             $astock=0;
             $avaue=0;
@@ -663,61 +508,12 @@ class part extends DB_Table {
             }
             //   print_r($this->used_in_list);
             break;
-        case("used in"):
-            $this->update_used_in();
+       
+     
+      
 
-            break;
-        case("supplied by"):
-            $supplied_by='';
-            $sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
-            $result=mysql_query($sql);
-            //print "$sql\n";
-            $supplier=array();
-            $current_supplier='_';
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $_current_supplier=$row['Supplier Key'];
-                if ($_current_supplier!=$current_supplier) {
-                    $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%s">%s</a>'
-                                          ,$row['Supplier Key']
-                                          ,$row['Supplier Code']
-                                          ,$row['Supplier Product Code']
-                                          ,$row['Supplier Key']
-                                          ,$row['Supplier Product Code']);
-                    $current_supplier=$_current_supplier;
-                } else {
-                    $supplied_by.=sprintf(', <a href="supplier_product.php?supplier_key=%d&code=%s">%s</a>',$row['Supplier Key'],$row['Supplier Product Code'],$row['Supplier Product Code']);
-
-                }
-
-            }
-            $supplied_by.=")";
-
-            $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
-            if ($supplied_by=='')
-                $supplied_by=_('Unknown Supplier');
-
-
-            $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
-            //       print "$sql\n";exit;
-            if (!mysql_query($sql))
-                exit("error can no suplied by part 498239048");
-            break;
-
-
-        case("sales"):
-            $this->update_sales();
-
-
-            break;
-
-        case('forecast'):
-            $this->forecast();
-            break;
-
-        case('future costs'):
-        case('estimated cost'):
-
-            exit("stimeted cost should be called with part->update_future_costs()");
+    
+      
         }
 
     }
@@ -2540,6 +2336,42 @@ $this->update_main_state();
 
     }
 
+function update_supplier_by(){
+      $supplied_by='';
+            $sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
+            $result=mysql_query($sql);
+            //print "$sql\n";
+            $supplier=array();
+            $current_supplier='_';
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+                $_current_supplier=$row['Supplier Key'];
+                if ($_current_supplier!=$current_supplier) {
+                    $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%s">%s</a>'
+                                          ,$row['Supplier Key']
+                                          ,$row['Supplier Code']
+                                          ,$row['Supplier Product Code']
+                                          ,$row['Supplier Key']
+                                          ,$row['Supplier Product Code']);
+                    $current_supplier=$_current_supplier;
+                } else {
+                    $supplied_by.=sprintf(', <a href="supplier_product.php?supplier_key=%d&code=%s">%s</a>',$row['Supplier Key'],$row['Supplier Product Code'],$row['Supplier Product Code']);
 
+                }
+
+            }
+            $supplied_by.=")";
+
+            $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
+            if ($supplied_by=='')
+                $supplied_by=_('Unknown Supplier');
+
+
+            $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
+            //       print "$sql\n";exit;
+            if (!mysql_query($sql))
+                exit("error can no suplied by part 498239048");
+           
+
+}
 
 }

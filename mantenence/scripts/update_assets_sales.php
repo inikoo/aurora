@@ -73,8 +73,8 @@ $department=new Department($row['Product Department Key']);
     $department->update_sales_default_currency();
 
   $department->update_customers();
-  $department->load('sales');
-  $department->load('products_info');
+  $department->update_sales_data();
+  $department->update_product_data();
   $department->update_families();
  
 
@@ -109,8 +109,8 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
 $part->update_estimated_future_cost();
-  $part->load('used in');
-  $part->load('supplied by');
+  $part->update_used_in();
+  $part->update_supplied_by();
   $part->update_up_today_sales();
 $part->update_interval_sales();
 $part->update_last_period_sales();

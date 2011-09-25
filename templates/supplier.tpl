@@ -2,8 +2,11 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0px 20px;">
  {include file='suppliers_navigation.tpl'}
+ <div class="branch"> 
+  <span  ><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
+  </div>
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-  <h1>{t}Supplier{/t}: {$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>
+  <h1>{$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>
    <table style="width:500px" >
 	
 	<tr>
@@ -41,7 +44,7 @@
       
       <div style="padding:0px 20px;">
       
-      <div id="block_products" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+      <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     <h2 style="font-size:150%;">{t}Supplier Details{/t}</h2>
 	
 	<div style="clear:both">
@@ -103,7 +106,7 @@
    </div>
       
      
- <div id="block_products" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+ <div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
    
 
 
@@ -148,7 +151,7 @@
 
     
 	   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
-	   <div  id="table0"   class="data_table_container dtable btable "> </div>
+	   <div  id="table0"   class="data_table_container dtable btable " style="font-size:90%"> </div>
 	 </div>
        </div>
        
