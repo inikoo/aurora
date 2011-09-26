@@ -161,8 +161,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					];
 		    
 		      
-		      this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=withcustomerproduct&tableid="+tableid);
-		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=customers_who_order_product&product_pid="+Dom.get('product_pid').value+"&tableid="+tableid);
+		 this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      this.dataSource1.responseSchema = {
 			  resultsList: "resultset.data", 

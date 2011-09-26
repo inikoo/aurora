@@ -1453,7 +1453,7 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
                  'Supplier Key'=>$supplier->id,
                  'Supplier Product Code'=>$scode,
                  'Supplier Product Units Per Case'=>1,
-                 'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_cost),
+                 'SPH Case Cost'=>sprintf("%.2f",$supplier_cost),
                  'Supplier Product Name'=>$description,
                  'Supplier Product Description'=>$description,
                  'Supplier Product Valid From'=>$editor['Date'],

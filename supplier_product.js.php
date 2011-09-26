@@ -90,14 +90,115 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_product']['porders']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_product']['porders']['f_value']?>'};
 	
+	 var tableid=1;
+		    var tableDivEL="table"+tableid;
+
+  var ColumnDefs = [
+				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
+				      ,{key:"locations", label:"<?php echo _('Locations')?>", width:100,sortable:false,className:"aleft"}
+				      ,{key:"quantity", label:"<?php echo _('Qty')?>", width:100,sortable:false,className:"aleft"}
+				      ,{key:"value", label:"<?php echo _('Value')?>", width:60,sortable:false,className:"aleft"}
+				      
+				      ,{key:"sold_qty", label:"<?php echo _('Sold')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"in_qty", label:"<?php echo _('In')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"lost_qty", label:"<?php echo _('Lost')?>", width:60,sortable:false,className:"aright"}
+
+				      ];
+
+		 
+		    
+		    
+		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&part_sku="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		  this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		    this.dataSource1.connXhrMode = "queueRequests";
+		    this.dataSource1.responseSchema = {
+			resultsList: "resultset.data", 			
+			metaFields: {
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"			
+			
+			 
+			},
+			
+		
+
+	fields: [
+				 "date","locations","quantity","value","sold_qty","in_qty","lost_qty"
+
+				 ]};
+
+	    
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							     this.dataSource1, {
+								 //draggableColumns:true,
+								 renderLoopSize: 50,generateRequest : myRequestBuilder
+								 ,paginator : new YAHOO.widget.Paginator({alwaysVisible:false,
+									 rowsPerPage:<?php echo$_SESSION['state']['part']['stock_history']['nr']?>,containers : 'paginator1', 
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									 previousPageLinkLabel : "<",
+									 nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								     })
+								 
+								 ,sortedBy : {
+								   Key: "<?php echo$_SESSION['state']['part']['stock_history']['order']?>",
+								    dir: "<?php echo$_SESSION['state']['part']['stock_history']['order_dir']?>"
+								  }
+								 ,dynamicData : true
+								 
+							     }
+							     );
+
+
+		    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+		    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+		    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	
+	
+	
  }});
+
+var change_snapshot_granularity=function(e){
+     var table=tables.table1;
+     var datasource=tables.dataSource1;
+     Dom.removeClass(Dom.getElementsByClassName('table_type','span' , 'stock_history_type'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&type='+this.getAttribute('table_type');
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
+
+function hide_stock_history_chart(){
+Dom.setStyle(['stock_history_plot','hide_stock_history_chart'],'display','none')
+Dom.setStyle('show_stock_history_chart','display','')
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_product-show_stock_history_chart&value=0',{});
+}
+
+function show_stock_history_chart(){
+Dom.setStyle(['hide_stock_history_chart','stock_history_plot'],'display','')
+Dom.setStyle(['show_stock_history_chart'],'display','none')
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_product-show_stock_history_chart&value=1' ,{});
+}
 
 function init(){
   Event.addListener(['details','sales','stock','purchase_orders','timeline'], "click",change_block);
 
   init_search('supplier_products_supplier');
   
-  
+    YAHOO.util.Event.addListener('hide_stock_history_chart', "click",hide_stock_history_chart);
+   YAHOO.util.Event.addListener('show_stock_history_chart', "click",show_stock_history_chart);
+   
+   var ids =Array("stock_history_type_month","stock_history_type_week","stock_history_type_day") ;
+Event.addListener(ids, "click", change_snapshot_granularity);
 }
 
 

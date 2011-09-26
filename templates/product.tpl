@@ -1,4 +1,5 @@
 {include file='header.tpl'}
+<input id="product_pid" value="{$product->pid}" type="hidden"/>
 <div id="bd"  style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 <div style="padding:0 20px">
 
@@ -15,10 +16,7 @@
     
 <div class="" id="block_info"  style="width:890px;position:relative">
 
-
-      <div   style="clear:left;padding:0;width:100%">
-
-	  <div id="photo_container" style="margin-top:10px;float:left">
+	  <div id="photo_container" style="margin-top:0px;float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	     
 	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
@@ -38,9 +36,7 @@
 	    
 	    
 	  </div>
-	  
-
-	<div style="float:left;margin-left:20px">
+	  <div style="float:left;margin-left:20px">
 	
 	  <div class=""  style="width:100%;">
 	    <div class="" style="width:100%;font-size:90%"   >
@@ -156,8 +152,8 @@
 	    </div>
 	  </div>
 	</div>
-      </div>
-      
+     
+      <div style="clear:both"></div>
       
      
 
@@ -165,11 +161,11 @@
     
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
      <li> <span class="item {if $block_view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
 
-    <li> <span class="item {if $block_view=='products'}selected{/if}" id="customers" {if $view_customers}display:none{/if} ><span>  {t}Customers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers" {if $view_customers}display:none{/if} ><span>  {t}Customers{/t}</span></span></li>
    <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders"  {if $view_orders}display:none{/if}  >  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='timeline'}selected{/if}"  id="timeline">  <span> {t}History{/t}</span></span></li>
 	<li> <span class="item {if $block_view=='web_site'}selected{/if}"  id="web_site">  <span> {t}Web Site{/t}</span></span></li>

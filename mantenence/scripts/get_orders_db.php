@@ -122,7 +122,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/6911.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/7883.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -861,6 +861,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $supplier_product_cost=4.4500;
                 $transaction['rrp']=60;
             }
+            /*
+             if (preg_match('/GP-\d{2}/i',$transaction['code']) and $transaction['units']==350) {
+                $transaction['units']=1;
+                $w=1.75;
+                $supplier_product_cost=;
+            
+            }
+            */
+            
+            
 
             if (preg_match('/^bag-02$/i',$transaction['code'])  and  $transaction['units']==30 ) {
                 $transaction['order']=$transaction['order']*30/25;
@@ -1157,7 +1167,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                          'Supplier Key'=>$supplier->id,
                          'Supplier Product Status'=>'Not In Use',
                          'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
+                         'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
                          'Supplier Product Description'=>$description,
                          'Supplier Product Valid From'=>$date_order,
@@ -1167,6 +1177,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             //print_r($sp_data);
             $supplier_product=new SupplierProduct('find',$sp_data,'create update');
 
+
+
+            
 
 
             $to_update['parts'][$part->sku]=1;

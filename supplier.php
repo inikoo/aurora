@@ -108,7 +108,8 @@ $js_files=array(
               'js/search.js',
               'js/table_common.js',
                 'js/edit_common.js',
-                'js/csv_common.js'
+                'js/csv_common.js',
+                'js/suppliers_common.js',
 
           );
 
@@ -130,9 +131,9 @@ $smarty->assign('parent','suppliers');
 $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
 
-$tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
+$tipo_filter=$_SESSION['state']['supplier']['supplier_products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['supplier']['products']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier']['supplier_products']['f_value']);
 
 $filter_menu=array(
                  'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
@@ -147,9 +148,13 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $js_files[]=sprintf('supplier.js.php');
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
-$smarty->assign('products_view',$_SESSION['state']['supplier']['products']['view']);
-$smarty->assign('products_percentage',$_SESSION['state']['supplier']['products']['percentage']);
-$smarty->assign('products_period',$_SESSION['state']['supplier']['products']['period']);
+
+$smarty->assign('supplier_products_view',$_SESSION['state']['supplier']['supplier_products']['view']);
+$smarty->assign('supplier_products_period',$_SESSION['state']['supplier']['supplier_products']['period']);
+//print_r($_SESSION['state']['supplier']['supplier_products']);
+
+//$smarty->assign('supplier_products_avg',$_SESSION['state']['supplier']['supplier_products']['avg']);
+
 
 
 $tipo_filter=$_SESSION['state']['supplier']['po']['f_field'];
@@ -175,10 +180,10 @@ $smarty->assign('js_files',$js_files);
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['code']),
-                                                             'supplier'=>array('label'=>_('Supplier'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['supplier']),
-                                                             'product_name'=>array('label'=>_('Product Name'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['product_name']),
-                                                             'product_description'=>array('label'=>_('Product Description'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['product_description']),                                                    
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['code']),
+                                                             'supplier'=>array('label'=>_('Supplier'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['supplier']),
+                                                             'product_name'=>array('label'=>_('Product Name'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['product_name']),
+                                                             'product_description'=>array('label'=>_('Product Description'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['product_description']),                                                    
                                                          )
                                                      )
                                           ),
@@ -187,11 +192,11 @@ $smarty->assign('js_files',$js_files);
                                         'rows'=>
                                                array(
                                                    array(
-                                                       'unit_type'=>array('label'=>_('Product Unit Type'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['unit_type']),
-                                                       'currency'=>array('label'=>_('Currency'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['currency']),
-                                                       'valid_from'=>array('label'=>_('Product Valid From'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['valid_from']),
-                                                       'valid_to'=>array('label'=>_('Product Valid To'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['valid_to']),
-                                                       'buy_state'=>array('label'=>_('Buy State'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['buy_state']),
+                                                       'unit_type'=>array('label'=>_('Product Unit Type'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['unit_type']),
+                                                       'currency'=>array('label'=>_('Currency'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['currency']),
+                                                       'valid_from'=>array('label'=>_('Product Valid From'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['valid_from']),
+                                                       'valid_to'=>array('label'=>_('Product Valid To'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['valid_to']),
+                                                       'buy_state'=>array('label'=>_('Buy State'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['buy_state']),
                                                 
                                                    )
                                                )
@@ -200,8 +205,8 @@ $smarty->assign('js_files',$js_files);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'cost_all'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['cost_all']),
-                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['profit_all']),
+                                                       'cost_all'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['cost_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['profit_all']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -211,8 +216,8 @@ $smarty->assign('js_files',$js_files);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'cost_1y'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['cost_1y']),
-                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['profit_1y']),
+                                                       'cost_1y'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['cost_1y']),
+                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['profit_1y']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -222,8 +227,8 @@ $smarty->assign('js_files',$js_files);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'cost_1q'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['cost_1q']),
-                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['profit_1q']),
+                                                       'cost_1q'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['cost_1q']),
+                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['profit_1q']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -233,8 +238,8 @@ $smarty->assign('js_files',$js_files);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'cost_1m'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['cost_1m']),
-                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['profit_1m']),
+                                                       'cost_1m'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['cost_1m']),
+                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['profit_1m']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )
@@ -244,8 +249,8 @@ $smarty->assign('js_files',$js_files);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'cost_1w'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['cost_1w']),
-                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['products']['csv_export']['profit_1w']),
+                                                       'cost_1w'=>array('label'=>_('Cost'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['cost_1w']),
+                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['supplier']['supplier_products']['csv_export']['profit_1w']),
                                                         array('label'=>''),
                                                              array('label'=>''),
                                                    )

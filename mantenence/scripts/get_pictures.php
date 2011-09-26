@@ -17,25 +17,31 @@ $to_stop=0;
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
-if(!$con){print "Error can not connect with database server\n";exit;}
+if (!$con) {
+    print "Error can not connect with database server\n";
+    exit;
+}
 //$dns_db='kaw';
 $db=@mysql_select_db($dns_db, $con);
-if (!$db){print "Error can not access the database\n";exit;}
+if (!$db) {
+    print "Error can not access the database\n";
+    exit;
+}
 
- 
+
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../conf/conf.php';           
+require_once '../../conf/conf.php';
 
 //$sql=sprintf("select `Product Family Key`,`Product Family Code` from `Product Family Dimension`");
 
- // $res=mysql_query($sql);
- // while($row=mysql_fetch_array($res)){
-  
+// $res=mysql_query($sql);
+// while($row=mysql_fetch_array($res)){
+
 //  print "wget www.ancientwisdom.biz/pics/".strtolower($row['Product Family Code']).".jpg;\n";
-//  
- // }
+//
+// }
 //exit;
 
 
@@ -51,78 +57,182 @@ $pics=array();
 $path="pics/";
 $img_array_full_path = glob($path."*.jpg");
 //print_r($img_array_full_path);
-foreach($img_array_full_path as $pic_path){
-   $_pic_path=preg_replace('/.*\//','',$pic_path);
-  if(preg_match('/[a-z0-9\-]+(|_l|_bis|_tris|_quad|_display|_displ|dpl|_box)+.jpg/',$_pic_path)){
-    // print "$pic_path\n";
-    if(preg_match('/^[a-z]+\-\d+[a-z]{0,3}/',$_pic_path,$match)){
-      $root=$match[0];
-      if(array_key_exists($root,$pics))
-    	$pics[$root][]=$pic_path;
-         else
-	   $pics[$root]=array($pic_path);
+foreach($img_array_full_path as $pic_path) {
+    $_pic_path=preg_replace('/.*\//','',$pic_path);
+    if (preg_match('/[a-z0-9\-]+(|_l|_bis|_tris|_quad|_display|_displ|dpl|_box)+.jpg/',$_pic_path)) {
+        // print "$pic_path\n";
+        if (preg_match('/^[a-z]+\-\d+[a-z]{0,3}/',$_pic_path,$match)) {
+            $root=$match[0];
+            if (array_key_exists($root,$pics))
+                $pics[$root][]=$pic_path;
+            else
+                $pics[$root]=array($pic_path);
+        }
+
+
+
     }
-    
-    
-    
-  }
-} 
+}
 //print_r($pics);
-
+//exit;
 chdir('../../');
-foreach($pics as $key=>$value){
-  $sql=sprintf("select `Product ID`,`Product Code` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($key));
-  //print "$sql\n";
-  $res=mysql_query($sql);
-  while($row=mysql_fetch_array($res)){
-  
-    $product=new Product('pid',$row['Product ID']);
-    foreach($value as $img_filename){
-     
-      print "----".getcwd()."------ ".$img_filename."   \n";
-      $rand=rand().rand();
+foreach($pics as $key=>$value) {
+    $parts=array();
+    $sql=sprintf("select `Product ID`,`Product Code` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($key));
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $product=new Product('pid',$row['Product ID']);
+
+        $sql=sprintf("select PPL.`Part SKU` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d;",$product->pid);
+//print $sql;
+        $result2=mysql_query($sql);
+
+        while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+            $parts[$row2['Part SKU']]=$row2['Part SKU'];
+
+        }
+
+    }
+
+   // print_r($parts);
+
+
+    foreach($value as $img_filename) {
+
+        print "----".getcwd()."------ ".$img_filename."   \n";
+        $rand=rand().rand();
+
+        $tmp_file='app_files/pics/tmp/tmp'.$rand.'.jpg';
+        copy('mantenence/scripts/'.$img_filename,$tmp_file );
+        // exit;
+
+        $data=array(
+                  'file'=>'tmp'.$rand.'.jpg',
+                  'path'=>'app_files/pics/assets/',
+                  'name'=>$img_filename,
+                  'caption'=>''
+              );
+
+        //print_r($data);
+        $image=new Image('find',$data,'create');
+
+        if (!$image->id) {
+
+            print_r($image);
+            exit;
+
+        }
+
+
+        foreach ($parts as $part_sku) {
+            $part=new Part($part_sku);
+            $part->add_image($image->id,'principal');
+            $part->update_main_image();
+
+            $sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  "
+                        ,$part->sku
+                        );
+
+            $res=mysql_query($sql);
+            $product_ids=array();
+            while ($row=mysql_fetch_array($res)) {
+                $product=new Product('pid',$row['Product ID']);
+                $product->add_image($image->id,'principal');
+                $product->update_main_image();
+
+            }
+
+
+
+            $sql=sprintf("select  SPPD.`Supplier Product Key`
+                         from `Supplier Product Part List` SPPL
+                         left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+                         left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) where `Part SKU`=%d ;
+                         ",$part->sku);
+            // print $sql;
+            $result=mysql_query($sql);
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+                $supplier_products=new SupplierProduct('pid',$row['Supplier Product Key']);
+                $supplier_products->add_image($image->id,'principal');
+                $supplier_products->update_main_image();
+
+
+
+            }
+        }
+
+
+
+
+        unlink($tmp_file);
+
       
-      $tmp_file='app_files/pics/tmp/tmp'.$rand.'.jpg';
-      copy('mantenence/scripts/'.$img_filename,$tmp_file );
-     // exit;
-     
-     $data=array(
-	    'file'=>'tmp'.$rand.'.jpg'
-	    ,'path'=>'app_files/pics/assets/'
-	    ,'name'=>$row['Product Code']
-	    ,'caption'=>''
-	    );
 
- //    print_r($data);
-$image=new Image('find',$data,'create');
+    }
 
-if(!$image->id){
 
-print_r($image);
+
+
+}
+
+/*
 exit;
 
-}
+$sql=sprintf("select `Product ID`,`Product Code` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($key));
+//print "$sql\n";
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
 
- //    print_r($image);
-    // exit;
-     $product->add_image($image->id,'principal');
-      //print_r($product);
-      // print $product->msg."\n";
-      $product->update_main_image();
-       unlink($tmp_file);
+    $product=new Product('pid',$row['Product ID']);
 
-//exit;
+
+
+    foreach($value as $img_filename) {
+
+        print "----".getcwd()."------ ".$img_filename."   \n";
+        $rand=rand().rand();
+
+        $tmp_file='app_files/pics/tmp/tmp'.$rand.'.jpg';
+        copy('mantenence/scripts/'.$img_filename,$tmp_file );
+        // exit;
+
+        $data=array(
+                  'file'=>'tmp'.$rand.'.jpg',
+                  'path'=>'app_files/pics/assets/',
+                  'name'=>$row['Product Code'],
+                  'caption'=>''
+              );
+
+        print_r($data);
+        $image=new Image('find',$data,'create');
+
+        if (!$image->id) {
+
+            print_r($image);
+            exit;
+
+        }
+
+//    print_r($image);
+        // exit;
+        $product->add_image($image->id,'principal');
+        //print_r($product);
+        // print $product->msg."\n";
+        $product->update_main_image();
+        unlink($tmp_file);
+
+        exit;
 
     }
 
-  }
-  mysql_free_result($res);
-
-
-
-
-
 }
+mysql_free_result($res);
+
+
+
+
+*/
+
 
 
 ?>

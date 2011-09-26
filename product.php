@@ -244,7 +244,7 @@ $smarty->assign('department_id',$product->get('Product Main Department Key'));
 $smarty->assign('family',$product->get('Product Family Code'));
 $smarty->assign('family_id',$product->get('Product Family Key'));
 
-$product->load('images_slideshow');
+$product->load_images_slidesshow();
 $images=$product->images_slideshow;
 $smarty->assign('div_img_width',190);
 $smarty->assign('img_width',190);
