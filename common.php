@@ -68,10 +68,11 @@ $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
-
- 
+$log_as="staff";
+if(isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
+ $log_as="supplier";
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
- 
+// print array_pop(explode('/', $_SERVER['PHP_SELF']));
 if ($logout) {
  
     /*  ?><script type = "text/javascript">alert("You are about to be signed out due to Inactivity");</script><?php   */
@@ -81,9 +82,13 @@ if ($logout) {
     session_regenerate_id();
     session_destroy();
     unset($_SESSION);
- 
-    include_once 'login.php';
-    exit;
+	if($log_as=="supplier"){
+		include_once 'login_supplier.php';
+		 exit;
+	}else{
+		include_once 'login.php';
+		exit;
+	}
 }
  
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
@@ -100,8 +105,13 @@ if ($is_already_logged_in) {
         session_destroy();
         unset($_SESSION);
  
-        include_once 'login.php';
-        exit;
+		if($log_as=="supplier"){
+		include_once 'login_supplier.php';
+		 exit;
+	}else{
+		include_once 'login.php';
+		exit;
+	}
  
     }
     $user=new User($_SESSION['user_key']);
@@ -114,14 +124,15 @@ if ($is_already_logged_in) {
     $auth=new Auth(IKEY,SKEY);
     $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
     $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
- 
+	$user_type = (array_key_exists('user_type', $_REQUEST)) ? $_REQUEST['user_type'] : false;
  
  
     if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
         $auth->authenticate_from_masterkey($_REQUEST['mk']);
     }
     elseif($handle) {
-        $auth->authenticate($handle,$sk,'staff',0);
+		
+        $auth->authenticate($handle,$sk,$user_type,0);
     }
  
     if ($auth->is_authenticated()) {
@@ -133,8 +144,16 @@ if ($is_already_logged_in) {
     } else {
         $target = $_SERVER['PHP_SELF'];
         if (!preg_match('/js$/',$target))
-            include_once 'login.php';
-        exit;
+          //  include_once 'login.php';
+			
+		
+	if($log_as=="supplier"){
+		include_once 'login_supplier.php';
+		exit;
+	}else{
+		include_once 'login.php';
+		exit;
+	}
     }
 }
  
@@ -151,6 +170,7 @@ $smarty->assign('lang_code',$_SESSION['text_locale_code']);
 $smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));
  
 $args="?";
+
 foreach($_GET as $key => $value) {
     if ($key!='_locale')$args.=$key.'='.$value.'&';
 }
@@ -286,8 +306,8 @@ if ($user->can_view('customers')) {
 if ($user->data['User Type']=='Supplier') {
  
  
-	$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
-	$nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'products');
+	//$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
+	$nav_menu[] = array(_('Products'), 'suppliers.php'  ,'suppliers');
 	$nav_menu[] = array(_('Dashboard'), 'suppliers_index.php','home');
 }
  

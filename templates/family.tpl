@@ -264,7 +264,7 @@
 	       </td></tr>
 
 
-<tr><td class="label">{t}Page Type{/t}:</td>
+<tr  style="display:none"><td class="label">{t}Page Type{/t}:</td>
  <td>
  <table>
  <tr><td class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.PageStoreType=="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>

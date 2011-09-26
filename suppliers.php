@@ -14,21 +14,73 @@
 include_once('common.php');
 
 
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 		 $yui_path.'assets/skins/sam/autocomplete.css',
+
+		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
+		 
+		 'button.css',
+		 'container.css',
+		
+		 );
+
+include_once('Theme.php');
+
+$js_files=array(
+
+		$yui_path.'utilities/utilities.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container-min.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
+		'js/common.js',
+		'js/table_common.js',
+		'js/search.js',
+		'js/suppliers_common.js',
+		'suppliers.js.php',
+        'js/edit_common.js',
+        'js/csv_common.js'
+
+		);
+
+
+
+
+
+$smarty->assign('parent','suppliers');
+$smarty->assign('title', _('Suppliers'));
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
+
+
+
 if($user->data['User Type']=='Supplier'){
-  
+   if(count($user->suppliers)==0){
+   $smarty->display('forbidden.tpl');
+    exit();
+  }
   
   if(count($user->suppliers)==1){
     header('Location: supplier.php?id='.$user->suppliers[0]);
     exit;
   }
-}
+}else{
 
 
-if(!($user->can_view('suppliers'))){
+if(!($user->can_view('suppliers')     )){
   header('Location: index.php');
    exit;
 }
-
+}
 
 $q='';
 $sql="select count(*) as numberof from `Supplier Dimension`";
@@ -83,52 +135,6 @@ $smarty->assign('search_scope','supplier_products');
 
 //$smarty->assign('box_layout','yui-t4');
 //print_r($_SESSION['state']['suppliers']);
-
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 
-		 'button.css',
-		 'container.css',
-		
-		 );
-
-include_once('Theme.php');
-
-$js_files=array(
-
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
-		'js/common.js',
-		'js/table_common.js',
-		'js/search.js',
-		'js/suppliers_common.js',
-		'suppliers.js.php',
-        'js/edit_common.js',
-        'js/csv_common.js'
-
-		);
-
-
-
-
-
-$smarty->assign('parent','suppliers');
-$smarty->assign('title', _('Suppliers'));
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
 
 

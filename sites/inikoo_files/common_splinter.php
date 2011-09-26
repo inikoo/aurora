@@ -293,6 +293,7 @@ function get_sk() {
 
 
 function show_product($code) {
+
     global $logged_in, $ecommerce_url, $username, $method,$store_key;
     $product=new LightProduct($code, $store_key);
 

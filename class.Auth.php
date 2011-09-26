@@ -40,6 +40,7 @@ class Auth {
     function authenticate($handle=false,$sk=false,$page=false,$page_key='f0') {
 
         $this->log_page=$page;
+	
         switch ($this->log_page) {
         case 'staff':
             $this->user_type="'Administrator','Staff','Warehouse'";
