@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
-//$files = glob("sites/forms/*/*.php");
-$files = glob("sites/forms/3dart/index.php");
+$files = glob("sites/forms/*/*.php");
+//$files = glob("sites/forms/3dart/index.php");
 
 $sql=sprintf("truncate table `Product Page Bridge`");
 if(!$result=mysql_query($sql))

@@ -4106,6 +4106,11 @@ function forgot_password($data){
                       Thank you";
 
 $files=array();	
+
+
+		$access_key='AKIAJGTHT6POHWCQQNRQ';
+		$secret_key='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';
+
         $to=$login_handle;
         $data=array(
 				  'type'=>'HTML',
@@ -4114,7 +4119,9 @@ $files=array();
                   'email_credentials_key'=>$email_credential_key,
                   'to'=>$to,
                   'html'=>$html_message,
-					'attachement'=>$files
+				  'attachement'=>$files,
+				  'access_key'=>$access_key,
+				  'secret_key'=>$secret_key
               );
 		if(isset($data['plain']) && $data['plain']){
 			$data['plain']=$data['plain'];
@@ -4123,7 +4130,8 @@ $files=array();
 			$data['plain']=null;
 			
         $send_email=new SendEmail();
-        $send_email->smtp('plain', $data);
+		$send_email->set_method('amazon');
+        $send_email->smtp('html', $data);
         $result=$send_email->send();
 
 		//print_r($result);
