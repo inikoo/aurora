@@ -143,7 +143,7 @@ Your password has been changed.
 <tr><td  class="label">Email: </td><td><input id="login_handle"></td></tr>
 <tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
 <tr><td  class="label">Remember Me: </td><td style="text-align:left;"><input style="width:20px;border:none" type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
-<tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Wrong credentials!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
+<tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Invalid username or password!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
 <tr class="link space"><td colspan=2>Don't know your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
 <tr id="tr_link_register_from_login" class="link" ><td colspan=2>First visit? <span class="link" id="link_register_from_login">Register Here</span></td></tr>
 <tr id="tr_link_register_from_login2" class="link"><td colspan=2>Use another email, <span class="link" id="link_register_from_login2">Register Here</span></td></tr>
@@ -193,7 +193,7 @@ Your password has been changed.
 
 </table>
 </div>
-<div id="dialog_register_part_2"    class="dialog"  style="xdisplay:block"  >
+<div id="dialog_register_part_2"    class="dialog"  style="xdisplay:block; z-index:1; position:relative;"  >
 <input id="epw2" value="" type="hidden"/>
 <h2>Registration</h2>
 <table border=0 style="margin:0 auto;">
@@ -549,7 +549,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 </tr>
 
 <tr class="title" >
-<td colspan="3">CAPTCHA: </td>
+<td colspan="3" >CAPTCHA: </td>
 </tr>
 
 
@@ -559,7 +559,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 <img id="captcha" src="<?php echo $path ?>inikoo_files/art/x.png" /> <br>
-<i><a href="#" onclick="document.getElementById('captcha').src = '<?php echo $path ?>inikoo_files/securimage_show.php?' + Math.random(); return false">Different Image</a></i>
+<i><a href="#" style="color:white" onclick="document.getElementById('captcha').src = '<?php echo $path ?>inikoo_files/securimage_show.php?' + Math.random(); return false">Different Image</a></i>
 
 </td>
 <td>

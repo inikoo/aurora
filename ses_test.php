@@ -7,14 +7,14 @@ $ses = new SimpleEmailService($access_key, $secret_key);
 
 
 /*Verify an emaail */
-//print_r($ses->verifyEmailAddress('migara@inikoo.com'));
+//print_r($ses->verifyEmailAddress('bugs@inikoo.com'));exit;
 //print_r($ses->verifyEmailAddress('migara64@gmail.com'));
 
 /*Remove an email from the list */
 //$ses->deleteVerifiedEmailAddress('migara@inikoo.com');
 
 /*Print the verified list */
-//print_r($ses->listVerifiedEmailAddresses());
+print_r($ses->listVerifiedEmailAddresses());exit;
 
 
 
