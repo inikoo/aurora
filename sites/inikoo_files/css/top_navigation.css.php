@@ -3,8 +3,8 @@ global $width;
 $width=$_REQUEST['width'];
 ?>
 
-#top_navigator{height:24px;z-index:1000;background:black;text-align:right;padding:0px;font-size:12px;font-family:"Arial";color:#ddd;visibility:hidden;
-width:<?php echo $width ?>px;vertical-align:bottom;
+#top_navigator{height:24px;z-index:5000;background:black;text-align:right;padding:0px;font-size:12px;font-family:"Arial";color:#ddd;visibility:hidden;
+width:<?php echo $width ?>px;vertical-align:bottom;position: absolute;
 }
 
 
@@ -14,7 +14,7 @@ width:<?php echo $width ?>px;vertical-align:bottom;
 
 .dialog {display:none;background:black;color:white;z-index:10000;padding:0px 20px 20px 20px;position:relative;top:-22px;float:right;}
 .dialog table {font-size:12px;color:white;margin:0px 0px 0px 30px}
-
+.dialog div{z-index:10000; position:relative;}
 .dialog tr.space td{padding-top:15px}
 
 .dialog tr.button td,.dialog tr.link td{text-align:right;}

@@ -17,6 +17,7 @@ class LightProduct{
   var $user_id;
   var $method;
   var $match=true;
+  //public $count=0;
   
     function __construct($arg1,$arg2=false) {
     
@@ -263,15 +264,18 @@ $_SESSION['logged_in']=1;
 		$discontinued='Discontinued';
 		$offline='Not for Sale';
 		  }
-
+		$flag=false;
 		  if ($this->data['Product Web State']=='Out of Stock') {
 		$_form='<br/><span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+		$flag=true;
 		  }
 		elseif($this->data['Product Web State']=='Offline'){
 		$_form='<br/><span style="color:red;font-weight:800">'.$offline.'</span>';
+		$flag=true;
 		  }
 		elseif($this->data['Product Web State']=='Discontinued'){
 		$_form='<br/><span style="color:red;font-weight:800">'.$discontinued.'</span>';
+		$flag=true;
 		  }
 		  else {
 		//global $site_checkout_address_indv,$site_checkout_id,$site_url;
@@ -284,12 +288,25 @@ $_SESSION['logged_in']=1;
 							   ,clean_accents(addslashes($this->data['Product Name']))
 							   );
 		  }
-
+			
+			
+		$login_path="";
+		  $register_path="";	
+		if(!$flag){
+			$message=sprintf('<br/><span style="color:red;font-style: italic; ">Please <a style="color:red;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:red;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+			//$this->count++;
+		}
+		else
+			$message='';
+		  
+		//print $this->count;  
 		  $_SESSION['logged_in']=1;
-		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span style="color:#444;font-style: italic;">Please login to see wholesale prices</span>%s</div>'
+		  
+		  $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span>%s%s</div>'
 				,$this->data['Product Code']
 				,$this->data['Product Units Per Case']
 				,$this->data['Product Name']
+				,$message
 				//,$this->get_formated_price($this->locale)
 				//,$this->get_formated_rrp($this->locale)
 				,(isset($_SESSION['logged_in'])?$_form:'')

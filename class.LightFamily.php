@@ -611,7 +611,7 @@ class LightFamily {
         else {
             $out_of_stock='Out of Stock';
             $discontinued='Discontinued';
-            $register='Please login to see wholesale prices';
+            $register=sprintf('<br/><span style="color:red;font-style: italic; ">Please <a style="color:red;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:red;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
         }
         $form=sprintf('<table class="product_list" >' );
 
