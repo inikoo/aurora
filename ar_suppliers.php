@@ -1492,9 +1492,9 @@ function list_suppliers() {
 
     elseif($order=='sales') {
 
-switch ($period) {
+        switch ($period) {
         case 'three_year':
-           $order='`Supplier 3 Year Acc Parts Sold Amount`';
+            $order='`Supplier 3 Year Acc Parts Sold Amount`';
             break;
         case 'year':
             $order='`Supplier 1 Year Acc Parts Sold Amount`';
@@ -1504,29 +1504,29 @@ switch ($period) {
             break;
 
         case 'six_month':
-           $order='`Supplier 6 Month Acc Parts Sold Amount`';
-        
+            $order='`Supplier 6 Month Acc Parts Sold Amount`';
+
             break;
         case 'month':
-           $order='`Supplier 1 Month Acc Parts Sold Amount`';
+            $order='`Supplier 1 Month Acc Parts Sold Amount`';
             break;
         case 'ten_day':
-          $order='`Supplier 10 Day Acc Parts Sold Amount`';
+            $order='`Supplier 10 Day Acc Parts Sold Amount`';
             break;
         case 'week':
-           $order='`Supplier 1 Week Acc Parts Sold Amount`';
+            $order='`Supplier 1 Week Acc Parts Sold Amount`';
             break;
         case 'yeartoday':
-           $order='`Supplier Year To Day Acc Parts Sold Amount`';
+            $order='`Supplier Year To Day Acc Parts Sold Amount`';
             break;
         case 'monthtoday':
-          $order='`Supplier Month To Day Acc Parts Sold Amount`';
+            $order='`Supplier Month To Day Acc Parts Sold Amount`';
             break;
         case 'weektoday':
-           $order='`Supplier Week To Day Acc Parts Sold Amount`';
+            $order='`Supplier Week To Day Acc Parts Sold Amount`';
             break;
         default:
-           $order='`Supplier Total Acc Parts Sold Amount`';
+            $order='`Supplier Total Acc Parts Sold Amount`';
             break;
         }
 
@@ -1541,10 +1541,10 @@ switch ($period) {
     }
 
 //    elseif($order='used_in')
-//        $order='Supplier Product XHTML Used In';
+//        $order='Supplier Product XHTML Sold As';
 
     $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
- //   print $sql;
+//   print $sql;
 
 
     $result=mysql_query($sql);
@@ -1684,7 +1684,32 @@ switch ($period) {
 
 
 function list_supplier_products() {
-    $conf=$_SESSION['state']['supplier']['products'];
+
+
+    if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else
+        $parent='none';
+
+
+    if ($parent=='supplier') {
+        $conf=$_SESSION['state']['supplier']['supplier_products'];
+        $conf_table='supplier';
+        $parent_key=$_REQUEST['parent_key'];
+    }
+    elseif ($parent=='none') {
+        $conf=$_SESSION['state']['suppliers']['supplier_products'];
+        $conf_table='suppliers';
+    }
+    else {
+
+        exit;
+    }
+
+
+
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -1731,8 +1756,8 @@ function list_supplier_products() {
         $product_view=$_REQUEST['product_view'];
     else
         $product_view=$conf['view'];
-    if (isset( $_REQUEST['product_period']))
-        $product_period=$_REQUEST['product_period'];
+    if (isset( $_REQUEST['period']))
+        $product_period=$_REQUEST['period'];
     else
         $product_period=$conf['period'];
 
@@ -1748,28 +1773,27 @@ function list_supplier_products() {
 
 
 
-    $_SESSION['state']['supplier']['products']['view']=$product_view;
-    $_SESSION['state']['supplier']['products']['percentage']=$product_percentage;
-    $_SESSION['state']['supplier']['products']['period']=$product_period;
-    $_SESSION['state']['supplier']['products']['order']=$order;
-    $_SESSION['state']['supplier']['products']['order_dir']=$order_dir;
-    $_SESSION['state']['supplier']['products']['nr']=$number_results;
-    $_SESSION['state']['supplier']['products']['sf']=$start_from;
-    $_SESSION['state']['supplier']['products']['where']=$where;
-    $_SESSION['state']['supplier']['products']['f_field']=$f_field;
-    $_SESSION['state']['supplier']['products']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['supplier_products']['view']=$product_view;
+    $_SESSION['state'][$conf_table]['supplier_products']['percentage']=$product_percentage;
+    $_SESSION['state'][$conf_table]['supplier_products']['period']=$product_period;
+    $_SESSION['state'][$conf_table]['supplier_products']['order']=$order;
+    $_SESSION['state'][$conf_table]['supplier_products']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['supplier_products']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['supplier_products']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['supplier_products']['where']=$where;
+    $_SESSION['state'][$conf_table]['supplier_products']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['supplier_products']['f_value']=$f_value;
 
 
 
 
 
-    $_SESSION['state']['supplier']['id']=$supplier_id;
 
 
-    //if($parent=='none')
-    //$where.='';
-    //else
-    $where=$where.' and `supplier key`='.$supplier_id;
+    if ($parent=='none')
+        $where.='';
+    else
+        $where=$where.sprintf(' and `Supplier Key`=%d',$parent_key);
 
 
     $wheref='';
@@ -1778,7 +1802,7 @@ function list_supplier_products() {
 
 
     if (($f_field=='p.code' ) and $f_value!='')
-        $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
+        $wheref.=" and  `Supplier Product Sold As` like '%".addslashes($f_value)."%'";
     if ($f_field=='sup_code' and $f_value!='')
         $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
 
@@ -1840,7 +1864,7 @@ function list_supplier_products() {
 
     }
 
-    //print "$order --\n";
+
 
     if ($order=='id')
         $order='`Supplier Product ID`';
@@ -1849,7 +1873,7 @@ function list_supplier_products() {
     elseif($order=='code')
     $order='`Supplier Product Code`';
     elseif($order=='used_in')
-    $order='`Supplier Product XHTML Used In`';
+    $order='`Supplier Product XHTML Sold As`';
     elseif($order=='tuos')
     $order='`Supplier Product Days Available`';
     elseif($order=='stock')
@@ -1859,7 +1883,7 @@ function list_supplier_products() {
     elseif($order=='profit') {
 
         if ($product_period=='all')
-            $order='`Supplier Product Total Parts Profit`';
+            $order='`Supplier Product Total Acc Parts Profit`';
         elseif ($product_period=='year')
         $order='`Supplier Product 1 Year Acc Parts Profit`';
         else if ($product_period=='quarter')
@@ -1870,11 +1894,22 @@ function list_supplier_products() {
 
         else if ($product_period=='week')
             $order='`Supplier Product 1 Week Acc Parts Profit`';
-
+   elseif ($product_period=='three_year')
+        $order='`Supplier Product 3 Year Acc Parts Profit`';
+        elseif ($product_period=='six_month')
+        $order='`Supplier Product 6 Month Acc Parts Profit`';
+        elseif ($product_period=='ten_day')
+        $order='`Supplier Product 10 Day Acc Parts Profit`';
+        elseif ($product_period=='yeartoday')
+        $order='`Supplier Product Year To Day Acc Parts Profit`';
+        elseif ($product_period=='monthtoday')
+        $order='`Supplier Product Month To Day Acc Parts Profit`';
+        elseif ($product_period=='weektoday')
+        $order='`Supplier Product Week To Day Acc Parts Profit`';
     }
     elseif($order=='required') {
         if ($product_period=='all')
-            $order='`Supplier Product Total Parts Required`';
+            $order='`Supplier Product Total Acc Parts Required`';
         elseif ($product_period=='year')
         $order='`Supplier Product 1 Year Acc Parts Required`';
         elseif ($product_period=='quarter')
@@ -1883,10 +1918,23 @@ function list_supplier_products() {
         $order='`Supplier Product 1 Month Acc Parts Required`';
         elseif ($product_period=='week')
         $order='`Supplier Product 1 Week Acc Parts Required`';
+        elseif ($product_period=='three_year')
+        $order='`Supplier Product 3 Year Acc Parts Required`';
+        elseif ($product_period=='six_month')
+        $order='`Supplier Product 6 Month Acc Parts Required`';
+        elseif ($product_period=='ten_day')
+        $order='`Supplier Product 10 Day Acc Parts Required`';
+        elseif ($product_period=='yeartoday')
+        $order='`Supplier Product Year To Day Acc Parts Required`';
+        elseif ($product_period=='monthtoday')
+        $order='`Supplier Product Month To Day Acc Parts Required`';
+        elseif ($product_period=='weektoday')
+        $order='`Supplier Product Week To Day Acc Parts Required`';
+
     }
     elseif($order=='sold') {
         if ($product_period=='all')
-            $order='`Supplier Product Total Parts Sold`';
+            $order='`Supplier Product Total Acc Parts Sold`';
         elseif ($product_period=='year')
         $order='`Supplier Product 1 Year Acc Parts Sold`';
         elseif ($product_period=='quarter')
@@ -1895,10 +1943,22 @@ function list_supplier_products() {
         $order='`Supplier Product 1 Month Acc Parts Sold`';
         elseif ($product_period=='week')
         $order='`Supplier Product 1 Week Acc Parts Sold`';
+           elseif ($product_period=='three_year')
+        $order='`Supplier Product 3 Year Acc Parts Sold`';
+        elseif ($product_period=='six_month')
+        $order='`Supplier Product 6 Month Acc Parts Sold`';
+        elseif ($product_period=='ten_day')
+        $order='`Supplier Product 10 Day Acc Parts Sold`';
+        elseif ($product_period=='yeartoday')
+        $order='`Supplier Product Year To Day Acc Parts Sold`';
+        elseif ($product_period=='monthtoday')
+        $order='`Supplier Product Month To Day Acc Parts Sold`';
+        elseif ($product_period=='weektoday')
+        $order='`Supplier Product Week To Day Acc Parts Sold`';
     }
     elseif($order=='sales') {
         if ($product_period=='all')
-            $order='`Supplier Product Total Parts Sold Amount`';
+            $order='`Supplier Product Total Acc Parts Sold Amount`';
         elseif ($product_period=='year')
         $order='`Supplier Product 1 Year Acc Parts Sold Amount`';
         elseif ($product_period=='quarter')
@@ -1907,14 +1967,26 @@ function list_supplier_products() {
         $order='`Supplier Product 1 Month Acc Parts Sold Amount`';
         elseif ($product_period=='week')
         $order='`Supplier Product 1 Week Acc Parts Sold Amount`';
+         elseif ($product_period=='three_year')
+        $order='`Supplier Product 3 Year Acc Parts Sold Amount`';
+        elseif ($product_period=='six_month')
+        $order='`Supplier Product 6 Month Acc Parts Sold Amount`';
+        elseif ($product_period=='ten_day')
+        $order='`Supplier Product 10 Day Acc Parts Sold Amount`';
+        elseif ($product_period=='yeartoday')
+        $order='`Supplier Product Year To Day Acc Parts Sold Amount`';
+        elseif ($product_period=='monthtoday')
+        $order='`Supplier Product Month To Day Acc Parts Sold Amount`';
+        elseif ($product_period=='weektoday')
+        $order='`Supplier Product Week To Day Acc Parts Sold Amount`';
     }
 
     else
         $order='`Supplier Product Code`';
 
-    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select * from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
-    // print $sql;
+   // print $sql;
     $data=array();
 
     $result=mysql_query($sql);
@@ -1922,51 +1994,140 @@ function list_supplier_products() {
 
 
         if ($product_period=='all') {
-            $profit=money($row['Supplier Product Total Parts Profit']);
-            $profit2=money($row['Supplier Product Total Parts Profit After Storing']);
-            $allcost=money($row['Supplier Product Total Cost']);
-            $sold=number($row['Supplier Product Total Parts Sold']);
-            $required=number($row['Supplier Product Total Parts Required']);
-            $lost=number($row['Supplier Product Total Parts Lost']);
-            $broken=$row['Supplier Product Total Parts Broken'];
-            $sold_amount=money($row['Supplier Product Total Parts Sold Amount']);
+            $profit=money($row['Supplier Product Total Acc Parts Profit']);
+            $profit2=money($row['Supplier Product Total Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product Total Acc Parts Cost']);
+            $sold=number($row['Supplier Product Total Acc Parts Sold']);
+            $required=number($row['Supplier Product Total Acc Parts Required']);
+            $lost=number($row['Supplier Product Total Acc Parts Lost']);
+            $broken=$row['Supplier Product Total Acc Parts Broken'];
+            $sold_amount=money($row['Supplier Product Total Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product Total Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product Total Acc Parts Margin'],1);
         } else if ($product_period=='year') {
             $profit=money($row['Supplier Product 1 Year Acc Parts Profit']);
             $profit2=money($row['Supplier Product 1 Year Acc Parts Profit After Storing']);
             $allcost=money($row['Supplier Product 1 Year Acc Parts Cost']);
             $sold=number($row['Supplier Product 1 Year Acc Parts Sold']);
             $required=number($row['Supplier Product 1 Year Acc Parts Required']);
+            $dispatched=number($row['Supplier Product 1 Year Acc Parts Dispatched']);
+
             $lost=number($row['Supplier Product 1 Year Acc Parts Lost']);
             $broken=number($row['Supplier Product 1 Year Acc Parts Broken']);
             $sold_amount=money($row['Supplier Product 1 Year Acc Parts Sold Amount']);
+            $margin=percentage($row['Supplier Product 1 Year Acc Parts Margin'],1);
         } else if ($product_period=='quarter') {
             $profit=money($row['Supplier Product 1 Quarter Acc Parts Profit']);
             $profit2=money($row['Supplier Product 1 Quarter Acc Parts Profit After Storing']);
-            $allcost=money($row['Supplier Product 1 Quarter Acc Cost']);
+            $allcost=money($row['Supplier Product 1 Quarter Acc Parts Cost']);
             $sold=number($row['Supplier Product 1 Quarter Acc Parts Sold']);
             $required=number($row['Supplier Product 1 Quarter Acc Parts Required']);
             $lost=number($row['Supplier Product 1 Quarter Acc Parts Lost']);
             $broken=number($row['Supplier Product 1 Quarter Acc Parts Broken']);
             $sold_amount=money($row['Supplier Product 1 Quarter Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product 1 Quarter Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product 1 Quarter Acc Parts Margin'],1);
         } else if ($product_period=='month') {
             $profit=money($row['Supplier Product 1 Month Acc Parts Profit']);
             $profit2=money($row['Supplier Product 1 Month Acc Parts Profit After Storing']);
-            $allcost=money($row['Supplier Product 1 Month Acc Cost']);
+            $allcost=money($row['Supplier Product 1 Month Acc Parts Cost']);
             $sold=number($row['Supplier Product 1 Month Acc Parts Sold']);
             $required=number($row['Supplier Product 1 Month Acc Parts Required']);
             $lost=number($row['Supplier Product 1 Month Acc Parts Lost']);
             $broken=number($row['Supplier Product 1 Month Acc Parts Broken']);
             $sold_amount=money($row['Supplier Product 1 Month Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product 1 Month Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product 1 Month Acc Parts Margin'],1);
+
         } else if ($product_period=='week') {
             $profit=money($row['Supplier Product 1 Week Acc Parts Profit']);
             $profit2=money($row['Supplier Product 1 Week Acc Parts Profit After Storing']);
-            $allcost=money($row['Supplier Product 1 Week Acc Cost']);
+            $allcost=money($row['Supplier Product 1 Week Acc Parts Cost']);
             $sold=number($row['Supplier Product 1 Week Acc Parts Sold']);
             $required=number($row['Supplier Product 1 Week Acc Parts Required']);
             $lost=number($row['Supplier Product 1 Week Acc Parts Lost']);
             $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
             $sold_amount=money($row['Supplier Product 1 Week Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product 1 Week Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product 1 Week Acc Parts Margin'],1);
 
+        }
+        elseif ($product_period=='three_year') {
+            $profit=money($row['Supplier Product 3 Year Acc Parts Profit']);
+            $profit2=money($row['Supplier Product 3 Year Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product 3 Year Acc Parts Cost']);
+            $sold=number($row['Supplier Product 3 Year Acc Parts Sold']);
+            $required=number($row['Supplier Product 3 Year Acc Parts Required']);
+            $lost=number($row['Supplier Product 3 Year Acc Parts Lost']);
+            $broken=number($row['Supplier Product 3 Year Acc Parts Broken']);
+            $sold_amount=money($row['Supplier Product 3 Year Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product 3 Year Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product 3 Year Acc Parts Margin'],1);
+
+        }
+        elseif ($product_period=='six_month') {
+            $profit=money($row['Supplier Product 6 Month Acc Parts Profit']);
+            $profit2=money($row['Supplier Product 6 Month Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product 6 Month Acc Parts Cost']);
+            $sold=number($row['Supplier Product 6 Month Acc Parts Sold']);
+            $required=number($row['Supplier Product 6 Month Acc Parts Required']);
+            $lost=number($row['Supplier Product 6 Month Acc Parts Lost']);
+            $broken=number($row['Supplier Product 6 Month Acc Parts Broken']);
+            $sold_amount=money($row['Supplier Product 6 Month Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product 6 Month Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product 6 Month Acc Parts Margin'],1);
+
+        }
+        elseif ($product_period=='ten_day') {
+            $profit=money($row['Supplier Product 10 Day Acc Parts Profit']);
+            $profit2=money($row['Supplier Product 10 Day Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product 10 Day Acc Parts Cost']);
+            $sold=number($row['Supplier Product 10 Day Acc Parts Sold']);
+            $required=number($row['Supplier Product 10 Day Acc Parts Required']);
+            $lost=number($row['Supplier Product 10 Day Acc Parts Lost']);
+            $broken=number($row['Supplier Product 10 Day Acc Parts Broken']);
+            $sold_amount=money($row['Supplier Product 10 Day Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product 10 Day Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product 10 Day Acc Parts Margin'],1);
+
+        }
+        elseif ($product_period=='yeartoday') {
+            $profit=money($row['Supplier Product Year To Day Acc Parts Profit']);
+            $profit2=money($row['Supplier Product Year To Day Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product Year To Day Acc Parts Cost']);
+            $sold=number($row['Supplier Product Year To Day Acc Parts Sold']);
+            $required=number($row['Supplier Product Year To Day Acc Parts Required']);
+            $lost=number($row['Supplier Product Year To Day Acc Parts Lost']);
+            $broken=number($row['Supplier Product Year To Day Acc Parts Broken']);
+            $sold_amount=money($row['Supplier Product Year To Day Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product Year To Day Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product Year To Day Acc Parts Margin'],1);
+
+        }
+        elseif ($product_period=='monthtoday') {
+            $profit=money($row['Supplier Product Month To Day Acc Parts Profit']);
+            $profit2=money($row['Supplier Product Month To Day Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product Month To Day Acc Parts Cost']);
+            $sold=number($row['Supplier Product Month To Day Acc Parts Sold']);
+            $required=number($row['Supplier Product Month To Day Acc Parts Required']);
+            $lost=number($row['Supplier Product Month To Day Acc Parts Lost']);
+            $broken=number($row['Supplier Product Month To Day Acc Parts Broken']);
+            $sold_amount=money($row['Supplier Product Month To Day Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product Month To Day Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product Month To Day Acc Parts Margin'],1);
+
+        }
+        elseif ($product_period=='weektoday') {
+            $profit=money($row['Supplier Product Week To Day Acc Parts Profit']);
+            $profit2=money($row['Supplier Product Week To Day Acc Parts Profit After Storing']);
+            $allcost=money($row['Supplier Product Week To Day Acc Parts Cost']);
+            $sold=number($row['Supplier Product Week To Day Acc Parts Sold']);
+            $required=number($row['Supplier Product Week To Day Acc Parts Required']);
+            $lost=number($row['Supplier Product Week To Day Acc Parts Lost']);
+            $broken=number($row['Supplier Product Week To Day Acc Parts Broken']);
+            $sold_amount=money($row['Supplier Product Week To Day Acc Parts Sold Amount']);
+            $dispatched=number($row['Supplier Product Week To Day Acc Parts Dispatched']);
+            $margin=percentage($row['Supplier Product Week To Day Acc Parts Margin'],1);
         }
 
 
@@ -1976,24 +2137,31 @@ function list_supplier_products() {
         else
             $weeks_until=round($row['Supplier Product Days Available']/7).' w';
 
+
+        $used_in=$row['Supplier Product XHTML Sold As'];
+        if ($row['Supplier Product XHTML Store As']) {
+            $used_in.=' ('.$row['Supplier Product XHTML Store As'].')';
+        }
+
         $data[]=array(
 
                     'code'=>$code,
                     'stock'=>number($row['Supplier Product Stock']),
-                    'tuos'=>$weeks_until,
+                    'weeks_until_out_of_stock'=>$weeks_until,
                     'supplier'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code']),
                     'name'=>$row['Supplier Product Name'],
-                    'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
-                    'cost'=>money($row['Supplier Product Cost Per Case']),
-                    'used_in'=>$row['Supplier Product XHTML Used In'].' '.$row['Supplier Product XHTML Store As'],
+                    'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']).' '.$row['Supplier Product Unit Type'].'</span>',
+                    'cost'=>money($row['SPH Case Cost']),
+                    'used_in'=>$used_in,
                     'profit'=>$profit,
                     'allcost'=>$allcost,
                     'sold'=>$sold,
                     'required'=>$required,
-
+                    'dispatched'=>$dispatched,
                     'lost'=>$lost,
                     'broken'=>$broken,
-                    'sales'=>$sold_amount
+                    'sales'=>$sold_amount,
+                    'margin'=>$margin
 
                 );
     }

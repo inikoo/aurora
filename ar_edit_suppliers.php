@@ -210,7 +210,7 @@ function edit_supplier_product($data) {
 		   ,'description'=>'Supplier Product Description'
 		   ,'unit_type'=>'Supplier Product Unit Type'
 		   ,'units'=>'Supplier Product Units Per Case'
-		   ,"cost"=>'Supplier Product Cost Per Case'
+		   ,"cost"=>'SPH Case Cost'
        
 		   
     );
@@ -444,7 +444,7 @@ if(isset( $_REQUEST['where']))
     $order='`Supplier Main XHTML Email`';
   
   //    elseif($order='used_in')
-  //        $order='Supplier Product XHTML Used In';
+  //        $order='Supplier Product XHTML Sold As';
   
   $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
@@ -579,7 +579,7 @@ function list_supplier_products() {
 
 
     if (($f_field=='code' ) and $f_value!='')
-        $wheref.=" and  `Supplier Product XHTML Used In` like '".addslashes($f_value)."%'";
+        $wheref.=" and  `Supplier Product XHTML Sold As` like '".addslashes($f_value)."%'";
     if ($f_field=='sup_code' and $f_value!='')
         $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
 
@@ -636,7 +636,7 @@ function list_supplier_products() {
     elseif($order=='code')
     $order='`Supplier Product Code`';
     elseif($order='usedin')
-    $order='`Supplier Product XHTML Used In`';
+    $order='`Supplier Product XHTML Sold As`';
 
     $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
     $data=array();
@@ -668,8 +668,8 @@ function list_supplier_products() {
 
                       
 		      ,'name'=>$row['Supplier Product Name']
-		      ,'cost'=>money($row['Supplier Product Cost Per Case'])
-		      //,'usedin'=>$row['Supplier Product XHTML Used In']
+		      ,'cost'=>money($row['SPH Case Cost'])
+		      //,'usedin'=>$row['Supplier Product XHTML Sold As']
 		      ,'unit_type'=>$row['Supplier Product Unit Type']
 		      ,'units'=>$row['Supplier Product Units Per Case']
 ,'delete'=>$delete

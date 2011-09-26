@@ -146,7 +146,8 @@ class product extends DB_Table {
                 return;
             mysql_free_result($result);
             return;
-        } else if ($tipo=='pid') {
+        } 
+        else if ($tipo=='pid') {
             $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d    ",$tag);
             $this->mode='pid';
             $result=mysql_query($sql);
@@ -1869,14 +1870,11 @@ class product extends DB_Table {
 
 
 
-        case('images_slideshow'):
+       
 
 
 
-            $this->load_images_slidesshow();
-
-
-            break;
+        
 
         }
 
@@ -1929,26 +1927,14 @@ class product extends DB_Table {
     function load_images() {
         $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
 
-        //      print $sql;
         $res=mysql_query($sql);
         $this->images=array();
 
-
-
         while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
-
             $this->images[$row['Image Key']]=$row;
-
         }
-
-
     }
 
-
-    /*
-      Function: load_original_image
-      Carga diferentes tipos de imagenes, Crea y actualiza datos de las tablas Product Image Bridge, Product Image, Image Dimension
-    */
 
 
 
@@ -1997,13 +1983,6 @@ class product extends DB_Table {
         }
         $this->msg="image added";
     }
-
-
-
-
-
-
-
 
     function update($key,$a1=false,$a2=false) {
         $this->updated=false;
@@ -4774,7 +4753,9 @@ class product extends DB_Table {
         $part_list=array();
         $this->product_part_key=0;
         $this->product_part_type='';
-        $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  ((  `Product Part Valid From`<=%s and `Product Part Valid To`>=%s and `Product Part Most Recent`='No') or ( `Product Part Most Recent`='Yes' and `Product Part Valid From`<=%s )  )   limit 1 "
+        $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  
+        ((  `Product Part Valid From`<=%s and `Product Part Valid To`>=%s and `Product Part Most Recent`='No') or 
+        ( `Product Part Most Recent`='Yes' and `Product Part Valid From`<=%s )  )   limit 1 "
                      ,$this->pid
                      ,prepare_mysql($datetime)
                      ,prepare_mysql($datetime)

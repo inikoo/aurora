@@ -32,25 +32,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 				  
-				  {key:"code", label:"<?php echo _('Code')?>",  width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"name", label:"<?php echo _('Name')?>",<?php echo(($_SESSION['state']['supplier']['products']['view']=='product_general' or $_SESSION['state']['supplier']['products']['view']=='product_stock')?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"required", label:"<?php echo _('Required')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"sold", label:"<?php echo _('Sold')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"sales", label:"<?php echo _('Sales')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"profit", label:"<?php echo _('Profit')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				  ,{key:"usld", label:"<?php echo _('%U slD')?>",<?php echo(($_SESSION['state']['supplier']['products']['view']=='product_stock' or $_SESSION['state']['supplier']['products']['view']=='product_forecast')  ?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"stock", label:"<?php echo _('Stock')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_stock'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				,{key:"tuos", label:"<?php echo _('T uOS')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_forecast'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  				,{key:"margin", label:"<?php echo _('Margin')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			  {key:"supplier", label:"<?php echo _('Supplier')?>", hidden:true, width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	              ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"description", label:"<?php echo _('Description')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='general'?'':'hidden:true,')?>width:380, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"used_in", label:"<?php echo _('Used In')?>", width:310,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"stock", label:"<?php echo _('Stock')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='stock'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"weeks_until_out_of_stock", label:"<?php echo _('W Until OO')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='stock'?'':'hidden:true,')?> width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					  ,{key:"required", label:"<?php echo _('Required')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"dispatched", label:"<?php echo _('Dispatched')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 	,{key:"sold", label:"<?php echo _('Sold')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 	,{key:"sales", label:"<?php echo _('Sales')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='sales'?'':'hidden:true,')?> width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 ,{key:"profit", label:"<?php echo _('Profit')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='profit'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 ,{key:"margin", label:"<?php echo _('Margin')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='profit'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				  ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&tableid="+tableid);
-		
-		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get('supplier_id').value+"&tableid="+tableid);
+	
+	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {
 		    resultsList: "resultset.data", 
@@ -66,7 +65,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","margin","code","name","cost","used_in","profit","allcost","used","required","sold","lost","broken","allcost","sales","usld","tuos","stock"
+			      "description","id","code","name","cost","used_in","profit","allcost","used","required","provided","lost","broken","supplier",
+				 "dispatched","sold","sales","weeks_until_out_of_stock","stock","margin"
 			     ]};
 		
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -74,7 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator0', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['supplier_products']['nr']?>,containers : 'paginator0', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -84,8 +84,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 							     
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['supplier']['supplier_products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['supplier']['supplier_products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 							     
@@ -94,8 +94,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
-		this.table0.view='<?php echo$_SESSION['state']['supplier']['products']['view']?>';
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_value']?>'};
+		this.table0.view='<?php echo$_SESSION['state']['supplier']['supplier_products']['view']?>';
 		
 		var tableid=1; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
@@ -312,11 +312,27 @@ break;
  }
 
 
+   function change_block(){
+ids=["details","products","purchase_orders"];
+block_ids=["block_details","block_products","block_purchase_orders"];
 
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-block_view&value='+this.id ,{});
+}
 
 
 function init(){
   init_search('supplier_products_supplier');
+  
+  
+  
+  
+  
+  
  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'supplier');
  YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'supplier'});
   csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
@@ -329,7 +345,6 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
-YAHOO.util.Event.addListener('details', "click",change_details,'supplier');
  
  ids=['pos','dns','invoices'];
     YAHOO.util.Event.addListener(ids, "click",orders_change_view)
@@ -339,38 +354,23 @@ YAHOO.util.Event.addListener('details', "click",change_details,'supplier');
     
     
 
-  var change_view2 = function (e){
-
-      block=this.getAttribute('block');
-      state=this.getAttribute('state');
-      new_title=this.getAttribute('atitle');
-      old_title=this.getAttribute('title');
-      
-      this.setAttribute('title',new_title);
-      this.setAttribute('atitle',old_title);
-
-      if(state==1){
-	  Dom.get('block_'+block).style.display='none';
-	  this.setAttribute('state',0);
-
-	  YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', .2);
-	  YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-display-'+block+'&value=0',{});
-      }else{
-
-	  Dom.get('block_'+block).style.display='';
-	  this.setAttribute('state',1);
-	  YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
-	  YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-display-'+block+'&value=1',{});
-	  
-	 }
-
-
-     }
 
     
-    var ids = ["change_view_details","change_view_products","change_view_po","change_view_history"]; 
-    Event.addListener(ids,"click",change_view2);
+    var ids = ["details","products","purchase_orders"]; 
+    Event.addListener(ids,"click",change_block);
 
+
+  ids=['supplier_products_general','supplier_products_sales','supplier_products_stock','supplier_products_profit'];
+ YAHOO.util.Event.addListener(ids, "click",change_supplier_products_view,{'table_id':0,'parent':'supplier'})
+
+
+ ids=['supplier_products_period_all','supplier_products_period_year','supplier_products_period_quarter','supplier_products_period_month','supplier_products_period_week',
+ 'supplier_products_period_six_month','supplier_products_period_three_year','supplier_products_period_ten_day','supplier_products_period_month','supplier_products_period_week',
+ 'supplier_products_period_yeartoday','supplier_products_period_monthtoday','supplier_products_period_weektoday'
+ 
+ ];
+
+ YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'supplier_products'});
 
 
 

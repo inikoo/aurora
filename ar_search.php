@@ -587,20 +587,16 @@ function search_orders($data) {
     } else
         $stores=join(',',$user->stores);
 
-    $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 10",$stores,addslashes($q));
-    // print $sql;
+
+
+
+
+
+    $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 100",$stores,addslashes($q));
+   
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-        if ($row['Order Public ID']==$q) {
-            $candidates[$row['Order Key']]=110;
-            $candidates_data[$row['Order Key']]=array(
-                                                    'store'=>$row['Store Code'],
-                                                    'public_id'=>$row['Order Public ID'],
-                                                    'state'=>$row['Order Current XHTML State'],
-                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-                                                    'customer'=>$row['Order Customer Name']
-                                                );
-        } else {
+   
             $candidates[$row['Order Key']]=100;
             $candidates_data[$row['Order Key']]=array(
                                                     'store'=>$row['Store Code'],
@@ -610,11 +606,29 @@ function search_orders($data) {
                                                     'customer'=>$row['Order Customer Name']
                                                 );
 
-        }
+     
 
     }
 
+ $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID`=%s ",$stores,prepare_mysql($q));
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+      
+            $candidates[$row['Order Key']]=110;
+            $candidates_data[$row['Order Key']]=array(
+                                                    'store'=>$row['Store Code'],
+                                                    'public_id'=>$row['Order Public ID'],
+                                                    'state'=>$row['Order Current XHTML State'],
+                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                    'customer'=>$row['Order Customer Name']
+                                                );
+      
+    }
+
+
+
     arsort($candidates);
+   
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {

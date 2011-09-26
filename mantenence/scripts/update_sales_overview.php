@@ -39,7 +39,7 @@ $sql="select * from `Supplier Product Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-    $supplier_product=new SupplierProduct($row['Supplier Product Key']);
+    $supplier_product=new SupplierProduct('pid',$row['Supplier Product Key']);
     $supplier_product->update_up_today_sales();
     $supplier_product->update_interval_sales();
     $supplier_product->update_last_period_sales();

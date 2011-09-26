@@ -796,6 +796,7 @@ class DeliveryNote extends DB_Table {
                                      prepare_mysql ( $map_to_otf_metadata )
                                    );
                 mysql_query($sql);
+                //print "$sql\n";
 //print "$location_key \n";
 
             }
@@ -1738,7 +1739,7 @@ class DeliveryNote extends DB_Table {
             $sku=$row['Part SKU'];
             $part=new Part($sku);
             $cost_storing=0;
-            $cost_supplier=$part->get_unit_cost()*$qty;
+            $cost_supplier=$part->get_unit_cost($date)*$qty;
 
             $sql = sprintf ( "update `Inventory Transaction Fact` set `Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s where `Inventory Transaction Key`=%d  "
                              ,$qty
@@ -1750,7 +1751,7 @@ class DeliveryNote extends DB_Table {
                              ,$itf_key
                            );
             mysql_query ( $sql );
-
+//print "$sql\n";
 
             $otf_key=$row['Map To Order Transaction Fact Key'];
             $factor=$row['Map To Order Transaction Fact Metadata'];
