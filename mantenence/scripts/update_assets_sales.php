@@ -30,7 +30,42 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
-$sql="select * from `Part Dimension` where `Part SKU`=1901 ";
+
+$sql="select * from `Supplier Product Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+    $supplier_product=new SupplierProduct('pid',$row['Supplier Product Key']);
+    $supplier_product->update_up_today_sales();
+    $supplier_product->update_interval_sales();
+    $supplier_product->update_last_period_sales();
+
+}
+
+$sql="select * from `Supplier Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+    $supplier=new Supplier($row['Supplier Key']);
+    $supplier->update_up_today_sales();
+    $supplier->update_interval_sales();
+    $supplier->update_last_period_sales();
+
+}
+
+
+$sql="select * from `Product Family Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+    $family=new Family($row['Product Family Key']);
+    $family->update_up_today_sales();
+    $family->update_interval_sales();
+    $family->update_last_period_sales();
+
+}
+
+$sql="select * from `Part Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
@@ -41,7 +76,7 @@ $part->update_last_period_sales();
 
 }
 
-exit;
+
 $sql="select * from `Product Family Dimension` ";
 
 //print $sql;
