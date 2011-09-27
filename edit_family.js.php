@@ -1350,7 +1350,7 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
      YAHOO.util.Event.addListener('delete_family', "click", delete_family);
         YAHOO.util.Event.addListener('cancel_delete_family', "click", cancel_delete_family);
         YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
-
+alert("1")
 
  validate_scope_metadata={
      'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'famiy_key','key':<?php echo$_REQUEST['id']?>}
@@ -1361,12 +1361,12 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
     ,'family_page_header':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
 ,'family_page_content':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
 };
-
+ alert("2")
 var product_code_validated=false;
 if(Dom.get('product_code').value!=''){
 product_code_validated=true;
 }
-
+ alert("3")
  validate_scope_data={
  
  	'product':{
@@ -1457,11 +1457,11 @@ product_code_validated=true;
 
 
 };
-alert("1")
+ alert("3a")
 
  init_search('products_store');
 
-
+ alert("3b")
     YAHOO.util.Event.addListener('new_family_page', "click", new_family_page);
 
 
@@ -1473,7 +1473,7 @@ alert("1")
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
  
-   alert("2")
+  
 
     
     var ids = ["details","products","discounts","pictures","web"]; 
@@ -1647,7 +1647,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     
     YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
  YAHOO.util.Event.addListener('clean_table_filter_hide7', "click",hide_filter,7);
-    alert("3")
+   
     var family_page_content_presentation_template_data_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_content_presentation_template_data);
     
     family_page_content_presentation_template_data_oACDS.queryMatchContains = true;
@@ -1666,7 +1666,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
 
 	
     Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
- alert("4")
+ 
 }
 
 YAHOO.util.Event.onDOMReady(init);
