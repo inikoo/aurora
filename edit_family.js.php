@@ -1339,7 +1339,6 @@ cancel_new_general('product');
 
 
 function init(){
-alert("0")
 Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
 
 //dialog_new_product_choose = new YAHOO.widget.Dialog("dialog_new_product_choose", {context:["new_product_choose","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
@@ -1350,7 +1349,6 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
      YAHOO.util.Event.addListener('delete_family', "click", delete_family);
         YAHOO.util.Event.addListener('cancel_delete_family', "click", cancel_delete_family);
         YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
-alert("1")
 
  validate_scope_metadata={
      'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'famiy_key','key':<?php echo$_REQUEST['id']?>}
@@ -1361,12 +1359,10 @@ alert("1")
     ,'family_page_header':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
 ,'family_page_content':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
 };
- alert("2")
 var product_code_validated=false;
 if(Dom.get('product_code').value!=''){
 product_code_validated=true;
 }
- alert("3")
  validate_scope_data={
  
  	'product':{
@@ -1457,11 +1453,8 @@ product_code_validated=true;
 
 
 };
- alert("3a")
-
  init_search('products_store');
 
- alert("3b")
     YAHOO.util.Event.addListener('new_family_page', "click", new_family_page);
 
 
