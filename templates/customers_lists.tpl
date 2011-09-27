@@ -2,6 +2,10 @@
 <div id="bd" >
 
 {include file='contacts_navigation.tpl'}
+<div> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Lists{/t}</span>
+</div>
+
 <h2 style="clear:left">{t}Customers Lists{/t} ({$store->get('Store Code')})</h2>
 
 <input type="hidden" id="store_id" value="{$store->id}">

@@ -1,7 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='orders_navigation.tpl'}
-
+<div style=""> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$customer->get_formated_id()} ({t}In Process{/t})</span>
+</div>
   <div id="yui-main">
     <div id="control_panel" class="yui-b">
       <div style="text-align:right">

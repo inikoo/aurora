@@ -2,7 +2,9 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-
+<div> 
+  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
+</div>
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing part{/t}: <span class="id">{$part->get_sku()}<span> </h1>
     <h2 id="title_description">{$part->get('Part XHTML Description')}</h2>
