@@ -354,12 +354,14 @@
 	       <td>
 	        <div style="float:right"  class="general_options"><span id="add_other_found_in_page" class="state_details">Add other page</span></div>
 	       <table >
+	       {if $page_key}
 		    {foreach from=$page->found_in() item=found_in_page}
                <tr><td style="padding:0">{$found_in_page.found_in_label}</td>
                <td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
              
                </tr>
             {/foreach}
+            {/if}
 	       </table>
 	      
 	       </td>
