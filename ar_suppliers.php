@@ -1349,7 +1349,7 @@ default:
 }
 
 function list_suppliers() {
-    global $myconf;
+    global $myconf,$user;
 
     $conf=$_SESSION['state']['suppliers']['suppliers'];
     if (isset( $_REQUEST['sf']))
@@ -1409,6 +1409,19 @@ function list_suppliers() {
     $_order=$order;
     $_dir=$order_direction;
 
+
+
+    if ($user->data['User Type']=='Supplier') {
+
+        if (!count($user->suppliers)) {
+            $where='where false';
+        } else {
+            $where=sprintf('where `Supplier Key` in (%s)',join(',',$user->suppliers));
+        }
+    } else {
+        $where='where true';
+
+    }
     $wheref='';
     if ($f_field=='code'  and $f_value!='')
         $wheref.=" and `Supplier Code` like '".addslashes($f_value)."%'";
@@ -1894,7 +1907,7 @@ function list_supplier_products() {
 
         else if ($product_period=='week')
             $order='`Supplier Product 1 Week Acc Parts Profit`';
-   elseif ($product_period=='three_year')
+        elseif ($product_period=='three_year')
         $order='`Supplier Product 3 Year Acc Parts Profit`';
         elseif ($product_period=='six_month')
         $order='`Supplier Product 6 Month Acc Parts Profit`';
@@ -1943,7 +1956,7 @@ function list_supplier_products() {
         $order='`Supplier Product 1 Month Acc Parts Sold`';
         elseif ($product_period=='week')
         $order='`Supplier Product 1 Week Acc Parts Sold`';
-           elseif ($product_period=='three_year')
+        elseif ($product_period=='three_year')
         $order='`Supplier Product 3 Year Acc Parts Sold`';
         elseif ($product_period=='six_month')
         $order='`Supplier Product 6 Month Acc Parts Sold`';
@@ -1967,7 +1980,7 @@ function list_supplier_products() {
         $order='`Supplier Product 1 Month Acc Parts Sold Amount`';
         elseif ($product_period=='week')
         $order='`Supplier Product 1 Week Acc Parts Sold Amount`';
-         elseif ($product_period=='three_year')
+        elseif ($product_period=='three_year')
         $order='`Supplier Product 3 Year Acc Parts Sold Amount`';
         elseif ($product_period=='six_month')
         $order='`Supplier Product 6 Month Acc Parts Sold Amount`';
@@ -1986,7 +1999,7 @@ function list_supplier_products() {
 
     $sql="select * from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
-   // print $sql;
+    // print $sql;
     $data=array();
 
     $result=mysql_query($sql);

@@ -55,8 +55,8 @@ case('supplier_products'):
     }
     $data['user']=$user;
     search_supplier_products($data);
-    break;    
-    
+    break;
+
 case('part'):
 case('parts'):
 
@@ -593,42 +593,42 @@ function search_orders($data) {
 
 
     $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 100",$stores,addslashes($q));
-   
+
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-   
-            $candidates[$row['Order Key']]=100;
-            $candidates_data[$row['Order Key']]=array(
-                                                    'store'=>$row['Store Code'],
-                                                    'public_id'=>$row['Order Public ID'],
-                                                    'state'=>$row['Order Current XHTML State'],
-                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-                                                    'customer'=>$row['Order Customer Name']
-                                                );
 
-     
+        $candidates[$row['Order Key']]=100;
+        $candidates_data[$row['Order Key']]=array(
+                                                'store'=>$row['Store Code'],
+                                                'public_id'=>$row['Order Public ID'],
+                                                'state'=>$row['Order Current XHTML State'],
+                                                'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                'customer'=>$row['Order Customer Name']
+                                            );
+
+
 
     }
 
- $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID`=%s ",$stores,prepare_mysql($q));
+    $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID`=%s ",$stores,prepare_mysql($q));
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-      
-            $candidates[$row['Order Key']]=110;
-            $candidates_data[$row['Order Key']]=array(
-                                                    'store'=>$row['Store Code'],
-                                                    'public_id'=>$row['Order Public ID'],
-                                                    'state'=>$row['Order Current XHTML State'],
-                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-                                                    'customer'=>$row['Order Customer Name']
-                                                );
-      
+
+        $candidates[$row['Order Key']]=110;
+        $candidates_data[$row['Order Key']]=array(
+                                                'store'=>$row['Store Code'],
+                                                'public_id'=>$row['Order Public ID'],
+                                                'state'=>$row['Order Current XHTML State'],
+                                                'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                'customer'=>$row['Order Customer Name']
+                                            );
+
     }
 
 
 
     arsort($candidates);
-   
+
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {
@@ -2021,6 +2021,9 @@ function search_field($data) {
 
 
 function search_supplier_products($data) {
+
+    $user=$data['user'];
+
     $the_results=array();
 
     $max_results=10;
@@ -2037,21 +2040,39 @@ function search_supplier_products($data) {
 
 
     if ($data['scope']=='supplier') {
-      $suppliers_where=sprintf(' `Supplier Key`=%d ',$data['supplier_id']);
-     //if (in_array($data['supplier_id'],$user->suppliers))
-     //       $suppliers=$data['suppleir_id'];
-     //   else
-      //      $suppliers=0;
+        $suppliers_where=sprintf(' `Supplier Key`=%d ',$data['supplier_id']);
 
-    } else{
+        if ($user->data['User Type']=='Supplier' and !in_array($data['supplier_id'],$user->suppliers)) {
+            $suppliers_where=' false ';
+        }
+
+
+        //if (in_array($data['supplier_id'],$user->suppliers))
+        //       $suppliers=$data['suppleir_id'];
+        //   else
+        //      $suppliers=0;
+
+    } else {
         $suppliers=join(',',$user->suppliers);
- $suppliers_where=' true ';
-}
+        $suppliers_where=' true ';
+        if ($user->data['User Type']=='Supplier' ) {
+
+            if (!count($user->suppliers)) {
+                $suppliers_where=' false ';
+            } else {
+
+                $suppliers_where=sprintf(' `Supplier Key` in (%s) ',join(',',$user->suppliers));
+            }
+        }
 
 
- 
-  
-    
+
+    }
+
+
+
+
+
     $extra_q='';
     $array_q=preg_split('/\s/',$q);
     if (count($array_q>1)) {
@@ -2063,29 +2084,30 @@ function search_supplier_products($data) {
     $found_supplier=false;
 
     $candidates=array();
-    
-    
-    if($data['scope']!='supplier'){
-    
-    $sql=sprintf('select `Supplier Key`,`Supplier Code` from `Supplier Dimension` where  `Supplier Code` like "%s%%" limit 100 ',
-    addslashes($q));
+
+
+    if ($data['scope']!='supplier') {
+
+        $sql=sprintf('select `Supplier Key`,`Supplier Code` from `Supplier Dimension` where %s and  `Supplier Code` like "%s%%" limit 100 ',
+          $suppliers_where,
+                     addslashes($q));
 //print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-        if (strtolower($row['Supplier Code'])==strtolower($q)) {
-            $candidates['S '.$row['Supplier Key']]=210;
-            $found_supplier=$row['Supplier Key'];
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            if (strtolower($row['Supplier Code'])==strtolower($q)) {
+                $candidates['S '.$row['Supplier Key']]=210;
+                $found_supplier=$row['Supplier Key'];
 
-        } else {
+            } else {
 
-            $len_name=strlen($row['Supplier Code']);
-            $len_q=strlen($q);
-            $factor=$len_q/$len_name;
-            $candidates['S '.$row['Supplier Key']]=200*$factor;
+                $len_name=strlen($row['Supplier Code']);
+                $len_q=strlen($q);
+                $factor=$len_q/$len_name;
+                $candidates['S '.$row['Supplier Key']]=200*$factor;
+            }
         }
     }
-    }
-    
+
     //print $extra_q;
     if ($found_supplier) {
         if ($extra_q) {
@@ -2114,9 +2136,9 @@ function search_supplier_products($data) {
 
 
         $sql=sprintf('select `Supplier Product Key`,`Supplier Product Code` from `Supplier Product Dimension` where %s  and `Supplier Product Code` like "%s%%" limit 100 ',
-        $suppliers_where,
-        addslashes($q));
-      //  print $sql;
+                     $suppliers_where,
+                     addslashes($q));
+        // print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             if ($row['Supplier Product Code']==$q)
@@ -2186,17 +2208,17 @@ function search_supplier_products($data) {
         while ($row=mysql_fetch_array($res)) {
             $image='';
             //if ($row['Supplier Product Main Image']!='art/nopic.png')
-             //   $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Supplier Product Main Image']));
-            
+            //   $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Supplier Product Main Image']));
+
             $description=$row['Supplier Product Name'].' (<b>'.$row['Supplier Code'].'</b>)';
-            
+
             $results['P '.$row['Supplier Product Key']]=array('image'=>$image,'code'=>$row['Supplier Product Code'],'description'=>$description,'link'=>'supplier_product.php?pid=','key'=>$row['Supplier Product Key']);
         }
     }
 
 
 
-   
+
 
 
     $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
