@@ -204,96 +204,81 @@ class Image  {
         $filename=$this->tmp_path.$file;
         $this->get_format($filename);
         $this->openImage($filename);
-        if (!$this->im){
-        return;
+        if (!$this->im) {
+            return;
         }
-        
-            //if (!file_exists($this->path)) {
-            //    mkdir($this->path, 0700);
-            //}
 
-            //if (!file_exists($this->path.'/original'))
-            //    mkdir($this->path.'/original', 0700);
+   
 
+        //$news_imgfile = fread(fopen($filename, "r"), filesize($filename));
+        $image_blob=$this->getImageData($this->im);
 
-            //$name=$this->path.'original/'.$this->checksum.'.'.$this->format;
-
-
-            //if ($this->name=='')
-            //    $this->name=$file;
-            //else
-            //    $this->name.='.'.$this->format;
-
-            //$news_imgfile = fread(fopen($filename, "r"), filesize($filename));
-            $image_blob=$this->getImageData($this->im);
-
-            $image_data=array(
-                            'Image Width' => $this->im_x,
-                            'Image Height' =>  $this->im_y,
-                            'Image File Size'=>filesize($filename),
-                            'Image File Checksum'=>$this->checksum,
-                            'Image Filename'=>$this->name,
+        $image_data=array(
+                        'Image Width' => $this->im_x,
+                        'Image Height' =>  $this->im_y,
+                        'Image File Size'=>filesize($filename),
+                        'Image File Checksum'=>$this->checksum,
+                        'Image Filename'=>$this->name,
                         //    'Image URL'=>$name,
-                            'Image Original Filename'=>$this->original_name,
-                            'Image File Format'=>$this->format,
-                            'Image Data'=>$image_blob
+                        'Image Original Filename'=>$this->original_name,
+                        'Image File Format'=>$this->format,
+                        'Image Data'=>$image_blob
+                    );
+
+
+
+
+
+
+        //copy($filename, $name);
+
+
+
+        $keys='(';
+        $values='values(';
+        foreach($image_data as $key=>$value) {
+            $keys.="`$key`,";
+            if ($key=='Image Data')
+                $values.="'".addslashes($value)."',";
+            elseif ($key=='Image Original Filename')
+            $values.=prepare_mysql($value,false).",";
+            else
+                $values.=prepare_mysql($value).",";
+        }
+        $keys=preg_replace('/,$/',')',$keys);
+        $values=preg_replace('/,$/',')',$values);
+        $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
+        // print "$sql\n";
+        if (mysql_query($sql)) {
+            $this->id=mysql_insert_id();
+            $this->new=true;
+            $this->get_data('id',$this->id);
+
+            global $dns_db;
+
+            $sql=sprintf("insert into kimage.`Image Data Dimension` values ('%s',%d,%s,%d,%s,'%s')
+                         ON DUPLICATE KEY UPDATE `Image Name`=%s ,`Image Size`=%d,`Image Type`=%s,`Image Data`='%s'   "
+                         ,addslashes($dns_db)
+                         ,$this->id
+                         ,prepare_mysql($this->name)
+                         ,filesize($filename)
+                         ,prepare_mysql($this->format)
+                         ,$image_blob
+                         ,prepare_mysql($this->name)
+                         ,filesize($filename)
+                         ,prepare_mysql($this->format)
+                         ,$image_blob
+
                         );
+            mysql_query($sql);
+        } else {
+            $this->error=true;
+            $this->msg='Can not insert the image '.mysql_error();
+            return;
+        }
 
 
 
-
-
-          
-            //copy($filename, $name);
-
-
-
-            $keys='(';
-            $values='values(';
-            foreach($image_data as $key=>$value) {
-                $keys.="`$key`,";
-                if ($key=='Image Data')
-                    $values.="'".addslashes($value)."',";
-                elseif ($key=='Image Original Filename')
-                    $values.=prepare_mysql($value,false).",";
-                else
-                    $values.=prepare_mysql($value).",";
-            }
-            $keys=preg_replace('/,$/',')',$keys);
-            $values=preg_replace('/,$/',')',$values);
-            $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-            // print "$sql\n";
-            if (mysql_query($sql)) {
-                $this->id=mysql_insert_id();
-                $this->new=true;
-                $this->get_data('id',$this->id);
-
-                global $dns_db;
-
-                $sql=sprintf("insert into kimage.`Image Data Dimension` values ('%s',%d,%s,%d,%s,'%s')
-                             ON DUPLICATE KEY UPDATE `Image Name`=%s ,`Image Size`=%d,`Image Type`=%s,`Image Data`='%s'   "
-                             ,addslashes($dns_db)
-                             ,$this->id
-                             ,prepare_mysql($this->name)
-                             ,filesize($filename)
-                             ,prepare_mysql($this->format)
-                             ,$image_blob
-                             ,prepare_mysql($this->name)
-                             ,filesize($filename)
-                             ,prepare_mysql($this->format)
-                             ,$image_blob
-
-                            );
-                mysql_query($sql);
-            }
-             else {
-                $this->error=true;
-                $this->msg='Can not insert the image '.mysql_error();
-                return;
-            }
-
-
-        
         if ($this->delete_source_file)
             unlink($filename);
 
@@ -315,15 +300,15 @@ class Image  {
             return;
         }
 
-       // if (!file_exists($this->path.'thumbnails'))
-       //     mkdir($this->path.'thumbnails', 0700);
+        // if (!file_exists($this->path.'thumbnails'))
+        //     mkdir($this->path.'thumbnails', 0700);
 
 
-       // $name=$this->path.'thumbnails/'.$this->checksum.'.'.$this->format;
+        // $name=$this->path.'thumbnails/'.$this->checksum.'.'.$this->format;
         //$this->saveImage($this->resized_im,$name);
         $image_blob=$this->getImageData($this->resized_im);
         $sql=sprintf("update `Image Dimension` set `Image Thumbnail Data`='%s' where `Image Key`=%d ",addslashes($image_blob),$this->id);
-      
+
         mysql_query($sql);
         $this->data['Image Thumbnail Data']=$image_blob;
     }
@@ -332,7 +317,7 @@ class Image  {
 
     function get_format($filename) {
 
-    
+
 
         $this->format=guess_file_format($filename);
 
@@ -343,7 +328,7 @@ class Image  {
        *    @desc Open the image
        **/
     function openImage($srcImage) {
-       
+
 
         if ($this->format=='jpeg') {
             $this->im = imagecreatefromjpeg($srcImage);
@@ -392,8 +377,8 @@ class Image  {
     }
 
 
-  function getImageData($im) {
-ob_start();
+    function getImageData($im) {
+        ob_start();
         if ($this->format=='jpeg' or $this->format=='psd' ) {
             imagejpeg($im,NULL,$this->jpgCompression);
 
@@ -402,12 +387,12 @@ ob_start();
         imagepng($im);
         elseif($this->format=='gif')
         imagegif($im);
-        
-$image_data = ob_get_contents();
+
+        $image_data = ob_get_contents();
         ob_end_clean();
 
-return $image_data;
-        
+        return $image_data;
+
     }
 
 
@@ -436,16 +421,16 @@ return $image_data;
     // scale the image constraining proportions (maxX and maxY)
 
     function create_small() {
-    
-     if($this->im_x<320 or $this->im_y<280){
-         $sql=sprintf("update `Image Dimension` set `Image Small Data`=NULL where `Image Key`=%d"
-                
-                     ,$this->id
-                    );
-        mysql_query($sql);
-    return;
-    }
-    
+
+        if ($this->im_x<320 or $this->im_y<280) {
+            $sql=sprintf("update `Image Dimension` set `Image Small Data`=NULL where `Image Key`=%d"
+
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            return;
+        }
+
         $this->transformToFit(320,280);
         if ($this->error) {
             $this->msg=_('Can not resize image');
@@ -453,18 +438,9 @@ return $image_data;
         }
 
 
-        if (!file_exists($this->path.'small'))
-            mkdir($this->path.'small', 0700);
 
+        $image_blob=$this->getImageData($this->resized_im);
 
-        $name=$this->path.'small/'.$this->checksum.'.'.$this->format;
-
-
-
-        $this->saveImage($this->resized_im,$name);
-        
-          $image_blob=$this->getImageData($this->resized_im);
-        
         $sql=sprintf("update `Image Dimension` set `Image Small Data`='%s' where `Image Key`=%d"
                      ,addslashes($image_blob)
                      ,$this->id
@@ -474,39 +450,32 @@ return $image_data;
 
     }
 
-  
 
-  
+
+
     function create_large() {
-    
-    
-    if($this->im_x<800 or $this->im_y<600){
-      $sql=sprintf("update `Image Dimension` set `Image Large Data`=NULL where `Image Key`=%d"
-                    
-                     ,$this->id
-                    );
-        mysql_query($sql);
-    return;
-    }
-    
+
+
+        if ($this->im_x<800 or $this->im_y<600) {
+            $sql=sprintf("update `Image Dimension` set `Image Large Data`=NULL where `Image Key`=%d"
+
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            return;
+        }
+
         $this->transformToFit(800,600);
         if ($this->error) {
             $this->msg=_('Can not resize image');
             return;
         }
 
-        //if (!file_exists($this->path.'large'))
-        //    mkdir($this->path.'large', 0700);
+   
 
 
-        //$name=$this->path.'large/'.$this->checksum.'.'.$this->format;
-        //$this->saveImage($this->resized_im,$name);
-
-        //$this->saveImage($this->resized_im,$name);
-        
-        
         $image_blob=$this->getImageData($this->resized_im);
-        
+
         $sql=sprintf("update `Image Dimension` set `Image Large Data`='%s' where `Image Key`=%d"
                      ,addslashes($image_blob)
                      ,$this->id
@@ -582,7 +551,7 @@ return $image_data;
         $num_subjects=count($this->subjects);
 
         if ($num_subjects==0 or $force) {
-          
+
 
             $sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
             // print $sql;
@@ -599,8 +568,8 @@ return $image_data;
     }
 
 
-    function get_url(){
-    
+    function get_url() {
+
         return "image.php?id=".$this->id;
     }
 
