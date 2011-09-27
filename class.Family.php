@@ -538,23 +538,23 @@ class Family extends DB_Table {
 
     function delete() {
         $this->deleted=false;
-        $this->load('products_info');
+        $this->update_product_data();
 
         if ($this->get('Total Products')==0) {
             $store=new Store($this->data['Product Family Store Key']);
-            $this->load('Department Key List');
+            $department_keys=$this->get_department_keys();
             $sql=sprintf("delete from `Product Family Dimension` where `Product Family Key`=%d",$this->id);
 
             if (mysql_query($sql)) {
 
                 $sql=sprintf("delete from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
                 mysql_query($sql);
-                foreach($this->department_keys as $dept_key) {
+                foreach($department_keys as $dept_key) {
 
                     $department=new Department($dept_key);
-                    $department->load('products_info');
+                    $department->update_product_data();
                 }
-                $store->load('products_info');
+                $store->update_product_data();
                 $this->deleted=true;
 
             } else {
@@ -570,23 +570,22 @@ class Family extends DB_Table {
         }
     }
 
-    /*
-        Method: load
-        Carga datos de la base de datos Product Dimension, Product Family Department Bridge, actualizando registros en la tabla Product Family Dimension
-    */
-// JFA
+   
+   function get_department_keys(){
+    $department_keys=array();
+            $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $department_keys[]=$row['Product Department Key'];
+            }
+   return $department_keys;
+   }
+   
 
     function load($tipo,$args=false) {
         switch ($tipo) {
 
-        case('Department Key List');
-            $this->department_keys=array();
-            $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $this->department_keys[]=$row['Product Department Key'];
-            }
-            break;
+    
         case('products'):
 
 
@@ -992,7 +991,7 @@ class Family extends DB_Table {
                          ,prepare_mysql($this->get('Product Family Name'))
                          ,$product->id);
             mysql_query($sql);
-            $this->load('products_info');
+            $this->update_product_data();
             // print "$sql\n";
         }
     }
@@ -2502,6 +2501,29 @@ class Family extends DB_Table {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function update_correlated_sales_families() {
         $orders=0;
 
@@ -2527,8 +2549,8 @@ class Family extends DB_Table {
                 $common_orders=array_intersect_key($orders_keys,$family_orders_keys);
                 $number_common_orders=count($common_orders);
                 $probability=$number_common_orders/$orders;
-               // print $family->id." $probability\n";
-                
+                // print $family->id." $probability\n";
+
                 if ($probability>0.000001) {
                     $sql=sprintf("insert into `Product Family Sales Correlation` values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f , `Samples`=%d  ",
                                  $this->id,
@@ -2539,7 +2561,7 @@ class Family extends DB_Table {
                                  $orders
                                 );
                     mysql_query($sql);
-                 //    print "$sql\n";
+                    //    print "$sql\n";
 
                 }
 
@@ -2552,5 +2574,57 @@ class Family extends DB_Table {
     }
 
 
+    function update_similar_families() {
+
+        $department_codes=array();
+        $department_keys=array();
+        $see_also=array();
+
+
+        $this_family_name=$this->data['Product Family Name'];
+
+
+        $department_key=$this->data['Product Family Main Department Key'];
+
+        $code=$this->data['Product Family Code'];
+
+        $finger_print=strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name']);
+
+        $sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d",
+                     $this->data['Product Family Store Key'],
+                     $this->id);
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
+
+            $weight=sentence_similarity($finger_print,$other_finger_print)/100;
+
+            if (!$row['Product Family Main Department Key']==$department_key)
+                $weight=$weight/1.4;
+
+
+
+            if ($weight>0.000001) {
+                $sql=sprintf("insert into `Product Family Semantic Correlation` values (%d,%d,%f) ON DUPLICATE KEY UPDATE `Weight`=%f  ",
+                             $this->id,
+                             $row['Product Family Key'],
+                             $weight,
+
+                             $weight
+
+                            );
+                mysql_query($sql);
+
+
+            }
+
+
+
+
+           
+        }
 }
-?>
+
+    }
+    ?>

@@ -498,10 +498,17 @@ function edit_staff_user() {
 
 function change_user_passwd() {
 
-	
+	$id=$_REQUEST['user_id'];
 
-    $user=new User($_REQUEST['user_id']);
-    $value=$_REQUEST['value'];
+    $user=new User($id);
+	
+	if(isset($_REQUEST['value']))
+		$value=$_REQUEST['value'];
+	else{
+		$_key=md5($user->id.'insecure_key'.$_REQUEST['ep2']);
+		$value=AESDecryptCtr($_REQUEST['ep1'], $_key ,256);
+	}
+	
     if ($user->id) {
         $user->change_password($value);
         if (!$user->error)
@@ -1126,6 +1133,7 @@ function create_user($data){
 	$site_key=$val['store_id'];
 	$password=generate_password(10,10);
 	$send_email=$val['send_email'];
+	$url=$val['url'];
 	
 	$store=new store($site_key);
 	$site=new site($site_key);
@@ -1182,10 +1190,18 @@ function create_user($data){
 			$result=$send_email->send();
 			}
 
+			$_val=array('customer_key'=>$customer_key,
+				'store_key'=>$site_key,
+				'url'=>$url,
+				'email'=>$handle
+				);
+			$response=forgot_password($_val);
+			/*
 			$response=array(
 				'state'=>200,
 				'user_key'=>$user->id,
 				'msg'=>'Email Sent');
+				*/
 			echo json_encode($response);
         }
 	} else {
@@ -1196,6 +1212,110 @@ function create_user($data){
 	}
 }
 
+
+function forgot_password($data){
+	//print_r($data);
+	global $secret_key,$public_url;
+	$key=$data['customer_key'];
+	$store_key=$data['store_key'];
+	$url=$data['url'];
+	$login_handle=$data['email'];
+	
+	$sql=sprintf("select `User Key`, `User Handle` from `User Dimension` where `User Handle` = '%s'", $login_handle);
+	//print $sql;
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result));
+	$user_key=$row['User Key'];
+	//$login_handle=$row['User Handle'];
+	//print $user_key;
+	if ($user_key) {
+
+
+        $user=new User($user_key);
+        $customer=new Customer($user->data['User Parent Key']);
+
+		$store=new Store($store_key);
+
+        $email_credential_key=$store->get_email_credential_key('Site Registration');
+
+		//print $email_credential_key=1;
+//print_r($store);
+        $signature_name='';
+        $signature_company='';
+
+        $master_key=$user_key.'x'.generatePassword(6,10);
+
+
+
+
+        $sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
+                     prepare_mysql($master_key),
+                     $user_key,
+                     prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
+                     prepare_mysql(ip())
+                    );
+
+        mysql_query($sql);
+
+
+
+
+
+        $encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
+
+
+        $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
+
+
+        $html_message=$customer->get_greetings()."<br/>We received request to reset the password associated with this email account.<br><br>
+                      If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
+                      <b>Click the link below to reset your password</b>
+                      <br><br>
+                      <a href=\"".$url."?p=".$encrypted_secret_data."\">".$url."?p=".$encrypted_secret_data."</a>
+                      <br></br>
+                      If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
+                      <br><br>
+                      Thank you";
+
+$files=array();	
+        $to=$login_handle;
+        $data=array(
+				  'type'=>'HTML',
+                  'subject'=>'Reset your password',
+                  'plain'=>$plain_message,
+                  'email_credentials_key'=>$email_credential_key,
+                  'to'=>$to,
+                  'html'=>$html_message,
+					'attachement'=>$files
+              );
+		if(isset($data['plain']) && $data['plain']){
+			$data['plain']=$data['plain'];
+		}
+		else
+			$data['plain']=null;
+			
+        $send_email=new SendEmail();
+        $send_email->smtp('plain', $data);
+        $result=$send_email->send();
+
+		//print_r($result);
+		
+        if ($result['msg']=='ok') {
+            $response=array('state'=>200,'result'=>'send');
+            return $response;
+
+        } else {
+            print_r($result);
+            $response=array('state'=>200,'result'=>'error '.join(' ',$result));
+            return $response;
+        }
+
+
+    } else {
+        $response=array('state'=>200,'result'=>'handle_not_found');
+        return $response;
+    }
+}
 
 function generate_password($length=9, $strength=0) {
     $vowels = 'aeuy'.md5(mt_rand());

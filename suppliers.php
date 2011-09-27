@@ -14,74 +14,6 @@
 include_once('common.php');
 
 
-if($user->data['User Type']=='Supplier'){
-  
-  
-  if(count($user->suppliers)==1){
-    header('Location: supplier.php?id='.$user->suppliers[0]);
-    exit;
-  }
-}
-
-
-if(!($user->can_view('suppliers'))){
-  header('Location: index.php');
-   exit;
-}
-
-
-$q='';
-$sql="select count(*) as numberof from `Supplier Dimension`";
-$result=mysql_query($sql);
-if(!$suppliers=mysql_fetch_array($result, MYSQL_ASSOC))
-  exit;
-
-
-$create=$user->can_create('suppliers');
-
-$modify=$user->can_edit('suppliers');
-$view_sales=$user->can_view('supplier sales');
-
-
-
-$view_stock=$user->can_view('supplier stock');
-
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
-
-
-$smarty->assign('create',$create);
-$smarty->assign('modify',$modify);
-
-$smarty->assign('suppliers_view',$_SESSION['state']['suppliers']['suppliers']['view']);
-$smarty->assign('supplier_products_view',$_SESSION['state']['suppliers']['supplier_products']['view']);
-$smarty->assign('supplier_products_period',$_SESSION['state']['suppliers']['supplier_products']['period']);
-$smarty->assign('supplier_products_avg',$_SESSION['state']['suppliers']['supplier_products']['avg']);
-
-
-$smarty->assign('options_box_width','400px');
-$smarty->assign('block_view',$_SESSION['state']['suppliers']['block_view']);
-
-$general_options_list=array();
-
-
-if($modify){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_suppliers.php','label'=>_('Edit Suppliers'));
-   $general_options_list[]=array('tipo'=>'url','url'=>'new_supplier.php','label'=>_('Add Supplier'));
-}
-//$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-$general_options_list[]=array('tipo'=>'url','url'=>'suppliers_lists.php','label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'supplier_categories.php','label'=>_('Categories'));
-
-$smarty->assign('general_options_list',$general_options_list);
-
-
-$smarty->assign('search_label',_('Search'));
-$smarty->assign('search_scope','suppliers');
-
-//$smarty->assign('box_layout','yui-t4');
-//print_r($_SESSION['state']['suppliers']);
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -127,6 +59,82 @@ $smarty->assign('parent','suppliers');
 $smarty->assign('title', _('Suppliers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+
+
+if($user->data['User Type']=='Supplier'){
+   if(count($user->suppliers)==0){
+   $smarty->display('forbidden.tpl');
+    exit();
+  }
+  
+  if(count($user->suppliers)==1){
+    header('Location: supplier.php?id='.$user->suppliers[0]);
+    exit;
+  }
+}else{
+
+
+if(!($user->can_view('suppliers')     )){
+  header('Location: index.php');
+   exit;
+}
+}
+
+$q='';
+$sql="select count(*) as numberof from `Supplier Dimension`";
+$result=mysql_query($sql);
+if(!$suppliers=mysql_fetch_array($result, MYSQL_ASSOC))
+  exit;
+
+
+$create=$user->can_create('suppliers');
+
+$modify=$user->can_edit('suppliers');
+$view_sales=$user->can_view('supplier sales');
+
+
+
+$view_stock=$user->can_view('supplier stock');
+
+$smarty->assign('view_sales',$view_sales);
+$smarty->assign('view_stock',$view_stock);
+
+
+$smarty->assign('create',$create);
+$smarty->assign('modify',$modify);
+
+$smarty->assign('suppliers_view',$_SESSION['state']['suppliers']['suppliers']['view']);
+$smarty->assign('suppliers_period',$_SESSION['state']['suppliers']['suppliers']['period']);
+
+$smarty->assign('supplier_products_view',$_SESSION['state']['suppliers']['supplier_products']['view']);
+$smarty->assign('supplier_products_period',$_SESSION['state']['suppliers']['supplier_products']['period']);
+$smarty->assign('supplier_products_avg',$_SESSION['state']['suppliers']['supplier_products']['avg']);
+
+
+$smarty->assign('options_box_width','400px');
+$smarty->assign('block_view',$_SESSION['state']['suppliers']['block_view']);
+
+$general_options_list=array();
+
+
+if($modify){
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_suppliers.php','label'=>_('Edit Suppliers'));
+   $general_options_list[]=array('tipo'=>'url','url'=>'new_supplier.php','label'=>_('Add Supplier'));
+}
+//$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+$general_options_list[]=array('tipo'=>'url','url'=>'suppliers_lists.php','label'=>_('Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'supplier_categories.php','label'=>_('Categories'));
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','supplier_products');
+
+//$smarty->assign('box_layout','yui-t4');
+//print_r($_SESSION['state']['suppliers']);
 
 
 

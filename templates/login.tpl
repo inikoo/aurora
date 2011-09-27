@@ -9,6 +9,7 @@
 	  {foreach from=$css_files item=i }
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach}	
+
 	{foreach from=$js_files item=i }
 	<script type="text/javascript" src="{$i}"></script>
 	{/foreach}
@@ -36,9 +37,10 @@
             </tr>
                 <td colspan="2">
                     <div style="text-align:center">
-                        <button id="login_go"   >{t}Log in{/t}</button>
+                        <button id="login_go">{t}Log in{/t}</button>
                         <input type="hidden" name="_lang" value="{$lang_id}" />
 			<input type="hidden" id="ep" name="ep" value="{$st}" />
+			<input type="hidden" id="user_type" name="user_type" value="staff" />
                     </div>
                 </td>
             </tr>
@@ -51,6 +53,7 @@
 {/foreach}
 </div>
 </div> 
+<div style="margin-left:130px">If you're a supplier please click <a href="index.php?log_as=supplier">here to login</a></div>
 
 
 

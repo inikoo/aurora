@@ -222,6 +222,18 @@ Dom.setStyle(['info_'+period,'info2_'+period],'display','')
 }
 
 
+function hide_stock_history_chart(){
+Dom.setStyle(['stock_history_plot','hide_stock_history_chart'],'display','none')
+Dom.setStyle('show_stock_history_chart','display','')
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-show_stock_history_chart&value=0',{});
+}
+
+function show_stock_history_chart(){
+Dom.setStyle(['hide_stock_history_chart','stock_history_plot'],'display','')
+Dom.setStyle(['show_stock_history_chart'],'display','none')
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-show_stock_history_chart&value=1' ,{});
+}
+
 function init(){
 
 init_search('parts');
@@ -248,8 +260,8 @@ Event.addListener(ids, "click", change_snapshot_granularity);
  YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 
 
-  
-
+   YAHOO.util.Event.addListener('hide_stock_history_chart', "click",hide_stock_history_chart);
+   YAHOO.util.Event.addListener('show_stock_history_chart', "click",show_stock_history_chart);
 
 }
  YAHOO.util.Event.onDOMReady(init);

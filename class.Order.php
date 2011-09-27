@@ -824,14 +824,14 @@ class Order extends DB_Table {
 
         $this->data ['Order Current Payment State'] = 'No Applicable';
         $this->data ['Order Current Dispatch State'] = 'Dispatched';
-        //     $dn_txt = "No value order, Send";print $this->load('xhtml delivery notes',$dn_txt);
+     
         $dn_txt=_('Dispatched');
         if ($this->data ['Order Type'] == 'Order') {
             $dn_txt = "No value order, Dispatched";
         }
 
 
-        //$xhtml =$this->load('xhtml delivery notes',$dn_txt);
+        
         $sql = sprintf ( "update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d", prepare_mysql ( $dn_txt ), $this->id );
         if (! mysql_query ( $sql ))
             exit ( "arror can not update no_payment_applicable\n" );
@@ -2067,7 +2067,7 @@ class Order extends DB_Table {
         }
         foreach($family as $key=>$val) {
             $family=new Family($key);
-            $family->load('sales');
+            $family->update_sales_data();
             $sql = sprintf("select `Product Department Key`  from `Product Family Department Bridge` where `Product Family Key`=%d" ,$key);
             $result = mysql_query ( $sql );
             while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -2077,7 +2077,7 @@ class Order extends DB_Table {
         }
         foreach($departments as $key=>$val) {
             $department=new Department($key);
-            $department->load('sales');
+            $department->update_sales_data();
         }
 
 

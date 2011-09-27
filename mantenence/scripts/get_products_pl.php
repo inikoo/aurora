@@ -439,11 +439,10 @@ $is_product=true;
  			   'Product Part Type'=>'Simple Pick'
  			   );
 	
- 	$product->new_current_part_list(array(),$part_list);
-	//	print_r($product->data);
- 	$product->load('parts');
+$product->new_current_part_list(array(),$part_list);
+ 	$product->update_parts();
 	$part =new Part('sku',$parts[0]);
- 	$part->load('used in');
+ 	$part->update_used_in();
       }
 
 

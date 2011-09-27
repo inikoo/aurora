@@ -1,12 +1,13 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'}
+<input id="department_key" value="{$department->id}" type="hidden" />
 <div style="clear:left;"> 
  <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a>&rarr; <span id="title_name_bis">{$department->get('Product Department Name')}</span></span>
  </div>
  
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Department{/t}: <span id="title_name">{$department->get('Product Department Name')}</span> (<span id="title_code">{$department->get('Product Department Code')}</span>)</h1>
+    <h1><span id="title_name">{$department->get('Product Department Name')}</span> (<span id="title_code">{$department->get('Product Department Code')}</span>)</h1>
 </div>
    
  
@@ -212,7 +213,7 @@
 	  <div  id="table6"  style="font-size:90%" class="data_table_container dtable btable "> </div>
 	</div>
 
-	   <table class="edit"  border=1 id="edit_department_page"  style="width:100%;clear:both;{if !$page_key}display:none{/if}" page_key="{$page_key}"   >
+	   <table class="edit" id="edit_department_page"  style="width:100%;clear:both;{if !$page_key}display:none{/if}" page_key="{$page_key}"   >
 	     <tr class="title"><td colspan="2">{t}Page Properties{/t}
 	     </td>
 	     <td>
@@ -338,7 +339,7 @@
 	    
 	       
 	     </tr>
-	     <tr><td class="label">{t}Subtitle{/t}:</td><td>
+	     <tr style="display:none"><td class="label">{t}Subtitle{/t}:</td><td>
 		 <div   >
 		   <input  id="department_page_header_subtitle"   value="{$page_data.PageStoreSubtitle}" ovalue="{$page_data.PageStoreSubtitle}"  />
 		   

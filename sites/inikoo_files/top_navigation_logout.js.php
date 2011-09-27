@@ -648,7 +648,32 @@ Dom.get('captcha_code3').focus();
 }
 
 
+var submit_form_on_enter=function(e){
+     var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
 
+     if (Key == 13){
+	 submit_login();
+	 
+	 }
+};
+
+
+var submit_register_form_on_enter=function(e){
+     var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
+
+     if (Key == 13){
+	 submit_check_email();
+	 
+	 }
+};
 
 function init(){
 
@@ -681,8 +706,8 @@ Event.addListener(["link_forgot_password_from_login","tr_link_register_from_logi
 Event.addListener("link_register_from_login", "click", show_register_from_login);
 Event.addListener("link_register_from_forgot_password", "click", show_register_from_forgot_password);
 
-
-
+Event.addListener('login_password', "keydown", submit_form_on_enter);
+Event.addListener('register_email', "keydown", submit_register_form_on_enter);
 
 
 }

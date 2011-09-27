@@ -34,7 +34,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('customers_who_order_product'):
+     list_customers_who_order_product();
+   break;
 case('products_lists'):
     list_products_lists();
     break;
@@ -133,22 +135,22 @@ case('is_product_code'):
                          ));
     is_product_code($data);
     break;
-  case('is_product_name'):
+case('is_product_name'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                              'query'=>array('type'=>'string')
                          ));
     is_product_name($data);
-    break;  
-    
-    case('is_product_special_char'):
+    break;
+
+case('is_product_special_char'):
     $data=prepare_values($_REQUEST,array(
                              'family_key'=>array('type'=>'key'),
                              'query'=>array('type'=>'string')
                          ));
     is_product_special_char($data);
     break;
-    
+
 case('charges'):
     list_charges();
     break;
@@ -1789,9 +1791,9 @@ function list_products() {
         $list_key=$_REQUEST['list_key'];
     else
         $list_key=false;
-        
-        
-        
+
+
+
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
@@ -2029,9 +2031,6 @@ function list_products() {
 
                 $raw_data['store_key']=$store;
                 list($where,$table)=product_awhere($raw_data);
-
-
-
             }
 
         } else {
@@ -3072,7 +3071,7 @@ function list_products() {
 
             $web_state=$_web_state.' '.$formated_web_configuration;
 
-        break;
+            break;
         default:
             $web_state='?';
         }
@@ -3290,9 +3289,9 @@ function list_parts() {
 
 
     $elements=$conf['elements'];
-    
-   
-    
+
+
+
     if (isset( $_REQUEST['elements_Keeping'])) {
         $elements['Keeping']=$_REQUEST['elements_Keeping'];
     }
@@ -3303,7 +3302,7 @@ function list_parts() {
     if (isset( $_REQUEST['elements_Discontinued'])) {
         $elements['Discontinued']=$_REQUEST['elements_Discontinued'];
     }
-  if (isset( $_REQUEST['elements_LastStock'])) {
+    if (isset( $_REQUEST['elements_LastStock'])) {
         $elements['LastStock']=$_REQUEST['elements_LastStock'];
     }
 
@@ -3520,23 +3519,23 @@ function list_parts() {
         $order=' `Part 10 Day Acc Sold Amount` ';
     } else if ($order=='profit_sold') {
         if ($period=='all')
-            $order=' `Part Total Acc Profit When Sold` ';
+            $order=' `Part Total Acc Profit` ';
         elseif($period=='year')
-        $order=' `Part 1 Year Acc Profit When Sold` ';
+        $order=' `Part 1 Year Acc Profit` ';
         elseif($period=='quarter')
-        $order=' `Part 1 Quarter Acc Profit When Sold` ';
+        $order=' `Part 1 Quarter Acc Profit` ';
         elseif($period=='month')
-        $order=' `Part 1 Month Acc Profit When Sold` ';
+        $order=' `Part 1 Month Acc Profit` ';
         elseif($period=='week')
-        $order=' `Part 1 Week Acc Profit When Sold` ';
+        $order=' `Part 1 Week Acc Profit` ';
         elseif($period=='three_year')
-        $order=' `Part 3 Year Acc Profit When Sold` ';
+        $order=' `Part 3 Year Acc Profit` ';
         elseif($period=='yeartoday')
-        $order=' `Part YearToDay Acc Profit When Sold` ';
+        $order=' `Part YearToDay Acc Profit` ';
         elseif($period=='six_month')
-        $order=' `Part 6 Month Acc Profit When Sold` ';
+        $order=' `Part 6 Month Acc Profit` ';
         elseif($period=='ten_day')
-        $order=' `Part 10 Day Acc Profit When Sold` ';
+        $order=' `Part 10 Day Acc Profit` ';
     } else if ($order=='avg_stock') {
         if ($period=='all')
             $order=' `Part Total Acc AVG Stock` ';
@@ -3638,8 +3637,8 @@ function list_parts() {
                 $sold=number($data['Part Total Acc Sold']);
                 $given=number($data['Part Total Acc Given']);
                 $sold_amount=money($data['Part Total Acc Sold Amount']);
-                $abs_profit=money($data['Part Total Acc Absolute Profit']);
-                $profit_sold=money($data['Part Total Acc Profit When Sold']);
+                $abs_profit=money($data['Part Total Acc Profit']);
+                $profit_sold=money($data['Part Total Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3662,8 +3661,8 @@ function list_parts() {
                     $sold=number($data['Part Total Acc Sold']/$factor);
                     $given=number($data['Part Total Acc Given']/$factor);
                     $sold_amount=money($data['Part Total Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part Total Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part Total Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part Total Acc Profit']/$factor);
+                    $profit_sold=money($data['Part Total Acc Profit']/$factor);
                 }
             }
 
@@ -3685,8 +3684,8 @@ function list_parts() {
                 $sold=number($data['Part 3 Year Acc Sold']);
                 $given=number($data['Part 3 Year Acc Given']);
                 $sold_amount=money($data['Part 3 Year Acc Sold Amount']);
-                $abs_profit=money($data['Part 3 Year Acc Absolute Profit']);
-                $profit_sold=money($data['Part 3 Year Acc Profit When Sold']);
+                $abs_profit=money($data['Part 3 Year Acc Profit']);
+                $profit_sold=money($data['Part 3 Year Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3709,8 +3708,8 @@ function list_parts() {
                     $sold=number($data['Part 3 Year Acc Sold']/$factor);
                     $given=number($data['Part 3 Year Acc Given']/$factor);
                     $sold_amount=money($data['Part 3 Year Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 3 Year Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 3 Year Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 3 Year Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 3 Year Acc Profit']/$factor);
                 }
             }
 
@@ -3736,8 +3735,8 @@ function list_parts() {
                 $sold=number($data['Part 1 Year Acc Sold']);
                 $given=number($data['Part 1 Year Acc Given']);
                 $sold_amount=money($data['Part 1 Year Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Year Acc Absolute Profit']);
-                $profit_sold=money($data['Part 1 Year Acc Profit When Sold']);
+                $abs_profit=money($data['Part 1 Year Acc Profit']);
+                $profit_sold=money($data['Part 1 Year Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3760,8 +3759,8 @@ function list_parts() {
                     $sold=number($data['Part 1 Year Acc Sold']/$factor);
                     $given=number($data['Part 1 Year Acc Given']/$factor);
                     $sold_amount=money($data['Part 1 Year Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Year Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Year Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 1 Year Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 1 Year Acc Profit']/$factor);
                 }
             }
 
@@ -3787,8 +3786,8 @@ function list_parts() {
                 $sold=number($data['Part YearToDay Acc Sold']);
                 $given=number($data['Part YearToDay Acc Given']);
                 $sold_amount=money($data['Part YearToDay Acc Sold Amount']);
-                $abs_profit=money($data['Part YearToDay Acc Absolute Profit']);
-                $profit_sold=money($data['Part YearToDay Acc Profit When Sold']);
+                $abs_profit=money($data['Part YearToDay Acc Profit']);
+                $profit_sold=money($data['Part YearToDay Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3811,8 +3810,8 @@ function list_parts() {
                     $sold=number($data['Part YearToDay Acc Sold']/$factor);
                     $given=number($data['Part YearToDay Acc Given']/$factor);
                     $sold_amount=money($data['Part YearToDay Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part YearToDay Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part YearToDay Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part YearToDay Acc Profit']/$factor);
+                    $profit_sold=money($data['Part YearToDay Acc Profit']/$factor);
                 }
             }
 
@@ -3838,8 +3837,8 @@ function list_parts() {
                 $sold=number($data['Part 6 Month Acc Sold']);
                 $given=number($data['Part 6 Month Acc Given']);
                 $sold_amount=money($data['Part 6 Month Acc Sold Amount']);
-                $abs_profit=money($data['Part 6 Month Acc Absolute Profit']);
-                $profit_sold=money($data['Part 6 Month Acc Profit When Sold']);
+                $abs_profit=money($data['Part 6 Month Acc Profit']);
+                $profit_sold=money($data['Part 6 Month Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3862,8 +3861,8 @@ function list_parts() {
                     $sold=number($data['Part 6 Month Acc Sold']/$factor);
                     $given=number($data['Part 6 Month Acc Given']/$factor);
                     $sold_amount=money($data['Part 6 Month Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 6 Month Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 6 Month Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 6 Month Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 6 Month Acc Profit']/$factor);
                 }
             }
 
@@ -3889,8 +3888,8 @@ function list_parts() {
                 $sold=number($data['Part 1 Quarter Acc Sold']);
                 $given=number($data['Part 1 Quarter Acc Given']);
                 $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']);
-                $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']);
+                $abs_profit=money($data['Part 1 Quarter Acc Profit']);
+                $profit_sold=money($data['Part 1 Quarter Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3913,8 +3912,8 @@ function list_parts() {
                     $sold=number($data['Part 1 Quarter Acc Sold']/$factor);
                     $given=number($data['Part 1 Quarter Acc Given']/$factor);
                     $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 1 Quarter Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 1 Quarter Acc Profit']/$factor);
                 }
             }
 
@@ -3940,8 +3939,8 @@ function list_parts() {
                 $sold=number($data['Part 1 Month Acc Sold']);
                 $given=number($data['Part 1 Month Acc Given']);
                 $sold_amount=money($data['Part 1 Month Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Month Acc Absolute Profit']);
-                $profit_sold=money($data['Part 1 Month Acc Profit When Sold']);
+                $abs_profit=money($data['Part 1 Month Acc Profit']);
+                $profit_sold=money($data['Part 1 Month Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -3964,8 +3963,8 @@ function list_parts() {
                     $sold=number($data['Part 1 Month Acc Sold']/$factor);
                     $given=number($data['Part 1 Month Acc Given']/$factor);
                     $sold_amount=money($data['Part 1 Month Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Month Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Month Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 1 Month Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 1 Month Acc Profit']/$factor);
                 }
             }
 
@@ -3991,8 +3990,8 @@ function list_parts() {
                 $sold=number($data['Part 10 Day Acc Sold']);
                 $given=number($data['Part 10 Day Acc Given']);
                 $sold_amount=money($data['Part 10 Day Acc Sold Amount']);
-                $abs_profit=money($data['Part 10 Day Acc Absolute Profit']);
-                $profit_sold=money($data['Part 10 Day Acc Profit When Sold']);
+                $abs_profit=money($data['Part 10 Day Acc Profit']);
+                $profit_sold=money($data['Part 10 Day Acc Profit']);
             } else {
 
                 if ($avg=='month')
@@ -4015,8 +4014,8 @@ function list_parts() {
                     $sold=number($data['Part 10 Day Acc Sold']/$factor);
                     $given=number($data['Part 10 Day Acc Given']/$factor);
                     $sold_amount=money($data['Part 10 Day Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 10 Day Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 10 Day Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 10 Day Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 10 Day Acc Profit']/$factor);
                 }
             }
 
@@ -4042,8 +4041,8 @@ function list_parts() {
                 $sold=number($data['Part 1 Week Acc Sold']);
                 $given=number($data['Part 1 Week Acc Given']);
                 $sold_amount=money($data['Part 1 Week Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Week Acc Absolute Profit']);
-                $profit_sold=money($data['Part 1 Week Acc Profit When Sold']);
+                $abs_profit=money($data['Part 1 Week Acc Profit']);
+                $profit_sold=money($data['Part 1 Week Acc Profit']);
             } else {
 
                 if ($avg=='week')
@@ -4066,8 +4065,8 @@ function list_parts() {
                     $sold=number($data['Part 1 Week Acc Sold']/$factor);
                     $given=number($data['Part 1 Week Acc Given']/$factor);
                     $sold_amount=money($data['Part 1 Week Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Week Acc Absolute Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Week Acc Profit When Sold']/$factor);
+                    $abs_profit=money($data['Part 1 Week Acc Profit']/$factor);
+                    $profit_sold=money($data['Part 1 Week Acc Profit']/$factor);
                 }
             }
 
@@ -4398,20 +4397,20 @@ function list_families() {
 
 
 
-   if (isset( $_REQUEST['elements_family_discontinued'])) {
+    if (isset( $_REQUEST['elements_family_discontinued'])) {
         $elements['Discontinued']=$_REQUEST['elements_family_discontinued'];
     }
-       if (isset( $_REQUEST['elements_family_discontinuing'])) {
+    if (isset( $_REQUEST['elements_family_discontinuing'])) {
         $elements['Discontinuing']=$_REQUEST['elements_family_discontinuing'];
     }
-  if (isset( $_REQUEST['elements_family_normal'])) {
+    if (isset( $_REQUEST['elements_family_normal'])) {
         $elements['Normal']=$_REQUEST['elements_family_normal'];
     }
-     if (isset( $_REQUEST['elements_family_inprocess'])) {
+    if (isset( $_REQUEST['elements_family_inprocess'])) {
         $elements['InProcess']=$_REQUEST['elements_family_inprocess'];
     }
 
-  if (isset( $_REQUEST['elements_family_nosale'])) {
+    if (isset( $_REQUEST['elements_family_nosale'])) {
         $elements['NoSale']=$_REQUEST['elements_family_nosale'];
     }
 
@@ -4456,12 +4455,12 @@ function list_families() {
         $where.=sprintf(' and `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     default:
-		if (count($user->stores)==0)
-			$where="where false";
-		else {
+        if (count($user->stores)==0)
+            $where="where false";
+        else {
 
-			$where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
-		}
+            $where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
+        }
 
     }
 
@@ -5466,7 +5465,6 @@ function list_stores() {
         $order='`Store 1 Month Acc Invoiced Amount`';
         elseif($period=='week')
         $order='`Store 1 Week Acc Invoiced Amount`';
-
         elseif($period=='yeartoday')
         $order='`Store YearToDay Acc Invoiced Amount`';
         elseif($period=='three_year')
@@ -9885,7 +9883,18 @@ function part_transactions() {
 
 function part_stock_history() {
     $conf=$_SESSION['state']['part']['stock_history'];
-    $part_sku=$_SESSION['state']['part']['id'];
+    
+    
+    
+  
+    
+    
+      if (isset( $_REQUEST['part_sku']))
+        $part_sku=$_REQUEST['part_sku'];
+    else
+        $part_sku=$_SESSION['state']['part']['id'];
+    
+    
     if (isset( $_REQUEST['elements']))
         $elements=$_REQUEST['elements'];
     else
@@ -10566,5 +10575,188 @@ function is_product_special_char($data) {
 
 }
 
+
+function list_customers_who_order_product(){
+ $conf=$_SESSION['state']['product']['customers'];
+
+   if(isset( $_REQUEST['code'])){
+     $tag=$_REQUEST['code'];
+     $mode='code';
+   }else if(isset( $_REQUEST['id'])){
+     $tag=$_REQUEST['id'];
+     $mode='id';
+   }else if(isset( $_REQUEST['key'])){
+     $tag=$_REQUEST['key'];
+     $mode='key';
+   }else{
+     $tag=$_SESSION['state']['product']['tag'];
+     $mode=$_SESSION['state']['product']['mode'];
+   }
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+   
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'tag'=>$tag,'mode'=>$mode);
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+   $table='`Order Transaction Fact` OTF left join `Product History Dimension`  PD on (PD.`Product Key`=OTF.`Product Key`)  ';
+
+   if($mode=='code'){
+     $where=$where.sprintf(" and P.`Product Code`=%s ",prepare_mysql($tag));
+     $table='`Order Transaction Fact` OTF left join `Product History Dimension` PD  on (PD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)  ';
+
+   }elseif($mode=='pid')
+     $where=$where.sprintf(" and PD.`Product ID`=%d ",$tag);
+   elseif($mode=='key')
+     $where=$where.sprintf(" and PD.`Product Key`=%d ",$tag);
+
+
+   $wheref="";
+   
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+  elseif($f_field=='customer_name'  and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+   $sql="select count(distinct `Customer Key`) as total from  $table  $where $wheref";
+   // print $mode.' '.$sql;
+   $res = mysql_query($sql);
+   if($row=mysql_fetch_array($res)) {
+       $total=$row['total'];
+   }
+    mysql_free_result($res);
+   if($wheref==''){
+     $filtered=0;
+      $total_records=$total;
+   }else{
+     $sql="select count(distinct `Customer Key`) as total from  $table  $where      ";
+
+     $res = mysql_query($sql);
+     if($row=mysql_fetch_array($res)) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+     }
+      mysql_free_result($res);
+   }
+   $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+   
+
+   $filter_msg='';
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('public_id'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('public_id'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b>";
+       break;
+     }
+   }
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+  if($order=='dispatched')
+         $order='dispatched';
+ elseif($order=='orders')
+         $order='orders';
+          elseif($order=='charged')
+         $order='charged';
+          elseif($order=='to_dispatch')
+         $order='to_dispatch';
+          elseif($order=='dispatched')
+         $order='dispatched';
+          elseif($order=='nodispatched')
+         $order='nodispatched';
+  else
+     $order='`Customer Name`';
+
+
+   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as to_dispatch,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
+		);
+
+   $data=array();
+   
+  $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+     $data[]=array(
+		   'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
+		   'charged'=>money($row['charged']),
+		   'orders'=>number($row['orders']),
+		   'to_dispatch'=>number($row['to_dispatch']),
+		   'dispatched'=>number($row['dispatched']),
+		   'nodispatched'=>number($row['nodispatched'])
+
+		   );
+   }
+   mysql_free_result($res);
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
 
 ?>

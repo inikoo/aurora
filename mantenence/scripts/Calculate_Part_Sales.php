@@ -67,8 +67,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
   }
   */
-  $part->load('used in');
-  $part->load('supplied by');
+  $part->update_used_in();
+  $part->update_supplied_by();
   
   $part->update_picking_location();
   $part->update_main_state();
@@ -77,16 +77,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 //$part->update_last_period_sales();
   
 
-  
- // if(!isset($argv[1])){
-    
-  //  $part->load('stock');
-  //  $part->load('forecast');
 
- // }
 
-  //   $part->load('stock_history');
-  //   $part->load('future costs');
+  //   $part->update_stock_history();
+  //   $part->update_future_costs();
   print $row['Part SKU']."\r";
   
   

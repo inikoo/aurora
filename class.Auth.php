@@ -40,6 +40,7 @@ class Auth {
     function authenticate($handle=false,$sk=false,$page=false,$page_key='f0') {
 
         $this->log_page=$page;
+	
         switch ($this->log_page) {
         case 'staff':
             $this->user_type="'Administrator','Staff','Warehouse'";
@@ -191,13 +192,10 @@ class Auth {
         $this->authentication_type='masterkey';
 
 
-
-
-
-        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s and U.`User Key`=%d   ",
+        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
                      prepare_mysql($data),
-                     prepare_mysql(date('Y-m-d H:i:s')),
-                     $user_key
+                     prepare_mysql(date('Y-m-d H:i:s'))
+                   
                     );
 
        
@@ -207,7 +205,7 @@ class Auth {
     
      
      $this->status=true;
-            $this->user_key=$user_key;
+            $this->user_key=$row['User Key'];
 
 
             $this->user_parent_key=$row['User Parent Key'];

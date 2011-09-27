@@ -857,6 +857,9 @@ $default_state=array(
                                           'supplier_key'=>0,
                                           'supplier_code'=>'',
                                           'editing'=>'prices',
+                                          'supplier_product_key'=>0,
+                                          'block_view'=>'details',
+                                           'show_stock_history_chart'=>1,  
                                           'porders'=>array(
                                                         'order'=>'date',
                                                         'view'=>'general',
@@ -2680,6 +2683,15 @@ $default_state=array(
                                                 'sf'=>0,
                                                 'nr'=>25,
                                             ),
+                                               'pages'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'code',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'code',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                        ),
 
                                 ),
                    'family'=>array(
@@ -2960,6 +2972,7 @@ $default_state=array(
                               'id'=>1,
                               'edit'=>'description',
                               'view'=>'description',
+                               'show_stock_history_chart'=>1,  
 
                               'history'=>array(
                                             'order'=>'date',
@@ -3534,11 +3547,12 @@ $default_state=array(
                                   'action_after_create'=>'continue',
                                   'plot'=>'sales_month',
                                   'orders_view'=>'pos',
+                                  'block_view'=>'products',
                                   'id'=>1,
                                   'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
                                   'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
-                                  'products'=>array(
-                                                 'view'=>'product_general',
+                                  'supplier_products'=>array(
+                                                 'view'=>'general',
                                                  'percentage'=>0,
                                                  'period'=>'year',
                                                  'order'=>'code',

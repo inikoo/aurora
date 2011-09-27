@@ -16,8 +16,8 @@ var info_period_title={<?php echo $title ?>};
 var current_store_period='<?php echo $_SESSION['state']['family']['products']['period']?>';
 
 function change_block(){
-ids=['details','customers','orders','timeline','sales'];
-block_ids=['block_details','block_customers','block_orders','block_timeline','block_sales'];
+ids=['details','customers','orders','timeline','sales', 'web_site'];
+block_ids=['block_details','block_customers','block_orders','block_timeline','block_sales', 'block_web_site'];
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
@@ -161,8 +161,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					];
 		    
 		      
-		      this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=withcustomerproduct&tableid="+tableid);
-		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=customers_who_order_product&product_pid="+Dom.get('product_pid').value+"&tableid="+tableid);
+		 this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      this.dataSource1.responseSchema = {
 			  resultsList: "resultset.data", 
@@ -302,7 +302,7 @@ var manual_check=function(){
 function init(){
  init_search('products_store');
 
-    Event.addListener(['details','customers','orders','timeline','sales'], "click",change_block);
+    Event.addListener(['details','customers','orders','timeline','sales', 'web_site'], "click",change_block);
 
 
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

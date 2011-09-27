@@ -5,16 +5,16 @@ td {text-align:left}
 
 .hide{visibility:hidden}
 
-h1 {font-size:160%}
+
 th,td {padding:.2em;}
 th {font-weight:bold;text-align:center;}
 p,fieldset,table,pre {margin-bottom:1em;}
 input.time_input,input.date_input,input.text,input.password,input.file ,textarea{border:1px solid #777}
 
 h1,h2,h3,h4{padding:5px 0px}
-h1 {font-size:160%}
+h1 {font-size:140%}
 h1 a.next,h1 a.prev{position:relative;bottom:0.5em}
-h2 {font-size:135%;margin-bottom:0px}
+h2 {font-size:125%;margin-bottom:0px}
 
 a,table,button{outline: none;}
 a {text-decoration:none;color:#222}

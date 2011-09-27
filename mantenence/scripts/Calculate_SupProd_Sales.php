@@ -38,15 +38,17 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Supplier Product Dimension`";
+$sql="select * from `Supplier Product Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sp=new SupplierProduct('pid',$row['Supplier Product Key']);
-  $sp->load('used in');
-  $sp->load('current_key_sales');
-  $sp->load('sales');
+ 
+ $sp->update_sold_as();
+  $sp->update_store_as();
 
-  print $row['Supplier Product Current Key']."\r";
+
+
+  print $row['Supplier Product Key']."\r";
  }
 
 

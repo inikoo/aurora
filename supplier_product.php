@@ -19,6 +19,7 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		  $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',
@@ -35,6 +36,8 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js',
+		'external_libs/amstock/amstock/swfobject.js',
+		'js/search.js',
 		'js/table_common.js',
 		);
 
@@ -64,11 +67,20 @@ $_SESSION['state']['supplier_product']['id']=$supplier_product->id;
 
 
 
+$smarty->assign('show_stock_history_chart',$_SESSION['state']['supplier_product']['show_stock_history_chart']);
+$smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
+
+
 $modify=$user->can_edit('suppliers');
 $general_options_list=array();
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Product'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Supplier Product'));
 $smarty->assign('general_options_list',$general_options_list);
+
+
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','supplier_products');
+$smarty->assign('block_view',$_SESSION['state']['supplier_product']['block_view']);
 
 
 $smarty->assign('supplier_product',$supplier_product);
@@ -90,6 +102,23 @@ $smarty->assign('js_files',$js_files);
 //$parts=$product_suppliir->get_parts();
 
 
+$part_skus=$supplier_product->get_part_skus();
+
+
+$part_sku=false;
+if($supplier_product->data['Supplier Product Part Convertion']=='1:1'){
+$part_sku=array_pop($part_skus);
+$smarty->assign('part_sku',$part_sku);
+
+}
+
+
+$supplier_product->load_images_slidesshow();
+$images=$supplier_product->images_slideshow;
+$smarty->assign('div_img_width',190);
+$smarty->assign('img_width',190);
+$smarty->assign('images',$images);
+$smarty->assign('num_images',count($images));
 
 $smarty->display('supplier_product.tpl');
 

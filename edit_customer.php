@@ -44,6 +44,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
+//print_r($customer);
 
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
@@ -108,6 +109,8 @@ $js_files=array(
               'edit_delivery_address_common.js.php',
               'js/edit_common.js',
               'js/validate_telecom.js',
+			  'js/aes.js',
+			  'js/sha256.js'
          
               // 'customer.js.php?id='.$customer->id
           );
@@ -124,26 +127,52 @@ $smarty->assign('customer',$customer);
 
 
 $other_email=$customer->get_other_emails_data();
-//print_r($email);
+
 $registered_email=array();
 $unregistered_email=array();
 
 foreach($other_email as $email){
 	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
-	//print $sql;
+
 	$result=mysql_query($sql);
-	if(mysql_num_rows($result)){
-		$registered_email[]=$email['email'];
-	}
-	else
-		$unregistered_email[]=$email['email'];
+
+	if($row=mysql_fetch_array($result)){
+		$rnd=md5(rand()); 
+		$epwcp1=sprintf("%sinsecure_key%s",$row['User Key'],$rnd);
+		$registered_email[]=array('email'=>$email['email'],									
+									'epwcp1'=>$epwcp1,
+									'epwcp2'=>$rnd,
+									'user_key'=>$row['User Key']
+							);
+	
+	}	else
+		$unregistered_email[]=array('email'=>$email['email']								
+									//'epwcp1'=>$epwcp1,
+									//'epwcp2'=>$rnd
+							);
 	
 }
+
+$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $customer->get('Customer Main Plain Email'));
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result)){
+	$rnd=md5(rand()); 
+	$epwcp1=sprintf("%sinsecure_key%s",$row['User Key'],$rnd);
+	$main_email=array('email'=>$customer->get('Customer Main Plain Email'),									
+						'epwcp1'=>$epwcp1,
+						'epwcp2'=>$rnd,
+						'user_key'=>$row['User Key']
+								);
+}
+							
+
 
 //print_r($registered_email);
 //print_r($unregistered_email);
 $smarty->assign('registered_email',$registered_email);
 $smarty->assign('unregistered_email',$unregistered_email);
+$smarty->assign('main_email',$main_email);
+
 
 $general_options_list=array();
 

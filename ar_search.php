@@ -34,8 +34,8 @@ case('search'):
     break;
 case('products'):
     $data=prepare_values($_REQUEST,array(
-                             'q'=>array('type'=>'string')
-                                 ,'scope'=>array('type'=>'string')
+                             'q'=>array('type'=>'string'),
+                             'scope'=>array('type'=>'string')
                          ));
 
     if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
@@ -44,6 +44,19 @@ case('products'):
     $data['user']=$user;
     search_products($data);
     break;
+case('supplier_products'):
+    $data=prepare_values($_REQUEST,array(
+                             'q'=>array('type'=>'string'),
+                             'scope'=>array('type'=>'string')
+                         ));
+
+    if ($data['scope']=='supplier' and isset($_REQUEST['supplier_id'])) {
+        $data['supplier_id']=$_REQUEST['supplier_id'];
+    }
+    $data['user']=$user;
+    search_supplier_products($data);
+    break;    
+    
 case('part'):
 case('parts'):
 
@@ -117,10 +130,10 @@ case('search_field'):
                              'store_id'=>array('type'=>'key'),
                              'scope'=>array('type'=>'string')
                          ));
-	$data['user']=$user;
+    $data['user']=$user;
     search_field($data);
-    break;	
-	
+    break;
+
 default:
     $response=array('state'=>404,'resp'=>"Operation not found $tipo");
     echo json_encode($response);
@@ -574,20 +587,16 @@ function search_orders($data) {
     } else
         $stores=join(',',$user->stores);
 
-    $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 10",$stores,addslashes($q));
-    // print $sql;
+
+
+
+
+
+    $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 100",$stores,addslashes($q));
+   
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-        if ($row['Order Public ID']==$q) {
-            $candidates[$row['Order Key']]=110;
-            $candidates_data[$row['Order Key']]=array(
-                                                    'store'=>$row['Store Code'],
-                                                    'public_id'=>$row['Order Public ID'],
-                                                    'state'=>$row['Order Current XHTML State'],
-                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-                                                    'customer'=>$row['Order Customer Name']
-                                                );
-        } else {
+   
             $candidates[$row['Order Key']]=100;
             $candidates_data[$row['Order Key']]=array(
                                                     'store'=>$row['Store Code'],
@@ -597,11 +606,29 @@ function search_orders($data) {
                                                     'customer'=>$row['Order Customer Name']
                                                 );
 
-        }
+     
 
     }
 
+ $sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID`=%s ",$stores,prepare_mysql($q));
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+      
+            $candidates[$row['Order Key']]=110;
+            $candidates_data[$row['Order Key']]=array(
+                                                    'store'=>$row['Store Code'],
+                                                    'public_id'=>$row['Order Public ID'],
+                                                    'state'=>$row['Order Current XHTML State'],
+                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                    'customer'=>$row['Order Customer Name']
+                                                );
+      
+    }
+
+
+
     arsort($candidates);
+   
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {
@@ -795,7 +822,7 @@ function search_customer($data) {
 
     }
 
- $sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  like "%s%%"  limit 20',$stores,$q);
+    $sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  like "%s%%"  limit 20',$stores,$q);
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if ($row['Contact Name']==$q) {
@@ -847,8 +874,8 @@ function search_customer($data) {
     }
 
 
-     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
-   // $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
+    $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
+    // $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
 
     //print $sql;
     $res=mysql_query($sql);
@@ -871,9 +898,9 @@ function search_customer($data) {
 //print_r($candidates);
 
     arsort($candidates);
-	
+
 //print_r($candidates);
-	
+
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {
@@ -1006,10 +1033,10 @@ function search_locations($data) {
 
 
 
-$q_sku=false;
-      if (preg_match('/sku\d+/i',$q)) {
+    $q_sku=false;
+    if (preg_match('/sku\d+/i',$q)) {
         $q_sku=preg_replace('/^sku/i','',$q);
-      }
+    }
 
 
 
@@ -1027,13 +1054,13 @@ $q_sku=false;
 
 
 
-  if (is_numeric($q)) {
+    if (is_numeric($q)) {
 
         $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part XHTML Description`,`Part Currently Used In`  from     `Part Dimension`    P     left join   `Part Location Dimension`  PL  on (P.`Part SKU`=PL.`Part SKU`)   left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%d ',
-        $warehouses,
-        $q
-       );
-      // print $sql;
+                     $warehouses,
+                     $q
+                    );
+        // print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             if ($number_results>$max_results)
@@ -1048,9 +1075,9 @@ $q_sku=false;
     if ($q_sku and $q_sku!=$q) {
 
         $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part XHTML Description`,`Part Currently Used In`  from `Part Location Dimension`  PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%d ',
-        $warehouses,
-        $q_sku
-       );
+                     $warehouses,
+                     $q_sku
+                    );
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             if ($number_results>$max_results)
@@ -1062,16 +1089,16 @@ $q_sku=false;
     }
 
 
-    $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part XHTML Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code` 
-    from `Part Location Dimension` PL 
-    left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) 
-    left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) 
-    left join `Product Part List` PPL on (PPL.`Part SKU`=P.`Part SKU`) 
-    left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) 
-    left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) 
-    left join `Store Dimension` on (`Product Store Key`=`Store Key`) 
-    left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) 
-    where `Product Part Most Recent`="Yes" and `Location Warehouse Key` in (%s) and PD.`Product Code` like "%s%%" group by PL.`Location Key`',$warehouses,addslashes($q));
+    $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part XHTML Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code`
+                 from `Part Location Dimension` PL
+                 left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`)
+                 left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`)
+                 left join `Product Part List` PPL on (PPL.`Part SKU`=P.`Part SKU`)
+                 left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)
+                 left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`)
+                 left join `Store Dimension` on (`Product Store Key`=`Store Key`)
+                 left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`)
+                 where `Product Part Most Recent`="Yes" and `Location Warehouse Key` in (%s) and PD.`Product Code` like "%s%%" group by PL.`Location Key`',$warehouses,addslashes($q));
 
 //print $sql;
     $res=mysql_query($sql);
@@ -1335,10 +1362,10 @@ function search_parts($data) {
         }
     }
     /*
-    
+
     $sql=sprintf("select `Part XHTML Description`,`Part SKU`,`Part Unit Description`, match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Part Dimension` where match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) limit 20",addslashes($q),addslashes($q));;
 
-// print $sql;
+    // print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
 
@@ -1346,40 +1373,40 @@ function search_parts($data) {
         $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
 
     }
-*/
-    
-      $sql=sprintf('select `Part XHTML Currently Used In`,`Part XHTML Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
+    */
 
-     $res=mysql_query($sql);
-      while($row=mysql_fetch_array($res)){
+    $sql=sprintf('select `Part XHTML Currently Used In`,`Part XHTML Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
 
-          $candidates[$row['Part SKU']]=100;
-            $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>strip_tags($row['Part XHTML Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
 
-      }
-      
-      
-      
-/*
+        $candidates[$row['Part SKU']]=100;
+        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>strip_tags($row['Part XHTML Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
-      $qs=preg_split('/\s+|\,/',$q);
-      if(count($sq>1)){
-        foreach($qs as $q){
-         $sql=sprintf('select `Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
+    }
 
-     $res=mysql_query($sql);
-      while($row=mysql_fetch_array($res)){
 
-          $candidates[$row['Part SKU']]=100;
-          $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description']);
 
-      }
+    /*
 
-        }
+          $qs=preg_split('/\s+|\,/',$q);
+          if(count($sq>1)){
+            foreach($qs as $q){
+             $sql=sprintf('select `Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
 
-      }
+         $res=mysql_query($sql);
+          while($row=mysql_fetch_array($res)){
 
-      */
+              $candidates[$row['Part SKU']]=100;
+              $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description']);
+
+          }
+
+            }
+
+          }
+
+          */
 
 
     arsort($candidates);
@@ -1586,12 +1613,12 @@ function search_full_text($data) {
 
 }
 
-function search_field($data){
-	//print 'here';
-	global $user;
-	//print_r($data);
-	$values=$data['values'];
-	//print_r($values);
+function search_field($data) {
+    //print 'here';
+    global $user;
+    //print_r($data);
+    $values=$data['values'];
+    //print_r($values);
 
 
     $max_results=10;
@@ -1601,32 +1628,32 @@ function search_field($data){
     // $q=_trim($_REQUEST['q']);
 
     if ($q=='') {
-	$total=0;
-	$rtext=$total." ".ngettext('Customer','Customers',$total);
-	$number_results=20;
-	if ($total>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=_('(Showing all)');
-	$response=array('resultset'=>
-						array('state'=>200,
-							  'data'=>'',
-							  'sort_key'=>'',
-							  'sort_dir'=>'',
-							  'tableid'=>5,
-							  'filter_msg'=>'',
-							  'total_records'=>0,
-							  'records_offset'=>0,
-							  'records_returned'=>0,
-							  'records_perpage'=>$number_results,
-							  // 'records_text'=>$rtext,
-							  // 'records_order'=>$order,
-							  // 'records_order_dir'=>$order_dir,
-							  // 'filtered'=>$filtered,
-							  'rtext'=>$rtext,
-							  'rtext_rpp'=>$rtext_rpp
-							 )
-		   );
+        $total=0;
+        $rtext=$total." ".ngettext('Customer','Customers',$total);
+        $number_results=20;
+        if ($total>$number_results)
+            $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+        else
+            $rtext_rpp=_('(Showing all)');
+        $response=array('resultset'=>
+                                    array('state'=>200,
+                                          'data'=>'',
+                                          'sort_key'=>'',
+                                          'sort_dir'=>'',
+                                          'tableid'=>5,
+                                          'filter_msg'=>'',
+                                          'total_records'=>0,
+                                          'records_offset'=>0,
+                                          'records_returned'=>0,
+                                          'records_perpage'=>$number_results,
+                                          // 'records_text'=>$rtext,
+                                          // 'records_order'=>$order,
+                                          // 'records_order_dir'=>$order_dir,
+                                          // 'filtered'=>$filtered,
+                                          'rtext'=>$rtext,
+                                          'rtext_rpp'=>$rtext_rpp
+                                         )
+                       );
         echo json_encode($response);
         return;
     }
@@ -1781,7 +1808,7 @@ function search_field($data){
 
     }
 
- $sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  like "%s%%"  limit 20',$stores,$q);
+    $sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  like "%s%%"  limit 20',$stores,$q);
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         if ($row['Contact Name']==$q) {
@@ -1833,8 +1860,8 @@ function search_field($data){
     }
 
 
-     $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
-   // $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
+    $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
+    // $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
 
     //print $sql;
     $res=mysql_query($sql);
@@ -1857,38 +1884,38 @@ function search_field($data){
 //print_r($candidates);
 
     arsort($candidates);
-	
+
 //print_r($candidates);
-	
+
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {
-	$total=0;
-	$rtext=$total." ".ngettext('Customer','Customers',$total);
-	$number_results=20;
-	if ($total>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=_('(Showing all)');
-	$response=array('resultset'=>
-						array('state'=>200,
-							  'data'=>'',
-							  'sort_key'=>'',
-							  'sort_dir'=>'',
-							  'tableid'=>5,
-							  'filter_msg'=>'',
-							  'total_records'=>0,
-							  'records_offset'=>0,
-							  'records_returned'=>0,
-							  'records_perpage'=>$number_results,
-							  // 'records_text'=>$rtext,
-							  // 'records_order'=>$order,
-							  // 'records_order_dir'=>$order_dir,
-							  // 'filtered'=>$filtered,
-							  'rtext'=>$rtext,
-							  'rtext_rpp'=>$rtext_rpp
-							 )
-		   );
+        $total=0;
+        $rtext=$total." ".ngettext('Customer','Customers',$total);
+        $number_results=20;
+        if ($total>$number_results)
+            $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+        else
+            $rtext_rpp=_('(Showing all)');
+        $response=array('resultset'=>
+                                    array('state'=>200,
+                                          'data'=>'',
+                                          'sort_key'=>'',
+                                          'sort_dir'=>'',
+                                          'tableid'=>5,
+                                          'filter_msg'=>'',
+                                          'total_records'=>0,
+                                          'records_offset'=>0,
+                                          'records_returned'=>0,
+                                          'records_perpage'=>$number_results,
+                                          // 'records_text'=>$rtext,
+                                          // 'records_order'=>$order,
+                                          // 'records_order_dir'=>$order_dir,
+                                          // 'filtered'=>$filtered,
+                                          'rtext'=>$rtext,
+                                          'rtext_rpp'=>$rtext_rpp
+                                         )
+                       );
         echo json_encode($response);
         return;
     }
@@ -1915,7 +1942,7 @@ function search_field($data){
 
 
     //   $customer_card='<table>';
-	$adata=array();
+    $adata=array();
     while ($row=mysql_fetch_array($res)) {
 
 
@@ -1936,38 +1963,38 @@ function search_field($data){
         $adata[]=array('store'=>$row['Store Code'],'key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
     }
 //$customer_card.='</table>';
-	    
-		/*
-		$adata=array();
-        $adata[]=array(
 
-                     'store'=>'sdf',
-                     'name'=>'dsfsdf',
-                     'key'=>'sfdsf',
-                     'address'=>'xxxxxxxxx'
-                 );
-			   $adata[]=array(
+    /*
+    $adata=array();
+    $adata[]=array(
 
-                     'store'=>'sdf',
-                     'name'=>'dsfsdf',
-                     'key'=>'sfdsf',
-                     'address'=>'xxxxxxxxx'
-                 );	 
-			*/	 
+                 'store'=>'sdf',
+                 'name'=>'dsfsdf',
+                 'key'=>'sfdsf',
+                 'address'=>'xxxxxxxxx'
+             );
+    	   $adata[]=array(
+
+                 'store'=>'sdf',
+                 'name'=>'dsfsdf',
+                 'key'=>'sfdsf',
+                 'address'=>'xxxxxxxxx'
+             );
+    	*/
     //$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'customer.php?id=','q'=>$q);
-	$_order='';
-	$_dir='';
-	$tableid=5;
-	$filter_msg='';
-	$total=$total_candidates;
-	$start_from=0;
-	$number_results=20;
-	$rtext=$total." ".ngettext('Customer','Customers',$total);
-	if ($total>$number_results)
+    $_order='';
+    $_dir='';
+    $tableid=5;
+    $filter_msg='';
+    $total=$total_candidates;
+    $start_from=0;
+    $number_results=20;
+    $rtext=$total." ".ngettext('Customer','Customers',$total);
+    if ($total>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
         $rtext_rpp=_('(Showing all)');
-		
+
     $response=array('resultset'=>
                                 array('state'=>200,
                                       'data'=>$adata,
@@ -1988,8 +2015,205 @@ function search_field($data){
                                      )
                    );
 
-    echo json_encode($response);	
-	
+    echo json_encode($response);
+
+}
+
+
+function search_supplier_products($data) {
+    $the_results=array();
+
+    $max_results=10;
+    $user=$data['user'];
+    $q=$data['q'];
+
+
+    if ($q=='') {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+        return;
+    }
+
+
+
+    if ($data['scope']=='supplier') {
+      $suppliers_where=sprintf(' `Supplier Key`=%d ',$data['supplier_id']);
+     //if (in_array($data['supplier_id'],$user->suppliers))
+     //       $suppliers=$data['suppleir_id'];
+     //   else
+      //      $suppliers=0;
+
+    } else{
+        $suppliers=join(',',$user->suppliers);
+ $suppliers_where=' true ';
+}
+
+
+ 
+  
+    
+    $extra_q='';
+    $array_q=preg_split('/\s/',$q);
+    if (count($array_q>1)) {
+        $q=array_shift($array_q);
+        $extra_q=join(' ',$array_q);
+
+    }
+
+    $found_supplier=false;
+
+    $candidates=array();
+    
+    
+    if($data['scope']!='supplier'){
+    
+    $sql=sprintf('select `Supplier Key`,`Supplier Code` from `Supplier Dimension` where  `Supplier Code` like "%s%%" limit 100 ',
+    addslashes($q));
+//print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if (strtolower($row['Supplier Code'])==strtolower($q)) {
+            $candidates['S '.$row['Supplier Key']]=210;
+            $found_supplier=$row['Supplier Key'];
+
+        } else {
+
+            $len_name=strlen($row['Supplier Code']);
+            $len_q=strlen($q);
+            $factor=$len_q/$len_name;
+            $candidates['S '.$row['Supplier Key']]=200*$factor;
+        }
+    }
+    }
+    
+    //print $extra_q;
+    if ($found_supplier) {
+        if ($extra_q) {
+
+            $sql=sprintf("SELECT `Supplier Product Key`, MATCH(`Supplier Product Name) AGAINST (%s) as Relevance FROM `Supplier Product Dimension` WHERE  `Supplier Key`=%d  and MATCH
+                         (`Product Name`) AGAINST(%s IN
+                         BOOLEAN MODE) HAVING Relevance > 0.2 ORDER
+                         BY Relevance DESC",
+                         prepare_mysql($extra_q),
+                         $found_supplier,
+                         prepare_mysql('+'.join(' +',$array_q)));
+
+            //$sql=sprintf('select damlevlim256(UPPER(%s),UPPER(`Product Name`),100) as dist , `Product ID`,`Product Name` from `Product Dimension` where `Product Family Key`=%d order by damlevlim256(UPPER(%s),UPPER(`Product Name`),100)  limit 6 ',prepare_mysql($extra_q),$found_supplier,prepare_mysql($extra_q));
+            //print $sql;
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+
+                $candidates['P '.$row['Supplier Product Key']]=$row['Relevance'];
+            }
+        }
+
+
+
+
+    } else {
+
+
+        $sql=sprintf('select `Supplier Product Key`,`Supplier Product Code` from `Supplier Product Dimension` where %s  and `Supplier Product Code` like "%s%%" limit 100 ',
+        $suppliers_where,
+        addslashes($q));
+      //  print $sql;
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            if ($row['Supplier Product Code']==$q)
+                $candidates['P '.$row['Supplier Product Key']]=110;
+            else {
+
+                $len_name=strlen($row['Supplier Product Code']);
+                $len_q=strlen($q);
+                $factor=$len_q/$len_name;
+                $candidates['P '.$row['Supplier Product Key']]=100*$factor;
+            }
+        }
+    }
+
+
+    arsort($candidates);
+// $candidates=array_reverse($candidates);
+//print_r($candidates);
+    $total_candidates=count($candidates);
+
+    if ($total_candidates==0) {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+        return;
+    }
+
+
+    $counter=0;
+    $customer_keys='';
+
+    $results=array();
+    $supplier_keys='';
+    $products_keys='';
+
+    foreach($candidates as $key=>$val) {
+        $_key=preg_split('/ /',$key);
+        if ($_key[0]=='S') {
+            $supplier_keys.=','.$_key[1];
+            $results[$key]='';
+        } else {
+            $products_keys.=','.$_key[1];
+            $results[$key]='';
+
+        }
+
+        $counter++;
+
+        if ($counter>$max_results)
+            break;
+    }
+    $supplier_keys=preg_replace('/^,/','',$supplier_keys);
+    $products_keys=preg_replace('/^,/','',$products_keys);
+
+    if ($supplier_keys) {
+        $sql=sprintf("select `Supplier Key`,`Supplier Name`,`Supplier Code`  from `Supplier Dimension` where `Supplier Key` in (%s)",$supplier_keys);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $image='';
+            $results['S '.$row['Supplier Key']]=array('image'=>$image,'code'=>$row['Supplier Code'],'description'=>$row['Supplier Name'],'link'=>'supplier.php?id=','key'=>$row['Supplier Key']);
+        }
+    }
+
+    if ($products_keys) {
+        $sql=sprintf("select `Supplier Code`,`Supplier Product Key`,`Supplier Product Name`,`Supplier Product Code`  from `Supplier Product Dimension`   where `Supplier Product Key` in (%s) ",$products_keys);
+        //   print $sql;
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $image='';
+            //if ($row['Supplier Product Main Image']!='art/nopic.png')
+             //   $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Supplier Product Main Image']));
+            
+            $description=$row['Supplier Product Name'].' (<b>'.$row['Supplier Code'].'</b>)';
+            
+            $results['P '.$row['Supplier Product Key']]=array('image'=>$image,'code'=>$row['Supplier Product Code'],'description'=>$description,'link'=>'supplier_product.php?pid=','key'=>$row['Supplier Product Key']);
+        }
+    }
+
+
+
+   
+
+
+    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
+    echo json_encode($response);
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
