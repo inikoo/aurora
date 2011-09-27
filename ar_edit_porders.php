@@ -571,7 +571,7 @@ function dn_transactions_to_process() {
 
 
 
-    $sql="select  `Supplier Product XHTML Used In` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select  `Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -606,7 +606,7 @@ function dn_transactions_to_process() {
                      'id'=>$row['Purchase Order Transaction Fact Key'],
                      'code'=>$row['Supplier Product Code'],
                      'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' '.$cost.' '.$row['Supplier Product Unit Type'].'</span>',
-                     'used_in'=>$row['Supplier Product XHTML Used In'],
+                     'used_in'=>$row['Supplier Product XHTML Sold As'],
                      'quantity'=>$row['Purchase Order Quantity'],
                      'quantity_static'=>number($row['Purchase Order Quantity']),
                      'dn_quantity'=>$row['Supplier Delivery Note Quantity'],
@@ -776,7 +776,7 @@ function po_transactions_to_process() {
     if ($f_field=='code' and $f_value!='')
         $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
     elseif($f_field=='p.code' and $f_value!='')
-    $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
+    $wheref.=" and  `Supplier Product XHTML Sold As` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $table   $where $wheref   ";
 
@@ -850,7 +850,7 @@ function po_transactions_to_process() {
 
 
 
-    $sql="select  `SPH Units Per Case`,`Supplier Product XHTML Used In` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select  `SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -871,7 +871,7 @@ function po_transactions_to_process() {
                      'id'=>$row['Supplier Product Current Key'],
                      'code'=>$row['Supplier Product Code'],
                      'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']).' '.$row['Supplier Product Unit Type'].'</span>',
-                     'used_in'=>$row['Supplier Product XHTML Used In'],
+                     'used_in'=>$row['Supplier Product XHTML Sold As'],
                      'quantity'=>$row['Purchase Order Quantity'],
                      'quantity_static'=>number($row['Purchase Order Quantity']),
                      'amount'=>$amount,
@@ -925,7 +925,7 @@ function edit_new_porder() {
 
         $supplier_product=new SupplierProduct('key',$supplier_product_key);
 
-        $gross=$quantity*$supplier_product->data['Supplier Product Cost Per Case'];
+        $gross=$quantity*$supplier_product->data['SPH Case Cost'];
 
 
         $data=array(
@@ -1392,7 +1392,7 @@ function dn_transactions_to_count() {
 
 
 
-    $sql="select  `Supplier Product XHTML Used In` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select  `Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -1423,7 +1423,7 @@ function dn_transactions_to_count() {
                      'id'=>$row['Purchase Order Transaction Fact Key'],
                      'code'=>$row['Supplier Product Code'],
                      'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span>',
-                     'used_in'=>$row['Supplier Product XHTML Used In'],
+                     'used_in'=>$row['Supplier Product XHTML Sold As'],
                      'received_quantity'=>$row['Supplier Delivery Note Received Quantity'],
                      'damaged_quantity'=>$row['Supplier Delivery Note Damaged Quantity'],
                      'notes_damaged'=>$notes,
@@ -1624,7 +1624,7 @@ function dn_transactions_to_stock() {
 
 
 
-    $sql="select `Purchase Order Transaction Fact Key`,`Supplier Delivery Note Received Location Key`,`Quantity On Hand`,  `Part XHTML Currently Used In`,`Supplier Product Code`,`Part XHTML Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Used In`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Name`,`Supplier Delivery Note Received Quantity` 
+    $sql="select `Purchase Order Transaction Fact Key`,`Supplier Delivery Note Received Location Key`,`Quantity On Hand`,  `Part XHTML Currently Used In`,`Supplier Product Code`,`Part XHTML Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Sold As`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Name`,`Supplier Delivery Note Received Quantity` 
     
     from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
@@ -1669,7 +1669,7 @@ function dn_transactions_to_stock() {
                      //	  'id'=>$row['Supplier Product Current Key'],
                      'code'=>$row['Supplier Product Code'],
                      'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span>',
-                     'used_in'=>$row['Supplier Product XHTML Used In'],
+                     'used_in'=>$row['Supplier Product XHTML Sold As'],
                      'to_stock_quantity'=>$qty,
                      'sku'=>sprintf("<a href='part.php?id=%d'>SKU%05d</a>",$row['Part SKU'],$row['Part SKU']),
                      'sku_name'=>$row['Part XHTML Description'].'<br/>'.$row['Part XHTML Currently Used In'],

@@ -955,7 +955,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                          'Supplier Key'=>$supplier->id,
                          'Supplier Product Status'=>'Not In Use',
                          'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
+                         'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
                          'Supplier Product Description'=>$description,
                          'Supplier Product Valid From'=>$date_order,
@@ -1436,8 +1436,8 @@ function update_data($to_update) {
             $department->update_sales_default_currency();
 
   $department->update_customers();
-  $department->load('sales');
-  $department->load('products_info');
+  $department->update_sales_data();
+  $department->update_product_data();
   $department->update_families();
         
         if (false) {

@@ -29,6 +29,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('page_list'):
+    page_list();
+    break;
 case('deal_list'):
     deal_list();
     break;
@@ -1552,5 +1555,180 @@ function deal_list() {
                                      )
                    );
 
+    echo json_encode($response);
+}
+
+
+
+function page_list() {
+
+
+ $site_key=$_REQUEST['site_key'];
+
+
+ if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+    if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+    else$store_key='';
+    
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+    
+    
+
+
+
+
+    // print_r($_SESSION['tables']['families_list']);
+
+    //  print_r($_SESSION['tables']['families_list']);
+
+    $where=sprintf(' where `Page Type`="Store" and `Page Site Key`=%d ',$site_key);
+   
+
+    $filter_msg='';
+    $wheref='';
+   
+if($f_field=='code' and $f_value!='')
+    $wheref.=" and  `Page Code` like '".addslashes($f_value)."%'";
+if($f_field=='header' and $f_value!='')
+    $wheref.=" and  `Page Store Title` like '%".addslashes($f_value)."%'";
+
+
+
+
+
+
+
+    $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
+   
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   $where ";
+ 
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('page','pages',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with this name ")." <b>".$f_value."*</b> ";
+            break;
+        case('description'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with description like ")." <b>".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with name like')." <b>".$f_value."*</b>";
+            break;
+        case('description'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with description like')." <b>".$f_value."*</b>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+
+    if ($order=='title')
+        $order='`Page Title`';
+    else
+        $order='`Page Section`';
+
+
+$adata=array();
+    $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where  $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+
+
+$type=$row['Page Store Section'];
+switch ($type) {
+    case 'Department Catalogue':
+        $type=_('Department');
+        break;
+            case 'Family Catalogue':
+        $type=_('Family');
+        break;
+    default:
+        $type=_('Other');
+        break;
+}
+
+        $adata[]=array(
+                     'key'=>$row['Page Key'],
+                     'section'=>$row['Page Section'],
+                     'code'=>$row['Page Code'],
+                     'store_title'=>$row['Page Store Title'],
+                     'type'=>$type
+
+                                    
+                 );
+    }
+    mysql_free_result($res);
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
     echo json_encode($response);
 }

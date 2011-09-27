@@ -1417,7 +1417,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
 		         'Supplier Product Units Per Case'=>1,
-		       'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_cost),
+		       'SPH Case Cost'=>sprintf("%.2f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description,
 		       'Supplier Product Valid From'=>$editor['Date'],
@@ -1479,14 +1479,17 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			   'Product Part Type'=>'Simple'
 			   );
 	
-			
-	
-	$product->new_current_part_list(array(),$part_list)  ;
-	$supplier_product->load('used in');
-	$product->load('parts');
-	$part->load('used in');
-	$part->load('supplied by');
-	$product->update_cost_supplier();
+
+
+  $product->new_current_part_list(array(),$part_list)  ;
+
+    $supplier_product->update_sold_as();
+    $supplier_product->update_store_as();
+    $product->update_parts();
+    $part->update_used_in();
+    $part->update_supplied_by();
+    $product->update_cost_supplier();
+
 
 }
 

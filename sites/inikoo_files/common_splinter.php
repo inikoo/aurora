@@ -174,9 +174,20 @@ session_destroy();
     $St=get_sk();
 }elseif(isset($_REQUEST['p'])) {
 
-
     $dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
 // print "$dencrypted_secret_data\n";
+/*
+	$sql=sprintf("select `User Key` from `Masterkey Dimension` where `Key`='%s'", $dencrypted_secret_data);
+
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result))
+		$user=new User($row['User Key']);
+	
+	if(isset($user)){
+		print_r($user);	
+		$_SESSION['user_key']=$user->id;
+}*/
+	
     $auth=new Auth(IKEY,SKEY);
 
     $auth->authenticate_from_masterkey($dencrypted_secret_data);
@@ -260,8 +271,10 @@ if ($logged_in ) {
 
 log_visit($session->id,$user_log_key);
 
-
-
+/*
+if(isset($user))
+print_r($user);	
+*/
 
 
 function show_footer() {
@@ -280,6 +293,7 @@ function get_sk() {
 
 
 function show_product($code) {
+
     global $logged_in, $ecommerce_url, $username, $method,$store_key;
     $product=new LightProduct($code, $store_key);
 
@@ -413,7 +427,7 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image;
+    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image, $page_code;
 	
 	if(isset($data['header_image']))
 		$header_image=$data['header_image'];
@@ -448,9 +462,9 @@ function set_parameters($data=false) {
     else
         $page_code=$family_code;
 
-    $page=new Page('site_code',$site->id,$page_code);
-
-
+	
+	
+	$page=new Page('site_code',$site->id,$page_code);
 
     $see_also=array();
 
@@ -524,7 +538,7 @@ function add_extra_header_content($data, $type="child") {
 function log_visit($session_key,$user_log_key) {
 
 
-    global $user_click_key;
+    global $user_click_key, $site, $page_code;
     $user_click_key=0;
     // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
     $file = $_SERVER["PHP_SELF"];
@@ -568,7 +582,10 @@ $prev_url =$purl ;
         $user_key=0;
     }
 
-    $page_key=0;
+
+	$page=new Page('site_code',$site->id,$page_code);
+
+    $page_key=$page->id;
     $date=date("Y-m-d H:i:s");
 
 

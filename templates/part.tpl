@@ -11,20 +11,28 @@
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 
-<div class="" id="block_info"  style="margin-top:20px;width:900px;">
+<div class="" id="block_info"  style="margin-top:10px;width:900px;">
 
-  <div id="photo_container" style="float:left;margin-top:0px;">
-    <div style="border:1px solid #ddd;padding-top:10;width:220px;text-align:center;margin:0 10px 0 0px">
-      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;;margin: 10px 0 10px 9px">
-	<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
-      </div>
-    </div>
-    <div style="width:160px;margin:auto;padding-top:5px"  >
-      {foreach from=$images item=image  name=foo}
-      {if $image.principal==0} <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  />{/if}
-      {/foreach}
-    </div>
-  </div>
+  <div id="photo_container" style="float:left">
+	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+	     
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+	      </div>
+	    </div>
+	    
+	    { if $num_images>1}
+	    <div style="width:160px;margin:auto;padding-top:5px"  >
+	      {foreach from=$images item=image  name=foo}
+	      {if $image.is_principal==0}
+	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
+	      {/if}
+	      {/foreach}
+	    </div>
+	    {/if}
+	    
+	    
+	  </div>
 
   <div style="width:340px;float:left;margin-left:10px;">
   
@@ -86,7 +94,7 @@
 		  
 		
 </div>
-
+<div style="clear:both"></div>
 
 </div>
 
@@ -96,7 +104,7 @@
  <div style="clear:both"></div>
  
  
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li><span class="item {if $view=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li><span class="item {if $view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
     <li><span class="item {if $view=='transactions'}selected{/if}"  id="transactions">  <span> {t}Stock Transactions{/t}</span></span></li>
@@ -126,10 +134,12 @@
 <div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
  <div id="block_history" class="block data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
-    <span   class="clean_table_title">{t}Stock History{/t}</span>
+    <span   class="clean_table_title">{t}Stock History Chart{/t}  
+    <img  id="hide_stock_history_chart"  alt="{t}hide{/t}" title="{t}Hide Chart{/t}" style="{if !$show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle;"  src="art/icons/hide_button.png"/> 
+    
+    <img  id="show_stock_history_chart"  alt="{t}show{/t}" title="{t}Show Chart{/t}" style="{if $show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle"  src="art/icons/show_button.png"/> </span>
 
-
- <div id="stock_history_plot"  >
+ <div id="stock_history_plot" style="{if !$show_stock_history_chart}display:none;{/if}" >
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
 
@@ -143,18 +153,17 @@
 		// ]]>
 	</script>
 
-    <span   class="clean_table_title" style="margin-top:30px">{t}Stock History{/t}</span>
+    <span   class="clean_table_title" style="clear:both;margin-top:20px">{t}Stock History{/t} 
+       <div id="stock_history_type" style="display:inline;color:#aaa">
+        <span id="stock_history_type_day" table_type="day" style="margin-left:10px;font-size:80%;"   class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
+     <span id="stock_history_type_week" table_type="week" style="margin-left:5px;font-size:80%;"  class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
+
+    <span id="stock_history_type_month" table_type="month" style="margin-left:5px;font-size:80%;"  class="table_type state_details {if $stock_history_type=='month'}selected{/if}">{t}Monthly{/t}</span>
+      </div>
+   </span> 
 
 
-
-
-
-
-     <div id="stock_history_type">
-        <span id="stock_history_type_month" table_type="month" style="float:right" class="table_type state_details {if $stock_history_type=='month'}selected{/if}">{t}Monthly{/t}</span>
-        <span id="stock_history_type_week" table_type="week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
-        <span id="stock_history_type_day" table_type="day" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
-     </div>
+ 
     
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
    

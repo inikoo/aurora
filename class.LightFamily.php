@@ -611,7 +611,7 @@ class LightFamily {
         else {
             $out_of_stock='Out of Stock';
             $discontinued='Discontinued';
-            $register='Please login to see wholesale prices';
+            $register=sprintf('<br/><span style="color:red;font-style: italic; ">Please <a style="color:red;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:red;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
         }
         $form=sprintf('<table class="product_list" >' );
 
@@ -1158,7 +1158,7 @@ class LightFamily {
 		}
 		
 		
-		$this->aasort($see_also,"weight");
+		aasort($see_also,"weight");
 
 		//$see_also_label=array();
 		$see_also_array=array();
@@ -1174,19 +1174,7 @@ class LightFamily {
 		//$see_also;
 	}
 	
-	function aasort (&$array, $key) {
-		$sorter=array();
-		$ret=array();
-		reset($array);
-		foreach ($array as $ii => $va) {
-			$sorter[$ii]=$va[$key];
-		}
-		arsort($sorter);
-		foreach ($sorter as $ii => $va) {
-			$ret[$ii]=$array[$ii];
-		}
-		$array=$ret;
-	}
+	
 
 
 

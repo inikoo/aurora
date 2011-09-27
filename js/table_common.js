@@ -212,7 +212,8 @@ var mygetTerms =function (query) {
 
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+  //alert(request)
+  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 
 var change_filter=function (key,label,tableid){
@@ -324,7 +325,7 @@ function change_period(e,data){
     var table=tables['table'+data.table_id];
     var datasource=tables['dataSource'+data.table_id];
     var request='&period=' + this.getAttribute('period');
-    
+   
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
 

@@ -122,20 +122,9 @@ class part extends DB_Table {
 
     }
 
-
     function update_custom_fields($id, $value) {
         $this->update(array($id=>$value));
     }
-
-
-
-
-
-
-
-
-
-
 
     function update_main_state() {
         if ($this->data['Part Status']=='In Use') {
@@ -163,8 +152,6 @@ class part extends DB_Table {
 
     }
 
-
-
     function update_status($value,$options='') {
 
         $this->update_field('Part Status',$value,$options);
@@ -187,7 +174,7 @@ class part extends DB_Table {
 
         }
         $this->update_main_state();
-        
+
         $products=$this->get_product_ids();
         foreach($products as $product_pid) {
             $product=new Product ('pid',$product_pid);
@@ -197,7 +184,6 @@ class part extends DB_Table {
 
 
     }
-
 
     function update_field_switcher($field,$value,$options='') {
 
@@ -229,105 +215,9 @@ class part extends DB_Table {
 
     }
 
-
-
     function load($data_to_be_read,$args='') {
         switch ($data_to_be_read) {
-        case('stock_history'):
-        case('calculate_stock_history'):
-            global $myconf;
-            $force='';
-            if (preg_match('/all/',$args))
-                $force='all';
-            if (preg_match('/last|audit/',$args))
-                $force='last';
-            if (preg_match('/continue/',$args))
-                $force='continue';
 
-
-            $part_sku=$this->data['Part SKU'];
-
-            if (isset($args) and $args=='today')
-                $min=strtotime('today');
-            else
-                $min=strtotime($myconf["data_from"]);
-
-
-            $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
-            print "$sql\n";
-            $resultxxx=mysql_query($sql);
-            while (($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC))) {
-                $skip=false;
-                $location_key=$rowxxx['Location Key'];
-                print 'find PL '.$location_key.'_'.$this->data['Part SKU']."\n";
-                $pl=new PartLocation($this->data['Part SKU'].'_'.$location_key);
-
-
-                if ($location_key==1) {
-                    if ($force=='all') {
-                        $_from=$this->data['Part Valid From'];
-                    }
-                    elseif($force=='last') {
-
-                        $_from=$pl->last_inventory_audit();
-                        //exit("Froim: $_from\n");
-                    }
-                    elseif($force=='continue') {
-                        $_from=$pl->last_inventory_date();
-                    }
-                    else {
-                        $_from=$pl->first_inventory_transacion();
-                    }
-                    //print "$_from\n";
-                    if (!$_from)
-                        $skip=true;
-                    $from=strtotime($_from);
-                } else {
-                    if ($force=='first')
-                        $_from=$pl->first_inventory_transacion();
-                    else
-                        $_from=$pl->last_inventory_audit();
-
-                    if (!$_from)
-                        $skip=true;
-                    $from=strtotime($_from);
-                }
-
-
-
-                if ($from<$min)
-                    $from=$min;
-
-                if ($this->data['Part Status']=='In Use') {
-                    $to=strtotime('today');
-                } else {
-                    $to=strtotime($this->data['Part Valid To']);
-                }
-
-
-                if ($from>$to) {
-                    print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
-                    continue;
-                }
-
-
-                if ($skip) {
-                    print "No trasactions: $part_sku $location_key \n";
-                    continue;
-                }
-
-                $from=date("Y-m-d",$from);
-                $to=date("Y-m-d",$to);
-                print "** Redo daily inv S: $part_sku L: $location_key  $from $to\n";
-                //  $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
-
-                $pl->redo_daily_inventory($from,$to);
-
-
-            }
-
-
-            break;
 
         case('locations'):
             $this->load_locations($args);
@@ -335,67 +225,6 @@ class part extends DB_Table {
 
             break;
 
-        case('stock'):
-            $a.=$a;
-            exit("error use update stock method  \n");
-            /*
-                if (!$this->current_locations_loaded)
-                    $this->load('locations');
-
-                $stock='';
-                $value='';
-                $neg_discrepancy_value='';
-                $neg_discrepancy='';
-                $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Stock Value`) as value, sum(`Negative Discrepancy`) as neg_discrepancy, sum(`Negative Discrepancy Value`) as neg_discrepancy_value from `Part Location Dimension` where  `Part SKU`=%d ",$this->data['Part SKU']);
-                //print $sql;
-                $result=mysql_query($sql);
-                if (($row=mysql_fetch_array($result, MYSQL_ASSOC))) {
-                    $stock=$row['stock'];
-                    $value=$row['value'];
-                    $neg_discrepancy_value=$row['neg_discrepancy_value'];
-                    $neg_discrepancy=$row['neg_discrepancy'];
-                }
-
-                if (!is_numeric($stock))
-                    $stock='NULL';
-                if (!is_numeric($value))
-                    $value='NULL';
-
-                $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s ,`Part Current Stock Negative Discrepancy`=%f ,`Part Current Stock Negative Discrepancy Value`=%f  where `Part SKU`=%d "
-                             ,$stock
-                             ,$value
-                             ,$neg_discrepancy
-                             ,$neg_discrepancy_value
-                             ,$this->id);
-
-                //print "$sql $stock $value $neg_discrepancy $neg_discrepancy_value \n";
-                // update products that depends of this part
-                if (!mysql_query($sql))
-                    exit("  errorcant not uopdate parts stock");
-
-
-                $this->data['Part Current Stock']=$stock;
-                $this->data['Part Current Stock Cost']=$value;
-                $this->data['Part Current Stock Negative Discrepancy']=$neg_discrepancy;
-                $this->data['Part Current Stock Negative Discrepancy Value']=$neg_discrepancy_value;
-
-                $this->load('used in list');
-
-                foreach($this->used_in_list as $product_id) {
-                    $product=new Product('pid',$product_id);
-                    if (!$product->id) {
-                        print_r($this->used_in_list);
-                        exit("Error can not load prodct $product_id\n");
-                    }
-
-                    $product->load('stock');
-
-                }
-
-            */
-
-
-            break;
         case('stock_data'):
             $astock=0;
             $avaue=0;
@@ -426,7 +255,7 @@ class part extends DB_Table {
                 $astock=$astock/$days_ok;
                 $avalue=$avalue/$days_ok;
                 if ($avalue>0)
-                    $gmroi=$this->data['Part Total Profit When Sold']/$avalue;
+                    $gmroi=$this->data['Part Total Profit']/$avalue;
             } else {
                 $astock='NULL';
                 $avalue='NULL';
@@ -476,7 +305,7 @@ class part extends DB_Table {
                 $astock=$astock/$days_ok;
                 $avalue=$avalue/$days_ok;
                 if ($avalue>0)
-                    $gmroi=$this->data['Part 1 Year Acc Profit When Sold']/$avalue;
+                    $gmroi=$this->data['Part 1 Year Acc Profit']/$avalue;
             } else {
                 $astock='NULL';
                 $avalue='NULL';
@@ -527,7 +356,7 @@ class part extends DB_Table {
                 $astock=$astock/$days_ok;
                 $avalue=$avalue/$days_ok;
                 if ($avalue>0)
-                    $gmroi=$this->data['Part 1 Quarter Acc Profit When Sold']/$avalue;
+                    $gmroi=$this->data['Part 1 Quarter Acc Profit']/$avalue;
             } else {
                 $astock='NULL';
                 $avalue='NULL';
@@ -577,7 +406,7 @@ class part extends DB_Table {
                 $astock=$astock/$days_ok;
                 $avalue=$avalue/$days_ok;
                 if ($avalue>0)
-                    $gmroi=$this->data['Part 1 Month Acc Profit When Sold']/$avalue;
+                    $gmroi=$this->data['Part 1 Month Acc Profit']/$avalue;
             } else {
                 $astock='NULL';
                 $avalue='NULL';
@@ -629,7 +458,7 @@ class part extends DB_Table {
                 $astock=$astock*$tmp;
                 $avalue=$avalue*$tmp;
                 if ($avalue>0)
-                    $gmroi=$this->data['Part 1 Week Acc Profit When Sold']/$avalue;
+                    $gmroi=$this->data['Part 1 Week Acc Profit']/$avalue;
             } else {
                 $astock='NULL';
                 $avalue='NULL';
@@ -663,61 +492,12 @@ class part extends DB_Table {
             }
             //   print_r($this->used_in_list);
             break;
-        case("used in"):
-            $this->update_used_in();
-
-            break;
-        case("supplied by"):
-            $supplied_by='';
-            $sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
-            $result=mysql_query($sql);
-            //print "$sql\n";
-            $supplier=array();
-            $current_supplier='_';
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $_current_supplier=$row['Supplier Key'];
-                if ($_current_supplier!=$current_supplier) {
-                    $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%s">%s</a>'
-                                          ,$row['Supplier Key']
-                                          ,$row['Supplier Code']
-                                          ,$row['Supplier Product Code']
-                                          ,$row['Supplier Key']
-                                          ,$row['Supplier Product Code']);
-                    $current_supplier=$_current_supplier;
-                } else {
-                    $supplied_by.=sprintf(', <a href="supplier_product.php?supplier_key=%d&code=%s">%s</a>',$row['Supplier Key'],$row['Supplier Product Code'],$row['Supplier Product Code']);
-
-                }
-
-            }
-            $supplied_by.=")";
-
-            $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
-            if ($supplied_by=='')
-                $supplied_by=_('Unknown Supplier');
 
 
-            $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
-            //       print "$sql\n";exit;
-            if (!mysql_query($sql))
-                exit("error can no suplied by part 498239048");
-            break;
 
 
-        case("sales"):
-            $this->update_sales();
 
 
-            break;
-
-        case('forecast'):
-            $this->forecast();
-            break;
-
-        case('future costs'):
-        case('estimated cost'):
-
-            exit("stimeted cost should be called with part->update_future_costs()");
         }
 
     }
@@ -731,7 +511,6 @@ class part extends DB_Table {
         return sprintf("SKU%05d",$this->sku);
 
     }
-
 
     function get($key='',$args=false) {
 
@@ -774,7 +553,7 @@ class part extends DB_Table {
         }
 
 
-        if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Adquired)$/',$key) or $key=='Current Stock'  ) {
+        if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Acquired)$/',$key) or $key=='Current Stock'  ) {
 
             $amount='Part '.$key;
 
@@ -850,8 +629,6 @@ class part extends DB_Table {
         return false;
     }
 
-
-
     function get_current_stock() {
         $stock=0;
         $value=0;
@@ -868,11 +645,6 @@ class part extends DB_Table {
         return array($stock,$value);
 
     }
-
-
-
-
-
 
     function get_stock($date) {
         $stock=0;
@@ -979,8 +751,6 @@ class part extends DB_Table {
         return $products;
     }
 
-
-
     function update_stock() {
         //print_r($this->get_current_stock());
         list($stock,$value)=$this->get_current_stock();
@@ -1006,9 +776,6 @@ class part extends DB_Table {
 
         //print "$sql\n";
     }
-
-
-
 
     function update_availability() {
 
@@ -1036,7 +803,7 @@ class part extends DB_Table {
         mysql_query($sql);
 
 
-$this->update_main_state();
+        $this->update_main_state();
 
 
         $products=$this->get_product_ids();
@@ -1047,13 +814,6 @@ $this->update_main_state();
         }
 
     }
-
-
-
-
-
-
-
 
     function update_valid_to($date) {
         $this->data['Part Valid To']=$date;
@@ -1071,6 +831,7 @@ $this->update_main_state();
 
 
     }
+
     function update_valid_from($date) {
         $this->data['Part Valid To']=$date;
         $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d    "
@@ -1106,7 +867,6 @@ $this->update_main_state();
 
     }
 
-
     function update_valid_dates($date) {
         $affected_from=0;
         $affected_to=0;
@@ -1133,7 +893,6 @@ $this->update_main_state();
 
         return $affected_to+$affected_from;
     }
-
 
     function get_suppliers() {
         $suppliers=array();
@@ -1179,7 +938,6 @@ $this->update_main_state();
         return $supplier_products;
     }
 
-
     function get_supplier_products_historic($date) {
         $supplier_products=array();
         $sql=sprintf("select `SPH Key`,  `Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product Key`=SPD.`Supplier Product Key` )    where `Part SKU`=%d
@@ -1217,9 +975,6 @@ $this->update_main_state();
         }
         return $supplier_products;
     }
-
-
-
 
     function load_locations($date='') {
 
@@ -1264,7 +1019,6 @@ $this->update_main_state();
         return $location_key;
 
     }
-
 
     function get_picking_location_key($date=false) {
         if ($date) {
@@ -1313,8 +1067,6 @@ $this->update_main_state();
         return $part_locations;
     }
 
-
-
     function get_location_keys() {
         $this->load_current_locations();
         return $this->current_associated_locations;
@@ -1331,7 +1083,6 @@ $this->update_main_state();
         $this->current_locations_loaded=true;
 
     }
-
 
     function items_per_product($product_ID,$date=false) {
         $where_date='';
@@ -1353,12 +1104,10 @@ $this->update_main_state();
 
     }
 
-
     function get_comercial_value($date='') {
 
         return 0;
     }
-
 
     function update_stock_history() {
 
@@ -1373,8 +1122,6 @@ $this->update_main_state();
             $part_location->update_stock_history();
         }
     }
-
-
 
     function update_up_today_sales() {
         $this->update_sales_from_invoices('Today');
@@ -1392,7 +1139,6 @@ $this->update_main_state();
         $this->update_sales_from_invoices('Last Month');
     }
 
-
     function update_interval_sales() {
         $this->update_sales_from_invoices('3 Year');
         $this->update_sales_from_invoices('1 Year');
@@ -1402,8 +1148,6 @@ $this->update_main_state();
         $this->update_sales_from_invoices('10 Day');
         $this->update_sales_from_invoices('1 Week');
     }
-
-
 
     function update_sales_from_invoices($interval) {
 
@@ -1564,42 +1308,110 @@ $this->update_main_state();
         $this->data["Part $db_interval Acc Provided"]=0;
         $this->data["Part $db_interval Acc Given"]=0;
         $this->data["Part $db_interval Acc Sold Amount"]=0;
-        $this->data["Part $db_interval Acc Absolute Profit"]=0;
+        $this->data["Part $db_interval Acc Profit"]=0;
         $this->data["Part $db_interval Acc Profit When Sold"]=0;
         $this->data["Part $db_interval Acc Sold"]=0;
         $this->data["Part $db_interval Acc Margin"]=0;
 
 
-
-        $sql=sprintf("select    ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,
-                     ifnull(sum(`Required`),0) as required,
-                     ifnull(sum(`Given`),0) as given,
-                     ifnull(sum(`Amount In`),0) as amount_in,
-                     ifnull(sum(-`Inventory Transaction Quantity`),0) as qty,
-                     ifnull(sum(-`Inventory Transaction Amount`),0) as value
-                     from  `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Sale' and  `Date`>=%s %s     ",
+        $sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+                     from `Inventory Transaction Fact` ITF  where `Part SKU`=%d and `Date`>=%s %s" ,
                      $this->sku,
                      prepare_mysql($from_date),
                      ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
                     );
-
-
-        //    print "$sql\n";
-
         $result=mysql_query($sql);
-
+        print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data["Part $db_interval Acc Required"]=$row["required"];
-            $this->data["Part $db_interval Acc Provided"]=$row["qty"];
-            $this->data["Part $db_interval Acc Given"]=$row["given"];
-            $this->data["Part $db_interval Acc Sold Amount"]=$row["amount_in"];
-            $this->data["Part $db_interval Acc Absolute Profit"]=$row["amount_in"]-$row['value'];
-            $this->data["Part $db_interval Acc Profit When Sold"]=$row["amount_in"]-$row['value']+$row['value_free'];
-            $this->data["Part $db_interval Acc Sold"]=$row["qty"]-$row["given"];
-            $this->data["Part $db_interval Acc Margin"]=($row["amount_in"]==0?0:$this->data["Part $db_interval Acc Profit When Sold"]/$row["amount_in"]);
-
+            $this->data["Part $db_interval Acc Profit"]=-1.0*$row['profit'];
+            $this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
 
         }
+
+
+        $sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+            $this->data["Part $db_interval Acc Acquired"]=$row['bought'];
+
+        }
+
+
+        $sql=sprintf("select sum(`Inventory Transaction Amount`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Part $db_interval Acc Sold Amount"]=-1.0*$row['sold_amount'];
+            $this->data["Part $db_interval Acc Sold"]=$row['sold'];
+            $this->data["Part $db_interval Acc Provided"]=-1.0*$row['dispatched'];
+            $this->data["Part $db_interval Acc Required"]=$row['required'];
+            $this->data["Part $db_interval Acc Given"]=$row['given'];
+
+        }
+
+        $sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Part SKU`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Part $db_interval Acc Broken"]=-1.*$row['broken'];
+
+        }
+
+
+        $sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d and `Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+        $result=mysql_query($sql);
+//print "$sql\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $this->data["Part $db_interval Acc Lost"]=-1.*$row['lost'];
+
+        }
+
+
+
+
+
+
+        if ($this->data["Part $db_interval Acc Sold Amount"]!=0)
+            $margin=$this->data["Part $db_interval Acc Profit After Storing"]/$this->data["Part $db_interval Acc Sold Amount"];
+        else
+            $margin=0;
+        $this->data["Part $db_interval Acc Margin"]=$margin;
 
 
         $sql=sprintf("update `Part Dimension` set
@@ -1607,7 +1419,7 @@ $this->update_main_state();
                      `Part $db_interval Acc Provided`=%f,
                      `Part $db_interval Acc Given`=%f ,
                      `Part $db_interval Acc Sold Amount`=%f ,
-                     `Part $db_interval Acc Absolute Profit`=%f ,
+                     `Part $db_interval Acc Profit`=%f ,
                      `Part $db_interval Acc Profit When Sold`=%f ,
                      `Part $db_interval Acc Sold`=%f ,
                      `Part $db_interval Acc Margin`=%s where
@@ -1616,7 +1428,7 @@ $this->update_main_state();
                      ,$this->data["Part $db_interval Acc Provided"]
                      ,$this->data["Part $db_interval Acc Given"]
                      ,$this->data["Part $db_interval Acc Sold Amount"]
-                     ,$this->data["Part $db_interval Acc Absolute Profit"]
+                     ,$this->data["Part $db_interval Acc Profit"]
                      ,$this->data["Part $db_interval Acc Profit When Sold"]
                      ,$this->data["Part $db_interval Acc Sold"]
                      ,$this->data["Part $db_interval Acc Margin"]
@@ -1625,7 +1437,7 @@ $this->update_main_state();
 
         mysql_query($sql);
 
-        //   print "$sql\n";
+        print "$sql\n";
 
 
 
@@ -1643,7 +1455,6 @@ $this->update_main_state();
 
 
     }
-
 
     function update_sales_old() {
         // the product wich this one is
@@ -2037,10 +1848,6 @@ $this->update_main_state();
 
     }
 
-
-
-
-
     function forecast() {
 
         // -------------- simple forecast -------------------------
@@ -2103,7 +1910,6 @@ $this->update_main_state();
 
     }
 
-
     function update_estimated_future_cost() {
         list($avg_cost,$min_cost)=$this->get_estimated_future_cost();
 
@@ -2118,13 +1924,6 @@ $this->update_main_state();
         mysql_query($sql);
     }
 
-
-
-
-
-
-
-
     function get_unit_cost($date=false) {
 
 
@@ -2132,21 +1931,28 @@ $this->update_main_state();
         if ($date) {
             // print "from date";
 
-            $sql=sprintf("select AVG(`Supplier Product Cost Per Case`/`Supplier Product Units Per Case`*`Supplier Product Units Per Part`) as cost
+            $sql=sprintf("select AVG(`SPH Case Cost`/`SPH Units Per Case`*`Supplier Product Units Per Part`) as cost
                          from `Supplier Product Dimension` SP
                          left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
                          left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
-                         where `Part SKU`=%d and (  ( `Supplier Product Part Most Recent`='Yes'  and `Supplier Product Part Valid From`<=%s ) or ( `Supplier Product Part Most Recent`='No' and `Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s) ) ",
+                         left join  `Supplier Product History Dimension` SPHD on (SPHD.`Supplier Product Key`=SP.`Supplier Product Key`)
+                         where `Part SKU`=%d and
+                         (
+                         ( `Supplier Product Part Most Recent`='Yes'  and `Supplier Product Part Valid From`<=%s ) or
+                         ( `Supplier Product Part Most Recent`='No' and `Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s) ) and
+                         (`SPH Valid From`<=%s and `SPH Valid To`>=%s)
+                         ",
                          $this->sku
                          ,prepare_mysql($date)
                          ,prepare_mysql($date)
                          ,prepare_mysql($date)
-
+                         ,prepare_mysql($date)
+                         ,prepare_mysql($date)
                         );
 
 
 
-            //print $sql;
+            //   print "$sql\n\n";
             //exit;
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
@@ -2156,16 +1962,19 @@ $this->update_main_state();
         }
         // print "not found in date";
 
-        $sql=sprintf("select AVG(`Supplier Product Cost Per Case`/`Supplier Product Units Per Case`*`Supplier Product Units Per Part`) as cost
+        $sql=sprintf("select AVG(`SPH Case Cost`/`SPH Units Per Case`*`Supplier Product Units Per Part`) as cost
                      from `Supplier Product Dimension` SP
                      left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
                      left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+                     left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`)
                      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
-        //  print $sql;
+        //print "$sql\n\n";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             return $row['cost'];
         }
+
+        print "Error can not fount part (SKU".$this->id.") unit cost on $dates\n";
 
         return 0;
 
@@ -2173,11 +1982,6 @@ $this->update_main_state();
 
 
     }
-
-
-
-
-
 
     function get_estimated_future_cost() {
         $sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product Key`=SPD.`Supplier Product Key`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->sku);
@@ -2202,6 +2006,7 @@ $this->update_main_state();
         return array($avg_cost,$min_cost);
 
     }
+
     function update_used_in() {
         $used_in_products='';
         $raw_used_in_products='';
@@ -2240,7 +2045,6 @@ $this->update_main_state();
         //  print "$sql\n";
         mysql_query($sql);
     }
-
 
     function wrap_transactions() {
 
@@ -2420,10 +2224,10 @@ $this->update_main_state();
 
 
     }
+
     function get_description() {
         return $this->data['Part XHTML Description'];
     }
-
 
     function get_product_ids() {
 
@@ -2481,7 +2285,6 @@ $this->update_main_state();
 
 
 
-//print "$from -> $to\n";
 
 
             $sql=sprintf("select  PPD.`Product Part Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
@@ -2501,7 +2304,7 @@ $this->update_main_state();
                              //   ,prepare_mysql($status)
                              ,$row2['Product Part Key']
                             );
-//print "$sql\n";
+
                 if (!mysql_query($sql))
                     print "$sql\n";
 
@@ -2540,6 +2343,143 @@ $this->update_main_state();
 
     }
 
+    function update_supplied_by() {
+        $supplied_by='';
+        $sql=sprintf("select SPD.`Supplier Product Key`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",
+        $this->data['Part SKU']);
+        $result=mysql_query($sql);
+        //print "$sql\n";
+        $supplier=array();
+        $current_supplier='_';
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $_current_supplier=$row['Supplier Key'];
+            if ($_current_supplier!=$current_supplier) {
+                $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?pid=%d">%s</a>',
+                                      $row['Supplier Key'],
+                                      $row['Supplier Code'],
+                                      $row['Supplier Product Key'],
+                                      $row['Supplier Product Code']);
+                $current_supplier=$_current_supplier;
+            } else {
+                $supplied_by.=sprintf(', <a href="supplier_product.php?pid=%d">%s</a>',
+                $row['Supplier Product Key'],
+                $row['Supplier Product Code']
+                );
 
+            }
+
+        }
+        $supplied_by.=")";
+
+        $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
+        if ($supplied_by=='')
+            $supplied_by=_('Unknown Supplier');
+
+
+        $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
+        //       print "$sql\n";exit;
+        if (!mysql_query($sql))
+            exit("error can no suplied by part 498239048");
+
+
+    }
+
+    function add_image($image_key,$args='') {
+
+        $tmp_images_dir='app_files/pics/';
+        $principal='No';
+        if (preg_match('/principal/i',$args))
+            $principal='Yes';
+        $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Part' and `Subject Key`=%d",$this->sku);
+
+        $res=mysql_query($sql);
+        $row=mysql_fetch_array($res,MYSQL_ASSOC );
+        $number_images=$row['num'];
+        if ($number_images==0)
+            $principal='Yes';
+
+        $sql=sprintf("insert into `Image Bridge` values ('Part',%d,%d,%s,'') on duplicate key update `Is Principal`=%s"
+                     ,$this->sku
+                     ,$image_key
+                     ,prepare_mysql($principal)
+                     ,prepare_mysql($principal)
+                    );
+        //print "$sql\n";
+        mysql_query($sql);
+
+
+       
+
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+                     ,$this->sku
+                     ,$image_key
+                    );
+
+        $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+            $this->images_slideshow[]=$this->new_value;
+        }
+        $this->msg="image added";
+    }
+
+    function update_main_image() {
+        $this->load_images();;
+        $num_images=count($this->images);
+
+
+        $main_image_src='art/nopic.png';
+        if ($num_images>0) {
+
+            //print_r($this->images_original);
+            foreach( $this->images as $image ) {
+                // print_r($image);
+                $main_image_src='image.php?id='.$image['Image Key'].'&size=small';
+                if ($image['Is Principal']=='Yes') {
+
+                    break;
+                }
+            }
+        }
+
+        $sql=sprintf("update `Part Dimension` set `Part Main Image`=%s  where `Part SKU`=%d",
+                     prepare_mysql($main_image_src)
+                     ,$this->sku
+                    );
+         
+        mysql_query($sql);
+       
+    }
+
+    function load_images() {
+        $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and `Subject Key`=%d",$this->sku);
+
+        $res=mysql_query($sql);
+        $this->images=array();
+
+        while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
+            $this->images[$row['Image Key']]=$row;
+        }
+    }
+
+    function load_images_slidesshow() {
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and `Subject Key`=%d",$this->sku);
+        $res=mysql_query($sql);
+        $this->images_slideshow=array();
+        while ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            // print_r($row);
+            $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+        }
+
+    }
 
 }

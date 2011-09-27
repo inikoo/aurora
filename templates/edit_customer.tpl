@@ -9,7 +9,7 @@
 
 <div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">{$recent_merges}</div>
 
-  <ul class="tabs" id="chooser_ul" style="clear:both">
+  <ul class="tabs" id="chooser_ul" styloe="clear:both">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Customer Details{/t}</span></span></li>
  {if $customer_type=='Company'}
     <li> <span class="item {if $edit=='company'}selected{/if}" style="display:none"  id="company">  <span> {t}Company Details{/t}</span></span></li>
@@ -38,29 +38,40 @@
    <td style="width:200px">
    <div>
        <input type="button" class="button" id="forget_password_main" value="Send"/>
-   </div></td><td>
-	<span id="password_msg" style="display:"></span></td></tr>
+	   
+   </div>
+   </td>
+   <td><span id="set_password_main">Set Password</span></td>
+   <td>
+	<span id="password_msg" style="display:"></span></td>
+	
+	
+	</tr>
     
 	{foreach from=$registered_email item=email key=key name=foo  }
 	   <tr>
-   <td style="width:200px">{t}Send an Email: ({$email}){/t}</td>
+   <td style="width:200px">{t}Send an Email: ({$email.email}){/t}</td>
    <td style="width:200px">
    <div>
        <input type="button" class="button" id="forget_password_{$key}" value="Send"/>
    </div></td>
+   <td><span id="set_password_{$key}">Set Password</span></td>
    </tr>
    <tr><td><span id="password_msg_{$key}" style="display:"></span></td></tr>
    {/foreach}
    
-   {if $unregistered_email} 
+
+   
+   
+   
    <tr class="title"><td colspan=5>{t}Register Email{/t}</td></tr>
-   {/if}
+
    	{foreach from=$unregistered_email item=email key=key name=foo  }
 	   <tr>
-   <td style="width:200px">{t}{$email}{/t}</td>
+   <td style="width:200px">{t}{$email.email}{/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" onclick="register_email(this)" email={$email} value="Register"/>
+       <input type="button" class="button" onclick="register_email(this)" email={$email.email} value="Register"/>
    </div></td>
    </tr>
    
@@ -771,5 +782,40 @@
     <span  style="display:block;margin-top:5px" onclick="save_comment()" id="comment_save"  class="unselectable_text button"   >{t}Save{/t}</span></td></tr>
 </table>
 </div>
+
+
+<div id="dialog_set_password_main">
+Change Password
+
+<table border=0 id="change_password_form" >
+
+
+<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
+<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
+<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
+<input id="epwcp1" value="{$main_email.epwcp1}" type="hidden"/>
+<input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
+<input id="user_key" value="{$main_email.user_key}" type="hidden"/>
+
+
+
+<tr  id="tr_change_password_buttons"  class="button space" >
+<td colspan=2><span style="display:none" id="change_password_error_no_password">Write new password</span><span style="display:none" id="change_password_error_password_not_march">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short">Password is too short</span><span>
+</span><button id="submit_change_password">Change Password</button> 
+</td></tr>
+<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
+
+
+
+
+</table>
+</div>
+ 
+{foreach from=$registered_email item=email key=key name=foo  } 
+<div id="dialog_set_password_{$key}">
+password
+</div>
+
+ {/foreach}
 
 {include file='footer.tpl'}

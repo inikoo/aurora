@@ -117,10 +117,10 @@ var validate_scope_data=
 	 'unit':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
 		 ,'validation':false
 		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 
-	'units_per_case':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
+	'units_per_case':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'SPH Units Per Case'
 		 ,'validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Units per case should be a number')?>'}]
 		 ,'name':'Product_Units_Per_Case','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-	'price_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
+	'price_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'SPH Case Cost'
 		,'validation':[{'numeric':"money",'invalid_msg':'<?php echo _('Invalid Product Price')?>'}]
 		 ,'name':'Product_Price_Per_Case','ar':false,'ar_request':false},	
 	'currency_price':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'

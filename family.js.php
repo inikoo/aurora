@@ -23,8 +23,8 @@ var Event   = YAHOO.util.Event;
 var current_store_period='<?php echo$_SESSION['state']['department']['period']?>';
 
 function change_block(){
-ids=['details','products','categories','deals','sales'];
-block_ids=['block_details','block_products','block_categories','block_deals','block_sales'];
+ids=['details','products','categories','deals','sales', 'web'];
+block_ids=['block_details','block_products','block_categories','block_deals','block_sales', 'block_web'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -120,7 +120,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 			       ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=family");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=family&sf=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 
@@ -250,7 +250,7 @@ function init(){
 Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
 
 
-    Event.addListener(['details','products','categories','deals','sales'], "click",change_block);
+    Event.addListener(['details','products','categories','deals','sales', 'web'], "click",change_block);
 
 
     Event.addListener('export_csv0', "click",download_csv,'products_in_family');

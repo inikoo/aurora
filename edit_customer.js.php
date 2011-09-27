@@ -417,6 +417,121 @@ function validate_customer_mobile(query){
     }
 }
 
+
+function submit_change_password(){
+
+var error=false;
+
+
+	if(  Dom.get('change_password_password1').value=='' &&  Dom.get('change_password_password1').value==Dom.get('change_password_password2').value ){
+		Dom.addClass(['change_password_password1','change_password_password2'],'error');
+		error=true;
+		Dom.setStyle('change_password_error_no_password','display','')
+
+	}else{
+	Dom.removeClass(['change_password_password1','change_password_password2'],'error');
+	Dom.setStyle('change_password_error_no_password','display','none')
+
+	}
+
+
+
+	if(!error){
+		if( Dom.get('change_password_password1').value!=Dom.get('change_password_password2').value ){
+			Dom.addClass(['change_password_password1','change_password_password2'],'error');
+			if(!error)
+				Dom.setStyle('change_password_error_password_not_march','display','')
+				error=true;
+
+		}else{
+			Dom.removeClass(['change_password_password1','change_password_password2'],'error');
+			Dom.setStyle('change_password_error_password_not_march','display','none')
+
+		}
+	}
+	if(!error){
+		if(!error &&   Dom.get('change_password_password1').value.length<6){
+			Dom.addClass(['change_password_password1'],'error');
+
+			if(!error)
+				Dom.setStyle('change_password_error_password_too_short','display','')
+
+			
+			error=true;
+		}else{
+			Dom.removeClass(['change_password_password1'],'error');
+			Dom.setStyle('change_password_error_password_too_short','display','none')
+
+		}
+	}
+
+
+
+	if(!error)
+	change_password()
+}
+
+
+function change_password(){
+alert('change');//return;
+    var user_key=Dom.get('user_key').value;
+	
+
+    //var store_key=Dom.get('store_key').value;
+    //var site_key=Dom.get('site_key').value;
+	
+	ep1=AESEncryptCtr(sha256_digest(Dom.get('change_password_password1').value),Dom.get('epwcp1').value,256);
+  //   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+    ep2=Dom.get('epwcp2').value;
+	
+alert(ep1)	
+	
+//	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
+    //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
+//var url ='http://'+ window.location.host + window.location.pathname;
+
+var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
+
+  var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+
+
+     var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
+alert(request);
+  Dom.setStyle('tr_email_in_db_buttons','display','none');
+    Dom.setStyle('tr_forgot_password_wait2','display','');
+
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){
+
+             
+
+
+		        if(r.result=='ok'){
+                Dom.setStyle('change_password_ok','display','');
+                Dom.setStyle('change_password_form','display','none');
+    		    }else{
+		        Dom.setStyle('change_password_ok','display','none');
+                Dom.setStyle('change_password_form','display','');
+		        }
+		    }else{
+		          Dom.setStyle('change_password_ok','display','none');
+                Dom.setStyle('change_password_form','display','');
+		    }
+			
+
+		},failure:function(o){
+		  //  alert(o)
+		}
+	    
+	    });
+
+
+
+}
+
+
 <?php
 
 foreach($show_case  as $custom_key=>$custom_value){
@@ -1119,7 +1234,7 @@ function register_email(o){
 	
 	email=Dom.get(o).getAttribute('email');
 	alert(email);
-	
+	var url ='http://'+ window.location.host + window.location.pathname;
 password='xxxxxxxxxxxxxx';
 
 	data['Email']=Dom.get(o).getAttribute('email');
@@ -1127,6 +1242,7 @@ password='xxxxxxxxxxxxxx';
 	data['store_id']=store_id;
 	data['password']=password;
 	data['send_email']=true;
+	data['url']=url;
 
 	var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
   
@@ -1138,12 +1254,20 @@ var request='ar_edit_users.php?tipo=create_user&values=' + json_value
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){
-					
-	            alert(o.responseText);	
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state=='200'){
+
+					window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
+
+				
+				}
 
 
    			}
     });
+	
+
+
 	
 }
 
@@ -1472,7 +1596,28 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
     customer_merge_oAutoComp.minQueryLength = 0; 
     customer_merge_oAutoComp.queryDelay = 0.1;
 
+		dialog_set_password_main = new YAHOO.widget.Dialog("dialog_set_password_main", {context:["set_password_main","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_set_password_main.render();
+	
+	
+	<?php
+	for($i=0; $i<$_REQUEST['forgot_count']; $i++){
+	printf("dialog_set_password_%s = new YAHOO.widget.Dialog(\"dialog_set_password_%s\", {context:[\"set_password_%s\",\"tr\",\"tl\"]  ,visible : false,close:true,underlay: \"none\",draggable:false});
+    dialog_set_password_%s.render();
+	", $i,$i, $i, $i);
+	}
+	?>
+	
+<?php
+for($i=0; $i<$_REQUEST['forgot_count']; $i++){
+printf("Event.addListener(\"set_password_%s\", \"click\", dialog_set_password_%s.show,dialog_set_password_%s , true);", $i, $i, $i);
+}
+?>	
+Event.addListener("set_password_main", "click", dialog_set_password_main.show,dialog_set_password_main , true);
 
+
+
+Event.addListener("submit_change_password", "click",submit_change_password);
 
 }
 
@@ -1488,5 +1633,9 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
+	
+	
+	
+	
 });
 

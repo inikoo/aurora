@@ -835,7 +835,7 @@ class Page extends DB_Table {
        $found_in=array();
            $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
       $this->id);
-     
+
        $res=mysql_query($sql);
        
        while($row=mysql_fetch_assoc($res)){
@@ -843,8 +843,9 @@ class Page extends DB_Table {
             if($found_in_page->id){
             $found_in[]=array(
             'found_in_label'=>$found_in_page->data['Page Short Title'],
-            'found_in_url'=>$found_in_page->data['Page URL']
-            
+            'found_in_url'=>$found_in_page->data['Page URL'],
+             'found_in_key'=>$found_in_page->id,
+             'found_in_code'=>$found_in_page->data['Page Code']
             );
             }
        
@@ -857,6 +858,19 @@ class Page extends DB_Table {
         return $found_in;
 
     }
+
+
+function delete(){
+$this->deleted=false;
+ $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
+    // print "$sql\n";
+    mysql_query($sql);
+    $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
+    mysql_query($sql);
+
+$this->deleted=true;
+
+}
 
 }
 ?>

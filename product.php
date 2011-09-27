@@ -244,7 +244,7 @@ $smarty->assign('department_id',$product->get('Product Main Department Key'));
 $smarty->assign('family',$product->get('Product Family Code'));
 $smarty->assign('family_id',$product->get('Product Family Key'));
 
-$product->load('images_slideshow');
+$product->load_images_slidesshow();
 $images=$product->images_slideshow;
 $smarty->assign('div_img_width',190);
 $smarty->assign('img_width',190);
@@ -284,6 +284,27 @@ $smarty->assign('display',$display);
 $tipo_filter=$_SESSION['state']['product']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['product']['customers']['f_value']);
+
+//print_r($product);
+$sql=sprintf("select * from `Product Page Bridge` where `Product ID`=%d", $product->pid);
+//print $sql;
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result)){
+	$page_key=$row['Page Key'];
+	$type=$row['Type'];
+	
+	$sql=sprintf("select `Page URL` from `Page Dimension` where `Page Key`=%d", $page_key);
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result))
+		$url=$row['Page URL'];
+	
+	$web_site=array('url'=>$url, 'type'=>$type, 'available'=>true);
+	
+}
+else
+	$web_site=array('available'=>false);
+	
+$smarty->assign('web_site',$web_site);	
 
 $filter_menu=array(
 		   'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),

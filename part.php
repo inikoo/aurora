@@ -207,7 +207,11 @@ $js_files[]='part.js.php';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+
+$smarty->assign('show_stock_history_chart',$_SESSION['state']['part']['show_stock_history_chart']);
 $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
+
+
 
 $transactions=array('all_transactions'=>0,'in_transactions'=>0,'out_transactions'=>0,'audit_transactions'=>0,'oip_transactions'=>0,'move_transactions'=>0);
 $sql=sprintf("select count(*) as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate' or `Inventory Transaction Type`='Adjust',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move In' or `Inventory Transaction Type`='Move Out',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",$part_id);
@@ -234,5 +238,14 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 // include_once('class.PartLocation.php');$part->update_stock_history();
+
+
+$part->load_images_slidesshow();
+$images=$part->images_slideshow;
+$smarty->assign('div_img_width',190);
+$smarty->assign('img_width',190);
+$smarty->assign('images',$images);
+$smarty->assign('num_images',count($images));
+
 $smarty->display('part.tpl');
 ?>
