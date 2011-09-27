@@ -11,10 +11,14 @@
 
  Version 2.0
 */
-ini_set('display_errors',1);
-error_reporting(E_ALL|E_STRICT|E_NOTICE);
 
 include_once('common.php');
+
+
+if($user->data['User Type']=='Supplier'){
+  header('Location: suppliers_index.php');
+        exit;
+}
 
 
 include_once('class.Product.php');
