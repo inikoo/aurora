@@ -259,8 +259,11 @@ if ($user->can_view('suppliers'))
 	
 	
 if ($user->can_view('warehouses')) {
+
+
 	if (count($user->warehouses)==1)
-		$nav_menu[] = array(_('Inventory'), 'warehouse.php','warehouses');
+		$nav_menu[] = array(_('Inventory'), 'inventory.php','warehouses');
+
  
 	else
 		$nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
@@ -326,10 +329,10 @@ if(!$is_root_available){
 }
 */
 $export_data=array(
-                 'xls'=>array('label'=>_('Export as xls'),'title'=>'Excel 2005 (xls)')
-                       ,'xlsx'=>array('label'=>_('Export as xlsx'),'title'=>'Excel 2007 (xlsx)')
-                               ,'csv'=>array('label'=>_('Export as csv'),'title'=>_('Comma separated values (vsv)'))
-                                      ,'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
+                 'xls'=>array('label'=>_('Export as xls'),'title'=>'Excel 2005 (xls)'),
+                       'xlsx'=>array('label'=>_('Export as xlsx'),'title'=>'Excel 2007 (xlsx)'),
+                               'csv'=>array('label'=>_('Export as csv'),'title'=>_('Comma separated values (vsv)')),
+                                      'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
              );
 
 
