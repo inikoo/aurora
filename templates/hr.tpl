@@ -5,7 +5,9 @@
 
 
 {include file='hr_navigation.tpl'}
-
+<div> 
+  <span class="branch">{t}Staff{/t}</span>
+</div>
     <h1>{t}Staff{/t}</h1>
   </div>
 

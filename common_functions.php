@@ -972,7 +972,8 @@ function customers_awhere($awhere) {
                     'sales_lower'=>'',
                     'sales_upper'=>'',
                     'sales_option'=>array(),
-                    'store_key'=>false
+                    'store_key'=>false,
+                    'order_option'=>array()
                 );
 
     //  $awhere=json_decode($awhere,TRUE);

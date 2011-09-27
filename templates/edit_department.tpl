@@ -2,9 +2,9 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
 <input id="department_key" value="{$department->id}" type="hidden" />
-<div style="clear:left;"> 
- <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a>&rarr; <span id="title_name_bis">{$department->get('Product Department Name')}</span></span>
- </div>
+<div style=""> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
+</div>
  
 <div style="clear:left;margin:0 0px">
     <h1><span id="title_name">{$department->get('Product Department Name')}</span> (<span id="title_code">{$department->get('Product Department Code')}</span>)</h1>

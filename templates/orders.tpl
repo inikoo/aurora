@@ -1,7 +1,11 @@
 {include file='header.tpl' }
 <div id="bd" style="padding:0px" >
 <div style="padding:0 20px">
- {include file='orders_navigation.tpl'}
+{include file='orders_navigation.tpl'}
+<div style=""> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Orders{/t}</span>
+</div>
+ 
   <h1>Orders {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
 
 </div>

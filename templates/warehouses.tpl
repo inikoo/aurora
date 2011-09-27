@@ -2,6 +2,9 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
+<div> 
+  <span class="branch">{t}Warehouses{/t}</span>
+</div>
  <h1 style="clear:left">{t}Warehouses{/t}</h1>
  </div>
 

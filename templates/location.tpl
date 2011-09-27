@@ -3,9 +3,10 @@
 <div id="bd" style="padding:0">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
- <div style="clear:left;"> 
- <span class="branch" ><a  href="warehouse.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')}({$location->get('Warehouse Code')})</a> &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')}({$location->get('Warehouse Area Code')})</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if}</span>
- </div>
+<div style="clear:left;"> 
+  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
+</div>
+
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>{t}Location{/t}: {$location->get('Location Code')} </h1>
   </div>
