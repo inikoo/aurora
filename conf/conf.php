@@ -2143,7 +2143,7 @@ $default_state=array(
 
                    'staff_user'=>array(
                                     'block_view'=>'login_history',
-                                    'loginhistory'=>array(
+                                    'login_history'=>array(
                                                        'display'=>'all',
                                                        'order'=>'login_date',
                                                        'order_dir'=>'',
@@ -2191,7 +2191,7 @@ $default_state=array(
                                               'f_field'=>'name',
                                               'f_value'=>''
                                           ),
-                               'loginhistory'=>array(
+                               'login_history'=>array(
                                                   'display'=>'all',
                                                   'order'=>'login_date',
                                                   'order_dir'=>'',
