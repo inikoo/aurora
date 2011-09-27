@@ -963,7 +963,7 @@ function list_products_for_edition() {
     $_dir=$order_direction;
 
     if ($order=='code')
-        $order='`Product File As`';
+        $order='`Product Code File As`';
     elseif($order=='name')
     $order='`Product Name`';
     elseif($order=='shortname')
