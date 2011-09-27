@@ -732,7 +732,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  
 	
 	  
-	  <div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;padding-top:0;clear:both;display:none"  id="new_product_dialog" >
+	  <div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;padding-top:0;clear:both;xdisplay:none"  id="new_product_dialog" >
 	    <h2>New Product</h2>
 	  <div id="new_product_dialog_msg" style="display:none" class="messages_block"></div>
 
