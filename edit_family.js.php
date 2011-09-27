@@ -1456,6 +1456,8 @@ product_code_validated=true;
 
 
 };
+alert("1")
+
  init_search('products_store');
 
 
@@ -1470,7 +1472,7 @@ product_code_validated=true;
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
  
-   
+   alert("2")
 
     
     var ids = ["details","products","discounts","pictures","web"]; 
@@ -1644,7 +1646,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     
     YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
  YAHOO.util.Event.addListener('clean_table_filter_hide7', "click",hide_filter,7);
-    
+    alert("3")
     var family_page_content_presentation_template_data_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_content_presentation_template_data);
     
     family_page_content_presentation_template_data_oACDS.queryMatchContains = true;
@@ -1663,7 +1665,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
 
 	
     Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
-
+ alert("4")
 }
 
 YAHOO.util.Event.onDOMReady(init);
