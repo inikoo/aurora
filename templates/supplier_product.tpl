@@ -60,12 +60,12 @@
 <div style="width:280px;float:left;margin-left:20px">
     {$product_chain_diagram}
 	<table class="show_info_product" style="{if $supplier_product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%"  >
-		 <tr><td>{t}Parts{/t}:</td></tr>
+		 <tr><td>{t}Current Stock{/t}:</td></tr>
 		 {foreach from=$supplier_product->get_parts() item=part_data}
 		  <tr>
-		    <td>1&rarr;{$part_data.Parts_Per_Supplier_Product_Unit}</td>
-		    <td><a href="part.php?sku={$part_data.part->sku}">{$part_data.part->get_sku()}</a></td>
-		    <td>{$part_data.part->get('Current Stock')}</td>
+		    <td style="vertical-align:bottom">1&rarr;{$part_data.Parts_Per_Supplier_Product_Unit}</td>
+		    <td style="vertical-align:bottom"><a href="part.php?sku={$part_data.part->sku}">{$part_data.part->get_sku()}</a></td>
+		    <td class="stock" style="padding:0">{$part_data.part->get('Current Stock')}</td>
 		    <td>{$part_data.part->get('Part XHTML Available For Forecast')}</td>
 		  </tr>
 		  {/foreach}

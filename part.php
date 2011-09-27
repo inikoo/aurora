@@ -18,6 +18,14 @@ include_once('class.Location.php');
 
 include_once('class.Part.php');
 
+$view_parts=$user->can_view('parts');
+
+if (!$view_parts) {
+    header('Location: index.php');
+    exit();
+}
+
+
 $view_sales=false;
 $view_stock=false;
 $view_orders=false;
