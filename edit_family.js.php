@@ -563,6 +563,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
    
+   
 
 
 	    var tableid=0; // Change if you have more the 1 table
