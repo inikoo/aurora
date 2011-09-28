@@ -1134,8 +1134,8 @@ class Customer extends DB_Table {
 
     function update_field_switcher($field,$value,$options='') {
 
-        //print "$field,$value,$options\n";
-
+     
+        
         if (is_string($value))
             $value=_trim($value);
 
@@ -1320,7 +1320,6 @@ class Customer extends DB_Table {
                 $email=new Email('email',$value);
 
 
-
                 $contact_email_keys=$contact->get_email_keys();
 
                 if ($email->id) {
@@ -1393,7 +1392,8 @@ class Customer extends DB_Table {
                     $this->updated=$contact->updated;
                     $this->msg=$contact->msg;
                     $this->new_value=$contact->new_value;
-                } else {//new email address not found
+                } 
+                else {//new email address not found
 
                     $principal_email=new Email($this->data['Customer Main Email Key']);
                     if ($principal_email->id) {
@@ -4944,8 +4944,16 @@ class Customer extends DB_Table {
         $email_contacts_number_keys=count($email_contacts_keys);
         $email_suppliers_number_keys=count($email_suppliers_keys);
         $email_companies_number_keys=count($email_companies_keys);
+        
+   //      print_r($email_customer_number_keys);
+     //     print_r($email_contacts_number_keys);
+       //    print_r($email_suppliers_number_keys);
+       // print_r($email_companies_number_keys);
+        
+      
+        
         $email->remove_from_parent('Customer',$this->id);
-        if ($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys>0) {
+        if (($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys)==0) {
 
 
             if ($this->data['Customer Type']=='Company') {
@@ -4967,7 +4975,7 @@ class Customer extends DB_Table {
             $contact_customers_number_keys=count($contact_customers_keys);
             $contact_suppliers_number_keys=count($contact_suppliers_keys);
 
-            print_r($contact_customers_keys);
+           // print_r($contact_customers_keys);
             // print_r($contact_suppliers_keys);
 
             if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
@@ -4980,6 +4988,8 @@ class Customer extends DB_Table {
             return;
         }
 
+
+        
 
         $this->updated=true;
         $this->msg='';

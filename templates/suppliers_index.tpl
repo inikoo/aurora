@@ -23,6 +23,21 @@
 
 </div>
 
+<div style="border:1px solid #777;font-size:120%;width:700px;padding:20px;margin-top:30px">
+{$user->get('User Alias')},<br><br>
+<p>
+Please note that this is an experimental system and is not finish yet, if you find and error
+or want a new feature please tell us and we will try our best to do it as soon as posible.
+</p>
+We are planning to release a commercial <i>- bug free & super cool-</i> product in January 2012.
+</p>
+
+Thanks<br>
+Inikoo Ltd<br>
+<br>
+<a href="mailto:raul@inikoo.com">raul@inikoo.com</a><br>
+
+</div>
 
 
 </div>

@@ -40,6 +40,7 @@ if ($store->id) {
 }
 
 $smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
 
 $general_options_list=array();

@@ -1,6 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='users_navigation.tpl'}
+<div> 
+  <span class="branch">{t}Users{/t}</span>
+</div>
+
 	<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Users Handing{/t}</h1>
 </div>

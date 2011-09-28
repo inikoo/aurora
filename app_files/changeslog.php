@@ -3591,6 +3591,7 @@ ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Prod
 ALTER TABLE `User Log Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
 ALTER TABLE `User Click Dimension` ADD `User Log Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `User Key` ;
 ALTER TABLE `Part Dimension` ADD `Part Main State` ENUM( 'Keeping', 'LastStock', 'Discontinued', 'NotKeeping' ) NULL DEFAULT NULL AFTER `Part Available` ,ADD INDEX ( `Part Main State` ) ;
+
 CREATE TABLE `Product Family Sales Correlation` (
 `Family A Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Family B Key` MEDIUMINT UNSIGNED NOT NULL ,
@@ -3605,14 +3606,14 @@ CREATE TABLE `Page Store Found In Bridge` (
 PRIMARY KEY ( `Page Store Key` , `Page Store Found In Key` )
 ) ENGINE = MYISAM ;
 
-CREATE TABLE `dw`.`Product Family Semantic Correlation` (
+CREATE TABLE `Product Family Semantic Correlation` (
 `Family A Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Family B Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Weight` FLOAT NOT NULL ,
 PRIMARY KEY ( `Family A Key` , `Family B Key` )
 ) ENGINE = MYISAM ;
 
-CREATE TABLE `dw`.`Product Page Bridge` (
+CREATE TABLE `Product Page Bridge` (
 `Product ID` MEDIUMINT UNSIGNED NOT NULL ,
 `Page Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Type` ENUM( 'List', 'Button' ) NOT NULL ,
@@ -4240,6 +4241,13 @@ CHANGE `Part Total Acc Adquired` `Part Total Acc Acquired` FLOAT NOT NULL DEFAUL
 ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Part Dimension` ADD `Part Main Image` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Part Interval Until Out of Stock` ;
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Main Image` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Supplier Product Buy State` ;
+
+
+ALTER TABLE `User Dimension` DROP INDEX `User Type_2` ;
+
+
+
+
 */
 
 ?>

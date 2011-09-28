@@ -4,7 +4,9 @@
 <div style="padding:0 20px">
 
 {include file='suppliers_navigation.tpl'}
-
+<div> 
+  <span class="branch">{t}Suppliers{/t}</span>
+</div>
 <div style="clear:left;">
   <h1>{t}Suppliers{/t}</h1>
 </div>

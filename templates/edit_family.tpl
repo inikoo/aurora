@@ -2,9 +2,9 @@
 <div id="bd" >
 <div>
 {include file='assets_navigation.tpl'}
-<div class="branch"> 
- <span ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
- </div>
+<div style=""> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
+</div>
 
 
 <div style="clear:left;margin:0 0px">
@@ -354,12 +354,14 @@
 	       <td>
 	        <div style="float:right"  class="general_options"><span id="add_other_found_in_page" class="state_details">Add other page</span></div>
 	       <table >
+	       {if $page_key}
 		    {foreach from=$page->found_in() item=found_in_page}
                <tr><td style="padding:0">{$found_in_page.found_in_label}</td>
                <td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
              
                </tr>
             {/foreach}
+            {/if}
 	       </table>
 	      
 	       </td>

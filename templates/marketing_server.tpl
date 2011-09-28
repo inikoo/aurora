@@ -2,7 +2,9 @@
 <div id="bd" >
  
 {include file='contacts_navigation.tpl'}
-
+<div> 
+  <span class="branch">{t}Marketing{/t}</span>
+</div>
   
   <div style="clear:left;">
     <h1>{t}Marketing Corporate Overview{/t}</h1>

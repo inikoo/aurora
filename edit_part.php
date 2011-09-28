@@ -1,6 +1,7 @@
 <?php
 include_once('common.php');
 include_once('class.Part.php');
+include_once('class.Warehouse.php');
 
 
 
@@ -45,9 +46,17 @@ $smarty->assign('part',$part);
 
 $general_options_list=array();
 
-$warehouse_key=0;
 
 
+$warehouse_keys=$part->get_warehouse_keys();
+foreach($warehouse_keys as $warehouse_key){
+    if(in_array($warehouse_key,$user->warehouses)){
+        $warehouse=new Warehouse($warehouse_key);
+        break;
+    }
+    header('Location: index.php?forbidden');
+exit;
+}
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
@@ -245,6 +254,7 @@ if($row=mysql_fetch_array($res)){
 }
 //print_r($show_case);
 $smarty->assign('show_case',$show_case);
+$smarty->assign('warehouse',$warehouse);
 
 $smarty->display('edit_part.tpl');
 

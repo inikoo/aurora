@@ -2,9 +2,10 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
  {include file='assets_navigation.tpl'}
-<div class="branch"> 
-<span ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
+<div style=""> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
 </div>
+
 <h1 style="width:600px">{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')})</h1>
 </div>
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
