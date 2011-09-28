@@ -40,7 +40,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
-		'users_loginhistory.js.php',	
+		'users_login_history.js.php',	
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -56,9 +56,9 @@ mysql_free_result($result);
 $smarty->assign('box_layout','yui-t4');
 $smarty->assign('parent','users');
 $smarty->assign('title', _('Users'));
-$tipo_filter=$_SESSION['state']['users']['loginhistory']['f_field'];
+$tipo_filter=$_SESSION['state']['users']['login_history']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['users']['loginhistory']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['users']['login_history']['f_value']);
 $filter_menu=array(
 		   'user'=>array('db_key'=>'user','menu_label'=>'User Handle like  <i>x</i>','label'=>'User'),
 		   'ip'=>array('db_key'=>'ip','menu_label'=>'IP Address like <i>x</i>','label'=>'IP Address'),
@@ -67,5 +67,5 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-$smarty->display('users_loginhistory.tpl');
+$smarty->display('users_login_history.tpl');
 ?>

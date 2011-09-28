@@ -254,7 +254,7 @@ class Auth {
                      ,prepare_mysql($this->handle)
                      ,$this->where_user_type
                     );
-//print $sql;
+         //print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->pass['handle']='Yes';

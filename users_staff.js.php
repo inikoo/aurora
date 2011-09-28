@@ -138,14 +138,15 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
 			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"}
-			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"}
-			       ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
-				
-				 
-			      
-	     }
+			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"logins", label:"<?php echo _('Logins')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"last_login", label:"<?php echo _('Last Login')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+,{key:"fail_logins", label:"<?php echo _('Fail Logins')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"fail_last_login", label:"<?php echo _('Last Fail Login')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			  //  ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"}
+			    //   ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"}
+			    //   ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"}
 
 
 			
@@ -170,7 +171,7 @@ var active=function(el, oRecord, oColumn, oData){
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active","alias","stores","warehouses"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","alias","stores","warehouses","logins","last_login","fail_logins","fail_last_login"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -290,7 +291,7 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			];
 			       
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_loginhistory&tableid=2");
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_login_history&tableid=2");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
@@ -315,7 +316,7 @@ var active=function(el, oRecord, oColumn, oData){
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['loginhistory']['nr']?>,containers : 'paginator2', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['login_history']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -325,8 +326,8 @@ var active=function(el, oRecord, oColumn, oData){
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['loginhistory']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['loginhistory']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -340,7 +341,7 @@ var active=function(el, oRecord, oColumn, oData){
 
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['users']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['loginhistory']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['users']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['login_history']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 

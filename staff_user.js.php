@@ -35,7 +35,7 @@ print $s;
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_loginhistory&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_login_history&user_key="+Dom.get('user_key').value+"&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -60,7 +60,7 @@ print $s;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['loginhistory']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -70,8 +70,8 @@ print $s;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -85,7 +85,7 @@ print $s;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 	
 
 	    var tableid=1; // Change if you have more the 1 table
@@ -97,7 +97,7 @@ print $s;
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
 			       
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_loginhistory&user_key="+Dom.get('user_key').value+"&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_login_history&user_key="+Dom.get('user_key').value+"&tableid=1");
 	 
 	 this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -123,7 +123,7 @@ print $s;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['loginhistory']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -133,8 +133,8 @@ print $s;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -148,7 +148,7 @@ print $s;
 
 
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 
 
 
@@ -168,7 +168,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff_u
 
  function init(){
 
-
+ init_search('users');
  ids=['login_history','access','email'];
  YAHOO.util.Event.addListener(ids, "click",change_block)
 

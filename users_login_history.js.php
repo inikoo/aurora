@@ -39,7 +39,7 @@ var Dom   = YAHOO.util.Dom;
 			
 			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=loginhistory&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=login_history&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -64,7 +64,7 @@ var Dom   = YAHOO.util.Dom;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['loginhistory']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['login_history']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -74,8 +74,8 @@ var Dom   = YAHOO.util.Dom;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['loginhistory']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['loginhistory']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -89,7 +89,7 @@ var Dom   = YAHOO.util.Dom;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['loginhistory']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['login_history']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
