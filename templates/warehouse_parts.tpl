@@ -2,7 +2,9 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
-
+<div> 
+  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; {t}Parts{/t}</span>
+</div>
  <div style="clear:left;margin:0 0px">
     <h1>{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</h1>
   </div>

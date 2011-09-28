@@ -3,6 +3,7 @@ include_once('common.php');
 include_once('class.CurrencyExchange.php');
 
 
+include_once('class.Store.php');
 
 include_once('class.Order.php');
 if(!$user->can_view('orders')){
@@ -101,6 +102,10 @@ if(!($user->can_view('stores') and in_array($order->data['Order Store Key'],$use
 
 $customer=new Customer($order->get('order customer key'));
 
+
+$store=new Store($order->data['Order Store Key']);
+    $smarty->assign('store',$store);
+
 if(isset($_REQUEST['pick_aid'])){
   $js_files[]='order_pick_aid.js.php';
   $template='order_pick_aid.tpl';
@@ -125,6 +130,7 @@ if(isset($_REQUEST['pick_aid'])){
     
     $template='order_in_process.tpl';
     
+   
    
     $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
     $smarty->assign('show_all',$_SESSION['state']['order']['show_all']);
