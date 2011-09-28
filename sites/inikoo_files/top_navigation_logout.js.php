@@ -102,7 +102,7 @@ Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
      var request=path+'inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
-// alert(request);
+ alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	
@@ -399,6 +399,7 @@ Dom.setStyle('dialog_register','display','none');
 }
 
 function show_register_part_2_dialog(){
+
 Dom.get('captcha').src = path+'inikoo_files/securimage_show.php?height=40&' + Math.random();
 
 Dom.setStyle(['show_login_dialog','dialog_login','dialog_forgot_password','dialog_register'],'display','none');
