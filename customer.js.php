@@ -728,7 +728,7 @@ Event.addListener(window, "load", function() {
 	   //login stat table
 	   
 	   
-	       
+	       /*
 
 	    var tableid=3; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -765,7 +765,7 @@ Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator3', 
+									      rowsPerPage:50,containers : 'paginator3', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -793,7 +793,7 @@ Event.addListener(window, "load", function() {
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 	   
 	   
-	   
+	   */
 // -------------------------------------orders end ----------------------------------
 
 	
