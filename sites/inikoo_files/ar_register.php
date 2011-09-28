@@ -347,7 +347,17 @@ function generate_password($length=9, $strength=0) {
 }
 
 function create_customer_user($handle,$customer_key,$site_key,$password, $send_email=true) {
-
+	$handle='migara@inikoo.com';
+	
+	$sql=sprintf("select * from `Configuration Dimension` where `Configuration Key`=%d", 1);
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result)){
+		$track_path=$row['Public Path'];
+	}
+	
+	//print $track_path;exit;
+	
+	
     global $site,$store;
 
     include_once('class.User.php');
@@ -377,26 +387,37 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
             return array(0,$user->msg);
 
         } else {
-
-
+		$send_email=new SendEmail();
+		$send_key=$send_email->update_email_dimension();
+		//print $send_key;exit;
+		
+		
         $email_credential_key=$store->get_email_credential_key('Site Registration');
+		//print $email_credential_key;exit;
 
             $welcome_email_subject="Thank you for your registration with ".$site->data['Site Name'];
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
+			
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
-
- $data=array(
+			
+			$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
+			//print $welcome_email_html;exit;
+				
+		$data=array(
                 
                   'subject'=>$welcome_email_subject,
                   'plain'=>$welcome_email_plain,
                   'email_credentials_key'=>$email_credential_key,
                   'to'=>$handle,
                   'html'=>$welcome_email_html,
-
+				  'email_type'=>'Registration',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user->id
               );
-
+//print_r($data);exit;
 		if($send_email){
-        $send_email=new SendEmail();
+		
+        //$send_email=new SendEmail();
         $send_email->smtp('HTML', $data);
         $result=$send_email->send();
 		}
@@ -651,6 +672,8 @@ function register($data) {
 
         list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
 
+		//print $user_key;
+		
         if ($user_key) {
 
             $_SESSION['logged_in']=true;

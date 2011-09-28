@@ -14,7 +14,8 @@ class SendEmail extends DB_Table{
 		$this->method='smtp';
 		$this->email_type='Registration';
 		$this->recipient_type='User';
-		
+		$this->recipient_key=0;
+		$this->email_key=0;
 		
 	}
 	
@@ -24,6 +25,9 @@ class SendEmail extends DB_Table{
 	
 	function smtp($type, $data){
 		
+		$this->email_type=$data['email_type'];
+		$this->recipient_key=$data['recipient_key'];
+		$this->recipient_type=$data['recipient_type'];
 		
 		switch($this->method){
 		case 'smtp':
@@ -483,7 +487,7 @@ class SendEmail extends DB_Table{
 			
 			
 			$sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
-					
+			//print $sql;		
 			$result=mysql_query($sql);
 			if($row=mysql_fetch_array($result)){
 				$this->m->addTo($data['to']);
@@ -497,7 +501,7 @@ class SendEmail extends DB_Table{
 				print 'No email Credential Matching';
 				exit;
 			}
-			switch($data['type']){
+			switch($type){
 				case 'plain':
 				case 'PLAIN':
 					$this->m->setMessageFromString($data['plain']);
@@ -521,6 +525,7 @@ class SendEmail extends DB_Table{
 	}
 	
 	function send(){
+	
 	//print_r($this->m);exit;
 		switch($this->method){
 			case 'amazon':
@@ -537,7 +542,7 @@ class SendEmail extends DB_Table{
 				$response= "Invalid recipient: ".Key($this->message_object->invalid_recipients)." Error: ".$this->message_object->invalid_recipients[Key($this->message_object->invalid_recipients)]."\n";
 			if(strcmp($error,"")){
 				$response=  array('state'=>400,'msg'=>$error);
-				//update_email_dimension($data);
+				
 			}
 			else
 				$response=  array('state'=>200,'msg'=>'ok');
@@ -549,6 +554,8 @@ class SendEmail extends DB_Table{
 			
 			
 		}
+		
+		//$this->update_email_dimension();
 		return $response;
 	}
 	
@@ -723,11 +730,13 @@ class SendEmail extends DB_Table{
 	}
 	
 	
-	function update_email_dimension($data){
+	function update_email_dimension(){
 		
-		$sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Date`) values ('%s', %d, '%s', '%s', '%s', '%s')", $this->email_type, 0, $this->recipient_type, $data['recipient_key'], $data['email_key'], NOW() );
+		$sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Date`) values ('%s', %d, '%s', '%s', '%s', NOW())", $this->email_type, 0, $this->recipient_type, $this->recipient_key, $this->email_key);
 		
-		print $sql;
+		$result=mysql_query($sql);
+		return mysql_insert_id();
+		//print $sql;
 		
 	}
   
