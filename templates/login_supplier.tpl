@@ -47,6 +47,8 @@
                         <input type="hidden" name="_lang" value="{$lang_id}" />
 			<input type="hidden" id="ep" name="ep" value="{$st}" />
 			<input type="hidden" id="user_type" name="user_type" value="supplier" />
+						<input type="hidden" id="log_as" name="log_as" value="supplier" />
+
                     </div>
                 </td>
             </tr>
