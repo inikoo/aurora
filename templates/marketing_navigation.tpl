@@ -1,25 +1,8 @@
-<span class="nav2 onleft"><a href="#">{t}Create List{/t}</a></span>
-
-<span class="nav2 onleft"><a href="customers_lists.php">{t}View List{/t}</a></span>
-<span class="nav2 onleft"><a href="new_campaign.php">{t}Create Campaign{/t}</a></span>
-<span class="nav2 onleft"><a href="campaign_builder.php">{t}View Campaign{/t}</a></span>
-
-
-
-
-<div class="right_box">
-  <div class="general_options">
-    
-
-    
-
-  </div>
-</div>
-
-{if $search_scope}
-<table class="search"  border=0>
+<input type='hidden' id="store_id" value="{$store_key}">
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_marketing.php{if $store_key}?store={$store_key}{/if}">{t}here{/t}</a>.</span>
+<table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
-<td class="label" style="" >{$search_label}:</td>
+<td class="label" style="" >{t}Search{/t}:</td>
 <td class="form" style="">
 <div id="search" class="asearch_container"  style=";float:left;{if !$search_scope}display:none{/if}">
   <input style="width:300px" class="search" id="{$search_scope}_search" value="" state="" name="search"/>
@@ -33,7 +16,16 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
-{/if}
 
 
-
+<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}500px{/if};float:right;margin-bottom:10px" class="right_box">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+    {if $options.tipo=="url"}
+    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+    {else}
+    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+    {/if}
+    {/foreach}
+  </div>
+</div>

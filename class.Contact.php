@@ -3007,9 +3007,10 @@ class Contact extends DB_Table {
                 $email_data['Email Contact Name']=$this->display('name');
                 $email_data['editor']=$this->editor;
                 $email=new Email('find',$email_data);
+             $email=new Email('email',$value);
 
-
-
+//print_r($email_data);
+//print_r($email);
 
                 //         if ($email->found) {
 
@@ -3063,6 +3064,7 @@ class Contact extends DB_Table {
                     $this->msg=$email->msg;
 
                 } else {
+                	if(!$email->id)
                     $email=new Email('find create',$email_data);
 
                     if ($email->id)
