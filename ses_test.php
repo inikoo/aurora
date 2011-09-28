@@ -14,12 +14,12 @@ $ses = new SimpleEmailService($access_key, $secret_key);
 //$ses->deleteVerifiedEmailAddress('migara@inikoo.com');
 
 /*Print the verified list */
-print_r($ses->listVerifiedEmailAddresses());exit;
+//print_r($ses->listVerifiedEmailAddresses());exit;
 
 
 
 $m = new SimpleEmailServiceMessage();
-$m->addTo('migara64@gmail.com');
+$m->addTo('migara@inikoo.com');
 $m->setFrom('migara@inikoo.com');
 $m->setSubject('Hello, world!');
 $m->setMessageFromString('This is the message body.');
@@ -52,8 +52,8 @@ $m->setMessageFromString($text, $html);
 
 print_r($ses->sendEmail($m));
 
-print_r($ses->getSendQuota());
-print_r($ses->getSendStatistics());
+//print_r($ses->getSendQuota());
+//print_r($ses->getSendStatistics());
 
 
 
