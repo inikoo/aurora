@@ -31,11 +31,11 @@ case('staff_users'):
     list_staff_users();
     break;
 
-case('staff_user_loginhistory'):
-    list_staff_user_loginhistory();
+case('staff_user_login_history'):
+    list_staff_user_login_history();
     break;
-case('customer_user_loginhistory'):
-    list_customer_user_loginhistory();
+case('customer_user_login_history'):
+    list_customer_user_login_history();
     break;
 
 case('supplier_users'):
@@ -47,11 +47,11 @@ case('customer_users'):
 case('users'):
     list_users();
     break;
-case('loginhistory'):
-    list_loginhistory();
+case('login_history'):
+    list_login_history();
     break;
-case('staff_loginhistory'):
-    list_staff_loginhistory();
+case('staff_login_history'):
+    list_staff_login_history();
     break;
 
 case('groups'):
@@ -225,8 +225,8 @@ function list_users() {
 
     echo json_encode($response);
 }
-function list_loginhistory() {
-    $conf=$_SESSION['state']['users']['loginhistory'];
+function list_login_history() {
+    $conf=$_SESSION['state']['users']['login_history'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -275,7 +275,7 @@ function list_loginhistory() {
     $filter_msg='';
 
 
-    $_SESSION['state']['users']['loginhistory']=array(
+    $_SESSION['state']['users']['login_history']=array(
                 'type'=>$type
                        ,'order'=>$order
                                 ,'order_dir'=>$order_direction
@@ -380,8 +380,8 @@ function list_loginhistory() {
     echo json_encode($response);
 }
 
-function list_staff_loginhistory() {
-    $conf=$_SESSION['state']['users']['loginhistory'];
+function list_staff_login_history() {
+    $conf=$_SESSION['state']['users']['login_history'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -430,7 +430,7 @@ function list_staff_loginhistory() {
     $filter_msg='';
 
 
-    $_SESSION['state']['users']['loginhistory']=array(
+    $_SESSION['state']['users']['login_history']=array(
                 'type'=>$type
                        ,'order'=>$order
                                 ,'order_dir'=>$order_direction
@@ -535,8 +535,8 @@ function list_staff_loginhistory() {
 
     echo json_encode($response);
 }
-function list_customer_user_loginhistory() {
-    $conf=$_SESSION['state']['staff_user']['loginhistory'];
+function list_customer_user_login_history() {
+    $conf=$_SESSION['state']['staff_user']['login_history'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -597,16 +597,16 @@ function list_customer_user_loginhistory() {
     $filter_msg='';
 
 
-    $_SESSION['state']['staff_user']['loginhistory']['type']=$type;
-    $_SESSION['state']['staff_user']['loginhistory']['order']=$order;
-    $_SESSION['state']['usstaff_userers']['loginhistory']['order_dir']=$order_direction;
-    $_SESSION['state']['staff_user']['loginhistory']['nr']=$number_results;
+    $_SESSION['state']['staff_user']['login_history']['type']=$type;
+    $_SESSION['state']['staff_user']['login_history']['order']=$order;
+    $_SESSION['state']['usstaff_userers']['login_history']['order_dir']=$order_direction;
+    $_SESSION['state']['staff_user']['login_history']['nr']=$number_results;
 
-    $_SESSION['state']['staff_user']['loginhistory']['sf']=$start_from;
-    $_SESSION['state']['staff_user']['loginhistory']['where']=$where;
-    $_SESSION['state']['staff_user']['loginhistory']['f_field']=$f_field;
-    $_SESSION['state']['staff_user']['loginhistory']['f_value']=$f_value;
-    $_SESSION['state']['staff_user']['loginhistory']['f_value']=$f_value;
+    $_SESSION['state']['staff_user']['login_history']['sf']=$start_from;
+    $_SESSION['state']['staff_user']['login_history']['where']=$where;
+    $_SESSION['state']['staff_user']['login_history']['f_field']=$f_field;
+    $_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
+    $_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
 
     $where=sprintf('where true ');
     $where.=" and `User Type`='Customer'";
@@ -710,8 +710,8 @@ function list_customer_user_loginhistory() {
 
     echo json_encode($response);
 }
-function list_staff_user_loginhistory() {
-    $conf=$_SESSION['state']['staff_user']['loginhistory'];
+function list_staff_user_login_history() {
+    $conf=$_SESSION['state']['staff_user']['login_history'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -772,16 +772,16 @@ function list_staff_user_loginhistory() {
     $filter_msg='';
 
 
-    $_SESSION['state']['staff_user']['loginhistory']['type']=$type;
-    $_SESSION['state']['staff_user']['loginhistory']['order']=$order;
-    $_SESSION['state']['usstaff_userers']['loginhistory']['order_dir']=$order_direction;
-    $_SESSION['state']['staff_user']['loginhistory']['nr']=$number_results;
+    $_SESSION['state']['staff_user']['login_history']['type']=$type;
+    $_SESSION['state']['staff_user']['login_history']['order']=$order;
+    $_SESSION['state']['usstaff_userers']['login_history']['order_dir']=$order_direction;
+    $_SESSION['state']['staff_user']['login_history']['nr']=$number_results;
 
-    $_SESSION['state']['staff_user']['loginhistory']['sf']=$start_from;
-    $_SESSION['state']['staff_user']['loginhistory']['where']=$where;
-    $_SESSION['state']['staff_user']['loginhistory']['f_field']=$f_field;
-    $_SESSION['state']['staff_user']['loginhistory']['f_value']=$f_value;
-    $_SESSION['state']['staff_user']['loginhistory']['f_value']=$f_value;
+    $_SESSION['state']['staff_user']['login_history']['sf']=$start_from;
+    $_SESSION['state']['staff_user']['login_history']['where']=$where;
+    $_SESSION['state']['staff_user']['login_history']['f_field']=$f_field;
+    $_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
+    $_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
 
     $where=sprintf('where true ');
     $where.=" and `User Type`='Staff'";
@@ -1108,7 +1108,7 @@ function list_staff_users() {
         $order='`Staff Name`';
     $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
 
-    $sql="select `User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Staff Key`) $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
+    $sql="select `User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Staff Key`) $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
     // print $sql;
     $adata=array();
     $res=mysql_query($sql);
@@ -1137,8 +1137,12 @@ function list_staff_users() {
                      'alias'=>$alias,
                      'name'=>$data['Staff Name'],
                      'password'=>$password,
+                    'logins'=>number($data['User Login Count']),
+                    'last_login'=>($data ['User Last Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Login']." +00:00" ) )),
+                 'fail_logins'=>number($data['User Failed Login Count']),
+                    'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Failed Login']." +00:00" ) )),
 
-                     'groups'=>$groups,
+           'groups'=>$groups,
                      'stores'=>$stores,
                      'warehouses'=>$warehouses,
                      'isactive'=>$is_active

@@ -739,8 +739,8 @@ Event.addListener(window, "load", function() {
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
 			       
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key);
-		//alert("ar_users.php?tipo=customer_user_loginhistory&tableid=3&user_key="+customer_key)
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_login_history&tableid=3&user_key="+customer_key);
+		//alert("ar_users.php?tipo=customer_user_login_history&tableid=3&user_key="+customer_key)
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
@@ -765,7 +765,7 @@ Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['loginhistory']['nr']?>,containers : 'paginator3', 
+									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator3', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -775,8 +775,8 @@ Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_user']['loginhistory']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -790,7 +790,7 @@ Event.addListener(window, "load", function() {
 
 
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table3.filter={key:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['loginhistory']['f_value']?>'};
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 	   
 	   
 	   
