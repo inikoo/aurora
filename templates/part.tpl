@@ -2,7 +2,9 @@
 <div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
 <div style="padding: 0 20px;">
 {include file='locations_navigation.tpl'}
-
+<div> 
+  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
+</div>
 
 <div style="clear:left">
   <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part{/t} <span class="id">{$part->get_sku()}</span></span></h1>

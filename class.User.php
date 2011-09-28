@@ -657,6 +657,16 @@ class User extends DB_Table {
 
     }
 
+function get_number_suppliers(){
+    return count($this->suppliers);
+}
+function get_number_warehouses(){
+    return count($this->warehouses);
+}
+function get_number_stores(){
+    return count($this->stores);
+}
+
     function is($tag='') {
         if (strtolower($this->data['User Type'])==strtolower($tag)) {
             return true;

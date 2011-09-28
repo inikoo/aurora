@@ -2346,7 +2346,7 @@ class part extends DB_Table {
     function update_supplied_by() {
         $supplied_by='';
         $sql=sprintf("select SPD.`Supplier Product Key`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",
-        $this->data['Part SKU']);
+                     $this->data['Part SKU']);
         $result=mysql_query($sql);
         //print "$sql\n";
         $supplier=array();
@@ -2362,9 +2362,9 @@ class part extends DB_Table {
                 $current_supplier=$_current_supplier;
             } else {
                 $supplied_by.=sprintf(', <a href="supplier_product.php?pid=%d">%s</a>',
-                $row['Supplier Product Key'],
-                $row['Supplier Product Code']
-                );
+                                      $row['Supplier Product Key'],
+                                      $row['Supplier Product Code']
+                                     );
 
             }
 
@@ -2408,7 +2408,7 @@ class part extends DB_Table {
         mysql_query($sql);
 
 
-       
+
 
         $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
                      ,$this->sku
@@ -2451,9 +2451,9 @@ class part extends DB_Table {
                      prepare_mysql($main_image_src)
                      ,$this->sku
                     );
-         
+
         mysql_query($sql);
-       
+
     }
 
     function load_images() {
@@ -2479,6 +2479,21 @@ class part extends DB_Table {
             // print_r($row);
             $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
         }
+
+    }
+
+    function get_warehouse_keys() {
+        $warehouse_keys=array();
+
+        $sql=sprintf("select `Warehouse Key` from `Part Warehouse Bridge` where `Part SKU`=%d",
+                     $this->sku
+                    );
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $warehouse_keys[$row['Warehouse Key']]=$row['Warehouse Key'];
+        }
+
+        return $warehouse_keys;
 
     }
 

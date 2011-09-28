@@ -27,7 +27,7 @@
 	            <span id="top_message" style=";margin-right:30px"></span>
 	            <a style=";margin-right:15px">{t}Help{/t}</a>
 	            <span id="language_flag"><img src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}"  /></span>
-	            <span>{t}Hello{/t} {$user}</span>
+	            <span>{t}Hello{/t} {$user->get('User Alias')}</span>
 	            <span><a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a></span>
 	        </div>
 	        
