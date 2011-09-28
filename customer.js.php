@@ -728,7 +728,7 @@ Event.addListener(window, "load", function() {
 	   //login stat table
 	   
 	   
-	       
+	       /*
 
 	    var tableid=3; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -793,7 +793,7 @@ Event.addListener(window, "load", function() {
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 	   
 	   
-	   
+	   */
 // -------------------------------------orders end ----------------------------------
 
 	
