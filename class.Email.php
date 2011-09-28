@@ -349,8 +349,8 @@ class Email extends DB_Table {
             if (preg_match('/anonimous|anonymous/',$options) ) {
                 $contact=new Contact('create anonimous');
                 $contact->add_email(array(
-                                        'Email Key'=>$this->id
-                                                    ,'Email Description'=>'Unknown'
+                                        'Email Key'=>$this->id,
+                                        'Email Description'=>'Unknown'
                                     ));
             }
 

@@ -1,44 +1,5 @@
 <input type='hidden' id="store_id" value="{$store_key}">
 <span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_products.php{if $store_key}?store={$store_key}{/if}">{t}here{/t}</a>.</span>
-
-
-{*
-{if $store_list_length>1}
-<dl class="dropdown">
-  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='stores.php'" >{t}Stores{/t}</dt>
-  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
-    <ul>
-      {foreach from=$tree_list item=store }
-      <li><a href="store.php?id={$store.id}" class="underline">{$store.code}</a></li>
-      {/foreach}
-    </ul>
-  </dd>
-</dl>
-{/if}
-
-
-
-{if $store_key}
-
-<dl class="dropdown">
-  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='store.php?id={$store_id}'" >{t}Departments{/t}</dt>
-  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
-    <ul>
-      {foreach from=$tree_list item=department }
-      <li><a href="department.php?id={$department.id}" class="underline">{$department.code}</a></li>
-      {/foreach}
-    </ul>
-  </dd>
-</dl>
- <span class="nav2 onleft"><a href="families.php?store_id={$store_key}">{t}Families{/t}</a></span>
- <span class="nav2 onleft"><a href="products.php?store_id={$store_key}">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="deals.php?store_id={$store_key}">{t}Deals{/t}</a></span>
- <span class="nav2 onleft"><a href="product_categories.php?store_id={$store_key}id=0">{t}Products Categories{/t}</a></span>
-
-{/if}
-
-*}
-
 <table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
 <td class="label" style="" >{t}Search{/t}:</td>
