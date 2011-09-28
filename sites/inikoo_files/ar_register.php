@@ -586,7 +586,7 @@ function register($data) {
 
     //print_r($_SESSION);
 
-    if ($securimage->check($data['values']['captcha_code']) == false) {
+    if (!$securimage->check($data['values']['captcha_code']) == false) {
         //echo $securimage->getCode();
         // the code was incorrect
         // you should handle the error so that the form processor doesn't continue

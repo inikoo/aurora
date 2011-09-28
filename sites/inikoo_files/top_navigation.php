@@ -184,7 +184,7 @@ Your password has been changed.
 
 </table>
 </div>
-<div id="dialog_register"    class="dialog"    style="">
+<div id="dialog_register"    class="dialog"    style="z-index:20000; position:relative;">
 <h2>Registration</h2>
 <table>
 <tr><td class="label">Email: </td><td><input id="register_email"></td></tr>
@@ -193,7 +193,7 @@ Your password has been changed.
 
 </table>
 </div>
-<div id="dialog_register_part_2"    class="dialog"  style="xdisplay:block; z-index:1; position:relative;"  >
+<div id="dialog_register_part_2"    class="dialog"  style="position:relative; z-index:20000;"  >
 <input id="epw2" value="" type="hidden"/>
 <h2>Registration</h2>
 <table border=0 style="margin:0 auto;">

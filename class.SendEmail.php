@@ -12,6 +12,9 @@ class SendEmail extends DB_Table{
 
 	function SendEmail(){
 		$this->method='smtp';
+		$this->email_type='Registration';
+		$this->recipient_type='User';
+		
 		
 	}
 	
@@ -532,8 +535,10 @@ class SendEmail extends DB_Table{
 			$error=$this->message_object->Send();
 			for($recipient=0,Reset($this->message_object->invalid_recipients);$recipient<count($this->message_object->invalid_recipients);Next($this->message_object->invalid_recipients),$recipient++)
 				$response= "Invalid recipient: ".Key($this->message_object->invalid_recipients)." Error: ".$this->message_object->invalid_recipients[Key($this->message_object->invalid_recipients)]."\n";
-			if(strcmp($error,""))
+			if(strcmp($error,"")){
 				$response=  array('state'=>400,'msg'=>$error);
+				//update_email_dimension($data);
+			}
 			else
 				$response=  array('state'=>200,'msg'=>'ok');
 
@@ -715,6 +720,15 @@ class SendEmail extends DB_Table{
 			
 		}
 		return $result;
+	}
+	
+	
+	function update_email_dimension($data){
+		
+		$sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Date`) values ('%s', %d, '%s', '%s', '%s', '%s')", $this->email_type, 0, $this->recipient_type, $data['recipient_key'], $data['email_key'], NOW() );
+		
+		print $sql;
+		
 	}
   
 }
