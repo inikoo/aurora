@@ -10641,9 +10641,9 @@ if(isset( $_REQUEST['tableid']))
      $table='`Order Transaction Fact` OTF left join `Product History Dimension` PD  on (PD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)  ';
 
    }elseif($mode=='pid')
-     $where=$where.sprintf(" and PD.`Product ID`=%d ",$tag);
+     $where=$where.sprintf(" and OTF.`Product ID`=%d ",$tag);
    elseif($mode=='key')
-     $where=$where.sprintf(" and PD.`Product Key`=%d ",$tag);
+     $where=$where.sprintf(" and OTF.`Product Key`=%d ",$tag);
 
 
    $wheref="";
