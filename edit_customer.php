@@ -130,7 +130,7 @@ $other_email=$customer->get_other_emails_data();
 
 $registered_email=array();
 $unregistered_email=array();
-
+$main_email=array();
 foreach($other_email as $email){
 	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
 
