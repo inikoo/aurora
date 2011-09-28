@@ -2,7 +2,9 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
-
+<div  style="clear:left;"> 
+  <span class="branch">{t}Orders{/t}</span>
+</div>
  
     <h1>{t}Orders Corporate Overview{/t}</h1>
 </div> 

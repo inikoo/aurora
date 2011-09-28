@@ -3,13 +3,15 @@
 
 <div style="padding:0 20px">
 {include file='users_navigation.tpl'}
-
+<div > 
+  <span   class="branch"><a  href="users.php">{t}Users{/t}</a> &rarr; <a  href="users_staff.php">{t}Staff Users{/t}</a> &rarr; {$user_class->get('User Alias')}</span>
+</div>
 
 <input id="user_key" value="{$user_class->id}" type="hidden"/>
 
-<div id="no_details_title" style="clear:left;">
+
     <h1>{t}Staff User{/t}: {$user_class->get('User Alias')}</h1>
-</div>
+
 
 <div style="clear:both"></div>
 <div style="width:230px;margin-top:0px;float:left">
@@ -50,22 +52,22 @@
 		       <td>{t}Failed Login Count{/t}:</td>
 		        <td>{$user_class->get('Failed Login Count')}</td>
 			</tr>
-		     <tr>
+		     <tr style="{if $user_class->get('Failed Login Count')==0}visibility:hidden{/if}">
 		       <td>{t}Failed Last Login{/t}:</td>
 		        <td>{$user_class->get('Last Failed Login')}</td>
 		     </tr>
 		</table>
 		
 </div>  
-	
+	<div style="clear:both"></div>
 		</div>
 		
 		
 		
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $block_view=='login_history'}selected{/if}"  id="login_history">  <span> {t}Login History{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='departments'}selected{/if}"  id="access">  <span> {t}System Permissions{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='families'}selected{/if}"  id="email">  <span> {t}Email Account{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='access'}selected{/if}"  id="access">  <span> {t}System Permissions{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='email'}selected{/if}"  id="email">  <span> {t}Email Account{/t}</span></span></li>
   
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -89,10 +91,7 @@
  <div id="block_email" style="{if $block_view!='email'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 
-  <span class="clean_table_title">{t}Customer communication email accounts{/t}</span>
-         {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
-      <div  id="table1"   class="data_table_container dtable btable "> </div>
-
+  
 
 </div>
 </div>

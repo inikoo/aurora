@@ -7,7 +7,29 @@ include_once('class.Supplier.php');
 $view_suppliers=$user->can_view('suppliers');
 
 
-if(!$view_suppliers){
+$product_supplier_key=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
+
+if (!$product_supplier_key) {
+    header('Location: suppliers.php?e');
+    exit();
+}
+$supplier_product= new SupplierProduct('pid',$product_supplier_key);
+if (!$supplier_product->id) {
+    header('Location: suppliers.php');
+    exit;
+
+}
+
+$supplier_key=$supplier_product->supplier_key;
+if ($user->data['User Type']=='Supplier') {
+
+    if (!in_array($supplier_key,$user->suppliers)) {
+        header('Location: suppliers.php?e');
+        exit();
+
+    }
+
+} else if (!$view_suppliers) {
     header('Location: index.php');
     exit();
 }
@@ -16,47 +38,35 @@ if(!$view_suppliers){
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		  $yui_path.'assets/skins/sam/autocomplete.css',
-		 'common.css',
-		 'container.css',
-		 'button.css',
-		 'table.css'
-		 );
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css'
+           );
 include_once('Theme.php');
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-debug.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/common.js',
-		'external_libs/amstock/amstock/swfobject.js',
-		'js/search.js',
-		'js/table_common.js',
-		);
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-debug.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'js/common.js',
+              'external_libs/amstock/amstock/swfobject.js',
+              'js/search.js',
+              'js/table_common.js',
+          );
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
-$product_supplier_key=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
-//$supplier_key=(isset($_REQUEST['supplier_key'])?$_REQUEST['supplier_key']:$_SESSION['state']['supplier_product']['supplier_key']);
-//$supplier_product_code=(isset($_REQUEST['code'])?$_REQUEST['code']:$_SESSION['state']['supplier_product']['code']);
-if(!$product_supplier_key){
- header('Location: suppliers.php?e');
-    exit();
-}
-$supplier_product= new SupplierProduct('pid',$product_supplier_key);
-if(!$supplier_product->id){
-header('Location: suppliers.php');
-   exit;
 
-}
-$supplier_key=$supplier_product->supplier_key;
+
 $supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
 
@@ -73,8 +83,8 @@ $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']
 
 $modify=$user->can_edit('suppliers');
 $general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Supplier Product'));
+if ($modify)
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Supplier Product'));
 $smarty->assign('general_options_list',$general_options_list);
 
 
@@ -106,9 +116,9 @@ $part_skus=$supplier_product->get_part_skus();
 
 
 $part_sku=false;
-if($supplier_product->data['Supplier Product Part Convertion']=='1:1'){
-$part_sku=array_pop($part_skus);
-$smarty->assign('part_sku',$part_sku);
+if ($supplier_product->data['Supplier Product Part Convertion']=='1:1') {
+    $part_sku=array_pop($part_skus);
+    $smarty->assign('part_sku',$part_sku);
 
 }
 
@@ -119,6 +129,8 @@ $smarty->assign('div_img_width',190);
 $smarty->assign('img_width',190);
 $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
+
+$smarty->assign('supplier_id',$supplier_key);
 
 $smarty->display('supplier_product.tpl');
 

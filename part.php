@@ -18,6 +18,14 @@ include_once('class.Location.php');
 
 include_once('class.Part.php');
 
+$view_parts=$user->can_view('parts');
+
+if (!$view_parts) {
+    header('Location: index.php');
+    exit();
+}
+
+
 $view_sales=false;
 $view_stock=false;
 $view_orders=false;
@@ -126,7 +134,16 @@ exit;
 }
 
 
-$warehouse_key=0;
+$warehouse_keys=$part->get_warehouse_keys();
+foreach($warehouse_keys as $warehouse_key){
+    if(in_array($warehouse_key,$user->warehouses)){
+        $warehouse=new Warehouse($warehouse_key);
+        break;
+    }
+    header('Location: index.php?forbidden');
+exit;
+}
+
 
 
 //show case 		
@@ -174,17 +191,15 @@ $smarty->assign('part_custom_fields',$part_custom_fields);
 
 
 
-$general_options_list=array();
-if($warehouse_key){
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php?id='.$warehouse->id,'label'=>_('Warehouse'));
-$general_options_list[]=array('tipo'=>'url','url'=>'locations.php?warehouse_id='.$warehouse->id,'label'=>_('Locations'));
-$general_options_list[]=array('tipo'=>'url','url'=>'parts.php?warehouse_id='.$warehouse->id,'label'=>_('Parts'));
-}else{
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Warehouse'));
-$general_options_list[]=array('tipo'=>'url','url'=>'locations.php','label'=>_('Locations'));
-$general_options_list[]=array('tipo'=>'url','url'=>'parts.php','label'=>_('Parts'));
 
-}
+
+$general_options_list=array();
+
+
+
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php?id=='.$warehouse->id,'label'=>_('Locations'));
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php?id='.$warehouse->id,'label'=>_('Parts'));
+
 
 
 
@@ -246,6 +261,7 @@ $smarty->assign('div_img_width',190);
 $smarty->assign('img_width',190);
 $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
+$smarty->assign('warehouse',$warehouse);
 
 $smarty->display('part.tpl');
 ?>

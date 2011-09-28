@@ -2,7 +2,9 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
 {include file='contacts_navigation.tpl'}
-
+<div> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Statistics{/t}</span>
+</div>
 <h2 style="clear:left">{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
 
 
