@@ -38,7 +38,7 @@ class LightProduct{
             return false;
 			
 		
-		
+		//print $sql;
         $result=mysql_query($sql);
 		
 		if(!mysql_num_rows($result))
@@ -71,18 +71,22 @@ class LightProduct{
 		if ($this->locale=='de_DE') {
 		$out_of_stock='nicht vorrv§tig';
 		$discontinued='ausgelaufen';
+		$offline='Not for Sale';
 		  }if ($this->locale=='de_DE') {
 		$out_of_stock='nicht vorrv§tig';
 		$discontinued='ausgelaufen';
+		$offline='Not for Sale';
 		  }
 		elseif($this->locale=='es_ES') {
 		$out_of_stock='Fuera de Stock';
 		$discontinued='Fuera de Stock';
+		$offline='Not for Sale';
 		  }
 
 		  elseif($this->locale=='fr_FR') {
 		$out_of_stock='Rupture de stock';
 		$discontinued='Rupture de stock';
+		$offline='Not for Sale';
 		  }
 		  else {
 		$out_of_stock='Out of Stock';
