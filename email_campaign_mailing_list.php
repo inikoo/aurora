@@ -1,5 +1,8 @@
 <?php
 include_once('common.php');
+
+include_once('class.EmailCampaign.php');
+
 if (!$user->can_view('customers') ) {
     header('Location: index.php');
     exit;
@@ -15,22 +18,25 @@ else {
 }
 
 
-$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$id);
 
-$res=mysql_query($sql);
-if (!$customer_list_data=mysql_fetch_assoc($res)) {
-    header('Location: index.php?error=id_in_customers_list_not_found');
+$email_campaign=new EmailCampaign($id);
+
+
+if (!$email_campaign->id) {
+    header('Location: index.php?error=email_campaign_not_found');
     exit;
 
 }
-$store=new Store($customer_list_data['List Store Key']);
+
+$smarty->assign('email_campaign',$email_campaign);
+
+
+$store=new Store($email_campaign->data['Email Campaign Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
-
-$customer_list_name=$customer_list_data['List Name'];
-$smarty->assign('customer_list_name',$customer_list_name);
-$smarty->assign('customer_list_id',$customer_list_data['List Key']);
+$smarty->assign('search_scope','marketing');
+$smarty->assign('search_label',_('Search'));
 
 
 
@@ -41,7 +47,6 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 $smarty->assign('general_options_list',$general_options_list);
 
-$smarty->assign('options_box_width','450px');
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -80,7 +85,7 @@ $js_files=array(
               'js/edit_common.js',
               'js/csv_common.js',
               'common_customers.js.php',
-              'customers_list.js.php?id='.$id
+              'email_campaign_mailing_list.js.php'
           );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -92,5 +97,5 @@ $smarty->assign('title', _('Customer Static List'));
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
-$smarty->display('customers_list.tpl');
+$smarty->display('email_campaign_mailing_list.tpl');
 ?>

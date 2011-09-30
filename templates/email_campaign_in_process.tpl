@@ -1,6 +1,12 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='marketing_navigation.tpl'}
+<div> 
+  <span class="branch">{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {$email_campaign->get('Email Campaign Name')}</span>
+</div>
+
+
+
 <div style="clear:left;margin:0 0px">
 <h1>{t}Email Campaign{/t}: <span id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></h1>
 
@@ -141,14 +147,15 @@
 
 
 <tr id="tr_content" style="{if $current_content_key!=$current_content_key}display:none{/if}">
-<td class="label" >{t}Content{/t}:</td>
+<td class="label" >{t}Content{/t}:<br/><div id="email_campaign_content_text_msg" class="edit_td_alert"></div>
+    <div id="html_email_editor_msg" class="edit_td_alert"></div></td>
    <td  colspan=2 style="text-align:">
-   <div  style="top:00px;width:600px;margin:0px" >                                                     
+   <div  style="top:00px;width:600px;margin:0px;height:260px" >                                                     
    <textarea style="width:100%;height:250px;background-image:url(art/text_email_guide.png);" id="email_campaign_content_text" ovalue="{$email_campaign->get_content_text($current_content_key)|escape}">{$email_campaign->get_content_text($current_content_key)|escape}</textarea>
     <br>
     <div id="email_campaign_content_text_Container" style="" ></div>
      </div>
-    <div id="email_campaign_content_text_msg" class="edit_td_alert"></div>
+   
    </td>
 </tr>
 
@@ -184,8 +191,8 @@
 <tr>
 <td></td>
 <td colspan=2>
-<textarea id="html_email_editor" rows="20" cols="75">
-</textarea>
+
+<textarea id="html_email_editor" ovalue="{$email_campaign->get_content_html($current_content_key)|escape}" rows="20" cols="75">{$email_campaign->get_content_html($current_content_key)|escape}</textarea>
 </td>
 </tr>
 
@@ -303,13 +310,9 @@
 <tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span  style=";margin-left:5px"><b>{t}To{/t}:</b></span></td><td id="preview_to"></td></tr>
 
 <tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span style=";margin-left:5px"><b>{t}Subject{/t}:</b></span></td><td   id="preview_subject" ></td></tr>
-<tr id="tr_preview_plain_body"><td colspan=2><div id="preview_plain_body" style="min-height: 200px;border:1px solid #ccc;padding:5px"></div></td></tr>
-<tr id="tr_preview_html_body"><td colspan=2>
-<iframe id="preview_html_body" onLoad="changeHeight(this);" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 style="width:700px;height:100px" >
-<p>Your browser does not support iframes.</p>
-</iframe>
-
-</td></tr>
+<tr style="display:none" id="tr_preview_plain_body"><td colspan=2><div id="preview_plain_body" style="min-height: 200px;border:1px solid #ccc;padding:5px"></div></td></tr>
+<tr style="display:none" id="tr_preview_template_body"><td colspan=2><iframe id="preview_html_body" onLoad="changeHeight(this);" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 style="width:700px;height:100px" ><p>Your browser does not support iframes.</p></iframe></td></tr>
+<tr style="display:none" id="tr_preview_html_body"><td colspan=2><div id="preview_html_body" style="min-height: 200px;border:1px solid #ccc;padding:5px"></div></td></tr>
 
 </table>
 

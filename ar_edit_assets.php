@@ -3309,6 +3309,8 @@ function edit_location($data) {
 
 function edit_part($data) {
 
+//print_r($data);
+
     $part=new Part($data['sku']);
     if (!$part->sku) {
         $response= array('state'=>400,'msg'=>'part not found');
@@ -3317,15 +3319,7 @@ function edit_part($data) {
     }
 
     $key_dic=array(
-                 'Part_Unit_Description'=>'Part Unit Description',
-                 'Part_Gross_Weight'=>'Part Gross Weight',
-                 'Part_Package_Volume'=>'Part Package Volume',
-                 'Part_Package_Minimun_Orthogonal_Volume'=>'Part Package Minimun Orthogonal Volume',
-                 'Part_Unit'=>'Part Unit',
-                 'Part_General_Description'=>'Part General Description',
-                 'Part_Health_And_Safety'=>'Part Health And Safety',
-                 'Part_Health_And_Safety'=>'Part Health And Safety',
-                 'Part_Health_And_Safety'=>'Part Health And Safety'
+          
              );
 
 
@@ -3333,7 +3327,7 @@ function edit_part($data) {
     if (array_key_exists($data['key'],$key_dic))
         $key=$key_dic[$data['key']];
     else
-        $key=$data['okey'];
+        $key=$data['key'];
 
 		
     $the_new_value=_trim($data['newvalue']);
@@ -3342,6 +3336,8 @@ function edit_part($data) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
         $part->update_custom_fields($key, $the_new_value);
     } else {
+    
+    print "$key $the_new_value";
         $part->update(array($key=>$the_new_value));
     }
 

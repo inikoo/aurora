@@ -197,12 +197,12 @@ class part extends DB_Table {
         }
 
         $base_data=$this->base_data();
-        //print_r($base_data);
+       // print_r($base_data);
         //print $field;
         if (array_key_exists($field,$base_data)) {
-
+    
             if ($value!=$this->data[$field]) {
-                //		print 'ss';
+                print $field;
                 $this->update_field($field,$value,$options);
 
             }
@@ -1009,20 +1009,50 @@ class part extends DB_Table {
     }
 
     function get_picking_location_historic($date) {
-        $sql=sprintf("select `Location Key` from `Inventory Spanshot Fact` where `Part SKU` in (%s) and `Location Type`='Picking'  ",$this->sku);
-        $location_key=1;
-        $res=mysql_query($sql);
-
-        if ($row=mysql_fetch_assoc($res)) {
-            $location_key=$row['Location Key'];
+    
+    
+    
+        $sql=sprintf("select `Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  on (ITF=.`Location Key`=L.`Location Key`)    where `Part SKU`=%d order by ORDER BY `Location Mainly Used For` IN ('Picking','Storing')  group by `Location Key`",$this->sku);
+        $was_associated=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+            $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+          
+          if($part_location->is_associated($date)){
+                 list($stock,$value)=$part_location->get_stock($date);
+                $was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock,'used_for'=>$row['Location Mainly Used For']);
+            }
+       }
+    
+        $number_associated_locations=count($was_associated);
+        
+        if($number_associated_locations==0)
+            return 1;
+        elseif($number_associated_locations==1){
+            return $was_associated[0]['location_key'];
+        }else{
+        
+            $location_data=array();
+            foreach($was_associated as $location_key){
+            
+           
+            $location_data[$location_key]=array('stock'=>$stock);
+            
+            }
+            
+         
+        
+        
         }
-        return $location_key;
+            
+    
+    
 
     }
 
-    function get_picking_location_key($date=false) {
+    function get_picking_location_key($date=false,$qty=1) {
         if ($date) {
-            return $this->get_picking_location_historic($date);
+            return $this->get_picking_location_historic($date,$qty);
         }
         $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes'",$this->sku);
         $location_key=1;
@@ -1108,6 +1138,10 @@ class part extends DB_Table {
 
         return 0;
     }
+
+
+
+
 
     function update_stock_history() {
 

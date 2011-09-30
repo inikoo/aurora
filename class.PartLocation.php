@@ -66,11 +66,7 @@ class PartLocation extends DB_Table {
 
 
     }
-    /*
-       Method: find
-       Find Part  Location  Paair with similar data
-      */
-
+    
     function find($raw_data,$options) {
         if (isset($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
@@ -143,8 +139,7 @@ class PartLocation extends DB_Table {
 
 
     }
-
-
+    
     function get_data() {
         $this->current=false;
         $sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
@@ -159,7 +154,7 @@ class PartLocation extends DB_Table {
         $this->location=New Location($this->location_key);
 
     }
-
+    
     function last_inventory_date() {
         $sql=sprintf("select `Date` from `Inventory Spanshot Fact` where  `Part Sku`=%d   order by `Date` desc limit 1",$this->part_sku);
         //   print $sql;
@@ -170,11 +165,7 @@ class PartLocation extends DB_Table {
             return false;
 
     }
-
-
-
-
-
+    
     function first_inventory_transacion() {
         $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact`
                      where  `Part Sku`=%d and (`Inventory Transaction Type`='Associate' )  order by `Date`",$this->part_sku);
@@ -186,6 +177,7 @@ class PartLocation extends DB_Table {
             return false;
 
     }
+    
     function last_inventory_audit() {
         $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku,$this->location_key);
         $result=mysql_query($sql);
@@ -196,7 +188,7 @@ class PartLocation extends DB_Table {
             return false;
 
     }
-
+    
     function update_can_pick($value) {
 
 
@@ -219,8 +211,7 @@ class PartLocation extends DB_Table {
 
 
     }
-
-
+    
     function audit($qty,$note='') {
 
         if (!is_numeric($qty) or $qty<0) {
@@ -382,6 +373,7 @@ class PartLocation extends DB_Table {
         /*     $this->redo_daily_inventory($_date,''); */
 
     }
+    
     function redo_daily_inventory($from,$to='') {
         $daysin=0;
 
@@ -730,7 +722,7 @@ class PartLocation extends DB_Table {
             }
         }
     }
-
+    
     function get_selling_price($part_sku,$date) {
 
 
@@ -764,6 +756,7 @@ class PartLocation extends DB_Table {
 
 
     }
+    
     function create($data) {
 
         //print_r($data);
@@ -831,6 +824,7 @@ class PartLocation extends DB_Table {
         }
 
     }
+    
     function create_inventory_spanshopt($data) {
 
         if (!isset($data['user key']))
@@ -902,10 +896,11 @@ class PartLocation extends DB_Table {
 
         }
     }
+    
     function delete() {
         $this->disassociate();
     }
-  
+    
     function get_unit_value() {
 
 
@@ -935,9 +930,7 @@ class PartLocation extends DB_Table {
 
 
     }
-
-
-
+    
     function identify_unknown($location_key) {
         if ($this->location_key!=1) {
             $this->error=true;
@@ -976,8 +969,7 @@ class PartLocation extends DB_Table {
         $part_location->part->update_stock();
 
     }
-
-
+    
     function add_stock($data) {
         $this->stock_transfer(array(
                                   'Quantity'=>$data['Quantity'],
@@ -1362,7 +1354,6 @@ class PartLocation extends DB_Table {
         }
     }
 
-
     function get_ohlc($date) {
 
 
@@ -1392,7 +1383,6 @@ class PartLocation extends DB_Table {
         return array($open,$high,$low,$close);
 
     }
-
 
     function get_stock($date='') {
         if (!$date)
@@ -1488,9 +1478,6 @@ class PartLocation extends DB_Table {
 
     }
 
-
-
-
     function update_stock() {
 
         list($stock,$value)=$this->get_stock();
@@ -1505,7 +1492,6 @@ class PartLocation extends DB_Table {
         //  print "$sql\n";
         $this->part->update_stock();
     }
-
 
     function get_history_intervals() {
         $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Inventory Transaction Key` ",
@@ -1533,6 +1519,28 @@ class PartLocation extends DB_Table {
         return $intervals;
 
     }
+    
+    
+    function is_associated($date){
+    $intervals=$this->get_history_intervals();
+    //print_r($intervals);
+    $date=strtotime($date);
+    foreach($intervals as $interval){
+            if(!$interval['To'])
+                $to=date('U');
+            else
+                 $to=strtotime($interval['To']);
+            $from=strtotime($interval['From']);
+            if($from<=$date and $to>=$date)
+                return true;
+                
+    }
+    return false;
+    
+    
+    
+    }
+    
 
     function update_stock_history() {
         $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
@@ -1599,6 +1607,7 @@ class PartLocation extends DB_Table {
         }
 
     }
+
     function set_audits() {
 
         $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Part SKU`=%d and `Location Key`=%d"
@@ -1619,7 +1628,6 @@ class PartLocation extends DB_Table {
         }
         $this->update_stock();
     }
-
 
     function set_audit($audit_key) {
 
@@ -1669,7 +1677,6 @@ class PartLocation extends DB_Table {
         mysql_query($sql);
 
     }
-
 
 }
 ?>

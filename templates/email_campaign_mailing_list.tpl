@@ -1,14 +1,12 @@
 {include file='header.tpl'}
 <div id="bd" >
-
-{include file='contacts_navigation.tpl'}
-
-
+<input value="{$email_campaign->id} id="email_campaign" type="hidden"  />
+{include file='marketing_navigation.tpl'}
 
 
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Customer List{/t}: {$customer_list_name}</h1>
-  </div>
+
+
+    <h1>{t}Mailing List{/t}: {$customer_list_name}</h1>
 
 
  <div id="the_table" class="data_table" style="clear:both">

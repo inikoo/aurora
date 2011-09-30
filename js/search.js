@@ -41,12 +41,7 @@ function init_search(type) {
         search_scope='';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_store);
         break;
-    case 'products':
-        subject='products';
-        
-    search_scope='';
-        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
-        break;
+  
     case 'locations':
         search_scope='locations';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_locations);
@@ -62,12 +57,28 @@ function init_search(type) {
         subject='customers';
         search_scope='store';
         break;
+    case 'products':
+        subject='products';
+        search_scope='';
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
+        break;
     case 'products_store':
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
         search_scope='store';
         subject='products';
-
         break;
+     case 'marketing':
+        subject='marketing';
+        search_scope='';
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_marketing);
+        break;
+    case 'marketing_store':
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_marketing_in_store);
+        search_scope='store';
+        subject='marketing';
+        break;       
+        
+        
     case 'parts':
         search_scope='parts';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
@@ -184,18 +195,30 @@ function search_customers(query) {
 function search_customers_in_store(query) {
     search(query,'customers','store');
 }
+
+function search_products(query) {
+    search(query,'products','');
+}
 function search_products_in_store(query) {
     search(query,'products','store');
 }
+
+function search_marketing(query) {
+    search(query,'marketing','');
+}
+function search_marketing_in_store(query) {
+    search(query,'marketing','store');
+}
+
+
+
 
 function search_all(query) {
 
     search(query,'all','all');
 }
 
-function search_products(query) {
-    search(query,'products','');
-}
+
 
 function search_orders(query) {
     search(query,'orders','');

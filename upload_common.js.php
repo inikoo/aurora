@@ -144,7 +144,7 @@ function init(){
 	function onUploadResponse(event) {
 	
 	var r =  YAHOO.lang.JSON.parse(event['data']);
-	alert(event['data'])
+//	alert(event['data'])
 	
 	if(Dom.get('attachment_type').value=='email_template_header'){
 	ar_file='ar_edit_marketing.php';
@@ -156,10 +156,13 @@ function init(){
 	}
 	 jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(r.files_data));
 	 var request=ar_file+'?tipo='+tipo+'&files_data='+jsonificated_values+'&scope='+Dom.get('attachment_scope').value+'&scope_key='+Dom.get('attachment_scope_key').value+'&caption='+Dom.get('attachment_caption').value
-	alert(request);
+
+	alert(request);return;
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
+
+                alert(o.responseText)
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				  

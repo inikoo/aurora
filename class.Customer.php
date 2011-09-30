@@ -5025,7 +5025,7 @@ class Customer extends DB_Table {
         $telecom_suppliers_number_keys=count($telecom_suppliers_keys);
         $telecom_companies_number_keys=count($telecom_companies_keys);
         $telecom->remove_from_parent('Customer',$this->id,$type);
-        if ($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys>0) {
+        if (($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys)==0) {
 
 
             if ($this->data['Customer Type']=='Company') {

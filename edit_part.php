@@ -204,7 +204,7 @@ $_parts[$key]=$key;
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$units_types=getEnumValues("Product Dimension","Product Unit Type" );
+$units_types=getEnumValues("Part Dimension","Part Unit" );
 //print_r($units_types);
 $unit_type_options=array();
 foreach($units_types as $units_type ){
@@ -212,8 +212,9 @@ foreach($units_types as $units_type ){
 }
 
 $smarty->assign('unit_type_options',$unit_type_options
+
                                 );
-//$smarty->assign('unit_type',$product->data['Product Unit Type']);
+$smarty->assign('unit_type',$part->data['Part Unit']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);

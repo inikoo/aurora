@@ -650,6 +650,9 @@ reset_edit_general('email_campaign');
 }
 
 function save_edit_email_campaign(){
+
+EmailHTMLEditor.saveHTML();
+
 save_edit_general('email_campaign');
 }
 
@@ -734,6 +737,9 @@ function get_preview( index ) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
              
+                 
+           Dom.setStyle(['tr_preview_plain_body','tr_preview_html_body','tr_preview_template_body'],'display','none') 
+    
            
              Dom.get('preview_index').value=r.index;
              Dom.get('preview_formated_index').innerHTML=r.formated_index;
@@ -742,13 +748,15 @@ function get_preview( index ) {
              
              if(r.type=='Plain'){
                 Dom.setStyle('tr_preview_plain_body','display','')
-                 Dom.setStyle('tr_preview_html_body','display','none')
-                              Dom.get('preview_plain_body').innerHTML=r.plain;
+                Dom.get('preview_plain_body').innerHTML=r.plain;
+
+             }if(r.type=='HTML'){
+                Dom.setStyle('tr_preview_plain_body','display','')
+                              Dom.get('preview_plain_body').innerHTML=r.html;
 
              }else{
-              Dom.setStyle('tr_preview_plain_body','display','none')
-                 Dom.setStyle('tr_preview_html_body','display','')
-                          Dom.get('preview_html_body').src=r.html_src;
+              Dom.setStyle('tr_preview_template_body','display','')
+            Dom.get('preview_html_body').src=r.html_src;
               
              }
           
@@ -762,9 +770,17 @@ function get_preview( index ) {
 	
 }
 
+function html_editor_changed(){
+
+validate_scope_data['email_campaign']['content_html_text']['changed']=true;
+validate_scope('email_campaign');
+}
 
 
 function init(){
+
+  init_search('marketing_store');
+
 //changeHeight(Dom.get('template_email_iframe'))
 //resizeFrame()
 
@@ -821,7 +837,16 @@ function init(){
 	            'name':'email_campaign_content_text',
 	            'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_contents').innerHTML}]
 	            },               
-	            
+	         'content_html_text':{
+	            'dbname':'Email Campaign Content HTML',
+	            'changed':false,
+	            'validated':true,
+	            'required':false,
+	            'group':1,
+	            'type':'item',
+	            'name':'html_email_editor',
+	            'validation':false
+	            },            
 	            
 	   	 //           'validation':[{'regexp':"^(((d|f|c)\\()?[a-z0-9\\-\\)]+,?)+$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
          
@@ -871,11 +896,7 @@ function init(){
   
   
   }
-
-
-
-
- validate_scope_metadata={
+validate_scope_metadata={
 'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value,'dynamic_second_key':'current_email_contact_key','second_key_name':'email_content_key'}
 ,'add_email_address_manually':{'type':'new','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'full_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
@@ -976,10 +997,11 @@ function init(){
     };
     
     var state = 'off';
-       var EmailHTMLEditor = new YAHOO.widget.Editor('html_email_editor', myConfig);
     
     
-        EmailHTMLEditor.on('toolbarLoaded', function() {
+    
+        EmailHTMLEditor = new YAHOO.widget.Editor('html_email_editor', myConfig);
+    EmailHTMLEditor.on('toolbarLoaded', function() {
     
         var codeConfig = {
             type: 'push', label: 'Edit HTML Code', value: 'editcode'
@@ -1025,6 +1047,13 @@ function init(){
             this.get('element').value = ev.html;
         }, this, true);
         
+        
+        
+        this.on('editorKeyUp', html_editor_changed, this, true);
+                this.on('editorDoubleClick', html_editor_changed, this, true);
+                this.on('editorMouseDown', html_editor_changed, this, true);
+                this.on('buttonClick', html_editor_changed, this, true);
+
         this.on('afterRender', function() {
             var wrapper = this.get('editor_wrapper');
             wrapper.appendChild(this.get('element'));
@@ -1039,9 +1068,7 @@ function init(){
         }, this, true);
     }, EmailHTMLEditor, true);
     EmailHTMLEditor.render();
-    
-    
-    
+ 
     
       Event.addListener("previous_preview", "click", previous_preview);
       Event.addListener("next_preview", "click", next_preview);

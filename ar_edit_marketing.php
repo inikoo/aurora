@@ -17,9 +17,9 @@ case('add_email_template_header'):
     $data=prepare_values($_REQUEST,array(
                              'files_data'=>array('type'=>'json array'),
                              'scope'=>array('type'=>'string'),
-                               'scope_key'=>array('type'=>'key'),
-                                 'caption'=>array('type'=>'string')
-                             
+                             'scope_key'=>array('type'=>'key'),
+                             'caption'=>array('type'=>'string')
+
                          ));
     add_email_template_header($data);
     break;
@@ -52,7 +52,7 @@ case('edit_email_campaign'):
                          ));
     edit_email_campaign($data);
     break;
-case('select_html_email_from_template_campaign'):    
+case('select_html_email_from_template_campaign'):
     $data=prepare_values($_REQUEST,array(
                              'email_campaign_key'=>array('type'=>'key')
 
@@ -62,7 +62,7 @@ case('select_html_email_from_template_campaign'):
     $data['okey']='email_campaign_content_type';
     edit_email_campaign($data);
     break;
-    
+
     break;
 case('select_html_email_campaign'):
     $data=prepare_values($_REQUEST,array(
@@ -157,7 +157,7 @@ function add_emails_to_email_campaign_from_list($data) {
                          'number_recipients'=>$email_campaign->data['Number of Emails'],
                          'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],
                          'msg'=>$email_campaign->msg,
-                          'ready_to_send'=>$email_campaign->ready_to_send()
+                         'ready_to_send'=>$email_campaign->ready_to_send()
                         );
     } else {
         $response= array('state'=>400,'msg'=>$email_campaign->msg);
@@ -252,14 +252,19 @@ function edit_email_campaign($data) {
     }
 
 
-    if($data['key']=='Email Campaign Subject'){
-     $email_campaign->update_subject($data['newvalue'],$data['email_content_key']);
-    } elseif($data['key']=='Email Campaign Content Text'){
-     $email_campaign->update_content_text($data['newvalue'],$data['email_content_key']);
-    }else{
+    if ($data['key']=='Email Campaign Subject') {
+        $email_campaign->update_subject($data['newvalue'],$data['email_content_key']);
+    }
+    elseif($data['key']=='Email Campaign Content Text') {
+        $email_campaign->update_content_text($data['newvalue'],$data['email_content_key']);
+    }
+    elseif($data['key']=='Email Campaign Content HTML') {
+        $email_campaign->update_content_html($data['newvalue'],$data['email_content_key']);
+    }
+    else {
 
-    $email_campaign->update(array($data['key']=>$data['newvalue']));
-}
+        $email_campaign->update(array($data['key']=>$data['newvalue']));
+    }
     if ($email_campaign->updated) {
 
         $response= array(
@@ -307,23 +312,25 @@ function edit_email_paragraph($data) {
                         'type'=>$data['values']['type'],
                     );
 
-    if(!$data['values']['paragraph_key']){
-    
-        if($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']==''){
-          $response= array('state'=>400,'msg'=>_('All fields are empty!'));    echo json_encode($response);return;
+    if (!$data['values']['paragraph_key']) {
+
+        if ($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']=='') {
+            $response= array('state'=>400,'msg'=>_('All fields are empty!'));
+            echo json_encode($response);
+            return;
         }
-    
-    $email_campaign->add_paragraph($data['values']['email_content_key'],$paragraph_data);
-    }else{
-    
-     if($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']==''){
-          delete_email_paragraph($data);
-          return; 
-     }else{
-    
-    $email_campaign->update_paragraph($data['values']['email_content_key'],$data['values']['paragraph_key'],$paragraph_data);
-   }
-   }
+
+        $email_campaign->add_paragraph($data['values']['email_content_key'],$paragraph_data);
+    } else {
+
+        if ($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']=='') {
+            delete_email_paragraph($data);
+            return;
+        } else {
+
+            $email_campaign->update_paragraph($data['values']['email_content_key'],$data['values']['paragraph_key'],$paragraph_data);
+        }
+    }
     if ($email_campaign->updated) {
         $response= array('state'=>200);
 
@@ -365,16 +372,16 @@ function delete_email_paragraph($data) {
 
 
     $email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
-    if(!$email_campaign->id){
-     $response= array('state'=>400,'msg'=>'invalid email campaign');
+    if (!$email_campaign->id) {
+        $response= array('state'=>400,'msg'=>'invalid email campaign');
         echo json_encode($response);
-        return;    
+        return;
     }
 
-    if(!in_array($email_campaign->data['Email Campaign Store Key'],$data['user']->stores)){
-    $response= array('state'=>400,'msg'=>'forbidden');
+    if (!in_array($email_campaign->data['Email Campaign Store Key'],$data['user']->stores)) {
+        $response= array('state'=>400,'msg'=>'forbidden');
         echo json_encode($response);
-        return;    
+        return;
     }
 
 
@@ -384,19 +391,43 @@ function delete_email_paragraph($data) {
     echo json_encode($response);
 }
 
-function add_email_template_header($data){
-print_r($data);
+function add_email_template_header($data) {
 
 
+    include_once('class.Image.php');
+    $create_image=false;
+    foreach($data['files_data'] as $file_data) {
 
-    $data=array(
-	    'file'=>'tmp'.$rand.'.jpg'
-	    ,'path'=>'app_files/pics/assets/'
-	    ,'name'=>$data['files_data']['original_filename']
-	    ,'caption'=>$data['caption']
-	    );
+        $image_data=array(
+                  'file'=>$file_data['filename_with_path'],
+                  'source_path'=>'',
+                  'name'=>$file_data['original_filename'],
+                  'caption'=>''
+              );
 
- //    print_r($data);
-$image=new Image('find',$data,'create');
+
+        $image=new Image('find',$image_data,'create');
+        if ($image->id) {
+            $sql=sprintf("insert into  `Email Template Header Image Dimension` (`Email Template Header Image Name`,`Store Key`,`Image Key`) values (%s,%d,%d)",
+                         prepare_mysql($file_data['original_filename']),
+                         $data['scope_key'],
+                         $image->id
+                        );
+            mysql_query($sql);
+            $create_image=true;
+        }
+    }
+    if ($create_image) {
+        $response= array(
+                       'state'=>200,
+                       'action'=>'created'
+                   );
+    } else {
+
+        $response= array('state'=>400,'msg'=>'can not add image');
+    }
+
+    echo json_encode($response);
+
 }
 ?>
