@@ -342,4 +342,5 @@ $export_data=array(
 
 //-------------------
 
+$smarty->assign('page_name',get_page());
 ?>
