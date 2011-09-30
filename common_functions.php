@@ -858,7 +858,11 @@ function strleft($s1, $s2) {
     return substr($s1, 0, strpos($s1, $s2));
 }
 
-
+function get_page(){
+	$url=explode("/", $_SERVER['REQUEST_URI']);
+	$url=array_reverse($url);
+	return $url[0];
+}
 /**
  * @return timestamp
  * @param integer year

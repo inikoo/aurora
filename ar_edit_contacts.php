@@ -76,6 +76,7 @@ case('forgot_password'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
 							 'store_key'=>array('type'=>'key'),
+							 'email'=>array('type'=>'string'),
 							 'url'=>array('type'=>'string')
                          ));
     forgot_password($data);
@@ -4044,17 +4045,20 @@ function add_attachment_to_customer_history($data) {
 }
 
 function forgot_password($data){
-	//print_r($data);
+	//print_r($data);exit;
 	global $secret_key,$public_url;
 	$key=$data['customer_key'];
 	$store_key=$data['store_key'];
 	$url=$data['url'];
+	$login_handle=$data['email'];
 	
-	$sql=sprintf("select `User Key`, `User Handle` from `User Dimension` where `User Parent Key` = %d", $key);
+	
+	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result));
-	$user_key=$row['User Key'];
-	$login_handle=$row['User Handle'];
+	if($row=mysql_fetch_array($result)){
+		$user_key=$row['User Key'];
+	}
+	
 	//print $user_key;
 	if ($user_key) {
 
@@ -4107,7 +4111,14 @@ function forgot_password($data){
 
 $files=array();	
 
-
+		$data=array('email_type'=>'Password Reminder',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user->id);
+				  
+		$send_email=new SendEmail($data);
+		
+		$html_message=$send_email->track_sent_email($html_message);
+		
 		$access_key='AKIAJGTHT6POHWCQQNRQ';
 		$secret_key='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';
 
@@ -4129,8 +4140,8 @@ $files=array();
 		else
 			$data['plain']=null;
 			
-        $send_email=new SendEmail();
-		$send_email->set_method('amazon');
+        //$send_email=new SendEmail();
+		//$send_email->set_method('amazon');
         $send_email->smtp('html', $data);
         $result=$send_email->send();
 

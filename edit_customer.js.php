@@ -190,8 +190,10 @@ Dom.addClass('delivery','selected');
 }
 
 function forget_password(){
+
+email=this.getAttribute('email')
 var url ='http://'+ window.location.host + window.location.pathname;
-var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url
+var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url + '&email='+email
 Dom.get('password_msg').innerHTML='Sending';
 Dom.get('password_msg').style.display='';
 	            alert(request);	
@@ -473,7 +475,7 @@ var error=false;
 
 
 function change_password(){
-alert('change');//return;
+//alert('change');//return;
     var user_key=Dom.get('user_key').value;
 	
 
@@ -484,7 +486,7 @@ alert('change');//return;
   //   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
     ep2=Dom.get('epwcp2').value;
 	
-alert(ep1)	
+//alert(ep1)	
 	
 //	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
     //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
@@ -496,7 +498,7 @@ var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
 
 
      var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
-alert(request);
+alert(request);return;
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
@@ -1233,7 +1235,7 @@ Dom.setStyle('tr_add_other_mobile','display','');
 function register_email(o){
 	
 	email=Dom.get(o).getAttribute('email');
-	alert(email);
+	//alert(email);
 	var url ='http://'+ window.location.host + window.location.pathname;
 password='xxxxxxxxxxxxxx';
 
@@ -1303,7 +1305,7 @@ dialog_comment.render();
 	
 
 ?>
-	Event.addListener(ids, "click", forget_password , true);
+	Event.addListener(ids, "click", forget_password );
 	/*
 <?php 
 

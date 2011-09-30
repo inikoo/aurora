@@ -906,7 +906,7 @@ class LightFamily {
         $counter=1;
         //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
 		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
-		//print $sql;
+		print $sql;
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
