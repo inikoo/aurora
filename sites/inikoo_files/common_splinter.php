@@ -447,8 +447,10 @@ function set_parameters($data=false) {
 
 	if (!isset($data['type']))
         $path="../../";
-    else
+    elseif($data['type']=='parent')
         $path="../";
+	elseif($data['type']=='index')
+		$path="../sites/";
 
     if (!isset($data['family']))
         $family_code='';

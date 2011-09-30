@@ -3,7 +3,8 @@ if($_REQUEST['path']==1)
 	$_path="../";
 elseif($_REQUEST['path']==2)
 	$_path="../../";
-
+elseif($_REQUEST['path']=='3')
+	$_path="../sites/";
 ?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
