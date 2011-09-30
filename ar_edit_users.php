@@ -497,6 +497,7 @@ function edit_staff_user() {
 }
 
 function change_user_passwd() {
+print_r($_REQUEST);
 
 	$id=$_REQUEST['user_id'];
 
@@ -505,10 +506,12 @@ function change_user_passwd() {
 	if(isset($_REQUEST['value']))
 		$value=$_REQUEST['value'];
 	else{
-		$_key=md5($user->id.'insecure_key'.$_REQUEST['ep2']);
+		$val=sprintf("%sinsecure_key%s",$user->id,$_REQUEST['ep2']);
+		//print $val;
+		$_key=md5($val);
 		$value=AESDecryptCtr($_REQUEST['ep1'], $_key ,256);
 	}
-	
+	print $value;
     if ($user->id) {
         $user->change_password($value);
         if (!$user->error)

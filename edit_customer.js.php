@@ -475,7 +475,7 @@ var error=false;
 
 
 function change_password(){
-alert('change');//return;
+//alert('change');//return;
     var user_key=Dom.get('user_key').value;
 	
 
@@ -486,7 +486,7 @@ alert('change');//return;
   //   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
     ep2=Dom.get('epwcp2').value;
 	
-alert(ep1)	
+//alert(ep1)	
 	
 //	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
     //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
@@ -498,7 +498,7 @@ var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
 
 
      var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
-alert(request);
+alert(request);return;
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
