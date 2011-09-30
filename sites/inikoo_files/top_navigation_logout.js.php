@@ -282,7 +282,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request=path+'inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
- 
+ //alert(request)
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 

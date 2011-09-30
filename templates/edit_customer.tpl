@@ -37,7 +37,7 @@
    <td style="width:400px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" id="forget_password_main" value="Send"/>
+       <input type="button" class="button" id="forget_password_main" email={$customer->get('Customer Main Plain Email')} value="Send"/>
 	   
    </div>
    </td>
@@ -53,7 +53,7 @@
    <td style="width:200px">{t}Send an Email: ({$email.email}){/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" id="forget_password_{$key}" value="Send"/>
+       <input type="button" class="button" id="forget_password_{$key}" email={$email.email} value="Send"/>
    </div></td>
    <td><span id="set_password_{$key}">Set Password</span></td>
    </tr>

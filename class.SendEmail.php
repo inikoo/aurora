@@ -10,12 +10,18 @@ require("external_libs/mail/sasl.php");
 
 class SendEmail extends DB_Table{
 
-	function SendEmail(){
+	function SendEmail($data=false){
 		$this->method='smtp';
 		$this->email_type='Registration';
 		$this->recipient_type='User';
 		$this->recipient_key=0;
 		$this->email_key=0;
+		
+		if(isset($data) and $data){
+			$this->email_type=$data['email_type'];
+			$this->recipient_key=$data['recipient_key'];
+			$this->recipient_type=$data['recipient_type'];
+		}
 		
 	}
 	
@@ -25,9 +31,9 @@ class SendEmail extends DB_Table{
 	
 	function smtp($type, $data){
 		
-		$this->email_type=$data['email_type'];
-		$this->recipient_key=$data['recipient_key'];
-		$this->recipient_type=$data['recipient_type'];
+		//$this->email_type=$data['email_type'];
+		//$this->recipient_key=$data['recipient_key'];
+		//$this->recipient_type=$data['recipient_type'];
 		
 		switch($this->method){
 		case 'smtp':
@@ -738,6 +744,21 @@ class SendEmail extends DB_Table{
 		return mysql_insert_id();
 		//print $sql;
 		
+	}
+	
+	function track_sent_email($html_messasge, $track=true){
+		if($track){
+			$sql=sprintf("select * from `Configuration Dimension`");
+			$result=mysql_query($sql);
+			if($row=mysql_fetch_array($result)){
+				$public_path=$row['Public Path'];
+			}
+			
+			if($send_key=$this->update_email_dimension()){
+				$html_messasge.=sprintf('<br/><img src="%s/track.php?sendkey=%s">', $public_path, $send_key);
+			}
+		}
+		return $html_messasge;
 	}
   
 }
