@@ -346,18 +346,9 @@ function generate_password($length=9, $strength=0) {
     return $password;
 }
 
-function create_customer_user($handle,$customer_key,$site_key,$password, $send_email=true) {
-	$handle='migara@inikoo.com';
-	
-	$sql=sprintf("select * from `Configuration Dimension` where `Configuration Key`=%d", 1);
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result)){
-		$track_path=$row['Public Path'];
-	}
-	
-	//print $track_path;exit;
-	
-	
+function create_customer_user($handle,$customer_key,$site_key,$password, $send_email_flag=true) {
+	//$handle='migara@inikoo.com';
+
     global $site,$store;
 
     include_once('class.User.php');
@@ -387,8 +378,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
             return array(0,$user->msg);
 
         } else {
-		$send_email=new SendEmail();
-		$send_key=$send_email->update_email_dimension();
+		
 		//print $send_key;exit;
 		
 		
@@ -400,23 +390,32 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 			
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 			
-			$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
+			//$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
 			//print $welcome_email_html;exit;
-				
-		$data=array(
-                
-                  'subject'=>$welcome_email_subject,
-                  'plain'=>$welcome_email_plain,
-                  'email_credentials_key'=>$email_credential_key,
-                  'to'=>$handle,
-                  'html'=>$welcome_email_html,
-				  'email_type'=>'Registration',
+			
+			
+		$data=array('email_type'=>'Registration',
 				  'recipient_type'=>'User',
-				  'recipient_key'=>$user->id
-              );
-//print_r($data);exit;
-		if($send_email){
+				  'recipient_key'=>$user->id);
+		$send_email=new SendEmail($data);
 		
+
+//print_r($data);exit;
+		if($send_email_flag){
+			$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
+
+		
+			$data=array(
+					
+					  'subject'=>$welcome_email_subject,
+					  'plain'=>$welcome_email_plain,
+					  'email_credentials_key'=>$email_credential_key,
+					  'to'=>$handle,
+					  'html'=>$welcome_email_html,
+					  'email_type'=>'Registration',
+					  'recipient_type'=>'User',
+					  'recipient_key'=>$user->id
+				  );
         //$send_email=new SendEmail();
         $send_email->smtp('HTML', $data);
         $result=$send_email->send();
@@ -522,6 +521,16 @@ $formated_url=preg_replace('/^http\:\\/\\//','',$url);
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
+					  
+		
+		$data=array('email_type'=>'Password Reminder',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user->id);
+				  
+		$send_email=new SendEmail($data);
+		
+		$html_message=$send_email->track_sent_email($html_message);
+		//print $html_message;			  
 
 $files=array();	
         $to=$login_handle;
@@ -532,7 +541,8 @@ $files=array();
                   'email_credentials_key'=>$email_credential_key,
                   'to'=>$to,
                   'html'=>$html_message,
-					'attachement'=>$files
+				  'attachement'=>$files
+				  
               );
 		if(isset($data['plain']) && $data['plain']){
 			$data['plain']=$data['plain'];
@@ -540,8 +550,8 @@ $files=array();
 		else
 			$data['plain']=null;
 			
-        $send_email=new SendEmail();
-        $send_email->smtp('plain', $data);
+        //$send_email=new SendEmail();
+        $send_email->smtp('html', $data);
         $result=$send_email->send();
 
 		//print_r($result);
@@ -607,7 +617,7 @@ function register($data) {
 
     //print_r($_SESSION);
 
-    if (!$securimage->check($data['values']['captcha_code']) == false) {
+    if ($securimage->check($data['values']['captcha_code']) == false) {
         //echo $securimage->getCode();
         // the code was incorrect
         // you should handle the error so that the form processor doesn't continue

@@ -7,8 +7,24 @@
  Version 2.0
 */
 
-include_once('common.php');
 //exit;
+require_once 'app_files/db/dns.php';
+
+
+$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+if (!$default_DB_link) {
+    print "Error can not connect with database server\n";
+}
+$db_selected=mysql_select_db($dns_db, $default_DB_link);
+if (!$db_selected) {
+    print "Error can not access the database\n";
+    exit;
+}
+mysql_query("SET NAMES 'utf8'");
+require_once 'conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+mysql_query("SET time_zone='+0:00'");
+
 
 if(!isset($_GET['sendkey'])){
 
