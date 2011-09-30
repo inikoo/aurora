@@ -392,6 +392,7 @@ function show_products($code,$options=false) {
                 $price=$val['Product Price'];
         }
         */
+		
         $product=new LightFamily($family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
