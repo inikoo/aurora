@@ -117,7 +117,7 @@
 
 
 
-<table class="edit"  style="width:800px">
+<table class="edit"  style="width:890px">
  <tr class="title"><td colspan=5>{t}Unit{/t}</td>
  <td>
  <div class="general_options" style="float:right">
@@ -130,17 +130,16 @@
 
 <tr><td style="width:120px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
-
-<select>
+<input type="hidden"  id="Part_Unit_Type"  value="{$unit_type}" ovalue="{$unit_type}"/>
+<select id="Part_Unit_Type_Select" onChange="part_unit_change(this)">
 {foreach from=$unit_type_options key=value item=label}
-   <option id="Part_Units_Type" label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
+   <option   label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
 
 {/foreach}
 </select>
- <div id="Part_Units_Type_Container" style="" ></div>
 
    </td>
-   <td id="Part_Units_Type_msg" class="edit_td_alert"></td>
+   <td id="Part_Unit_Type_msg" class="edit_td_alert"></td>
  </tr>
 
 <tr class="first"><td style="" class="label">{t}Unit Description{/t}:</td>
@@ -185,6 +184,17 @@
    <td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
  </tr>
  
+   <tr><td style="width:200px" class="label">{t}Tariff Code{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0">
+       <div id="Part_Tariff_Code_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Part_Tariff_Code_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ 
 </table>
 
 
@@ -196,33 +206,20 @@
 	
       </div>
 
-<table class="edit" border=0 style="width:700px">
- <tr class="title"><td colspan=5>{t}Description{/t}</td></tr>
+<table class="edit" border=0 style="width:890px">
+ <tr class="title"><td >{t}General Description{/t}</td></tr>
+  <tr ><td style="padding:5px 0 0 0 ">
+  <textarea id="part_general_description" ovalue="{$part->get('Part General Description')|escape}" rows="20" cols="75">{$part->get('Part General Description')|escape}</textarea>
+
+  </td></tr>
+
+</table>
+
+<table class="edit" border=0 style="width:890px">
+ <tr class="title"><td colspan=5>{t}Health & Safety{/t}</td></tr>
 
 
 
-
-
-<tr><td style="width:200px" class="label">{t}General Description{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:25em;position:" >
-    <textarea id="Part_General_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Part General Description')}"  ovalue="{$part->get('Part General Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Part General Description')}</textarea>
-       <div id="Part_General_Description_Container" style="" ></div>
-     </div>
-   </td>
-   <td id="Part_General_Description_msg" class="edit_td_alert"></td>
- </tr>
-
-<tr>
-<td style="width:200px" class="label">{t}Health & Safety{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:25em;" >
-    <textarea id="Part_Health_And_Safety"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Part Health And Safety')}"  ovalue="{$part->get('Part Health And Safety')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Part Health And Safety')}</textarea>
-       <div id="Part_Health_And_Safety_Container" style="" ></div>
-     </div>
-   </td>
-   <td id="Part_Health_And_Safety_msg" class="edit_td_alert"></td>
- </tr>	
 
 </table>
 

@@ -63,6 +63,9 @@ $smarty->assign('js_files',$js_files);
 
 $smarty->assign('table_title',_('Marketing'));
 
+$smarty->assign('search_scope','marketing');
+$smarty->assign('search_label',_('Search'));
+
 
 $general_options_list=array();
 $smarty->assign('general_options_list',$general_options_list);

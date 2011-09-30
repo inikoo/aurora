@@ -322,6 +322,7 @@ $email_campaign= new EmailCampaign($data['email_campaign_key']);
     
        $response= array('state'=>200,
        'plain'=>$message_data['plain'],
+        'html'=>$message_data['html'],
        'html_src'=>'email_template.php?email_campaign_key='.$email_campaign->id.'&email_mailing_list_key='.$email_mailing_list_key,
        'subject'=>$message_data['subject'],
        'index'=>$index,

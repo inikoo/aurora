@@ -45,7 +45,7 @@ class Image  {
 
     function Image($a1,$a2=false,$a3=false) {
 
-        $this->path='app_files/pics/';
+      
         $this->tmp_path='app_files/pics/tmp/';
         $this->name='';
         $this->original_name='';
@@ -144,17 +144,7 @@ class Image  {
 
 
 
-        if (isset($raw_data['path'])) {
-            if (preg_match('/\.\.\//',$raw_data['path'])) {
-                $this->error=true;
-                $this->msg=_('Invalid destination path, return paths forbidden');
-                return;
-            }
-
-
-            $this->path=$raw_data['path'];
-        }
-
+   
         $create='';
         $update='';
         if (preg_match('/create/i',$options)) {

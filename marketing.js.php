@@ -94,7 +94,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
   
 function init(){
 
-
+  init_search('marketing_store');
     var ids = ["metrics","newsletter","email","web_internal","web","other"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    

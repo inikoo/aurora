@@ -4246,8 +4246,23 @@ ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Main Image` VARCH
 ALTER TABLE `User Dimension` DROP INDEX `User Type_2` ;
 
 
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Type` ENUM( 'Newsletter', 'Marketing' ) NOT NULL DEFAULT 'Marketing' AFTER `Email Campaign Key` ,ADD INDEX ( `Email Campaign Type` );
+ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Type` `Email Send Recipient Type` ENUM( 'Customer', 'Supplier', 'User' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Customer';
+ALTER TABLE `Email Send Dimension` CHANGE `Email Key` `Email Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL;
 
+CREATE TABLE `Configuration Dimension` (
+`Public Path` VARCHAR( 1024 ) NOT NULL
+) ENGINE = MYISAM ;
 
+CREATE TABLE `Email Template Header Image Dimension` (
+`Email Template Header Image Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Template Header Image Name` VARCHAR( 256 ) NOT NULL ,
+`Image Key` MEDIUMINT UNSIGNED NOT NULL
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Email Template Header Image Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Header Image Name` ,ADD INDEX ( `Store Key` );
+ALTER TABLE `Part Dimension` ADD `Part Export Code` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Health And Safety` ;
+ALTER TABLE `Part Dimension` CHANGE `Part Export Code` `Part Tariff Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 */
 
 ?>

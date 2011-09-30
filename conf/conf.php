@@ -2490,7 +2490,19 @@ $default_state=array(
 
 
                    'email_campaign'=>array(
-                                        'id'=>false
+                                        'id'=>false,
+                                         'mailing_list'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'email',
+                                                         'f_value'=>'','f_show'=>false,
+                                                         'order'=>'email',
+                                                         'order_dir'=>'',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     )
+                                        
+                                        
                                     ),
 
 
