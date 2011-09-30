@@ -846,6 +846,7 @@ function list_supplier_user_login_history(){
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_array($res)) {
+	
         if ($row['Logout Date']=="") {
             $adata[]=array(
                          'user'=>$row['User Handle'],
@@ -1483,9 +1484,9 @@ function list_supplier_users() {
     $res=mysql_query($sql);
     while ($data=mysql_fetch_array($res)) {
 
-// $groups=preg_split('/,/',$data['Groups']);
-//      $stores=preg_split('/,/',$data['Stores']);
-//     $warehouses=preg_split('/,/',$data['Warehouses']);
+        //$groups=preg_split('/,/',$data['Groups']);
+        //$stores=preg_split('/,/',$data['Stores']);
+       // $warehouses=preg_split('/,/',$data['Warehouses']);
 
         //   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
         //  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
@@ -1494,24 +1495,27 @@ function list_supplier_users() {
         if ($data['User Active']=='Yes')
             $is_active='Yes';
 
-//$password='';
-//  if ($data['User Key']){
-//  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
-// }
-        $supplier_name=sprintf('<a href="supplier_user.php?id=%d">%s</a>',$data['User Key'],$data['Supplier Name']);
+        $password='';
+        if ($data['User Key']) {
+            $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
+        }
+
+        $alias=sprintf('<a href="staff_user.php?id=%d">%s</a>',$data['User Key'],$data['User Alias']);
         $adata[]=array(
                      'id'=>$data['User Key'],
-                     'supplier_id'=>$data['Supplier Key'],
-                     //'alias'=>$data['Staff Alias'],
-                     'name'=>$supplier_name,
-                     //'password'=>$password,
-                     'location'=>$data['Supplier Main Location'],
-                     'email'=>$data['Supplier Main Plain Email'],
-                     'telephone'=>$data['Supplier Main XHTML Telephone'],
-                     // 'groups'=>$groups,
-                     // 'stores'=>$stores,
-                     // 'warehouses'=>$warehouses,
-                     'isactive'=>$is_active
+                     'staff_id'=>$data['User Key'],
+                     'alias'=>$alias,
+                     'name'=>$data['User Handle'],
+                     'password'=>$password,
+                    'logins'=>number($data['User Login Count']),
+                    'last_login'=>($data ['User Last Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Login']." +00:00" ) )),
+                 'fail_logins'=>number($data['User Failed Login Count']),
+                    'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Failed Login']." +00:00" ) ))
+
+           //'groups'=>$groups,
+                   //  'stores'=>$stores,
+                   //  'warehouses'=>$warehouses,
+                   //  'isactive'=>$is_active
                  );
 
 

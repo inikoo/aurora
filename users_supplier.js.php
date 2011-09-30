@@ -136,12 +136,13 @@ var active=function(el, oRecord, oColumn, oData){
 	   var ColumnDefs = [
 			
 			
-			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
-			     // , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Supplier Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                              ,{key:"location", label:"<?php echo _('Location')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
+			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"logins", label:"<?php echo _('Logins')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"last_login", label:"<?php echo _('Last Login')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+,{key:"fail_logins", label:"<?php echo _('Fail Logins')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"fail_last_login", label:"<?php echo _('Last Fail Login')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 
 			     
@@ -170,7 +171,7 @@ var active=function(el, oRecord, oColumn, oData){
 		
 		
 		fields: [
-			 "id","isactive","name","location","email","telephone","lang","tipo","active","alias"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","alias","stores","warehouses","logins","last_login","fail_logins","fail_last_login"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
