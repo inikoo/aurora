@@ -1500,7 +1500,7 @@ function list_supplier_users() {
             $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
         }
 
-        $alias=sprintf('<a href="staff_user.php?id=%d">%s</a>',$data['User Key'],$data['User Alias']);
+        $alias=sprintf('<a href="supplier_user.php?id=%d">%s</a>',$data['User Key'],$data['User Alias']);
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'staff_id'=>$data['User Key'],
