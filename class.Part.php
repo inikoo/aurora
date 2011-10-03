@@ -1012,6 +1012,7 @@ class part extends DB_Table {
 
     function get_picking_location_historic($date,$qty) {
 
+
         $locations=array();
         $was_associated=array();
         $sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d   group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);

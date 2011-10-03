@@ -440,18 +440,28 @@ function reset_edit_part_unit() {
 
 function save_edit_part_description() {
 GeneralDescriptionEditor.saveHTML();
-
 	save_edit_general('part_description');
-
-	
 }
+
+function save_edit_part_health_and_safety() {
+HealthAndSafetyEditor.saveHTML();
+	save_edit_general('part_health_and_safety');
+}
+
+
 function reset_edit_part_description() {
-
 	reset_edit_general('part_description')
-
-GeneralDescriptionEditor.setEditorHTML(Dom.get('part_general_description').value);
-	
+    GeneralDescriptionEditor.setEditorHTML(Dom.get('part_general_description').value);
 }
+
+function reset_edit_part_health_and_safety() {
+	reset_edit_general('part_health_and_safety')
+    HealthAndSafetyEditor.setEditorHTML(Dom.get('part_health_and_safety').value);
+}
+
+
+
+
 
 
 function save_edit_custom_field() {
@@ -466,27 +476,6 @@ function reset_edit_custom_field() {
 }
 
 
-function save_edit_price() {
-	save_edit_general('part_price');
-
-	
-}
-function reset_edit_price() {
-	reset_edit_general('part_price')
-
-	
-}
-
-function save_edit_weight() {
-	save_edit_general('part_weight');
-
-	
-}
-function reset_edit_weight() {
-	reset_edit_general('part_weight')
-
-	
-}
 
 
 function reset_part(key) {
@@ -948,9 +937,11 @@ validate_scope_data['part_description']['general_description']['changed']=true;
 validate_scope('part_description')
 }
 
-function geneal_description_editor_changed(){
-validate_scope_data['part_description']['general_description']['changed']=true;
-validate_scope('part_description')
+
+
+function health_and_safety_editor_changed(){
+validate_scope_data['part_health_and_safety']['health_and_safety']['changed']=true;
+validate_scope('part_health_and_safety')
 }
 
 function init() {
@@ -988,6 +979,12 @@ init_search('parts');
 
 	Event.addListener('save_edit_part_description', "click", save_edit_part_description);
 	Event.addListener('reset_edit_part_description', "click", reset_edit_part_description);
+	
+	Event.addListener('save_edit_part_health_and_safety', "click", save_edit_part_health_and_safety);
+	Event.addListener('reset_edit_part_health_and_safety', "click", reset_edit_part_health_and_safety);	
+	
+	
+	
 
 	Event.addListener('save_edit_part_custom_field', "click", save_edit_custom_field);
 	Event.addListener('reset_edit_part_custom_field', "click", reset_edit_custom_field);
@@ -1194,7 +1191,7 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
     };
     
   
-  GeneralDescriptionEditor = new YAHOO.widget.Editor('part_general_description', myConfig);
+    GeneralDescriptionEditor = new YAHOO.widget.Editor('part_general_description', myConfig);
     GeneralDescriptionEditor.on('toolbarLoaded', function() {
          this.on('editorKeyUp', geneal_description_editor_changed, this, true);
                 this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
@@ -1204,12 +1201,12 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
     yuiImgUploader(GeneralDescriptionEditor, 'part_general_description', 'ar_upload_file_from_editor.php','image');
     GeneralDescriptionEditor.render();
 
-  HealthAndSafetyEditor = new YAHOO.widget.Editor('part_health_and_safety', myConfig);
+    HealthAndSafetyEditor = new YAHOO.widget.Editor('part_health_and_safety', myConfig);
     HealthAndSafetyEditor.on('toolbarLoaded', function() {
-         this.on('editorKeyUp', geneal_description_editor_changed, this, true);
-                this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
-                this.on('editorMouseDown', geneal_description_editor_changed, this, true);
-                this.on('buttonClick', geneal_description_editor_changed, this, true);
+         this.on('editorKeyUp',  health_and_safety_editor_changed, this, true);
+                this.on('editorDoubleClick', health_and_safety_editor_changed, this, true);
+                this.on('editorMouseDown', health_and_safety_editor_changed, this, true);
+                this.on('buttonClick', health_and_safety_editor_changed, this, true);
     }, HealthAndSafetyEditor, true);
     yuiImgUploader(HealthAndSafetyEditor, 'part_health_and_safety', 'ar_upload_file_from_editor.php','image');
     HealthAndSafetyEditor.render();
