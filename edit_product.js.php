@@ -337,7 +337,7 @@ function part_changed(o){
 part_render_save_buttons();
 }
 
-
+/*
 function goto_search_result(subject){
 elements_array=Dom.getElementsByClassName('selected', 'tr', subject+'_search_results_table');
 
@@ -350,7 +350,7 @@ sku:tr.getAttribute('key')
 ,description:tr.getAttribute('description')
 };
 
-select_part(data)
+salect_part_from_list(data)
 
 }
 function go_to_result(){
@@ -360,11 +360,12 @@ sku:this.getAttribute('key')
 ,description:this.getAttribute('description')
 };
 
-select_part(data)
+salect_part_from_list(data)
 
 }
+*/
 
-function select_part(oArgs){
+function salect_part_from_list(oArgs){
 
 sku=tables.table1.getRecord(oArgs.target).getData('sku')
 
@@ -756,7 +757,7 @@ var tableid=1;
                    
                    this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
        this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
-      this.table1.subscribe("rowClickEvent", select_part);
+      this.table1.subscribe("rowClickEvent", salect_part_from_list);
      
 
                    

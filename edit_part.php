@@ -125,7 +125,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'js/common.js',
 		'js/search.js',
-	
+	    'js/editor_image_uploader.js',    
 		'js/table_common.js',
 		'js/upload_image.js',
 		'js/edit_common.js',
@@ -233,8 +233,8 @@ $smarty->assign('title',_('Editing').' '.$part->formated_sku());
 //$smarty->assign('cat_material',$cat_material);
 //$smarty->assign('cat_theme',$cat_theme);
 
-
-//show case 		
+/*
+ Do this inside class.Part.php
 $custom_field=Array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
 $res = mysql_query($sql);
@@ -253,8 +253,13 @@ if($row=mysql_fetch_array($res)){
 		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
 	}
 }
-//print_r($show_case);
+
 $smarty->assign('show_case',$show_case);
+*/
+
+
+
+
 $smarty->assign('warehouse',$warehouse);
 
 $smarty->display('edit_part.tpl');

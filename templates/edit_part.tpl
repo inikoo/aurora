@@ -161,9 +161,6 @@
    </td>
    <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
  </tr>
- 
-
- 
   <tr><td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
@@ -173,8 +170,7 @@
    </td>
    <td id="Part_Package_Volume_msg" class="edit_td_alert"></td>
  </tr>
- 
-   <tr><td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
+    <tr><td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0">
@@ -182,9 +178,8 @@
      </div>
    </td>
    <td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
- </tr>
- 
-   <tr><td style="width:200px" class="label">{t}Tariff Code{/t}:</td>
+ </tr> 
+  <tr><td style="width:200px" class="label">{t}Tariff Code{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0">
@@ -199,29 +194,46 @@
 
 
 
-<div class="general_options" style="float:right">
-	
+
+
+<table class="edit" border=0 style="width:890px">
+ <tr class="title"><td >{t}General Description{/t} <span id="part_general_description_msg"></span></td>
+ <td>
+ <div class="general_options" style="float:right">	
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_description" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_description" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
-
-<table class="edit" border=0 style="width:890px">
- <tr class="title"><td >{t}General Description{/t}</td></tr>
-  <tr ><td style="padding:5px 0 0 0 ">
+</div>
+ </td>
+  </tr>
+  <tr ><td colspan=2 style="padding:5px 0 0 0 ">
+  <form onsubmit="return false;">
   <textarea id="part_general_description" ovalue="{$part->get('Part General Description')|escape}" rows="20" cols="75">{$part->get('Part General Description')|escape}</textarea>
-
+</form>
   </td></tr>
-
 </table>
+
 
 <table class="edit" border=0 style="width:890px">
- <tr class="title"><td colspan=5>{t}Health & Safety{/t}</td></tr>
-
-
-
-
+ <tr class="title"><td >{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
+ <td>
+ <div class="general_options" style="float:right">	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_health_and_safety" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_health_and_safety" class="state_details">{t}Reset{/t}</span>
+</div>
+ </td>
+  </tr>
+  <tr ><td colspan=2 style="padding:5px 0 0 0 ">
+  <form onsubmit="return false;">
+  <textarea id="part_health_and_safety" ovalue="{$part->get('Part Health And Safety')|escape}" rows="20" cols="75">{$part->get('Part Health And Safety')|escape}</textarea>
+</form>
+  </td></tr>
 </table>
+
+
+
+
+
+{*}
 
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
@@ -271,7 +283,7 @@
 
 
 </table>
-
+{*}
  
 </div>
 
