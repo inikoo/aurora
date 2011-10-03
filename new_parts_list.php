@@ -1,12 +1,12 @@
 <?php
 include_once('common.php');
-include_once('class.Store.php');
+include_once('class.Warehouse.php');
 /*if (!$user->can_view('customers') ) {
     header('Location: index.php');
     exit;
 }*/
 
-
+/*
 if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
     $store_id=$_REQUEST['store'];
 
@@ -20,9 +20,13 @@ if (! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
     exit;
 }
 
-$store=new Store($store_id);
-$smarty->assign('store_id',$store_id);
-$smarty->assign('store',$store);
+*/
+$warehouse_id=1;
+$warehouse=new Warehouse($warehouse_id);
+//$smarty->assign('store_id',$store_id);
+$smarty->assign('warehouse',$warehouse);
+
+
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -45,14 +49,14 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'common_customers.js.php',
-              'new_products_list.js.php',
+              'new_parts_list.js.php',
               'js/edit_common.js',
           );
 
 
 
-$_SESSION['state']['products']['list']['where']='';
-$smarty->assign('parent','products');
+$_SESSION['state']['parts']['list']['where']='';
+$smarty->assign('parent','parts');
 $smarty->assign('title', _('Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -130,5 +134,5 @@ $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2',$_SESSION['state']['world']['countries']['f_value']);
 
 
-$smarty->display('new_products_list.tpl');
+$smarty->display('new_parts_list.tpl');
 ?>

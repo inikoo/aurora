@@ -37,8 +37,8 @@ $smarty->assign('customer_list_id',$customer_list_data['List Key']);
 
 $general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_address_label.pdf.php?label=l7159&scope=list&id='.$id,'label'=>_('Print Address Labels'));
-$general_options_list[]=array('tipo'=>'url','url'=>'products_lists.php?store='.$store->id,'label'=>_('Products Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'products.php?store='.$store->id,'label'=>_('Products'));
+$general_options_list[]=array('tipo'=>'url','url'=>'parts_lists.php?store='.$store->id,'label'=>_('Parts Lists'));
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php'.$store->id,'label'=>_('Parts'));
 
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -81,17 +81,17 @@ $js_files=array(
               'js/edit_common.js',
               'js/csv_common.js',
               'common_customers.js.php',
-              'products_list.js.php?id='.$id
+              'parts_list.js.php?id='.$id
           );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('parent','products');
+$smarty->assign('parent','parts');
 //$smarty->assign('sub_parent','areas');
 $smarty->assign('view',$_SESSION['state']['orders']['view']);
 
 $smarty->assign('title', _('Order Static List'));
-$smarty->assign('search_label',_('Orders'));
-$smarty->assign('search_scope','customers');
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
-$smarty->display('products_list.tpl');
+$smarty->display('parts_list.tpl');
 ?>

@@ -7,7 +7,7 @@ $welcome_email_subject="Test subject";
 $welcome_email_plain="Plain text message";
 $welcome_email_html='<b>This is test html message</b><br/><img src="localhost/kaktus/track.php">';
 $email_credential_key='1';
-$handle=array('migara@inikoo.com','migara64@gmail.com');
+$handle=array('asdf@sadfg.info','migara64@gmail.com');
 $access_key='AKIAJGTHT6POHWCQQNRQ';
 $secret_key='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';
 
@@ -22,7 +22,8 @@ $data=array(
 				  'recipient_type'=>'User',
 				  'recipient_key'=>2,
 				  'access_key'=>$access_key,
-				  'secret_key'=>$secret_key
+				  'secret_key'=>$secret_key,
+				  'return_path'=>'migara@inikoo.com'
               );
 
 
