@@ -4264,6 +4264,7 @@ ALTER TABLE `Email Template Header Image Dimension` ADD `Store Key` MEDIUMINT UN
 ALTER TABLE `Part Dimension` ADD `Part Export Code` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Health And Safety` ;
 ALTER TABLE `Part Dimension` CHANGE `Part Export Code` `Part Tariff Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Product Dimension` DROP `Product Tariff Code` ;
+ALTER TABLE `Product Dimension` ADD `Product Tariff Code` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Product Gross Weight` ;
 
 */
 

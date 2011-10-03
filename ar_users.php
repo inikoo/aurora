@@ -1688,12 +1688,14 @@ function list_customer_users() {
 //  if ($data['User Key']){
 //  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
 // }
-        $customer_name=sprintf('<a href="customer_user.php?id=%d&store=%d">%s</a>',$data['User Key'],$data['User Site Key'],$data['Customer Main Contact Name']);
+        $alias=sprintf('<a href="customer_user.php?id=%d&site_key=%d">%s</a>',$data['User Key'],$data['User Site Key'],$data['User Handle']);
+        $customer=sprintf('%s (<a href="customer.php?id=%d">%5d</a>)',$data['Customer Name'],$data['User Parent Key'],$data['User Parent Key']);
+
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'customer_id'=>$data['Customer Key'],
                      'alias'=>$data['User Handle'],
-                     'name'=>$customer_name,
+                     'name'=>$customer,
                      'login'=>$data['User Last Login'],
 					 'count'=>$data['User Login Count'],
                      'isactive'=>$is_active

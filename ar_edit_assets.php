@@ -23,6 +23,8 @@ if (!isset($_REQUEST['tipo'])) {
 
 
 $tipo=$_REQUEST['tipo'];
+
+
 switch ($tipo) {
 
 
@@ -30,6 +32,7 @@ case('edit_part_custom_field'):
 case('edit_part_unit'):
 case('edit_part'):
 case('edit_part_description'):
+case('edit_part_health_and_safety'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
                              'key'=>array('type'=>'string'),
