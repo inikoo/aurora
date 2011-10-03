@@ -499,7 +499,7 @@ class SendEmail extends DB_Table{
 				$this->m->addTo($data['to']);
 				$this->m->setFrom($row['Email Address']);
 				$this->m->setSubject($data['subject']);
-				
+				$this->m->setReturnPath($data['return_path']);
 				
 				//$ses->sendEmail($m)
 			}

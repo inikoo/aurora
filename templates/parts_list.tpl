@@ -7,12 +7,12 @@
 
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Products List{/t}: {$customer_list_name}</h1>
+    <h1>{t}Parts List{/t}: {$customer_list_name}</h1>
   </div>
 
 
  <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Part List{/t}</span>
+      <span class="clean_table_title">{t}Parts List{/t}</span>
       
  
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

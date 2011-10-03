@@ -14,11 +14,7 @@ if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
 
 }
 
-if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
-	
-    header('Location: index.php');
-    exit;
-}
+
 
 $store=new Store($store_id);
 
@@ -57,33 +53,33 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/search.js',
-              'products_lists.js.php',
+              'parts_lists.js.php',
               'js/list_function.js',
               
               'js/menu.js'
           );
 
 
-$smarty->assign('parent','products');
-$smarty->assign('title', _('Products Lists'));
+$smarty->assign('parent','parts');
+$smarty->assign('title', _('Parts Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
 
-$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_products_list.php?store='.$store_id,'label'=>_('New List'));
-
-     $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
- $general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store->id,'label'=>_('Store'));
+$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_parts_list.php?store='.$store_id,'label'=>_('New List'));
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php','label'=>_('Warehouse'));
+   //  $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
+ //$general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store->id,'label'=>_('Store'));
   
 $smarty->assign('general_options_list',$general_options_list);
-$smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('options_box_width','600px');
 
-$smarty->display('products_lists.tpl');
+$smarty->display('parts_lists.tpl');
 ?>
