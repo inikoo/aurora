@@ -3337,7 +3337,7 @@ function edit_part($data) {
         $part->update_custom_fields($key, $the_new_value);
     } else {
     
-    print "$key $the_new_value";
+    //print "$key $the_new_value";
         $part->update(array($key=>$the_new_value));
     }
 

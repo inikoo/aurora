@@ -572,7 +572,7 @@ function create_order($data) {
 
             //  print_r($data);
             $order->skip_update_after_individual_transaction=true;
-            $transaction_data=$order->add_order_transaction($data);
+            $transaction_data=$order->add_order_transaction($data,true);
             if ($transaction_data['updated'])
                 $discounts_map[$transaction_data['otf_key']]=$transaction['discount_amount'];
 
@@ -602,7 +602,7 @@ function create_order($data) {
             //   print_r($data);
 
             $order->skip_update_after_individual_transaction=true;
-            $transaction_data=$order->add_order_transaction($data);
+            $transaction_data=$order->add_order_transaction($data,true);
             $data_dn_transactions[$ddt_key]['otf_key']=$transaction_data['otf_key'];
 
             //    print_r($transaction_data);
@@ -642,9 +642,9 @@ function create_order($data) {
     $order->update_charges_amount($charges_data);
 
 
-if(count($data_dn_transactions)>0){
-    $dn=$order->send_to_warehouse($date_order);
-}
+    if (count($data_dn_transactions)>0) {
+        $dn=$order->send_to_warehouse($date_order);
+    }
 
 
 
@@ -675,42 +675,79 @@ function send_order($data,$data_dn_transactions) {
     $_picked_qty=array();
     $_out_of_stock_qty=array();
     foreach($data_dn_transactions as $key=>$value) {
-     //   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
-        $sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d",$value['otf_key']);
+
+        $shipped_quantity=round($value['Shipped Quantity'],8);
+        $out_of_stock_quantity=round($value['No Shipped Due Out of Stock'],8);;
+
+        //   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
+        $sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
         $res=mysql_query($sql);
-        if ($row=mysql_fetch_assoc($res)) {
-            $itf=$row['Inventory Transaction Key'];
-            $data_dn_transactions[$key]['itf']=$itf;
-        } else {
+
+        $num_rows = mysql_num_rows($res);
+
+        if (!$num_rows) {
             exit("==============\n  $key\n $sql    Error no itf-otf map\n");
         }
-        if (  $value['Shipped Quantity']>0) {
-            if (array_key_exists($itf, $_picked_qty))
-                $_picked_qty[$itf]+=round($value['Shipped Quantity'],8);
-            else
-                $_picked_qty[$itf]=round($value['Shipped Quantity'],8);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $itf=$row['Inventory Transaction Key'];
+
+
+
+
+            $metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
+            $parts_per_product=$metadata[1];
+            $part_index=$metadata[0];
+            $max_picks_in_this_location=$row['Required'];
+
+
+
+            if ($part_index==0) {
+                $_shipped_qty=$shipped_quantity*$parts_per_product;
+                $_outstock_qty=$out_of_stock_quantity*$parts_per_product;
+            }
+
+
+            if ($max_picks_in_this_location<$_shipped_qty) {
+                $_picked_qty[$itf]=$max_picks_in_this_location;
+                $_shipped_qty=$_shipped_qty-$max_picks_in_this_location;
+                $still_required=0;
+            } else {
+                $_picked_qty[$itf]=$_shipped_qty;
+                $still_required=$max_picks_in_this_location-$_shipped_qty;
+                $_shipped_qty=0;
+            }
+
+              if ($still_required<$_outstock_qty) {
+                $_out_of_stock_qty[$itf]=$still_required;
+                $_outstock_qty=$_outstock_qty-$still_required;
+               
+            } else {
+                $_out_of_stock_qty[$itf]=$_outstock_qty;
+                 $_outstock_qty=0;
+               
+            }
+
+            
+            
+
+
         }
 
-        if ( $value['No Shipped Due Out of Stock']>0) {
-            if (array_key_exists($itf, $_out_of_stock_qty))
-                $_out_of_stock_qty[$itf]+=round($value['No Shipped Due Out of Stock'],8);
-            else
-                $_out_of_stock_qty[$itf]=round($value['No Shipped Due Out of Stock'],8);
-        }
 
     }
 
 
 
-     foreach($_picked_qty as $itf=>$_qty){
-     $dn->set_as_picked($itf,$_qty,$date_order);
-     }
+    foreach($_picked_qty as $itf=>$_qty) {
+        $dn->set_as_picked($itf,$_qty,$date_order);
+    }
 
-  foreach($_out_of_stock_qty as $itf=>$_qty){
-     $dn->set_as_out_of_stock($itf,$_qty,$date_order);
-     }
+    foreach($_out_of_stock_qty as $itf=>$_qty) {
+        $dn->set_as_out_of_stock($itf,$_qty,$date_order);
+    }
 
- 
+
 
 
 
@@ -722,9 +759,74 @@ function send_order($data,$data_dn_transactions) {
     }
     $dn->start_packing($staff_key,$date_order);
 
-    foreach($data_dn_transactions as $key=>$value) {
-        $dn->set_as_packed($value['itf'],round($value['Shipped Quantity'],8),$date_order);
+   
+    
+    
+     $_packed_qty=array();
+      foreach($data_dn_transactions as $key=>$value) {
+
+        $shipped_quantity=round($value['Shipped Quantity'],8);
+    
+
+        $sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
+        $res=mysql_query($sql);
+
+        $num_rows = mysql_num_rows($res);
+
+        if (!$num_rows) {
+            exit("==============\n  $key\n $sql    Error no itf-otf map\n");
+        }
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $itf=$row['Inventory Transaction Key'];
+
+
+
+
+            $metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
+            $parts_per_product=$metadata[1];
+            $part_index=$metadata[0];
+            $max_picks_in_this_location=$row['Required'];
+
+
+
+            if ($part_index==0) {
+                $_shipped_qty=$shipped_quantity*$parts_per_product;
+            }
+
+
+            if ($max_picks_in_this_location<$_shipped_qty) {
+                $_packed_qty[$itf]=$max_picks_in_this_location;
+                $_shipped_qty=$_shipped_qty-$max_picks_in_this_location;
+                $still_required=0;
+            } else {
+                $_packed_qty[$itf]=$_shipped_qty;
+                $still_required=$max_picks_in_this_location-$_shipped_qty;
+                $_shipped_qty=0;
+            }
+
+          
+
+            
+            
+
+
+        }
+
+
     }
+    
+    
+     foreach($_packed_qty as $itf=>$_qty) {
+        $dn->set_as_packed($itf,$_qty,$date_order);
+    }
+
+    
+    
+    
+    
+    
+    
     $dn->update_packing_percentage();
 
     $dn->set_parcels($parcels,$parcel_type);

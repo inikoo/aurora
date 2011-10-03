@@ -4263,6 +4263,8 @@ CREATE TABLE `Email Template Header Image Dimension` (
 ALTER TABLE `Email Template Header Image Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Header Image Name` ,ADD INDEX ( `Store Key` );
 ALTER TABLE `Part Dimension` ADD `Part Export Code` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Health And Safety` ;
 ALTER TABLE `Part Dimension` CHANGE `Part Export Code` `Part Tariff Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Product Dimension` DROP `Product Tariff Code` ;
+
 */
 
 ?>
