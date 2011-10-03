@@ -178,25 +178,16 @@
  
  
  <div style="float:left;width:450px">
- <h2 style="clear:both">{t}Unit Details{/t}</h2>
 
 
 <table    class="show_info_product">
 
+
 	<tr>
-		<td>{t}Unit Type{/t}:</td><td>{$part->get('Units Type')}</td>
+		<td>{t}Weight{/t}:</td><td>{$part->get('Weight')}</td>
 	</tr>
 	<tr>
-		<td>{t}Unit Description{/t}:</td><td>{$part->get('Part Unit Description')}</td>
-	</tr>
-	<tr>
-		<td>{t}Gross Weight{/t}:</td><td>{$part->get('Part Gross Weight')}</td>
-	</tr>
-	<tr>
-		<td>{t}Package Volume{/t}:</td><td>{$part->get('Part Package Volume')}</td>
-	</tr>
-	<tr>
-		<td>{t}Package MOV{/t}:</td><td>{$part->get('Part Package Minimun Orthogonal Volume')}</td>
+		<td>{t}Volume{/t}:</td><td>{$part->get('Volume')}</td>
 	</tr>
 	<tr>
 		<td>{t}Export Code{/t}:</td><td>{$part->get('Part Export Code')}</td>
@@ -220,13 +211,19 @@
 		</table>
 </div>  
   
-
- <h2 style="clear:both">{t}General Description{/t}</h2>
+<div style="clear:both;{if !$part->get('Part General Description')}display:none{/if}">
+ <h2 >{t}General Description{/t}</h2>
+ <div style="margin-top:5px">
+{$part->get('Part General Description')}
+ </div>
+ </div>
  
- 
- <h2 style="clear:both">{t}Health & Safety{/t}</h2>
-
-
+ <div style="clear:both;{if !$part->get('Part Health And Safety')}display:none{/if}">
+ <h2 >{t}Health & Safety{/t}</h2>
+<div style="margin-top:5px">
+{$part->get('Part Health And Safety')}
+ </div>
+</div>
 
 
  

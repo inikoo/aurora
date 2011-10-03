@@ -57,7 +57,6 @@ $js_files=array(
 
 
 $smarty->assign('search_scope','users');
-
 $smarty->assign('search_label',_('Search'));
 
 $smarty->assign('parent','users');
