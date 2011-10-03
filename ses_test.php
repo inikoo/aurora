@@ -50,10 +50,10 @@ $html="<b>This is bold</b>";
 //Set both text and html message body
 $m->setMessageFromString($text, $html);
 
-print_r($ses->sendEmail($m));
+//print_r($ses->sendEmail($m));
 
-//print_r($ses->getSendQuota());
-//print_r($ses->getSendStatistics());
+print_r($ses->getSendQuota());
+print_r($ses->getSendStatistics());
 
 
 
