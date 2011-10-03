@@ -197,12 +197,14 @@ class part extends DB_Table {
         }
 
         $base_data=$this->base_data();
-       // print_r($base_data);
+        // print_r($base_data);
         //print $field;
         if (array_key_exists($field,$base_data)) {
-    
+
             if ($value!=$this->data[$field]) {
-                print $field;
+                
+                if($field=='Part General Description' or $field=='Part Health And Safety')
+                    $options.=' nohistory';
                 $this->update_field($field,$value,$options);
 
             }
@@ -1008,45 +1010,60 @@ class part extends DB_Table {
 
     }
 
-    function get_picking_location_historic($date) {
-    
-    
-    
-        $sql=sprintf("select `Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  on (ITF=.`Location Key`=L.`Location Key`)    where `Part SKU`=%d order by ORDER BY `Location Mainly Used For` IN ('Picking','Storing')  group by `Location Key`",$this->sku);
+    function get_picking_location_historic($date,$qty) {
+
+        $locations=array();
         $was_associated=array();
+        $sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d   group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
+        //print $sql;
+
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-          
-          if($part_location->is_associated($date)){
-                 list($stock,$value)=$part_location->get_stock($date);
+
+            if ($part_location->is_associated($date)) {
+                list($stock,$value)=$part_location->get_stock($date);
                 $was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock,'used_for'=>$row['Location Mainly Used For']);
             }
-       }
-    
-        $number_associated_locations=count($was_associated);
-        
-        if($number_associated_locations==0)
-            return 1;
-        elseif($number_associated_locations==1){
-            return $was_associated[0]['location_key'];
-        }else{
-        
-            $location_data=array();
-            foreach($was_associated as $location_key){
-            
-           
-            $location_data[$location_key]=array('stock'=>$stock);
-            
-            }
-            
-         
-        
-        
         }
-            
-    
-    
+
+        $number_associated_locations=count($was_associated);
+
+        if ($number_associated_locations==0)
+            return array('location_key'=>1,'qty'=>$qty);
+        elseif($number_associated_locations==1 or $qty<=0) {
+            return array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
+        }
+        else {
+
+
+            foreach($was_associated as $location_data) {
+
+                if ($qty>0) {
+                    if ($location_data['stock']<=$qty) {
+                        $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
+                        $qty=0;
+                    } else {
+                        $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
+                        $qty=$qty-$location_data['stock'];
+                    }
+                }
+
+
+
+            }
+
+            if ($qty>0) {
+                $locations[0]['qty']=$locations[0]['qty']+$qty;
+
+            }
+
+            return $locations;
+
+        }
+
+
+
 
     }
 
@@ -1054,15 +1071,58 @@ class part extends DB_Table {
         if ($date) {
             return $this->get_picking_location_historic($date,$qty);
         }
-        $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes'",$this->sku);
-        $location_key=1;
-        $res=mysql_query($sql);
+        $locations=array();
+        $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and ORDER BY `Can Pick` IN ('Yes','No')   ",$this->sku);
 
-        if ($row=mysql_fetch_assoc($res)) {
-            $location_key=$row['Location Key'];
+        $res=mysql_query($sql);
+        $locations_data=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+
+            if ($part_location->is_associated($date)) {
+                list($stock,$value)=$part_location->get_stock();
+                $locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
+            }
         }
 
-        return $location_key;
+
+        $number_associated_locations=count($locations_data);
+
+        if ($number_associated_locations==0)
+            return array('location_key'=>1,'qty'=>$qty);
+        elseif($number_associated_locations==1 or $qty<=0) {
+            return array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
+        }
+        else {
+
+
+            foreach($locations_data as $location_data) {
+
+                if ($qty>0) {
+                    if ($location_data['stock']<=$qty) {
+                        $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
+                        $qty=0;
+                    } else {
+                        $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
+                        $qty=$qty-$location_data['stock'];
+                    }
+                }
+
+
+
+            }
+
+            if ($qty>0) {
+                $locations[0]['qty']=$locations[0]['qty']+$qty;
+
+            }
+
+            return $locations;
+
+        }
+
+
+
     }
 
     function get_locations($for_smarty=false) {

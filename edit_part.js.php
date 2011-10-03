@@ -44,6 +44,9 @@ var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var part_sku = <?php echo $_REQUEST['sku'] ?>;
 var Editor_change_part;
+var GeneralDescriptionEditor;
+var HealthAndSafetyEditor;
+
 
 var validate_scope_data = 
 {
@@ -158,42 +161,29 @@ var validate_scope_data =
 		'general_description': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 2,
 			'type': 'item',
-			'dbname': 'Part_General_Description',
-			'name': 'Part_General_Description',
+			'dbname': 'Part General Description',
+			'name': 'part_general_description',
 			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Description ')?>'
-				
-			}]
-			
+			'validation': false
 		}
-		,
-		'has_description': {
+	},
+'part_health_and_safety': {
+		'health_and_safety': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 2,
 			'type': 'item',
-			'dbname': 'Part_Health_And_Safety',
-			'name': 'Part_Health_And_Safety',
+			'dbname': 'Part Health And Safety',
+			'name': 'part_health_and_safety',
 			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Description ')?>'
-				
-			}]
-			
+			'validation': false
 		}
-
-
-		
-	}
-
-	,
+	},
+	
 	'part_custom_field': {
 		 <?php
 		 $i = 0;
@@ -224,32 +214,22 @@ var validate_scope_metadata = {
 		'key_name': 'sku',
 		'key': part_sku
 		
-	}
-	,
-	'part_price': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	}
-	,
-	'part_weight': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	}
-	,
+	},
+
 	'part_description': {
 		'type': 'edit',
 		'ar_file': 'ar_edit_assets.php',
 		'key_name': 'sku',
 		'key': part_sku
 		
-	}
-	,
+	},
+	'part_health_and_safety': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_assets.php',
+		'key_name': 'sku',
+		'key': part_sku
+		
+	},
 	'part_custom_field': {
 		'type': 'edit',
 		'ar_file': 'ar_edit_assets.php',
@@ -459,13 +439,17 @@ function reset_edit_part_unit() {
 }
 
 function save_edit_part_description() {
+GeneralDescriptionEditor.saveHTML();
+
 	save_edit_general('part_description');
 
 	
 }
 function reset_edit_part_description() {
+
 	reset_edit_general('part_description')
 
+GeneralDescriptionEditor.setEditorHTML(Dom.get('part_general_description').value);
 	
 }
 
@@ -960,7 +944,13 @@ validate_scope('part_unit')
 }
 
 function geneal_description_editor_changed(){
+validate_scope_data['part_description']['general_description']['changed']=true;
+validate_scope('part_description')
+}
 
+function geneal_description_editor_changed(){
+validate_scope_data['part_description']['general_description']['changed']=true;
+validate_scope('part_description')
 }
 
 function init() {
@@ -1206,18 +1196,28 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
   
   GeneralDescriptionEditor = new YAHOO.widget.Editor('part_general_description', myConfig);
     GeneralDescriptionEditor.on('toolbarLoaded', function() {
-    
-   
-        
-        
-        this.on('editorKeyUp', geneal_description_editor_changed, this, true);
+         this.on('editorKeyUp', geneal_description_editor_changed, this, true);
                 this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
                 this.on('editorMouseDown', geneal_description_editor_changed, this, true);
                 this.on('buttonClick', geneal_description_editor_changed, this, true);
-
-       
     }, GeneralDescriptionEditor, true);
+    yuiImgUploader(GeneralDescriptionEditor, 'part_general_description', 'ar_upload_file_from_editor.php','image');
     GeneralDescriptionEditor.render();
+
+  HealthAndSafetyEditor = new YAHOO.widget.Editor('part_health_and_safety', myConfig);
+    HealthAndSafetyEditor.on('toolbarLoaded', function() {
+         this.on('editorKeyUp', geneal_description_editor_changed, this, true);
+                this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
+                this.on('editorMouseDown', geneal_description_editor_changed, this, true);
+                this.on('buttonClick', geneal_description_editor_changed, this, true);
+    }, HealthAndSafetyEditor, true);
+    yuiImgUploader(HealthAndSafetyEditor, 'part_health_and_safety', 'ar_upload_file_from_editor.php','image');
+    HealthAndSafetyEditor.render();
+
+
+
+
+
 
 }
 

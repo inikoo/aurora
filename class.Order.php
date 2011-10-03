@@ -854,7 +854,7 @@ class Order extends DB_Table {
 
 
 
-    function add_order_transaction($data) {
+    function add_order_transaction($data,$historic=falses) {
 
         if (!isset($data ['ship to key'])) {
             $ship_to_keys=preg_split('/,/',$this->data['Order Ship To Keys']);
@@ -897,7 +897,7 @@ class Order extends DB_Table {
 
 
 
-        if ($this->data['Order Current Dispatch State']=='In Process') {
+        if ($this->data['Order Current Dispatch State']=='In Process' and !$historic) {
 
             $sql=sprintf("select `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",
                          $this->id,
@@ -1009,7 +1009,8 @@ class Order extends DB_Table {
                 $otf_key=mysql_insert_id();
 
             }
-        } else {
+        } 
+        else {
             $total_quantity=$quantity+$bonus_quantity;
             if ($total_quantity==0) {
                 return array(
