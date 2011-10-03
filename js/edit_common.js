@@ -140,6 +140,7 @@ var save_option_table=function(args) {
 
 
 function option_selected(branch,item){
+
     var data= validate_scope_data[branch][item];
 select=Dom.get(data.name);
 
@@ -159,7 +160,7 @@ validate_scope(branch);
 var CellEdit = function (callback, newValue) {
 
 //alert("xxxx")
-
+alert('xx');return;	
     var record = this.getRecord(),
                  column = this.getColumn(),
                           oldValue = this.value,
@@ -235,6 +236,7 @@ scope:this
     );
 };
 var onCellClick = function(oArgs) {
+
     var target = oArgs.target,
     column = this.getColumn(target),
     record = this.getRecord(target);
