@@ -7,7 +7,10 @@ if($path=="../../"){
 }elseif($path=="../"){
 	$path_id=1;
 	  $path_menu='../forms/';
-}	
+}elseif($path=="../sites/"){
+	$path_id=3;
+	  $path_menu='../sites/forms/';
+}		
 	
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />

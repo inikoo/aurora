@@ -392,6 +392,7 @@ function show_products($code,$options=false) {
                 $price=$val['Product Price'];
         }
         */
+		
         $product=new LightFamily($family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
@@ -446,8 +447,10 @@ function set_parameters($data=false) {
 
 	if (!isset($data['type']))
         $path="../../";
-    else
+    elseif($data['type']=='parent')
         $path="../";
+	elseif($data['type']=='index')
+		$path="../sites/";
 
     if (!isset($data['family']))
         $family_code='';
