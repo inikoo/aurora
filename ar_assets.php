@@ -40,7 +40,9 @@ case('customers_who_order_product'):
 case('products_lists'):
     list_products_lists();
     break;
-
+case('parts_lists'):
+    list_parts_lists();
+    break;
 case('new_list'):
 
     $data=prepare_values($_REQUEST,array(
@@ -54,6 +56,20 @@ case('new_list'):
 
 
     new_products_list($data);
+    break;
+case('new_parts_list'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'awhere'=>array('type'=>'json array'),
+                             //'store_id'=>array('type'=>'key'),
+                             'list_name'=>array('type'=>'string'),
+                             'list_type'=>array('type'=>'enum',
+                                                'valid values regex'=>'/static|Dynamic/i'
+                                               )
+                         ));
+
+
+    new_parts_list($data);
     break;
 case('is_valid_family_code'):
 
@@ -3106,7 +3122,7 @@ function list_products() {
                      'stock_forecast'=>$stock_forecast,
                      'family'=>$row['Product Family Name'],
                      'dept'=>$row['Product Main Department Name'],
-                     'expcode'=>$row['Product Tariff Code'],
+                     //'expcode'=>$row['Product Tariff Code'],
                      'parts'=>$row['Product XHTML Parts'],
                      'supplied'=>$row['Product XHTML Supplied By'],
                      'gmroi'=>$row['Product GMROI'],
@@ -3208,9 +3224,16 @@ function list_parts() {
     $conf=$_SESSION['state']['warehouse']['parts'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
+		
     else
         $view=$_SESSION['state']['warehouse']['parts']['view'];
-
+$_SESSION['state']['warehouse']['parts']['view']=$view;
+	if (isset( $_REQUEST['list_key']))
+        $list_key=$_REQUEST['list_key'];
+    else
+        $list_key=false;
+		
+		
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -3243,9 +3266,9 @@ function list_parts() {
 
 
     if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
+        $awhere=addslashes($_REQUEST['where']);
     else
-        $where=$conf['where'];
+        $awhere=$conf['where'];
 
 
     if (isset( $_REQUEST['f_field']))
@@ -3315,7 +3338,7 @@ function list_parts() {
     $_SESSION['state']['warehouse']['parts']['order_dir']=$order_direction;
     $_SESSION['state']['warehouse']['parts']['nr']=$number_results;
     $_SESSION['state']['warehouse']['parts']['sf']=$start_from;
-    $_SESSION['state']['warehouse']['parts']['where']=$where;
+    $_SESSION['state']['warehouse']['parts']['where']=$awhere;
     $_SESSION['state']['warehouse']['parts']['f_field']=$f_field;
     $_SESSION['state']['warehouse']['parts']['f_value']=$f_value;
     $_SESSION['state']['warehouse']['parts']['elements']=$elements;
@@ -3331,10 +3354,54 @@ function list_parts() {
         $number_results=25;
 
     $where="where true  ";
+	$table="`Part Dimension` P";
+
+    if ($awhere) {
+
+        $tmp=preg_replace('/\\\"/','"',$awhere);
+        $tmp=preg_replace('/\\\\\"/','"',$tmp);
+        $tmp=preg_replace('/\'/',"\'",$tmp);
+		
+        $raw_data=json_decode($tmp, true);
+        //$raw_data['store_key']=$store;
+		//print_r($raw_data);exit;
+        list($where,$table)=parts_awhere($raw_data);
+
+        $where_type='';
+        $where_interval='';
+    }
+
+	
+	if ($list_key) {
+		
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+		//print $sql;exit;
+        $res=mysql_query($sql);
+        if ($customer_list_data=mysql_fetch_assoc($res)) {
+            $awhere=false;
+            if ($customer_list_data['List Type']=='Static') {
+
+                $table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+
+            } else {// Dynamic by DEFAULT
 
 
 
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
 
+                $raw_data=json_decode($tmp, true);
+
+                //$raw_data['store_key']=$store;
+                list($where,$table)=parts_awhere($raw_data);
+            }
+
+        } else {
+            exit("error");
+        }
+    }
 
     $_elements='';
     foreach($elements as $_key=>$_value) {
@@ -3368,9 +3435,9 @@ function list_parts() {
     elseif($f_field=='sku' and $f_value!='')
     $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
-    $sql="select count(*) as total from `Part Dimension`  $where $wheref";
+    $sql="select count(*) as total from $table  $where $wheref";
 
-    //   print $sql;
+       //print $sql;exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -3617,12 +3684,12 @@ function list_parts() {
 
     }
 
+	$order='P.'.$order;
 
 
 
-
-    $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-//      print $sql;
+    $sql="select * from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+    //print $sql; exit;
     $adata=array();
     $result=mysql_query($sql);
 
@@ -10210,6 +10277,105 @@ function new_products_list($data) {
 
 }
 
+function new_parts_list($data) {
+//print 'xx';exit;
+    $list_name=$data['list_name'];
+    //$store_id=$data['store_id'];
+
+    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s",
+                 prepare_mysql($list_name)
+                );
+    $res=mysql_query($sql);
+
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $response=array('resultset'=>
+                                    array(
+                                        'state'=>400,
+                                        'msg'=>_('Another list has the same name')
+                                    )
+                       );
+        echo json_encode($response);
+        return;
+    }
+
+    $list_type=$data['list_type'];
+
+    $awhere=$data['awhere'];
+    $table='`Product Dimension` P ';
+
+
+//   $where=customers_awhere($awhere);
+    list($where,$table)=parts_awhere($awhere);
+
+    //$where.=sprintf(' and `Product Store Key`=%d ',$store_id);
+
+
+    $sql="select count(Distinct P.`Part SKU`) as total from $table  $where";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        if ($row['total']==0) {
+            $response=array('resultset'=>
+                                        array(
+                                            'state'=>400,
+                                            'msg'=>_('No products match this criteria')
+                                        )
+                           );
+            echo json_encode($response);
+            return;
+
+        }
+
+
+    }
+    mysql_free_result($res);
+
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Part',%d,%s,%s,%s,NOW())",
+                      0,
+                      prepare_mysql($list_name),
+                      prepare_mysql($list_type),
+                      prepare_mysql(json_encode($data['awhere']))
+
+                     );
+    mysql_query($list_sql);
+    $customer_list_key=mysql_insert_id();
+
+    if ($list_type=='Static') {
+
+
+        $sql="select P.`Part SKU` from $table  $where group by P.`Part SKU`";
+           //print $sql;exit;
+        $result=mysql_query($sql);
+        while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $customer_key=$data['Part SKU'];
+            $sql=sprintf("insert into `List Part Bridge` (`List Key`,`Part SKU`) values (%d,%d)",
+                         $customer_list_key,
+                         $customer_key
+                        );
+            mysql_query($sql);
+
+        }
+        mysql_free_result($result);
+
+
+
+
+    }
+
+
+
+
+    $response=array(
+                  'state'=>200,
+                  'customer_list_key'=>$customer_list_key
+
+              );
+    echo json_encode($response);
+
+}
 
 function list_products_lists() {
 
@@ -10402,6 +10568,197 @@ function list_products_lists() {
                    );
     echo json_encode($response);
 }
+
+
+function list_parts_lists() {
+
+    global $user;
+
+    $conf=$_SESSION['state']['products']['list'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+
+
+
+        $awhere=$_REQUEST['where'];
+    else
+        $awhere=$conf['where'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+/*
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['products']['store']=$store;
+    } else
+        $store=$_SESSION['state']['products']['store'];
+*/
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['parts']['list']['order']=$order;
+    $_SESSION['state']['parts']['list']['order_dir']=$order_direction;
+    $_SESSION['state']['parts']['list']['nr']=$number_results;
+    $_SESSION['state']['parts']['list']['sf']=$start_from;
+    $_SESSION['state']['parts']['list']['where']=$awhere;
+    $_SESSION['state']['parts']['list']['f_field']=$f_field;
+    $_SESSION['state']['parts']['list']['f_value']=$f_value;
+
+
+
+    $where=' where `List Scope`="Part"';
+	
+
+    $wheref='';
+
+    $sql="select count(distinct `List Key`) as total from `List Dimension`  $where  ";
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `List Dimension` $where $wheref ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('List','Lists',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_("Showing all Lists");
+
+
+
+
+    $filter_msg='';
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='name')
+        $order='`List Name`';
+    elseif($order=='creation_date')
+    $order='`List Creation Date`';
+    elseif($order=='product_list_type')
+    $order='`List Type`';
+
+    else
+        $order='`List Key`';
+
+
+    $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+
+    $adata=array();
+
+
+
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+
+
+        $cusomer_list_name=" <a href='parts_list.php?id=".$data['List key']."'>".$data['List Name'].'</a>';
+        switch ($data['List Type']) {
+        case 'Static':
+            $product_list_type=_('Static');
+            break;
+        default:
+            $product_list_type=_('Dynamic');
+            break;
+
+        }
+
+        $adata[]=array(
+
+
+                     'product_list_type'=>$product_list_type,
+                     'name'=>$cusomer_list_name,
+                     'key'=>$data['List key'],
+                     'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                     'delete'=>'<img src="art/icons/cross.png"/>'
+
+
+                 );
+
+    }
+
+
+    mysql_free_result($result);
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
 
 
 function part_location_info($data) {

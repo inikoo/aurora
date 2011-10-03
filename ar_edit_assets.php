@@ -50,6 +50,14 @@ case('edit_location'):
 
     edit_location($data);
     break;
+case('delete_parts_list'):
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'key'),
+
+
+                         ));
+    delete_parts_list($data);
+    break;
 case('edit_part_custom_field'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
@@ -3436,5 +3444,44 @@ function create_product($data) {
     } else
         $response=array('state'=>400,'msg'=>_('Error'));
     echo json_encode($response);
+}
+
+
+
+function delete_parts_list($data) {
+    global $user;
+    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+        //if (in_array($row['List Store Key'],$user->stores)) {
+            $sql=sprintf("delete from  `List Order Bridge` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
+            mysql_query($sql);
+            $response=array('state'=>200,'action'=>'deleted');
+            echo json_encode($response);
+            return;
+
+
+
+        //} else {
+            //$response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+           // echo json_encode($response);
+           // return;
+        //}
+
+
+
+    } else {
+        $response=array('state'=>400,'msg'=>'Error no order list');
+        echo json_encode($response);
+        return;
+
+    }
+
+
+
 }
 ?>
