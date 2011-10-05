@@ -13,6 +13,12 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('mailing_list'):
+
+    mailing_list();
+
+    break;
 case('add_email_template_header'):
     $data=prepare_values($_REQUEST,array(
                              'files_data'=>array('type'=>'json array'),
@@ -399,11 +405,11 @@ function add_email_template_header($data) {
     foreach($data['files_data'] as $file_data) {
 
         $image_data=array(
-                  'file'=>$file_data['filename_with_path'],
-                  'source_path'=>'',
-                  'name'=>$file_data['original_filename'],
-                  'caption'=>''
-              );
+                        'file'=>$file_data['filename_with_path'],
+                        'source_path'=>'',
+                        'name'=>$file_data['original_filename'],
+                        'caption'=>''
+                    );
 
 
         $image=new Image('find',$image_data,'create');
@@ -430,4 +436,161 @@ function add_email_template_header($data) {
     echo json_encode($response);
 
 }
+
+
+function mailing_list() {
+    $conf=$_SESSION['state']['email_campaign']['mailing_list'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+
+    if (isset( $_REQUEST['where']))
+        $where=$_REQUEST['where'];
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['email_campaign_key'])) {
+        $email_campaign_key=$_REQUEST['email_campaign_key'];
+        $_SESSION['state']['email_campaign']['id']=$email_campaign_key;
+    } else {
+        $email_campaign_key=$_SESSION['state']['email_campaign']['id'];
+    }
+
+    $filter_msg='';
+
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['email_campaign']['mailing_list']['order']=$order;
+    $_SESSION['state']['email_campaign']['mailing_list']['order_dir']=$order_dir;
+    $_SESSION['state']['email_campaign']['mailing_list']['nr']=$number_results;
+    $_SESSION['state']['email_campaign']['mailing_list']['sf']=$start_from;
+    $_SESSION['state']['email_campaign']['mailing_list']['where']=$where;
+    $_SESSION['state']['email_campaign']['mailing_list']['f_field']=$f_field;
+    $_SESSION['state']['email_campaign']['mailing_list']['f_value']=$f_value;
+
+
+    $where=sprintf(" where  `Email Campaign Key`=%d",$email_campaign_key);
+
+
+
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+    $sql="select count(*) as total from `Email Campaign Mailing List`     $where $wheref";
+
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total  from `Email Campaign Mailing List`    $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $filtered=$row['total']-$total;
+            $total_records=$row['total'];
+        }
+        mysql_free_result($result);
+    }
+
+    $rtext=sprintf(ngettext("%d recipient", "%d recipients", $total_records), $total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp='('._('Showing all').')';
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='contact')
+        $order='`Email Contact Name`';
+    else
+        $order='`Email Address`';
+
+    $sql="select *  from `Email Campaign Mailing List`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
+    $res = mysql_query($sql);
+    $adata=array();
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+
+        $adata[]=array(
+                     'id'=>$row['Email Campaign Key'],
+                     'contact'=>$row['Email Contact Name'],
+                     'email'=>$row['Email Address'],
+                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
+
+
+                 );
+    }
+    mysql_free_result($res);
+    $response=array('resultset'=>
+                                array(
+
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'total_records'=>$total,
+                                    'records_offset'=>$start_from,
+                                    'records_perpage'=>$number_results,
+
+
+
+                                )
+                   );
+
+    echo json_encode($response);
+
+}
+
 ?>

@@ -1015,8 +1015,8 @@ class part extends DB_Table {
 
         $locations=array();
         $was_associated=array();
-        $sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d  and  ITF.`Location Key`>0  group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
-        print $sql;
+        $sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d  and  ITF.`Location Key`>0 and `Location Mainly Used For` in ('Picking','Storing') group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
+       // print $sql;
 
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1041,10 +1041,10 @@ class part extends DB_Table {
             foreach($was_associated as $location_data) {
 
                 if ($qty>0) {
-                    if ($location_data['stock']<=$qty) {
+                    if ($location_data['stock']>=$qty) {
                         $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
                         $qty=0;
-                    } else {
+                    } elseif($location_data['stock']>0) {
                         $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
                         $qty=$qty-$location_data['stock'];
                     }
@@ -1075,20 +1075,20 @@ class part extends DB_Table {
             return $this->get_picking_location_historic($date,$qty);
         }
         $locations=array();
-        $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and ORDER BY `Can Pick` IN ('Yes','No')   ",$this->sku);
-
+        $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s)  ORDER BY `Can Pick` IN ('Yes','No')   ",$this->sku);
+        
         $res=mysql_query($sql);
         $locations_data=array();
         while ($row=mysql_fetch_assoc($res)) {
             $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
-            if ($part_location->is_associated($date)) {
+        
                 list($stock,$value)=$part_location->get_stock();
                 $locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
-            }
+          
         }
-
-
+//print "===== $qty ================\n";
+//print_r($locations_data);
         $number_associated_locations=count($locations_data);
 
         if ($number_associated_locations==0)
@@ -1102,10 +1102,15 @@ class part extends DB_Table {
             foreach($locations_data as $location_data) {
 
                 if ($qty>0) {
-                    if ($location_data['stock']<=$qty) {
+  //                  print "caca $qty \n ";
+          //   print_r($location_data);
+                    if ($location_data['stock']>=$qty) {
                         $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
+    //                     print "xxxcaca $qty \n ";
                         $qty=0;
-                    } else {
+                    } elseif($location_data['stock']>0) {
+      //                print "yyycaca $qty \n ";
+                        
                         $locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
                         $qty=$qty-$location_data['stock'];
                     }
@@ -1123,6 +1128,7 @@ class part extends DB_Table {
             
 
         }
+
 
 return $locations;
 
