@@ -93,6 +93,7 @@ data['Customer Address Postal Code']=Dom.get('register_address_postcode').value;
 data['Customer Address Country 2 Alpha Code']=Dom.get('register_address_country_2alpha_code').value;
 data['captcha_code']=Dom.get('captcha_code').value;
 
+
 data['ep']=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.get('epw2').value,256);
   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
@@ -103,7 +104,7 @@ Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
      var request=path+'inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
- alert(request);
+ //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	
