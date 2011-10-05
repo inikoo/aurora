@@ -157,7 +157,7 @@ function init(){
 	 jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(r.files_data));
 	 var request=ar_file+'?tipo='+tipo+'&files_data='+jsonificated_values+'&scope='+Dom.get('attachment_scope').value+'&scope_key='+Dom.get('attachment_scope_key').value+'&caption='+Dom.get('attachment_caption').value
 
-	alert(request);return;
+
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {

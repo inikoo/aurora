@@ -276,6 +276,32 @@
 
 
 
+<div id="dialog_send_email_campaign">
+  <div id="note_msg"></div>
+  <table style="padding:10px;margin:10px" border=0 >
+ 
+  
+   
+   <tr class="">
+   <td  class="label" >{t}Send campaign{/t}</td>
+   </td>
+   </tr>
+   <tr style="height:40px">
+   <td   style="cursor:pointer;text-align:center;border:1px solid #ccc;vertical-align:middle;padding:5px">
+    {t}Now{/t} 
+
+
+   <td  style="cursor:pointer;text-align:center;border:1px solid #ccc;vertical-align:middle;padding:5px">
+      {t}Choose time{/t} 
+   </td>
+ 
+ </tr>
+
+</table>
+</div>
+
+
+
 {include file='footer.tpl'}
 
 

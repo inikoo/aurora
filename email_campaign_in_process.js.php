@@ -621,6 +621,11 @@ var request='ar_edit_marketing.php?tipo=select_html_email_campaign&email_campaig
 function send_email_campaign(){
 
 validate_scope('email_campaign');
+
+
+
+
+
 }
 
 function delete_email_campaign(){

@@ -22,12 +22,23 @@ if(!$dn->id){
    exit;
 
 }
+
+
+
+if(isset($_REQUEST['refresh'])){
+$dn->actualize_inventory_transaction_facts();
+}
+
 $dn->update_picking_percentage();
 
 
 
 $warehouse= new Warehouse($dn->data['Delivery Note Warehouse Key']);
 $smarty->assign('warehouse',$warehouse);
+
+
+
+
 
 
 

@@ -128,12 +128,12 @@ class DeliveryNote extends DB_Table {
             $this->data ['Delivery Note Pickers IDs'] = $dn_data ['Delivery Note Pickers IDs'];
         else
             $this->data ['Delivery Note Pickers IDs'] ='';
-            
-         if (isset($dn_data ['Delivery Note Warehouse Key']))
+
+        if (isset($dn_data ['Delivery Note Warehouse Key']))
             $this->data ['Delivery Note Warehouse Key'] = $dn_data ['Delivery Note Warehouse Key'];
         else
-            $this->data ['Delivery Note Warehouse Key'] =1;    
-            
+            $this->data ['Delivery Note Warehouse Key'] =1;
+
 
         if (isset($dn_data ['Delivery Note XHTML Packers']))
             $this->data ['Delivery Note XHTML Packers'] = $dn_data ['Delivery Note XHTML Packers'];
@@ -350,7 +350,7 @@ class DeliveryNote extends DB_Table {
 
                          ) values (%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s  )"
                          ,$this->data ['Delivery Note Warehouse Key']
-                         
+
                          , prepare_mysql ( $this->data ['Delivery Note State'] )
 
                          , prepare_mysql ( $this->data ['Delivery Note Date Created'] )
@@ -586,9 +586,9 @@ class DeliveryNote extends DB_Table {
                                , $this->id
                                , $this->data['Delivery Note ID']
                              );
-                unset ( $product );
+               
 
-
+$location_index=0;
                 foreach($locations as $location_data) {
                     $location_key=$location_data['location_key'];
                     $quantity_taken_from_location=$location_data['qty'];
@@ -626,9 +626,10 @@ class DeliveryNote extends DB_Table {
                                      prepare_mysql ( $note ),
                                      $supplier_product_key,
                                      $map_to_otf_key,
-                                     prepare_mysql ( prepare_mysql($part_index.';'.$part_data['Parts Per Product']) )
+                                     prepare_mysql ( prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index) )
                                    );
                     mysql_query($sql);
+                    $location_index++;
 
                 }
                 $part_index++;
@@ -693,12 +694,11 @@ class DeliveryNote extends DB_Table {
                                , $this->id
                                , $this->data['Delivery Note ID']
                              );
-                unset ( $product );
-
+               
 
                 $quantity_to_be_taken=$part_data['Parts Per Product'] * $row ['Delivery Note Quantity'];
                 $locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
-
+$location_index=0;
                 foreach($locations as $location_data) {
                     $location_key=$location_data['location_key'];
                     $quantity_taken_from_location=$location_data['qty'];
@@ -734,16 +734,173 @@ class DeliveryNote extends DB_Table {
                                      prepare_mysql ( $note ),
                                      $supplier_product_key,
                                      $map_to_otf_key,
-                                     prepare_mysql($part_index.';'.$part_data['Parts Per Product'])
+                                     prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
                                    );
                     mysql_query($sql);
-
+                    $location_index++;
                 }
                 $part_index++;
             }
         }
 
     }
+
+
+    function actualize_inventory_transaction_facts() {
+        
+        $last_used_index=0;
+        $sql=sprintf("select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d  ",$this->id);
+        $res=mysql_query($sql);
+        $inventory_to_actualize=array();
+//   print $sql;
+   while ($row=mysql_fetch_assoc($res)) {
+//print_r($row);
+            $to_pick=$row['Required']-$row['Picked'];
+            $metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
+            
+            if($row['Picked']>0){
+            $sql=sprintf("update `Inventory Transaction Fact`  set `Required`=0,`Out of Stock`=0,`Not Found`=0 ,`No Picked Other`=0  where `Inventory Transaction Key`=%d ",$row['Inventory Transaction Key']);
+            mysql_query($sql);
+            }else{
+             $sql=sprintf("delete from `Inventory Transaction Fact`  where `Inventory Transaction Key`=%d ",$row['Inventory Transaction Key']);
+            mysql_query($sql);
+            
+            }
+            
+            $part_index=$metadata[0];
+            $parts_per_product=$metadata[1];
+            $location_index=$metadata[2];
+            if ($to_pick>0) {
+               
+                $sql=sprintf("select `Product Key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d ",$row['Map To Order Transaction Fact Key']);
+                $res2=mysql_query($sql);
+                $product_key=0;
+                if($row2=mysql_fetch_assoc($res2)){
+                    $product_key=$row2['Product Key'];
+                }
+               
+                $transaction_data=array('itf'=>$row['Inventory Transaction Key'],'qty'=>$to_pick,'sku'=>$row['Part SKU'],'part_index'=>$part_index,'location_index'=>$location_index,'otf'=>$row['Map To Order Transaction Fact Key'],'product_key'=>$product_key,'picking_note'=>$row['Picking Note'],'parts_per_product'=>$parts_per_product);
+                $inventory_to_actualize[$row['Map To Order Transaction Fact Key']][$row['Part SKU']]=$transaction_data;
+                    
+                
+            }
+        
+
+        }
+
+
+       // print_r($inventory_to_actualize);
+
+        foreach($inventory_to_actualize as $otf=>$transactions_parts){
+            
+            foreach($transactions_parts as $part_sku=>$transaction_locations){
+            $number_locations=count($transaction_locations);
+            $part=new Part($part_sku);
+            
+        
+            
+            $locations=$part->get_picking_location_key(false,$transaction_locations['qty']);
+            $product=new Product($transaction_locations['product_key']);
+            $picking_note=$transaction_locations['picking_note'];
+            $map_to_otf_key=$transaction_locations['otf'];
+            $parts_per_product=$transaction_locations['parts_per_product'];
+               $date=date("Y-m-d H:i:s");            
+             
+                $supplier_products=$part->get_supplier_products();
+
+                $supplier_product_key=0;
+                if (count($supplier_products)>0) {
+
+                    $supplier_products_rnd_key=array_rand($supplier_products,1);
+                    $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
+                    $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
+
+                } else {
+                    print_r($part);
+                    exit("\nError geting supplier products\n");
+
+                }
+
+                
+                $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
+                               , $product->id
+                               , $product->code
+                               , $this->id
+                               , $this->data['Delivery Note ID']
+                             );
+
+
+                $location_index=0;
+             //   print_r($locations);
+                foreach($locations as $location_data) {
+
+
+                    $location_key=$location_data['location_key'];
+                    $quantity_taken_from_location=$location_data['qty'];
+
+                    if ($location_key) {
+                        if ($location_key==1) {
+                            $a.=' '._('Taken from an')." ".sprintf("<a href='location.php?id=1'>%s</a>",_('Unknown Location'));
+                        } else {
+                            $location = new Location($location_key);
+                            $a.=' '._('Taken from').": ".sprintf("<a href='location.php?id=%d'>%s</a>",$location->id,$location->data['Location Code']);
+                        }
+
+                    }
+
+
+                    $note = $a;
+
+                
+
+                    $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
+                                     `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
+                                     `Required`,`Given`,`Amount In`,
+                                     `Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+                                     (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     prepare_mysql ($picking_note),
+                                     0,
+                                     prepare_mysql ($date),
+                                     prepare_mysql ($date),
+                                     $this->id,
+                                     prepare_mysql ( $part->sku ),
+                                     $location_key,
+                                     0,
+                                     "'Order In Process'",
+                                     0,
+                                     $quantity_taken_from_location,
+                                     0,
+                                     0,
+                                     prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
+                                     prepare_mysql ( $note ),
+                                     $supplier_product_key,
+                                     $map_to_otf_key,
+                                     prepare_mysql($part_index.';'.$parts_per_product.';'.$location_index)
+                                   );
+                    mysql_query($sql);
+                   // print "$sql\n";
+                    $location_index++;
+                }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            }
+        
+        }
+
+
+    }
+
 
     function create_inventory_transaction_fact($order_key) {
 
@@ -755,9 +912,9 @@ class DeliveryNote extends DB_Table {
         $res=mysql_query($sql);
 
         while ($row=mysql_fetch_assoc($res)) {
-        
-            print_r($row);
-        
+
+           
+
             $product=new Product('id',$row['Product Key']);
             $part_list=$product->get_part_list($date);
 
@@ -776,9 +933,6 @@ class DeliveryNote extends DB_Table {
 
 
                 $part = new Part ( 'sku', $part_data['Part SKU'] );
-                //  $location_key = $part->get ( 'Picking Location Key' );
-
-
                 $quantity_to_be_taken=$part_data['Parts Per Product'] * $row ['Current Autorized to Sell Quantity'];
 
                 $locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
@@ -804,12 +958,12 @@ class DeliveryNote extends DB_Table {
                                , $this->id
                                , $this->data['Delivery Note ID']
                              );
-               
 
 
+                $location_index=0;
                 foreach($locations as $location_data) {
-                
-                
+
+
                     $location_key=$location_data['location_key'];
                     $quantity_taken_from_location=$location_data['qty'];
 
@@ -827,12 +981,14 @@ class DeliveryNote extends DB_Table {
                     $note = $a;
 
                     $picking_note=$product->data['Product Code'];
-                    if(_trim($part_data['Product Part List Note'])){
-                         $picking_note.=', '.$part_data['Product Part List Note'];
+                    if (_trim($part_data['Product Part List Note'])) {
+                        $picking_note.=', '.$part_data['Product Part List Note'];
                     }
 
                     $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
-                                     `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+                                     `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
+                                     `Required`,`Given`,`Amount In`,
+                                     `Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
                                      (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
                                      prepare_mysql ($picking_note),
                                      0,
@@ -851,10 +1007,11 @@ class DeliveryNote extends DB_Table {
                                      prepare_mysql ( $note ),
                                      $supplier_product_key,
                                      $map_to_otf_key,
-                                     prepare_mysql($part_index.';'.$part_data['Parts Per Product'])
+                                     prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
                                    );
                     mysql_query($sql);
-                    print "$sql\n";
+                    //print "$sql\n";
+                    $location_index++;
                 }
 
                 $part_index++;
