@@ -187,15 +187,16 @@ function register_customer($data) {
 
 function change_password($data) {
     global $user;
-
+//print_r($data);
   //  print_r($data['values']);
   //  print "\n". $user->id;
     
     $_key=md5($user->id.'insecure_key'.$data['values']['ep2']);
     $password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
 
-    
-   // exit($password);
+    print "Key:$_key\n";
+	print "Pass:$password\n";
+    exit($password);
     $user->change_password($password);
     if ($user->updated) {
         $response=array('state'=>200,'result'=>'ok',);
@@ -676,7 +677,13 @@ function register($data) {
 
     if ($response['state']==200 and $response['action']=='created' ) {
         // $ep=rawurldecode($data['ep']);
-
+		$customer=new Customer($response['customer_key']);
+		if($data['values']['Customer Send Postal Marketing']=='Yes'){
+			$sql=sprintf("insert into `Marketing Post Sent Fact` (`Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, NOW())", $customer->id, $customer->get('Customer Store Key'));
+			//print $sql;
+			$result=mysql_query($sql);
+		}
+		
 
         $password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 

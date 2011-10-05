@@ -126,6 +126,10 @@ $smarty->assign('customer',$customer);
 //print_r($customer);
 
 
+
+
+
+
 $other_email=$customer->get_other_emails_data();
 
 $registered_email=array();
@@ -184,8 +188,26 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
 $smarty->assign('general_options_list',$general_options_list);
-
+$smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
+
+$_login_stat=array();
+
+if($site_customer){
+	
+	foreach($login_stat as $key=>$value){
+
+	if($key=='User Last Login' || $key=='User Last Failed Login'){
+		$value=strftime("%a %e %b %y %H:%M", strtotime($value." +00:00"));
+	}
+
+	$_login_stat[preg_replace('/\s/','',$key)]=$value;
+	}
+}
+
+$smarty->assign('login_stat',$_login_stat);
+
+
 $smarty->assign('site_customer',$site_customer);
 $smarty->assign('customer_type',$customer->data['Customer Type']);
 $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
@@ -411,6 +433,11 @@ if($row=mysql_fetch_array($res)){
 //print_r($show_case);
 $smarty->assign('show_case',$show_case);	
 
+$sql=sprintf("select `User Key` from `User Dimension` where `User Parent Key`=%d", $customer->id);
+//print $sql;
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result))
+	$smarty->assign('user_main_id',$row['User Key']);	
 
 $smarty->display('edit_customer.tpl');
 exit();

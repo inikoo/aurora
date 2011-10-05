@@ -34,7 +34,7 @@ var data={'user_key':user_key,'store_key':store_key,'site_key':site_key,'ep1':ep
 
 
      var request=path+'inikoo_files/ar_register.php?tipo=change_password&values='+json_value;
-//alert(request);
+alert(request);
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
