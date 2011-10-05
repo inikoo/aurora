@@ -11,7 +11,7 @@
 
 
 
-<div id="staff_column" class="col" style="width:430px">
+<div class="col" style="width:430px">
 <table class="search"  border=0 style="margin-top:5px">
 <tr>
 <td class="form" style="">
@@ -35,7 +35,7 @@
 </div>
 
 </div>	
-<div id="suppliers_column" class="col" style="width:430px">
+<div  class="col" style="width:430px">
 
 
 <table class="search"  border=0 style="margin-top:5px">
@@ -59,9 +59,17 @@
 </div>
 </div>
 
+<div  class="col" style="margin-top:30px;width:430px">
 
+<h2>{t}Orders{/t}</h2>
+<div style="text-align:center;padding:20px">
+<span onClick="location.href='warehouse_orders.php?id={$warehouse_id}'" class="button state_details">{t}Pending Orders{/t}</span>
+</div>
+</div>
 
 
 </div>
 
 {include file='footer.tpl'}
+
+

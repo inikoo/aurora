@@ -24,6 +24,13 @@ if(!$dn->id){
 }
 $dn->update_picking_percentage();
 
+
+
+$warehouse= new Warehouse($dn->data['Delivery Note Warehouse Key']);
+$smarty->assign('warehouse',$warehouse);
+
+
+
 //$dn->start_packing(1);
 
 //print_r($dn);

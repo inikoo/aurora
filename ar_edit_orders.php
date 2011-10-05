@@ -1234,10 +1234,11 @@ function ready_to_pick_orders() {
     $_dir=$order_direction;
 
 
-    if ($order=='id')
-        $order='`Delivery Note File As`';
-    else if ($order=='customer')
+
+    if ($order=='customer')
         $order='`Delivery Note Customer Name`';
+    else if ($order=='public_id')
+        $order='`Delivery Note File As`';    
     else if ($order=='status')
         $order='`Delivery Note State`';
     else
@@ -1572,8 +1573,8 @@ function picking_aid_sheet() {
     $total_picks=0;
 
     $data=array();
-    $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
-    // print $sql;
+    $sql="select  `Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  ";
+  //   print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 //print_r($row);
@@ -1609,7 +1610,7 @@ function picking_aid_sheet() {
                     'description'=>$row['Part XHTML Description'],
                     'used_in'=>$row['Part XHTML Currently Used In'],
                     'quantity'=>number($row['Required']),
-                    'location'=>$row['Part XHTML Picking Location'],
+                    'location'=>$row['Location Code'],
                     'check_mark'=>'&#x2713;',
                     'add'=>'+',
                     'remove'=>'-',
@@ -1617,6 +1618,7 @@ function picking_aid_sheet() {
                     'todo'=>$todo,
                     'formated_todo'=>$formated_todo,
                     'notes'=>$notes,
+                    'picking_notes'=>$row['Picking Note'],
                     'required'=>$row['Required'],
                     'picked'=>$row['Picked'],
                     'out_of_stock'=>$row['Out of Stock'],

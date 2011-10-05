@@ -573,8 +573,8 @@ function edit_subcategory() {
 
 function edit_family_department($data) {
     //print $data['newvalue'];
-    
-  
+
+
     $family=new family($data['id']);
     global $editor;
     $family->editor=$editor;
@@ -593,15 +593,15 @@ function edit_family_department($data) {
 
 function edit_family($data) {
     //print $data['newvalue'];
-    
-  
+
+
     $family=new family($data['id']);
     global $editor;
     $family->editor=$editor;
-  
- 
 
- $family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+
+
+    $family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
     if ($family->updated) {
         $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key']);
 
@@ -632,30 +632,28 @@ function edit_deal() {
 
 function upload_image($subject='product') {
 
-    $target_path = "app_files/tmp/";
-    $filename='pimg_'.date('U');
 
-    if (!file_exists($target_path)) {
-        $response= array('state'=>400,'msg'=>"Image tmp directory do not exist (".$target_path.")");
-        echo json_encode($response);
-        return;
-    }
-
-
-
-    if (move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
+if (isset($_FILES['testFile']['tmp_name'])) {
+ 
         include_once('class.Image.php');
-        $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
-        $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
-        $data=array(
-                  'file'=>$filename
-                         ,'path'=>'app_files/pics/assets/'
-                                 ,'name'=>$name
-                                         ,'original_name'=>$_FILES['testFile']['name']
-                                                          ,'type'=>$_FILES['testFile']['type']
-                                                                  ,'caption'=>''
-              );
-        $image=new Image('find',$data,'create');
+     //   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
+       // $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
+        
+     //   print_r($_FILES);
+        
+     
+              
+          $image_data=array(
+                    'file'=>$_FILES['testFile']['tmp_name'],
+                    'source_path'=>'',
+                    'name'=>$_FILES['testFile']['name'],
+                    'caption'=>''
+                );     
+              
+       // print_r($image_data);      
+              
+              
+        $image=new Image('find',$image_data,'create');
         if (!$image->error) {
             $subject=$_REQUEST['subject'];
             if ($subject=='product')
@@ -667,11 +665,11 @@ function upload_image($subject='product') {
             $subject->add_image($image->id);
             $subject->update_main_image();
             $msg=array(
-                     'set_main'=>_('Set Main')
-                                ,'main'=>_('Main Image')
-                                        ,'caption'=>_('Caption')
-                                                   ,'save_caption'=>_('Save caption')
-                                                                   ,'delete'=>_('Delete')
+                     'set_main'=>_('Set Main'),
+                     'main'=>_('Main Image'),
+                     'caption'=>_('Caption'),
+                     'save_caption'=>_('Save caption'),
+                     'delete'=>_('Delete')
                  );
             $response= array('state'=>200,'msg'=>$msg,'image_key'=>$image->id,'data'=>$subject->new_value);
             echo json_encode($response);
@@ -681,7 +679,8 @@ function upload_image($subject='product') {
             echo json_encode($response);
             return;
         }
-    } else {
+    } 
+    else {
         $response= array('state'=>400,'msg'=>'no image');
         echo json_encode($response);
         return;
@@ -3330,7 +3329,7 @@ function edit_part($data) {
     }
 
     $key_dic=array(
-          
+
              );
 
 
@@ -3340,15 +3339,15 @@ function edit_part($data) {
     else
         $key=$data['key'];
 
-		
+
     $the_new_value=_trim($data['newvalue']);
 
     if (preg_match('/^custom_field_part/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
         $part->update_custom_fields($key, $the_new_value);
     } else {
-    
-    //print "$key $the_new_value";
+
+        //print "$key $the_new_value";
         $part->update(array($key=>$the_new_value));
     }
 
@@ -3378,7 +3377,7 @@ function edit_supplier_product_part($data) {
             $available_state='Available';
         }
         elseif($data['newvalue']=='No
-        ') {
+               ') {
             $available_state='No available';
         }
         else {
@@ -3426,13 +3425,13 @@ function create_product($data) {
 
         $product=new Product('create',array(
 
-                               'Product Code'=>$data['values']['Product Code'],
-                               'Product Name'=>$data['values']['Product Name'],
-                               'Product Description'=>$data['values']['Product Description'],
-                               'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
-                               'Product Main Department Key'=>$department_key,
-                               'editor'=>$editor
-                           ));
+                                 'Product Code'=>$data['values']['Product Code'],
+                                 'Product Name'=>$data['values']['Product Name'],
+                                 'Product Description'=>$data['values']['Product Description'],
+                                 'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
+                                 'Product Main Department Key'=>$department_key,
+                                 'editor'=>$editor
+                             ));
         if (!$product->new) {
 
             $response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->id);
@@ -3459,20 +3458,20 @@ function delete_parts_list($data) {
     if ($row=mysql_fetch_assoc($res)) {
 
         //if (in_array($row['List Store Key'],$user->stores)) {
-            $sql=sprintf("delete from  `List Order Bridge` where `List Key`=%d",$data['key']);
-            mysql_query($sql);
-            $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
-            mysql_query($sql);
-            $response=array('state'=>200,'action'=>'deleted');
-            echo json_encode($response);
-            return;
+        $sql=sprintf("delete from  `List Order Bridge` where `List Key`=%d",$data['key']);
+        mysql_query($sql);
+        $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
+        mysql_query($sql);
+        $response=array('state'=>200,'action'=>'deleted');
+        echo json_encode($response);
+        return;
 
 
 
         //} else {
-            //$response=array('state'=>400,'msg'=>_('Forbidden Operation'));
-           // echo json_encode($response);
-           // return;
+        //$response=array('state'=>400,'msg'=>_('Forbidden Operation'));
+        // echo json_encode($response);
+        // return;
         //}
 
 
