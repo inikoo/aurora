@@ -677,7 +677,13 @@ function register($data) {
 
     if ($response['state']==200 and $response['action']=='created' ) {
         // $ep=rawurldecode($data['ep']);
-
+		$customer=new Customer($response['customer_key']);
+		if($data['values']['Customer Send Postal Marketing']=='Yes'){
+			$sql=sprintf("insert into `Marketing Post Sent Fact` (`Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, NOW())", $customer->id, $customer->get('Customer Store Key'));
+			//print $sql;
+			$result=mysql_query($sql);
+		}
+		
 
         $password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 
