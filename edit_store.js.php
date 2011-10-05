@@ -714,6 +714,15 @@ function init(){
     store_name_oAutoComp.minQueryLength = 0; 
     store_name_oAutoComp.queryDelay = 0.1;   
 
+ var formObject = document.getElementById('aForm');
+ 
+   // the second argument is true to indicate file upload.
+   YAHOO.util.Connect.setForm(Dom.get('logo_file_upload_form'), true);
+ 
+  
+  
+  
+
 }
 
 YAHOO.util.Event.onDOMReady(init);

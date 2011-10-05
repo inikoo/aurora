@@ -3247,6 +3247,8 @@ CREATE TABLE `List Invoice Bridge` (
 
 ALTER TABLE `Invoice Tax Dimension` CHANGE `UNK` `UNK` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
 
+/// from here
+
 
 alter table `Order Dimension` add `Order Main World Region Code` char(4) NULL DEFAULT NULL ,
 add `Order Main Country Code` char(4) NULL DEFAULT NULL ,
@@ -3320,11 +3322,12 @@ CHANGE `Order Main Postal Code` `Order Main Postal Code` VARCHAR( 64 ) CHARACTER
 ALTER TABLE `Order Dimension` CHANGE `Order Ship To City Code` `Order Ship To Town` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 CHANGE `Order Ship To Postal Code` `Order Ship To Postal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
-//xxxxxxxxxxxxxxxxxxxx
-//{imap.gmail.com:993/imap/ssl/novalidate-cert}
+
 
 ALTER TABLE `Email Campaign Mailing List` ADD `Email Content Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Campaign Key` ,ADD INDEX ( `Email Content Key` ) ;
 
+
+// from here to costadw
 
 CREATE TABLE `Email Queue Dimension` (
 `Email Queue Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
@@ -3353,7 +3356,6 @@ PRIMARY KEY ( `Attachement Key` )
 
 ) ENGINE = MYISAM;
 
-from here to inikoo(machne)
 
 ALTER TABLE `MasterKey Dimension` CHANGE `Handle` `User Key` MEDIUMINT NOT NULL ;
 ALTER TABLE `Image Dimension` CHANGE `Image URL` `Image Data` LONGBLOB NOT NULL ,
@@ -4265,7 +4267,10 @@ ALTER TABLE `Part Dimension` ADD `Part Export Code` VARCHAR( 256 ) NULL DEFAULT 
 ALTER TABLE `Part Dimension` CHANGE `Part Export Code` `Part Tariff Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Product Dimension` DROP `Product Tariff Code` ;
 ALTER TABLE `Product Dimension` ADD `Product Tariff Code` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Product Gross Weight` ;
-
+ALTER TABLE `Inventory Transaction Fact` ADD `Picking Note` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Note` ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Warehouse Key` SMALLINT UNSIGNED NOT NULL AFTER `Delivery Note Key` ,ADD INDEX ( `Delivery Note Warehouse Key` ); 
+update `Delivery Note Dimension`  set `Delivery Note Warehouse Key`=1 ;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 */
 
 ?>

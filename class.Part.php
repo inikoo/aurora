@@ -1015,8 +1015,8 @@ class part extends DB_Table {
 
         $locations=array();
         $was_associated=array();
-        $sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d   group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
-        //print $sql;
+        $sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d  and  ITF.`Location Key`>0  group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
+        print $sql;
 
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1030,10 +1030,10 @@ class part extends DB_Table {
 
         $number_associated_locations=count($was_associated);
 
-        if ($number_associated_locations==0)
-            return array('location_key'=>1,'qty'=>$qty);
-        elseif($number_associated_locations==1 or $qty<=0) {
-            return array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
+        if ($number_associated_locations==0){
+            $locations[]= array('location_key'=>1,'qty'=>$qty);
+        }elseif($number_associated_locations==1 or $qty<=0) {
+            $locations[]= array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
         }
         else {
 
@@ -1059,11 +1059,13 @@ class part extends DB_Table {
 
             }
 
-            return $locations;
+           
 
         }
 
 
+
+ return $locations;
 
 
     }
@@ -1090,9 +1092,9 @@ class part extends DB_Table {
         $number_associated_locations=count($locations_data);
 
         if ($number_associated_locations==0)
-            return array('location_key'=>1,'qty'=>$qty);
+            $locations[]=array('location_key'=>1,'qty'=>$qty);
         elseif($number_associated_locations==1 or $qty<=0) {
-            return array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
+            $locations[]=array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
         }
         else {
 
@@ -1118,11 +1120,11 @@ class part extends DB_Table {
 
             }
 
-            return $locations;
+            
 
         }
 
-
+return $locations;
 
     }
 

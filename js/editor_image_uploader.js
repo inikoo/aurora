@@ -58,7 +58,7 @@ function yuiImgUploader(rte, editor_name, upload_url, upload_image_name) {
                                    upload:function(r){
                                        try {
                                            // strip pre tags if they got added somehow
-                                           alert("xxx xxx "+r.responseText)
+                                          // alert("xxx xxx "+r.responseText)
                                            
                                            resp=r.responseText.replace( /<pre>/i, '').replace ( /<\/pre>/i, '');
                                            var o=eval('('+resp+')');

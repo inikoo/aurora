@@ -128,6 +128,12 @@ class DeliveryNote extends DB_Table {
             $this->data ['Delivery Note Pickers IDs'] = $dn_data ['Delivery Note Pickers IDs'];
         else
             $this->data ['Delivery Note Pickers IDs'] ='';
+            
+         if (isset($dn_data ['Delivery Note Warehouse Key']))
+            $this->data ['Delivery Note Warehouse Key'] = $dn_data ['Delivery Note Warehouse Key'];
+        else
+            $this->data ['Delivery Note Warehouse Key'] =1;    
+            
 
         if (isset($dn_data ['Delivery Note XHTML Packers']))
             $this->data ['Delivery Note XHTML Packers'] = $dn_data ['Delivery Note XHTML Packers'];
@@ -335,14 +341,16 @@ class DeliveryNote extends DB_Table {
 
 
     function create_header() {
-        $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
+        $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
                          `Delivery Note Country 2 Alpha Code`,
                          `Delivery Note Country Code`,
                          `Delivery Note World Region Code`,
                          `Delivery Note Town`,
                          `Delivery Note Postal Code`
 
-                         ) values (%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s  )"
+                         ) values (%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s  )"
+                         ,$this->data ['Delivery Note Warehouse Key']
+                         
                          , prepare_mysql ( $this->data ['Delivery Note State'] )
 
                          , prepare_mysql ( $this->data ['Delivery Note Date Created'] )
@@ -600,7 +608,8 @@ class DeliveryNote extends DB_Table {
 
 
 
-                    $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                    $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     prepare_mysql ($part_data['Product Part List Note']),
                                      0,
                                      prepare_mysql ($date),
                                      prepare_mysql ($date),
@@ -708,6 +717,7 @@ class DeliveryNote extends DB_Table {
                     $note = $a;
 
                     $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     prepare_mysql ($part_data['Product Part List Note']),
                                      0,
                                      prepare_mysql ($date),
                                      prepare_mysql ($date),
@@ -737,9 +747,6 @@ class DeliveryNote extends DB_Table {
 
     function create_inventory_transaction_fact($order_key) {
 
-
-
-
         $date=$this->data['Delivery Note Date Created'];
         $skus_data=array();
 
@@ -748,6 +755,9 @@ class DeliveryNote extends DB_Table {
         $res=mysql_query($sql);
 
         while ($row=mysql_fetch_assoc($res)) {
+        
+            print_r($row);
+        
             $product=new Product('id',$row['Product Key']);
             $part_list=$product->get_part_list($date);
 
@@ -794,10 +804,12 @@ class DeliveryNote extends DB_Table {
                                , $this->id
                                , $this->data['Delivery Note ID']
                              );
-                unset ( $product );
+               
 
 
                 foreach($locations as $location_data) {
+                
+                
                     $location_key=$location_data['location_key'];
                     $quantity_taken_from_location=$location_data['qty'];
 
@@ -814,9 +826,15 @@ class DeliveryNote extends DB_Table {
 
                     $note = $a;
 
-                    $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
+                    $picking_note=$product->data['Product Code'];
+                    if(_trim($part_data['Product Part List Note'])){
+                         $picking_note.=', '.$part_data['Product Part List Note'];
+                    }
+
+                    $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
                                      `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-                                     (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     prepare_mysql ($picking_note),
                                      0,
                                      prepare_mysql ($date),
                                      prepare_mysql ($date),
@@ -836,7 +854,7 @@ class DeliveryNote extends DB_Table {
                                      prepare_mysql($part_index.';'.$part_data['Parts Per Product'])
                                    );
                     mysql_query($sql);
-                    //print "$sql\n";
+                    print "$sql\n";
                 }
 
                 $part_index++;
@@ -1978,9 +1996,9 @@ class DeliveryNote extends DB_Table {
                     );
         $res=mysql_query ( $sql );
         if ($row=mysql_fetch_assoc($res)) {
-        
-            
-        
+
+
+
             $sku=$row['Part SKU'];
             if ($row['Required']-$row['Out of Stock']<=0 or $row['Picked']==0) {
                 return;
@@ -2014,7 +2032,7 @@ class DeliveryNote extends DB_Table {
 
             $metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 
-          //  print_r($metadata);
+            //  print_r($metadata);
             $parts_per_product=$metadata[1];
 
             if ($packing_factor>=1)

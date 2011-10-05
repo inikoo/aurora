@@ -386,7 +386,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			       ];
 
 	    this.dataSource3 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=none&tableid=3");
-		alert("ar_assets.php?tipo=products&parent=none&tableid=3");
+		//alert("ar_assets.php?tipo=products&parent=none&tableid=3");
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
