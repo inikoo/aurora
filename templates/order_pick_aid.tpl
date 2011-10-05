@@ -17,9 +17,10 @@
 	<div style="clear:both"></div>
        </div>
 
-   <div style="width:100px;float:right;margin-left:20px;">
+   <div style="width:120px;float:right;margin-left:20px;">
     <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
     <tr><td  ><a href="order_pick_aid.pdf.php?&id={$delivery_note->id}" target="_blank">{t}Print Order{/t}</a></td></tr>
+    <tr><td  ><a href="order_pick_aid.php?id={$delivery_note->id}&refresh" target="_blank">{t}Refresh Order{/t}</a></td></tr>
 
 
 </table>
