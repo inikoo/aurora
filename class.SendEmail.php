@@ -760,6 +760,16 @@ class SendEmail extends DB_Table{
 		}
 		return $html_messasge;
 	}
+	
+	
+	function generate_unsubscribe_email($type='Newsletter', $customer_id, $generate=true){
+		if(!$generate){
+			return;
+		}
+		
+		$link='<a href="localhost/unsubscribe.php?key=$customer_id&type=$type"';
+		return $link;
+	}
   
 }
 
