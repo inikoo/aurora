@@ -106,9 +106,9 @@ $smarty->assign('parent','suppliers');
 $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
 
-$tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
+$tipo_filter=$_SESSION['state']['supplier']['supplier_products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['supplier']['products']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier']['supplier_products']['f_value']);
 
 $filter_menu=array(
                  'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
@@ -148,6 +148,10 @@ $js_files[]='js/edit_common.js';
 $js_files[]='js/validate_telecom.js';
 
 $js_files[]='edit_address.js.php';
+$js_files[]='address_data.js.php?tipo=supplier&id='.$supplier->id;
+
+ 
+
 $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
@@ -172,13 +176,38 @@ $smarty->assign('units_list',$units);
 $smarty->assign('units_list_selected','ea');
 
 $currencies=array();
-$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Short Name` from kbase.`Currency Dimension");
+$sql=sprintf("select `Currency Code`,`Currency Name` from kbase.`Currency Dimension");
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
 $currencies[$row['Currency Code']]=sprintf("(%s) %s",$row['Currency Code'],$row['Currency Name']);
 }
 $smarty->assign('currency_list',$currencies);
 $smarty->assign('currency_selected',$supplier->data['Supplier Default Currency']);
+
+
+$categories_value=array();
+$categories=array();
+$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Supplier' and `Category Deep`=1 ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $tmp=new Category($row['Category Key']);
+    $selected_array=$tmp->sub_category_selected_by_subject($supplier->id);
+
+
+    if (count($selected_array)==0) {
+        $tmp_selected='';
+    } else {
+        $tmp_selected=array_pop($selected_array);
+    }
+
+    $categories[$row['Category Key']]=$tmp;
+    $categories_value[$row['Category Key']]=$tmp_selected;
+
+}
+
+$smarty->assign('categories',$categories);
+$smarty->assign('categories_value',$categories_value);
+
 
 $smarty->display('edit_supplier.tpl');
 

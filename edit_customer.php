@@ -281,6 +281,8 @@ $js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 //$delivery_addresses=$customer->get_address_objects();
+
+
 $categories_value=array();
 $categories=array();
 $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$customer->data['Customer Store Key']);
@@ -305,35 +307,6 @@ $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);
 
 
-
-/*
-
-$nodes=new nodes('`Category Dimension`');
-$nodes->sql_condition = "AND `Category Subject`='Customer' AND `Category Store Key`=".$customer->data['Customer Store Key'] ;
-$nodes->load_comb();
-$comb=$nodes->comb;
-//print_r($comb);
-
-$sql=sprintf("select PCB.`Category Key`,`Category Position` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Customer'    " ,
-$customer->id);
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
-  $parents=preg_replace('/\d+>$/','',$row['Category Position']);
-  $root=preg_replace('/>.*$/','',$row['Category Position']);
-  // print "$root $parents ".$row['Category Key']."\n";
-  $comb[$root]['teeth'][$parents]['elements'][$row['Category Key']]['selected']=true;
-
-
-
-}
-mysql_free_result($res);
-
-
-
-
-$smarty->assign('categories',$comb);
-$smarty->assign('number_categories',count($comb));
-*/
 
 
 
