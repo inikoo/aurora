@@ -277,25 +277,38 @@
 
 
 <div id="dialog_send_email_campaign">
-  <div id="note_msg"></div>
+  
   <table style="padding:10px;margin:10px" border=0 >
  
   
    
-   <tr class="">
-   <td  class="label" >{t}Send campaign{/t}</td>
+   <tr id="dialog_send_email_campaign_choose_when1">
+   <td  class="label" colspan=2>{t}Send campaign{/t}</td>
    </td>
    </tr>
    <tr style="height:40px">
-   <td   style="cursor:pointer;text-align:center;border:1px solid #ccc;vertical-align:middle;padding:5px">
+   <td  onclick="send_now()" style="width:50%;cursor:pointer;text-align:center;border:1px solid #ccc;vertical-align:middle;padding:2px">
     {t}Now{/t} 
 
 
-   <td  style="cursor:pointer;text-align:center;border:1px solid #ccc;vertical-align:middle;padding:5px">
+   <td onclick="choose_time()" style="cursor:pointer;text-align:center;border:1px solid #ccc;vertical-align:middle;padding:2px">
       {t}Choose time{/t} 
    </td>
  
  </tr>
+<tbody id="other_time_form" style="display:none">
+<tr>
+<td colspan=2>{t}Date{/t} {t}Time{/t}: <input id="end_email_campaign_datetime"></td>
+</tr>
+  <tr class="buttons" style="font-size:100%">
+   <td></td>
+   <td colspan="2">
+   <div class="general_options" style="padding:10px;float:right">
+	<span  style="margin-right:10px;" class="disabled"  id="save_send_other_time" class="state_details">{t}Send{/t}</span>
+</div>
+    </td>
+</tbody>
+
 
 </table>
 </div>

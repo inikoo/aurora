@@ -49,7 +49,6 @@ if (!($user->can_view('stores') and in_array($email_campaign->data['Email Campai
 
 
 $general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'marketing.php?view=email','label'=>_('Email Campaigns'));
 
 $store=new Store($email_campaign->data['Email Campaign Store Key']);
 $smarty->assign('store',$store);
@@ -110,6 +109,15 @@ case 'Creating':
     $smarty->assign('current_content_key',$email_campaign->get_first_content_key());
 
     break;
+    
+case 'Ready':
+ $tpl_file='email_campaign_ready.tpl';
+ 
+ $js_files[]='js/countdown.js';
+$js_files[]='email_campaign_ready.js.php';
+
+break;
+    
 
 }
 $smarty->assign('general_options_list',$general_options_list);
