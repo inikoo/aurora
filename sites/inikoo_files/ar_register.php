@@ -679,7 +679,7 @@ function register($data) {
         // $ep=rawurldecode($data['ep']);
 		$customer=new Customer($response['customer_key']);
 		if($data['values']['Customer Send Postal Marketing']=='Yes'){
-			$sql=sprintf("insert into `Marketing Post Sent Fact` (`Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, NOW())", $customer->id, $customer->get('Customer Store Key'));
+			$sql=sprintf("insert into `Marketing Post Sent Fact` (`Marketing Post Key`, `Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, %d, NOW())", 1, $customer->id, $customer->get('Customer Store Key'));
 			//print $sql;
 			$result=mysql_query($sql);
 		}
