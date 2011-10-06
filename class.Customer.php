@@ -5453,6 +5453,13 @@ class Customer extends DB_Table {
 
     }
 
+	function update_subscription($customer_id, $type){
+		if(!isset($customer_id) || !isset($type)){
+			return;
+		}
+		
+		
+	}
 
 }
 ?>
