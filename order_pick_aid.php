@@ -3,6 +3,8 @@ include_once('common.php');
 include_once('class.CurrencyExchange.php');
 
 include_once('class.Order.php');
+include_once('class.PartLocation.php');
+
 if(!$user->can_view('orders')){
   header('Location: index.php');
    exit;
