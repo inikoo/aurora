@@ -961,24 +961,26 @@ class EmailCampaign extends DB_Table {
     
     function set_as_ready($lag_seconds){
     
-    if($this->data['Email Campaign Status']=='Sending'){
-        $this->error=true;
-        $this->msg=_('Campaign already sending emails');
-        return;
-    }
-     if($this->data['Email Campaign Status']=='Complete'){
-        $this->error=true;
-        $this->msg=_('Campaign already send');
-        return;
-    }
-    
-    $this->data['Email Campaign Status']='Ready';
-    $this->data['Email Campaign Start Overdue Date']=date("Y-m-d H:i:s",strtotime(sprintf('now +%d seconds ',$lag_seconds)));
-    $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ",
-    prepare_mysql($this->data['Email Campaign Start Overdue Date'])
-    
-    );
-    mysql_query($sql);
+		if($this->data['Email Campaign Status']=='Sending'){
+			$this->error=true;
+			$this->msg=_('Campaign already sending emails');
+			return;
+		}
+		 if($this->data['Email Campaign Status']=='Complete'){
+			$this->error=true;
+			$this->msg=_('Campaign already send');
+			return;
+		}
+		
+		$this->data['Email Campaign Status']='Ready';
+		$this->data['Email Campaign Start Overdue Date']=date("Y-m-d H:i:s",strtotime(sprintf('now +%d seconds ',$lag_seconds)));
+		$sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ",
+		prepare_mysql($this->data['Email Campaign Start Overdue Date'])
+		
+		);
+		
+		//print $sql;
+		mysql_query($sql);
     
     }
     
