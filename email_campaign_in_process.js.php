@@ -659,16 +659,30 @@ start_send(0)
 }
 
 function choose_time(){
+
 Dom.setStyle('dialog_send_email_campaign_choose_when1','display','none');
 Dom.setStyle('other_time_form','display','');
 
 }
 
 function send_other_time(){
+user_input=Dom.get('end_email_campaign_datetime').value;
+lag_seconds=Date.create(user_input).secondsFromNow();
 
-lag_seconds=3600;
+if(isNaN(lag_seconds)){
+	lag_seconds='Not Identified';
+	Dom.get('time_tag').innerHTML=lag_seconds
+	Dom.setStyle('time_tag','display','');
+}
+else{
+	display_date=Date.create(user_input).format(Date.RFC1123);
+	Dom.get('time_tag').innerHTML=display_date;
+	//Dom.setStyle('time_tag','display','none');
+	start_send(lag_seconds);
+}
+//alert(lag_seconds);return;
 
-start_send(lag_seconds)
+
 }
 
 
