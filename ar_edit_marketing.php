@@ -13,7 +13,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('set_email_campaign_as_ready'):
+   $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key'),
+                             'start_sending_in'=>array('type'=>'numeric')
+                         ));
+    set_email_campaign_as_ready($data);
+break;
 case('mailing_list'):
 
     mailing_list();
@@ -591,6 +597,23 @@ function mailing_list() {
 
     echo json_encode($response);
 
+}
+
+
+function set_email_campaign_as_ready($data){
+
+$email_campaign=new EmailCampaign($data['email_campaign_key']);
+$email_campaign->set_as_ready($data['start_sending_in']);
+ if (!$email_campaign->error) {
+        $response= array(
+                       'state'=>200,
+                       'action'=>'ready'
+                   );
+    } else {
+
+        $response= array('state'=>400,'msg'=>'can not add image');
+    }
+  echo json_encode($response);
 }
 
 ?>
