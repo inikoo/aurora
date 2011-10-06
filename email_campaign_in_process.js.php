@@ -666,6 +666,9 @@ Dom.setStyle('other_time_form','display','');
 
 function send_other_time(){
 
+lag_seconds=3600;
+
+start_send(lag_seconds)
 }
 
 
@@ -679,7 +682,7 @@ alert(request);
 		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
-
+//alert("email_campaign.php?id="+Dom.get('email_campaign_key').value);return;
             location.href="email_campaign.php?id="+Dom.get('email_campaign_key').value;
 		}else{
 		alert(r.msg)
