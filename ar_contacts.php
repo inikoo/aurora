@@ -54,7 +54,9 @@ case('customers_lists'):
     list_customers_lists();
     break;
 
-
+case('marketing_post_lists'):
+    marketing_post_lists();
+    break;
 
 case('used_email'):
     used_email();
@@ -5199,7 +5201,201 @@ function list_customer_categories() {
 
 
 
+function marketing_post_lists() {
 
+    global $user;
+
+    $conf=$_SESSION['state']['customers']['list'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+
+
+
+        $awhere=$_REQUEST['where'];
+    else
+        $awhere=$conf['where'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['store_id'])    ) {
+        $store=$_REQUEST['store_id'];
+        $_SESSION['state']['customers']['store']=$store;
+    } else
+        $store=$_SESSION['state']['customers']['store'];
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['customers']['list']['order']=$order;
+    $_SESSION['state']['customers']['list']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['list']['nr']=$number_results;
+    $_SESSION['state']['customers']['list']['sf']=$start_from;
+    $_SESSION['state']['customers']['list']['where']=$awhere;
+    $_SESSION['state']['customers']['list']['f_field']=$f_field;
+    $_SESSION['state']['customers']['list']['f_value']=$f_value;
+    
+    
+     $where=' true';
+    
+
+
+
+    if (in_array($store,$user->stores)) {
+        $where.=sprintf(' and `Store Key`=%d  ',$store);
+
+    }
+
+    $wheref='';
+
+    $sql="select count(distinct `Marketing Post Sent Fact Key`) as total from `Marketing Post Sent Fact` where $where  ";
+	//print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `Marketing Post Sent Fact` where $where $wheref ";
+		//print $sql;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('Record','Records',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_("Showing all Records");
+
+
+
+
+    $filter_msg='';
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='date')
+        $order='`Requested Date`';
+    elseif($order=='customer_key')
+    $order='`Customer Key`';
+    elseif($order=='store_key')
+    $order='`Store Key`';
+
+    else
+        $order='`Marketing Post Sent Fact Key`';
+
+
+    $sql="select * from `Marketing Post Sent Fact` where $where  order by $order $order_direction limit $start_from,$number_results";
+
+   
+   $adata=array();
+
+
+
+    $result=mysql_query($sql);
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$customer=new Customer($data['Customer Key']);
+		//print_r($customer);exit;
+		
+		$sql=sprintf("select `Marketing Post Name` from `Marketing Post Dimension` where `Marketing Post Key`=%d", $data['Marketing Post Key']);
+		$result1=mysql_query($sql);
+		if($row=mysql_fetch_array($result1)){
+			$post_name=$row['Marketing Post Name'];
+		}
+
+
+        $cusomer_name=" <a href='customers.php?id=".$customer->id."'>".$customer->get("Customer Main Contact Name").'</a>';
+
+
+        $adata[]=array(
+
+
+                     'requested_date'=>$data['Requested Date'],
+                     'name'=>$cusomer_name,
+                     //'type'=>$data['List key'],
+					 'post_name'=>$post_name,
+					 'key'=>$data['Marketing Post Sent Fact Key']
+                     //'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+                    // 'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                    // 'delete'=>'<img src="art/icons/cross.png"/>'
+
+
+                 );
+
+    }
+    mysql_free_result($result);
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
 
 function list_customers_lists() {
 
