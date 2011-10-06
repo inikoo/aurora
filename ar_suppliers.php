@@ -2736,7 +2736,7 @@ function list_supplier_categories() {
 
 
 
-    $sql="select S.`Category Key`, `Category Name` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Supplier Dimension` CD on (CD.`Supplier Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Supplier Dimension` CD on (CD.`Supplier Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
     // print $sql;
     $res = mysql_query($sql);
 
@@ -2775,6 +2775,7 @@ function list_supplier_categories() {
                      //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
+                     'subjects'=>number($row['Category Number Subjects'])
 
                      /*  'departments'=>number($row['Product Category Departments']),
                        'families'=>number($row['Product Category Families']),

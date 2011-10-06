@@ -1,5 +1,4 @@
 <?php
-include_once('class.Store.php');
 
 include_once('class.Category.php');
 
@@ -118,20 +117,10 @@ $smarty->assign('subject','Supplier');
 $_SESSION['state']['supplier_categories']['category_key']=$category_key;
 
 
-$store=new Store($store_id);
-
-if(!$store->id){
-
-exit("Error wrong store");
-}
-
-$_SESSION['state']['store']['id']=$store->id;
-$smarty->assign('store',$store);
-
 
 
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
-$smarty->assign('store_id',$store_id);
+
 $smarty->display($tpl_file);
 ?>

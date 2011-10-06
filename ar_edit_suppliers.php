@@ -491,15 +491,21 @@ if(isset( $_REQUEST['where']))
 
 
 function list_supplier_products() {
-    $conf=$_SESSION['state']['supplier']['products'];
+    $conf=$_SESSION['state']['supplier']['supplier_products'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
+
+
+
     if (isset( $_REQUEST['nr']))
         $number_results=$_REQUEST['nr'];
     else
         $number_results=$conf['nr'];
+
+
+
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
     else
@@ -555,16 +561,16 @@ function list_supplier_products() {
 
 
   
- $_SESSION['state']['supplier']['products']['view']=$product_view;
-    $_SESSION['state']['supplier']['products']['percentage']=$product_percentage;
-    $_SESSION['state']['supplier']['products']['period']=$product_period;
-    $_SESSION['state']['supplier']['products']['order']=$order;
-    $_SESSION['state']['supplier']['products']['order_dir']=$order_dir;
-    $_SESSION['state']['supplier']['products']['nr']=$number_results;
-    $_SESSION['state']['supplier']['products']['sf']=$start_from;
-    $_SESSION['state']['supplier']['products']['where']=$where;
-    $_SESSION['state']['supplier']['products']['f_field']=$f_field;
-    $_SESSION['state']['supplier']['products']['f_value']=$f_value;
+ $_SESSION['state']['supplier']['supplier_products']['view']=$product_view;
+    $_SESSION['state']['supplier']['supplier_products']['percentage']=$product_percentage;
+    $_SESSION['state']['supplier']['supplier_products']['period']=$product_period;
+    $_SESSION['state']['supplier']['supplier_products']['order']=$order;
+    $_SESSION['state']['supplier']['supplier_products']['order_dir']=$order_dir;
+    $_SESSION['state']['supplier']['supplier_products']['nr']=$number_results;
+    $_SESSION['state']['supplier']['supplier_products']['sf']=$start_from;
+    $_SESSION['state']['supplier']['supplier_products']['where']=$where;
+    $_SESSION['state']['supplier']['supplier_products']['f_field']=$f_field;
+    $_SESSION['state']['supplier']['supplier_products']['f_value']=$f_value;
 
 
 
@@ -572,7 +578,7 @@ function list_supplier_products() {
 
 
 
-    $where=$where.' and `Supplier Product Buy State` in ("Ok","Discontinued") and `supplier key`='.$supplier_id;
+    $where=sprintf('where  `Supplier key`=%d ',$supplier_id);
 
 
     $wheref='';
@@ -591,7 +597,7 @@ function list_supplier_products() {
 
 
     $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
-//print $sql;
+
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -638,7 +644,7 @@ function list_supplier_products() {
     elseif($order='usedin')
     $order='`Supplier Product XHTML Sold As`';
 
-    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select * from `Supplier Product Dimension` left join `Supplier Product History Dimension` H  on (`SPH Key`=`Supplier Product Current Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
     $data=array();
 
     $result=mysql_query($sql);

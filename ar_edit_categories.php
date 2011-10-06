@@ -1025,7 +1025,8 @@ $found=false;
                  $data['subject_key']
                 );
     $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
+ 
+ if($row=mysql_fetch_assoc($res)){
         if($row['num']>0)
             $found=true;
     
@@ -1067,6 +1068,9 @@ function associate_subject_to_category($data) {
     mysql_query($sql);
     
     if(mysql_affected_rows()>0){
+    
+        $category=new Category($data['category_key']);
+    
     $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
     echo json_encode($response);
     }else{
@@ -1116,6 +1120,9 @@ function associate_subject_to_category_radio($data) {
     mysql_query($sql);
     
     if(mysql_affected_rows()>0){
+    
+    $category=new Category($data['category_key']);
+    $category->update_number_of_subjects();
     $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key'],'msg'=>_('Saved'));
     echo json_encode($response);
     }else{

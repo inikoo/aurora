@@ -2,8 +2,8 @@
 <div id="bd" >
  {include file='suppliers_navigation.tpl'}
  
- <div class="branch"> 
- <span ><a  href="supplier_categories.php?id=0">{t}Supplier Categories{/t}</a> &rarr; {$category->get_smarty_tree('supplier_categories.php')}
+ <div> 
+ <span  class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a  href="supplier_categories.php?id=0">{t}Supplier Categories{/t}</a> &rarr; {$category->get_smarty_tree('supplier_categories.php')}
  </div> 
   
 <div style="clear:left;">

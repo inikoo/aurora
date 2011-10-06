@@ -1596,7 +1596,7 @@ $location_index=0;
     function update_picking_percentage() {
         $percentage_picked=$this->get_picking_percentage();
         
-        print $percentage_picked;
+        
         
         $sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Faction Picked`=%f where `Delivery Note Key`=%d  '
                      ,$percentage_picked

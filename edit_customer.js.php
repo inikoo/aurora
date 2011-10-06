@@ -172,13 +172,7 @@ Dom.setStyle('d_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
-	//alert('ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id);
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id ,{});
-	
-   
-
-
-
 }
 
 function change_to_delivery_block(){

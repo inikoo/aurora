@@ -1,23 +1,42 @@
 <?php
 include_once('common.php');
-include_once('class.Customer.php');
 
 
 if (!isset($_REQUEST['id']) or !isset($_REQUEST['tipo'])) {
-    exit;
+    exit("err1");
 }
-$customer=new Customer($_REQUEST['id']);
-if (!$customer->id) {
-    exit('err');
-}
+
 
 $address_data="var Address_Data= new Object;";
 switch ($_REQUEST['tipo']) {
- case('customer'); 
- 
- 
- print "var customer_id=".$customer->id.";";
- $addresses=$customer->get_address_keys();
+case('customer');
+include_once('class.Customer.php');
+
+    $customer=new Customer($_REQUEST['id']);
+    if (!$customer->id) {
+        exit('err');
+    }
+
+    print "var customer_id=".$customer->id.";";
+    $addresses=$customer->get_address_keys();
+
+    break;
+case('supplier'):
+include_once('class.Supplier.php');
+
+  $supplier=new Supplier($_REQUEST['id']);
+    if (!$supplier->id) {
+        exit('err');
+    }
+
+    print "var supplier_id=".$supplier->id.";";
+    $addresses=$supplier->get_address_keys();
+
+break;
+
+default:
+    return;
+}
 
 $address_data.="\n";
 foreach($addresses as $index) {
@@ -45,8 +64,8 @@ foreach($addresses as $index) {
 
                                 $address->id
                                 ,$address->id
-                                 ,prepare_mysql($address->data['Address Contact'],false)
-                                 ,prepare_mysql($address->get_formated_principal_telephone(),false)
+                                ,prepare_mysql($address->data['Address Contact'],false)
+                                ,prepare_mysql($address->get_formated_principal_telephone(),false)
                                 ,prepare_mysql($address->data['Address Country Name'],false)
                                 ,prepare_mysql($address->data['Address Country Code'],false)
                                 ,prepare_mysql($address->data['Address Country First Division'],false)
@@ -71,10 +90,6 @@ foreach($addresses as $index) {
 
 }
 print $address_data;
-
-}
-
-
 
 
 ?>
