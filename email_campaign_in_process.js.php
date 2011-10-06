@@ -15,7 +15,7 @@ var dialog_add_email_address_from_list;
 var validate_scope_data;
 var validate_scope_metadata;
 var dialog_preview_text_email;
-
+var dialog_send_email_campaign;
 
 function select_department(oArgs){
     var product_ordered_or=Dom.get('email_campaign_scope').value;
@@ -622,7 +622,7 @@ function send_email_campaign(){
 
 validate_scope('email_campaign');
 
-
+dialog_send_email_campaign.show();
 
 
 
@@ -653,6 +653,46 @@ function reset_edit_email_campaign(){
 reset_edit_general('email_campaign');
 
 }
+
+function send_now(){
+start_send(0)
+}
+
+function choose_time(){
+Dom.setStyle('dialog_send_email_campaign_choose_when1','display','none');
+Dom.setStyle('other_time_form','display','');
+
+}
+
+function send_other_time(){
+
+}
+
+
+function start_send(lap_seconds){
+var email_campaign_key=Dom.get('email_campaign_key').value;
+
+var request='ar_edit_marketing.php?tipo=set_email_campaign_as_ready&email_campaign_key='+email_campaign_key+'&start_sending_in='+lap_seconds;
+alert(request);
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+
+            location.href="email_campaign.php?id="+Dom.get('email_campaign_key').value;
+		}else{
+		alert(r.msg)
+		    //if(r.msg!=undefined)
+		     //   Dom.get('add_email_address_from_customer_list_msg').innerHTML='<span class="error">'+r.msg+'</span>';
+	      
+	    }
+	    }
+	    });
+
+}
+
+
 
 function save_edit_email_campaign(){
 
@@ -924,6 +964,13 @@ validate_scope_metadata={
     dialog_preview_text_email.render();
     Event.addListener("preview_email_campaign", "click", preview_email_campaign);
 
+
+
+  
+   dialog_send_email_campaign = new YAHOO.widget.Dialog("dialog_send_email_campaign", {context:["send_email_campaign","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_send_email_campaign.render();
+    Event.addListener("preview_email_campaign", "click", preview_email_campaign);
+  
   
     var email_campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_name);
     email_campaign_name_oACDS.queryMatchContains = true;

@@ -4271,6 +4271,12 @@ ALTER TABLE `Inventory Transaction Fact` ADD `Picking Note` VARCHAR( 256 ) NULL 
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Warehouse Key` SMALLINT UNSIGNED NOT NULL AFTER `Delivery Note Key` ,ADD INDEX ( `Delivery Note Warehouse Key` ); 
 update `Delivery Note Dimension`  set `Delivery Note Warehouse Key`=1 ;
 ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Start Overdue Date` DATETIME NULL DEFAULT NULL AFTER `Email Campaign Last Updated Date` ,
+ADD `Email Campaign Start Send Date` DATETIME NULL DEFAULT NULL AFTER `Email Campaign Start Overdue Date` ,
+ADD `Email Campaign End Send Date` DATETIME NULL DEFAULT NULL AFTER `Email Campaign Start Send Date`;
+
+
 */
 
 ?>
