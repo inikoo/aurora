@@ -133,6 +133,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 function myrenderEvent(){
+alert("x")
 ostate=this.getState();
 paginator=ostate.pagination
 if(paginator.totalRecords<=paginator.rowsPerPage){
@@ -234,6 +235,7 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
+  
     table.get('paginator').setRowsPerPage(rpp)
 
 }
@@ -241,7 +243,7 @@ var change_rpp=function (rpp,tableid){
 
 var change_rpp_with_totals=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
-    var table=tables['table'+tableid];
+   
 
     table.get('paginator').setRowsPerPage(rpp+1)
 

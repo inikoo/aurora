@@ -3310,11 +3310,7 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
 
 
 
-
     $elements=$conf['elements'];
-
-
-
     if (isset( $_REQUEST['elements_Keeping'])) {
         $elements['Keeping']=$_REQUEST['elements_Keeping'];
     }
@@ -3429,7 +3425,7 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
     if ($f_field=='used_in' and $f_value!='')
         $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
     elseif($f_field=='description' and $f_value!='')
-    $wheref.=" and  `Part XHTML Description` like '%".addslashes($f_value)."%'";
+    $wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
     elseif($f_field=='supplied_by' and $f_value!='')
     $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
     elseif($f_field=='sku' and $f_value!='')
@@ -4187,7 +4183,8 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
         $total_records=ceil($total_records/$number_results)+$total_records;
     */
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                        'state'=>200,
                                       'data'=>$adata,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
