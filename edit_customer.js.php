@@ -213,7 +213,7 @@ Dom.get('password_msg').style.display='';
 			if(r.state==200){
 				Dom.get('password_msg').innerHTML="Email Sent"
 				Dom.get('password_msg').style.display='';
-	
+				window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 
             }
 			else{
@@ -537,6 +537,7 @@ var error=false;
 }
 
 function change_password_(user_key){
+Dom.setStyle('dialog_set_password_','display','none');
 //alert('change');//return;
 //user_key=Dom.get(o).getAttribute('user');
 
@@ -565,7 +566,7 @@ var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
 
 
      var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
-alert(request);//return;
+//alert(request);//return;
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
@@ -578,9 +579,10 @@ alert(request);//return;
 
 
 		        if(r.result=='ok'){
-				alert('Password changed!');
+				//alert('Password changed!');
                 //Dom.setStyle('change_password_ok','display','');
-                Dom.setStyle('dialog_set_password_','display','none');
+                
+				window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
     		    }else{
 		      //  Dom.setStyle('change_password_ok','display','none');
                 //Dom.setStyle('change_password_form','display','');

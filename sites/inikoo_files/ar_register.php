@@ -194,9 +194,9 @@ function change_password($data) {
     $_key=md5($user->id.'insecure_key'.$data['values']['ep2']);
     $password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
 
-    print "Key:$_key\n";
-	print "Pass:$password\n";
-    exit($password);
+   // print "Key:$_key\n";
+//	print "Pass:$password\n";
+ //   exit($password);
     $user->change_password($password);
     if ($user->updated) {
         $response=array('state'=>200,'result'=>'ok',);
