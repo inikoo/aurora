@@ -306,6 +306,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 function init(){
+YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+
+
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
 
 // ------------------------------------ready_to_pick_orders export csv code here------------------
@@ -334,17 +342,9 @@ assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {visible 
  pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  pack_it_dialog.render();    
 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
 
 
-var change_view = function (e){
-	   window.location = "orders_server.php?view="+this.id;
-	 }
-	var ids=['orders','invoices','dn'];
-	Event.addListener(ids, "click", change_view);
+
  
 
 }

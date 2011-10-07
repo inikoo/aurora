@@ -412,6 +412,23 @@ function part_list() {
 
 
 
+ $elements=array('Keeping'=>1,'NotKeeping'=>0,'Discontinued'=>0,'LastStock'=>1);
+    if (isset( $_REQUEST['elements_Keeping'])) {
+        $elements['Keeping']=$_REQUEST['elements_Keeping'];
+    }
+    if (isset( $_REQUEST['elements_NotKeeping'])) {
+        $elements['NotKeeping']=$_REQUEST['elements_NotKeeping'];
+    }
+
+    if (isset( $_REQUEST['elements_Discontinued'])) {
+        $elements['Discontinued']=$_REQUEST['elements_Discontinued'];
+    }
+    if (isset( $_REQUEST['elements_LastStock'])) {
+        $elements['LastStock']=$_REQUEST['elements_LastStock'];
+    }
+
+
+
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_order=$order;
@@ -431,15 +448,29 @@ function part_list() {
   $where='where true ';
     
     
+     $_elements='';
+    foreach($elements as $_key=>$_value) {
+        if ($_value)
+            $_elements.=','.prepare_mysql($_key);
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Part Main State` in ('.$_elements.')' ;
+    }
+    
+    
     $filter_msg='';
     $wheref='';
-    if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Product SKU` like '".addslashes($f_value)."%'";
+
+  if ($f_field=='used_in' and $f_value!='')
+        $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
     elseif($f_field=='description' and $f_value!='')
-    $wheref.=" and  `Part Unit Description` like '".addslashes($f_value)."%'";
- elseif($f_field=='used_in' and $f_value!='')
-    $wheref.=" and  `Part Currently Used In` like '".addslashes($f_value)."%'";
-  elseif($f_field=='sku' and $f_value!='')
+    $wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+    elseif($f_field=='supplied_by' and $f_value!='')
+    $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+    elseif($f_field=='sku' and $f_value!='')
     $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(DISTINCT `Part SKU`) as total from `Part Dimension` $where $wheref  ";
@@ -463,30 +494,52 @@ function part_list() {
     }
 
 
-    $rtext=$total_records." ".ngettext('Part','Parts',$total_records);
+    $rtext=$total_records." ".ngettext('part','parts',$total_records);
     if ($total_records>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=_('(Showing all)');
+        $rtext_rpp=' '._('(Showing all)');
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('sku'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+            break;
 
-
-    $filter_msg='';
-
-    switch ($f_field) {
-     case('sku'):
-        if ($total==0 and $filtered>0)
-            $filter_msg=_("There isn't any part with")." <b> ".sprintf("SKU%05d",$f_value)."*</b> ";
-        elseif($filtered>0)
-        $filter_msg=_('Showing')." $total ("._('parts with')." <b> ".sprintf("SKU%05d",$f_value)."</b>)";
-        break;
-    case('description'):
-        if ($total==0 and $filtered>0)
-            $filter_msg=_("There isn't any part with description")." <b>".$f_value."*</b> ";
-        elseif($filtered>0)
-        $filter_msg=_('Showing')." $total ("._('parts with description like')." <b>$f_value</b>)";
-        break;
-
+        case('used_in'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
+            break;
+        case('suppiled_by'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
+            break;
+        case('description'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
+            break;
+        }
     }
+    elseif($filtered>0) {
+
+
+        switch ($f_field) {
+        case('sku'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+            break;
+
+        case('used_in'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
+            break;
+        case('supplied_by'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b>";
+            break;
+        case('description'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+
+
 
 
 

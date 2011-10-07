@@ -4754,7 +4754,20 @@ ADD `Supplier Last Month Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Last Month Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Last Month Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product Last Week Acc 1YB Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Week Acc 1YB Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Week Acc 1YB Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product Last Week Acc 1YB Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product Last Week Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
 
 

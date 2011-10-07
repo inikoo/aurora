@@ -134,11 +134,7 @@ $smarty->assign('filter0',$tipo_filter2);
 $smarty->assign('filter_value0',($_SESSION['state']['orders']['ready_to_pick_dn']['f_value']));
 $filter_menu2=array(
 		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
-		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
-		   'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
-		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
-		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
-		   );
+			   );
 $smarty->assign('filter_menu0',$filter_menu2);
 $smarty->assign('filter_name0',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu0=array(10,25,50,100,500);

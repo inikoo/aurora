@@ -232,7 +232,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
                  array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
-                 array('w'=>50,'txt'=>strip_tags($row['Part XHTML Description'].' '.$row['Part XHTML Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>50,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'L'),
                  array('w'=>55,'txt'=> strip_tags($row['Picking Note']) ,'border'=>'T','align'=>'L'),
                  array('w'=>35,'txt'=>$row['Location Code'],'border'=>'T','align'=>'L'),
                  array('w'=>8,'txt'=>$row['Required'],'border'=>'T','align'=>'R'),
