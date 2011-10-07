@@ -477,9 +477,10 @@ function change_period(e,table_id){
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
     var request='&period=' + this.getAttribute('period');
-    // alert(request);
+
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
+
 function change_avg(e,table_id){
 
     //  alert(avg);

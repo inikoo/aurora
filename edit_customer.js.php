@@ -189,24 +189,31 @@ Dom.addClass('delivery','selected');
 
 }
 
-function forget_password(){
+function forget_password(o, email){
 
-email=this.getAttribute('email')
+  var pos = Dom.getXY(o);
+  
+  pos[0]=pos[0]+500
+
+
+    Dom.setXY('password_msg', pos);
+	
+//email=this.getAttribute('email')
 var url ='http://'+ window.location.host + window.location.pathname;
 var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url + '&email='+email
 Dom.get('password_msg').innerHTML='Sending';
 Dom.get('password_msg').style.display='';
-	            alert(request);	
+	            //alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){
 					
-	            alert(o.responseText);	
+	            //alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 				Dom.get('password_msg').innerHTML="Email Sent"
 				Dom.get('password_msg').style.display='';
-	
+				window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 
             }
 			else{
@@ -530,6 +537,7 @@ var error=false;
 }
 
 function change_password_(user_key){
+Dom.setStyle('dialog_set_password_','display','none');
 //alert('change');//return;
 //user_key=Dom.get(o).getAttribute('user');
 
@@ -558,7 +566,7 @@ var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
 
 
      var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
-alert(request);//return;
+//alert(request);//return;
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
@@ -571,9 +579,10 @@ alert(request);//return;
 
 
 		        if(r.result=='ok'){
-				alert('Password changed!');
+				//alert('Password changed!');
                 //Dom.setStyle('change_password_ok','display','');
-                Dom.setStyle('dialog_set_password_','display','none');
+                
+				window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
     		    }else{
 		      //  Dom.setStyle('change_password_ok','display','none');
                 //Dom.setStyle('change_password_form','display','');
@@ -1355,6 +1364,12 @@ Dom.setStyle('tr_add_other_mobile','display','');
 }
 
 function register_email(o){
+	  var pos = Dom.getXY(o);
+  
+  pos[0]=pos[0]+300
+
+
+    Dom.setXY('register_msg', pos);
 	
 	email=Dom.get(o).getAttribute('email');
 	//alert(email);
@@ -1373,14 +1388,15 @@ password='xxxxxxxxxxxxxx';
   
   
 var request='ar_edit_users.php?tipo=create_user&values=' + json_value 
-
-	            alert(request);	
+Dom.get('register_msg').innerHTML="Registering in the system"
+				Dom.get('register_msg').style.display='';
+	          //  alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-
+				
 	            success:function(o){
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state=='200'){
-
+					Dom.get('register_msg').style.display='none';
 					window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 
 				

@@ -35,12 +35,10 @@
     <tr class="title"><td colspan=5>{t}Reset Password{/t}</td></tr>
 
    <tr>
-   <td style="width:400px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
-   <td style="width:200px">
-   <div>
-       <input type="button" class="button" id="forget_password_main" email={$customer->get('Customer Main Plain Email')} value="Send"/>
-	   
-   </div>
+   <td style="width:300px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
+   <td style="width:300px">
+
+   <span   style="cursor:pointer" onClick="forget_password(this, '{$customer->get('Customer Main Plain Email')}')">{t}Send an Email to Reset password{/t}</span>
    </td>
    <td><span  style="cursor:pointer"  onClick="show_change_password_dialog(this, {$user_main_id})"  >Set Password</span></td>
    <td>
@@ -52,10 +50,10 @@
 	{foreach from=$registered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}Send an Email: ({$email.email}){/t}</td>
-   <td style="width:200px">
-   <div>
-       <input type="button" class="button" id="forget_password_{$key}" email={$email.email} value="Send"/>
-   </div></td>
+   <td style="width:300px">
+
+   <span   style="cursor:pointer" onClick="forget_password(this, '{$email.email}')"  email={$email.email} >{t}Send an Email to Reset password{/t}</span>
+   </td>
    <td><span   style="cursor:pointer" user_key={$email.user_key} onClick="show_change_password_dialog(this,{$email.user_key})" >{t}Set Password{/t}</span></td>
    </tr>
    <tr><td><span id="password_msg_{$key}" style="display:"></span></td></tr>
@@ -64,21 +62,22 @@
 
    
    
-   
-   <tr class="title"><td colspan=5>{t}Register Email{/t}</td></tr>
+   {if $unregistered_count>0}
+   <tr class="title"><td colspan=5>{t}Unregistered Emails{/t}</td></tr>
 
    	{foreach from=$unregistered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}{$email.email}{/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" onclick="register_email(this)" email={$email.email} value="Register"/>
+       <input type="button" class="button" onclick="register_email(this)" email={$email.email} value="Register in Website"/>
    </div></td>
+   <td><span id="register_msg" style="display:"></span></td>
    </tr>
    
    {/foreach}
    
-   
+   {/if}
    
    </table>
  </div>
