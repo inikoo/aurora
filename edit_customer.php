@@ -178,6 +178,9 @@ $smarty->assign('unregistered_email',$unregistered_email);
 $smarty->assign('main_email',$main_email);
 
 
+$smarty->assign('unregistered_count',count($unregistered_email));
+
+
 $general_options_list=array();
 
  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
