@@ -1714,7 +1714,7 @@ function list_suppliers() {
             break;
         }
     }
-	print $order;
+	//print $order;
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 

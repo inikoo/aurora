@@ -57,7 +57,7 @@ Event.addListener(window, "load", function() {
 				       ];
 
 	      this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=suppliers");
-		  alert("ar_suppliers.php?tipo=suppliers");
+		  //alert("ar_suppliers.php?tipo=suppliers");
   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -145,7 +145,7 @@ table_paginator0=new YAHOO.widget.Paginator({
 				  ];
 
 		this.dataSource1 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&parent=none&tableid="+tableid);
-		alert("ar_suppliers.php?tipo=supplier_products&parent=none&tableid="+tableid);
+		//alert("ar_suppliers.php?tipo=supplier_products&parent=none&tableid="+tableid);
 
    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource1.connXhrMode = "queueRequests";
