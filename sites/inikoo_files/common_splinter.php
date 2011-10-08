@@ -21,6 +21,13 @@ require_once "class.LightCustomer.php";
 require_once "class.LightProduct.php";
 require_once "class.LightFamily.php";
 
+require('external_libs/Smarty/Smarty.class.php');
+$smarty = new Smarty();
+$smarty->template_dir = 'templates';
+$smarty->compile_dir = 'server_files/smarty/templates_c';
+$smarty->cache_dir = 'server_files/smarty/cache';
+$smarty->config_dir = 'server_files/smarty/configs';
+
 
 $user_log_key=0;
 $found_in=array();

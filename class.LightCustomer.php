@@ -6,7 +6,7 @@
   Copyright (c) 2011, Inikoo
 
 */
-
+include_once('class.Address.php');
 
 class LightCustomer {
 
@@ -107,6 +107,8 @@ class LightCustomer {
 
     function get($key) {
 
+
+		
         switch ($key) {
         case('name'):
             return ($this->data['Customer Name']==''?_('Customer'):$this->data['Customer Name']);
@@ -138,8 +140,157 @@ class LightCustomer {
 
         return false;
     }
+	
+	function get_other_emails_data() {
+
+        $sql=sprintf("select B.`Email Key`,`Email`,`Email Description` from `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) where  `Subject Type`='Customer' and `Subject Key`=%d "
+                     ,$this->id );
+
+        $email_keys=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['Email Key']!=$this->data['Customer Main Email Key'])
+                $email_keys[$row['Email Key']]= array(
+                                                    'email'=>$row['Email'],
+                                                    'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
+                                                    'label'=>$row['Email Description']
+
+                                                );
+        }
+        return $email_keys;
+
+    }
+
+	function get_other_telephones_data() {
+        return $this->get_other_telecoms_data('Telephone');
+    }
+	
+	function get_other_telecoms_data($type='Telephone') {
+
+        $sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Customer' and `Subject Key`=%d ",
+                     prepare_mysql($type),
+                     $this->id
+                    );
+//print $sql;
+        $telecom_keys=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if ($row['Telecom Key']!=$this->data["Customer Main $type Key"]) {
+
+                $telecom=new Telecom($row['Telecom Key']);
+
+                $telecom_keys[$row['Telecom Key']]= array(
+                                                        'number'=>$telecom->display('plain'),
+                                                        'xhtml'=>$telecom->display('xhtml'),
+                                                        'label'=>$row['Telecom Description']
+                                                    );
+
+            }
+        }
+        return $telecom_keys;
+
+    }
+	
+	function get_other_mobiles_data() {
+        return $this->get_other_telecoms_data('Mobile');
+    }
+
+	function get_other_faxes_data() {
+        return $this->get_other_telecoms_data('FAX');
+    }
+	
+	function billing_address_xhtml() {
 
 
+        if ($this->data['Customer Billing Address Link']=='None') {
 
+            $address=new Address($this->data['Customer Billing Address Key']);
+
+        } else
+            $address=new Address($this->data['Customer Main Address Key']);
+
+        return $address->display('xhtml');
+
+    }
+	
+	function get_tax_number($reread=false) {
+        return $this->data['Customer Tax Number'];
+    }
+
+    function get_registration_number($reread=false) {
+        return $this->data['Customer Registration Number'];
+    }
+	
+		
+	function is_user_customer($data){
+		$sql=sprintf("select * from `User Dimension` where `User Parent Key`=%d and `User Type`='Customer' ", $data);
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result, MYSQL_ASSOC))
+			return array(true, $row);
+	}
+	
+	function get_other_email_login_handle(){
+		$other_login_handle_emails=array();
+		foreach($this->get_other_emails_data() as $email){
+			$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
+
+			$result=mysql_query($sql);
+			
+			if($row=mysql_fetch_array($result)){
+				$other_login_handle_emails[$email['email']]=$email['email'];
+			}
+		}
+		
+		return $other_login_handle_emails;
+	}
+	
+	function load($key='',$arg1=false) {
+        switch ($key) {
+        case('contact_data'):
+        case('contact data'):
+            $contact=new Contact($this->get('customer contact key'));
+            if ($contact->id)
+                $this->contact_data=$contact->data;
+            else
+                $this->errors[]='Error geting contact data object. Contact key:'.$this->get('customer contact key');
+            break;
+        case('ship to'):
+
+            $sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ',$arg1);
+
+            //  print $sql;
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $this->ship_to[$row['Ship To Key']]=$row;
+
+
+            } else
+                $this->errors[]='Error loading ship to data. Ship to Key:'.$arg1;
+
+            break;
+        }
+
+    }
+	
+	function delivery_address_xhtml() {
+
+        if ($this->data['Customer Delivery Address Link']=='None') {
+
+            $address=new Address($this->data['Customer Main Delivery Address Key']);
+
+        }
+        elseif ($this->data['Customer Delivery Address Link']=='Billing')
+        $address=new Address($this->data['Customer Billing Address Key']);
+        else
+            $address=new Address($this->data['Customer Main Address Key']);
+
+        $tel=$address->get_formated_principal_telephone();
+        if ($tel!='') {
+            $tel=_('Tel').': '.$tel.'</br>';
+        }
+
+        return $tel.$address->display('xhtml');
+
+    }
 }
 ?>
