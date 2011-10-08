@@ -370,6 +370,70 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['store']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['products']['f_value']?>'};
 		
 
+  var tableid=3; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 	 ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+						    
+				    
+				    
+				     ];
+
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_sites.php?tipo=sites&parent=store&tableid=3&parent_key="+Dom.get('store_id').value);
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id','name','url'
+						 ]};
+	    
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource3, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['store']['sites']['nr']?>,containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['store']['sites']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['store']['sites']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	    
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['store']['sites']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['sites']['f_value']?>'};
+		
+
+
 
 
 
@@ -387,7 +451,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 
-	    this.dataSource4 = new YAHOO.util.DataSource("ar_assets.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('store_id').value);
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('store_id').value);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
 	    this.dataSource4.responseSchema = {

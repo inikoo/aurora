@@ -38,7 +38,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

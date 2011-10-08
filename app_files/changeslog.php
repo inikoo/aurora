@@ -4772,6 +4772,24 @@ ADD `Supplier Product Last Week Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0'
 ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown;
 ALTER TABLE `Page Store Dimension` ADD `Page Parent Code` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Page Parent Key` ;
 
+CREATE TABLE `dw`.`Page Snapshot Fact` (
+`Date` DATE NOT NULL ,
+`Site Key` SMALLINT UNSIGNED NULL DEFAULT NULL ,
+`Page Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Requests` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',
+`Visitors` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',
+`Requests Logged In` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',
+`Visitors Logged In` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0'
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Page Snapshot Fact` ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `Page Snapshot Fact` ADD INDEX ( `Page Key` ) ;
+ALTER TABLE `Page Snapshot Fact` ADD INDEX ( `Date` ) ;
+
+
+
+
+
 
 */
 

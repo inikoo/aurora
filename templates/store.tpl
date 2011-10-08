@@ -15,9 +15,9 @@
     <li> <span class="item {if $block_view=='departments'}selected{/if}"  id="departments">  <span> {t}Departments{/t}</span></span></li>
     <li> <span class="item {if $block_view=='families'}selected{/if}"  id="families">  <span> {t}Families{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='sites'}selected{/if}" style="display:none" id="sites">  <span> {t}Sites{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='sites'}selected{/if}"  id="sites">  <span> {t}Websites{/t}</span></span></li>
     <li> <span class="item {if $block_view=='deals'}selected{/if}" style="display:none" id="deals">  <span> {t}Offers{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='pages'}selected{/if}" style="{if !$number_sites}display:none{/if}" id="pages">  <span> {t}Pages{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='pages'}selected{/if}" style="{if !$number_sites}display:none{/if}" id="pages">  <span> {t}Webpages{/t}</span></span></li>
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -281,21 +281,7 @@
 </div>
 <div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
-<div class="data_table" style="clear:both;margin-top:25px">
-<div class="todo">
-<h1>TO DO (KAKTUS-319)</h1>
-<h2>List/thumbnails of store websites</h2>
-<h3>Objective</h3>
-<p>
-show code (link to:site.php?id=) ,url, type (created with inikoo,created by others),status (live/offline),
-some stats like (# visitors,# unique visitors etc)</br>
-</p>
-<h3>Files</h3>
-<p>
-ar fie: ar_sites.php?tipo=list_store_sites<br>
-DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Type`(enum[inikoo,other]),`Site Status`... etc )
-</p>
-</div>
+
     <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>
  <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
@@ -307,7 +293,7 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
    
  {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
 <div  id="table3"   class="data_table_container dtable btable"> </div>
-</div>
+
 </div>
 <div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 <div class="data_table" style="clear:both;">
