@@ -607,10 +607,10 @@ class Page extends DB_Table {
         case('title'):
             $this->update_field('Page Title',$value,$options);
             break;
-            
-           case('link_title'):
+
+        case('link_title'):
             $this->update_field('Page Short Title',$value,$options);
-            break;    
+            break;
         case('keywords'):
             $this->update_field('Page Keywords',$value,$options);
             break;
@@ -786,91 +786,45 @@ class Page extends DB_Table {
         return $data;
     }
 
-    function found_in_old() {
-       
 
-    switch ($this->data['Page Store Section']) {
-        case 'Family Catalogue':
-       
-       $sql=sprintf("select `Product Family Main Department Key` from  `Product Family Dimension` where `Product Family Key`=%d",
-       $this->data['Page Parent Key']);
-     
-       $res=mysql_query($sql);
-       if($row=mysql_fetch_assoc($res)){
-       $department_key=$row['Product Family Main Department Key'];
-       
-       }else
-          $department_key=0;
-       
-       $sql=sprintf('select `Page URL`,`Page Short Title` from  `Page Store Dimension` PS     left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`)  where `Page Store Section`="Department Catalogue" and PS.`Page Parent Key`=%d',
-       
-       $department_key
-       );
-       
+
+
+    function found_in() {
+
+        $found_in=array();
+        $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
+                     $this->id);
+
         $res=mysql_query($sql);
-        if($row=mysql_fetch_assoc($res)){
-         $found_in_label=$row['Page Short Title'];
-        $found_in_url=$row['Page URL'];
-        
-        }else{
-             $found_in_label="x";
-        $found_in_url="x";
-        }
-        
-            break;
-        default:
-             $found_in_label="";
-        $found_in_url="";
-            break;
-    }
 
-
-        return array($found_in_label,$found_in_url);
-
-    }
-    
-    
-     function found_in() {
-       
-       $found_in=array();
-           $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
-      $this->id);
-
-       $res=mysql_query($sql);
-       
-       while($row=mysql_fetch_assoc($res)){
+        while ($row=mysql_fetch_assoc($res)) {
             $found_in_page=new Page($row['Page Store Found In Key']);
-            if($found_in_page->id){
-            $found_in[]=array(
-            'found_in_label'=>$found_in_page->data['Page Short Title'],
-            'found_in_url'=>$found_in_page->data['Page URL'],
-             'found_in_key'=>$found_in_page->id,
-             'found_in_code'=>$found_in_page->data['Page Code']
-            );
+            if ($found_in_page->id) {
+                $found_in[]=array(
+                                'found_in_label'=>$found_in_page->data['Page Short Title'],
+                                'found_in_url'=>$found_in_page->data['Page URL'],
+                                'found_in_key'=>$found_in_page->id,
+                                'found_in_code'=>$found_in_page->data['Page Code']
+                            );
             }
-       
-       }
-       
-   //    print_r($found_in);
 
-  
-
+        }
         return $found_in;
 
     }
 
 
-function delete(){
-$this->deleted=false;
- $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
-    // print "$sql\n";
-    mysql_query($sql);
-    $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
-    mysql_query($sql);
+    function delete() {
+        $this->deleted=false;
+        $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
+        // print "$sql\n";
+        mysql_query($sql);
+        $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
+        mysql_query($sql);
 
-$this->deleted=true;
+        $this->deleted=true;
 
-}
+    }
 
 }
 ?>
