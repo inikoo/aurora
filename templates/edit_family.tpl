@@ -350,7 +350,8 @@
 	       
 	     </tr>
 	     
-	       <tr><td class="label">{t}Found In{/t}:</td>
+	       <tr>
+	       <td class="label">{t}Found In{/t}:</td>
 	       <td>
 	        <div style="float:right"  class="general_options"><span id="add_other_found_in_page" class="state_details">Add other page</span></div>
 	       <table >
@@ -366,11 +367,31 @@
 	      
 	       </td>
 	       <td></td>
-	       </td>
+	       
 	    
 	       
 	     </tr>
 	     
+	     <tr>
+	       <td class="label">{t}See Also{/t}:</td>
+	       <td>
+	        <div style="float:right"  class="general_options"><span id="add_other_see_also_page" class="state_details">Add other page</span></div>
+	       <table >
+	       {if $page_key}
+		    {foreach from=$page->see_also() item=see_also_page}
+               <tr><td style="padding:0">{$see_also_page.see_also_label}</td>
+               <td style="padding:0;padding-left:10px"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+               </tr>
+            {/foreach}
+            {/if}
+	       </table>
+	      
+	       </td>
+	       <td></td>
+	       
+	    
+	       
+	     </tr>
 	     
 	     <tr style="display:none"><td class="label">{t}Subtitle{/t}:</td><td>
 		 <div   >

@@ -17,6 +17,7 @@
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
     <li> <span class="item {if $block_view=='sites'}selected{/if}" style="display:none" id="sites">  <span> {t}Sites{/t}</span></span></li>
     <li> <span class="item {if $block_view=='deals'}selected{/if}" style="display:none" id="deals">  <span> {t}Offers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='pages'}selected{/if}" style="{if !$number_sites}display:none{/if}" id="pages">  <span> {t}Pages{/t}</span></span></li>
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -467,7 +468,19 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
 <div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 <a href="product_categories.php?store_id={$store->id}id=0">{t}Product Category Page{/t}</a>
 </div>
+<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+   <span   class="clean_table_title" style="">{t}Pages{/t}</span>
 
+   
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+    
+   
+ {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1  }
+<div  id="table4"   class="data_table_container dtable btable"  style="font-size:85%"> </div>
+
+
+
+</div>
 </div>
 
 </div>

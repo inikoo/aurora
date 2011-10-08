@@ -517,7 +517,7 @@ function reset_part(key) {
 }
 
 function save_part() {
-	alert("x")
+	
 
 	 key = Dom.get("part_part_items").getAttribute("part_part_key");
 
