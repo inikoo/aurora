@@ -2215,7 +2215,7 @@ $default_state=array(
                            ),
                    'page'=>array(
                               'id'=>0,
-                              'edit'=>'properties'
+                              'view'=>'details'
                           ),
                    'store'=>array(
                                'block_view'=>'departments',
