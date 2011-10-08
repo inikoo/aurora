@@ -2222,6 +2222,34 @@ $default_state=array(
                                'plot'=>'store',
                                'edit'=>'description',
                                'id'=>1,
+
+                               'pages'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'code',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'order'=>'code',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>50,
+                                           'percentages'=>false,
+                                           'view'=>'general',
+                                           'period'=>'year',
+                                           'percentage'=>0,
+                                           'mode'=>'all',
+                                           'avg'=>'totals',
+                                           'elements'=>array(
+                                                          'Product Description'=>1,
+                                                          'Family Catalogue'=>1,
+                                                          'Product Catalogue'=>1,
+                                                          'Other'=>1,
+
+                                                      )
+
+
+                                       ),
+
+
                                'departments'=>array(
                                                  'where'=>'where true',
                                                  'f_field'=>'code',
@@ -2421,18 +2449,9 @@ $default_state=array(
                                            'order_dir'=>'',
                                            'sf'=>0,
                                            'nr'=>25,
-                                       ),
+                                       )
 
-                               'pages'=>array(
-                                           'where'=>'where true',
-                                           'f_field'=>'section',
-                                           'f_value'=>'',
-                                           'f_show'=>false,
-                                           'order'=>'section',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>25,
-                                       ),
+                             
 
                            ),
 
@@ -2442,15 +2461,14 @@ $default_state=array(
 
                    'site'=>array(
 
-                              'view'=>'general',
-                              'period'=>'year',
+                              'view'=>'details',
+                              'period'=>'day',
                               'percentage'=>0,
                               'mode'=>'all',
                               'avg'=>'totals',
                               'details'=>true,
 
-                              'edit'=>'general',
-                              'editing'=>false,
+        
                               'id'=>false,
 
 
@@ -2458,14 +2476,27 @@ $default_state=array(
 
 
                               'pages'=>array(
-                                          'where'=>'where true',
-                                          'f_field'=>'code',
-                                          'f_value'=>'',
-                                          'f_show'=>false,
-                                          'order'=>'name',
-                                          'order_dir'=>'',
-                                          'sf'=>0,
-                                          'nr'=>25,
+                                         'where'=>'where true',
+                                           'f_field'=>'code',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'order'=>'code',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>50,
+                                           'percentages'=>false,
+                                           'view'=>'general',
+                                           'period'=>'year',
+                                           'percentage'=>0,
+                                           'mode'=>'all',
+                                           'avg'=>'totals',
+                                           'elements'=>array(
+                                                          'Product Description'=>1,
+                                                          'Family Catalogue'=>1,
+                                                          'Product Catalogue'=>1,
+                                                          'Other'=>1,
+
+                                                      )
 
 
                                       ),
@@ -3109,33 +3140,33 @@ $default_state=array(
                                           'm'=>date('m'),
                                           'd'=>date('d'),
                                           'w'=>1,
-                                          'activity'=>array('compare'=>'last_year','period'=>'week')
+                                          'activity'=>array('compare'=>'last_year','period'=>'week'),
 
-                                                     'sales'=>array(
-                                                                 'store_keys'=>'all',
-                                                                 'from'=>'',
-                                                                 'to'=>'',
-                                                                 'period'=>'',
-                                                                 'order'=>'date',
-                                                                 'order_dir'=>'desc',
-                                                                 'invoice_type'=>'all',
-                                                                 'dn_state'=>'all',
-                                                                 'sf'=>0,
-                                                                 'nr'=>25,
-                                                                 'plot'=>'per_store',
-                                                                 'plot_data'=>array('per_store'=>array(
-                                                                                                    'category'=>'sales',
-                                                                                                    'page'=>'plot.php',
-                                                                                                    'period'=>'m'
+                                          'sales'=>array(
+                                                      'store_keys'=>'all',
+                                                      'from'=>'',
+                                                      'to'=>'',
+                                                      'period'=>'',
+                                                      'order'=>'date',
+                                                      'order_dir'=>'desc',
+                                                      'invoice_type'=>'all',
+                                                      'dn_state'=>'all',
+                                                      'sf'=>0,
+                                                      'nr'=>25,
+                                                      'plot'=>'per_store',
+                                                      'plot_data'=>array('per_store'=>array(
+                                                                                         'category'=>'sales',
+                                                                                         'page'=>'plot.php',
+                                                                                         'period'=>'m'
 
-                                                                                                )
-                                                                                                ,'per_category'=>array(
-                                                                                                                    'category'=>'sales',
-                                                                                                                    'page'=>'plot.php',
-                                                                                                                    'period'=>'m'
-                                                                                                                )
-                                                                                   ),
-                                                             ),
+                                                                                     )
+                                                                                     ,'per_category'=>array(
+                                                                                                         'category'=>'sales',
+                                                                                                         'page'=>'plot.php',
+                                                                                                         'period'=>'m'
+                                                                                                     )
+                                                                        ),
+                                                  ),
 
 
                                           'products'=>array('store_keys'=>'all',

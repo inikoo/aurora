@@ -34,9 +34,12 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('pages'):
+    list_pages();
+    break;
 case('customers_who_order_product'):
-     list_customers_who_order_product();
-   break;
+    list_customers_who_order_product();
+    break;
 case('products_lists'):
     list_products_lists();
     break;
@@ -2053,7 +2056,10 @@ function list_products() {
             exit("error");
         }
     }
+
     $where.=$where_type;
+
+
     switch ($parent) {
     case('store'):
         $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['products']['store']);
@@ -3224,16 +3230,16 @@ function list_parts() {
     $conf=$_SESSION['state']['warehouse']['parts'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
-		
+
     else
         $view=$_SESSION['state']['warehouse']['parts']['view'];
-$_SESSION['state']['warehouse']['parts']['view']=$view;
-	if (isset( $_REQUEST['list_key']))
+    $_SESSION['state']['warehouse']['parts']['view']=$view;
+    if (isset( $_REQUEST['list_key']))
         $list_key=$_REQUEST['list_key'];
     else
         $list_key=false;
-		
-		
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -3350,28 +3356,28 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
         $number_results=25;
 
     $where="where true  ";
-	$table="`Part Dimension` P";
+    $table="`Part Dimension` P";
 
     if ($awhere) {
 
         $tmp=preg_replace('/\\\"/','"',$awhere);
         $tmp=preg_replace('/\\\\\"/','"',$tmp);
         $tmp=preg_replace('/\'/',"\'",$tmp);
-		
+
         $raw_data=json_decode($tmp, true);
         //$raw_data['store_key']=$store;
-		//print_r($raw_data);exit;
+        //print_r($raw_data);exit;
         list($where,$table)=parts_awhere($raw_data);
 
         $where_type='';
         $where_interval='';
     }
 
-	
-	if ($list_key) {
-		
+
+    if ($list_key) {
+
         $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
-		//print $sql;exit;
+        //print $sql;exit;
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
             $awhere=false;
@@ -3433,7 +3439,7 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
 
     $sql="select count(*) as total from $table  $where $wheref";
 
-       //print $sql;exit;
+    //print $sql;exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -3680,7 +3686,7 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
 
     }
 
-	$order='P.'.$order;
+    $order='P.'.$order;
 
 
 
@@ -4184,18 +4190,18 @@ $_SESSION['state']['warehouse']['parts']['view']=$view;
     */
     $response=array('resultset'=>
                                 array(
-                                        'state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
-                                     )
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'total_records'=>$total_records,
+                                    'records_offset'=>$start_from,
+                                    'records_perpage'=>$number_results,
+                                )
                    );
     echo json_encode($response);
 }
@@ -9947,18 +9953,18 @@ function part_transactions() {
 
 function part_stock_history() {
     $conf=$_SESSION['state']['part']['stock_history'];
-    
-    
-    
-  
-    
-    
-      if (isset( $_REQUEST['part_sku']))
+
+
+
+
+
+
+    if (isset( $_REQUEST['part_sku']))
         $part_sku=$_REQUEST['part_sku'];
     else
         $part_sku=$_SESSION['state']['part']['id'];
-    
-    
+
+
     if (isset( $_REQUEST['elements']))
         $elements=$_REQUEST['elements'];
     else
@@ -10343,7 +10349,7 @@ function new_parts_list($data) {
 
 
         $sql="select P.`Part SKU` from $table  $where group by P.`Part SKU`";
-           //print $sql;exit;
+        //print $sql;exit;
         $result=mysql_query($sql);
         while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -10613,13 +10619,13 @@ function list_parts_lists() {
         $tableid=$_REQUEST['tableid'];
     else
         $tableid=0;
-/*
-    if (isset( $_REQUEST['store_id'])    ) {
-        $store=$_REQUEST['store_id'];
-        $_SESSION['state']['products']['store']=$store;
-    } else
-        $store=$_SESSION['state']['products']['store'];
-*/
+    /*
+        if (isset( $_REQUEST['store_id'])    ) {
+            $store=$_REQUEST['store_id'];
+            $_SESSION['state']['products']['store']=$store;
+        } else
+            $store=$_SESSION['state']['products']['store'];
+    */
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
@@ -10636,7 +10642,7 @@ function list_parts_lists() {
 
 
     $where=' where `List Scope`="Part"';
-	
+
 
     $wheref='';
 
@@ -10930,187 +10936,830 @@ function is_product_special_char($data) {
 }
 
 
-function list_customers_who_order_product(){
- $conf=$_SESSION['state']['product']['customers'];
+function list_customers_who_order_product() {
+    $conf=$_SESSION['state']['product']['customers'];
 
-   if(isset( $_REQUEST['code'])){
-     $tag=$_REQUEST['code'];
-     $mode='code';
-   }else if(isset( $_REQUEST['id'])){
-     $tag=$_REQUEST['id'];
-     $mode='id';
-   }else if(isset( $_REQUEST['key'])){
-     $tag=$_REQUEST['key'];
-     $mode='key';
-   }else{
-     $tag=$_SESSION['state']['product']['tag'];
-     $mode=$_SESSION['state']['product']['mode'];
-   }
+    if (isset( $_REQUEST['code'])) {
+        $tag=$_REQUEST['code'];
+        $mode='code';
+    } else if (isset( $_REQUEST['id'])) {
+        $tag=$_REQUEST['id'];
+        $mode='id';
+    } else if (isset( $_REQUEST['key'])) {
+        $tag=$_REQUEST['key'];
+        $mode='key';
+    } else {
+        $tag=$_SESSION['state']['product']['tag'];
+        $mode=$_SESSION['state']['product']['mode'];
+    }
 
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
-    $order=$conf['order'];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$conf['order_dir'];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-   
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
 
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   $_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'tag'=>$tag,'mode'=>$mode);
-   $_order=$order;
-   $_dir=$order_direction;
-   $filter_msg='';
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
 
-   $table='`Order Transaction Fact` OTF left join `Product History Dimension`  PD on (PD.`Product Key`=OTF.`Product Key`)  ';
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'tag'=>$tag,'mode'=>$mode);
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
 
-   if($mode=='code'){
-     $where=$where.sprintf(" and P.`Product Code`=%s ",prepare_mysql($tag));
-     $table='`Order Transaction Fact` OTF left join `Product History Dimension` PD  on (PD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)  ';
+    $table='`Order Transaction Fact` OTF left join `Product History Dimension`  PD on (PD.`Product Key`=OTF.`Product Key`)  ';
 
-   }elseif($mode=='pid')
-     $where=$where.sprintf(" and OTF.`Product ID`=%d ",$tag);
-   elseif($mode=='key')
-     $where=$where.sprintf(" and OTF.`Product Key`=%d ",$tag);
+    if ($mode=='code') {
+        $where=$where.sprintf(" and P.`Product Code`=%s ",prepare_mysql($tag));
+        $table='`Order Transaction Fact` OTF left join `Product History Dimension` PD  on (PD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)  ';
+
+    }
+    elseif($mode=='pid')
+    $where=$where.sprintf(" and OTF.`Product ID`=%d ",$tag);
+    elseif($mode=='key')
+    $where=$where.sprintf(" and OTF.`Product Key`=%d ",$tag);
 
 
-   $wheref="";
-   
-  if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
-  else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-  elseif($f_field=='customer_name'  and $f_value!='')
+    $wheref="";
+
+    if ($f_field=='max' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+    else if ($f_field=='min' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+    elseif($f_field=='customer_name'  and $f_value!='')
     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
 
-   $sql="select count(distinct `Customer Key`) as total from  $table  $where $wheref";
-   // print $mode.' '.$sql;
-   $res = mysql_query($sql);
-   if($row=mysql_fetch_array($res)) {
-       $total=$row['total'];
-   }
+    $sql="select count(distinct `Customer Key`) as total from  $table  $where $wheref";
+    // print $mode.' '.$sql;
+    $res = mysql_query($sql);
+    if ($row=mysql_fetch_array($res)) {
+        $total=$row['total'];
+    }
     mysql_free_result($res);
-   if($wheref==''){
-     $filtered=0;
-      $total_records=$total;
-   }else{
-     $sql="select count(distinct `Customer Key`) as total from  $table  $where      ";
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(distinct `Customer Key`) as total from  $table  $where      ";
 
-     $res = mysql_query($sql);
-     if($row=mysql_fetch_array($res)) {
-	$total_records=$row['total'];
-	$filtered=$total_records-$total;
-     }
-      mysql_free_result($res);
-   }
-   $rtext=$total_records." ".ngettext('customer','customers',$total_records);
-   if($total_records>$number_results)
-     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-   
-
-   $filter_msg='';
-   if($total==0 and $filtered>0){
-     switch($f_field){
-     case('public_id'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
-       break;
-     }
-   }
-   elseif($filtered>0){
-     switch($f_field){
-     case('public_id'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b>";
-       break;
-     }
-   }
-
-   
-   $_order=$order;
-   $_dir=$order_direction;
-
-  if($order=='dispatched')
-         $order='dispatched';
- elseif($order=='orders')
-         $order='orders';
-          elseif($order=='charged')
-         $order='charged';
-          elseif($order=='to_dispatch')
-         $order='to_dispatch';
-          elseif($order=='dispatched')
-         $order='dispatched';
-          elseif($order=='nodispatched')
-         $order='nodispatched';
-  else
-     $order='`Customer Name`';
+        $res = mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+    $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+    if ($total_records>$number_results)
+        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
 
-   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as to_dispatch,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
-		);
+    $filter_msg='';
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('public_id'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('public_id'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b>";
+            break;
+        }
+    }
 
-   $data=array();
-   
-  $res = mysql_query($sql);
-   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+    if ($order=='dispatched')
+        $order='dispatched';
+    elseif($order=='orders')
+    $order='orders';
+    elseif($order=='charged')
+    $order='charged';
+    elseif($order=='to_dispatch')
+    $order='to_dispatch';
+    elseif($order=='dispatched')
+    $order='dispatched';
+    elseif($order=='nodispatched')
+    $order='nodispatched';
+    else
+        $order='`Customer Name`';
 
 
-     $data[]=array(
-		   'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
-		   'charged'=>money($row['charged']),
-		   'orders'=>number($row['orders']),
-		   'to_dispatch'=>number($row['to_dispatch']),
-		   'dispatched'=>number($row['dispatched']),
-		   'nodispatched'=>number($row['nodispatched'])
+    $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as to_dispatch,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
+                );
 
-		   );
-   }
-   mysql_free_result($res);
+    $data=array();
 
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data,
-			 'sort_key'=>$_order,
-			 'rtext'=>$rtext,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
+    $res = mysql_query($sql);
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        $data[]=array(
+                    'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
+                    'charged'=>money($row['charged']),
+                    'orders'=>number($row['orders']),
+                    'to_dispatch'=>number($row['to_dispatch']),
+                    'dispatched'=>number($row['dispatched']),
+                    'nodispatched'=>number($row['nodispatched'])
+
+                );
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data,
+                                      'sort_key'=>$_order,
+                                      'rtext'=>$rtext,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$start_from+$total,
+                                      'records_perpage'=>$number_results,
+                                      'records_text'=>$rtext,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
 }
+
+function list_pages() {
+
+
+
+    if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else
+        $parent='none';
+
+
+
+    if (isset( $_REQUEST['parent_key']))
+        $parent_key=$_REQUEST['parent_key'];
+    else
+        $parent_key='';
+
+    if ($parent=='store') {
+        $conf=$_SESSION['state']['store']['pages'];
+        $conf_table='store';
+    }
+    elseif ($parent=='department') {
+        $conf=$_SESSION['state']['department']['pages'];
+        $conf_table='department';
+    }
+    elseif ($parent=='family') {
+        $conf=$_SESSION['state']['family']['pages'];
+        $conf_table='family';
+    }
+    elseif ($parent=='none') {
+        $conf=$_SESSION['state']['sites']['pages'];
+        $conf_table='stores';
+    }
+    elseif ($parent=='site') {
+        $conf=$_SESSION['state']['site']['pages'];
+        $conf_table='site';
+    }
+    else {
+
+        exit;
+    }
+
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+    if (isset( $_REQUEST['where']))
+        $where=$_REQUEST['where'];
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['period']))
+        $period=$_REQUEST['period'];
+    else
+        $period=$conf['period'];
+
+
+    if (isset( $_REQUEST['percentages']))
+        $percentages=$_REQUEST['percentages'];
+    else
+        $percentages=$conf['percentages'];
+
+
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+    $elements=$conf['elements'];
+
+
+    if (isset( $_REQUEST['elements_products'])) {
+        $elements['Product Description']=$_REQUEST['elements_products'];
+
+    }
+    if (isset( $_REQUEST['elements_families'])) {
+        $elements['Family Catalogue']=$_REQUEST['elements_families'];
+    }
+    if (isset( $_REQUEST['elements_departments'])) {
+        $elements['Department Catalogue']=$_REQUEST['elements_departments'];
+    }
+
+
+    if (isset( $_REQUEST['elements_other'])) {
+        $elements['Other']=$_REQUEST['elements_other'];
+    }
+
+
+
+
+
+
+    $_SESSION['state'][$conf_table]['pages']['order']=$order;
+    $_SESSION['state'][$conf_table]['pages']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['pages']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['pages']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['pages']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['pages']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['pages']['percentages']=$percentages;
+    $_SESSION['state'][$conf_table]['pages']['period']=$period;
+    $_SESSION['state'][$conf_table]['pages']['elements']=$elements;
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    $where='where true ';
+
+
+
+    switch ($parent) {
+    case('store'):
+        $where.=sprintf(' and `Page Store Key`=%d',$parent_key);
+        break;
+    case('site'):
+        $where.=sprintf(' and `Page Site Key`=%d',$parent_key);
+        break;
+    case('department'):
+        $where.=sprintf('  and `Page Store Parent Key`=%d  and `Page Store Section`="Department Catalogue"  ',$parent_key);
+        break;
+    case('Product'):
+        $where.=sprintf('  and `Page Store Parent Key`=%d  and `Page Store Section`="Product Description"  ',$parent_key);
+        break;
+    case('family'):
+        $where.=sprintf('  and `Page Store Parent Key`=%d  and `Page Store Section`="Family Catalogue"  ',$parent_key);
+
+        break;
+    default:
+
+
+    }
+
+
+    $group='';
+
+    $_elements='';
+    foreach($elements as $_key=>$_value) {
+        if ($_value) {
+            if ($_key=='Other') {
+                $_key="'Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
+                $_elements.=','.$_key;
+
+            } else {
+                $_elements.=','.prepare_mysql($_key);
+            }
+        }
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `Page Store Section` in ('.$_elements.')' ;
+    }
+
+
+
+
+    $wheref='';
+    if ($f_field=='code'  and $f_value!='')
+        $wheref.=" and `Supplier Code` like '".addslashes($f_value)."%'";
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  `Supplier Name` like '".addslashes($f_value)."%'";
+    elseif($f_field=='low' and is_numeric($f_value))
+    $wheref.=" and lowstock>=$f_value  ";
+    elseif($f_field=='outofstock' and is_numeric($f_value))
+    $wheref.=" and outofstock>=$f_value  ";
+
+
+    $sql="select count(*) as total from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
+
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where      ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$row['total']-$total;
+        }
+
+    }
+
+    $rtext=$total_records." ".ngettext('page','pages',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+
+
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with code")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with code')." <b>$f_value</b>*)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with name")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with name')." <b>$f_value</b>*)";
+        break;
+    case('low'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('low stock products');
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('low stock products').")";
+        break;
+    case('outofstock'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('out of stock products');
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('out of stock products').")";
+        break;
+    }
+
+
+    if ($order=='code')
+        $order='`Page Code`';
+    elseif($order=='url')
+    $order='`Page URL`';
+    elseif($order=='title')
+    $order='`Page Store Title`';
+    elseif($order=='location')
+    $order='`Supplier Main Location`';
+    elseif($order=='email')
+    $order='`Supplier Main XHTML Email`';
+
+    elseif($order=='sales') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Sold Amount`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Sold Amount`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Sold Amount`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Sold Amount`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Sold Amount`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Sold Amount`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Sold Amount`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Sold Amount`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Sold Amount`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Sold Amount`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Sold Amount`';
+            break;
+        }
+
+
+
+
+    }
+
+    elseif($order=='pending_pos') {
+        $order='`Supplier Open Purchase Orders`';
+
+    }
+    elseif($order=='margin') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Margin`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Margin`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Margin`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Margin`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Margin`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Margin`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Margin`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Margin`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Margin`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Margin`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Margin`';
+            break;
+        }
+    }
+    elseif($order=='cost') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Cost`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Cost`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Cost`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Cost`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Cost`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Cost`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Cost`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Cost`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Cost`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Cost`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Cost`';
+            break;
+        }
+    }
+
+    elseif($order=='profit_after_storing') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Profit After Storing`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Profit After Storing`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Profit After Storing`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Profit After Storing`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Profit After Storing`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Profit After Storing`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Profit After Storing`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Profit After Storing`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Profit After Storing`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Profit After Storing`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Profit After Storing`';
+            break;
+        }
+    }
+
+    elseif($order=='profit') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Profit`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Profit`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Profit`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Profit`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Profit`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Profit`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Profit`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Profit`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Profit`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Profit`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Profit`';
+            break;
+        }
+    }
+    //print $order;
+//    elseif($order='used_in')
+//        $order='Supplier Product XHTML Sold As';
+
+    $sql="select `Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+  
+  
+
+
+    $result=mysql_query($sql);
+    $data=array();
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+        $code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
+
+/*
+        switch ($period) {
+        case 'three_year':
+            $sales=money($row['Supplier 3 Year Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 3 Year Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 3 Year Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 3 Year Acc Parts Cost']);
+            $margin=percentage($row['Supplier 3 Year Acc Parts Margin'],1);
+            break;
+        case 'year':
+            $sales=money($row['Supplier 1 Year Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 1 Year Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 1 Year Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 1 Year Acc Parts Cost']);
+            $margin=percentage($row['Supplier 1 Year Acc Parts Margin'],1);
+            break;
+        case 'quarter':
+            $sales=money($row['Supplier 1 Quarter Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 1 Quarter Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 1 Quarter Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 1 Quarter Acc Parts Cost']);
+            $margin=percentage($row['Supplier 1 Quarter Acc Parts Margin'],1);
+            break;
+
+        case 'six_month':
+            $sales=money($row['Supplier 6 Month Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 6 Month Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 6 Month Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 6 Month Acc Parts Cost']);
+            $margin=percentage($row['Supplier 6 Month Acc Parts Margin'],1);
+            break;
+        case 'month':
+            $sales=money($row['Supplier 1 Month Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 1 Month Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 1 Month Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 1 Month Acc Parts Cost']);
+            $margin=percentage($row['Supplier 1 Month Acc Parts Margin'],1);
+            break;
+        case 'ten_day':
+            $sales=money($row['Supplier 10 Day Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 10 Day Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 10 Day Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 10 Day Acc Parts Cost']);
+            $margin=percentage($row['Supplier 10 Day Acc Parts Margin'],1);
+            break;
+        case 'week':
+            $sales=money($row['Supplier 1 Week Acc Parts Sold Amount']);
+            $profit=money($row['Supplier 1 Week Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier 1 Week Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier 1 Week Acc Parts Cost']);
+            $margin=percentage($row['Supplier 1 Week Acc Parts Margin'],1);
+            break;
+        case 'yeartoday':
+            $sales=money($row['Supplier Year To Day Acc Parts Sold Amount']);
+            $profit=money($row['Supplier Year To Day Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier Year To Day Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier Year To Day Acc Parts Cost']);
+            $margin=percentage($row['Supplier Year To Day Acc Parts Margin'],1);
+            break;
+        case 'monthtoday':
+            $sales=money($row['Supplier Month To Day Acc Parts Sold Amount']);
+            $profit=money($row['Supplier Month To Day Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier Month To Day Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier Month To Day Acc Parts Cost']);
+            $margin=percentage($row['Supplier Month To Day Acc Parts Margin'],1);
+            break;
+        case 'weektoday':
+            $sales=money($row['Supplier Week To Day Acc Parts Sold Amount']);
+            $profit=money($row['Supplier Week To Day Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier Week To Day Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier Week To Day Acc Parts Cost']);
+            $margin=percentage($row['Supplier Week To Day Acc Parts Margin'],1);
+            break;
+        default:
+            $sales=money($row['Supplier Total Acc Parts Sold Amount']);
+            $profit=money($row['Supplier Total Acc Parts Profit']);
+            $profit_after_storing=money($row['Supplier Total Acc Parts Profit After Storing']);
+            $cost=money($row['Supplier Total Acc Parts Cost']);
+            $margin=percentage($row['Supplier Total Acc Parts Margin'],1);
+            break;
+        }
+*/
+
+switch ($row['Page Store Section']) {
+    case 'Department Catalogue':
+        $type=sprintf("d(<a href='department.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
+        break;
+      case 'Family Catalogue':
+        $type=sprintf("f(<a href='family.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
+        break;    
+    default:
+        $type=_('Other');
+        break;
+}
+
+
+        $data[]=array(
+                    'id'=>$row['Page Key'],
+                    'code'=>$code,
+                    'title'=>$row['Page Store Title'],
+                    'type'=>$type,
+                    'url'=>$row['Page URL'],
+                    
+                    /*
+                    'for_sale'=>number($row['Supplier For Sale Products']),
+                    'low'=>number($row['Supplier Low Availability Products']),
+                    'outofstock'=>number($row['Supplier Out Of Stock Products']),
+                    'location'=>$row['Supplier Main Location'],
+                    'email'=>$row['Supplier Main XHTML Email'],
+                    'tel'=>$row['Supplier Main XHTML Telephone'],
+                    'contact'=>$row['Supplier Main Contact Name'],
+                    'sales'=>$sales,
+                    'profit'=>$profit,
+                    'profit_after_storing'=>$profit_after_storing,
+                    'cost'=>$cost,
+                    'pending_pos'=>number($row['Supplier Open Purchase Orders']),
+                    'margin'=>$margin
+                    
+                    */
+                );
+    }
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data,
+                                      'sort_key'=>$_order,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$start_from+$total,
+                                      'records_perpage'=>$number_results,
+                                      'records_text'=>$rtext,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
 
 ?>

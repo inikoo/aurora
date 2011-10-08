@@ -133,7 +133,6 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 function myrenderEvent(){
-alert("x")
 ostate=this.getState();
 paginator=ostate.pagination
 if(paginator.totalRecords<=paginator.rowsPerPage){
