@@ -41,7 +41,7 @@ if($logged_in){?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
 <input type="hidden" value="<?php echo $site->id?>" id="site_key">
-
+<input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 <?php include('conf/checkout.php');?>
 
 <div id="top_navigator" >
@@ -78,6 +78,7 @@ if($logged_in){?>
 <?php if($logged_in){?>
 <div id="dialog_actions"    class="dialog logged"  >
 <table border=0 style="margin-top:20px;">
+<tr><td><span id="show_user_profile" class="link">User Profile</span></td></tr>
 <tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
 <tr class="button space"><td><button id="hide_actions_dialog" >Close</button></td></tr>
 </table>
