@@ -598,6 +598,10 @@ class Page extends DB_Table {
 
 
         switch ($field) {
+        case('Page Store See Also Type'):
+            $this->update_field('Page Store See Also Type',$value,$options);
+            break;
+
         case('page_code'):
             $this->update_field('Page Code',$value,$options);
             break;
@@ -607,10 +611,10 @@ class Page extends DB_Table {
         case('title'):
             $this->update_field('Page Title',$value,$options);
             break;
-            
-           case('link_title'):
+
+        case('link_title'):
             $this->update_field('Page Short Title',$value,$options);
-            break;    
+            break;
         case('keywords'):
             $this->update_field('Page Keywords',$value,$options);
             break;
@@ -786,91 +790,225 @@ class Page extends DB_Table {
         return $data;
     }
 
-    function found_in_old() {
-       
 
-    switch ($this->data['Page Store Section']) {
-        case 'Family Catalogue':
-       
-       $sql=sprintf("select `Product Family Main Department Key` from  `Product Family Dimension` where `Product Family Key`=%d",
-       $this->data['Page Parent Key']);
-     
-       $res=mysql_query($sql);
-       if($row=mysql_fetch_assoc($res)){
-       $department_key=$row['Product Family Main Department Key'];
-       
-       }else
-          $department_key=0;
-       
-       $sql=sprintf('select `Page URL`,`Page Short Title` from  `Page Store Dimension` PS     left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`)  where `Page Store Section`="Department Catalogue" and PS.`Page Parent Key`=%d',
-       
-       $department_key
-       );
-       
+
+
+    function get_found_in() {
+
+        $found_in=array();
+        $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
+                     $this->id);
+
         $res=mysql_query($sql);
-        if($row=mysql_fetch_assoc($res)){
-         $found_in_label=$row['Page Short Title'];
-        $found_in_url=$row['Page URL'];
-        
-        }else{
-             $found_in_label="x";
-        $found_in_url="x";
-        }
-        
-            break;
-        default:
-             $found_in_label="";
-        $found_in_url="";
-            break;
-    }
 
-
-        return array($found_in_label,$found_in_url);
-
-    }
-    
-    
-     function found_in() {
-       
-       $found_in=array();
-           $sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
-      $this->id);
-
-       $res=mysql_query($sql);
-       
-       while($row=mysql_fetch_assoc($res)){
+        while ($row=mysql_fetch_assoc($res)) {
             $found_in_page=new Page($row['Page Store Found In Key']);
-            if($found_in_page->id){
-            $found_in[]=array(
-            'found_in_label'=>$found_in_page->data['Page Short Title'],
-            'found_in_url'=>$found_in_page->data['Page URL'],
-             'found_in_key'=>$found_in_page->id,
-             'found_in_code'=>$found_in_page->data['Page Code']
-            );
+            if ($found_in_page->id) {
+                $found_in[]=array(
+                                'found_in_label'=>$found_in_page->data['Page Short Title'],
+                                'found_in_url'=>$found_in_page->data['Page URL'],
+                                'found_in_key'=>$found_in_page->id,
+                                'found_in_code'=>$found_in_page->data['Page Code']
+                            );
             }
-       
-       }
-       
-   //    print_r($found_in);
 
-  
-
+        }
         return $found_in;
 
     }
 
 
-function delete(){
-$this->deleted=false;
- $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
-    // print "$sql\n";
-    mysql_query($sql);
-    $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
-    mysql_query($sql);
 
-$this->deleted=true;
+    function get_see_also() {
 
-}
+        $see_also=array();
+        $sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d",
+                     $this->id);
+
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $see_also_page=new Page($row['Page Store See Also Key']);
+            if ($see_also_page->id) {
+
+
+                switch ($row['Correlation Type']) {
+                case 'Manual':
+                    $formated_correlation_type=_('Manual');
+                    $formated_correlation_value='';
+                    break;
+                case 'Sales':
+                    $formated_correlation_type=_('Sales');
+                    $formated_correlation_value=percentage($row['Correlation Value'],1);
+                    break;
+                case 'Semantic':
+                    $formated_correlation_type=_('Semantic');
+                    $formated_correlation_value=number($row['Correlation Value']);
+                    break;
+                default:
+                    $formated_correlation_type=$row['Correlation Type'];
+                    break;
+                }
+
+
+                $see_also[]=array(
+                                'see_also_label'=>$see_also_page->data['Page Short Title'],
+                                'see_also_url'=>$see_also_page->data['Page URL'],
+                                'see_also_key'=>$see_also_page->id,
+                                'see_also_code'=>$see_also_page->data['Page Code'],
+                                'see_also_correlation_type'=>$row['Correlation Type'],
+                                'see_also_correlation_formated'=>$formated_correlation_type,
+                                'see_also_correlation_value'=>$row['Correlation Value'],
+                                'see_also_correlation_formated_value'=>$formated_correlation_value,
+                            );
+            }
+
+        }
+        return $see_also;
+
+    }
+
+
+
+    function delete() {
+        $this->deleted=false;
+        $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
+        // print "$sql\n";
+        mysql_query($sql);
+        $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
+        mysql_query($sql);
+
+        $this->deleted=true;
+
+    }
+
+
+    function update_see_also() {
+
+
+
+
+        if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
+            return;
+
+        $max_links=3;
+        $min_sales_correlation_samples=20;
+        $correlation_upper_limit=1/($min_sales_correlation_samples);
+        $see_also=array();
+        $number_links=0;
+        switch ($this->data['Page Store Section']) {
+        case 'Department Catalogue':
+            break;
+        case 'Family Catalogue':
+
+            $family=new Family($this->data['Page Parent Key']);
+            /*
+            $store_key=$family->data['Product Family Store Key'];
+
+            $sql=sprintf("select avg(`Correlation`) avg_correlation,avg(`Samples`) avg_samples, std(`Correlation`) std_correlation,std(`Samples`) std_samples  from `Product Family Sales Correlation` left join `Product Family Dimension` F on (`Product Family Key`=`Family A Key`) where `Product Family Store Key` and `Samples`>=20",
+                         $this->data['Page Parent Key'],
+                         $store_key
+                        );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+
+                $correlation_upper_limit=$row['avg_correlation']/3;
+
+
+            }
+            */
+            //print "Family: ".$family->data['Product Family Code']."\n";
+
+            $sql=sprintf("select * from `Product Family Sales Correlation` where `Family A Key`=%d order by `Correlation` desc limit 200",
+                         $this->data['Page Parent Key']);
+            $res=mysql_query($sql);
+            // print "$sql\n";
+            while ($row=mysql_fetch_assoc($res)) {
+        //    print_r($row);
+            
+                if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>$correlation_upper_limit) {
+                    $family=new Family($row['Family B Key']);
+                    if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
+
+                        $page_keys=$family->get_pages_keys();
+                       
+                        $see_also_page_key=array_pop($page_keys);
+                        if($see_also_page_key){
+                        $see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+                        $number_links=count($see_also);
+                        if ($number_links>=$max_links)
+                            break;
+                        }    
+                    }
+                }
+
+
+            }
+
+
+
+
+
+
+            if ($number_links<$max_links) {
+                $sql=sprintf("select * from `Product Family Semantic Correlation` where `Family A Key`=%d order by `Weight` limit 100",
+                             $this->data['Page Parent Key'],
+                             $max_links
+                            );
+                $res=mysql_query($sql);
+                // print "$sql\n";
+                while ($row=mysql_fetch_assoc($res)) {
+                    if (!array_key_exists($row['Family B Key'], $see_also)) {
+                        $family=new Family($row['Family B Key']);
+                        if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
+
+                            $page_keys=$family->get_pages_keys();
+                            $see_also_page_key=array_pop($page_keys);
+                             if($see_also_page_key){
+                            $see_also[$see_also_page_key]=array('type'=>'Semantic','value'=>$row['Weight']);
+                            $number_links=count($see_also);
+                            if ($number_links>=$max_links)
+                                break;
+                                }
+                        }
+                    }
+                }
+
+
+            }
+            // if ($number_links==0) {
+            // print_r($see_also);
+            // exit("error\n");
+            // }
+
+
+        //    print_r($see_also);
+
+            break;
+        default:
+
+            break;
+        }
+
+
+        $sql=sprintf("delete from `Page Store See Also Bridge`where `Page Store Key`=%d ",
+                     $this->id);
+        mysql_query($sql);
+
+        foreach($see_also  as $see_also_page_key=>$see_also_data) {
+
+            $sql=sprintf("insert  into `Page Store See Also Bridge` values (%d,%d,%s,%f) ",
+                         $this->id,
+                         $see_also_page_key,
+                         prepare_mysql($see_also_data['type']),
+                         $see_also_data['value']
+                        );
+            mysql_query($sql);
+        //    print "$sql\n";
+        }
+
+    }
+
 
 }
 ?>

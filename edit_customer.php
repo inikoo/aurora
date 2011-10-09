@@ -126,6 +126,10 @@ $smarty->assign('customer',$customer);
 //print_r($customer);
 
 
+
+
+
+
 $other_email=$customer->get_other_emails_data();
 
 $registered_email=array();
@@ -174,6 +178,9 @@ $smarty->assign('unregistered_email',$unregistered_email);
 $smarty->assign('main_email',$main_email);
 
 
+$smarty->assign('unregistered_count',count($unregistered_email));
+
+
 $general_options_list=array();
 
  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
@@ -184,8 +191,26 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
 $smarty->assign('general_options_list',$general_options_list);
-
+$smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
+
+$_login_stat=array();
+
+if($site_customer){
+	
+	foreach($login_stat as $key=>$value){
+
+	if($key=='User Last Login' || $key=='User Last Failed Login'){
+		$value=strftime("%a %e %b %y %H:%M", strtotime($value." +00:00"));
+	}
+
+	$_login_stat[preg_replace('/\s/','',$key)]=$value;
+	}
+}
+
+$smarty->assign('login_stat',$_login_stat);
+
+
 $smarty->assign('site_customer',$site_customer);
 $smarty->assign('customer_type',$customer->data['Customer Type']);
 $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
@@ -259,6 +284,8 @@ $js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 //$delivery_addresses=$customer->get_address_objects();
+
+
 $categories_value=array();
 $categories=array();
 $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$customer->data['Customer Store Key']);
@@ -283,35 +310,6 @@ $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);
 
 
-
-/*
-
-$nodes=new nodes('`Category Dimension`');
-$nodes->sql_condition = "AND `Category Subject`='Customer' AND `Category Store Key`=".$customer->data['Customer Store Key'] ;
-$nodes->load_comb();
-$comb=$nodes->comb;
-//print_r($comb);
-
-$sql=sprintf("select PCB.`Category Key`,`Category Position` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Customer'    " ,
-$customer->id);
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
-  $parents=preg_replace('/\d+>$/','',$row['Category Position']);
-  $root=preg_replace('/>.*$/','',$row['Category Position']);
-  // print "$root $parents ".$row['Category Key']."\n";
-  $comb[$root]['teeth'][$parents]['elements'][$row['Category Key']]['selected']=true;
-
-
-
-}
-mysql_free_result($res);
-
-
-
-
-$smarty->assign('categories',$comb);
-$smarty->assign('number_categories',count($comb));
-*/
 
 
 
@@ -411,6 +409,11 @@ if($row=mysql_fetch_array($res)){
 //print_r($show_case);
 $smarty->assign('show_case',$show_case);	
 
+$sql=sprintf("select `User Key` from `User Dimension` where `User Parent Key`=%d", $customer->id);
+//print $sql;
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result))
+	$smarty->assign('user_main_id',$row['User Key']);	
 
 $smarty->display('edit_customer.tpl');
 exit();

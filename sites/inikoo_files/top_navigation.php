@@ -7,7 +7,10 @@ if($path=="../../"){
 }elseif($path=="../"){
 	$path_id=1;
 	  $path_menu='../forms/';
-}	
+}elseif($path=="../sites/"){
+	$path_id=3;
+	  $path_menu='../sites/forms/';
+}		
 	
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />
@@ -38,7 +41,7 @@ if($logged_in){?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
 <input type="hidden" value="<?php echo $site->id?>" id="site_key">
-
+<input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 <?php include('conf/checkout.php');?>
 
 <div id="top_navigator" >
@@ -75,6 +78,7 @@ if($logged_in){?>
 <?php if($logged_in){?>
 <div id="dialog_actions"    class="dialog logged"  >
 <table border=0 style="margin-top:20px;">
+<tr><td><span id="show_user_profile" class="link">User Profile</span></td></tr>
 <tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
 <tr class="button space"><td><button id="hide_actions_dialog" >Close</button></td></tr>
 </table>
@@ -184,7 +188,7 @@ Your password has been changed.
 
 </table>
 </div>
-<div id="dialog_register"    class="dialog"    style="">
+<div id="dialog_register"    class="dialog"    style="z-index:20000; position:relative;">
 <h2>Registration</h2>
 <table>
 <tr><td class="label">Email: </td><td><input id="register_email"></td></tr>
@@ -193,7 +197,7 @@ Your password has been changed.
 
 </table>
 </div>
-<div id="dialog_register_part_2"    class="dialog"  style="xdisplay:block; z-index:1; position:relative;"  >
+<div id="dialog_register_part_2"    class="dialog"  style="position:relative; z-index:20000;"  >
 <input id="epw2" value="" type="hidden"/>
 <h2>Registration</h2>
 <table border=0 style="margin:0 auto;">

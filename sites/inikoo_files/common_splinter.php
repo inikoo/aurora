@@ -21,6 +21,13 @@ require_once "class.LightCustomer.php";
 require_once "class.LightProduct.php";
 require_once "class.LightFamily.php";
 
+require('external_libs/Smarty/Smarty.class.php');
+$smarty = new Smarty();
+$smarty->template_dir = 'templates';
+$smarty->compile_dir = 'server_files/smarty/templates_c';
+$smarty->cache_dir = 'server_files/smarty/cache';
+$smarty->config_dir = 'server_files/smarty/configs';
+
 
 $user_log_key=0;
 $found_in=array();
@@ -392,6 +399,7 @@ function show_products($code,$options=false) {
                 $price=$val['Product Price'];
         }
         */
+		
         $product=new LightFamily($family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
@@ -446,8 +454,10 @@ function set_parameters($data=false) {
 
 	if (!isset($data['type']))
         $path="../../";
-    else
+    elseif($data['type']=='parent')
         $path="../";
+	elseif($data['type']=='index')
+		$path="../sites/";
 
     if (!isset($data['family']))
         $family_code='';

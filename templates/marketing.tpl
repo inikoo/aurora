@@ -3,7 +3,9 @@
 <div style="padding:0 20px">
 
 {include file='marketing_navigation.tpl'}
-
+<div> 
+  <span class="branch">{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} {$store->get('Store Code')} {t}Marketing{/t}</span>
+</div>
 
 
 

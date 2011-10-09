@@ -497,6 +497,7 @@ function edit_staff_user() {
 }
 
 function change_user_passwd() {
+//print_r($_REQUEST);
 
 	$id=$_REQUEST['user_id'];
 
@@ -506,13 +507,13 @@ function change_user_passwd() {
 		$value=$_REQUEST['value'];
 	else{
 		$_key=md5($user->id.'insecure_key'.$_REQUEST['ep2']);
-		$value=AESDecryptCtr($_REQUEST['ep1'], $_key ,256);
+		//$value=AESDecryptCtr($_REQUEST['ep1'], $_key ,256);
+		$value=$_REQUEST['ep1'];
 	}
-	
     if ($user->id) {
         $user->change_password($value);
         if (!$user->error)
-            $response=array('state'=>200);
+            $response=array('state'=>200,'result'=>'ok');
         else
             $response=array('state'=>400,'msg'=>$user->msg);
 
@@ -1174,6 +1175,12 @@ function create_user($data){
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 
+			$data=array('email_type'=>'Registration',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user->id);
+			$send_email=new SendEmail($data);
+			$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
+			
 			$data=array(
                 
                   'subject'=>$welcome_email_subject,
@@ -1185,7 +1192,7 @@ function create_user($data){
               );
 
 			if($send_email){
-			$send_email=new SendEmail();
+			//$send_email=new SendEmail();
 			$send_email->smtp('HTML', $data);
 			$result=$send_email->send();
 			}
@@ -1278,6 +1285,14 @@ function forgot_password($data){
                       Thank you";
 
 $files=array();	
+		$data=array('email_type'=>'Password Reminder',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user_key);
+				  
+		$send_email=new SendEmail($data);
+		
+		$html_message=$send_email->track_sent_email($html_message);
+		
         $to=$login_handle;
         $data=array(
 				  'type'=>'HTML',
@@ -1294,7 +1309,7 @@ $files=array();
 		else
 			$data['plain']=null;
 			
-        $send_email=new SendEmail();
+        //$send_email=new SendEmail();
         $send_email->smtp('plain', $data);
         $result=$send_email->send();
 

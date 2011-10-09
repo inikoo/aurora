@@ -15,7 +15,7 @@ var dialog_add_email_address_from_list;
 var validate_scope_data;
 var validate_scope_metadata;
 var dialog_preview_text_email;
-
+var dialog_send_email_campaign;
 
 function select_department(oArgs){
     var product_ordered_or=Dom.get('email_campaign_scope').value;
@@ -621,6 +621,11 @@ var request='ar_edit_marketing.php?tipo=select_html_email_campaign&email_campaig
 function send_email_campaign(){
 
 validate_scope('email_campaign');
+
+dialog_send_email_campaign.show();
+
+
+
 }
 
 function delete_email_campaign(){
@@ -649,7 +654,67 @@ reset_edit_general('email_campaign');
 
 }
 
+function send_now(){
+start_send(0)
+}
+
+function choose_time(){
+
+Dom.setStyle('dialog_send_email_campaign_choose_when1','display','none');
+Dom.setStyle('other_time_form','display','');
+
+}
+
+function send_other_time(){
+user_input=Dom.get('end_email_campaign_datetime').value;
+lag_seconds=Date.create(user_input).secondsFromNow();
+
+if(isNaN(lag_seconds)){
+	lag_seconds='Not Identified';
+	Dom.get('time_tag').innerHTML=lag_seconds
+	Dom.setStyle('time_tag','display','');
+}
+else{
+	display_date=Date.create(user_input).format(Date.RFC1123);
+	Dom.get('time_tag').innerHTML=display_date;
+	//Dom.setStyle('time_tag','display','none');
+	start_send(lag_seconds);
+}
+//alert(lag_seconds);return;
+
+
+}
+
+
+function start_send(lap_seconds){
+var email_campaign_key=Dom.get('email_campaign_key').value;
+
+var request='ar_edit_marketing.php?tipo=set_email_campaign_as_ready&email_campaign_key='+email_campaign_key+'&start_sending_in='+lap_seconds;
+alert(request);
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+//alert("email_campaign.php?id="+Dom.get('email_campaign_key').value);return;
+            location.href="email_campaign.php?id="+Dom.get('email_campaign_key').value;
+		}else{
+		alert(r.msg)
+		    //if(r.msg!=undefined)
+		     //   Dom.get('add_email_address_from_customer_list_msg').innerHTML='<span class="error">'+r.msg+'</span>';
+	      
+	    }
+	    }
+	    });
+
+}
+
+
+
 function save_edit_email_campaign(){
+
+EmailHTMLEditor.saveHTML();
+
 save_edit_general('email_campaign');
 }
 
@@ -734,6 +799,9 @@ function get_preview( index ) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
              
+                 
+           Dom.setStyle(['tr_preview_plain_body','tr_preview_html_body','tr_preview_template_body'],'display','none') 
+    
            
              Dom.get('preview_index').value=r.index;
              Dom.get('preview_formated_index').innerHTML=r.formated_index;
@@ -742,13 +810,15 @@ function get_preview( index ) {
              
              if(r.type=='Plain'){
                 Dom.setStyle('tr_preview_plain_body','display','')
-                 Dom.setStyle('tr_preview_html_body','display','none')
-                              Dom.get('preview_plain_body').innerHTML=r.plain;
+                Dom.get('preview_plain_body').innerHTML=r.plain;
+
+             }if(r.type=='HTML'){
+                Dom.setStyle('tr_preview_plain_body','display','')
+                              Dom.get('preview_plain_body').innerHTML=r.html;
 
              }else{
-              Dom.setStyle('tr_preview_plain_body','display','none')
-                 Dom.setStyle('tr_preview_html_body','display','')
-                          Dom.get('preview_html_body').src=r.html_src;
+              Dom.setStyle('tr_preview_template_body','display','')
+            Dom.get('preview_html_body').src=r.html_src;
               
              }
           
@@ -762,9 +832,17 @@ function get_preview( index ) {
 	
 }
 
+function html_editor_changed(){
+
+validate_scope_data['email_campaign']['content_html_text']['changed']=true;
+validate_scope('email_campaign');
+}
 
 
 function init(){
+
+  init_search('marketing_store');
+
 //changeHeight(Dom.get('template_email_iframe'))
 //resizeFrame()
 
@@ -821,7 +899,16 @@ function init(){
 	            'name':'email_campaign_content_text',
 	            'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_contents').innerHTML}]
 	            },               
-	            
+	         'content_html_text':{
+	            'dbname':'Email Campaign Content HTML',
+	            'changed':false,
+	            'validated':true,
+	            'required':false,
+	            'group':1,
+	            'type':'item',
+	            'name':'html_email_editor',
+	            'validation':false
+	            },            
 	            
 	   	 //           'validation':[{'regexp':"^(((d|f|c)\\()?[a-z0-9\\-\\)]+,?)+$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
          
@@ -871,11 +958,7 @@ function init(){
   
   
   }
-
-
-
-
- validate_scope_metadata={
+validate_scope_metadata={
 'email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value,'dynamic_second_key':'current_email_contact_key','second_key_name':'email_content_key'}
 ,'add_email_address_manually':{'type':'new','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
 ,'full_email_campaign':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'email_campaign_key','key':Dom.get('email_campaign_key').value}
@@ -898,6 +981,13 @@ function init(){
     dialog_preview_text_email.render();
     Event.addListener("preview_email_campaign", "click", preview_email_campaign);
 
+
+
+  
+   dialog_send_email_campaign = new YAHOO.widget.Dialog("dialog_send_email_campaign", {context:["send_email_campaign","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_send_email_campaign.render();
+    Event.addListener("preview_email_campaign", "click", preview_email_campaign);
+  
   
     var email_campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_name);
     email_campaign_name_oACDS.queryMatchContains = true;
@@ -976,10 +1066,11 @@ function init(){
     };
     
     var state = 'off';
-       var EmailHTMLEditor = new YAHOO.widget.Editor('html_email_editor', myConfig);
     
     
-        EmailHTMLEditor.on('toolbarLoaded', function() {
+    
+        EmailHTMLEditor = new YAHOO.widget.Editor('html_email_editor', myConfig);
+    EmailHTMLEditor.on('toolbarLoaded', function() {
     
         var codeConfig = {
             type: 'push', label: 'Edit HTML Code', value: 'editcode'
@@ -1025,6 +1116,13 @@ function init(){
             this.get('element').value = ev.html;
         }, this, true);
         
+        
+        
+        this.on('editorKeyUp', html_editor_changed, this, true);
+                this.on('editorDoubleClick', html_editor_changed, this, true);
+                this.on('editorMouseDown', html_editor_changed, this, true);
+                this.on('buttonClick', html_editor_changed, this, true);
+
         this.on('afterRender', function() {
             var wrapper = this.get('editor_wrapper');
             wrapper.appendChild(this.get('element'));
@@ -1039,9 +1137,7 @@ function init(){
         }, this, true);
     }, EmailHTMLEditor, true);
     EmailHTMLEditor.render();
-    
-    
-    
+ 
     
       Event.addListener("previous_preview", "click", previous_preview);
       Event.addListener("next_preview", "click", next_preview);

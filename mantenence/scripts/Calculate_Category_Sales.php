@@ -30,6 +30,11 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
+$category=new Category(201);
+
+$category->update_up_today();
+
+exit;
 
 /* $sql="select * from `Product Dimension` where `Product Store Key`=1"; */
 /* $result=mysql_query($sql); */

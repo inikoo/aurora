@@ -7,7 +7,24 @@
  Version 2.0
 */
 
-include_once('common.php');
+//exit;
+require_once 'app_files/db/dns.php';
+
+
+$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+if (!$default_DB_link) {
+    print "Error can not connect with database server\n";
+}
+$db_selected=mysql_select_db($dns_db, $default_DB_link);
+if (!$db_selected) {
+    print "Error can not access the database\n";
+    exit;
+}
+mysql_query("SET NAMES 'utf8'");
+require_once 'conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+mysql_query("SET time_zone='+0:00'");
+
 
 if(!isset($_GET['sendkey'])){
 
@@ -15,10 +32,16 @@ if(!isset($_GET['sendkey'])){
 	exit;
 }
 
+//print $_GET['sendkey'];
+
 $sendkey = trim($_GET['sendkey']);
-$s="SELECT `Email Send Type Key` , `Email Key`, `Email Send First Read Date`, `Email Send Last Read Date`, `Email Send Number Reads` FROM `Email Send Dimension` WHERE `Email Send Key` = '$sendkey'";
-$q = mysql_query($s);
-$r = mysql_fetch_assoc($q);
+$sql="SELECT `Email Send Type Key` , `Email Key`, `Email Send First Read Date`, `Email Send Last Read Date`, `Email Send Number Reads` FROM `Email Send Dimension` WHERE `Email Send Key` = '$sendkey'";
+
+$result=mysql_query($sql);
+
+
+$r = mysql_fetch_array($result);
+//print_r($r);
 $email_key=$r['Email Key'];
 $first_date=$r['Email Send First Read Date'];
 $last_date=$r['Email Send Last Read Date'];
@@ -27,16 +50,20 @@ $campaign_key = $r['Email Send Type Key'];
 
 if($first_date == NULL){
 
-	$update_sql = "UPDATE `Email Send Dimension` SET `Email Send First Read Date` = NOW(), `Email Send Last Read Date` = NOW(), `Email Send Number Reads` = '1' WHERE `Email Key` ='$sendkey' AND `Email Send First Read Date` IS NULL AND `Email Send Last Read Date` IS NULL AND `Email Send Number Reads` IS NULL";
+	$update_sql = "UPDATE `Email Send Dimension` SET `Email Send First Read Date` = NOW(), `Email Send Last Read Date` = NOW(), `Email Send Number Reads` = '1' WHERE `Email Send Key` ='$sendkey' AND `Email Send First Read Date` IS NULL AND `Email Send Last Read Date` IS NULL AND `Email Send Number Reads` IS NULL";
 
-	$update_master_sql = "UPDATE `Email Campaign Dimension` SET `Number of Read Emails` = `Number of Read Emails`+1 WHERE `Email Campaign Key` = '$campaign_key'";
+	print $update_sql;
+	
+	
+	//$update_master_sql = "UPDATE `Email Campaign Dimension` SET `Number of Read Emails` = `Number of Read Emails`+1 WHERE `Email Campaign Key` = '$campaign_key'";
 	//echo $update_master_sql;
 	$update_query=mysql_query($update_sql);
-	$update_query2=mysql_query($update_master_sql);
+	//$update_query2=mysql_query($update_master_sql);
 	}else{
 	$update_sql = "UPDATE `Email Send Dimension` SET `Email Send Last Read Date` = NOW(), `Email Send Number Reads` = `Email Send Number Reads`+1 WHERE `Email Key` ='$sendkey' AND `Email Send First Read Date` IS NOT NULL AND `Email Send Last Read Date` IS NOT NULL AND `Email Send Number Reads` IS NOT NULL";
 
 	$update_query=mysql_query($update_sql);
 
-}
+	}
+
 ?>

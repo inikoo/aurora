@@ -2,6 +2,7 @@
 <div id="bd" >
  {include file='contacts_navigation.tpl'}
 <input type="hidden" value="{$customer->id}" id="customer_key"/>
+<input type="hidden" value="{$registered_email}" id="registered_email"/>
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1><span style="color:SteelBlue">{$id}</span>, <span id="title_name">{$customer->get('Customer Name')}</span></h1>
@@ -34,14 +35,12 @@
     <tr class="title"><td colspan=5>{t}Reset Password{/t}</td></tr>
 
    <tr>
-   <td style="width:400px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
-   <td style="width:200px">
-   <div>
-       <input type="button" class="button" id="forget_password_main" value="Send"/>
-	   
-   </div>
+   <td style="width:300px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
+   <td style="width:300px">
+
+   <span   style="cursor:pointer" onClick="forget_password(this, '{$customer->get('Customer Main Plain Email')}')">{t}Send an Email to Reset password{/t}</span>
    </td>
-   <td><span id="set_password_main">Set Password</span></td>
+   <td><span  style="cursor:pointer"  onClick="show_change_password_dialog(this, {$user_main_id})"  >Set Password</span></td>
    <td>
 	<span id="password_msg" style="display:"></span></td>
 	
@@ -51,11 +50,11 @@
 	{foreach from=$registered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}Send an Email: ({$email.email}){/t}</td>
-   <td style="width:200px">
-   <div>
-       <input type="button" class="button" id="forget_password_{$key}" value="Send"/>
-   </div></td>
-   <td><span id="set_password_{$key}">Set Password</span></td>
+   <td style="width:300px">
+
+   <span   style="cursor:pointer" onClick="forget_password(this, '{$email.email}')"  email={$email.email} >{t}Send an Email to Reset password{/t}</span>
+   </td>
+   <td><span   style="cursor:pointer" user_key={$email.user_key} onClick="show_change_password_dialog(this,{$email.user_key})" >{t}Set Password{/t}</span></td>
    </tr>
    <tr><td><span id="password_msg_{$key}" style="display:"></span></td></tr>
    {/foreach}
@@ -63,21 +62,22 @@
 
    
    
-   
-   <tr class="title"><td colspan=5>{t}Register Email{/t}</td></tr>
+   {if $unregistered_count>0}
+   <tr class="title"><td colspan=5>{t}Unregistered Emails{/t}</td></tr>
 
    	{foreach from=$unregistered_email item=email key=key name=foo  }
 	   <tr>
    <td style="width:200px">{t}{$email.email}{/t}</td>
    <td style="width:200px">
    <div>
-       <input type="button" class="button" onclick="register_email(this)" email={$email.email} value="Register"/>
+       <input type="button" class="button" onclick="register_email(this)" email={$email.email} value="Register in Website"/>
    </div></td>
+   <td><span id="register_msg" style="display:"></span></td>
    </tr>
    
    {/foreach}
    
-   
+   {/if}
    
    </table>
  </div>
@@ -184,6 +184,7 @@
 </table>
 </div>
 <div  class="edit_block" style="{if $edit!="categories"}display:none{/if};min-height:260px"  id="d_categories">
+
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
  
@@ -204,9 +205,8 @@
  </td>   
 </tr>
 {/foreach}
-
-
 </table>
+
 </div>
 <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if};min-height:260px"  id="d_delivery">
  {include file='edit_delivery_address_splinter.tpl'}
@@ -329,7 +329,7 @@
 
 
  
- <tr class=""><td style="" class="label"><img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+ <tr class=""><td style="" class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}xxx{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
@@ -345,7 +345,7 @@
 
 
  {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
-  <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:<span></td>
+  <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label">{if $other_email_login_handle[$other_email.email] == $other_email.email}xxx{/if}<img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
@@ -811,11 +811,33 @@ Change Password
 </table>
 </div>
  
-{foreach from=$registered_email item=email key=key name=foo  } 
-<div id="dialog_set_password_{$key}">
-password
+
+<div id="dialog_set_password_">
+Change Password
+
+<table border=0 id="change_password_form_" >
+
+
+<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1_"></td></tr>
+<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1_"></td></tr>
+<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2_"></td></tr>
+
+<input id="user_key_in_change_password_form" value="" type="hidden"/>
+
+
+
+<tr  id="tr_change_password_buttons_"  class="button space" >
+<td colspan=2><span style="display:none" id="change_password_error_no_password_">Write new password</span><span style="display:none" id="change_password_error_password_not_march_">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short_">Password is too short</span><span>
+</span><button id="submit_change_password_" user={$email.user_key}>Change Password</button> 
+</td></tr>
+<tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
+
+
+
+
+</table>
 </div>
 
- {/foreach}
+
 
 {include file='footer.tpl'}

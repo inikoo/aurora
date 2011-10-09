@@ -3,11 +3,13 @@ if($_REQUEST['path']==1)
 	$_path="../";
 elseif($_REQUEST['path']==2)
 	$_path="../../";
-
+elseif($_REQUEST['path']=='3')
+	$_path="../sites/";
 ?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var path='<?php echo $_path ?>';
+var dir_pos='<?php echo $_REQUEST["path"]?>';
 
 function change_password(){
 
@@ -99,6 +101,18 @@ Dom.get('change_password_password1').focus();
 
 }
 
+function show_user_profile(){
+	var customer_key=Dom.get('customer_key').value;
+	var store_key=Dom.get('store_key').value;
+	var site_key=Dom.get('site_key').value;
+
+
+
+     var request=path+'inikoo_files/customer.php?id='+customer_key;
+	window.location =request;
+
+}
+
 function show_actions_dialog(){
 hide_dialogs()
 Dom.setStyle('dialog_actions','display','block')
@@ -184,6 +198,7 @@ Event.addListener("logout", "click",logout);
 
 Event.addListener("hide_actions_dialog", "click",hide_actions_dialog);
 Event.addListener("show_change_password_dialog", "click",show_change_password_dialog);
+Event.addListener("show_user_profile", "click",show_user_profile);
 Event.addListener("show_actions_dialog", "click",show_actions_dialog);
 
 

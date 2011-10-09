@@ -733,7 +733,7 @@ var request='tipo=new_department_page&department_key='+department_id+'&site_key=
 						'POST',
 						'ar_edit_sites.php', {
 						    success:function(o) {
-						    alert(o.responseText)
+						    //alert(o.responseText)
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 

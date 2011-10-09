@@ -321,20 +321,17 @@ function set_order_shipping() {
 
 
             $updated_data=array(
-                              'order_items_gross'=>$order->get('Items Gross Amount')
-                                                  ,'order_items_discount'=>$order->get('Items Discount Amount')
-                                                                          ,'order_items_net'=>$order->get('Items Net Amount')
-                                                                                             ,'order_net'=>$order->get('Total Net Amount')
-                                                                                                          ,'order_tax'=>$order->get('Total Tax Amount')
-                                                                                                                       ,'order_charges'=>$order->get('Charges Net Amount')
-                                                                                                                                        ,'order_credits'=>$order->get('Net Credited Amount')
-                                                                                                                                                         ,'order_shipping'=>$order->get('Shipping Net Amount')
-                                                                                                                                                                           ,'order_total'=>$order->get('Total Amount')
+                              'order_items_gross'=>$order->get('Items Gross Amount'),
+                              'order_items_discount'=>$order->get('Items Discount Amount'),
+                              'order_items_net'=>$order->get('Items Net Amount'),
+                              'order_net'=>$order->get('Total Net Amount'),
+                              'order_tax'=>$order->get('Total Tax Amount'),
+                              'order_charges'=>$order->get('Charges Net Amount'),
+                              'order_credits'=>$order->get('Net Credited Amount'),
+                              'order_shipping'=>$order->get('Shipping Net Amount'),
+                              'order_total'=>$order->get('Total Amount')
 
                           );
-
-
-
             $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping'=>money($order->new_value));
 
 
@@ -755,10 +752,10 @@ function transactions_to_process() {
         else
             $stock='?';
         $type=$row['Product Record Type'];
-        
+
         if ($row['Product Stage']=='In Process')
             $type.='<span style="color:red">*</span>';
-            
+
         switch ($row['Product Web Configuration']) {
         case('Online Force Out of Stock'):
             $web_state=_('Out of Stock');
@@ -1234,10 +1231,11 @@ function ready_to_pick_orders() {
     $_dir=$order_direction;
 
 
-    if ($order=='id')
-        $order='`Delivery Note File As`';
-    else if ($order=='customer')
+
+    if ($order=='customer')
         $order='`Delivery Note Customer Name`';
+    else if ($order=='public_id')
+        $order='`Delivery Note File As`';
     else if ($order=='status')
         $order='`Delivery Note State`';
     else
@@ -1252,7 +1250,7 @@ function ready_to_pick_orders() {
     $data=array();
 
     $res = mysql_query($sql);
-	//print $sql;
+    //print $sql;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         //  if($row['Order Last Updated Date']=='')
@@ -1309,13 +1307,13 @@ function ready_to_pick_orders() {
             $status=$row['Delivery Note State'];
             $public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
             $public_id=$row['Delivery Note ID'];
-			$public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+            $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
         }
         $operations.='</div>';
 
         //$packer='';
 
-		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
+        $see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
         $data[]=array(
                     'id'=>$row['Delivery Note Key'],
                     'public_id'=>$public_id,
@@ -1325,7 +1323,7 @@ function ready_to_pick_orders() {
                     'date'=>$row['Delivery Note Date Created'],
                     'operations'=>$operations,
                     'status'=>$status,
-					'see_link'=>$see_link
+                    'see_link'=>$see_link
                 );
     }
     mysql_free_result($res);
@@ -1549,7 +1547,7 @@ function assign_picker_temp($data) {
 
 
     }
-   // echo json_encode($response);
+    // echo json_encode($response);
 
 }
 
@@ -1561,8 +1559,8 @@ function picking_aid_sheet() {
         return;
     }
 
-	$data=array('dn_key'=>$order_id, 'staff_key'=>1);
-	assign_picker_temp($data);
+    $data=array('dn_key'=>$order_id, 'staff_key'=>1);
+    assign_picker_temp($data);
 
 
     $where=sprintf(' where `Delivery Note Key`=%d',$order_id);
@@ -1572,8 +1570,8 @@ function picking_aid_sheet() {
     $total_picks=0;
 
     $data=array();
-    $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
-    // print $sql;
+    $sql="select  `Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  ";
+    //   print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 //print_r($row);
@@ -1609,7 +1607,7 @@ function picking_aid_sheet() {
                     'description'=>$row['Part XHTML Description'],
                     'used_in'=>$row['Part XHTML Currently Used In'],
                     'quantity'=>number($row['Required']),
-                    'location'=>$row['Part XHTML Picking Location'],
+                    'location'=>$row['Location Code'],
                     'check_mark'=>'&#x2713;',
                     'add'=>'+',
                     'remove'=>'-',
@@ -1617,6 +1615,7 @@ function picking_aid_sheet() {
                     'todo'=>$todo,
                     'formated_todo'=>$formated_todo,
                     'notes'=>$notes,
+                    'picking_notes'=>$row['Picking Note'],
                     'required'=>$row['Required'],
                     'picked'=>$row['Picked'],
                     'out_of_stock'=>$row['Out of Stock'],

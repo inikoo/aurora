@@ -3667,7 +3667,21 @@ class Customer extends DB_Table {
 
     }
 
+	function get_other_email_login_handle(){
+		$other_login_handle_emails=array();
+		foreach($this->get_other_emails_data() as $email){
+			$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
 
+			$result=mysql_query($sql);
+			
+			if($row=mysql_fetch_array($result)){
+				$other_login_handle_emails[$email['email']]=$email['email'];
+			}
+		}
+		
+		return $other_login_handle_emails;
+	}
+	
     function get_email_keys() {
         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
                      ,$this->id );
@@ -5025,7 +5039,7 @@ class Customer extends DB_Table {
         $telecom_suppliers_number_keys=count($telecom_suppliers_keys);
         $telecom_companies_number_keys=count($telecom_companies_keys);
         $telecom->remove_from_parent('Customer',$this->id,$type);
-        if ($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys>0) {
+        if (($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys)==0) {
 
 
             if ($this->data['Customer Type']=='Company') {
@@ -5439,6 +5453,13 @@ class Customer extends DB_Table {
 
     }
 
+	function update_subscription($customer_id, $type){
+		if(!isset($customer_id) || !isset($type)){
+			return;
+		}
+		
+		
+	}
 
 }
 ?>

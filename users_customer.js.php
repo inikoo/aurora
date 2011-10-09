@@ -137,11 +137,12 @@ var active=function(el, oRecord, oColumn, oData){
 	    var ColumnDefs = [
 			
 			
-			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
-				 ,{key:"name", label:"<?php echo _('Customer Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      {key:"isactive",label:"<?php echo _('Active')?>" ,hidden:true,className:'aright',width:45  }
 			     ,{key:"alias", label:"<?php echo _('Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                 ,{key:"login", label:"<?php echo _('Last Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 ,{key:"count", label:"<?php echo _('Number of Logins')?>",width:130,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+               				 ,{key:"name", label:"<?php echo _('Customer')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+               ,{key:"login", label:"<?php echo _('Last Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 ,{key:"count", label:"<?php echo _('Logins')?>",width:130,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 //,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 //,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 

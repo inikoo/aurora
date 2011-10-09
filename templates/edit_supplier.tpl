@@ -1,7 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='suppliers_navigation.tpl'}
-
+<div> 
+  <span   class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
+</div>
 
 
 
@@ -13,9 +15,9 @@
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Supplier Details{/t}</span></span></li>
 
-    <li> <span class="item {if $edit=='company'}selected{/if}"  id="company">  <span> {t}Company Details{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $edit=='company'}selected{/if}"  id="company">  <span> {t}Company Details{/t}</span></span></li>
     <li> <span class="item {if $edit=='products'}selected{/if}"  id="products">  <span> {t}Supplier Products{/t}</span></span></li>
-   
+       <li> <span class="item {if $edit=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
   </ul>
 
  <div class="tabbed_container" > 
@@ -26,7 +28,7 @@
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_supplier" onClick="reset_edit_general('supplier')" class="state_details">{t}Reset{/t}</span>
       </div>
   
-   <table class="edit" border=1 style="clear:both">
+   <table class="edit" border=0 style="clear:both">
 	<tr class="first"><td style="width:11em" class="label">Supplier Code:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
@@ -98,11 +100,11 @@
  
      </table>
     
-    <div id="supplier_contact_address" style="float:left;width:400px;margin-right:40px;min-height:300px;margin-top:30px">
+    <div id="supplier_contact_address" style="float:left;width:500px;margin-right:40px;min-height:300px;margin-top:30px">
      <div style="border-bottom:1px solid #777;margin-bottom:7px">
        {t}Contact Address{/t}:
      </div>
-     <table border=0>
+     <table border=0 style="width:500px">
        {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  }
      </table>
      <div style="display:none" id='contact_current_address' ></div>
@@ -136,15 +138,18 @@
    </div>
 
   <div  class="edit_block" style="{if $edit!="products"}display:none{/if}"  id="d_products">
-   
-  <div class="data_table" style="clear:both">
-  
-  <div class="general_options" style="float:right">
+
+     <div class="general_options" style="float:right; text-align:right; ">
+	 <span  style="margin-right:10px;"  id="show_new_product_dialog_button" onClick="show_new_product_dialog()" class="state_details">{t}Create New Product{/t}</span>
+	    <span  style="margin-right:10px;"  id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span>
 		<span  style="margin-right:10px;visibility:hidden"  id="save_new_product" onClick="save_new_general('product')" class="state_details">{t}Save New Product{/t}</span>
   	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_product" onClick="cancel_new_general('product')" class="state_details">{t}Cancel New Product{/t}</span>
-	    <span  style="margin-right:10px;"  id="show_new_product_dialog_button" onClick="show_new_product_dialog()" class="state_details">{t}Create New Product{/t}</span>
-	    <span  style="margin-right:10px;"  id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span>
+	   
 </div>
+
+  <div class="data_table" style="clear:both">
+  
+
   
   
   
@@ -234,11 +239,35 @@
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable" style="font-size:85%"> </div>
    </div>
    </div>
 </div>
-
+ <div  class="edit_block" style="{if $edit!="categories"}display:none{/if}"  id="d_categories">
+ 
+ <table class="edit">
+ <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
+ 
+ {foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
+ <td>
+  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+        {if $smarty.foreach.foo2.first}
+        <option {if $categories_value[$cat_key]=='' }selected="selected"{/if} value="">{t}Unknown{/t}</option>
+        {/if}
+        <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+    {/foreach}
+  </select>
+  
+ </td>   
+</tr>
+{/foreach}
+ </table>
+ 
+ </div>
 </div>
 <div id="the_table1" class="data_table" style="">
   <span class="clean_table_title">{t}History{/t}</span>

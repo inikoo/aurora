@@ -3,6 +3,8 @@ include_once('common.php');
 include_once('class.CurrencyExchange.php');
 
 include_once('class.Order.php');
+include_once('class.PartLocation.php');
+
 if(!$user->can_view('orders')){
   header('Location: index.php');
    exit;
@@ -22,7 +24,25 @@ if(!$dn->id){
    exit;
 
 }
+
+
+
+if(isset($_REQUEST['refresh'])){
+$dn->actualize_inventory_transaction_facts();
+}
+
 $dn->update_picking_percentage();
+
+
+
+$warehouse= new Warehouse($dn->data['Delivery Note Warehouse Key']);
+$smarty->assign('warehouse',$warehouse);
+
+
+
+
+
+
 
 //$dn->start_packing(1);
 

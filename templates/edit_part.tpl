@@ -117,7 +117,7 @@
 
 
 
-<table class="edit"  style="width:800px">
+<table class="edit"  style="width:890px">
  <tr class="title"><td colspan=5>{t}Unit{/t}</td>
  <td>
  <div class="general_options" style="float:right">
@@ -130,17 +130,16 @@
 
 <tr><td style="width:120px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
-
-<select>
+<input type="hidden"  id="Part_Unit_Type"  value="{$unit_type}" ovalue="{$unit_type}"/>
+<select id="Part_Unit_Type_Select" onChange="part_unit_change(this)">
 {foreach from=$unit_type_options key=value item=label}
-   <option id="Part_Units_Type" label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
+   <option   label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
 
 {/foreach}
 </select>
- <div id="Part_Units_Type_Container" style="" ></div>
 
    </td>
-   <td id="Part_Units_Type_msg" class="edit_td_alert"></td>
+   <td id="Part_Unit_Type_msg" class="edit_td_alert"></td>
  </tr>
 
 <tr class="first"><td style="" class="label">{t}Unit Description{/t}:</td>
@@ -162,9 +161,6 @@
    </td>
    <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
  </tr>
- 
-
- 
   <tr><td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
@@ -174,8 +170,7 @@
    </td>
    <td id="Part_Package_Volume_msg" class="edit_td_alert"></td>
  </tr>
- 
-   <tr><td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
+    <tr><td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0">
@@ -183,48 +178,62 @@
      </div>
    </td>
    <td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
+ </tr> 
+  <tr><td style="width:200px" class="label">{t}Tariff Code{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0">
+       <div id="Part_Tariff_Code_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Part_Tariff_Code_msg" class="edit_td_alert"></td>
  </tr>
+ 
  
 </table>
 
 
 
-<div class="general_options" style="float:right">
-	
+
+
+<table class="edit" border=0 style="width:890px">
+ <tr class="title"><td >{t}General Description{/t} <span id="part_general_description_msg"></span></td>
+ <td>
+ <div class="general_options" style="float:right">	
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_description" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_description" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
-
-<table class="edit" border=0 style="width:700px">
- <tr class="title"><td colspan=5>{t}Description{/t}</td></tr>
-
-
-
-
-
-<tr><td style="width:200px" class="label">{t}General Description{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:25em;position:" >
-    <textarea id="Part_General_Description"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Part General Description')}"  ovalue="{$part->get('Part General Description')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Part General Description')}</textarea>
-       <div id="Part_General_Description_Container" style="" ></div>
-     </div>
-   </td>
-   <td id="Part_General_Description_msg" class="edit_td_alert"></td>
- </tr>
-
-<tr>
-<td style="width:200px" class="label">{t}Health & Safety{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:25em;" >
-    <textarea id="Part_Health_And_Safety"  olength="{$part->get('Product Description Length')}"  value="{$part->get('Part Health And Safety')}"  ovalue="{$part->get('Part Health And Safety')}"  ohash="{$part->get('Product Description MD5 Hash')}" rows="6" cols="42">{$part->get('Part Health And Safety')}</textarea>
-       <div id="Part_Health_And_Safety_Container" style="" ></div>
-     </div>
-   </td>
-   <td id="Part_Health_And_Safety_msg" class="edit_td_alert"></td>
- </tr>	
-
+</div>
+ </td>
+  </tr>
+  <tr ><td colspan=2 style="padding:5px 0 0 0 ">
+  <form onsubmit="return false;">
+  <textarea id="part_general_description" ovalue="{$part->get('Part General Description')|escape}" rows="20" cols="75">{$part->get('Part General Description')|escape}</textarea>
+</form>
+  </td></tr>
 </table>
+
+
+<table class="edit" border=0 style="width:890px">
+ <tr class="title"><td >{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
+ <td>
+ <div class="general_options" style="float:right">	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_health_and_safety" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_health_and_safety" class="state_details">{t}Reset{/t}</span>
+</div>
+ </td>
+  </tr>
+  <tr ><td colspan=2 style="padding:5px 0 0 0 ">
+  <form onsubmit="return false;">
+  <textarea id="part_health_and_safety" ovalue="{$part->get('Part Health And Safety')|escape}" rows="20" cols="75">{$part->get('Part Health And Safety')|escape}</textarea>
+</form>
+  </td></tr>
+</table>
+
+
+
+
+
+{*}
 
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
@@ -274,7 +283,7 @@
 
 
 </table>
-
+{*}
  
 </div>
 
@@ -393,6 +402,51 @@
     </ul>
   </div>
 </div>
+
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="filtermenu2" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu2" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},2)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+
+
 
 {include file='footer.tpl'}
 

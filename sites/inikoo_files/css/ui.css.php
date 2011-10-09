@@ -113,7 +113,7 @@ table.footer_table{
 
  .footer_table td.address{
 	background-position:center bottom; 
-	width:128px;padding-top:5px;padding-bottom:10px;
+	width:128px;padding-top:5px;padding-bottom:10px;padding-left:10px;
 	font-family:"Arial", sans-serif; font-weight:700; font-size:9.0px; 
     line-height:1.22; color:#ffffff; 
 }

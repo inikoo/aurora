@@ -234,6 +234,7 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
+  
     table.get('paginator').setRowsPerPage(rpp)
 
 }
@@ -241,7 +242,7 @@ var change_rpp=function (rpp,tableid){
 
 var change_rpp_with_totals=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
-    var table=tables['table'+tableid];
+   
 
     table.get('paginator').setRowsPerPage(rpp+1)
 
@@ -325,7 +326,7 @@ function change_period(e,data){
     var table=tables['table'+data.table_id];
     var datasource=tables['dataSource'+data.table_id];
     var request='&period=' + this.getAttribute('period');
-   
+  // alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
 

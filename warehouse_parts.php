@@ -27,7 +27,7 @@ $general_options_list=array();
 if($modify)
   $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'part_configuration.php','label'=>_('Part Settings'));
 
-
+$general_options_list[]=array('tipo'=>'url','url'=>'parts_lists.php','label'=>_('Parts Lists'));
 
 
 $smarty->assign('search_label',_('Parts'));

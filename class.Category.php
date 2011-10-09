@@ -163,13 +163,16 @@ class Category extends DB_Table {
                           );
             $this->add_history($history_data);
             $this->new=true;
-            if($this->data['Category Subject']=='Invoice'){
+            if ($this->data['Category Subject']=='Invoice') {
                 $sql=sprintf("insert into `Invoice Category Dimension` (`Category Key`,`Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
-                //print "$sql\n";
                 mysql_query($sql);
             }
-            
-            
+            elseif($this->data['Category Subject']=='Supplier') {
+                $sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
+                mysql_query($sql);
+            }
+
+
             $parent_category=new Category($data['Category Parent Key']);
 
             if ($parent_category->id) {
@@ -217,17 +220,274 @@ class Category extends DB_Table {
 
     }
 
-    function load($key,$args='') {
-        switch ($key) {
-        case('sales'):
-            $this->update_sales();
-            break;
 
-        case('product_data'):
-            $this->update_product_data();
+
+
+
+
+    function delete() {
+        $this->deleted=false;
+        /* if($this->data['Company Area Number Employees']>0){
+        $this->msg=_('Company Area could not be deleted because').' '.gettext($this->data['Company Area Number Employees'],'employee','employees').' '.gettext($this->data['Company Area Number Employees'],'is','are').' '._('associated with it');
+        return;
+        }
+
+        $this->load_positions();
+        foreach($this->positions as $position_key=>$position){
+            $position=new CompanyPosition($position_key);
+            $position->editor=$this->editor;
+            $position->delete();
+        }
+        $this->load_departments();
+        foreach($this->departments as $department_key=>$department){
+            $department=new CompanyArea($department_key);
+            $department->editor=$this->editor;
+            $department->delete();
+        }
+
+        */
+
+        $sql=sprintf('delete from `Category Dimension` where `Category Key`=%d',$this->id);
+        mysql_query($sql);
+
+        $history_data=array(
+                          'History Abstract'=>_('Category deleted').' ('.$this->data['Category Name'].')'
+                                             ,'History Details'=>_trim(_('Category')." ".$this->data['Category Name'].' ('.$this->data['Category Key'].') '._('has been permanently') )
+                                                                ,'Action'=>'deleted'
+                      );
+        $this->add_history($history_data);
+        $this->deleted=true;
+
+    }
+
+    function sub_category_selected_by_subject($subject_key) {
+        $sub_category_keys_selected=array();
+        $sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where `Category Subject`=%s and `Subject Key`=%d and `Category Parent Key`=%d",
+                     prepare_mysql($this->data['Category Subject']),
+                     $subject_key,
+                     $this->id
+                    );
+        $res=mysql_query($sql);
+        //print $sql;
+        while ($row=mysql_fetch_assoc($res)) {
+            $sub_category_keys_selected[$row['Category Key']]=$row['Category Key'];
+        }
+        return $sub_category_keys_selected;
+    }
+
+
+    function get_children_keys() {
+        $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ",
+                       $this->id
+                      );
+
+        $res=mysql_query($sql);
+        $children_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $children_keys[$row['Category Key']]=$row['Category Key'];
+        }
+        return $children_keys;
+
+    }
+
+
+
+
+    function get_children_objects() {
+        $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d order by `Category Name` ",
+                       $this->id
+                      );
+        //  print $sql;
+        $res=mysql_query($sql);
+        $children_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $children_keys[$row['Category Key']]=new Category($row['Category Key']);
+        }
+        return $children_keys;
+
+    }
+
+
+
+
+    function update_up_today() {
+
+        switch ($this->data['Category Subject']) {
+        case 'Invoice':
+            $this->update_invoice_category_up_today_sales();
+            break;
+            case('Supplier'):
+            $this->update_supplier_category_up_today_sales();
+            break;
+        default:
+
             break;
         }
+
     }
+
+    function update_last_period() {
+
+        switch ($this->data['Category Subject']) {
+        case 'Invoice':
+            $this->update_invoice_category_last_period_sales();
+            break;
+            case('Supplier'):
+            $this->update_supplier_category_last_period_sales();
+            break;
+        default:
+
+            break;
+        }
+
+    }
+
+
+    function update_last_interval() {
+
+        switch ($this->data['Category Subject']) {
+        case 'Invoice':
+            $this->update_invoice_category_interval_sales();
+            break;
+        case('Supplier'):
+            $this->update_supplier_category_interval_sales();
+            break;
+        default:
+
+            break;
+        }
+
+    }
+
+
+
+    function update_children_data() {
+
+        $number_of_children=0;
+
+
+
+        $sql = sprintf("SELECT COUNT(*)  as num  FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Subject`=%s ",
+                       $this->id,
+                       prepare_mysql($this->data['Category Subject'])
+                      );
+        $res=mysql_query($sql);
+        $number_of_children=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $number_of_children=$row['num'];
+        }
+
+        //print "$sql\n";
+
+        $max_deep=0;
+        if ($number_of_children) {
+
+            $sql = sprintf("SELECT `Category Position`  FROM `Category Dimension` WHERE `Category Position`	RLIKE '^%s[0-9]+>$' and `Category Subject`=%s ",
+                           $this->data['Category Position'],
+                           prepare_mysql($this->data['Category Subject'])
+                          );
+
+
+
+            $res=mysql_query($sql);
+
+            $max_deep=0;
+            while ($row=mysql_fetch_assoc($res)) {
+                $deep=count(preg_split('/\>/',$row['Category Position']))-2;
+                if ($deep>$max_deep)
+                    $max_deep=$deep;
+
+            }
+
+        }
+
+        $sql=sprintf("update `Category Dimension` set `Category Children`=%d ,`Category Children Deep`=%d where `Category Key`=%d ",
+                     $number_of_children,
+                     $max_deep,
+                     $this->id
+                    );
+        mysql_query($sql);
+
+    }
+
+    function update_number_of_subjects() {
+        $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
+                     $this->id
+                    );
+        $res=mysql_query($sql);
+        $num=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $num=$row['num'];
+        }
+        $sql=sprintf("update `Category Dimension` set `Category Number Subjects`=%d where `Category Key`=%d ",
+                     $num,
+                     $this->id
+                    );
+        mysql_query($sql);
+
+        $this->update_no_assigned_subjects();
+        //        print "$sql\n";
+    }
+
+
+
+    function update_no_assigned_subjects() {
+        $children_keys=$this->get_children_keys();
+        $no_assigned_subjects=0;
+        $assigned_subjects=0;
+
+        if (count($children_keys)>0) {
+
+
+            switch ($this->data['Category Subject']) {
+
+            default:
+                $table=$this->data['Category Subject'];
+                $store=sprintf(" where `%s Store Key`=%d",
+                               addslashes($this->data['Category Subject']),
+                               $this->data['Category Store Key']);
+                break;
+            }
+
+            $sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
+
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                $total_subjects=$row['num'];
+
+                $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key` in (%s)  ",
+                             join(',',$children_keys)
+                            );
+                $res=mysql_query($sql);
+                $assigned_subjects=0;
+                if ($row=mysql_fetch_assoc($res)) {
+                    $assigned_subjects=$row['num'];
+                }
+                $no_assigned_subjects=$total_subjects-$assigned_subjects;
+
+
+            }
+
+
+
+
+
+
+
+
+
+        }
+
+        $sql=sprintf("update `Category Dimension` set `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
+                     $no_assigned_subjects,
+                     $assigned_subjects,
+                     $this->id
+                    );
+        // print "$sql\n";
+        mysql_query($sql);
+
+    }
+
 
 
     function update_sales() {
@@ -721,223 +981,31 @@ class Category extends DB_Table {
     }
 
 
-    function delete() {
-        $this->deleted=false;
-        /* if($this->data['Company Area Number Employees']>0){
-        $this->msg=_('Company Area could not be deleted because').' '.gettext($this->data['Company Area Number Employees'],'employee','employees').' '.gettext($this->data['Company Area Number Employees'],'is','are').' '._('associated with it');
-        return;
-        }
-
-        $this->load_positions();
-        foreach($this->positions as $position_key=>$position){
-            $position=new CompanyPosition($position_key);
-            $position->editor=$this->editor;
-            $position->delete();
-        }
-        $this->load_departments();
-        foreach($this->departments as $department_key=>$department){
-            $department=new CompanyArea($department_key);
-            $department->editor=$this->editor;
-            $department->delete();
-        }
-
-        */
-
-        $sql=sprintf('delete from `Category Dimension` where `Category Key`=%d',$this->id);
-        mysql_query($sql);
-
-        $history_data=array(
-                          'History Abstract'=>_('Category deleted').' ('.$this->data['Category Name'].')'
-                                             ,'History Details'=>_trim(_('Category')." ".$this->data['Category Name'].' ('.$this->data['Category Key'].') '._('has been permanently') )
-                                                                ,'Action'=>'deleted'
-                      );
-        $this->add_history($history_data);
-        $this->deleted=true;
-
+   function update_supplier_category_up_today_sales() {
+        $this->update_supplier_category_sales('Today');
+        $this->update_supplier_category_sales('Week To Day');
+        $this->update_supplier_category_sales('Month To Day');
+        $this->update_supplier_category_sales('Year To Day');
     }
 
-    function sub_category_selected_by_subject($subject_key){
-        $sub_category_keys_selected=array();
-        $sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where `Category Subject`=%s and `Subject Key`=%d and `Category Parent Key`=%d",
-        prepare_mysql($this->data['Category Subject']),
-        $subject_key,
-        $this->id
-        );
-        $res=mysql_query($sql);
-        //print $sql;
-        while($row=mysql_fetch_assoc($res)){
-        $sub_category_keys_selected[$row['Category Key']]=$row['Category Key'];
-        }            
-        return $sub_category_keys_selected;
-    }
-    
-    
-    function get_children_keys(){
-      $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ",
-                       $this->id
-                      );
+    function update_supplier_category_last_period_sales() {
 
-        $res=mysql_query($sql);
-        $children_keys=array();
-        while ($row=mysql_fetch_assoc($res)) {
-            $children_keys[$row['Category Key']]=$row['Category Key'];
-        }
-            return $children_keys;
-
-    }
-    
-  
-  
-  
-  function get_children_objects(){
-      $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d order by `Category Name` ",
-                       $this->id
-                      );
-                    //  print $sql;
-        $res=mysql_query($sql);
-        $children_keys=array();
-        while ($row=mysql_fetch_assoc($res)) {
-            $children_keys[$row['Category Key']]=new Category($row['Category Key']);
-        }
-        return $children_keys;
-    
-    }
-    
-  
-
-    function update_children_data() {
-
-        $number_of_children=0;
-
-
-
-        $sql = sprintf("SELECT COUNT(*)  as num  FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Subject`=%s ",
-                       $this->id,
-                       prepare_mysql($this->data['Category Subject'])
-                      );
-        $res=mysql_query($sql);
-        $number_of_children=0;
-        if ($row=mysql_fetch_assoc($res)) {
-            $number_of_children=$row['num'];
-        }
-
-        //print "$sql\n";
-
-        $max_deep=0;
-        if ($number_of_children) {
-
-            $sql = sprintf("SELECT `Category Position`  FROM `Category Dimension` WHERE `Category Position`	RLIKE '^%s[0-9]+>$' and `Category Subject`=%s ",
-                           $this->data['Category Position'],
-                           prepare_mysql($this->data['Category Subject'])
-                          );
-
-
-
-            $res=mysql_query($sql);
-
-            $max_deep=0;
-            while ($row=mysql_fetch_assoc($res)) {
-                $deep=count(preg_split('/\>/',$row['Category Position']))-2;
-                if ($deep>$max_deep)
-                    $max_deep=$deep;
-
-            }
-
-        }
-
-        $sql=sprintf("update `Category Dimension` set `Category Children`=%d ,`Category Children Deep`=%d where `Category Key`=%d ",
-                     $number_of_children,
-                     $max_deep,
-                     $this->id
-                    );
-        mysql_query($sql);
-
-    }
-
-    function update_number_of_subjects() {
-        $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
-                     $this->id
-                    );
-        $res=mysql_query($sql);
-        $num=0;
-        if ($row=mysql_fetch_assoc($res)) {
-            $num=$row['num'];
-        }
-        $sql=sprintf("update `Category Dimension` set `Category Number Subjects`=%d where `Category Key`=%d ",
-                     $num,
-                     $this->id
-                    );
-        mysql_query($sql);
-
-	$this->update_no_assigned_subjects();
-	//        print "$sql\n";
+        $this->update_supplier_category_sales('Yesterday');
+        $this->update_supplier_category_sales('Last Week');
+        $this->update_supplier_category_sales('Last Month');
     }
 
 
-
-    function update_no_assigned_subjects(){
-      $children_keys=$this->get_children_keys();
-      $no_assigned_subjects=0;
-$assigned_subjects=0;
-      
-      if(count($children_keys)>0){
-	
-	
-      switch($this->data['Category Subject']){
-	
-      default:
-	$table=$this->data['Category Subject'];
-	$store=sprintf(" where `%s Store Key`=%d",
-		       addslashes($this->data['Category Subject']),
-		       $this->data['Category Store Key']);
-	break;
-      }
-
-		       $sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
-		     
-	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-	  $total_subjects=$row['num'];
-	  
-	  $sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key` in (%s)  ",
-		       join(',',$children_keys)
-		       );
-	  $res=mysql_query($sql);
-	  $assigned_subjects=0;
-	  if ($row=mysql_fetch_assoc($res)) {
-            $assigned_subjects=$row['num'];
-	  }
-	  $no_assigned_subjects=$total_subjects-$assigned_subjects;
-	    
-	    
-	}
-	
-
-	
-	
-      
-      
-      
-      
-    
-      }
-      
-       $sql=sprintf("update `Category Dimension` set `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
-                     $no_assigned_subjects,
-                     $assigned_subjects,
-                     $this->id
-                    );
-      // print "$sql\n";
-        mysql_query($sql);
-
+    function update_supplier_category_interval_sales() {
+        $this->update_supplier_category_sales('3 Year');
+        $this->update_supplier_category_sales('1 Year');
+        $this->update_supplier_category_sales('6 Month');
+        $this->update_supplier_category_sales('1 Quarter');
+        $this->update_supplier_category_sales('1 Month');
+        $this->update_supplier_category_sales('10 Day');
+        $this->update_supplier_category_sales('1 Week');
     }
 
-    
-    
-    
-    
-    
-    
     function update_invoice_category_up_today_sales() {
         $this->update_invoice_category_sales('Today');
         $this->update_invoice_category_sales('Week To Day');
@@ -964,13 +1032,13 @@ $assigned_subjects=0;
     }
 
 
-    function update_invoice_category_sales($interval) {
+ function update_supplier_category_sales($interval) {
 
-        $to_date='';
+        
 
         switch ($interval) {
 
-  
+
 
 
         case 'Last Month':
@@ -980,7 +1048,235 @@ $assigned_subjects=0;
 
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-          //  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            //  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+
+        case 'Last Week':
+            $db_interval='Last Week';
+
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+                $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+            } else {
+                return;
+            }
+
+
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            break;
+
+        case 'Yesterday':
+            $db_interval='Yesterday';
+            $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+            $to_date=date('Y-m-d 00:00:00',strtotime('today'));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            break;
+
+        case 'Week To Day':
+        case 'wtd':
+            $db_interval='Week To Day';
+
+            $from_date=false;
+            $from_date_1yb=false;
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=$row['First Day'].' 00:00:00';
+                $lapsed_seconds=strtotime('now')-strtotime($from_date);
+
+            } else {
+                return;
+            }
+
+            $sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date_1yb=$row['First Day'].' 00:00:00';
+            }
+
+
+            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+
+
+
+            break;
+        case 'Today':
+
+            $db_interval='Today';
+            $from_date=date('Y-m-d 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+
+        case 'Month To Day':
+        case 'mtd':
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case 'Year To Day':
+        case 'ytd':
+            $db_interval='Year To Day';
+            $from_date=date('Y-01-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+        case '3 Year':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+            $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case '1 Year':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '6 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Quarter':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '10 Day':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Week':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+        default:
+            return;
+            break;
+        }
+
+
+    
+
+        //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+
+        $supplier_category_data["$db_interval Acc Cost"]=0;
+        $supplier_category_data["$db_interval Acc Part Sales"]=0;
+        $supplier_category_data["$db_interval Acc Profit"]=0;
+     
+
+        $sql=sprintf("select sum(`Supplier $db_interval Acc Parts Cost`) as cost, sum(`Supplier $db_interval Acc Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
+                     $this->id
+                  
+
+                    );
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
+            $supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
+            $supplier_category_data["$db_interval Acc Profit"]=$row["profit"];
+          
+        }
+
+        $sql=sprintf("update `Supplier Category Dimension` set
+                     `$db_interval Acc Cost`=%.2f,
+                     `$db_interval Acc Part Sales`=%.2f,
+                     `$db_interval Acc Profit`=%.2f
+                     where `Category Key`=%d "
+                     ,$supplier_category_data["$db_interval Acc Cost"]
+                     ,$supplier_category_data["$db_interval Acc Part Sales"]
+                     ,$supplier_category_data["$db_interval Acc Profit"]
+                     ,$this->id
+                    );
+
+        mysql_query($sql);
+
+
+
+        if ($from_date_1yb) {
+            $supplier_category_data["$db_interval Acc 1YB Cost"]=0;
+            $supplier_category_data["$db_interval Acc 1YB Part Sales"]=0;
+            $supplier_category_data["$db_interval Acc 1YB Profit"]=0;
+           
+               $sql=sprintf("select sum(`Supplier $db_interval Acc 1YB Parts Cost`) as cost, sum(`Supplier $db_interval Acc 1YB Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc 1YB Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
+                     $this->id
+                  
+
+                    );
+        $result=mysql_query($sql);
+        
+     
+        
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $supplier_category_data["$db_interval Acc 1YB Cost"]=$row["cost"];
+                $supplier_category_data["$db_interval Acc 1YB Part Sales"]=$row["sold"];
+                $supplier_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
+            
+            }
+
+            $sql=sprintf("update `Supplier Category Dimension` set
+                         `$db_interval Acc 1YB Cost`=%.2f,
+                         `$db_interval Acc 1YB Part Sales`=%.2f,
+                         `$db_interval Acc 1YB Profit`=%.2f
+                         where `Category Key`=%d "
+                         ,$supplier_category_data["$db_interval Acc 1YB Cost"]
+                         ,$supplier_category_data["$db_interval Acc 1YB Part Sales"]
+                         ,$supplier_category_data["$db_interval Acc 1YB Profit"]
+                         ,$this->id
+                        );
+
+            mysql_query($sql);
+        
+        }
+
+
+    }
+
+
+    function update_invoice_category_sales($interval) {
+
+        $to_date='';
+
+        switch ($interval) {
+
+
+
+
+        case 'Last Month':
+            $db_interval='Last Month';
+            $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+            $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
             break;
 
         case 'Last Week':
@@ -1131,7 +1427,7 @@ $assigned_subjects=0;
 
                     );
         $result=mysql_query($sql);
-    
+
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $invoice_category_data["$db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
             $invoice_category_data["$db_interval Acc Invoiced Amount"]=$row["net"];
@@ -1182,8 +1478,8 @@ $assigned_subjects=0;
             $invoice_category_data["DC $db_interval Acc 1YB Profit"]=0;
 
             $sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit  from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d and  `Invoice Date`>%s and `Invoice Date`<%s" ,
-                        $this->id,
-                     $this->data['Category Store Key'],
+                         $this->id,
+                         $this->data['Category Store Key'],
                          prepare_mysql($from_date_1yb),
                          prepare_mysql($to_1yb)
                         );
@@ -1213,7 +1509,7 @@ $assigned_subjects=0;
                         );
 
             mysql_query($sql);
-           // print "$sql\n";
+            // print "$sql\n";
             $sql=sprintf("update `Invoice Category Dimension` set
                          `DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
@@ -1230,7 +1526,7 @@ $assigned_subjects=0;
 
 
     }
-    
-    
+
+
 
 }

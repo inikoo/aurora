@@ -13,13 +13,25 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('set_email_campaign_as_ready'):
+   $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key'),
+                             'start_sending_in'=>array('type'=>'numeric')
+                         ));
+    set_email_campaign_as_ready($data);
+break;
+case('mailing_list'):
+
+    mailing_list();
+
+    break;
 case('add_email_template_header'):
     $data=prepare_values($_REQUEST,array(
                              'files_data'=>array('type'=>'json array'),
                              'scope'=>array('type'=>'string'),
-                               'scope_key'=>array('type'=>'key'),
-                                 'caption'=>array('type'=>'string')
-                             
+                             'scope_key'=>array('type'=>'key'),
+                             'caption'=>array('type'=>'string')
+
                          ));
     add_email_template_header($data);
     break;
@@ -52,7 +64,7 @@ case('edit_email_campaign'):
                          ));
     edit_email_campaign($data);
     break;
-case('select_html_email_from_template_campaign'):    
+case('select_html_email_from_template_campaign'):
     $data=prepare_values($_REQUEST,array(
                              'email_campaign_key'=>array('type'=>'key')
 
@@ -62,7 +74,7 @@ case('select_html_email_from_template_campaign'):
     $data['okey']='email_campaign_content_type';
     edit_email_campaign($data);
     break;
-    
+
     break;
 case('select_html_email_campaign'):
     $data=prepare_values($_REQUEST,array(
@@ -157,7 +169,7 @@ function add_emails_to_email_campaign_from_list($data) {
                          'number_recipients'=>$email_campaign->data['Number of Emails'],
                          'recipients_preview'=>$email_campaign->data['Email Campaign Recipients Preview'],
                          'msg'=>$email_campaign->msg,
-                          'ready_to_send'=>$email_campaign->ready_to_send()
+                         'ready_to_send'=>$email_campaign->ready_to_send()
                         );
     } else {
         $response= array('state'=>400,'msg'=>$email_campaign->msg);
@@ -252,14 +264,19 @@ function edit_email_campaign($data) {
     }
 
 
-    if($data['key']=='Email Campaign Subject'){
-     $email_campaign->update_subject($data['newvalue'],$data['email_content_key']);
-    } elseif($data['key']=='Email Campaign Content Text'){
-     $email_campaign->update_content_text($data['newvalue'],$data['email_content_key']);
-    }else{
+    if ($data['key']=='Email Campaign Subject') {
+        $email_campaign->update_subject($data['newvalue'],$data['email_content_key']);
+    }
+    elseif($data['key']=='Email Campaign Content Text') {
+        $email_campaign->update_content_text($data['newvalue'],$data['email_content_key']);
+    }
+    elseif($data['key']=='Email Campaign Content HTML') {
+        $email_campaign->update_content_html($data['newvalue'],$data['email_content_key']);
+    }
+    else {
 
-    $email_campaign->update(array($data['key']=>$data['newvalue']));
-}
+        $email_campaign->update(array($data['key']=>$data['newvalue']));
+    }
     if ($email_campaign->updated) {
 
         $response= array(
@@ -307,23 +324,25 @@ function edit_email_paragraph($data) {
                         'type'=>$data['values']['type'],
                     );
 
-    if(!$data['values']['paragraph_key']){
-    
-        if($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']==''){
-          $response= array('state'=>400,'msg'=>_('All fields are empty!'));    echo json_encode($response);return;
+    if (!$data['values']['paragraph_key']) {
+
+        if ($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']=='') {
+            $response= array('state'=>400,'msg'=>_('All fields are empty!'));
+            echo json_encode($response);
+            return;
         }
-    
-    $email_campaign->add_paragraph($data['values']['email_content_key'],$paragraph_data);
-    }else{
-    
-     if($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']==''){
-          delete_email_paragraph($data);
-          return; 
-     }else{
-    
-    $email_campaign->update_paragraph($data['values']['email_content_key'],$data['values']['paragraph_key'],$paragraph_data);
-   }
-   }
+
+        $email_campaign->add_paragraph($data['values']['email_content_key'],$paragraph_data);
+    } else {
+
+        if ($paragraph_data['title']=='' and $paragraph_data['subtitle']=='' and $paragraph_data['content']=='') {
+            delete_email_paragraph($data);
+            return;
+        } else {
+
+            $email_campaign->update_paragraph($data['values']['email_content_key'],$data['values']['paragraph_key'],$paragraph_data);
+        }
+    }
     if ($email_campaign->updated) {
         $response= array('state'=>200);
 
@@ -365,16 +384,16 @@ function delete_email_paragraph($data) {
 
 
     $email_campaign=new EmailCampaign($data['values']['email_campaign_key']);
-    if(!$email_campaign->id){
-     $response= array('state'=>400,'msg'=>'invalid email campaign');
+    if (!$email_campaign->id) {
+        $response= array('state'=>400,'msg'=>'invalid email campaign');
         echo json_encode($response);
-        return;    
+        return;
     }
 
-    if(!in_array($email_campaign->data['Email Campaign Store Key'],$data['user']->stores)){
-    $response= array('state'=>400,'msg'=>'forbidden');
+    if (!in_array($email_campaign->data['Email Campaign Store Key'],$data['user']->stores)) {
+        $response= array('state'=>400,'msg'=>'forbidden');
         echo json_encode($response);
-        return;    
+        return;
     }
 
 
@@ -384,19 +403,217 @@ function delete_email_paragraph($data) {
     echo json_encode($response);
 }
 
-function add_email_template_header($data){
-print_r($data);
+function add_email_template_header($data) {
 
 
+    include_once('class.Image.php');
+    $create_image=false;
+    foreach($data['files_data'] as $file_data) {
 
-    $data=array(
-	    'file'=>'tmp'.$rand.'.jpg'
-	    ,'path'=>'app_files/pics/assets/'
-	    ,'name'=>$data['files_data']['original_filename']
-	    ,'caption'=>$data['caption']
-	    );
+        $image_data=array(
+                        'file'=>$file_data['filename_with_path'],
+                        'source_path'=>'',
+                        'name'=>$file_data['original_filename'],
+                        'caption'=>''
+                    );
 
- //    print_r($data);
-$image=new Image('find',$data,'create');
+
+        $image=new Image('find',$image_data,'create');
+        if ($image->id) {
+            $sql=sprintf("insert into  `Email Template Header Image Dimension` (`Email Template Header Image Name`,`Store Key`,`Image Key`) values (%s,%d,%d)",
+                         prepare_mysql($file_data['original_filename']),
+                         $data['scope_key'],
+                         $image->id
+                        );
+            mysql_query($sql);
+            $create_image=true;
+        }
+    }
+    if ($create_image) {
+        $response= array(
+                       'state'=>200,
+                       'action'=>'created'
+                   );
+    } else {
+
+        $response= array('state'=>400,'msg'=>'can not add image');
+    }
+
+    echo json_encode($response);
+
 }
+
+
+function mailing_list() {
+    $conf=$_SESSION['state']['email_campaign']['mailing_list'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+
+    if (isset( $_REQUEST['where']))
+        $where=$_REQUEST['where'];
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['email_campaign_key'])) {
+        $email_campaign_key=$_REQUEST['email_campaign_key'];
+        $_SESSION['state']['email_campaign']['id']=$email_campaign_key;
+    } else {
+        $email_campaign_key=$_SESSION['state']['email_campaign']['id'];
+    }
+
+    $filter_msg='';
+
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['email_campaign']['mailing_list']['order']=$order;
+    $_SESSION['state']['email_campaign']['mailing_list']['order_dir']=$order_dir;
+    $_SESSION['state']['email_campaign']['mailing_list']['nr']=$number_results;
+    $_SESSION['state']['email_campaign']['mailing_list']['sf']=$start_from;
+    $_SESSION['state']['email_campaign']['mailing_list']['where']=$where;
+    $_SESSION['state']['email_campaign']['mailing_list']['f_field']=$f_field;
+    $_SESSION['state']['email_campaign']['mailing_list']['f_value']=$f_value;
+
+
+    $where=sprintf(" where  `Email Campaign Key`=%d",$email_campaign_key);
+
+
+
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+    $sql="select count(*) as total from `Email Campaign Mailing List`     $where $wheref";
+
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total  from `Email Campaign Mailing List`    $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $filtered=$row['total']-$total;
+            $total_records=$row['total'];
+        }
+        mysql_free_result($result);
+    }
+
+    $rtext=sprintf(ngettext("%d recipient", "%d recipients", $total_records), $total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp='('._('Showing all').')';
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    if ($order=='contact')
+        $order='`Email Contact Name`';
+    else
+        $order='`Email Address`';
+
+    $sql="select *  from `Email Campaign Mailing List`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
+    $res = mysql_query($sql);
+    $adata=array();
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+
+        $adata[]=array(
+                     'id'=>$row['Email Campaign Key'],
+                     'contact'=>$row['Email Contact Name'],
+                     'email'=>$row['Email Address'],
+                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
+
+
+                 );
+    }
+    mysql_free_result($res);
+    $response=array('resultset'=>
+                                array(
+
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'total_records'=>$total,
+                                    'records_offset'=>$start_from,
+                                    'records_perpage'=>$number_results,
+
+
+
+                                )
+                   );
+
+    echo json_encode($response);
+
+}
+
+
+function set_email_campaign_as_ready($data){
+
+$email_campaign=new EmailCampaign($data['email_campaign_key']);
+$email_campaign->set_as_ready($data['start_sending_in']);
+ if (!$email_campaign->error) {
+        $response= array(
+                       'state'=>200,
+                       'action'=>'ready'
+                   );
+    } else {
+
+        $response= array('state'=>400,'msg'=>'can not add image');
+    }
+  echo json_encode($response);
+}
+
 ?>

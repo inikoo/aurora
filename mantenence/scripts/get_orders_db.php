@@ -13,6 +13,7 @@ include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('../../class.TaxCategory.php');
+include_once('../../class.PartLocation.php');
 
 include_once('common_read_orders_functions.php');
 
@@ -122,7 +123,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/7883.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/134868.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";

@@ -858,7 +858,11 @@ function strleft($s1, $s2) {
     return substr($s1, 0, strpos($s1, $s2));
 }
 
-
+function get_page(){
+	$url=explode("/", $_SERVER['REQUEST_URI']);
+	$url=array_reverse($url);
+	return $url[0];
+}
 /**
  * @return timestamp
  * @param integer year
@@ -1548,6 +1552,102 @@ function invoices_awhere($awhere) {
 
 
 }
+
+//Parts awhere
+function parts_awhere($awhere) {
+
+    $where_data=array(
+                    //'product_ordered1'=>'∀',
+                    //'price'=>array(),
+                    //'invoice'=>array(),
+                    //'web_state'=>array(),
+                    //'availability_state'=>array(),
+                    'geo_constraints'=>'',
+                    'part_valid_from'=>'',
+                    'part_valid_to'=>'',
+                    //'product_valid_to'=>'',
+                    //'price_lower'=>'',
+                    //'price_upper'=>'',
+                    //'invoice_lower'=>'',
+                   // 'invoice_upper'=>''
+                );
+
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key=>$item) {
+        $where_data[$key]=$item;
+    }
+
+
+    $where='where true';
+    //$table='`Part Dimension` P ';
+	$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
+
+    $use_product=false;
+    //$use_categories =false;
+    $use_otf =false;
+
+
+/*
+    $price_where='';
+    foreach($where_data['price'] as $price) {
+        switch ($price) {
+        case 'less':
+            $price_where.=sprintf(" and `Product Price`<%s ",prepare_mysql($where_data['price_lower']));
+            break;
+        case 'equal':
+            $price_where.=sprintf(" and `Product Price`=%s  ",prepare_mysql($where_data['price_lower']));
+            break;
+        case 'more':
+            $price_where.=sprintf(" and `Product Price`>%s  ",prepare_mysql($where_data['price_upper']));
+            break;
+        case 'between':
+            $price_where.=sprintf(" and  `Product Price`>%s  and `Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
+            break;
+        }
+    }
+    $price_where=preg_replace('/^\s*and/','',$price_where);
+
+    if ($price_where!='') {
+        $where.=" and ($price_where)";
+    }
+
+*/
+
+    $date_interval_from=prepare_mysql_dates($where_data['part_valid_from'],$where_data['part_valid_to'],'ITF.`Date`','only_dates');
+    //$date_interval_to=prepare_mysql_dates('',$where_data['product_valid_to'],'`Product Valid To`','only_dates');
+
+
+
+    $where.=$date_interval_from['mysql'];
+	//print $where;exit;
+
+
+	$where_geo_constraints='';
+    if ($where_data['geo_constraints']!='') {
+        $where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'CD.`Country Code`','CD.`World Region Code`');
+    }
+	$where.=$where_geo_constraints;
+	//print $where_geo_constraints;exit;
+    /*
+
+    $where_billing_geo_constraints='';
+    if ($where_data['billing_geo_constraints']!='') {
+        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+    }
+
+
+    */
+
+    //print $table. $where; exit;
+
+    return array($where,$table);
+}
+////
+
+
 
 function product_awhere($awhere) {
 

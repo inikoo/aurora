@@ -117,19 +117,13 @@ $store_id=$category->data['Category Store Key'];
 
 }
 
-$store=new Store($store_id);
 
-if (!$store->id) {
- header('Location: index.php?error=store_not_found');
-    exit;
-  
-}
+
 
 $_SESSION['state']['categories']['subject']='Supplier';
 
 $_SESSION['state']['categories']['parent_key']=$category_key;
 $_SESSION['state']['categories']['subject_key']=false;
-$_SESSION['state']['categories']['store_key']=$store->id;
 
 
 $js_files[]='edit_supplier_category.js.php?key='.$category_key;
@@ -138,8 +132,6 @@ $smarty->assign('category_key',$category_key);
 
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('edit',$view);
-$_SESSION['state']['store']['id']=$store->id;
-$smarty->assign('store',$store);
 
 $smarty->display('edit_supplier_category.tpl');
 ?>

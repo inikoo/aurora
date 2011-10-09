@@ -176,49 +176,33 @@
 </div>
  <div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
  
- <h2 style="clear:both">{t}Unit Details{/t}</h2>
-
-<div style="float:left;width:450px">
-<table    class="show_info_product">
-
-	<tr>
-		<td>{t}Unit Type{/t}:</td><td>{$part->get('Units Type')}</td>
-	</tr>
-	<tr>
-		<td>{t}Unit Description{/t}:</td><td>{$part->get('Part Unit Description')}</td>
-	</tr>
-	<tr>
-		<td>{t}Gross Weight{/t}:</td><td>{$part->get('Part Gross Weight')}</td>
-	</tr>
-	<tr>
-		<td>{t}Package Volume{/t}:</td><td>{$part->get('Part Package Volume')}</td>
-	</tr>
-	<tr>
-		<td>{t}Package MOV{/t}:</td><td>{$part->get('Part Package Minimun Orthogonal Volume')}</td>
-	</tr>
-</table>
-</div>
  
- <h2 style="clear:both">{t}Description{/t}</h2>
+ <div style="float:left;width:450px">
 
-<div style="float:left;width:450px">
+
 <table    class="show_info_product">
 
-	<tr>
-		<td>{t}General Description{/t}:</td><td>{$part->get('Part General Description')}</td>
-	</tr>
-	<tr>
-		<td>{t}Health & Safety{/t}:</td><td>{$part->get('Part Health And Safety')}</td>
-	</tr>
 
+	<tr>
+		<td>{t}Weight{/t}:</td><td>{$part->get('Weight')}</td>
+	</tr>
+	<tr>
+		<td>{t}Volume{/t}:</td><td>{$part->get('Volume')}</td>
+	</tr>
+	<tr>
+		<td>{t}Export Code{/t}:</td><td>{$part->get('Part Export Code')}</td>
+	</tr>
 </table>
 
+ 
+ </div>
+ 
 
+
+<div style="float:left;width:450px;margin-left:10px;{if !$number_part_custom_fields}display:none{/if}">
 <h2 style="clear:both">{t}Custom Fields{/t}</h2>
 
-<div style="float:left;width:450px">
 <table    class="show_info_product">
-
 		  {foreach from=$part_custom_fields key=name item=value}
 		  <tr>
 		  <td>{$name}:</td><td>{$value}</td>
@@ -227,8 +211,21 @@
 		</table>
 </div>  
   
-</div> 
+<div style="clear:both;{if !$part->get('Part General Description')}display:none{/if}">
+ <h2 >{t}General Description{/t}</h2>
+ <div style="margin-top:5px">
+{$part->get('Part General Description')}
+ </div>
+ </div>
  
+ <div style="clear:both;{if !$part->get('Part Health And Safety')}display:none{/if}">
+ <h2 >{t}Health & Safety{/t}</h2>
+<div style="margin-top:5px">
+{$part->get('Part Health And Safety')}
+ </div>
+</div>
+
+
  
  </div>
  <div id="block_sales" class="block ata_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">

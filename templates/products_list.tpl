@@ -12,7 +12,7 @@
 
 
  <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Product List{/t}</span>
+      <span class="clean_table_title">{t}Part List{/t}</span>
       
  
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

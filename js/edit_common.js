@@ -140,6 +140,7 @@ var save_option_table=function(args) {
 
 
 function option_selected(branch,item){
+
     var data= validate_scope_data[branch][item];
 select=Dom.get(data.name);
 
@@ -235,6 +236,7 @@ scope:this
     );
 };
 var onCellClick = function(oArgs) {
+
     var target = oArgs.target,
     column = this.getColumn(target),
     record = this.getRecord(target);
@@ -413,12 +415,16 @@ function validate_scope_edit(branch) {
 
     for (item in validate_scope_data[branch]) {
     
- //      alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
+    //   alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
         if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][item].changed==true)
             changed=true;
+            
+        //    alert(errors+' '+changed)
     }
+
+
 
 Dom.setStyle('save_edit_'+branch,'visibility','visible');
 Dom.setStyle('reset_edit_'+branch,'visibility','visible');
@@ -644,7 +650,9 @@ function reset_edit_general(branch) {
         //alert(validate_scope_data[branch][item].name)
         var item_input=Dom.get(validate_scope_data[branch][item].name);
 
+     
         item_input.value=item_input.getAttribute('ovalue');
+        
         validate_scope_data[branch][item].changed=false;
         validate_scope_data[branch][item].validated=true;
        // alert(validate_scope_data[branch][item].name+'_msg')
@@ -740,17 +748,17 @@ function save_edit_general(branch) {
 	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
 	   }
 	   
-	  //alert(request);
-
+	 alert(request)
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-			//	alert(o.responseText);
+				alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
                         validate_scope_data[branch][r.key].changed=false;
                         validate_scope_data[branch][r.key].validated=true;
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
+                       
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
 
                         post_item_updated_actions(branch,r);
@@ -876,7 +884,7 @@ return;
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	alert(request);
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
  //alert(o.responseText);

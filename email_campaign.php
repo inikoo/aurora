@@ -49,7 +49,6 @@ if (!($user->can_view('stores') and in_array($email_campaign->data['Email Campai
 
 
 $general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'marketing.php?view=email','label'=>_('Email Campaigns'));
 
 $store=new Store($email_campaign->data['Email Campaign Store Key']);
 $smarty->assign('store',$store);
@@ -61,6 +60,7 @@ $css_files=array(
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/editor.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
                'button.css',
                'container.css',
@@ -77,7 +77,7 @@ $js_files=array(
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
-                 $yui_path.'editor/editor-min.js',
+              $yui_path.'editor/editor-min.js',
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
@@ -93,18 +93,32 @@ $smarty->assign('title', _('Marketing'));
 
 $smarty->assign('email_campaign',$email_campaign);
 
+
+$smarty->assign('search_scope','marketing');
+$smarty->assign('search_label',_('Search'));
+
 switch ($email_campaign->data['Email Campaign Status']) {
 case 'Creating':
-$general_options_list=array();
+    $general_options_list=array();
     $css_files[]='css/edit.css';
-     $css_files[]='css/email_campaign_in_process.css';
+    $css_files[]='css/email_campaign_in_process.css';
     $js_files[]='js/edit_common.js';
     $js_files[]='email_campaign_in_process.js.php?email_campaign_key='.$email_campaign->id;
+	$js_files[]='js/sugar-0.9.5.min.js';
     $tpl_file='email_campaign_in_process.tpl';
-    
+
     $smarty->assign('current_content_key',$email_campaign->get_first_content_key());
 
     break;
+    
+case 'Ready':
+ $tpl_file='email_campaign_ready.tpl';
+ 
+ $js_files[]='js/countdown.js';
+$js_files[]='email_campaign_ready.js.php';
+
+break;
+    
 
 }
 $smarty->assign('general_options_list',$general_options_list);

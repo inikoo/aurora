@@ -12,23 +12,21 @@
  Version 2.0
 */
 include_once('common.php');
+include_once('class.Store.php');
+
 include_once('class.Site.php');
 include_once('assets_header_functions.php');
 
-$page='site';
-$smarty->assign('page',$page);
+
+$smarty->assign('page','site');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
     $site_id=$_REQUEST['id'];
 
 } else {
-    $site_id=$_SESSION['state'][$page]['id'];
+    $site_id=$_SESSION['state']['site']['id'];
 }
 
-if (isset($_REQUEST['edit'])) {
-    header('Location: edit_site.php?id='.$site_id);
 
-    exit("E2");
-}
 
 
 if (!($user->can_view('stores')    ) ) {
@@ -39,8 +37,16 @@ if (!($user->can_view('stores')    ) ) {
 
 
 $site=new Site($site_id);
-$_SESSION['state'][$page]['id']=$site->id;
+if(!$site->id){
+ header('Location: index.php');
+    exit;
+}
 
+
+$_SESSION['state']['site']['id']=$site->id;
+
+$store=new Store($site->data['Site Store Key']);
+$smarty->assign('store',$store);
 
 $create=$user->can_create('sites');
 
@@ -53,18 +59,10 @@ $smarty->assign('modify',$modify);
 
 
 
-$show_details=$_SESSION['state'][$page]['details'];
-$smarty->assign('show_details',$show_details);
-get_header_info($user,$smarty);
-
-
-
-
 $general_options_list=array();
 
 //if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'edit_site.php','label'=>_('Edit Site'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
 
 $smarty->assign('general_options_list',$general_options_list);
@@ -104,7 +102,7 @@ $js_files=array(
 
 
 $js_files[]='js/search.js';
-$js_files[]='common_plot.js.php?page='.$page;
+$js_files[]='common_plot.js.php?page='.'site';
 
 $js_files[]='site.js.php';
 
@@ -116,14 +114,14 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$_SESSION['state']['assets']['page']=$page;
+$_SESSION['state']['assets']['page']='site';
 if (isset($_REQUEST['view'])) {
     $valid_views=array('sales','general','stoke');
     if (in_array($_REQUEST['view'], $valid_views))
-        $_SESSION['state'][$page]['view']=$_REQUEST['view'];
+        $_SESSION['state']['site']['view']=$_REQUEST['view'];
 
 }
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+$smarty->assign('block_view',$_SESSION['state']['site']['view']);
 
 
 
@@ -132,17 +130,19 @@ $smarty->assign('view',$_SESSION['state'][$page]['view']);
 $subject_id=$site_id;
 
 
-$smarty->assign($page,$site);
+$smarty->assign('site',$site);
 
 $smarty->assign('parent','products');
 $smarty->assign('title', $site->data['Site Name']);
 
 $q='';
-$tipo_filter=($q==''?$_SESSION['state'][$page]['pages']['f_field']:'code');
+$tipo_filter=($q==''?$_SESSION['state']['site']['pages']['f_field']:'code');
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['pages']['f_value']:addslashes($q)));
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['site']['pages']['f_value']:addslashes($q)));
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Site starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
+                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
+
              );
 $smarty->assign('filter_menu0',$filter_menu);
 //$smarty->assign('departments',$site->data['Site Departments']);

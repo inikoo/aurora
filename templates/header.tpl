@@ -25,7 +25,7 @@
   	<div style="float:left;font-size:65%;margin-left:16px;" class='timezone'>{$timezone}</div>
   	<div style="float:right;font-size:77%;margin:0px 20px 0.15em 0">
 	            <span id="top_message" style=";margin-right:30px"></span>
-	            <a style=";margin-right:15px">{t}Help{/t}</a>
+	            <a href="help.php?page={$page_name}" style=";margin-right:15px">{t}Help{/t}</a>
 	            <span id="language_flag"><img src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}"  /></span>
 	            <span>{t}Hello{/t} {$user->get('User Alias')}</span>
 	            <span><a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a></span>

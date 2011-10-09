@@ -73,7 +73,7 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     }
 //print "$location_code\n";
 
-continue;
+
 
     if (preg_match('/^\d+\-\d+\-\d+$/',$location_code))
         $used_for='Storing';
