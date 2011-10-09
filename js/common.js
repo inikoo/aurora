@@ -389,28 +389,7 @@ keychar = String.fromCharCode(keynum);
 		this.hide();
     }
 
-function change_details(e,the_scope){
 
-    var state =this.getAttribute('state');
-    if(state==1){
-	Dom.get("info").style.display='none';
-	Dom.get("plot").style.display='none';
-	Dom.get("no_details_title").style.display='';
-	this.innerHTML=Dom.get('show_details_label').innerHTML;
-	
-	this.setAttribute('state',0);
-	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=0',{});
-    }else{
-	Dom.get("info").style.display='';
-	Dom.get("plot").style.display='';
-	Dom.get("no_details_title").style.display='none';
-	this.innerHTML=Dom.get('hide_details_label').innerHTML;
-	this.setAttribute('state',1);
-	//alert('ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1');
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1',{});
-    }
-}
 
 var show_percentages=function(e,location){
 

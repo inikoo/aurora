@@ -98,7 +98,8 @@ $css_files=array(
                'container.css',
                'button.css',
                'table.css',
-
+                'css/edit.css',
+                'css/upload_files.css',
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -122,8 +123,7 @@ $js_files=array(
 
 
 
-$css_files[]='css/edit.css';
-$css_files[]='css/upload_files.css';
+
 $js_files[]='js/edit_common.js';
 $js_files[]='country_select.js.php';
 $js_files[]='js/upload_image.js';

@@ -27,6 +27,10 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
+
+$sql='truncate  `Page Store Found In Bridge` ';
+mysql_query($sql);
+
 $sql=sprintf("select * from `Page Store Dimension`   ");
 $result2a=mysql_query($sql);
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
@@ -72,10 +76,12 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
             $sql=sprintf("insert into `Page Store Found In Bridge` values (%d,%d)  ",$page->id,$found_in_key);
             //print "$sql\n";
             mysql_query($sql);
-        } else {
-            $found_in_label="x";
-            $found_in_url="x";
-        }
+        } 
+        
+        
+         $page->update_see_also();   
+        
+        
         break;
     default:
 

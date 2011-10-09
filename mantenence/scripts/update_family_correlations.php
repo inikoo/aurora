@@ -44,7 +44,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
     $family=new Family($row['Product Family Key']);
     $family->update_correlated_sales_families();
-    print $family->id."\r";
+     $family->update_similar_families();
+   // print $family->id."\r";
 }
 
 
