@@ -79,7 +79,6 @@ $js_files=array(
 $q='';
 
 $general_options_list=array();
- $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_orders.php','label'=>_('Warehouse Operations'));
 $smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('search_label',_('Orders'));

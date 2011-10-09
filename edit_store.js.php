@@ -75,6 +75,42 @@ function validate_address(query){validate_general('store','address',unescape(que
 function validate_marketing_description(query){validate_general('store','marketing_description',unescape(query));}
 
 
+function new_store_page(){
+
+
+var request='tipo=new_store_page&store_key='+store_id+'&site_key='+Dom.get('site_key').value
+
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_sites.php', {
+						    success:function(o) {
+						    //alert(o.responseText)
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+								        window.location = "edit_store.php?id=<?php echo$_SESSION['state']['store']['id']?>"
+							    }else{
+						
+                                        alert(r.msg)								
+								
+							    }
+						
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
+
+
+}
+
+
 function reset_edit_store(){
  reset_edit_general('store');
 }
@@ -652,7 +688,7 @@ function init(){
 
     YAHOO.util.Event.addListener('reset_edit_store', "click", reset_edit_store);
     YAHOO.util.Event.addListener('save_edit_store', "click", save_edit_store);
-
+  YAHOO.util.Event.addListener('new_store_page', "click", new_store_page);
 
     var store_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     store_code_oACDS.queryMatchContains = true;
@@ -713,6 +749,15 @@ function init(){
     var store_name_oAutoComp = new YAHOO.widget.AutoComplete("marketing_description","marketing_description_Container", store_name_oACDS);
     store_name_oAutoComp.minQueryLength = 0; 
     store_name_oAutoComp.queryDelay = 0.1;   
+
+ var formObject = document.getElementById('aForm');
+ 
+   // the second argument is true to indicate file upload.
+   YAHOO.util.Connect.setForm(Dom.get('logo_file_upload_form'), true);
+ 
+  
+  
+  
 
 }
 

@@ -1,6 +1,6 @@
 <?php
 include_once('common.php');
-
+include_once('class.Store.php');
 if (!$user->can_view('stores') or count($user->stores)==0 ) {
 	
     header('Location: index.php');

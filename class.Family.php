@@ -581,6 +581,16 @@ class Family extends DB_Table {
    return $department_keys;
    }
    
+   
+    function get_pages_keys(){
+    $page_keys=array();
+            $sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and  `Page Parent Key`=%d",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $page_keys[]=$row['Page Key'];
+            }
+   return $page_keys;
+   }
 
     function load($tipo,$args=false) {
         switch ($tipo) {

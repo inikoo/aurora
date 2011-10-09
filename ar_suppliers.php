@@ -1552,7 +1552,169 @@ function list_suppliers() {
         $order='`Supplier Open Purchase Orders`';
 
     }
+    elseif($order=='margin') {
 
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Margin`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Margin`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Margin`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Margin`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Margin`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Margin`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Margin`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Margin`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Margin`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Margin`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Margin`';
+            break;
+        }
+    }
+	elseif($order=='cost') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Cost`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Cost`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Cost`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Cost`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Cost`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Cost`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Cost`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Cost`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Cost`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Cost`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Cost`';
+            break;
+        }
+    }
+	
+	elseif($order=='profit_after_storing') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Profit After Storing`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Profit After Storing`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Profit After Storing`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Profit After Storing`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Profit After Storing`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Profit After Storing`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Profit After Storing`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Profit After Storing`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Profit After Storing`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Profit After Storing`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Profit After Storing`';
+            break;
+        }
+    }
+	
+	elseif($order=='profit') {
+
+        switch ($period) {
+        case 'three_year':
+            $order='`Supplier 3 Year Acc Parts Profit`';
+            break;
+        case 'year':
+            $order='`Supplier 1 Year Acc Parts Profit`';
+            break;
+        case 'quarter':
+            $order='`Supplier 1 Quarter Acc Parts Profit`';
+            break;
+
+        case 'six_month':
+            $order='`Supplier 6 Month Acc Parts Profit`';
+
+            break;
+        case 'month':
+            $order='`Supplier 1 Month Acc Parts Profit`';
+            break;
+        case 'ten_day':
+            $order='`Supplier 10 Day Acc Parts Profit`';
+            break;
+        case 'week':
+            $order='`Supplier 1 Week Acc Parts Profit`';
+            break;
+        case 'yeartoday':
+            $order='`Supplier Year To Day Acc Parts Profit`';
+            break;
+        case 'monthtoday':
+            $order='`Supplier Month To Day Acc Parts Profit`';
+            break;
+        case 'weektoday':
+            $order='`Supplier Week To Day Acc Parts Profit`';
+            break;
+        default:
+            $order='`Supplier Total Acc Parts Profit`';
+            break;
+        }
+    }
+	//print $order;
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 
@@ -1993,13 +2155,36 @@ function list_supplier_products() {
         elseif ($product_period=='weektoday')
         $order='`Supplier Product Week To Day Acc Parts Sold Amount`';
     }
-
+    elseif($order=='margin') {
+        if ($product_period=='all')
+            $order='`Supplier Product Total Acc Parts Margin`';
+        elseif ($product_period=='year')
+        $order='`Supplier Product 1 Year Acc Parts Margin`';
+        elseif ($product_period=='quarter')
+        $order='`Supplier Product 1 Quarter Acc Parts Margin`';
+        elseif ($product_period=='month')
+        $order='`Supplier Product 1 Month Acc Parts Margin`';
+        elseif ($product_period=='week')
+        $order='`Supplier Product 1 Week Acc Parts Margin`';
+        elseif ($product_period=='three_year')
+        $order='`Supplier Product 3 Year Acc Parts Margin`';
+        elseif ($product_period=='six_month')
+        $order='`Supplier Product 6 Month Acc Parts Margin`';
+        elseif ($product_period=='ten_day')
+        $order='`Supplier Product 10 Day Acc Parts Margin`';
+        elseif ($product_period=='yeartoday')
+        $order='`Supplier Product Year To Day Acc Parts Margin`';
+        elseif ($product_period=='monthtoday')
+        $order='`Supplier Product Month To Day Acc Parts Margin`';
+        elseif ($product_period=='weektoday')
+        $order='`Supplier Product Week To Day Acc Parts Margin`';
+    }
     else
         $order='`Supplier Product Code`';
 
     $sql="select * from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
-    // print $sql;
+    //print $sql;exit;
     $data=array();
 
     $result=mysql_query($sql);
@@ -2736,7 +2921,7 @@ function list_supplier_categories() {
 
 
 
-    $sql="select S.`Category Key`, `Category Name` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Supplier Dimension` CD on (CD.`Supplier Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Supplier Dimension` CD on (CD.`Supplier Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
     // print $sql;
     $res = mysql_query($sql);
 
@@ -2775,6 +2960,7 @@ function list_supplier_categories() {
                      //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
+                     'subjects'=>number($row['Category Number Subjects'])
 
                      /*  'departments'=>number($row['Product Category Departments']),
                        'families'=>number($row['Product Category Families']),

@@ -188,6 +188,7 @@ if($row=mysql_fetch_array($res)){
 
 $smarty->assign('show_case',$show_case);	
 $smarty->assign('part_custom_fields',$part_custom_fields);	
+$smarty->assign('number_part_custom_fields',count($part_custom_fields));	
 
 
 

@@ -4,7 +4,8 @@ if($_REQUEST['path']=='1')
 	$_path="../";
 elseif($_REQUEST['path']=='2')
 	$_path="../../";
-
+elseif($_REQUEST['path']=='3')
+	$_path="../sites/";
 ?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
@@ -92,6 +93,7 @@ data['Customer Address Postal Code']=Dom.get('register_address_postcode').value;
 data['Customer Address Country 2 Alpha Code']=Dom.get('register_address_country_2alpha_code').value;
 data['captcha_code']=Dom.get('captcha_code').value;
 
+
 data['ep']=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.get('epw2').value,256);
   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
@@ -102,7 +104,7 @@ Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
      var request=path+'inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
-// alert(request);
+ //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	
@@ -282,7 +284,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request=path+'inikoo_files/ar_register.php?tipo=forgot_password&values='+json_value;
- 
+ //alert(request)
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
@@ -399,6 +401,7 @@ Dom.setStyle('dialog_register','display','none');
 }
 
 function show_register_part_2_dialog(){
+
 Dom.get('captcha').src = path+'inikoo_files/securimage_show.php?height=40&' + Math.random();
 
 Dom.setStyle(['show_login_dialog','dialog_login','dialog_forgot_password','dialog_register'],'display','none');

@@ -44,6 +44,9 @@ var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var part_sku = <?php echo $_REQUEST['sku'] ?>;
 var Editor_change_part;
+var GeneralDescriptionEditor;
+var HealthAndSafetyEditor;
+
 
 var validate_scope_data = 
 {
@@ -54,12 +57,12 @@ var validate_scope_data =
 			'required': true,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part_Unit_Description',
+			'dbname': 'Part Unit Description',
 			'name': 'Part_Unit_Description',
 			'ar': false,
 			'validation': [{
 				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Part_Unit_Description ')?>'
+				'invalid_msg': '<?php echo _('Invalid Part Unit Description')?>'
 				
 			}]
 			
@@ -68,15 +71,15 @@ var validate_scope_data =
 		'gross_weight': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part_Gross_Weight',
+			'dbname': 'Part Gross Weight',
 			'name': 'Part_Gross_Weight',
 			'ar': false,
 			'validation': [{
 				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid Weight ')?>'
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'
 				
 			}]
 			
@@ -85,15 +88,15 @@ var validate_scope_data =
 		'package_volume': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part_Package_Volume',
+			'dbname': 'Part Package Volume',
 			'name': 'Part_Package_Volume',
 			'ar': false,
 			'validation': [{
 				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid Volume ')?>'
+				'invalid_msg': '<?php echo _('Invalid Volume')?>'
 				
 			}]
 			
@@ -102,15 +105,32 @@ var validate_scope_data =
 		'package_mov': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part_Package_Minimun_Orthogonal_Volume',
+			'dbname': 'Part Package Minimun Orthogonal Volume',
 			'name': 'Part_Package_MOV',
 			'ar': false,
 			'validation': [{
 				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid MOV ')?>'
+				'invalid_msg': '<?php echo _('Invalid MOV')?>'
+				
+			}]
+			
+		}
+		,
+		'tariff_code': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Tariff Code',
+			'name': 'Part_Tariff_Code',
+			'ar': false,
+			'validation': [{
+				'regexp': "\\d",
+				'invalid_msg': '<?php echo _('Invalid Tariff Code')?>'
 				
 			}]
 			
@@ -122,14 +142,10 @@ var validate_scope_data =
 			'required': true,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part_Unit',
-			'name': 'Part_Units_Type',
+			'dbname': 'Part Unit',
+			'name': 'Part_Unit_Type',
 			'ar': false,
-			'validation': [{
-				'regexp': "\\.+",
-				'invalid_msg': '<?php echo _('Invalid Unit Type ')?>'
-				
-			}]
+			'validation':false
 			
 		}
 
@@ -138,96 +154,36 @@ var validate_scope_data =
 		//  	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'part_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
 		
 	}
-	//   , 'part_price':{
-	//	'price':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Price','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
-	//	,'rrp':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_RRP','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
-	//   }
-	,
-	'part_weight': {
-		//	'unit_weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Unit_Weight','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
-		//	,'outer_weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Outer_Weight','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}	
-		//	,'gross_weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Part_Gross_Weight','name':'Part_Gross_Weight','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}	
-		}
-
-	,
-	'part_units': {
-		'units_per_case': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'name': 'part_Units_Per_Case',
-			'ar': false,
-			'validation': [{
-				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid Number ')?>'
-				
-			}]
-			
-		}
-		,
-		'units_type': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'name': 'part_Units_Type',
-			'ar': false,
-			'validation': [{
-				'regexp': "\\.+",
-				'invalid_msg': '<?php echo _('Invalid Unit Type ')?>'
-				
-			}]
-			
-		}
-
-
-		
-	}
+	
 
 	,
 	'part_description': {
 		'general_description': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 2,
 			'type': 'item',
-			'dbname': 'Part_General_Description',
-			'name': 'Part_General_Description',
+			'dbname': 'Part General Description',
+			'name': 'part_general_description',
 			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Description ')?>'
-				
-			}]
-			
+			'validation': false
 		}
-		,
-		'has_description': {
+	},
+'part_health_and_safety': {
+		'health_and_safety': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 2,
 			'type': 'item',
-			'dbname': 'Part_Health_And_Safety',
-			'name': 'Part_Health_And_Safety',
+			'dbname': 'Part Health And Safety',
+			'name': 'part_health_and_safety',
 			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Description ')?>'
-				
-			}]
-			
+			'validation': false
 		}
-
-
-		
-	}
-
-	,
+	},
+	
 	'part_custom_field': {
 		 <?php
 		 $i = 0;
@@ -258,32 +214,22 @@ var validate_scope_metadata = {
 		'key_name': 'sku',
 		'key': part_sku
 		
-	}
-	,
-	'part_price': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	}
-	,
-	'part_weight': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	}
-	,
+	},
+
 	'part_description': {
 		'type': 'edit',
 		'ar_file': 'ar_edit_assets.php',
 		'key_name': 'sku',
 		'key': part_sku
 		
-	}
-	,
+	},
+	'part_health_and_safety': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_assets.php',
+		'key_name': 'sku',
+		'key': part_sku
+		
+	},
 	'part_custom_field': {
 		'type': 'edit',
 		'ar_file': 'ar_edit_assets.php',
@@ -315,11 +261,13 @@ function validate_Part_Package_Volume(query) {
 
 function validate_Part_Package_MOV(query) {
 	validate_general('part_unit', 'package_mov', query);
-
-	
 }
 
-function validate_Part_Units_Type(query) {
+function validate_Part_Tariff_Code(query) {
+	validate_general('part_unit', 'tariff_code', query);
+}
+
+function validate_Part_Unit_Type(query) {
 	validate_general('part_unit', 'unit_type', query);
 
 	
@@ -491,15 +439,29 @@ function reset_edit_part_unit() {
 }
 
 function save_edit_part_description() {
+GeneralDescriptionEditor.saveHTML();
 	save_edit_general('part_description');
-
-	
 }
+
+function save_edit_part_health_and_safety() {
+HealthAndSafetyEditor.saveHTML();
+	save_edit_general('part_health_and_safety');
+}
+
+
 function reset_edit_part_description() {
 	reset_edit_general('part_description')
-
-	
+    GeneralDescriptionEditor.setEditorHTML(Dom.get('part_general_description').value);
 }
+
+function reset_edit_part_health_and_safety() {
+	reset_edit_general('part_health_and_safety')
+    HealthAndSafetyEditor.setEditorHTML(Dom.get('part_health_and_safety').value);
+}
+
+
+
+
 
 
 function save_edit_custom_field() {
@@ -514,27 +476,6 @@ function reset_edit_custom_field() {
 }
 
 
-function save_edit_price() {
-	save_edit_general('part_price');
-
-	
-}
-function reset_edit_price() {
-	reset_edit_general('part_price')
-
-	
-}
-
-function save_edit_weight() {
-	save_edit_general('part_weight');
-
-	
-}
-function reset_edit_weight() {
-	reset_edit_general('part_weight')
-
-	
-}
 
 
 function reset_part(key) {
@@ -576,7 +517,7 @@ function reset_part(key) {
 }
 
 function save_part() {
-	alert("x")
+	
 
 	 key = Dom.get("part_part_items").getAttribute("part_part_key");
 
@@ -972,7 +913,36 @@ function add_part_selected(sType, aArgs) {
 };
 
 
+function part_unit_change(o){
 
+var chosenoption=o.options[o.selectedIndex]
+
+value=chosenoption.value;
+ validate_scope_data['part_unit']['unit_type']['value']=value;
+Dom.get('Part_Unit_Type').value=value
+ovalue=Dom.get('Part_Unit_Type').getAttribute('ovalue');
+
+if(ovalue!=value){
+validate_scope_data['part_unit']['unit_type']['changed']=true;
+}else{
+validate_scope_data['part_unit']['unit_type']['changed']=false;
+}
+validate_scope('part_unit')
+
+
+}
+
+function geneal_description_editor_changed(){
+validate_scope_data['part_description']['general_description']['changed']=true;
+validate_scope('part_description')
+}
+
+
+
+function health_and_safety_editor_changed(){
+validate_scope_data['part_health_and_safety']['health_and_safety']['changed']=true;
+validate_scope('part_health_and_safety')
+}
 
 function init() {
 init_search('parts');
@@ -1009,6 +979,12 @@ init_search('parts');
 
 	Event.addListener('save_edit_part_description', "click", save_edit_part_description);
 	Event.addListener('reset_edit_part_description', "click", reset_edit_part_description);
+	
+	Event.addListener('save_edit_part_health_and_safety', "click", save_edit_part_health_and_safety);
+	Event.addListener('reset_edit_part_health_and_safety', "click", reset_edit_part_health_and_safety);	
+	
+	
+	
 
 	Event.addListener('save_edit_part_custom_field', "click", save_edit_custom_field);
 	Event.addListener('reset_edit_part_custom_field', "click", reset_edit_custom_field);
@@ -1046,12 +1022,19 @@ var part_unit_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Par
 	part_gross_weight_oAutoComp.minQueryLength = 0;
 	part_gross_weight_oAutoComp.queryDelay = 0.1;
 
-	var part_unit_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Units_Type);
-	part_unit_oACDS.queryMatchContains = true;
-	var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Units_Type", "Part_Units_Type_Container", part_unit_oACDS);
+
+var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tariff_Code);
+	part_Tariff_Code_oACDS.queryMatchContains = true;
+	var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Tariff_Code", "Part_Tariff_Code_Container", part_Tariff_Code_oACDS);
 	part_gross_weight_oAutoComp.minQueryLength = 0;
 	part_gross_weight_oAutoComp.queryDelay = 0.1;
 
+
+	
+	
+
+
+	
 	var part_general_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_General_Description);
 	part_general_description_oACDS.queryMatchContains = true;
 	var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_General_Description", "Part_General_Description_Container", part_general_description_oACDS);
@@ -1119,6 +1102,118 @@ var part_unit_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Par
 	part_name_oAutoComp.queryDelay = 0.1;
 */
 	
+       var myConfig = {
+        height: '300px',
+        width: '890px',
+        animate: true,
+        dompath: true,
+        focusAtStart: false,
+          toolbar: {
+        titlebar: 'My Editor',
+        buttons: [
+    { group: 'fontstyle', label: 'Font Name and Size',
+        buttons: [
+            { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+                menu: [
+                    { text: 'Arial', checked: true },
+                    { text: 'Arial Black' },
+                    { text: 'Comic Sans MS' },
+                    { text: 'Courier New' },
+                    { text: 'Lucida Console' },
+                    { text: 'Tahoma' },
+                    { text: 'Times New Roman' },
+                    { text: 'Trebuchet MS' },
+                    { text: 'Verdana' }
+                ]
+            },
+            { type: 'spin', label: '13', value: 'fontsize', range: [ 9, 75 ], disabled: true }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'textstyle', label: 'Font Style',
+        buttons: [
+            { type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+            { type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+            { type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+          
+            { type: 'separator' },
+            { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+            { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true },
+            { type: 'separator' },
+            { type: 'push', label: 'Remove Formatting', value: 'removeformat', disabled: true },
+          
+        ]
+    },
+    { type: 'separator' },
+    { group: 'alignment', label: 'Alignment',
+        buttons: [
+            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' },
+            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' },
+            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' },
+            { type: 'push', label: 'Justify', value: 'justifyfull' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'parastyle', label: 'Style',
+        buttons: [
+        { type: 'select', label: 'Normal', value: 'heading', disabled: true,
+            menu: [
+                { text: 'Normal', value: 'none', checked: true },
+                { text: 'Header 1', value: 'h1' },
+                { text: 'Header 2', value: 'h2' },
+                { text: 'Header 3', value: 'h3' },
+                { text: 'Header 4', value: 'h4' },
+                { text: 'Header 5', value: 'h5' },
+                { text: 'Header 6', value: 'h6' }
+            ]
+        }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'indentlist', label: 'Lists',
+        buttons: [
+          
+            { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
+            { type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'insertitem', label: 'Insert Item',
+        buttons: [
+            { type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true },
+            { type: 'push', label: 'Insert Image', value: 'insertimage' }
+        ]
+    }
+]
+
+    }
+        
+    };
+    
+  
+    GeneralDescriptionEditor = new YAHOO.widget.Editor('part_general_description', myConfig);
+    GeneralDescriptionEditor.on('toolbarLoaded', function() {
+         this.on('editorKeyUp', geneal_description_editor_changed, this, true);
+                this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
+                this.on('editorMouseDown', geneal_description_editor_changed, this, true);
+                this.on('buttonClick', geneal_description_editor_changed, this, true);
+    }, GeneralDescriptionEditor, true);
+    yuiImgUploader(GeneralDescriptionEditor, 'part_general_description', 'ar_upload_file_from_editor.php','image');
+    GeneralDescriptionEditor.render();
+
+    HealthAndSafetyEditor = new YAHOO.widget.Editor('part_health_and_safety', myConfig);
+    HealthAndSafetyEditor.on('toolbarLoaded', function() {
+         this.on('editorKeyUp',  health_and_safety_editor_changed, this, true);
+                this.on('editorDoubleClick', health_and_safety_editor_changed, this, true);
+                this.on('editorMouseDown', health_and_safety_editor_changed, this, true);
+                this.on('buttonClick', health_and_safety_editor_changed, this, true);
+    }, HealthAndSafetyEditor, true);
+    yuiImgUploader(HealthAndSafetyEditor, 'part_health_and_safety', 'ar_upload_file_from_editor.php','image');
+    HealthAndSafetyEditor.render();
+
+
+
+
 
 
 }
@@ -1180,14 +1275,14 @@ function() {
 		this.dataSource0.responseSchema = {
 			resultsList: "resultset.data",
 			metaFields: {
-				rowsPerPage: "resultset.records_perpage",
-				rtext: "resultset.rtext",
-				rtext_rpp: "resultset.rtext_rpp",
-				sort_key: "resultset.sort_key",
-				sort_dir: "resultset.sort_dir",
-				tableid: "resultset.tableid",
-				filter_msg: "resultset.filter_msg",
-				totalRecords: "resultset.total_records"
+				    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 
 				
 			},
@@ -1265,14 +1360,14 @@ function() {
 		this.dataSource1.responseSchema = {
 			resultsList: "resultset.data",
 			metaFields: {
-				rowsPerPage: "resultset.records_perpage",
-				rtext: "resultset.rtext",
-				rtext_rpp: "resultset.rtext_rpp",
-				sort_key: "resultset.sort_key",
-				sort_dir: "resultset.sort_dir",
-				tableid: "resultset.tableid",
-				filter_msg: "resultset.filter_msg",
-				totalRecords: "resultset.total_records"
+				    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 
 				
 			},
@@ -1445,29 +1540,6 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", 
-function() {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
-		trigger: "rtext_rpp0"
-		
-	});
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-
-	
-});
-
-YAHOO.util.Event.onContentReady("filtermenu0", 
-function() {
-	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
-		trigger: "filter_name0"
-		
-	});
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-
-	
-});
 
 
 function close_change_part_dialog() {
@@ -1530,14 +1602,11 @@ fields: ["info", "sku", "description", "usedin", "formated_sku"]
 	};
 	var new_loc_oAC = new YAHOO.widget.AutoComplete("change_part", "change_part_container", new_loc_oDS);
 
-
 	new_loc_oAC.generateRequest = function(sQuery) {
 
 		sku = Dom.get("change_part_sku").value;
 		request = "?tipo=find_part&except_part=" + sku + "&query=" + sQuery;
-
 		return request;
-
 		
 	};
 	new_loc_oAC.forceSelection = true;
@@ -1556,3 +1625,29 @@ function remove_part(sku) {
 
 	
 }
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+		trigger: "rtext_rpp0"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+YAHOO.util.Event.onContentReady("filtermenu0", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+		trigger: "filter_name0"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+

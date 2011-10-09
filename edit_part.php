@@ -125,7 +125,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'js/common.js',
 		'js/search.js',
-	
+	    'js/editor_image_uploader.js',    
 		'js/table_common.js',
 		'js/upload_image.js',
 		'js/edit_common.js',
@@ -169,34 +169,7 @@ $smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
 /* $cats=array(); */
 
 //print $sql;
-/*
 
-$nodes=new nodes('`Category Dimension`');
-$nodes->sql_condition = "AND `Category Subject`='Product' " ;
-$nodes->load_comb();
-$comb=$nodes->comb;
-
-
-$sql=sprintf("select PCB.`Category Key`,`Category Position` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'    " ,$product->pid);
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
-  $parents=preg_replace('/\d+>$/','',$row['Category Position']);
-  $root=preg_replace('/>.*$/','',$row['Category Position']);
-  // print "$root $parents ".$row['Category Key']."\n";
-  $comb[$root]['teeth'][$parents]['elements'][$row['Category Key']]['selected']=true;
-  
-  
-
-}
-mysql_free_result($res);
-
-$smarty->assign('categories',$comb);
-$smarty->assign('number_categories',count($comb));
-$_parts=array();
-foreach($parts_info as $key=>$value){
-$_parts[$key]=$key;
-}
-*/
 
 //$js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s',
  //   $product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
@@ -204,7 +177,7 @@ $_parts[$key]=$key;
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$units_types=getEnumValues("Product Dimension","Product Unit Type" );
+$units_types=getEnumValues("Part Dimension","Part Unit" );
 //print_r($units_types);
 $unit_type_options=array();
 foreach($units_types as $units_type ){
@@ -212,28 +185,18 @@ foreach($units_types as $units_type ){
 }
 
 $smarty->assign('unit_type_options',$unit_type_options
+
                                 );
-//$smarty->assign('unit_type',$product->data['Product Unit Type']);
+$smarty->assign('unit_type',$part->data['Part Unit']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('title',_('Editing').' '.$part->formated_sku());
 
 
-//while($row=mysql_fetch_array($res)){
-  //$tree=preg_split('/>/',$row['Category Position']);
-  //print $row['Category Key'];
-  //print_r($nodes->fetch($row['Category Key']));
-  //$cat_theme[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
-//}
-//mysql_free_result($res);
 
-//$smarty->assign('cat_use',$cat_use);
-//$smarty->assign('cat_material',$cat_material);
-//$smarty->assign('cat_theme',$cat_theme);
-
-
-//show case 		
+/*
+ Do this inside class.Part.php
 $custom_field=Array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
 $res = mysql_query($sql);
@@ -252,8 +215,14 @@ if($row=mysql_fetch_array($res)){
 		$show_case[$value]=Array('value'=>$row[$key], 'lable'=>$key);
 	}
 }
-//print_r($show_case);
+
 $smarty->assign('show_case',$show_case);
+*/
+
+
+
+
+
 $smarty->assign('warehouse',$warehouse);
 
 $smarty->display('edit_part.tpl');

@@ -1,16 +1,14 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+<div> 
+  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')}</span>
+</div>
 
 <input value="{$delivery_note->id}" id="dn_key" type="hidden"/>
-  <div id="control_panel" class="yui-b">
+  <div id="control_panel"  >
 
- <div style="text-align:right">
-	<span class="state_details" id="continue_later" style="{if $picked}display:none{/if}"><a href="warehouse_orders.php">{t}Continue Later{/t}</a></span>
-	<span class="state_details" id="finish" style="{if !$picked}display:none;{/if}margin-left:20px"><a href="warehouse_orders.php">{t}Close{/t}</a></span>
 
-      </div>
-    <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
+    <div  style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Picking for Delivery Note{/t} {$delivery_note->get('Delivery Note ID')}</h1>
@@ -19,18 +17,23 @@
 	<div style="clear:both"></div>
        </div>
 
+   <div style="width:120px;float:right;margin-left:20px;">
+    <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
+    <tr><td  ><a href="order_pick_aid.pdf.php?&id={$delivery_note->id}" target="_blank">{t}Print Order{/t}</a></td></tr>
+    <tr><td  ><a href="order_pick_aid.php?id={$delivery_note->id}&refresh" target="_blank">{t}Refresh Order{/t}</a></td></tr>
 
-      <div style="border:0px solid #ddd;width:430px;float:right;xdisplay:none">
+
+</table>
+       
+       </div>
+      <div style="border:0px solid #ddd;width:330px;float:right;">
           
-	 <table border=0  style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
+	 <table  style="display:none;width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 
-<tbody id="resend" style="display:none">
-
+        <tbody id="resend" style="xdisplay:none">
 		        <tr><td  class="aright" >{t}Picker{/t}:</td><td id="assigned_picker" key="{$delivery_note->get('Delivery Note Assigned Picker Key')}"  class="aright">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td></tr>
-
 	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_picked_transactions">{$number_picked_transactions}</span>/<span id="number_transactions">{$number_transactions}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Faction Picked')}</span></td></tr>
-	
-</tbody>
+        </tbody>
 
 	   
 	   
@@ -39,10 +42,14 @@
 	 </table>
        </div>
 
-      
-       
+    
        <div style="clear:both"></div>
       </div>
+      
+      
+      
+      
+      
     <div class="data_table"  style="clear:both">
 	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
 	<div id="table_type" style="display:none">

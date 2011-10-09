@@ -187,15 +187,16 @@ function register_customer($data) {
 
 function change_password($data) {
     global $user;
-
+//print_r($data);
   //  print_r($data['values']);
   //  print "\n". $user->id;
     
     $_key=md5($user->id.'insecure_key'.$data['values']['ep2']);
     $password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
 
-    
-   // exit($password);
+   // print "Key:$_key\n";
+//	print "Pass:$password\n";
+ //   exit($password);
     $user->change_password($password);
     if ($user->updated) {
         $response=array('state'=>200,'result'=>'ok',);
@@ -346,7 +347,8 @@ function generate_password($length=9, $strength=0) {
     return $password;
 }
 
-function create_customer_user($handle,$customer_key,$site_key,$password, $send_email=true) {
+function create_customer_user($handle,$customer_key,$site_key,$password, $send_email_flag=true) {
+	//$handle='migara@inikoo.com';
 
     global $site,$store;
 
@@ -377,26 +379,45 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
             return array(0,$user->msg);
 
         } else {
-
-
+		
+		//print $send_key;exit;
+		
+		
         $email_credential_key=$store->get_email_credential_key('Site Registration');
+		//print $email_credential_key;exit;
 
             $welcome_email_subject="Thank you for your registration with ".$site->data['Site Name'];
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
+			
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
+			
+			//$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
+			//print $welcome_email_html;exit;
+			
+			
+		$data=array('email_type'=>'Registration',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user->id);
+		$send_email=new SendEmail($data);
+		
 
- $data=array(
-                
-                  'subject'=>$welcome_email_subject,
-                  'plain'=>$welcome_email_plain,
-                  'email_credentials_key'=>$email_credential_key,
-                  'to'=>$handle,
-                  'html'=>$welcome_email_html,
+//print_r($data);exit;
+		if($send_email_flag){
+			$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
 
-              );
-
-		if($send_email){
-        $send_email=new SendEmail();
+		
+			$data=array(
+					
+					  'subject'=>$welcome_email_subject,
+					  'plain'=>$welcome_email_plain,
+					  'email_credentials_key'=>$email_credential_key,
+					  'to'=>$handle,
+					  'html'=>$welcome_email_html,
+					  'email_type'=>'Registration',
+					  'recipient_type'=>'User',
+					  'recipient_key'=>$user->id
+				  );
+        //$send_email=new SendEmail();
         $send_email->smtp('HTML', $data);
         $result=$send_email->send();
 		}
@@ -501,6 +522,16 @@ $formated_url=preg_replace('/^http\:\\/\\//','',$url);
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
+					  
+		
+		$data=array('email_type'=>'Password Reminder',
+				  'recipient_type'=>'User',
+				  'recipient_key'=>$user->id);
+				  
+		$send_email=new SendEmail($data);
+		
+		$html_message=$send_email->track_sent_email($html_message);
+		//print $html_message;			  
 
 $files=array();	
         $to=$login_handle;
@@ -511,7 +542,8 @@ $files=array();
                   'email_credentials_key'=>$email_credential_key,
                   'to'=>$to,
                   'html'=>$html_message,
-					'attachement'=>$files
+				  'attachement'=>$files
+				  
               );
 		if(isset($data['plain']) && $data['plain']){
 			$data['plain']=$data['plain'];
@@ -519,8 +551,8 @@ $files=array();
 		else
 			$data['plain']=null;
 			
-        $send_email=new SendEmail();
-        $send_email->smtp('plain', $data);
+        //$send_email=new SendEmail();
+        $send_email->smtp('html', $data);
         $result=$send_email->send();
 
 		//print_r($result);
@@ -645,12 +677,20 @@ function register($data) {
 
     if ($response['state']==200 and $response['action']=='created' ) {
         // $ep=rawurldecode($data['ep']);
-
+		$customer=new Customer($response['customer_key']);
+		if($data['values']['Customer Send Postal Marketing']=='Yes'){
+			$sql=sprintf("insert into `Marketing Post Sent Fact` (`Marketing Post Key`, `Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, %d, NOW())", 1, $customer->id, $customer->get('Customer Store Key'));
+			//print $sql;
+			$result=mysql_query($sql);
+		}
+		
 
         $password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 
         list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
 
+		//print $user_key;
+		
         if ($user_key) {
 
             $_SESSION['logged_in']=true;

@@ -39,20 +39,27 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
-		
+		'supplier_user.js.php'
 		);
 
-
+$block_view=$_SESSION['state']['staff_user']['block_view'];
+$smarty->assign('block_view',$block_view);
+//$smarty->assign('user_key',$_REQUEST['id']);
+$general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'forgot_password','label'=>_('Forgot Password'));
+$smarty->assign('search_scope','users');
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('parent','users');
 $id=$_REQUEST['id'];
 
 
-$user_supplier=new User($id);
- print($user_supplier->data['User Type']);  //User Type is not selected
+$user_customer=new User($id);
+//print($user_customer->data['User Type']);  //User Type is not selected
 
 $title=_('Supplier User');
-$smarty->assign('user_class',$user_supplier);
 
+$smarty->assign('user_class',$user_customer);
+//$smarty->assign('user_store',$_REQUEST['store']);
 
 $smarty->assign('title', $title);
 $smarty->assign('css_files',$css_files);

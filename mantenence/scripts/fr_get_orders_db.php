@@ -8,6 +8,8 @@ include_once('../../class.Order.php');
 include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
+include_once('../../class.PartLocation.php');
+
 include_once('../../class.CurrencyExchange.php');
 include_once('common_read_orders_functions.php');
 

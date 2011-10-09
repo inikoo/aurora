@@ -85,7 +85,7 @@ $header=<<<EOD
 
 
 EOD;
-if($path=="../"){
+if($path=="../" || $path=="../sites/"){
 $header='';
 }
 ?>

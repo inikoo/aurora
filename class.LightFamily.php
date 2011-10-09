@@ -32,10 +32,9 @@ class LightFamily {
             $sql=sprintf("select * from `Product Family Dimension` where `Product Family Key`=%s",prepare_mysql($id));
         elseif($tag=='code')
         $sql=sprintf("select * from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Store Key`=%d",prepare_mysql($id),$id2);
+		
         else
             return false;
-
-
 
         $result=mysql_query($sql);
 

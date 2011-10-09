@@ -10,8 +10,18 @@ require("external_libs/mail/sasl.php");
 
 class SendEmail extends DB_Table{
 
-	function SendEmail(){
+	function SendEmail($data=false){
 		$this->method='smtp';
+		$this->email_type='Registration';
+		$this->recipient_type='User';
+		$this->recipient_key=0;
+		$this->email_key=0;
+		
+		if(isset($data) and $data){
+			$this->email_type=$data['email_type'];
+			$this->recipient_key=$data['recipient_key'];
+			$this->recipient_type=$data['recipient_type'];
+		}
 		
 	}
 	
@@ -21,6 +31,9 @@ class SendEmail extends DB_Table{
 	
 	function smtp($type, $data){
 		
+		//$this->email_type=$data['email_type'];
+		//$this->recipient_key=$data['recipient_key'];
+		//$this->recipient_type=$data['recipient_type'];
 		
 		switch($this->method){
 		case 'smtp':
@@ -480,13 +493,13 @@ class SendEmail extends DB_Table{
 			
 			
 			$sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
-					
+			//print $sql;		
 			$result=mysql_query($sql);
 			if($row=mysql_fetch_array($result)){
 				$this->m->addTo($data['to']);
 				$this->m->setFrom($row['Email Address']);
 				$this->m->setSubject($data['subject']);
-				
+				$this->m->setReturnPath($data['return_path']);
 				
 				//$ses->sendEmail($m)
 			}
@@ -494,7 +507,7 @@ class SendEmail extends DB_Table{
 				print 'No email Credential Matching';
 				exit;
 			}
-			switch($data['type']){
+			switch($type){
 				case 'plain':
 				case 'PLAIN':
 					$this->m->setMessageFromString($data['plain']);
@@ -518,6 +531,7 @@ class SendEmail extends DB_Table{
 	}
 	
 	function send(){
+	
 	//print_r($this->m);exit;
 		switch($this->method){
 			case 'amazon':
@@ -532,8 +546,10 @@ class SendEmail extends DB_Table{
 			$error=$this->message_object->Send();
 			for($recipient=0,Reset($this->message_object->invalid_recipients);$recipient<count($this->message_object->invalid_recipients);Next($this->message_object->invalid_recipients),$recipient++)
 				$response= "Invalid recipient: ".Key($this->message_object->invalid_recipients)." Error: ".$this->message_object->invalid_recipients[Key($this->message_object->invalid_recipients)]."\n";
-			if(strcmp($error,""))
+			if(strcmp($error,"")){
 				$response=  array('state'=>400,'msg'=>$error);
+				
+			}
 			else
 				$response=  array('state'=>200,'msg'=>'ok');
 
@@ -544,6 +560,8 @@ class SendEmail extends DB_Table{
 			
 			
 		}
+		
+		//$this->update_email_dimension();
 		return $response;
 	}
 	
@@ -715,6 +733,42 @@ class SendEmail extends DB_Table{
 			
 		}
 		return $result;
+	}
+	
+	
+	function update_email_dimension(){
+		
+		$sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Date`) values ('%s', %d, '%s', '%s', '%s', NOW())", $this->email_type, 0, $this->recipient_type, $this->recipient_key, $this->email_key);
+		
+		$result=mysql_query($sql);
+		return mysql_insert_id();
+		//print $sql;
+		
+	}
+	
+	function track_sent_email($html_messasge, $track=true){
+		if($track){
+			$sql=sprintf("select * from `Configuration Dimension`");
+			$result=mysql_query($sql);
+			if($row=mysql_fetch_array($result)){
+				$public_path=$row['Public Path'];
+			}
+			
+			if($send_key=$this->update_email_dimension()){
+				$html_messasge.=sprintf('<br/><img src="%s/track.php?sendkey=%s">', $public_path, $send_key);
+			}
+		}
+		return $html_messasge;
+	}
+	
+	
+	function generate_unsubscribe_email($type='Newsletter', $customer_id, $generate=true){
+		if(!$generate){
+			return;
+		}
+		
+		$link='<a href="localhost/unsubscribe.php?key=$customer_id&type=$type"';
+		return $link;
 	}
   
 }
