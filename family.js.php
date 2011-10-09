@@ -285,7 +285,7 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
     Event.addListener("info_previous", "click",previous_info_period,0);
 
     
-    Event.addListener('details', "click",change_details,'family');
+  
     //Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 

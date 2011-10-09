@@ -65,7 +65,7 @@ $smarty->assign('modify',$modify);
 $general_options_list=array();
 
 //if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_page.php?id='.$page->id,'label'=>_('Edit Page'));
+    $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_page.php?id='.$page->id,'label'=>_('Edit Page'));
 
 
 $smarty->assign('general_options_list',$general_options_list);
@@ -77,7 +77,6 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
               	 $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',

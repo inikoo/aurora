@@ -4147,10 +4147,7 @@ ADD `Supplier Total Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
 ALTER TABLE `Supplier Product Dimension` DROP `Supplier Product XHTML Used In`;
 
-ALTER TABLE `Supplier Product Dimension` CHANGE `Supplier Product Store As` `Supplier Product Store As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-CHANGE `Supplier Product XHTML Store As` `Supplier Product XHTML Store As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-CHANGE `Supplier Product Sold As` `Supplier Product Sold As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-CHANGE `Supplier Product XHTML Sold As` `Supplier Product XHTML Sold As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Supplier Product Dimension` CHANGE `Supplier Product Store As` `Supplier Product Store As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Supplier Product XHTML Store As` `Supplier Product XHTML Store As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Supplier Product Sold As` `Supplier Product Sold As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Supplier Product XHTML Sold As` `Supplier Product XHTML Sold As` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
 ALTER TABLE `Part Dimension`
   DROP `Part 3 Year Acc Absolute Profit`,
@@ -4769,10 +4766,10 @@ ADD `Supplier Product Last Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0'
 ADD `Supplier Product Last Week Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product Last Week Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Page Store Dimension` ADD `Page Parent Code` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Page Parent Key` ;
 
-CREATE TABLE `dw`.`Page Snapshot Fact` (
+CREATE TABLE `Page Snapshot Fact` (
 `Date` DATE NOT NULL ,
 `Site Key` SMALLINT UNSIGNED NULL DEFAULT NULL ,
 `Page Key` MEDIUMINT UNSIGNED NOT NULL ,
@@ -4787,9 +4784,14 @@ ALTER TABLE `Page Snapshot Fact` ADD INDEX ( `Page Key` ) ;
 ALTER TABLE `Page Snapshot Fact` ADD INDEX ( `Date` ) ;
 
 
+CREATE TABLE `Page Store See Also Bridge` (
+`Page Store Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Page Store See Also Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Page Store Key` , `Page Store See Also Key` )
+) ENGINE = MYISAM ;
 
-
-
+ALTER TABLE `Page Store Dimension` ADD `Page Store See Also Type` ENUM( 'Auto', 'Manual' ) NOT NULL DEFAULT 'Auto' AFTER `Page Store Resume` ,ADD INDEX ( `Page Store See Also Type` ) ;
+ALTER TABLE `Page Store See Also Bridge` ADD `Correlation Type` ENUM( 'Manual', 'Sales', 'Semantic' ) NOT NULL ,ADD `Correlation Value` FLOAT NULL DEFAULT NULL ;
 
 */
 

@@ -74,10 +74,10 @@ function is_page_store_code($data) {
     $res=mysql_query($sql);
 
     if ($data=mysql_fetch_array($res)) {
-        $msg=sprintf('A page in this site (<a href="%s">%s</a>) already has this code (%s)'
+        $msg=sprintf('A page in this site %s already has this code (%s)'
             
                      ,$data['Page URL']
-                     ,$data['Page URL']
+                   
                       ,$data['Page Code']
                     );
         $response= array(
