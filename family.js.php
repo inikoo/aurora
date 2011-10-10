@@ -202,7 +202,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 
-	    this.dataSource4 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&parent=family&tableid=4&parent_key="+Dom.get('family_key').value);
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+Dom.get('family_key').value);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
 	    this.dataSource4.responseSchema = {
