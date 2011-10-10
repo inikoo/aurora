@@ -188,6 +188,74 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		
 
+ var tableid=4; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"type", label:"<?php echo _('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"title", label:"<?php echo _('Title')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+						    
+				    
+				    
+				     ];
+
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&parent=family&tableid=4&parent_key="+Dom.get('family_key').value);
+	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id','title','code','url','type'
+						 ]};
+	    
+	    this.table4 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource4, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['family']['pages']['nr']?>,containers : 'paginator4', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['family']['pages']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['family']['pages']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	    
+	    this.table4.filter={key:'<?php echo$_SESSION['state']['family']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['pages']['f_value']?>'};
+		
+
+
+
 
 
 
