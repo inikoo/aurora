@@ -282,7 +282,7 @@
 <div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
 
-    <span   class="clean_table_title" style="">{t}Web Pages{/t}</span>
+    <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>
  <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
@@ -455,9 +455,8 @@
 <a href="product_categories.php?store_id={$store->id}id=0">{t}Product Category Page{/t}</a>
 </div>
 <div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-   <span   class="clean_table_title" style="">{t}Pages{/t}</span>
-
-   
+  
+  <span   class="clean_table_title" style="">{t}Pages{/t}</span> 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
     
    

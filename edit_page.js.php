@@ -1,7 +1,7 @@
 <?php  include_once('common.php'); ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-
+var select_page_operation=false;
 
 function save_see_also_type(value){
 
@@ -14,7 +14,7 @@ var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom
 //	alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-alert(o.responseText)
+//alert(o.responseText)
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				
 				if(r.state==200){
@@ -25,7 +25,7 @@ alert(o.responseText)
                            Dom.removeClass(['see_also_type_Auto','see_also_type_Manual'],'selected');
 
                Dom.addClass('see_also_type_'+r.newvalue,'selected');
-
+                          location.href='edit_page.php?id='+r.page_key;
             }else{
                 alert(r.msg)
             }
@@ -63,6 +63,78 @@ function delete_found_in_page( page_key ) {
 }
 
 
+function delete_see_also_page( page_key ) {
+	
+	var request='ar_edit_sites.php?tipo=delete_see_also_page&id=' + Dom.get('page_key').value +'&see_also_key='+page_key
+	           
+	          
+//alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	      //     alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+        location.href='edit_page.php?id='+r.page_key;
+                                  }else{
+                                  
+                                  
+                                  
+                                  }
+   			}
+    });
+
+	
+}
+
+
+
+function show_dialog_page_list(e,type){
+select_page_operation=type;
+dialog_page_list.show();
+}
+
+function select_page(oArgs){
+if(select_page_operation=='found_in'){
+select_found_in_page(oArgs)
+}else if(select_page_operation=='see_also'){
+select_see_also_page(oArgs)
+}else{
+ dialog_page_list.hide();
+}
+
+}
+
+
+
+function select_see_also_page(oArgs){
+
+
+see_also_key=tables.table7.getRecord(oArgs.target).getData('key');
+
+ dialog_page_list.hide();
+
+
+	var request = 'ar_edit_sites.php?tipo=add_see_also_page&id=' + Dom.get('page_key').value + '&see_also_key=' + see_also_key;
+	 //alert(request);
+
+	YAHOO.util.Connect.asyncRequest('POST', request, {
+		success: function(o) {
+			//salert(o.responseText);
+			var r = YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {
+				
+                    location.href='edit_page.php?id='+r.page_key;
+			} else {
+
+
+				}	
+		}		
+	});
+ 
+
+}
+
+
 function select_found_in_page(oArgs){
 
 
@@ -72,7 +144,7 @@ found_in_key=tables.table7.getRecord(oArgs.target).getData('key');
 
 
 	var request = 'ar_edit_sites.php?tipo=add_found_in_page&id=' + Dom.get('page_key').value + '&found_in_key=' + found_in_key;
-	 alert(request);
+	 
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
 		success: function(o) {
@@ -168,7 +240,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  this.table7.subscribe("rowMouseoverEvent", this.table7.onEventHighlightRow);
        this.table7.subscribe("rowMouseoutEvent", this.table7.onEventUnhighlightRow);
-      this.table7.subscribe("rowClickEvent", select_found_in_page);
+      this.table7.subscribe("rowClickEvent", select_page);
         this.table7.table_id=tableid;
            this.table7.subscribe("renderEvent", myrenderEvent);
 
@@ -359,8 +431,8 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_ot
     dialog_page_list.render();
 	
 
-     Event.addListener("add_other_found_in_page", "click", dialog_page_list.show,dialog_page_list , true);
-
+     Event.addListener("add_other_found_in_page", "click", show_dialog_page_list,'found_in', true);
+  Event.addListener("add_other_see_also_page", "click", show_dialog_page_list,'see_also' , true);
     var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS7.queryMatchContains = true;
  oACDS7.table_id=7;
@@ -372,6 +444,8 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_ot
 
 
 }
+
+
 
 
 YAHOO.util.Event.onDOMReady(init);
