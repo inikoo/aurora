@@ -2616,7 +2616,6 @@ function list_products() {
 
 
             }
-// -------------------------Start Product's  3 Year-------------------------------------------
             elseif($period=='three_year') {
 
 
@@ -2663,7 +2662,6 @@ function list_products() {
                 }
                 $margin=$row['Product 3 Year Acc Margin'];
             }
-// -------------------------End Product's  3 Year-------------------------------------------
             elseif($period=='year') {
 
 
@@ -2710,8 +2708,6 @@ function list_products() {
                 }
                 $margin=$row['Product 1 Year Acc Margin'];
             }
-
-// -------------------------Start Product's  YeartoDay-------------------------------------------
             elseif($period=='yeartoday') {
 
 
@@ -2758,8 +2754,6 @@ function list_products() {
                 }
                 $margin=$row['Product YearToDay Acc Margin'];
             }
-// -------------------------End Product's  YearToDay-------------------------------------------
-// -------------------------Start Product's  6 Month-------------------------------------------
             elseif($period=='six_month') {
 
 
@@ -2806,9 +2800,6 @@ function list_products() {
                 }
                 $margin=$row['Product 6 Month Acc Margin'];
             }
-// -------------------------End Product's  6 Month-------------------------------------------
-
-
             elseif($period=='quarter') {
                 if ($avg=='totals')
                     $factor=1;
@@ -2855,10 +2846,6 @@ function list_products() {
                 $margin=$row['Product 1 Quarter Acc Margin'];
 
             }
-
-
-
-
             elseif($period=='month') {
                 if ($avg=='totals')
                     $factor=1;
@@ -2904,9 +2891,6 @@ function list_products() {
                 }
                 $margin=$row['Product 1 Month Acc Margin'];
             }
-
-
-// -------------------------Start Product's  10 day-------------------------------------------
             elseif($period=='ten_day') {
 
 
@@ -2953,8 +2937,6 @@ function list_products() {
                 }
                 $margin=$row['Product 10 Day Acc Margin'];
             }
-// -------------------------End Product's  10 days-------------------------------------------
-
             elseif($period=='week') {
                 if ($avg=='totals')
                     $factor=1;
@@ -3002,9 +2984,6 @@ function list_products() {
                 $margin=$row['Product 1 Week Acc Margin'];
 
             }
-
-
-
         }
 
         if (is_numeric($row['Product Availability']))
@@ -3036,66 +3015,52 @@ function list_products() {
 
 
 
-
-
-
         switch ($row['Product Main Type']) {
         case('Historic'):
-            $web_state=_('Historic Product').' ('._('Offline').')';
+            $main_type=_('Historic');
             break;
         case('Private'):
-            $web_state=_('Private Sale').' ('._('Offline').')';
+            $main_type=_('Private');
             break;
         case('NoSale'):
-            $web_state=_('Not for Sale').' ('._('Offline').')';
+            $main_type=_('Not for Sale');
         case('Discontinued'):
-            $web_state=_('Discontinued').' ('._('Offline').')';
+            $main_type=_('Discontinued');
             break;
         case('Sale'):
-
-
-            switch ($row['Product Web Configuration']) {
-            case('Online Force Out of Stock'):
-                $formated_web_configuration=_('Force out of stock');
-                break;
-            case('Offline'):
-                $formated_web_configuration=_('Force Offline');
-                break;
-            case('Online Force For Sale'):
-                $formated_web_configuration=_('Force Online');
-                break;
-            default:
-                $formated_web_configuration='('._('Auto').')';
-            }
-
-            switch ($row['Product Web State']) {
-            case('Out of Stock'):
-                $_web_state='<span class=="out_of_stock">'._('Out of Stock').'</span>';
-                break;
-            case('For Sale'):
-                $_web_state='<span class=="online">'._('Online').'</span>';
-                break;
-            case('Discontinued'):
-                $_web_state=_('Discontinued');
-            case('Offline'):
-                $_web_state=_('Offline');
-            default:
-                $_web_state=$row['Product Web State'];
-
-
-                break;
-
-
-            }
-
-
-            $web_state=$_web_state.' '.$formated_web_configuration;
-
+            $main_type=_('For Sale');
             break;
         default:
-            $web_state='?';
+            $main_type=$row['Product Main Type'];
+
         }
 
+$web_configuration='';
+        switch ($row['Product Web State']) {
+
+        case('For Sale'):
+        if($row['Product Web Configuration']='Online Force For Sale')
+            $web_configuration='('._('forced').')';
+        
+            $formated_web_configuration='<span class="web_online">'._('Online')." $web_configuration</span>";
+            break;
+        case('Offline'):
+         if($row['Product Web Configuration']='Offline')
+            $web_configuration='('._('forced').')';
+            $formated_web_configuration='<span class="web_offline">'._('Offline')." $web_configuration</span>";
+            break;
+        case('Out of Stock'):
+        if($row['Product Web Configuration']='Online Force Out of Stock')
+            $web_configuration='('._('forced').')';
+            $formated_web_configuration='<span class="web_out_of_stock">'._('Out of Stock')." $web_configuration</span>";
+            break;
+        case('Discontinued'):
+            $formated_web_configuration='<span class="web_discontinued">'._('Discontinued')." $web_configuration</span>";
+            break;
+        default:
+            $formated_web_configuration=$row['Product Web State'];
+
+        }
 
 
 
@@ -3137,7 +3102,7 @@ function list_products() {
                      'margin'=>$margin,
                      'sold'=>(is_numeric($sold)?number($sold):$sold),
                      'state'=>$type,
-                     'web'=>$web_state,
+                     'web'=>$formated_web_configuration,
                      'image'=>$row['Product Main Image'],
                      'type'=>'item',
                      'name_only'=>$row['Product Name'],

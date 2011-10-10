@@ -1425,7 +1425,7 @@ return $locations;
 
                     );
         $result=mysql_query($sql);
-        print "$sql\n";
+      //  print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data["Part $db_interval Acc Profit"]=-1.0*$row['profit'];
             $this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
@@ -1540,7 +1540,7 @@ return $locations;
 
         mysql_query($sql);
 
-        print "$sql\n";
+       // print "$sql\n";
 
 
 
