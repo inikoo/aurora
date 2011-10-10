@@ -1205,19 +1205,22 @@ class Family extends DB_Table {
         //$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=0;
         //$this->data["Product Family DC $db_interval Acc Profit"]=0;
 
-        $sql=sprintf("select count(distinct `Invoice Key`) as invoices,sum(`Invoice Transaction Total Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+        $sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
+        sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
                      $this->id,
                      prepare_mysql($from_date),
                      ($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
                     );
+                    
         $result=mysql_query($sql);
-        print "$sql\n";
+       
+        
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
             $this->data["Product Family $db_interval Acc Invoiced Amount"]=$row["net"];
             $this->data["Product Family $db_interval Acc Invoices"]=$row["invoices"];
-            $this->data["Product Family $db_interval Acc Profit"]=$row["profit"];
+            $this->data["Product Family $db_interval Acc Profit"]=$row["net"]-$row['total_cost'];
             //$this->data["Product Family DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
             //$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
             //$this->data["Product Family DC $db_interval Acc Profit"]=$row["dc_profit"];
@@ -1237,8 +1240,7 @@ class Family extends DB_Table {
                     );
 
         mysql_query($sql);
-        print "$sql\n\n";
-        exit;
+      
         /*
                 $sql=sprintf("update `Product Family Default Currency` set
                              `Product Family DC $db_interval Acc Invoiced Discount Amount`=%.2f,
@@ -1264,18 +1266,23 @@ class Family extends DB_Table {
             //$this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]=0;
             //$this->data["Product Family DC $db_interval Acc 1YB Profit"]=0;
 
-            $sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Product Family Key`=%d and `Invoice Date`>%s and `Invoice Date`<%s" ,
-                         $this->id,
-                         prepare_mysql($from_date_1yb),
+            $sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
+        sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+                     $this->id,
+                      prepare_mysql($from_date_1yb),
                          prepare_mysql($to_1yb)
-                        );
+
+                    );
+                    
+                    
+                   
             // print "$sql\n\n";
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                 $this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
                 $this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
                 $this->data["Product Family $db_interval Acc 1YB Invoices"]=$row["invoices"];
-                $this->data["Product Family $db_interval Acc 1YB Profit"]=$row["profit"];
+                $this->data["Product Family $db_interval Acc 1YB Profit"]=$row["net"]-$row['total_cost'];
                 // $this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
                 //$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
                 //$this->data["Product Family DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
