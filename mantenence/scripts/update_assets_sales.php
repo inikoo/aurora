@@ -29,6 +29,20 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+$sql="select * from `Product Family Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+    $family=new Family($row['Product Family Key']);
+      $family->update_product_data();
+    $family->update_up_today_sales();
+    $family->update_interval_sales();
+    $family->update_last_period_sales();
+  print "Family ".$family->data['Product Family Code']."\r";
+
+}
+
+
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -60,18 +74,6 @@ $department=new Department($row['Product Department Key']);
   print "Department ".$department->data['Product Department Code']."\r";
  }
 
-$sql="select * from `Product Family Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-    $family=new Family($row['Product Family Key']);
-      $family->update_product_data();
-    $family->update_up_today_sales();
-    $family->update_interval_sales();
-    $family->update_last_period_sales();
-  print "Family ".$department->data['Product Family Code']."\r";
-
-}
 
 $sql="select * from `Part Dimension`  ";
 $result=mysql_query($sql);
