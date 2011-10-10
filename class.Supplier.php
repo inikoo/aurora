@@ -521,7 +521,7 @@ class supplier extends DB_Table {
 
     function update_sales($interval) {
         $to_date='';
-
+$from_date_1yb=false;
         switch ($interval) {
 
 
@@ -543,8 +543,8 @@ class supplier extends DB_Table {
             $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
 
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_date_1yb\n";
             break;
 
         case 'Last Week':
@@ -565,7 +565,7 @@ class supplier extends DB_Table {
 
 
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
             break;
 
         case 'Yesterday':
@@ -575,7 +575,7 @@ class supplier extends DB_Table {
             $to_date=date('Y-m-d 00:00:00',strtotime('today'));
 
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
             break;
 
         case 'Week To Day':
@@ -602,7 +602,7 @@ class supplier extends DB_Table {
             }
 
 
-            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
 
 
 
@@ -612,7 +612,7 @@ class supplier extends DB_Table {
             $db_interval='Today';
             $from_date=date('Y-m-d 00:00:00');
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
 
 
@@ -621,63 +621,63 @@ class supplier extends DB_Table {
             $db_interval='Month To Day';
             $from_date=date('Y-m-01 00:00:00');
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case 'Year To Day':
         case 'ytd':
             $db_interval='Year To Day';
             $from_date=date('Y-01-01 00:00:00');
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_date_1yb\n";
             break;
         case '3 Year':
         case '3y':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
             $from_date_1yb=false;
-            $to_1yb=false;
+            $to_date_1yb=false;
             break;
         case '1 Year':
         case '1y':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '6 Month':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Quarter':
         case '1q':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Month':
         case '1m':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '10 Day':
         case '10d':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Week':
         case '1w':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
 
         default:
@@ -710,7 +710,7 @@ class supplier extends DB_Table {
                      ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
                     );
-                     print "$sql\n";
+                     //print "$sql\n";
         $result=mysql_query($sql);
        
 
@@ -728,7 +728,7 @@ class supplier extends DB_Table {
 
                     );
         $result=mysql_query($sql);
-        print "$sql\n";
+        //print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $this->data["Supplier $db_interval Acc Parts Cost"]=$row['cost'];
@@ -750,7 +750,7 @@ class supplier extends DB_Table {
                     );
         $result=mysql_query($sql);
 
-        print "$sql\n";
+        //print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $this->data["Supplier $db_interval Acc Parts Sold Amount"]=-1.0*$row['sold_amount'];
@@ -771,7 +771,7 @@ class supplier extends DB_Table {
                     );
         $result=mysql_query($sql);
 
-        print "$sql\n";
+        //print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $this->data["Supplier $db_interval Acc Parts Broken"]=-1.*$row['broken'];
@@ -787,7 +787,7 @@ class supplier extends DB_Table {
 
                     );
         $result=mysql_query($sql);
-        print "$sql\n";
+        //print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $this->data["Supplier $db_interval Acc Parts Lost"]=-1.*$row['lost'];

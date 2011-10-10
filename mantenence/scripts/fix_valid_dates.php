@@ -47,22 +47,30 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                  $supplier->id
 
                 );
-    print "$sql\n";
+    //print "$sql\n";
     $result2=mysql_query($sql);
 
 
     if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 
-        $sql=sprintf("update `Supplier Dimension` set `Supplier Valid From`=%s, where `Supplier Key`=%d ",
+      $date=$row2['date'];
+      if($date=='')
+        $date=date("Y-m-d H:i:s");
+      
+    }else{
+    $date=date("Y-m-d H:i:s");
+    }
+    
+      $sql=sprintf("update `Supplier Dimension` set `Supplier Valid From`=%s where `Supplier Key`=%d ",
 
-                     prepare_mysql($row2['date']),
+                     prepare_mysql($date),
                      $supplier->id
 
                     );
 
         mysql_query($sql);
         print "$sql\n";
-    }
+    
 
 }
 
