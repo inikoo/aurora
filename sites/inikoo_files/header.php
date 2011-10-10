@@ -39,7 +39,7 @@ $i=0;
 $see_also_data="";
 if(isset($see_also)){
 foreach($see_also as $key=>$value){
-$see_also_data.="<span class='see_also'><a href='".$value['see_also_url']."'>".$value['see_also_label']."</a></span>";
+$see_also_data.="<span class='see_also'><a href='http://".$value['see_also_url']."'>".$value['see_also_label']."</a></span>";
 	if($i++>1) break;
 }
 }
