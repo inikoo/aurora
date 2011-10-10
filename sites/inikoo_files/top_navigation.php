@@ -34,14 +34,16 @@ if($path=="../../"){
 
 //echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
 if($logged_in){?>
+<input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
+
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>"></script>
+
 <?php }else{?>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path_id ?>"></script>
 <?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
 <input type="hidden" value="<?php echo $site->id?>" id="site_key">
-<input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 <?php include('conf/checkout.php');?>
 
 <div id="top_navigator" >
