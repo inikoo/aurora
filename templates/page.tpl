@@ -14,27 +14,71 @@
 
     <h1><span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span></h1>
 
-<div  style="clear:left;margin:10px 0 10px 0;padding:0;">
+
+</div>
+
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
+
+    <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='visitors'}selected{/if}"  id="visitors">  <span> {t}Visitors{/t}</span></span></li>
+
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
+
+
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+
+
 
 
 <div style="width:450px;float:left">
   <table    class="show_info_product">
 
-   
+     <tr >
+      <td>{t}Type{/t}:</td><td>{$page->get_formated_store_section()}</td>
+    </tr>
     <tr >
-      <td>{t}Title{/t}:</td><td>{$page->get('Page Store Title')}</td>
+      <td>{t}Header Title{/t}:</td><td>{$page->get('Page Store Title')}</td>
     </tr>
  <tr >
       <td>{t}URL{/t}:</td><td>{$page->get('Page URL')}</td>
     </tr>
+      <tr >
+      <td>{t}Link Label{/t}:</td><td>{$page->get('Page Short Title')}</td>
+    </tr>
+    
 </table>
 <table    class="show_info_product">
 
    <tr>
-	    <td>{t}Parent Pages{/t}:</td><td><div ></div></td>
+	    <td>{t}Parent Pages{/t}:</td><td>
+	       <table >
+	       
+		    {foreach from=$page->get_found_in() item=found_in_page}
+               <tr><td style="padding:0">{$found_in_page.found_in_label} <span class="id">(<a href="page.php?id={$found_in_page.found_in_key}">{$found_in_page.found_in_code}</a>)</span></td>
+             
+               </tr>
+            {/foreach}
+          
+	       </table>
+	    </td>
 	  </tr>
    <tr>
-	    <td>{t}Related Pages{/t}:</td><td><div ></div></td>
+	    <td>{t}Related Pages{/t}:</td><td>
+	        <table >
+	     
+		    {foreach from=$page->get_see_also() item=see_also_page}
+               <tr>
+               <td style="padding:0">{$see_also_page.see_also_label} <span class="id">(<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</span></td>
+               <td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
+               </tr>
+            {/foreach}
+       
+	       </table>
+	    </td>
 	  </tr>
 	 
   </table>
@@ -73,22 +117,8 @@
 
 </div>
 
+
 </div>
-</div>
-
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
-
-    <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='visitors'}selected{/if}"  id="visitors">  <span> {t}Visitors{/t}</span></span></li>
-
-  </ul>
-<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
-
-<div style="padding:0 20px">
-
-
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0"></div>
 
 <div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 <div id="plot1" style="clear:both;border:1px solid #ccc" >

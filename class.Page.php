@@ -822,7 +822,7 @@ class Page extends DB_Table {
     function get_see_also() {
 
         $see_also=array();
-        $sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d",
+        $sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Correlation Value` desc ",
                      $this->id);
 
         $res=mysql_query($sql);
@@ -924,21 +924,21 @@ class Page extends DB_Table {
             $res=mysql_query($sql);
             // print "$sql\n";
             while ($row=mysql_fetch_assoc($res)) {
-        //    print_r($row);
-            
+                //    print_r($row);
+
                 if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>$correlation_upper_limit) {
                     $family=new Family($row['Family B Key']);
                     if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
 
                         $page_keys=$family->get_pages_keys();
-                       
+
                         $see_also_page_key=array_pop($page_keys);
-                        if($see_also_page_key){
-                        $see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
-                        $number_links=count($see_also);
-                        if ($number_links>=$max_links)
-                            break;
-                        }    
+                        if ($see_also_page_key) {
+                            $see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+                            $number_links=count($see_also);
+                            if ($number_links>=$max_links)
+                                break;
+                        }
                     }
                 }
 
@@ -964,12 +964,12 @@ class Page extends DB_Table {
 
                             $page_keys=$family->get_pages_keys();
                             $see_also_page_key=array_pop($page_keys);
-                             if($see_also_page_key){
-                            $see_also[$see_also_page_key]=array('type'=>'Semantic','value'=>$row['Weight']);
-                            $number_links=count($see_also);
-                            if ($number_links>=$max_links)
-                                break;
-                                }
+                            if ($see_also_page_key) {
+                                $see_also[$see_also_page_key]=array('type'=>'Semantic','value'=>$row['Weight']);
+                                $number_links=count($see_also);
+                                if ($number_links>=$max_links)
+                                    break;
+                            }
                         }
                     }
                 }
@@ -982,7 +982,7 @@ class Page extends DB_Table {
             // }
 
 
-        //    print_r($see_also);
+            //    print_r($see_also);
 
             break;
         default:
@@ -1004,11 +1004,58 @@ class Page extends DB_Table {
                          $see_also_data['value']
                         );
             mysql_query($sql);
-        //    print "$sql\n";
+            //    print "$sql\n";
         }
 
     }
 
+
+    function get_formated_store_section() {
+        if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
+            return;
+
+
+        switch ($this->data['Page Store Section']) {
+        case 'Front Page Store':
+            $formated_store_section=_('Front Page Store');
+            break;
+        case 'Search':
+            $formated_store_section=_('Search');
+            break;
+        case 'Product Description':
+            $formated_store_section=_('Product Description');
+            break;
+        case 'Information':
+            $formated_store_section=_('Information');
+            break;
+        case 'Category Catalogue':
+            $formated_store_section=_('Category Catalogue');
+            break;
+        case 'Family Catalogue':
+            $formated_store_section=_('Family Catalogue').' <a href="family.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+            break;
+              case 'Department Catalogue':
+            $formated_store_section=_('Department Catalogue').' <a href="department.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+            break;
+              case 'Store Catalogue':
+            $formated_store_section=_('Store Catalogue').' <a href="store.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+            break;
+              case 'Registration':
+            $formated_store_section=_('Registration');
+            break;
+              case 'Client Section':
+            $formated_store_section=_('Client Section');
+            break;
+                 case 'Check Out':
+            $formated_store_section=_('Check Out');
+            break;
+        default:
+            $formated_store_section=$this->data['Page Store Section'];
+            break;
+        }
+
+return $formated_store_section;
+    }
 
 }
 ?>

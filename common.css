@@ -396,7 +396,7 @@ font-size: 11px;
 color: #316D89;
 }
 
-.id{color:SteelBlue}
+.id ,.id a{color:SteelBlue}
 
 
 /*Products pages*/
