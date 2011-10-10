@@ -29,6 +29,62 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+$sql="select * from `Store Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+    $store=new Store($row['Store Key']);
+    $store->update_up_today_sales();
+    $store->update_customer_activity_interval();
+    $store->update_interval_sales();
+    $store->update_last_period_sales();
+
+}
+
+
+$sql="select * from `Product Department Dimension`  ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  
+$department=new Department($row['Product Department Key']);
+
+    $department->update_sales_default_currency();
+
+  $department->update_customers();
+  $department->update_sales_data();
+  $department->update_product_data();
+  $department->update_families();
+ 
+
+  print "Department ".$department->data['Product Department Code']."\r";
+ }
+
+$sql="select * from `Product Family Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+    $family=new Family($row['Product Family Key']);
+      $family->update_product_data();
+    $family->update_up_today_sales();
+    $family->update_interval_sales();
+    $family->update_last_period_sales();
+  print "Family ".$department->data['Product Family Code']."\r";
+
+}
+
+$sql="select * from `Part Dimension`  ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $part=new Part('sku',$row['Part SKU']);
+
+  $part->update_up_today_sales();
+$part->update_interval_sales();
+$part->update_last_period_sales();
+
+}
+
+
 
 
 $sql="select * from `Supplier Product Dimension`";
@@ -53,41 +109,29 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 }
 
-
-$sql="select * from `Product Family Dimension`";
+ $sql="select `Product ID` from `Product Dimension` ";
 $result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-    $family=new Family($row['Product Family Key']);
-    $family->update_up_today_sales();
-    $family->update_interval_sales();
-    $family->update_last_period_sales();
-
-}
-
-$sql="select * from `Part Dimension`  ";
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $part=new Part('sku',$row['Part SKU']);
-
-  $part->update_up_today_sales();
-$part->update_interval_sales();
-$part->update_last_period_sales();
+while($row=mysql_fetch_array($result)   ){
+ $product=new Product('pid',$row['Product ID']);
+//$product=new Product('pid',37949);
+ $product->update_sales_data();
+ // $product->update_full_search();
+//  print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 
 }
 
 
-$sql="select * from `Product Family Dimension` ";
-
-//print $sql;
+ $sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
 $result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $family=new Family($row['Product Family Key']);
-//  $family->update_sales_default_currency();
-  $family->update_product_data();
-  //$family->update_sales_data();
- // print $row['Product Family Code']."        \r";
- }
+while($row=mysql_fetch_array($result)   ){
+  $product=new Product('id',$row['Product Key']);
+ $product->update_historic_sales_data();
+  //print "PH ".$row['Product Key']."\t\t ".$product->data['Product Code']." \r";
+
+}
+
+
+
 
 mysql_free_result($result);
 
@@ -108,22 +152,7 @@ $store->update_interval_sales();
 $store->update_last_period_sales();
 
  }
-$sql="select * from `Product Department Dimension`  ";
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  
-$department=new Department($row['Product Department Key']);
- // $department=new Department(95);
-    $department->update_sales_default_currency();
 
-  $department->update_customers();
-  $department->update_sales_data();
-  $department->update_product_data();
-  $department->update_families();
- 
-
-//  print $department->data['Product Department Code']."\n";
- }
 mysql_free_result($result);
 
  $sql="select `Product ID` from `Product Dimension` ";

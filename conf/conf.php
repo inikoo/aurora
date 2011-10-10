@@ -2744,15 +2744,31 @@ $default_state=array(
                                                 'sf'=>0,
                                                 'nr'=>25,
                                             ),
-                                    'pages'=>array(
-                                                'where'=>'where true',
-                                                'f_field'=>'code',
-                                                'f_value'=>'','f_show'=>false,
-                                                'order'=>'code',
-                                                'order_dir'=>'',
-                                                'sf'=>0,
-                                                'nr'=>25,
-                                            ),
+                                      'pages'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'code',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'order'=>'code',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>50,
+                                           'percentages'=>false,
+                                           'view'=>'general',
+                                           'period'=>'year',
+                                           'percentage'=>0,
+                                           'mode'=>'all',
+                                           'avg'=>'totals',
+                                           'elements'=>array(
+                                                          'Product Description'=>0,
+                                                          'Family Catalogue'=>0,
+                                                          'Product Catalogue'=>1,
+                                                          'Other'=>0,
+
+                                                      )
+
+
+                                       ),
 
                                 ),
                    'family'=>array(
@@ -2828,15 +2844,31 @@ $default_state=array(
                                             'sf'=>0,
                                             'nr'=>25,
                                         ),
-                                'pages'=>array(
-                                            'where'=>'where true',
-                                            'f_field'=>'code',
-                                            'f_value'=>'','f_show'=>false,
-                                            'order'=>'code',
-                                            'order_dir'=>'',
-                                            'sf'=>0,
-                                            'nr'=>25,
-                                        ),
+                               'pages'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'code',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'order'=>'code',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>50,
+                                           'percentages'=>false,
+                                           'view'=>'general',
+                                           'period'=>'year',
+                                           'percentage'=>0,
+                                           'mode'=>'all',
+                                           'avg'=>'totals',
+                                           'elements'=>array(
+                                                          'Product Description'=>0,
+                                                          'Family Catalogue'=>1,
+                                                          'Product Catalogue'=>0,
+                                                          'Other'=>0,
+
+                                                      )
+
+
+                                       ),
 
                             ),
 
