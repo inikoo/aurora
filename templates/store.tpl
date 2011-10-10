@@ -282,7 +282,7 @@
 <div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
 
-    <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>
+    <span   class="clean_table_title" style="">{t}Web Pages{/t}</span>
  <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
@@ -291,7 +291,7 @@
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
     
    
- {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
+ {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=1  }
 <div  id="table3"   class="data_table_container dtable btable"> </div>
 
 </div>
