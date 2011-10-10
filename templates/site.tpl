@@ -12,7 +12,23 @@
 
     <h1>{$site->get('Site Name')} ({$site->get('Site URL')})</h1>
 
-<div  style="clear:left;margin:10px 0 10px 0;padding:0;">
+
+</div>
+
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='visitors'}selected{/if}"  id="visitors">  <span> {t}Visitors{/t}</span></span></li>
+
+  </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div style="padding:0 20px">
+
+
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+
 
 
 <div style="width:350px;float:left">
@@ -69,23 +85,9 @@
 
 </div>
 
+
+
 </div>
-</div>
-
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-    <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
-
-    <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='visitors'}selected{/if}"  id="visitors">  <span> {t}Visitors{/t}</span></span></li>
-
-  </ul>
-<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
-
-<div style="padding:0 20px">
-
-
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0"></div>
 <div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
    <span   class="clean_table_title" style="">{t}Pages{/t}</span>
  <div id="table_type">
