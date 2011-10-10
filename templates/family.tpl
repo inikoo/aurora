@@ -304,7 +304,7 @@
 
 
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
-    <div  id="table0"   class="data_table_container dtable btable with_total "  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
+    <div  id="table0"   class="data_table_container dtable btable with_total "  style="{if $table_type=='thumbnails'}display:none{/if};font-size:90%"   > </div>
   
 </div>
 <div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>

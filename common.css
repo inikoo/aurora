@@ -726,3 +726,7 @@ div.todo {;padding:20px}
 #bd.out_of_stock{background-image:url('art/out_of_stock.png');;background-repeat:repeat-x;}
 #bd.discontinued{background-image:url('art/discontinued_gradient.png');;background-repeat:repeat-x;}
 
+.web_online{color:green}
+.web_offline{color:grey;}
+.web_out_of_stock{color:red}
+.web_discontinued{color:brown}

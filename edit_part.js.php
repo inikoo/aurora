@@ -372,12 +372,6 @@ function validate_part_rrp(query) {
 
 function save_status(key,value){
 
-
-
-
-
-
-
 var request='ar_edit_assets.php?tipo=edit_part&key=' + key+ '&newvalue=' + value +'&sku=' + part_sku+'&okey=' + key
 	//alert(request);return;
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -1643,6 +1637,31 @@ YAHOO.util.Event.onContentReady("filtermenu0",
 function() {
 	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
 		trigger: "filter_name0"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+
+YAHOO.util.Event.onContentReady("rppmenu1", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+		trigger: "rtext_rpp1"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+YAHOO.util.Event.onContentReady("filtermenu1", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+		trigger: "filter_name1"
 		
 	});
 	oMenu.render();
