@@ -201,11 +201,8 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
 
 
 
- 
 
 
-
-YAHOO.util.Event.addListener('details', "click",change_details,'customers');
 
 
 
