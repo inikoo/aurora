@@ -600,6 +600,9 @@ class Page extends DB_Table {
         switch ($field) {
         case('Page Store See Also Type'):
             $this->update_field('Page Store See Also Type',$value,$options);
+            if($value=='Auto'){
+                $this->update_see_also();
+            }
             break;
 
         case('page_code'):

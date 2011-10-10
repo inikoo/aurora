@@ -172,7 +172,7 @@
 
     <div class="edit_block" {if $block_view!="page_header"}style="display:none"{/if}   id="d_page_header">
    
-    <table class="edit" border=1  id="header_edit_table" style="width:100%">
+    <table class="edit" border=0  id="header_edit_table" style="width:100%">
         <tr ><td colspan="3">
          <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_header" class="state_details">{t}Save{/t}</span>
@@ -215,7 +215,7 @@
 		   <div id="page_header_resume_Container" style="" ></div>
 		 </div>
 	     </td></tr>
-	     
+	     <tr style="height:15px"><td colspan=3></td></tr>
 	         <tr>
 	       <td style="width:120px" class="label">{t}Found In{/t}:</td>
 	       <td style="width:500px" >
@@ -241,14 +241,18 @@
 	     <tr>
 	       <td style="width:120px" class="label">{t}See Also{/t}:</td>
 	       <td  style="width:500px">
-	        <div style="float:right"  class="general_options"><span id="add_other_see_also_page" class="state_details">Add page</span></div>
+	        <div id="see_also_type" default_cat=""   class="options" style="margin:0;float:right;padding:0">
+   <span style="margin:0px" class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</span> <span style="margin:0px" class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</span><br/><br/>
+   
+   </div>
+	        <div style="clear:right;float:right;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"  class="general_options"><span id="add_other_see_also_page" class="state_details">Add page</span></div>
 	       <table >
 	     
 		    {foreach from=$page->get_see_also() item=see_also_page}
                <tr>
                <td style="padding:0">{$see_also_page.see_also_label} (<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</td>
                <td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
-               <td style="padding:0;padding-left:10px"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+               <td style="padding:0;padding-left:10px;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
                </tr>
             {/foreach}
        
@@ -257,9 +261,7 @@
 	       </td>
 	       
 	       <td>
-   <div id="see_also_type" default_cat=""   class="options" style="margin:0">
-   <span class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</span> <span class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</span><br/><br/>
-   </div>
+  
  </td>
 	       
 	     

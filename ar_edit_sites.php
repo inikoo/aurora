@@ -22,7 +22,28 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('add_see_also_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'see_also_key'=>array('type'=>'key')
 
+                         ));
+
+    add_see_also_page($data);
+
+
+    break;
+case('delete_see_also_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'see_also_key'=>array('type'=>'key')
+
+                         ));
+
+    delete_see_also_page($data);
+
+
+    break;
 case('add_found_in_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -481,10 +502,7 @@ function  delete_page_store($data) {
 
 }
 
-
-
 function add_found_in_page($data) {
-
 
     $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
@@ -493,36 +511,49 @@ function add_found_in_page($data) {
                  $found_in_key);
 
     mysql_query($sql);
-
-
-
-
     $response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
     echo json_encode($response);
-
 
 }
 
 
 function delete_found_in_page($data) {
 
-
     $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
     $sql=sprintf("delete from  `Page Store Found In Bridge` where `Page Store Key`=%d and `Page Store Found In Key`=%d   ",
                  $page_key,
                  $found_in_key);
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
+    echo json_encode($response);
+    
+}
 
+function add_see_also_page($data) {
 
+    $page_key=$data['id'];
+    $see_also_key=$data['see_also_key'];
+    $sql=sprintf("insert into `Page Store See Also Bridge` values (%d,%d,'Manual',null)  ",
+                 $page_key,
+                 $see_also_key);
 
     mysql_query($sql);
-
-
-    $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
-
-
+    $response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
     echo json_encode($response);
-
 
 }
 
+
+function delete_see_also_page($data) {
+
+    $page_key=$data['id'];
+    $see_also_key=$data['see_also_key'];
+    $sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store Key`=%d and `Page Store See Also Key`=%d   ",
+                 $page_key,
+                 $see_also_key);
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
+    echo json_encode($response);
+    
+}
