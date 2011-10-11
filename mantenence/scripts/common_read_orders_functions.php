@@ -660,6 +660,10 @@ function create_order($data) {
 
     if (count($data_dn_transactions)>0) {
         $dn=$order->send_to_warehouse($date_order);
+    }else{
+    
+        print_r($data_dn_transactions);
+    
     }
 
 
