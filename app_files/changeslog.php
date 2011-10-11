@@ -4887,8 +4887,28 @@ ADD `Supplier 1 Quarter Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier 1 Quarter Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier 1 Quarter Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier 1 Quarter Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
-ALTER TABLE `Order Transaction Fact` ADD `Supplier Metadata` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
-ALTER TABLE `Order Transaction Fact` CHANGE `Supplier Metadata` `Supplier Metadata` TEXT NULL DEFAULT NULL ;
+ALTER TABLE `Order Transaction Fact` ADD `Supplier Metadata` TEXT NULL DEFAULT NULL ;
+
+
+
+
+ALTER TABLE `Supplier Product Dimension` 
+ADD `Supplier Product 1 Month Acc Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Month Acc Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Month Acc Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',
+ADD `Supplier Product 1 Month Acc Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Bought` FLOAT  NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Required` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Sold` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
+ADD `Supplier Product 1 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
+
+
+
 
 */
 
