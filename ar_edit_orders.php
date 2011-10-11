@@ -332,9 +332,6 @@ function set_order_shipping() {
                               'order_total'=>$order->get('Total Amount')
 
                           );
-
-
-
             $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping'=>money($order->new_value));
 
 

@@ -9,6 +9,8 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
 include_once('../../class.Invoice.php');
+include_once('../../class.PartLocation.php');
+
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
@@ -1177,6 +1179,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
+            $used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
 
             create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 //print "xcaca\n";

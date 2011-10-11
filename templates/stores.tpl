@@ -8,9 +8,7 @@
 <div  style="clear:left;"> 
   <span class="branch">{t}Stores{/t}</span>
 </div>
-<div style="clear:left;">
-  <h1>{t}Stores{/t}</h1>
-</div>
+
 </div>
 
 

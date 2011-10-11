@@ -1,29 +1,26 @@
 <?php
 /*
- File: site.php
 
- UI site page
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2009, Inikoo
+ Copyright (c) 2011, Inikoo
 
  Version 2.0
 */
 include_once('common.php');
 include_once('class.Store.php');
 
+include_once('class.Page.php');
 include_once('class.Site.php');
-include_once('assets_header_functions.php');
 
 
-$smarty->assign('page','site');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
-    $site_id=$_REQUEST['id'];
+    $page_key=$_REQUEST['id'];
 
 } else {
-    $site_id=$_SESSION['state']['site']['id'];
+    $page_key=$_SESSION['state']['page']['id'];
 }
 
 
@@ -36,17 +33,23 @@ if (!($user->can_view('stores')    ) ) {
 
 
 
-$site=new Site($site_id);
-if(!$site->id){
+$page=new Page($page_key);
+if(!$page->id){
  header('Location: index.php');
     exit;
 }
 
 
-$_SESSION['state']['site']['id']=$site->id;
+$_SESSION['state']['page']['id']=$page->id;
 
-$store=new Store($site->data['Site Store Key']);
+$store=new Store($page->data['Page Store Key']);
 $smarty->assign('store',$store);
+$site=new Site($page->data['Page Site Key']);
+$smarty->assign('site',$site);
+
+
+$smarty->assign('page',$page);
+
 
 $create=$user->can_create('sites');
 
@@ -62,7 +65,7 @@ $smarty->assign('modify',$modify);
 $general_options_list=array();
 
 //if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_site.php','label'=>_('Edit Site'));
+    $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_page.php?id='.$page->id,'label'=>_('Edit Page'));
 
 
 $smarty->assign('general_options_list',$general_options_list);
@@ -74,7 +77,6 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
               	 $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',
@@ -104,7 +106,7 @@ $js_files=array(
 $js_files[]='js/search.js';
 $js_files[]='common_plot.js.php?page='.'site';
 
-$js_files[]='site.js.php';
+$js_files[]='page.js.php';
 
 
 
@@ -114,44 +116,30 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$_SESSION['state']['assets']['page']='site';
 if (isset($_REQUEST['view'])) {
-    $valid_views=array('sales','general','stoke');
+    $valid_views=array('details','hits','visitors');
     if (in_array($_REQUEST['view'], $valid_views))
-        $_SESSION['state']['site']['view']=$_REQUEST['view'];
+        $_SESSION['state']['page']['view']=$_REQUEST['view'];
 
 }
-$smarty->assign('block_view',$_SESSION['state']['site']['view']);
+$smarty->assign('block_view',$_SESSION['state']['page']['view']);
 
 
 
 
 
-$subject_id=$site_id;
+$subject_id=$page_key;
 
 
 $smarty->assign('site',$site);
 
 $smarty->assign('parent','products');
-$smarty->assign('title', $site->data['Site Name']);
-
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['site']['pages']['f_field']:'code');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['site']['pages']['f_value']:addslashes($q)));
-$filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
-                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
-
-             );
-$smarty->assign('filter_menu0',$filter_menu);
-//$smarty->assign('departments',$site->data['Site Departments']);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('title', $page->data['Page Store Title']);
 
 
 
-$smarty->display('site.tpl');
+
+
+$smarty->display('page.tpl');
 
 ?>

@@ -330,6 +330,9 @@ $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
 
 
+$number_sites=$store->get_number_sites();
+$smarty->assign('number_sites',$number_sites);
+
 
 $smarty->display('store.tpl');
 

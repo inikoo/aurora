@@ -372,12 +372,6 @@ function validate_part_rrp(query) {
 
 function save_status(key,value){
 
-
-
-
-
-
-
 var request='ar_edit_assets.php?tipo=edit_part&key=' + key+ '&newvalue=' + value +'&sku=' + part_sku+'&okey=' + key
 	//alert(request);return;
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -517,7 +511,7 @@ function reset_part(key) {
 }
 
 function save_part() {
-	alert("x")
+	
 
 	 key = Dom.get("part_part_items").getAttribute("part_part_key");
 
@@ -1275,14 +1269,14 @@ function() {
 		this.dataSource0.responseSchema = {
 			resultsList: "resultset.data",
 			metaFields: {
-				rowsPerPage: "resultset.records_perpage",
-				rtext: "resultset.rtext",
-				rtext_rpp: "resultset.rtext_rpp",
-				sort_key: "resultset.sort_key",
-				sort_dir: "resultset.sort_dir",
-				tableid: "resultset.tableid",
-				filter_msg: "resultset.filter_msg",
-				totalRecords: "resultset.total_records"
+				    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 
 				
 			},
@@ -1360,14 +1354,14 @@ function() {
 		this.dataSource1.responseSchema = {
 			resultsList: "resultset.data",
 			metaFields: {
-				rowsPerPage: "resultset.records_perpage",
-				rtext: "resultset.rtext",
-				rtext_rpp: "resultset.rtext_rpp",
-				sort_key: "resultset.sort_key",
-				sort_dir: "resultset.sort_dir",
-				tableid: "resultset.tableid",
-				filter_msg: "resultset.filter_msg",
-				totalRecords: "resultset.total_records"
+				    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 
 				
 			},
@@ -1540,29 +1534,6 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", 
-function() {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
-		trigger: "rtext_rpp0"
-		
-	});
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-
-	
-});
-
-YAHOO.util.Event.onContentReady("filtermenu0", 
-function() {
-	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
-		trigger: "filter_name0"
-		
-	});
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-
-	
-});
 
 
 function close_change_part_dialog() {
@@ -1625,14 +1596,11 @@ fields: ["info", "sku", "description", "usedin", "formated_sku"]
 	};
 	var new_loc_oAC = new YAHOO.widget.AutoComplete("change_part", "change_part_container", new_loc_oDS);
 
-
 	new_loc_oAC.generateRequest = function(sQuery) {
 
 		sku = Dom.get("change_part_sku").value;
 		request = "?tipo=find_part&except_part=" + sku + "&query=" + sQuery;
-
 		return request;
-
 		
 	};
 	new_loc_oAC.forceSelection = true;
@@ -1651,3 +1619,54 @@ function remove_part(sku) {
 
 	
 }
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+		trigger: "rtext_rpp0"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+YAHOO.util.Event.onContentReady("filtermenu0", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+		trigger: "filter_name0"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+
+YAHOO.util.Event.onContentReady("rppmenu1", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+		trigger: "rtext_rpp1"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+YAHOO.util.Event.onContentReady("filtermenu1", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+		trigger: "filter_name1"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+

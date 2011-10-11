@@ -1323,6 +1323,16 @@ function update_children_data(){
     }
 
 
+function get_number_sites(){
+$number_sites=0;
+    $sql=sprintf("select count(*) as number_sites from `Site Dimension` where `Site Store Key`=%d ",$this->id);
+     $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+        $number_sites=$row['number_sites'];
+        }
+return $number_sites;
+}
+
 function get_formated_email_credentials($type){
 
     $credentials=$this->get_email_credentials_data($type);

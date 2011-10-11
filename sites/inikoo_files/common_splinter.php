@@ -484,13 +484,13 @@ function set_parameters($data=false) {
     $see_also=array();
 
     if (!isset($data['found_in'])) {
-        $found_in=$page->found_in();
+        $found_in=$page->get_found_in();
     } else {
         $found_in=$data['found_in'];
     }
 
     if (!isset($data['see_also'])) {
-        $see_also=see_also($page_code);
+        $see_also=$page->get_see_also();
     } else {
         $see_also_temp=explode(";", $data['see_also']);
         foreach($see_also_temp as $val) {
@@ -650,13 +650,7 @@ function update_page_key_visit_log($page_key) {
 
 
 
-function see_also($code, $url="http://www.ancientwisdom.biz/forms/") {
-    global $store_key;
-    $family=new LightFamily($code, $store_key);
-    if (!$family->id)
-        return;
-    return $family->get_see_also($code, $url);
-}
+
 
 
 ?>

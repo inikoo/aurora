@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
+ <input type="hidden" id="family_key" value="{$family->id}"/>
  {include file='assets_navigation.tpl'}
 <div style=""> 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
@@ -225,60 +226,16 @@
 
 <div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
  
-	   <table class="edit"  id="edit_family_page"  style="width:100%;clear:both;{if !$page_key}display:none{/if}" page_key="{$page_key}"   >
-	     <tr class="title"><td colspan="2">{t}Page Properties{/t}
-	     </td>
-	     <td>
-	      <div class="general_options" style="float:right">
-		   
-		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_properties" class="state_details">{t}Save{/t}</span>
-		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_properties" class="state_details">{t}Reset{/t}</span>
-		   
-      </div>
-	     </td>
-	     
-	     </tr>
-
-  <tr><td width="180px" class="label">{t}Page Code{/t}:</td>
-	     <td>
-		 <div   >     
-		   <span>{$page_data.PageCode}</span>
-		  
-		 </div>
-	       </td>
-		   </tr>
-
-	     <tr><td width="180px" class="label">{t}URL{/t}:</td>
-	     <td>
-		 <div   >
-		   		   <span>{$page_data.PageURL}</span>
-		 </div>
-	       </td></tr>
+	 <span   class="clean_table_title" style="">{t}Pages{/t}</span> 
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+    
+   
+ {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1  }
+<div  id="table4"   class="data_table_container dtable btable"  style="font-size:85%"> </div>
 
 
-<tr><td width="180px" class="label">{t}Link Title{/t}:</td>
-	     <td>
-		 <div   >
-		   <span>{$page_data.PageShortTitle}</span>
-
-		 </div>
-	       </td></tr>
-
-
-<tr  style="display:none"><td class="label">{t}Page Type{/t}:</td>
- <td>
- <table>
- <tr><td class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.PageStoreType=="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
- 
-
- </table>
- 
 	
 	
-
-    </td></tr>
-	
-</table>	
 </div>
 
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -347,7 +304,7 @@
 
 
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
-    <div  id="table0"   class="data_table_container dtable btable with_total "  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
+    <div  id="table0"   class="data_table_container dtable btable with_total "  style="{if $table_type=='thumbnails'}display:none{/if};font-size:90%"   > </div>
   
 </div>
 <div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>

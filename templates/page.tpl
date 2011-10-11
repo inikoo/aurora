@@ -2,22 +2,24 @@
 <div id="bd" style="padding:0px">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="page_key" value="{$page->id}"/>
+
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <div style=""> 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
 </div>
 
 
 
-    <h1>{$site->get('Site Name')} ({$site->get('Site URL')})</h1>
+    <h1><span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span></h1>
 
 
 </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+
     <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>
     <li> <span class="item {if $block_view=='visitors'}selected{/if}"  id="visitors">  <span> {t}Visitors{/t}</span></span></li>
 
@@ -31,23 +33,53 @@
 
 
 
-<div style="width:350px;float:left">
+
+<div style="width:450px;float:left">
   <table    class="show_info_product">
 
-   
+     <tr >
+      <td>{t}Type{/t}:</td><td>{$page->get_formated_store_section()}</td>
+    </tr>
     <tr >
-      <td>{t}Name{/t}:</td><td>{$site->get('Site Name')}</td>
+      <td>{t}Header Title{/t}:</td><td>{$page->get('Page Store Title')}</td>
     </tr>
  <tr >
-      <td>{t}Home Page{/t}:</td><td>{$site->get('Site URL')}</td>
+      <td>{t}URL{/t}:</td><td>{$page->get('Page URL')}</td>
     </tr>
+      <tr >
+      <td>{t}Link Label{/t}:</td><td>{$page->get('Page Short Title')}</td>
+    </tr>
+    
 </table>
 <table    class="show_info_product">
 
    <tr>
-	    <td>{t}Number Pages{/t}:</td><td class="number"><div >{$site->get('Number Pages')}</div></td>
+	    <td>{t}Parent Pages{/t}:</td><td>
+	       <table >
+	       
+		    {foreach from=$page->get_found_in() item=found_in_page}
+               <tr><td style="padding:0">{$found_in_page.found_in_label} <span class="id">(<a href="page.php?id={$found_in_page.found_in_key}">{$found_in_page.found_in_code}</a>)</span></td>
+             
+               </tr>
+            {/foreach}
+          
+	       </table>
+	    </td>
 	  </tr>
-  
+   <tr>
+	    <td>{t}Related Pages{/t}:</td><td>
+	        <table >
+	     
+		    {foreach from=$page->get_see_also() item=see_also_page}
+               <tr>
+               <td style="padding:0">{$see_also_page.see_also_label} <span class="id">(<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</span></td>
+               <td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
+               </tr>
+            {/foreach}
+       
+	       </table>
+	    </td>
+	  </tr>
 	 
   </table>
 
@@ -57,24 +89,24 @@
    <table    class="show_info_product">
 
    <tr>
-	    <td>{t}Total Hits{/t}:</td><td class="number"><div >{$site->get('Visits')}</div></td>
+	    <td>{t}Total Hits{/t}:</td><td class="number"><div >{$page->get('Visits')}</div></td>
 	  </tr>
     <tr>
-	    <td>{t}Unique Visitors{/t}:</td><td class="number"><div >{$site->get('Unique Visitors')}</div></td>
+	    <td>{t}Unique Visitors{/t}:</td><td class="number"><div >{$page->get('Unique Visitors')}</div></td>
 	  </tr>
 	 
   </table>
    <table    class="show_info_product">
 
    <tr>
-	    <td>{t}Last 24h Hits{/t}:</td><td class="number"><div >{$site->get('1 Day Visits')}</div></td>
+	    <td>{t}Last 24h Hits{/t}:</td><td class="number"><div >{$page->get('1 Day Visits')}</div></td>
 	  </tr>
     <tr>
-	    <td>{t}Last 24h Visitors{/t}:</td><td class="number"><div >{$site->get('1 Day Unique Visitors')}</div></td>
+	    <td>{t}Last 24h Visitors{/t}:</td><td class="number"><div >{$page->get('1 Day Unique Visitors')}</div></td>
 	  </tr>
 	  
 	    <tr>
-	    <td>{t}Current Visitors{/t}:</td><td class="number"><div >{$site->get('Current Visitors')}</div></td>
+	    <td>{t}Current Visitors{/t}:</td><td class="number"><div >{$page->get('Current Visitors')}</div></td>
 	  </tr>
 	 
   </table>
@@ -86,23 +118,8 @@
 </div>
 
 
-
 </div>
-<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-   <span   class="clean_table_title" style="">{t}Pages{/t}</span>
- <div id="table_type">
-     <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
-     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
-     </div>
-   
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
-    
-   
- {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0  }
-<div  id="table0"   class="data_table_container dtable btable" style="font-size:85%"> </div>
 
-
-</div>
 <div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 <div id="plot1" style="clear:both;border:1px solid #ccc" >
 	<div id="single_data_set"  >
