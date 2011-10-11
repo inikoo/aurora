@@ -2,7 +2,7 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span>
 </div>
 
@@ -149,11 +149,11 @@
 <table class="edit" border=0>
  <tr class="title"><td colspan=5>{t}Price{/t}</td></tr>
 
-<tr class="first"><td style="" class="label">{t}Price per Outer{/t}:</td>
+<tr class="first"><td  class="label">{t}Price per Outer{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:7em;position:relative;top:00px" >
        <input style="text-align:left;width:8em" id="Product_Price" value="{$product->get('Price')}" ovalue="{$product->get('Price')}" valid="0">
-       <div id="Product_Price_Container" style="" ></div>
+       <div id="Product_Price_Container"  ></div>
      </div>
    </td>
 <td id="price_per_unit" cost="{$product->get_cost_supplier()}"  old_price="{$product->get('Product Price')}"  units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
@@ -162,11 +162,11 @@
    <td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr class="first"><td style="" class="label">{t}RRP per Unit{/t}:</td>
+<tr class="first"><td  class="label">{t}RRP per Unit{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:7em;position:relative;top:00px" >
        <input style="text-align:left;width:8em" id="Product_RRP" value="{$product->get('RRP')}" ovalue="{$product->get('RRP')}" valid="0">
-       <div id="Product_RRP_Container" style="" ></div>
+       <div id="Product_RRP_Container"  ></div>
      </div>
    </td>
 <td ></td>
@@ -191,22 +191,22 @@
  <tr class="title">
  <td colspan=3>{t}Weight{/t}</td>
  </tr>
-<tr class="first"><td style="" class="label">{t}Unit Weight{/t}:</td>
+<tr class="first"><td  class="label">{t}Unit Weight{/t}:</td>
    <td  style="text-align:left;">
      <div   >
        <input style="text-align:left;" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
-       <div id="Product_Unit_Weight_Container" style="" ></div>
+       <div id="Product_Unit_Weight_Container"  ></div>
      </div>
     
    </td><td>Kg</td>
    <td style="width:450px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
  </tr>
 <tr style="display:none">
-<td style="" class="label">{t}Outer Weight{/t}:<br/><small>with packing</small></td>
+<td  class="label">{t}Outer Weight{/t}:<br/><small>with packing</small></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0">
-       <div id="Product_Outer_Weight_Container" style="" ></div>
+       <div id="Product_Outer_Weight_Container"  ></div>
      </div>
    </td><td>Kg</td>
    <td id="Product_Outer_Weight_msg" class="edit_td_alert"></td>
@@ -240,7 +240,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0">
-       <div id="Product_Units_Per_Case_Container" style="" ></div>
+       <div id="Product_Units_Per_Case_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
@@ -280,7 +280,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Product_Name" value="{$product->get('Product Name')}" ovalue="{$product->get('Product Name')}" valid="0">
-       <div id="Product_Name_Container" style="" ></div>
+       <div id="Product_Name_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
@@ -289,7 +289,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')}" ovalue="{$product->get('Product Special Characteristic')}" valid="0">
-       <div id="Product_Special_Characteristic_Container" style="" ></div>
+       <div id="Product_Special_Characteristic_Container"  ></div>
      </div>
    </td>
    <td id="Product_Special_Characteristic_msg" class="edit_td_alert"></td>
@@ -300,7 +300,7 @@
 
 <textarea id="Product_Description"  olength="{$product->get('Product Description Length')}"  value="{$product->get('Product Description')}"  ovalue="{$product->get('Product Description')}"  ohash="{$product->get('Product Description MD5 Hash')}" rows="6" cols="42">{$product->get('Product Description')}</textarea>
        
-       <div id="Product_Description_Container" style="" ></div>
+       <div id="Product_Description_Container"  ></div>
      </div>
    </td>
    <td id="Product_Description_msg" class="edit_td_alert"></td>

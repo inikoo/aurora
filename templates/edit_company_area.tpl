@@ -36,27 +36,27 @@
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Company_Area_Code" value="{$company_area->get('Company Area Code')}" ovalue="{$company_area->get('Company Area Code')}" >
-	      <div id="Company_Area_Code_Container" style="" ></div>
+	      <div id="Company_Area_Code_Container"  ></div>
 	    </div>
 	  </td>
 	  <td id="Company_Area_Code_msg" class="edit_td_alert"></td>
 	</tr>
-	<tr class="first"><td style="" class="label">{t}Area Name{/t}:</td>
+	<tr class="first"><td  class="label">{t}Area Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Company_Area_Name" value="{$company_area->get('Company Area Name')}" ovalue="{$company_area->get('Company Area Name')}">
-	      <div id="Company_Area_Name_Container" style="" ></div>
+	      <div id="Company_Area_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  	  <td id="Company_Area_Name_msg" class="edit_td_alert"></td>
 
 	</tr>
         </tr>
-	<tr class="first"><td style="" class="label">{t}Area Description{/t}:</td>
+	<tr class="first"><td  class="label">{t}Area Description{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:40em" id="Company_Area_Description" value="{$company_area->get('Company Area Description')}" ovalue="{$company_area->get('Company Area Description')}">
-	      <div id="Company_Area_Description_Container" style="" ></div>
+	      <div id="Company_Area_Description_Container"  ></div>
 	    </div>
 	  </td>
 	  	  <td id="Company_Area_Description_msg" class="edit_td_alert"></td>
@@ -81,7 +81,7 @@
     <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
     <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
       <div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
   </div>
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div> 

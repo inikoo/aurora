@@ -38,11 +38,11 @@
 <table class="edit" border=0>
  <tr class="title"><td colspan=5>{t}Price{/t}</td></tr>
 
-<tr class="first"><td style="" class="label">{t}Price per Outer{/t}:</td>
+<tr class="first"><td  class="label">{t}Price per Outer{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:7em;position:relative;top:00px" >
        <input style="text-align:left;width:8em" id="Product_Price" value="{$supplier_product->get('Price')}" ovalue="{$supplier_product->get('Price')}" valid="0">
-       <div id="Product_Price_Container" style="" ></div>
+       <div id="Product_Price_Container"  ></div>
      </div>
    </td>
 <td id="price_per_unit" cost="{$supplier_product->get('Supplier Product Cost')}"  old_price="{$supplier_product->get('Supplier Product Price')}"  units="{$supplier_product->get('Supplier Product Units Per Case')}">{$supplier_product->get_formated_price_per_unit()}</td>
@@ -51,11 +51,11 @@
    <td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr class="first"><td style="" class="label">{t}RRP per Unit{/t}:</td>
+<tr class="first"><td  class="label">{t}RRP per Unit{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:7em;position:relative;top:00px" >
        <input style="text-align:left;width:8em" id="Product_RRP" value="{$supplier_product->get('RRP')}" ovalue="{$supplier_product->get('RRP')}" valid="0">
-       <div id="Product_RRP_Container" style="" ></div>
+       <div id="Product_RRP_Container"  ></div>
      </div>
    </td>
 <td ></td>
@@ -146,7 +146,7 @@
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Units{/t}</td></tr>
 
-<tr><td style="" class="label">{t}Units Type{/t}:</td>
+<tr><td  class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
 
 <select id="Product_Units_Type" onChange="option_selected('product_description','unit_type')" ovalue="{$unit_type}">
@@ -161,7 +161,7 @@
    <td id="Product_Units_Type_msg" class="edit_td_alert"></td>
  </tr>
  
- <tr><td style="" class="label">{t}Unit Package Type{/t}:</td>
+ <tr><td  class="label">{t}Unit Package Type{/t}:</td>
 <td  style="text-align:left">
 
 <select id="Product_Unit_Package_Type" onChange="option_selected('product_description','unit_packing_type')"  ovalue="{$unit_packing_type}"  >
@@ -174,23 +174,23 @@
    <td id="Product_Unit_Package_Type_msg" class="edit_td_alert"></td>
  </tr>
  
-<tr class="first"><td style="" class="label"><span style="font-size:80%">({t}Without packing{/t})</span> {t}Unit Weight{/t}:</td>
+<tr class="first"><td  class="label"><span style="font-size:80%">({t}Without packing{/t})</span> {t}Unit Weight{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px;" >
        <input style="text-align:left;width:6em" id="Product_Unit_Weight" value="{$supplier_product->get('Supplier Product Unit Net Weight')}" ovalue="{$supplier_product->get('Supplier Product Unit Net Weight')}" valid="0">
        <span style="margin-left:6.75em">{t}Kg{/t}</span>
-       <div id="Product_Unit_Weight_Container" style="" ></div>
+       <div id="Product_Unit_Weight_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr class="first"><td style="" class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Unit Weight{/t}:</td>
+<tr class="first"><td  class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Unit Weight{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:6em" id="Product_Unit_Gross_Weight" value="{$supplier_product->get('Supplier Product Unit Gross Weight')}" ovalue="{$supplier_product->get('Supplier Product Unit Gross Weight')}" valid="0">
         <span style="margin-left:6.75em">{t}Kg{/t}</span>
-       <div id="Product_Unit_Gross_Weight_Container" style="" ></div>
+       <div id="Product_Unit_Gross_Weight_Container"  ></div>
      </div>
     
    </td>
@@ -198,23 +198,23 @@
  </tr>
  
  
- <tr class="first"><td style="" class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Unit Best Approximate Volume{/t}:</td>
+ <tr class="first"><td  class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Unit Best Approximate Volume{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:6em" id="Product_Unit_Gross_Volume" value="{$supplier_product->get('Supplier Product Unit Gross Volume')}" ovalue="{$supplier_product->get('Supplier Product Unit Gross Volume')}" valid="0">
         <span style="margin-left:6.75em">{t}Liters{/t}</span>
-       <div id="Product_Unit_Gross_Volume_Container" style="" ></div>
+       <div id="Product_Unit_Gross_Volume_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Unit_Gross_Volume_msg" class="edit_td_alert"></td>
  </tr>
  
-<tr class="first"><td style="" class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Minimun Orthogonal Volume{/t}:</td>
+<tr class="first"><td  class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Minimun Orthogonal Volume{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:6em" id="Product_Unit_MOV" value="{$supplier_product->get('Supplier Product Unit Minimun Orthogonal Gross Volume')}" ovalue="{$supplier_product->get('Supplier Product Unit Minimun Orthogonal Gross Volume')}" valid="0">
         <span style="margin-left:6.75em">{t}Liters{/t}</span>
-       <div id="Product_Unit_MOV_Container" style="" ></div>
+       <div id="Product_Unit_MOV_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Unit_MOV_msg" class="edit_td_alert"></td>
@@ -223,23 +223,23 @@
 
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Cases{/t}</td></tr>
-<tr class="first"><td style="" class="label">{t}Units Per Outer{/t}:</td>
+<tr class="first"><td  class="label">{t}Units Per Outer{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:6em" id="Product_Units_Per_Case" value="{$supplier_product->get('Supplier Product Units Per Case')}" ovalue="{$supplier_product->get('Supplier Product Units Per Case')}" valid="0">
-       <div id="Product_Units_Per_Case_Container" style="" ></div>
+       <div id="Product_Units_Per_Case_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
  </tr>
 
  
-<tr class="first"><td style="" class="label"> {t}Case Weight{/t}:</td>
+<tr class="first"><td  class="label"> {t}Case Weight{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:6em" id="Product_Case_Gross_Weight" value="{$supplier_product->get('Supplier Product Case Gross Weight')}" ovalue="{$supplier_product->get('Supplier Product Case Gross Weight')}" valid="0">
       <span style="margin-left:6.75em">{t}Kg{/t}</span>
-       <div id="Product_Case_Gross_Weight_Container" style="" ></div>
+       <div id="Product_Case_Gross_Weight_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Case_Gross_Weight_msg" class="edit_td_alert"></td>
@@ -247,12 +247,12 @@
 
 
  
-<tr class="first"><td style="" class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Minimun Orthogonal Case Volume{/t}:</td>
+<tr class="first"><td  class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Minimun Orthogonal Case Volume{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:6em" id="Product_Case_MOV" value="{$supplier_product->get('Supplier Product Case Minimun Orthogonal Gross Volume')}" ovalue="{$supplier_product->get('Supplier Product Case Minimun Orthogonal Gross Volume')}" valid="0">
         <span style="margin-left:6.75em">{t}Liters{/t}</span>
-       <div id="Product_Case_MOV_Container" style="" ></div>
+       <div id="Product_Case_MOV_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Case_MOV_msg" class="edit_td_alert"></td>
@@ -269,33 +269,33 @@
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Name / Description{/t}</td></tr>
  
- <tr><td style="" class="label">{t}Product ID{/t}:</td>
+ <tr><td  class="label">{t}Product ID{/t}:</td>
  <td>{$supplier_product->pid}</td>
  </tr>
-<tr class="first"><td style="" class="label">{t}Product Code{/t}:</td>
+<tr class="first"><td  class="label">{t}Product Code{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Product_Code" value="{$supplier_product->get('Supplier Product Code')}" ovalue="{$supplier_product->get('Supplier Product Code')}" valid="0">
-       <div id="Product_Code_Container" style="" ></div>
+       <div id="Product_Code_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Code_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr class="first"><td style="" class="label">{t}Product Name{/t}:</td>
+<tr class="first"><td  class="label">{t}Product Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Product_Name" value="{$supplier_product->get('Supplier Product Name')}" ovalue="{$supplier_product->get('Supplier Product Name')}" valid="0">
-       <div id="Product_Name_Container" style="" ></div>
+       <div id="Product_Name_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
  </tr>
-<tr class="first"><td style="" class="label">{t}Product Supplier Web Site{/t}:</td>
+<tr class="first"><td  class="label">{t}Product Supplier Web Site{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Product_URL" value="{$supplier_product->get('Supplier Product URL')}" ovalue="{$supplier_product->get('Supplier Product URL')}" valid="0">
-       <div id="Product_URL_Container" style="" ></div>
+       <div id="Product_URL_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Product_URL_msg" class="edit_td_alert"></td>

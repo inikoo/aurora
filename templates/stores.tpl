@@ -83,7 +83,7 @@
 	     <div id='f_container0'></div>
 	   </div>
 	 </div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	 <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
        
        
@@ -94,7 +94,7 @@
 <div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 <div class="data_table" style="clear:both;">
 <span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
-    <span   class="clean_table_title" style="">{t}Departments{/t}</span>
+    <span   class="clean_table_title" >{t}Departments{/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
   
@@ -256,7 +256,7 @@ ar fie: ar_sites.php?tipo=list_store_sites<br>
 DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Type`(enum[inikoo,other]),`Site Status`... etc )
 </p>
 </div>
-    <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>
+    <span   class="clean_table_title" >{t}Web Sites{/t}</span>
  <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>

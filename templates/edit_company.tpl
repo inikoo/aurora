@@ -92,9 +92,9 @@
 		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div class="address_buttons" id="address_buttons{$address->id}">
 		  
-		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <span  style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		  <img src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <span  style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		  <img src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
 
 		  <input type="checkbox" class='Is_Main' {if $address->is_main()}checked="checked" value="Yes" ovalue="Yes"{else}value="No" ovalue="No"{/if} /> {t}Main{/t}
@@ -282,7 +282,7 @@
 	  
 		      <tr>
 			<td class="label" >{t}Salutation{/t}:</td>
-			<td  style="" >
+			<td   >
 			  <input id="Contact_Salutation" type="hidden" value="" ovalue="">
 			  {foreach from=$prefix item=s name=foo  }
 			  <span   onclick="update_salutation(this)"  label="{$s.txt}" style="{if $smarty.foreach.foo.first}margin:0;{else}margin-left:3px{/if};{if $s.relevance>1};display:none{/if} " class="Contact_Salutation small_button"   id="Contact_Salutation_{$s.txt}"  >{$s.txt}</span>
@@ -395,7 +395,7 @@
 	    </tr>
 	    <tr class="title" >
 	    <td colspan=3 >{t}Contact Address & Landlines{/t}:
-	      <span style=""  class="small_button" id="add_address_to_contact_button" >Add Address</span>
+	      <span   class="small_button" id="add_address_to_contact_button" >Add Address</span>
 	    </td>
 	  </tr>
 	  <tr id="address_mould" class="mould" style="display:none">

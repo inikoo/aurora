@@ -9,7 +9,7 @@
 
        <div style="border:0px solid #ddd;width:350px;float:left"> 
          <h1 style="padding:0 0 0px 0">{t}Delivery Note{/t} {$dn->get('Delivery Note ID')}</h1>
-	 <h3 style="">{$dn->get('Delivery Note Title')}</h3>
+	 <h3 >{$dn->get('Delivery Note Title')}</h3>
 
          <h2 style="padding:0">{$dn->get('Delivery Note Customer Name')} (<a href="customer.php?id={$dn->get("Order Customer ID")}">{$customer->get_formated_id()}</a>)</h2>
          {$contact}<br/>

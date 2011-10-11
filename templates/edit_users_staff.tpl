@@ -11,9 +11,9 @@
        <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
      <tr  id="orders_show_only"   style="margin-left:0;padding:0"  >
        <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       <td  style="" {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
-       <td  style="" {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
-       <td  style="" {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
+       <td   {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
+       <td   {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
+       <td   {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
      </tr>
     </table>
       

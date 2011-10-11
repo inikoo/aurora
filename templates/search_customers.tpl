@@ -28,11 +28,11 @@
 <input type="hidden" value="store" id="Scope"/>
 	
 	
-	<tr class="first"><td style="" class="label">{t}Company Name{/t}:</td>
+	<tr class="first"><td  class="label">{t}Company Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue="" valid="0">
-	      <div id="Company_Name_Container" style="" ></div>
+	      <div id="Company_Name_Container"  ></div>
 	    </div>
 	  </td>
 	</tr>
@@ -43,7 +43,7 @@
 	  <td>
 	    
 	    <input style="width:18em" id="Contact_Name" value="" >
-	    <div id="Contact_Name_Container" style="" ></div>
+	    <div id="Contact_Name_Container"  ></div>
 	    
 	  </td>
 	 </tr> 
@@ -57,7 +57,7 @@
 	  <td>
 	    
 	    <input style="width:18em" id="Contact_Name" value="" >
-	    <div id="Contact_Name_Container" style="" ></div>
+	    <div id="Contact_Name_Container"  ></div>
 	    
 	  </td>
 	  
@@ -75,7 +75,7 @@
 	<tbody style="display:none">
 	  <tr>
 	    <td class="label" >{t}Salutation{/t}:</td>
-	    <td  style="" >
+	    <td   >
 	      <input id="Contact_Salutation" type="hidden" value="" ovalue="">
 	      {foreach from=$prefix item=s name=foo  }
 	      <span   onclick="update_salutation(this)"  label="{$s.txt}" style="{if $smarty.foreach.foo.first}margin:0;{else}margin-left:3px{/if};{if $s.relevance>1};display:none{/if} " class="Contact_Salutation small_button"   id="Contact_Salutation_{$s.txt}"  >{$s.txt}</span>
@@ -102,7 +102,7 @@
 	  <td  class="label"  >{t}Email{/t}:</td>
 	  <td >
 	    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
-	    <div id="Email_Container" style="" ></div>
+	    <div id="Email_Container"  ></div>
 	    
 	  </td>
 	</tr>
@@ -115,7 +115,7 @@
 	    
 	    <input  style="width:18em" class="Telecom" telecom_key=0 telecom_type="Telephone" id="Telephone" 
 		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
-	    <div id="Telephone_Container" style="" ></div>
+	    <div id="Telephone_Container"  ></div>
 	  </td >
 	  
 	</tr>	
@@ -147,7 +147,7 @@
   <td  style="text-align:left">
 	      <div  style="width:15em;position:relative;top:00px" >
 		<input id="address_country" style="text-align:left;width:18em" type="text">
-		<div id="address_country_container" style="" ></div>
+		<div id="address_country_container"  ></div>
 	      </div>
 	    </td>
 	  </tr>
@@ -163,7 +163,7 @@
 	     <div id="myAutoComplete" style="width:15em;" >
 	      <input style="text-align:left;width:18em" id="address_country_d1" value="" ovalue="" >
 	      <input id="address_country_d1_code" value="" type="hidden">
-	    <div id="address_country_d1_container" style="" ></div>
+	    <div id="address_country_d1_container"  ></div>
 	      </div>
 	      </td>
 	  </tr>
@@ -172,7 +172,7 @@
 	     <div class="AutoComplete" style="width:15em;" >
 	      <input id="address_country_d2_code" value="" type="hidden">
 	      <input style="text-align:left;width:18em" id="address_country_d2" value="" ovalue="" >
-	      <div id="address_country_d2_container" style="" >
+	      <div id="address_country_d2_container"  >
 	      </div>
 	     </div>
 	    </td>
@@ -182,7 +182,7 @@
 	    <div class="AutoComplete" style="width:15em;" >
 	      <input id="address_country_d3_code" value="" type="hidden">
 	      <input style="text-align:left;width:18em" id="address_country_d3" value="" ovalue="" >
-	      <div id="address_country_d3_container" style="" ></div>
+	      <div id="address_country_d3_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
@@ -191,7 +191,7 @@
 	    <div class="AutoComplete" style="width:15em;" >
 	      <input id="address_country_d4_code" value="" type="hidden">
 	      <input style="text-align:left;width:18em" id="address_country_d4" value="" ovalue="" >
-	      <div id="address_country_d4_container" style="" ></div>
+	      <div id="address_country_d4_container"  ></div>
 	    </div>
 	  </td>
 	</tr>	
@@ -200,7 +200,7 @@
 	    <div class="AutoComplete" style="width:15em;" >
 	      <input id="address_country_d5_code" value="" type="hidden">
 	      <input style="text-align:left;width:18em" id="address_country_d5" value="" ovalue="" >
-	      <div id="address_country_d5_container" style="" ></div>
+	      <div id="address_country_d5_container"  ></div>
 	    </div>
 	  </td>
 	</tr>	
@@ -211,7 +211,7 @@
 	  <td class="label"  style="width:160px;background:none"><img  id="address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="float:left;visibility:hidden" /> {t}Postal Code{/t}:</td>
 	  <td  style="text-align:left">
 	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue="" valid="0"  >
-	    <div id="address_postal_code_container" style="" ></div>
+	    <div id="address_postal_code_container"  ></div>
 	  </td>
 	</tr>
 	
@@ -221,7 +221,7 @@
 	      <td  style="text-align:left">
 		<div class="AutoComplete" style="width:15em;" >
 		<input style="text-align:left;width:18em" id="address_town" value="" ovalue="" >
-		 <div id="address_town_container" style="" ></div>
+		 <div id="address_town_container"  ></div>
 	      </div>
 	      </td>
 	  </tr>
@@ -230,7 +230,7 @@
 	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td>
 	      <td  style="text-align:left">
 		<input style="text-align:left;width:18em" id="address_town_d1" value="" ovalue="" >
-		<div id="address_town_d1_container" style="" ></div>
+		<div id="address_town_d1_container"  ></div>
 	      </td>
 	  </tr>
 	  <tr style="display:none;" id="tr_address_town_d2">

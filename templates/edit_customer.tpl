@@ -93,7 +93,7 @@
    
    <div>
        <input style="text-align:left;width:100%" id="customer_b_id" value="" ovalue="" >
-       <div id="customer_b_id_Container" style="" ></div>
+       <div id="customer_b_id_Container"  ></div>
    </div>
    
    </td>
@@ -268,11 +268,11 @@
 </tr>
    
   <tr id="New_Company_Name_tr"  style="display:none" class="first">
-  <td style=""  class="label">{t}Company Name{/t}:</td>
+  <td   class="label">{t}Company Name{/t}:</td>
    <td  style="text-align:left;">
      <div  >
        <input style="text-align:left;width:100%" id="New_Company_Name" value="" ovalue="" valid="0">
-       <div id="New_Company_Name_Container" style="" ></div>
+       <div id="New_Company_Name_Container"  ></div>
      </div>
    </td>
    <td id="New_Company_Name_msg"  class="edit_td_alert"></td>
@@ -294,21 +294,21 @@
 
 		 
  
- <tr {if $customer_type!='Company'}style="display:none"{/if} class="first"><td style="" class="label">{t}Company Name{/t}:</td>
+ <tr {if $customer_type!='Company'}style="display:none"{/if} class="first"><td  class="label">{t}Company Name{/t}:</td>
    <td  style="text-align:left;">
      <div  >
        <input style="text-align:left;width:100%" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0">
-       <div id="Customer_Name_Container" style="" ></div>
+       <div id="Customer_Name_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Name_msg"  class="edit_td_alert"></td>
  </tr>
  
-  <tr  class="first"><td style="" class="label">{if $customer_type=='Company'}{t}Registration Number{/t}{else}{t}Identification Number{/t}{/if}:</td>
+  <tr  class="first"><td  class="label">{if $customer_type=='Company'}{t}Registration Number{/t}{else}{t}Identification Number{/t}{/if}:</td>
    <td  style="text-align:left;">
      <div  >
        <input style="text-align:left;width:100%" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0">
-       <div id="Customer_Registration_Number_Container" style="" ></div>
+       <div id="Customer_Registration_Number_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Registration_Number_msg"  class="edit_td_alert"></td>
@@ -317,11 +317,11 @@
  
  
 
- <tr class=""><td style="" class="label" >{t}Contact Name{/t}:</td>
+ <tr ><td  class="label" >{t}Contact Name{/t}:</td>
    <td  style="text-align:left;">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Contact_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
-       <div id="Customer_Main_Contact_Name_Container" style="" ></div>
+       <div id="Customer_Main_Contact_Name_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
@@ -329,11 +329,11 @@
 
 
  
- <tr class=""><td style="" class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}xxx{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+ <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}xxx{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
-       <div id="Customer_Main_Email_Container" style="" ></div>
+       <div id="Customer_Main_Email_Container"  ></div>
      </div>
    </td>
    <td>
@@ -345,11 +345,11 @@
 
 
  {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
-  <tr class="" id="tr_other_email{$other_email_key}"><td style="" class="label">{if $other_email_login_handle[$other_email.email] == $other_email.email}xxx{/if}<img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:<span></td>
+  <tr  id="tr_other_email{$other_email_key}"><td  class="label">{if $other_email_login_handle[$other_email.email] == $other_email.email}xxx{/if}<img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
-       <div id="Customer_Email{$other_email_key}_Container" style="" ></div>
+       <div id="Customer_Email{$other_email_key}_Container"  ></div>
      </div>
    </td>
    <td>
@@ -359,11 +359,11 @@
 {/foreach}
 
 
- <tr id="tr_add_other_email" class="" style="display:none"><td style="" class="label">{t}Other Email{/t}:</td>
+ <tr id="tr_add_other_email"  style="display:none"><td  class="label">{t}Other Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_Email" value="" ovalue="" valid="0">
-       <div id="Customer_Other_Email_Container" style="" ></div>
+       <div id="Customer_Other_Email_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Other_Email_msg" class="edit_td_alert"></td>
@@ -372,11 +372,11 @@
 
 
 
- <tr class=""><td style="" class="label"><img  id="comment_icon_telephone" src="{if $customer->get_principal_telecom_comment('Telephone')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Telephone Key')==''}display:none{/if}" onClick="change_comment(this,'telephone',{$customer->get('Customer Main Telephone Key')})"> {t}Contact Telephone{/t}:</td>
+ <tr ><td  class="label"><img  id="comment_icon_telephone" src="{if $customer->get_principal_telecom_comment('Telephone')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Telephone Key')==''}display:none{/if}" onClick="change_comment(this,'telephone',{$customer->get('Customer Main Telephone Key')})"> {t}Contact Telephone{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
-       <div id="Customer_Main_Telephone_Container" style="" ></div>
+       <div id="Customer_Main_Telephone_Container"  ></div>
      </div>
    </td>
    <td>
@@ -388,11 +388,11 @@
  
  
   {foreach from=$customer->get_other_telephones_data() key=other_telephone_key item=other_telephone }
- <tr class="" id="tr_other_telephone{$other_telephone_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',{$other_telephone_key})">  <span id="tr_other_telephone_label{$other_telephone_key}">{if $other_telephone.label==''}{t}Other Telephone{/t}{else}{$other_telephone.label} (Telephone){/if}:<span></td>
+ <tr  id="tr_other_telephone{$other_telephone_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',{$other_telephone_key})">  <span id="tr_other_telephone_label{$other_telephone_key}">{if $other_telephone.label==''}{t}Other Telephone{/t}{else}{$other_telephone.label} (Telephone){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Telephone{$other_telephone_key}" value="{$other_telephone.xhtml}" ovalue="{$other_telephone.xhtml}" valid="0">
-       <div id="Customer_Telephone{$other_telephone_key}_Container" style="" ></div>
+       <div id="Customer_Telephone{$other_telephone_key}_Container"  ></div>
      </div>
    </td>
    <td>
@@ -401,11 +401,11 @@
  </tr>
 {/foreach}
 
- <tr id="tr_add_other_telephone" class="" style="display:none"><td style="" class="label">{t}Other Telephone{/t}:</td>
+ <tr id="tr_add_other_telephone"  style="display:none"><td  class="label">{t}Other Telephone{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_Telephone" value="" ovalue="" valid="0">
-       <div id="Customer_Other_Telephone_Container" style="" ></div>
+       <div id="Customer_Other_Telephone_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Other_Telephone_msg" class="edit_td_alert"></td>
@@ -414,11 +414,11 @@
  
  
  
-  <tr class=""><td style="" class="label"><img  id="comment_icon_mobile" src="{if $customer->get_principal_telecom_comment('Mobile')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Mobile Key')==''}display:none{/if}" onClick="change_comment(this,'mobile',{$customer->get('Customer Main Mobile Key')})"> {t}Contact Mobile{/t}:</td>
+  <tr ><td  class="label"><img  id="comment_icon_mobile" src="{if $customer->get_principal_telecom_comment('Mobile')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Mobile Key')==''}display:none{/if}" onClick="change_comment(this,'mobile',{$customer->get('Customer Main Mobile Key')})"> {t}Contact Mobile{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
-       <div id="Customer_Main_Mobile_Container" style="" ></div>
+       <div id="Customer_Main_Mobile_Container"  ></div>
      </div>
    </td>
   
@@ -433,11 +433,11 @@
  
  
    {foreach from=$customer->get_other_mobiles_data() key=other_mobile_key item=other_mobile }
- <tr class="" id="tr_other_mobile{$other_mobile_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'mobile',{$other_mobile_key})">  <span id="tr_other_mobile_label{$other_mobile_key}">{if $other_mobile.label==''}{t}Other Mobile{/t}{else}{$other_mobile.label} (Mobile){/if}:<span></td>
+ <tr  id="tr_other_mobile{$other_mobile_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'mobile',{$other_mobile_key})">  <span id="tr_other_mobile_label{$other_mobile_key}">{if $other_mobile.label==''}{t}Other Mobile{/t}{else}{$other_mobile.label} (Mobile){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Mobile{$other_mobile_key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0">
-       <div id="Customer_Mobile{$other_mobile_key}_Container" style="" ></div>
+       <div id="Customer_Mobile{$other_mobile_key}_Container"  ></div>
      </div>
    </td>
    <td>
@@ -446,22 +446,22 @@
  </tr>
 {/foreach}
 
- <tr id="tr_add_other_mobile" class="" style="display:none"><td style="" class="label">{t}Other Mobile{/t}:</td>
+ <tr id="tr_add_other_mobile"  style="display:none"><td  class="label">{t}Other Mobile{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_Mobile" value="" ovalue="" valid="0">
-       <div id="Customer_Other_Mobile_Container" style="" ></div>
+       <div id="Customer_Other_Mobile_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Other_Mobile_msg" class="edit_td_alert"></td>
  </tr>
  
  
-<tr class=""><td style="" class="label"><img  id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onClick="change_comment(this,'fax',{$customer->get('Customer Main FAX Key')})"> {t}Contact Fax{/t}:</td>
+<tr ><td  class="label"><img  id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onClick="change_comment(this,'fax',{$customer->get('Customer Main FAX Key')})"> {t}Contact Fax{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
-       <div id="Customer_Main_FAX_Container" style="" ></div>
+       <div id="Customer_Main_FAX_Container"  ></div>
      </div>
    </td>
    <td>
@@ -471,11 +471,11 @@
  </tr>
 
  {foreach from=$customer->get_other_faxes_data() key=other_fax_key item=other_fax }
- <tr class="" id="tr_other_fax{$other_fax_key}"><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'fax',{$other_fax_key})">  <span id="tr_other_fax_label{$other_fax_key}">{if $other_fax.label==''}{t}Other Fax{/t}{else}{$other_fax.label} (Fax){/if}:<span></td>
+ <tr  id="tr_other_fax{$other_fax_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'fax',{$other_fax_key})">  <span id="tr_other_fax_label{$other_fax_key}">{if $other_fax.label==''}{t}Other Fax{/t}{else}{$other_fax.label} (Fax){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_FAX{$other_fax_key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0">
-       <div id="Customer_FAX{$other_fax_key}_Container" style="" ></div>
+       <div id="Customer_FAX{$other_fax_key}_Container"  ></div>
      </div>
    </td>
    <td>
@@ -484,11 +484,11 @@
  </tr>
 {/foreach}
 
- <tr id="tr_add_other_fax" class="" style="display:none"><td style="" class="label">{t}Other Fax{/t}:</td>
+ <tr id="tr_add_other_fax"  style="display:none"><td  class="label">{t}Other Fax{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_FAX" value="" ovalue="" valid="0">
-       <div id="Customer_Other_FAX_Container" style="" ></div>
+       <div id="Customer_Other_FAX_Container"  ></div>
      </div>
    </td>
    <td id="Customer_Other_FAX_msg" class="edit_td_alert"></td>
@@ -497,11 +497,11 @@
  {*Edit custom fields*}
  
  {foreach from=$show_case key=custom_field_key item=custom_field_value }
- <tr class="" id="tr_{$custom_field_value.lable}"><td style="" class="label">{$custom_field_key}:</td>
+ <tr  id="tr_{$custom_field_value.lable}"><td  class="label">{$custom_field_key}:</td>
    <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Customer_{$custom_field_value.lable}" value="{$custom_field_value.value}" ovalue="{$custom_field_value.value}" valid="0">
-       <div id="Customer_{$custom_field_value.lable}_Container" style="" ></div>
+       <div id="Customer_{$custom_field_value.lable}_Container"  ></div>
      </div>
    </td>
    <td>
@@ -545,15 +545,15 @@
        <table border=0>
        
        
-       <tr class="">
+       <tr >
  <td  class="label">{t}Tax Number{/t}:</td>
    <td  style="text-align:left;width:280px">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
-       <div id="Customer_Tax_Number_Container" style="" ></div>
+       <div id="Customer_Tax_Number_Container"  ></div>
      </div>
    </td>
-   <td id="Customer_Tax_Number_msg" style="" class="edit_td_alert"></td>
+   <td id="Customer_Tax_Number_msg"  class="edit_td_alert"></td>
  </tr>
        
        
@@ -562,7 +562,7 @@
         <td style="text-align:left;">
      <div   >
        <input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
-       <div id="Customer_Fiscal_Name_Container" style="" ></div>
+       <div id="Customer_Fiscal_Name_Container"  ></div>
      </div>
    </td>
    </tr><tr> <td id="Customer_Fiscal_Name_msg" class="edit_td_alert"></td>

@@ -76,7 +76,7 @@
 </tr>
 {if $balance.replacements.orders!=0}
 
-<tr class="">
+<tr >
   <td class="label">{t}Replt.{/t}</td>
   <td>{$balance.replacements.orders}</td>
   <td>{$balance.replacements.products}</td>
@@ -89,7 +89,7 @@
 {/if}
 {if $balance.shortage.orders!=0}
 
-<tr class="">
+<tr >
 <td class="label">{t}Shortges{/t}</td>
   <td>{$balance.shortage.orders}</td>
   <td>{$balance.shortage.products}</td>
@@ -100,7 +100,7 @@
 </tr>
 {/if}
 {if $balance.followup.orders!=0}
-<tr class="">
+<tr >
 <td class="label">{t}Follows{/t}</td>
   <td>{$balance.followup.orders}</td>
   <td>{$balance.followup.products}</td>
@@ -111,7 +111,7 @@
 </tr>
 {/if}
 {if $balance.samples.orders!=0}
-<tr class="">
+<tr >
 <td class="label">{t}Samples{/t}</td>
   <td>{$balance.samples.orders}</td>
   <td>{$balance.samples.products}</td>
@@ -122,7 +122,7 @@
 </tr>
 {/if}
 {if $balance.donation.orders!=0}
-<tr class="">
+<tr >
 
 <td class="label">{t}Donations{/t}</td>
   <td>{$balance.donation.orders}</td>
@@ -152,7 +152,7 @@
   <td>{$balance.invoices_zero.charges}</td>
  <td>{$balance.invoices_zero.net}</td>
 </tr>{/if}
-<tr class="" style="display:none"  >
+<tr  style="display:none"  >
  <td class="label">{t}Subtotal{/t}</td>
   <td>{$balance.subtotal.orders}</td>
   <td>{$balance.subtotal.products}</td>
@@ -172,7 +172,7 @@
  <td>{$balance.refund.net}</td>
 </tr>
 {/if}
-<tr class="">
+<tr >
  <td class="label">{t}Credits{/t}</td>
   <td>{$balance.credits.orders}</td>
   <td>{$balance.credits.products}</td>
@@ -181,7 +181,7 @@
 <td>{$balance.credits.unk}</td>
   <td>{$balance.credits.net}</td>
 </tr>
-<tr class="">
+<tr >
  <td class="label">{t}Total{/t}</td>
   <td>{$balance.total.orders}</td>
   <td>{$balance.total.products}</td>
@@ -209,7 +209,7 @@
 </tr>
 {if $balance.replacements.orders!=0}
 
-<tr class="">
+<tr >
   <td class="label">{t}Replt.{/t}</td>
   <td>{$balance.replacements.orders}</td>
   <td>{$balance.replacements.products}</td>
@@ -224,7 +224,7 @@
 {/if}
 {if $balance.shortage.orders!=0}
 
-<tr class="">
+<tr >
 <td class="label">{t}Shortges{/t}</td>
   <td>{$balance.shortage.orders}</td>
   <td>{$balance.shortage.products}</td>
@@ -238,7 +238,7 @@
 </tr>
 {/if}
 {if $balance.followup.orders!=0}
-<tr class="">
+<tr >
 <td class="label">{t}Follows{/t}</td>
   <td>{$balance.followup.orders}</td>
   <td>{$balance.followup.products}</td>
@@ -252,7 +252,7 @@
 </tr>
 {/if}
 {if $balance.samples.orders!=0}
-<tr class="">
+<tr >
 <td class="label">{t}Samples{/t}</td>
   <td>{$balance.samples.orders}</td>
   <td>{$balance.samples.products}</td>
@@ -266,7 +266,7 @@
 </tr>
 {/if}
 {if $balance.donation.orders!=0}
-<tr class="">
+<tr >
 
 <td class="label">{t}Donations{/t}</td>
   <td>{$balance.donation.orders}</td>
@@ -332,7 +332,7 @@
   <td>{$balance.refund_error.total}</td>
 </tr>
 {/if}
-<tr class="">
+<tr >
  <td class="label">{t}Total{/t}</td>
   <td>{$balance.total.orders}</td>
   <td>{$balance.total.net}</td>

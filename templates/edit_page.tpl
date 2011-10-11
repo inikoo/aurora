@@ -4,7 +4,7 @@
 <input type="hidden" id="site_key" value="{$site->id}"/>
 <input type="hidden" id="page_key" value="{$page->id}"/>
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
 </div>
 
@@ -87,7 +87,7 @@
 		 <div   >     
 		   <input  style="width:100%" id="page_properties_page_code"   value="{$page->get('Page Code')}" ovalue="{$page->get('Page Code')}"  />
 		   
-		   <div id="page_properties_page_code_Container" style="" ></div>
+		   <div id="page_properties_page_code_Container"  ></div>
 		 </div>
 	       </td><td><div style="font-size:80%;color:red" id="page_properties_page_code_msg"></div></td></tr>
 
@@ -97,7 +97,7 @@
 		 <div   >
 		   <input style="width:100%"  id="page_properties_url"   value="{$page->get('Page URL')}" ovalue="{$page->get('Page URL')}"  />
 		   
-		   <div id="page_properties_url_Container" style="" ></div>
+		   <div id="page_properties_url_Container"  ></div>
 		 </div>
 	       </td><td><div id="page_properties_url_msg"></div>
       </td></tr>
@@ -108,7 +108,7 @@
 		 <div   >
 		   <input  style="width:100%" id="page_properties_link_title"   value="{$page->get('Page Short Title')}" ovalue="{$page->get('Page Short Title')}"  />
 		   
-		   <div id="page_properties_link_title_Container" style="" ></div>
+		   <div id="page_properties_link_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="page_properties_link_title_msg"></div>
       </td></tr>
@@ -143,7 +143,7 @@
 		 <div   >
 		   <input  id="page_html_head_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Title')}" ovalue="{$page->get('Page Title')}"  />
 		   <div id="page_html_head_title_msg"></div>
-		   <div id="page_html_head_title_Container" style="" ></div>
+		   <div id="page_html_head_title_Container"  ></div>
 		 </div>
 	       </td><td>
 		
@@ -155,7 +155,7 @@
 		 <div >
 		   <textarea  id="page_html_head_keywords"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}"  >{$page->get('Page Keywords')}</textarea>
 		   <div id="page_html_head_keywords_msg"></div>
-		   <div id="page_html_head_keywords_Container" style="" ></div>
+		   <div id="page_html_head_keywords_Container"  ></div>
 		 </div>
 		 
 		 
@@ -186,7 +186,7 @@
 		 <div  >
 		   <input  id="page_header_store_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}"  />
 		   <div id="page_header_store_title_msg"></div>
-		   <div id="page_header_store_title_Container" style="" ></div>
+		   <div id="page_header_store_title_Container"  ></div>
 		 </div>
 	       </td>
 	    
@@ -197,7 +197,7 @@
 		 <div  >
 		   <input  id="page_header_subtitle"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Subtitle')}" ovalue="{$page->get('Page Store Subtitle')}"  />
 		   <div id="page_header_subtitle_msg"></div>
-		   <div id="page_header_subtitle_Container" style="" ></div>
+		   <div id="page_header_subtitle_Container"  ></div>
 		 </div>
 		 
 	     </td></tr>
@@ -205,14 +205,14 @@
 		 <div >
 		 <input  id="page_header_slogan"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Slogan')}" ovalue="{$page->get('Page Store Slogan')}"  />
 		 <div id="page_header_slogan_msg"></div>
-		 <div id="page_header_slogan_Container" style="" ></div>
+		 <div id="page_header_slogan_Container"  ></div>
 		 </div>
 	     </td></tr>
 	     <tr style="display:none;height:87px"  ><td style="width:120px" class="label">{t}Short Introduction{/t}:</td><td>
 		 <div  >
 		   <textarea  id="page_header_resume"  rows="5" style="width:100%;height:80px" MAXLENGTH="64" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  />{$page->get('Page Store Resume')}</textarea>
 		   <div id="page_header_resume_msg"></div>
-		   <div id="page_header_resume_Container" style="" ></div>
+		   <div id="page_header_resume_Container"  ></div>
 		 </div>
 	     </td></tr>
 	     <tr style="height:15px"><td colspan=3></td></tr>
@@ -296,8 +296,8 @@
       </td></tr>
 	     <tr><td class="label">{t}Form Type{/t}:</td>
 	     <td class="image_radio">
-	     <div {if $options.Form_Type=='Steps'}class="selected"{/if}><img style="" src="art/form_show_all{if $options.Form_Type!='Steps'}_bw{/if}.png"/><br>{t}Show all fields{/t}</div>
-	     <div {if $options.Form_Type=='Show All'}class="selected"{/if} style="margin-left:20px;"><img style="" src="art/form_show_in_steps{if $options.Form_Type!='Show All'}_bw{/if}.png"/><br>{t}Show by steps{/t}</div>
+	     <div {if $options.Form_Type=='Steps'}class="selected"{/if}><img  src="art/form_show_all{if $options.Form_Type!='Steps'}_bw{/if}.png"/><br>{t}Show all fields{/t}</div>
+	     <div {if $options.Form_Type=='Show All'}class="selected"{/if} style="margin-left:20px;"><img  src="art/form_show_in_steps{if $options.Form_Type!='Show All'}_bw{/if}.png"/><br>{t}Show by steps{/t}</div>
 	     
 	     </td>
 	    </td></tr>
@@ -384,7 +384,7 @@
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
     <div id="clean_table_filter0" class="clean_table_filter" style="display:none">
       <div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>

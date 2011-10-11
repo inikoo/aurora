@@ -430,7 +430,7 @@
   <div id="note_msg"></div>
   <table style="padding:10px;margin:10px" >
   <tr id="note_type" class="options_list" prefix="note_type_" value="deletable">
-  <td class="" id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
+  <td  id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
   </td>
   <td class="selected" id="note_type_deletable" onclick="radio_changed(this)" name="deletable" >{t}Deletable{/t}
   </td>
@@ -460,7 +460,7 @@
  
   <td class="selected" id="note_date_keep_date" onclick="radio_changed(this)" name="keep_date" >{t}Keep Date{/t}
   </td>
-   <td class="" id="note_date_update_date" onclick="radio_changed(this)" name="update_date" >{t}Update Date{/t}
+   <td  id="note_date_update_date" onclick="radio_changed(this)" name="update_date" >{t}Update Date{/t}
   </td>
   </tr>
   
@@ -472,7 +472,7 @@
   <td style="text-align:center;width:50%">
     <span  class="unselectable_text button" onClick="close_dialog('edit_note')" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
-    <span  onclick="save('edit_note')" id="edit_note_save"  class="unselectable_text button"     style="" >{t}Save{/t}</span></td></tr>
+    <span  onclick="save('edit_note')" id="edit_note_save"  class="unselectable_text button"      >{t}Save{/t}</span></td></tr>
 </table>
 </div>
 
@@ -518,7 +518,7 @@
   <td style="text-align:center;width:50%">
     <span  class="unselectable_text button" onClick="close_dialog('sticky_note')" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
-    <span  onclick="save('sticky_note')" id="sticky_note_save"  class="unselectable_text button"     style="" >{t}Save{/t}</span></td></tr>
+    <span  onclick="save('sticky_note')" id="sticky_note_save"  class="unselectable_text button"      >{t}Save{/t}</span></td></tr>
 </table>
 </div>
 
