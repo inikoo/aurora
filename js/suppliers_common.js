@@ -89,13 +89,6 @@ table.hideColumn('low');
  
  }
 
-
-
-
-
-
-
-
 function  change_supplier_products_view(e,data){	
 
 
