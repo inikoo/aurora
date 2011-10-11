@@ -18,8 +18,8 @@
         
   </head>
 
-  <body  class="">
-    <div id="" class="">
+  <body  >
+    <div id="" >
     
 
 	  
