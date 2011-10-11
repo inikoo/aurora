@@ -555,6 +555,13 @@ function create_order($data) {
             $gross=$quantity*$product->data['Product History Price'];
             $estimated_weight=$quantity*$product->data['Product Gross Weight'];
 
+
+            $_supplier_metadata=array();
+            foreach($transaction['pick_method_data']['parts_sku'] as $__key=>$__value){
+             $_supplier_metadata[$__key]=$__value['supplier_product_pid'];
+            
+            }
+
             $data=array(
                       'Estimated Weight'=>$estimated_weight,
                       'date'=>$date_order,
@@ -568,6 +575,7 @@ function create_order($data) {
                       'Current Dispatching State'=>'In Process',
                       'Current Payment State'=>'Waiting Payment',
                       'Metadata'=>$store_code.$order_data_id,
+                      'Supplier Metadata'=>serialize($_supplier_metadata)
                   );
 
             //  print_r($data);
@@ -586,6 +594,13 @@ function create_order($data) {
             $quantity=$transaction['given'];
             $gross=0;
             $estimated_weight=$quantity*$product->data['Product Gross Weight'];
+            
+             $_supplier_metadata=array();
+            foreach($transaction['pick_method_data']['parts_sku'] as $__key=>$__value){
+             $_supplier_metadata[$__key]=$__value['supplier_product_pid'];
+            
+            }
+            
             $data=array(
                       'Estimated Weight'=>$estimated_weight,
                       'date'=>$date_order,
@@ -598,6 +613,7 @@ function create_order($data) {
                       'Current Dispatching State'=>'In Process',
                       'Current Payment State'=>'Waiting Payment',
                       'Metadata'=>$store_code.$order_data_id,
+                        'Supplier Metadata'=>serialize($_supplier_metadata)
                   );
             //   print_r($data);
 
