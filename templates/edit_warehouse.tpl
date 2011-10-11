@@ -256,11 +256,11 @@
 <input type="hidden" id="location_key" value="">
 <input type="hidden" id="record_index" value="">
 
-<tr class="first"><td style="" class="label">{t}Area{/t}:</td>
+<tr class="first"><td  class="label">{t}Area{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="Area_Code" value="" ovalue="" valid="0">
-       <div id="Area_Code_Container" style="" ></div>
+       <div id="Area_Code_Container"  ></div>
      </div>
    </td>
    <td id="Area_Code_msg" class="edit_td_alert"></td>

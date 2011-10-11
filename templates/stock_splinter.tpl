@@ -79,7 +79,7 @@
 			  <div id="location_move_to_container" ></div>
 			</div>
 			<div id="location_move_from" style="margin-left:2px;display:none">
-			  <input id="location_move_from_input" type="text" style="" value="">
+			  <input id="location_move_from_input" type="text"  value="">
 			  <div id="location_move_from_container"></div>
 			</div>
 
@@ -116,7 +116,7 @@
 	    <td id="other_location" >
 			
 			<div id="add_location" >
-			  <input id="add_location_input" type="text" style="" value="" >
+			  <input id="add_location_input" type="text"  value="" >
 			  <div id="add_location_container"></div>
 			</div>
 

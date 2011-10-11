@@ -2,7 +2,7 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
 <input id="department_key" value="{$department->id}" type="hidden" />
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
 </div>
  
@@ -53,7 +53,7 @@
 		 value="{$department->get('Product Department Code')}" 
 		 ovalue="{$department->get('Product Department Code')}"  
 		 />
-		 <div id="code_Container" style="" ></div>
+		 <div id="code_Container"  ></div>
          </div>
 	    </td>
 	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
@@ -72,7 +72,7 @@
 		   value="{$department->get('Product Department Name')}"  
 		   ovalue="{$department->get('Product Department Name')}"  
 		   />
-		<div id="name_Container" style="" ></div>
+		<div id="name_Container"  ></div>
               </div>
 	    </td>
 	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
@@ -121,7 +121,7 @@
 		 value="" 
 		 ovalue=""  
 		 />
-		 <div id="family_code_Container" style="" ></div>
+		 <div id="family_code_Container"  ></div>
          </div>
 	    </td>
 	     <td id="family_code_msg" class="edit_td_alert" style="width:300px"></td>
@@ -140,7 +140,7 @@
 		   value=""  
 		   ovalue=""  
 		   />
-		<div id="family_name_Container" style="" ></div>
+		<div id="family_name_Container"  ></div>
               </div>
 	    </td>
 	     <td id="family_name_msg" class="edit_td_alert" style="width:300px"></td>
@@ -159,7 +159,7 @@
 		   value=""  
 		   ovalue=""  
 		   />
-		<div id="family_special_char_Container" style="" ></div>
+		<div id="family_special_char_Container"  ></div>
               </div>
 	    </td>
 	     <td id="family_special_char_msg" class="edit_td_alert" style="width:300px"></td>
@@ -232,7 +232,7 @@
 		 <div   >     
 		   <input  id="department_page_properties_page_code"   value="{$page_data.PageCode}" ovalue="{$page_data.PageCode}"  />
 		   
-		   <div id="department_page_properties_page_code_Container" style="" ></div>
+		   <div id="department_page_properties_page_code_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_properties_page_code_msg"></div></td></tr>
 
@@ -241,7 +241,7 @@
 		 <div   >
 		   <input  id="department_page_properties_url"   value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
 		   
-		   <div id="department_page_properties_url_Container" style="" ></div>
+		   <div id="department_page_properties_url_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_properties_url_msg"></div>
       </td></tr>
@@ -251,7 +251,7 @@
 		 <div   >
 		   <input  id="department_page_properties_link_title"   value="{$page_data.PageShortTitle}" ovalue="{$page_data.PageShortTitle}"  />
 		   
-		   <div id="department_page_properties_link_title_Container" style="" ></div>
+		   <div id="department_page_properties_link_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_properties_link_title_msg"></div>
       </td></tr>
@@ -292,7 +292,7 @@
 		 <div   >
 		   <input  id="department_page_html_head_title"    value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
 		   
-		   <div id="department_page_html_head_title_Container" style="" ></div>
+		   <div id="department_page_html_head_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_html_head_title_msg"></div> </td></tr>
 	    
@@ -301,7 +301,7 @@
 		 <div  style="height:60px" >
 		   <textarea  id="department_page_html_head_keywords"  value="{$page_data.PageKeywords}" ovalue="{$page_data.PageKeywords}"  >{$page_data.PageKeywords}</textarea>
 		   
-		   <div id="department_page_html_head_keywords_Container" style="" ></div>
+		   <div id="department_page_html_head_keywords_Container"  ></div>
 		 </div>
 		 
 		 
@@ -333,7 +333,7 @@
 		 <div   >
 		   <input  id="department_page_header_store_title"   value="{$page_data.PageStoreTitle}" ovalue="{$page_data.PageStoreTitle}"  />
 		   
-		   <div id="department_page_header_store_title_Container" style="" ></div>
+		   <div id="department_page_header_store_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_header_store_title_msg"></div></td>
 	    
@@ -343,7 +343,7 @@
 		 <div   >
 		   <input  id="department_page_header_subtitle"   value="{$page_data.PageStoreSubtitle}" ovalue="{$page_data.PageStoreSubtitle}"  />
 		   
-		   <div id="department_page_header_subtitle_Container" style="" ></div>
+		   <div id="department_page_header_subtitle_Container"  ></div>
 		 </div>
 		 
 	     </td><td><div id="department_page_header_subtitle_msg"></div></td></tr>
@@ -351,14 +351,14 @@
 		 <div   >
 		 <input  id="department_page_header_slogan"   value="{$page_data.PageStoreSlogan}" ovalue="{$page_data.PageStoreSlogan}"  />
 		 <div id="department_page_header_slogan_msg"></div>
-		 <div id="department_page_header_slogan_Container" style="" ></div>
+		 <div id="department_page_header_slogan_Container"  ></div>
 		 </div>
 	     </td></tr>
 	     <tr style="display:none"><td class="label">{t}Short Introduction{/t}:</td><td>
 		 <div   >
 		   <input  id="department_page_header_resume"   value="{$page_data.PageStoreResume}" ovalue="{$page_data.PageStoreResume}"  />
 		   <div id="department_page_header_resume_msg"></div>
-		   <div id="department_page_header_resume_Container" style="" ></div>
+		   <div id="department_page_header_resume_Container"  ></div>
 		 </div>
 	     </td></tr>
 	     
@@ -406,7 +406,7 @@
 		 <div style="height:200px"  >
 		 <textarea  id="department_page_content_presentation_template_data"  style="width:450px" rows="10"  value="{$page_data.ProductPresentationTemplateData}" ovalue="{$page_data.ProductPresentationTemplateData}"  >{$page_data.ProductPresentationTemplateData}</textarea>
 		 <div id="department_page_content_presentation_template_data_msg"></div>
-		 <div id="department_page_content_presentation_template_data_Container" style="" ></div>
+		 <div id="department_page_content_presentation_template_data_Container"  ></div>
 		 </div>
 	       </td>
  

@@ -37,9 +37,9 @@
 
 		<div class="address_display"  id="delivery_address_display0"></div>
 		<div class="address_buttons" id="delivery_address_buttons0">
-		  <span class="" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
+		  <span  style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
+		  <span  style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/>
 		  </span>
 		  <span id="delivery_set_main0" style="float:left" class="{if $key==$customer->get('Customer Main Delivery Address Key')}hide{/if}  delivery_set_main small_button small_button_edit"  onClick="change_main_address(0,{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</span>
@@ -58,9 +58,9 @@
 
 	<div class="address_display"  id="delivery_address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div style="clear:both" class="address_buttons" id="delivery_address_buttons{$address->id}">
-		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <span  style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <span  style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/>
 		  </span>
 		  <span id="delivery_set_main{$address->id}" style="float:left" class="{if $key==$customer->get('Customer Main Delivery Address Key')}hide{/if}  delivery_set_main small_button small_button_edit"  onClick="change_main_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</span>

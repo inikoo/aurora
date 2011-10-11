@@ -51,9 +51,9 @@
 	<tr class="first">
 	<td style="width:120px" class="label">{t}Field Name{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Custom_Field_Name" value="" ovalue="" valid="0">
-	      <div id="Custom_Field_Name_Container" style="" ></div>
+	      <div id="Custom_Field_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -62,9 +62,9 @@
 	<tr>
 		<td style="width:120px" class="label">{t}Default Value{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Default_Value" value="" ovalue="" valid="0">
-	      <div id="Default_Value_Container" style="" ></div>
+	      <div id="Default_Value_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>

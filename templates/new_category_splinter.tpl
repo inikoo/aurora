@@ -8,7 +8,7 @@
    <input id="new_category_subject" value="{$subject}" type="hidden"/>
   <table style="margin:10px">
 <tr>
- <td> <span  style=""  >{t}Name{/t}:</span></td>
+ <td> <span    >{t}Name{/t}:</span></td>
  <td> <input id="new_category_name" /></td>
 </tr>
 </table>

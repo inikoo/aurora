@@ -14,7 +14,7 @@
 <div class="col" style="width:430px">
 <table class="search"  border=0 style="margin-top:5px">
 <tr>
-<td class="form" style="">
+<td class="form" >
 <div id="search" class="asearch_container"  style=";float:left;">
   <input style="width:300px" class="search" id="locations_search" value="" state="" name="search"/>
       <img style="position:relative;left:305px" align="absbottom" id="locations_clean_search" class="submitsearch" src="art/icons/zoom.png">
@@ -40,7 +40,7 @@
 
 <table class="search"  border=0 style="margin-top:5px">
 <tr>
-<td class="form" style="">
+<td class="form" >
 <div id="search" class="asearch_container"  style=";float:left;">
   <input style="width:300px" class="search" id="parts_search" value="" state="" name="search"/>
       <img style="position:relative;left:305px" align="absbottom" id="parts_clean_search" class="submitsearch" src="art/icons/zoom.png">

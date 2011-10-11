@@ -58,9 +58,9 @@
 	<tr class="first">
 	<td style="width:120px" class="label">{t}Field Name{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Custom_Field_Name" value="" ovalue="" valid="0">
-	      <div id="Custom_Field_Name_Container" style="" ></div>
+	      <div id="Custom_Field_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -69,9 +69,9 @@
 	<tr>
 		<td style="width:120px" class="label">{t}Default Value{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Default_Value" value="" ovalue="" valid="0">
-	      <div id="Default_Value_Container" style="" ></div>
+	      <div id="Default_Value_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -223,9 +223,9 @@
   	<tr class="top">
 	<td style="width:120px" class="label">{t}Email{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Email" value="" ovalue="" valid="0">
-	      <div id="Email_Container" style="" ></div>
+	      <div id="Email_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -234,9 +234,9 @@
 	<tr>
 		<td style="width:120px" class="label">{t}Password{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" type="password" id="Password" value="" ovalue="" valid="0">
-	      <div id="Password_Container" style="" ></div>
+	      <div id="Password_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -247,9 +247,9 @@
 	<tr>
 		<td style="width:120px" class="label">{t}Incoming Mail Server{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Incoming_Mail_Server" value="" ovalue="" valid="0">
-	      <div id="Incoming_Mail_Server_Container" style="" ></div>
+	      <div id="Incoming_Mail_Server_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -259,9 +259,9 @@
 	<tr>
 		<td style="width:1200px" class="label">{t}Outgoing Mail Server{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Outgoing_Mail_Server" value="" ovalue="" valid="0">
-	      <div id="Outgoing_Mail_Server_Container" style="" ></div>
+	      <div id="Outgoing_Mail_Server_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -314,9 +314,9 @@
   	<tr class="top">
 	<td style="width:120px" class="label">{t}Email{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Email" value="" ovalue="" valid="0">
-	      <div id="Email_Container" style="" ></div>
+	      <div id="Email_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -325,9 +325,9 @@
 	<tr>
 		<td style="width:120px" class="label">{t}Password{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" type="password" id="Password" value="" ovalue="" valid="0">
-	      <div id="Password_Container" style="" ></div>
+	      <div id="Password_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -338,9 +338,9 @@
 	<tr>
 		<td style="width:120px" class="label">{t}Incoming Mail Server{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Incoming_Mail_Server" value="" ovalue="" valid="0">
-	      <div id="Incoming_Mail_Server_Container" style="" ></div>
+	      <div id="Incoming_Mail_Server_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -350,9 +350,9 @@
 	<tr>
 		<td style="width:1200px" class="label">{t}Outgoing Mail Server{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Outgoing_Mail_Server" value="" ovalue="" valid="0">
-	      <div id="Outgoing_Mail_Server_Container" style="" ></div>
+	      <div id="Outgoing_Mail_Server_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>

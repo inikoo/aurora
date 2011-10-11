@@ -42,7 +42,7 @@
     <div>
         <input type="hidden" id="{$address_identifier}address_use_contact" value="{$show_contact}"   ovalue="{$show_contact}"  />
         <input style="text-align:left;width:100%" id="{$address_identifier}address_contact" value="" ovalue="" />
-        <div id="{$address_identifier}address_contact_container" style="" ></div>
+        <div id="{$address_identifier}address_contact_container"  ></div>
 	</div>
     </td>
   </tr>
@@ -52,7 +52,7 @@
     <div>
         <input type="hidden" id="{$address_identifier}address_use_tel" value="{$show_tel}"   ovalue="{$show_tel}"  />
         <input style="text-align:left;width:100%" id="{$address_identifier}address_telephone" value="" ovalue="" />
-        <div id="{$address_identifier}address_telephone_container" style="" ></div>
+        <div id="{$address_identifier}address_telephone_container"  ></div>
 	</div>
     </td>
   </tr>
@@ -83,7 +83,7 @@
      <div >
     <input style="text-align:left;width:100%" id="{$address_identifier}address_town" value="" ovalue="" />
       <input id="{$address_identifier}address_town_code" value="" type="hidden"/>
-<div id="{$address_identifier}address_town_container" style="" ></div>
+<div id="{$address_identifier}address_town_container"  ></div>
 	      </div>
     </td>
   </tr>
@@ -94,34 +94,34 @@
     <div >
     <input style="text-align:left;width:100%" id="{$address_identifier}address_postal_code" value="" ovalue=""  />
      <input id="{$address_identifier}address_postal_code_code" value="" type="hidden"/>
-        <div id="{$address_identifier}address_postal_code_container" style="" ></div>
+        <div id="{$address_identifier}address_postal_code_container"  ></div>
 	      </div>
     </td>
   </tr>
     <tr id="{$address_identifier}tr_address_country_d5" style="display:none">
-	  <td class="label" style=""><span id="label_address_country_d5">{t}5rd Division{/t}</span>:</td><td  style="text-align:left">
+	  <td class="label" ><span id="label_address_country_d5">{t}5rd Division{/t}</span>:</td><td  style="text-align:left">
 	    <div  >
 	      <input id="address_country_d5_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d5" value="" ovalue="" />
-	      <div id="address_country_d5_container" style="" ></div>
+	      <div id="address_country_d5_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
     <tr id="{$address_identifier}tr_address_country_d4" style="display:none">
-	  <td class="label" style=""><span id="label_address_country_d4">{t}4rd Division{/t}</span>:</td><td  style="text-align:left">
-	    <div style="" >
+	  <td class="label" ><span id="label_address_country_d4">{t}4rd Division{/t}</span>:</td><td  style="text-align:left">
+	    <div  >
 	      <input id="address_country_d4_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d4" value="" ovalue="" />
-	      <div id="address_country_d4_container" style="" ></div>
+	      <div id="address_country_d4_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
     <tr id="{$address_identifier}tr_address_country_d3" style="display:none">
-	  <td class="label" style=""><span id="label_address_country_d3">{t}3rd Division{/t}</span>:</td><td  style="text-align:left">
-	    <div  style="" >
+	  <td class="label" ><span id="label_address_country_d3">{t}3rd Division{/t}</span>:</td><td  style="text-align:left">
+	    <div   >
 	      <input id="address_country_d3_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d3" value="" ovalue="" />
-	      <div id="address_country_d3_container" style="" ></div>
+	      <div id="address_country_d3_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
@@ -131,7 +131,7 @@
         <div  >
 	    <input style="text-align:left;width:100%" id="{$address_identifier}address_country_d2" value="" ovalue="" />
 	    	      <input id="{$address_identifier}address_country_d2_code" value="" type="hidden"/>
-            <div id="{$address_identifier}address_country_d2_container" style="" ></div>
+            <div id="{$address_identifier}address_country_d2_container"  ></div>
 	      </div>
 	    </td>
   </tr>
@@ -140,10 +140,10 @@
 	    
 	    <span id="{$address_identifier}label_address_country_d1">{t}Region{/t}</span>:</td>
 	    <td  style="text-align:left">
-	     <div style="" >
+	     <div  >
 	      <input style="text-align:left;width:100%" id="{$address_identifier}address_country_d1" value="" ovalue="" />
 	      <input id="{$address_identifier}address_country_d1_code" value="" type="hidden"/>
-	    <div id="{$address_identifier}address_country_d1_container" style="" ></div>
+	    <div id="{$address_identifier}address_country_d1_container"  ></div>
 	      </div>
 	      </td>
   </tr>

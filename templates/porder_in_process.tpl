@@ -35,7 +35,7 @@
     
     
     <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Purchase Order{/t}: {$po->get('Purchase Order Public ID')}</h1>
-    <table border=0 style="">
+    <table border=0 >
       <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po->get('Purchase Order Key')}</td></tr>
       <tr><td>{t}Supplier{/t}:</td><td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td></tr>
       <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po->get('Number Items')}</td></tr>
@@ -164,7 +164,7 @@
     <tr >
         <input type="hidden" id="submitted_by" value="{$user_staff_key}"/>
 
-      <td class="label" ><img class="edit_mini_button" id="get_submiter" src="art/icons/edit.gif" alt="({t}edit{/t})"/> {t}Submit By{/t}:</td><td   ><span id="submited_by_alias" class="value" style="">{$user}</span></td>
+      <td class="label" ><img class="edit_mini_button" id="get_submiter" src="art/icons/edit.gif" alt="({t}edit{/t})"/> {t}Submit By{/t}:</td><td   ><span id="submited_by_alias" class="value" >{$user}</span></td>
     </tr>
 
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">

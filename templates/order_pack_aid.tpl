@@ -25,7 +25,7 @@
 	 <table border=0  style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 	  
 	
-<tbody id="resend" style="">	   
+<tbody id="resend" >	   
 		        <tr><td  class="aright" >{t}Packer{/t}:</td><td id="assigned_packer" key="{$delivery_note->get('Delivery Note Assigned Packer Key')}"  class="aright">{$delivery_note->get('Delivery Note Assigned Packer Alias')}</td></tr>
 
 	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_packed_transactions">{$number_packed_transactions}</span>/<span id="number_transactions">{$number_transactions}</span> <span style="margin-left:10px" id="percentage_packed">{$delivery_note->get('Faction Picked')}</span></td></tr>
