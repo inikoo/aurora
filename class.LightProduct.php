@@ -302,7 +302,7 @@ class LightProduct {
         $login_path="";
         $register_path="";
         if (!$flag) {
-            $message=sprintf('<br/><span style="color:red;font-style: italic; ">Please <a style="color:red;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:red;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+            $message=sprintf('<br/><span style="color:green;font-style: italic; ">In stock, please <a style="color:green;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:green;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
             //$this->count++;
         } else
             $message='';

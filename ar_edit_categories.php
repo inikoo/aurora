@@ -12,17 +12,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('disassociate_subject_from_all_sub_categories'):
-$data=prepare_values($_REQUEST,array(
-                          
+    $data=prepare_values($_REQUEST,array(
+
                              'subject'  =>array('type'=>'string'),
                              'subject_key'  =>array('type'=>'key'),
                              'category_key'  =>array('type'=>'key')
                          ));
-disassociate_subject_from_all_sub_categories($data);
-break;
+    disassociate_subject_from_all_sub_categories($data);
+    break;
 case('disassociate_subject_to_category'):
- $data=prepare_values($_REQUEST,array(
- 'cat_id'  =>array('type'=>'string'),
+    $data=prepare_values($_REQUEST,array(
+                             'cat_id'  =>array('type'=>'string'),
                              'subject'  =>array('type'=>'string'),
                              'subject_key'  =>array('type'=>'key'),
                              'category_key'  =>array('type'=>'key')
@@ -31,46 +31,46 @@ case('disassociate_subject_to_category'):
 
     disassociate_subject_to_category($data);
 
-break;
+    break;
 case('disassociate_subject_to_category_radio'):
- $data=prepare_values($_REQUEST,array(
-  'cat_id'  =>array('type'=>'string'),
+    $data=prepare_values($_REQUEST,array(
+                             'cat_id'  =>array('type'=>'string'),
                              'subject'  =>array('type'=>'string'),
                              'subject_key'  =>array('type'=>'key'),
                              'category_key'  =>array('type'=>'key'),
-                              'parent_category_key'  =>array('type'=>'key')
+                             'parent_category_key'  =>array('type'=>'key')
                          ));
 
 
     disassociate_subject_to_category_radio($data);
 
-break;
+    break;
 case('associate_subject_to_category'):
- $data=prepare_values($_REQUEST,array(
-                                'cat_id'  =>array('type'=>'string'),
+    $data=prepare_values($_REQUEST,array(
+                             'cat_id'  =>array('type'=>'string'),
                              'subject'  =>array('type'=>'string'),
                              'subject_key'  =>array('type'=>'key'),
                              'category_key'  =>array('type'=>'key'),
-                            
+
                          ));
 
 
     associate_subject_to_category($data);
 
-break;
+    break;
 case('associate_subject_to_category_radio'):
- $data=prepare_values($_REQUEST,array(
-  'cat_id'  =>array('type'=>'string'),
-                            'subject'  =>array('type'=>'string'),
-                            'subject_key'  =>array('type'=>'key'),
-                            'category_key'  =>array('type'=>'key'),
-                            'parent_category_key'  =>array('type'=>'key')
+    $data=prepare_values($_REQUEST,array(
+                             'cat_id'  =>array('type'=>'string'),
+                             'subject'  =>array('type'=>'string'),
+                             'subject_key'  =>array('type'=>'key'),
+                             'category_key'  =>array('type'=>'key'),
+                             'parent_category_key'  =>array('type'=>'key')
                          ));
 
 
     associate_subject_to_category_radio($data);
 
-break;
+    break;
 case('new_category'):
     $data=prepare_values($_REQUEST,array(
                              'name'=>array('type'=>'string'),
@@ -92,9 +92,9 @@ case('edit_categories'):
     edit_categories($data);
     break;
 case('edit_category'):
-   $data=prepare_values($_REQUEST,array('category_key'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+    $data=prepare_values($_REQUEST,array('category_key'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
 
-   edit_category($data);
+    edit_category($data);
     break;
 case('edit_subcategory'):
     edit_subcategory();
@@ -166,14 +166,14 @@ function list_edit_product_categories() {
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
-        
-        
-     if (isset( $_REQUEST['nr']))
+
+
+    if (isset( $_REQUEST['nr']))
         $number_results=$_REQUEST['nr'];
     else
-        $number_results=$conf['nr'];   
+        $number_results=$conf['nr'];
 
- 
+
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -227,7 +227,7 @@ function list_edit_product_categories() {
 
 
     $where=sprintf("where   `Category Store Key`=%d  and `Category Subject`=%s and  `Category Parent Key`=%d ",
-    $store_key,prepare_mysql($subject),$parent_key);
+                   $store_key,prepare_mysql($subject),$parent_key);
     if ($subject_key) {
         $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
     }
@@ -309,43 +309,43 @@ function list_edit_product_categories() {
     $sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     //print $sql;
     $res = mysql_query($sql);
-$adata=array();
-while($row=mysql_fetch_assoc($res)){
+    $adata=array();
+    while ($row=mysql_fetch_assoc($res)) {
 
-    $name=$row['Category Name'];
+        $name=$row['Category Name'];
 
-    $delete='<img src="art/icons/delete.png"/>';
-    $adata[]=array(
-                 'go'=>sprintf("<a href='edit_product_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-                 $row['Category Store Key'],
-                 $row['Category Key']),
-                 'id'=>$row['Category Key'],
-                 'name'=>$name,
+        $delete='<img src="art/icons/delete.png"/>';
+        $adata[]=array(
+                     'go'=>sprintf("<a href='edit_product_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
+                                   $row['Category Store Key'],
+                                   $row['Category Key']),
+                     'id'=>$row['Category Key'],
+                     'name'=>$name,
 
-                 'delete'=>$delete,
-                           'delete_type'=>'delete'
+                     'delete'=>$delete,
+                     'delete_type'=>'delete'
 
-             );
-}
-mysql_free_result($res);
+                 );
+    }
+    mysql_free_result($res);
 
 
 
-$response=array('resultset'=>
-                            array('state'=>200,
-                                  'data'=>$adata,
-                                  'sort_key'=>$_order,
-                                  'sort_dir'=>$_dir,
-                                  'tableid'=>$tableid,
-                                  'filter_msg'=>$filter_msg,
-                                  'rtext'=>$rtext,
-                                  'rtext_rpp'=>$rtext_rpp,
-                                  'total_records'=>$total_records,
-                                  'records_offset'=>$start_from,
-                                  'records_perpage'=>$number_results,
-                                 )
-               );
-echo json_encode($response);
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 function list_edit_customer_categories() {
@@ -355,14 +355,14 @@ function list_edit_customer_categories() {
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
-        
-        
-     if (isset( $_REQUEST['nr']))
+
+
+    if (isset( $_REQUEST['nr']))
         $number_results=$_REQUEST['nr'];
     else
-        $number_results=$conf['nr'];   
+        $number_results=$conf['nr'];
 
- 
+
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -416,7 +416,7 @@ function list_edit_customer_categories() {
 
 
     $where=sprintf("where   `Category Store Key`=%d  and `Category Subject`=%s and  `Category Parent Key`=%d ",
-    $store_key,prepare_mysql($subject),$parent_key);
+                   $store_key,prepare_mysql($subject),$parent_key);
     if ($subject_key) {
         $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
     }
@@ -498,43 +498,43 @@ function list_edit_customer_categories() {
     $sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 //print $sql;
     $res = mysql_query($sql);
-$adata=array();
-while($row=mysql_fetch_assoc($res)){
+    $adata=array();
+    while ($row=mysql_fetch_assoc($res)) {
 
-    $name=$row['Category Label'];
+        $name=$row['Category Label'];
 
-    $delete='<img src="art/icons/delete.png"/>';
-    $adata[]=array(
-                 'go'=>sprintf("<a href='edit_customer_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-                 $row['Category Store Key'],
-                 $row['Category Key']),
-                 'id'=>$row['Category Key'],
-                 'name'=>$name,
+        $delete='<img src="art/icons/delete.png"/>';
+        $adata[]=array(
+                     'go'=>sprintf("<a href='edit_customer_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
+                                   $row['Category Store Key'],
+                                   $row['Category Key']),
+                     'id'=>$row['Category Key'],
+                     'name'=>$name,
 
-                 'delete'=>$delete,
-                           'delete_type'=>'delete'
+                     'delete'=>$delete,
+                     'delete_type'=>'delete'
 
-             );
-}
-mysql_free_result($res);
+                 );
+    }
+    mysql_free_result($res);
 
 
 
-$response=array('resultset'=>
-                            array('state'=>200,
-                                  'data'=>$adata,
-                                  'sort_key'=>$_order,
-                                  'sort_dir'=>$_dir,
-                                  'tableid'=>$tableid,
-                                  'filter_msg'=>$filter_msg,
-                                  'rtext'=>$rtext,
-                                  'rtext_rpp'=>$rtext_rpp,
-                                  'total_records'=>$total_records,
-                                  'records_offset'=>$start_from,
-                                  'records_perpage'=>$number_results,
-                                 )
-               );
-echo json_encode($response);
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
 }
 function list_edit_part_categories() {
     $conf=$_SESSION['state']['categories']['table'];
@@ -543,14 +543,14 @@ function list_edit_part_categories() {
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
-        
-        
-     if (isset( $_REQUEST['nr']))
+
+
+    if (isset( $_REQUEST['nr']))
         $number_results=$_REQUEST['nr'];
     else
-        $number_results=$conf['nr'];   
+        $number_results=$conf['nr'];
 
- 
+
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -604,7 +604,7 @@ function list_edit_part_categories() {
 
 
     $where=sprintf("where  `Category Subject`=%s and  `Category Parent Key`=%d ",
-    prepare_mysql($subject),$parent_key);
+                   prepare_mysql($subject),$parent_key);
     if ($subject_key) {
         $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
     }
@@ -686,42 +686,42 @@ function list_edit_part_categories() {
     $sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 //print $sql;
     $res = mysql_query($sql);
-$adata=array();
-while($row=mysql_fetch_assoc($res)){
+    $adata=array();
+    while ($row=mysql_fetch_assoc($res)) {
 
-    $name=$row['Category Name'];
+        $name=$row['Category Name'];
 
-    $delete='<img src="art/icons/delete.png"/>';
-    $adata[]=array(
-                 'go'=>sprintf("<a href='edit_part_category.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-                 $row['Category Key']),
-                 'id'=>$row['Category Key'],
-                 'name'=>$name,
+        $delete='<img src="art/icons/delete.png"/>';
+        $adata[]=array(
+                     'go'=>sprintf("<a href='edit_part_category.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
+                                   $row['Category Key']),
+                     'id'=>$row['Category Key'],
+                     'name'=>$name,
 
-                 'delete'=>$delete,
-                           'delete_type'=>'delete'
+                     'delete'=>$delete,
+                     'delete_type'=>'delete'
 
-             );
-}
-mysql_free_result($res);
+                 );
+    }
+    mysql_free_result($res);
 
 
 
-$response=array('resultset'=>
-                            array('state'=>200,
-                                  'data'=>$adata,
-                                  'sort_key'=>$_order,
-                                  'sort_dir'=>$_dir,
-                                  'tableid'=>$tableid,
-                                  'filter_msg'=>$filter_msg,
-                                  'rtext'=>$rtext,
-                                  'rtext_rpp'=>$rtext_rpp,
-                                  'total_records'=>$total_records,
-                                  'records_offset'=>$start_from,
-                                  'records_perpage'=>$number_results,
-                                 )
-               );
-echo json_encode($response);
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 
@@ -732,14 +732,14 @@ function list_edit_supplier_categories() {
         $start_from=$_REQUEST['sf'];
     else
         $start_from=$conf['sf'];
-        
-        
-     if (isset( $_REQUEST['nr']))
+
+
+    if (isset( $_REQUEST['nr']))
         $number_results=$_REQUEST['nr'];
     else
-        $number_results=$conf['nr'];   
+        $number_results=$conf['nr'];
 
- 
+
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -793,7 +793,7 @@ function list_edit_supplier_categories() {
 
 
     $where=sprintf("where   `Category Store Key`=%d  and `Category Subject`=%s and  `Category Parent Key`=%d ",
-    $store_key,prepare_mysql($subject),$parent_key);
+                   $store_key,prepare_mysql($subject),$parent_key);
     if ($subject_key) {
         $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
     }
@@ -875,43 +875,43 @@ function list_edit_supplier_categories() {
     $sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 // print $sql;
     $res = mysql_query($sql);
-$adata=array();
-while($row=mysql_fetch_assoc($res)){
+    $adata=array();
+    while ($row=mysql_fetch_assoc($res)) {
 
-    $name=$row['Category Name'];
+        $name=$row['Category Name'];
 
-    $delete='<img src="art/icons/delete.png"/>';
-    $adata[]=array(
-                 'go'=>sprintf("<a href='edit_supplier_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-                 $row['Category Store Key'],
-                 $row['Category Key']),
-                 'id'=>$row['Category Key'],
-                 'name'=>$name,
+        $delete='<img src="art/icons/delete.png"/>';
+        $adata[]=array(
+                     'go'=>sprintf("<a href='edit_supplier_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
+                                   $row['Category Store Key'],
+                                   $row['Category Key']),
+                     'id'=>$row['Category Key'],
+                     'name'=>$name,
 
-                 'delete'=>$delete,
-                           'delete_type'=>'delete'
+                     'delete'=>$delete,
+                     'delete_type'=>'delete'
 
-             );
-}
-mysql_free_result($res);
+                 );
+    }
+    mysql_free_result($res);
 
 
 
-$response=array('resultset'=>
-                            array('state'=>200,
-                                  'data'=>$adata,
-                                  'sort_key'=>$_order,
-                                  'sort_dir'=>$_dir,
-                                  'tableid'=>$tableid,
-                                  'filter_msg'=>$filter_msg,
-                                  'rtext'=>$rtext,
-                                  'rtext_rpp'=>$rtext_rpp,
-                                  'total_records'=>$total_records,
-                                  'records_offset'=>$start_from,
-                                  'records_perpage'=>$number_results,
-                                 )
-               );
-echo json_encode($response);
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 
@@ -971,91 +971,91 @@ function delete_categories($data) {
 
 function disassociate_subject_from_all_sub_categories($data) {
 
-$category=new Category($data['category_key']);
-$sub_cats=$category->get_children_keys();
-if(count($sub_cats)==0){
- $response=array('state'=>200,'action'=>'nochange','msg'=>_('Category has not children'));
-    echo json_encode($response);
-    return;
-}
+    $category=new Category($data['category_key']);
+    $sub_cats=$category->get_children_keys();
+    if (count($sub_cats)==0) {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Category has not children'));
+        echo json_encode($response);
+        return;
+    }
 
     $sql=sprintf("delete from `Category Bridge`  where `Category Key` in (%s) and `Subject`=%s and `Subject Key`=%d",
-                 join(',',$sub_cats), 
+                 join(',',$sub_cats),
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     mysql_query($sql);
-   // print($sql);
+    // print($sql);
     //print "-->".mysql_affected_rows()."<--  "    ;
-    if(mysql_affected_rows()>0){
-    $response=array('state'=>200,'action'=>'deleted','msg'=>_('Saved'));
-    echo json_encode($response);
-    }else{
-    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-    echo json_encode($response);
+    if (mysql_affected_rows()>0) {
+        $response=array('state'=>200,'action'=>'deleted','msg'=>_('Saved'));
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+        echo json_encode($response);
     }
-    
+
 }
 
 function disassociate_subject_to_category($data) {
     $sql=sprintf("delete from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                 $data['parent_category_key'], 
+                 $data['parent_category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     mysql_query($sql);
-   // print($sql);
+    // print($sql);
     //print "-->".mysql_affected_rows()."<--  "    ;
-    if(mysql_affected_rows()>0){
-    $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id']);
-    echo json_encode($response);
-    }else{
-    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-    echo json_encode($response);
+    if (mysql_affected_rows()>0) {
+        $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id']);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+        echo json_encode($response);
     }
-    
+
 }
 
 
 function disassociate_subject_to_category_radio($data) {
-$found=false;
+    $found=false;
     $sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                 $data['category_key'], 
+                 $data['category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     $res=mysql_query($sql);
- 
- if($row=mysql_fetch_assoc($res)){
-        if($row['num']>0)
+
+    if ($row=mysql_fetch_assoc($res)) {
+        if ($row['num']>0)
             $found=true;
-    
+
     }
 
 
-    if(!$found){
-     $response=array('state'=>200,'action'=>'nochange','msg'=>_('The Subject is not associated with the category'));
-    echo json_encode($response);
-    exit;
+    if (!$found) {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('The Subject is not associated with the category'));
+        echo json_encode($response);
+        exit;
     }
 
 
     $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                 $data['parent_category_key'], 
+                 $data['parent_category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     mysql_query($sql);
-   //print($sql);
+    //print($sql);
     //print "-->".mysql_affected_rows()."<--  "    ;
-    if(mysql_affected_rows()>0){
-    $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key']);
-    echo json_encode($response);
-    }else{
-    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-    echo json_encode($response);
+    if (mysql_affected_rows()>0) {
+        $response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key']);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
+        echo json_encode($response);
     }
-    
+
 }
 
 
@@ -1066,68 +1066,93 @@ function associate_subject_to_category($data) {
                  $data['subject_key']
                 );
     mysql_query($sql);
-    
-    if(mysql_affected_rows()>0){
-    
+
+    if (mysql_affected_rows()>0) {
+
         $category=new Category($data['category_key']);
-    
-    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
-    echo json_encode($response);
-    }else{
-    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
-    echo json_encode($response);
+
+        $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
+        echo json_encode($response);
     }
-    
+
 }
 
 
 function associate_subject_to_category_radio($data) {
-  
-  
-  $found=false;
+
+
+    $found=false;
     $sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                 $data['category_key'], 
+                 $data['category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
-        if($row['num']>0)
+    if ($row=mysql_fetch_assoc($res)) {
+        if ($row['num']>0)
             $found=true;
-    
+
     }
 
 
-    if($found){
-     $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-    echo json_encode($response);
-    exit;
+    if ($found) {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject already associated with the category'));
+        echo json_encode($response);
+        exit;
     }
-  
-  
+
+    $old_category_key=0;
+    $sql=sprintf("select C.`Category Key` from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
+                 $data['parent_category_key'],
+                 prepare_mysql($data['subject']),
+                 $data['subject_key']
+                );
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($result)) {
+        $old_category_key=$row['Category Key'];
+
+    }
+
+
     $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-                 $data['parent_category_key'], 
+                 $data['parent_category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     mysql_query($sql);
-    
-  $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+
+    $old_category=new Category($old_category_key);
+    if ($old_category->id)
+        $old_category->update_number_of_subjects();
+    $old_category->update_subjects_data();
+
+    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
                  $data['category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     mysql_query($sql);
-    
-    if(mysql_affected_rows()>0){
-    
-    $category=new Category($data['category_key']);
-    $category->update_number_of_subjects();
-    $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key'],'msg'=>_('Saved'));
-    echo json_encode($response);
-    }else{
-    $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
-    echo json_encode($response);
+
+    if (mysql_affected_rows()>0) {
+
+
+
+        $category=new Category($data['category_key']);
+        $category->update_number_of_subjects();
+        $category->update_subjects_data();
+
+
+
+
+
+        $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key'],'msg'=>_('Saved'));
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
+        echo json_encode($response);
     }
-  
-  }
+
+}
