@@ -105,8 +105,6 @@ function list_pages() {
     else
         $parent='none';
 
-
-
     if (isset( $_REQUEST['parent_key']))
         $parent_key=$_REQUEST['parent_key'];
     else

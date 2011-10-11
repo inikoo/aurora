@@ -14,7 +14,7 @@
 </div>
 
 
-{$category->get('Category Number Children')}
+
 <div class="data_table" style="{if $category->get('Category Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
     <span class="clean_table_title">Subcategories</span>
 
@@ -23,9 +23,7 @@
        <div  id="table1"   class="data_table_container dtable btable "> </div>		
 </div>
 
-
-
-  <div id="children_table" class="data_table" style="{if $category->get('Category Deep')==1}display:none;{/if}clear:both;margin-top:0px">
+<div id="children_table" class="data_table" style="{if $category->get('Category Deep')==1}display:none;{/if}clear:both;margin-top:0px">
       <span class="clean_table_title">{t}Customers in this category{/t}</span>
       
   
@@ -39,7 +37,7 @@
 	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
 	</tr>
       </table>
-{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name1 filter_value=$filter_value1  }
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
  <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
  </div>
 

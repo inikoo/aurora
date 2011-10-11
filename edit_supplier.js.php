@@ -389,7 +389,7 @@ var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&cat
 	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-			alert(o.responseText);
+			//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				}
@@ -419,6 +419,9 @@ Dom.addClass(this,'selected');
 
 
 function init(){
+
+  init_search('supplier_products_supplier');
+
 	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
 	oACDS.queryMatchContains = true;
 	var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
