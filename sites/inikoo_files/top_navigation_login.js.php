@@ -108,7 +108,7 @@ function show_user_profile(){
 
 
 
-     var request=path+'inikoo_files/customer.php?id='+customer_key;
+     var request=path+'inikoo_files/profile.php?id='+customer_key;
 	window.location =request;
 
 }
