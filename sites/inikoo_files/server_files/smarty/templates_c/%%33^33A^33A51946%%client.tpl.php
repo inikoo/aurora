@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-11 09:14:58
+<?php /* Smarty version 2.6.22, created on 2011-10-11 16:15:33
          compiled from client.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'client.tpl', 14, false),)), $this); ?>
@@ -409,7 +409,7 @@ unset($_smarty_tpl_vars);
  <?php $_from = $this->_tpl_vars['customer']->get_other_emails_data(); if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
     foreach ($_from as $this->_tpl_vars['other_email_key'] => $this->_tpl_vars['other_email']):
 ?>
-  <tr class="" id="tr_other_email<?php echo $this->_tpl_vars['other_email_key']; ?>
+  <tr  id="tr_other_email<?php echo $this->_tpl_vars['other_email_key']; ?>
 "><td style="" class="label"><?php if ($this->_tpl_vars['other_email_login_handle'][$this->_tpl_vars['other_email']['email']] == $this->_tpl_vars['other_email']['email']): ?>xxx<?php endif; ?><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',<?php echo $this->_tpl_vars['other_email_key']; ?>
 )">  <span id="tr_other_email_label<?php echo $this->_tpl_vars['other_email_key']; ?>
 "><?php if ($this->_tpl_vars['other_email']['label'] == ''): ?><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Email<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?><?php else: ?><?php echo $this->_tpl_vars['other_email']['label']; ?>
@@ -432,7 +432,7 @@ _msg" class="edit_td_alert"></span>
 <?php endforeach; endif; unset($_from); ?>
 
 
- <tr id="tr_add_other_email" class="" style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Email<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+ <tr id="tr_add_other_email"  style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Email<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_Email" value="" ovalue="" valid="0">
@@ -467,7 +467,7 @@ _msg" class="edit_td_alert"></span>
   <?php $_from = $this->_tpl_vars['customer']->get_other_telephones_data(); if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
     foreach ($_from as $this->_tpl_vars['other_telephone_key'] => $this->_tpl_vars['other_telephone']):
 ?>
- <tr class="" id="tr_other_telephone<?php echo $this->_tpl_vars['other_telephone_key']; ?>
+ <tr  id="tr_other_telephone<?php echo $this->_tpl_vars['other_telephone_key']; ?>
 "><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',<?php echo $this->_tpl_vars['other_telephone_key']; ?>
 )">  <span id="tr_other_telephone_label<?php echo $this->_tpl_vars['other_telephone_key']; ?>
 "><?php if ($this->_tpl_vars['other_telephone']['label'] == ''): ?><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Telephone<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?><?php else: ?><?php echo $this->_tpl_vars['other_telephone']['label']; ?>
@@ -489,7 +489,7 @@ _msg" class="edit_td_alert"></span>
  </tr>
 <?php endforeach; endif; unset($_from); ?>
 
- <tr id="tr_add_other_telephone" class="" style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Telephone<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+ <tr id="tr_add_other_telephone"  style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Telephone<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_Telephone" value="" ovalue="" valid="0">
@@ -527,7 +527,7 @@ _msg" class="edit_td_alert"></span>
    <?php $_from = $this->_tpl_vars['customer']->get_other_mobiles_data(); if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
     foreach ($_from as $this->_tpl_vars['other_mobile_key'] => $this->_tpl_vars['other_mobile']):
 ?>
- <tr class="" id="tr_other_mobile<?php echo $this->_tpl_vars['other_mobile_key']; ?>
+ <tr  id="tr_other_mobile<?php echo $this->_tpl_vars['other_mobile_key']; ?>
 "><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'mobile',<?php echo $this->_tpl_vars['other_mobile_key']; ?>
 )">  <span id="tr_other_mobile_label<?php echo $this->_tpl_vars['other_mobile_key']; ?>
 "><?php if ($this->_tpl_vars['other_mobile']['label'] == ''): ?><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Mobile<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?><?php else: ?><?php echo $this->_tpl_vars['other_mobile']['label']; ?>
@@ -549,7 +549,7 @@ _msg" class="edit_td_alert"></span>
  </tr>
 <?php endforeach; endif; unset($_from); ?>
 
- <tr id="tr_add_other_mobile" class="" style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Mobile<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+ <tr id="tr_add_other_mobile"  style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Mobile<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_Mobile" value="" ovalue="" valid="0">
@@ -580,7 +580,7 @@ _msg" class="edit_td_alert"></span>
  <?php $_from = $this->_tpl_vars['customer']->get_other_faxes_data(); if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
     foreach ($_from as $this->_tpl_vars['other_fax_key'] => $this->_tpl_vars['other_fax']):
 ?>
- <tr class="" id="tr_other_fax<?php echo $this->_tpl_vars['other_fax_key']; ?>
+ <tr  id="tr_other_fax<?php echo $this->_tpl_vars['other_fax_key']; ?>
 "><td style="" class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'fax',<?php echo $this->_tpl_vars['other_fax_key']; ?>
 )">  <span id="tr_other_fax_label<?php echo $this->_tpl_vars['other_fax_key']; ?>
 "><?php if ($this->_tpl_vars['other_fax']['label'] == ''): ?><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Fax<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?><?php else: ?><?php echo $this->_tpl_vars['other_fax']['label']; ?>
@@ -602,7 +602,7 @@ _msg" class="edit_td_alert"></span>
  </tr>
 <?php endforeach; endif; unset($_from); ?>
 
- <tr id="tr_add_other_fax" class="" style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Fax<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+ <tr id="tr_add_other_fax"  style="display:none"><td style="" class="label"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Other Fax<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Other_FAX" value="" ovalue="" valid="0">
@@ -616,7 +616,7 @@ _msg" class="edit_td_alert"></span>
  <?php $_from = $this->_tpl_vars['show_case']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
     foreach ($_from as $this->_tpl_vars['custom_field_key'] => $this->_tpl_vars['custom_field_value']):
 ?>
- <tr class="" id="tr_<?php echo $this->_tpl_vars['custom_field_value']['lable']; ?>
+ <tr  id="tr_<?php echo $this->_tpl_vars['custom_field_value']['lable']; ?>
 "><td style="" class="label"><?php echo $this->_tpl_vars['custom_field_key']; ?>
 :</td>
    <td  style="text-align:left">
