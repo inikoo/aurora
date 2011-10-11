@@ -83,7 +83,7 @@
 
 <div id="dialog_add_part" style="padding:10px 20px">
 
-    <div id="manage_stock" style="">
+    <div id="manage_stock" >
 	<div id="manage_stock_messages" style="padding:5px 5px">{t}Choose the part the you want to place in this location{/t}</div>
 	
 	<div id="manage_stock_locations" style="display:none">

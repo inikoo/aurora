@@ -25,9 +25,9 @@
 
        <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
        
-       <td  style="" {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
-       <td  style="" {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
-       <td  style="" {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
+       <td   {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
+       <td   {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
+       <td   {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
 
      </tr>
    
@@ -41,7 +41,7 @@
       <div  class="clean_table_caption"  style="clear:both;">
 	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	<div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	<div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
       </div>
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>

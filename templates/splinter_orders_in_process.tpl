@@ -10,7 +10,7 @@
  <div style="float:right;width:400px">
 <h1>{t}Pending Orders{/t}</h1>
 
-<div class="">
+<div >
 <h2>{t}Orders to do{/t}</h2>
 <div>{$orders_in_process_data.orders}</div>
 </div>

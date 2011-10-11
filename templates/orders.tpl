@@ -2,7 +2,7 @@
 <div id="bd" style="padding:0px" >
 <div style="padding:0 20px">
 {include file='orders_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Orders{/t}</span>
 </div>
  
@@ -43,7 +43,7 @@
      <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
       
-      <div style="">
+      <div >
    <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
      
      
@@ -153,7 +153,7 @@
      </div>
     <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <div style="">
+      <div >
    
 </div>
     <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  

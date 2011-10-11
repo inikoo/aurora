@@ -246,7 +246,7 @@ session_destroy();
 
 //print "<br> xxx2";
 //print_r($_SESSION);
-
+$customer=new LightCustomer(0);
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 if (!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])) {
     $_SESSION['logged_in']=0;
@@ -263,7 +263,7 @@ if ($logged_in ) {
 
         $user=new User($_SESSION['user_key']);
         $customer=new LightCustomer($_SESSION['customer_key']);
-
+		//print_r($customer);
     }
 
 } else {
@@ -435,8 +435,12 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image, $page_code;
+    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image, $page_code, $customer_profile;
 	
+	
+	if(isset($data['customer_profile']))
+		$customer_profile=$data['customer_profile'];
+		
 	if(isset($data['header_image']))
 		$header_image=$data['header_image'];
 
@@ -459,6 +463,7 @@ function set_parameters($data=false) {
 	elseif($data['type']=='index')
 		$path="../sites/";
 
+		
     if (!isset($data['family']))
         $family_code='';
     else
@@ -642,6 +647,7 @@ function update_page_key_visit_log($page_key) {
     $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
     mysql_query($sql);
 }
+
 
 
 

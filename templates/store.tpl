@@ -3,7 +3,7 @@
 
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
 </div>
  <h1>Store: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
@@ -186,7 +186,7 @@
 
 <div id="plot_pie_block"  style="{if $plot_tipo!='pie'}display:none;{/if}clear:both;border:1px solid #ccc;padding:20px">
   <div style="width:435px;float:left">
-  <span   class="clean_table_title" style="">{t}Departments{/t}</span>
+  <span   class="clean_table_title" >{t}Departments{/t}</span>
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
      
@@ -204,7 +204,7 @@
 <div id="plot_pie_departments" ><strong>You need to upgrade your Flash Player</strong></div>
 </div>
  <div style="width:435px;float:left;margin-left:20px">
-  <span   class="clean_table_title" style="">{t}Families{/t}</span>
+  <span   class="clean_table_title" >{t}Families{/t}</span>
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
      
@@ -282,7 +282,7 @@
 <div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
 
-    <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>
+    <span   class="clean_table_title" >{t}Web Sites{/t}</span>
  <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
@@ -299,7 +299,7 @@
 <div class="data_table" style="clear:both;">
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
 
-    <span   class="clean_table_title" style="">{t}Departments{/t}</span>
+    <span   class="clean_table_title" >{t}Departments{/t}</span>
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
@@ -456,7 +456,7 @@
 </div>
 <div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
   
-  <span   class="clean_table_title" style="">{t}Pages{/t}</span> 
+  <span   class="clean_table_title" >{t}Pages{/t}</span> 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
     
    

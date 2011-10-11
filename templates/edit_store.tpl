@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
 </div>
 <div style="clear:left;margin:0 0px">
@@ -76,7 +76,7 @@
 		 <div   >     
 		   <input  id="department_page_properties_page_code"   value="{$page_data.PageCode}" ovalue="{$page_data.PageCode}"  />
 		   
-		   <div id="department_page_properties_page_code_Container" style="" ></div>
+		   <div id="department_page_properties_page_code_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_properties_page_code_msg"></div></td></tr>
 
@@ -85,7 +85,7 @@
 		 <div   >
 		   <input  id="department_page_properties_url"   value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
 		   
-		   <div id="department_page_properties_url_Container" style="" ></div>
+		   <div id="department_page_properties_url_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_properties_url_msg"></div>
       </td></tr>
@@ -95,7 +95,7 @@
 		 <div   >
 		   <input  id="department_page_properties_link_title"   value="{$page_data.PageShortTitle}" ovalue="{$page_data.PageShortTitle}"  />
 		   
-		   <div id="department_page_properties_link_title_Container" style="" ></div>
+		   <div id="department_page_properties_link_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_properties_link_title_msg"></div>
       </td></tr>
@@ -136,7 +136,7 @@
 		 <div   >
 		   <input  id="department_page_html_head_title"    value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
 		   
-		   <div id="department_page_html_head_title_Container" style="" ></div>
+		   <div id="department_page_html_head_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_html_head_title_msg"></div> </td></tr>
 	    
@@ -145,7 +145,7 @@
 		 <div  style="height:60px" >
 		   <textarea  id="department_page_html_head_keywords"  value="{$page_data.PageKeywords}" ovalue="{$page_data.PageKeywords}"  >{$page_data.PageKeywords}</textarea>
 		   
-		   <div id="department_page_html_head_keywords_Container" style="" ></div>
+		   <div id="department_page_html_head_keywords_Container"  ></div>
 		 </div>
 		 
 		 
@@ -177,7 +177,7 @@
 		 <div   >
 		   <input  id="department_page_header_store_title"   value="{$page_data.PageStoreTitle}" ovalue="{$page_data.PageStoreTitle}"  />
 		   
-		   <div id="department_page_header_store_title_Container" style="" ></div>
+		   <div id="department_page_header_store_title_Container"  ></div>
 		 </div>
 	       </td><td><div id="department_page_header_store_title_msg"></div></td>
 	    
@@ -187,7 +187,7 @@
 		 <div   >
 		   <input  id="department_page_header_subtitle"   value="{$page_data.PageStoreSubtitle}" ovalue="{$page_data.PageStoreSubtitle}"  />
 		   
-		   <div id="department_page_header_subtitle_Container" style="" ></div>
+		   <div id="department_page_header_subtitle_Container"  ></div>
 		 </div>
 		 
 	     </td><td><div id="department_page_header_subtitle_msg"></div></td></tr>
@@ -195,14 +195,14 @@
 		 <div   >
 		 <input  id="department_page_header_slogan"   value="{$page_data.PageStoreSlogan}" ovalue="{$page_data.PageStoreSlogan}"  />
 		 <div id="department_page_header_slogan_msg"></div>
-		 <div id="department_page_header_slogan_Container" style="" ></div>
+		 <div id="department_page_header_slogan_Container"  ></div>
 		 </div>
 	     </td></tr>
 	     <tr style="display:none"><td class="label">{t}Short Introduction{/t}:</td><td>
 		 <div   >
 		   <input  id="department_page_header_resume"   value="{$page_data.PageStoreResume}" ovalue="{$page_data.PageStoreResume}"  />
 		   <div id="department_page_header_resume_msg"></div>
-		   <div id="department_page_header_resume_Container" style="" ></div>
+		   <div id="department_page_header_resume_Container"  ></div>
 		 </div>
 	     </td></tr>
 	     
@@ -250,7 +250,7 @@
 		 <div style="height:200px"  >
 		 <textarea  id="department_page_content_presentation_template_data"  style="width:450px" rows="10"  value="{$page_data.ProductPresentationTemplateData}" ovalue="{$page_data.ProductPresentationTemplateData}"  >{$page_data.ProductPresentationTemplateData}</textarea>
 		 <div id="department_page_content_presentation_template_data_msg"></div>
-		 <div id="department_page_content_presentation_template_data_Container" style="" ></div>
+		 <div id="department_page_content_presentation_template_data_Container"  ></div>
 		 </div>
 	       </td>
  
@@ -574,7 +574,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 		 value="{$store->get('Store Code')}" 
 		 ovalue="{$store->get('Store Code')}"  
 		 />
-		 <div id="code_Container" style="" ></div>
+		 <div id="code_Container"  ></div>
     </div>   
 	    </td>
 	     <td id="code_msg" class="edit_td_alert" style="xwidth:300px"></td>
@@ -584,7 +584,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <tr><td class="label">{t}Store Name{/t}:</td><td>
 	<div>
 	   <input  style="width:100%" id="name" name="name" changed=0 type='text' MAXLENGTH="255"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
-	   <div id="name_Container" style="" ></div>
+	   <div id="name_Container"  ></div>
 	   </div>
        </div>
 	  
@@ -595,7 +595,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	<div>
 	   <input  style="width:100%" id="slogan" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Slogan')}" ovalue="{$store->get('Store Slogan')}" />
-	   <div id="slogan_Container" style="" ></div>
+	   <div id="slogan_Container"  ></div>
        </div>
 	   </td>
 	   <td id="slogan_msg" class="edit_td_alert" ></td>
@@ -606,7 +606,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	 <div>
 	   <input  style="width:100%" id="contact" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Contact Name')}" ovalue="{$store->get('Store Contact Name')}" />
-	   <div id="contact_Container" style="" ></div>
+	   <div id="contact_Container"  ></div>
       </div>
 	   </td>
 	   <td id="contact_msg" class="edit_td_alert" ></td>
@@ -618,7 +618,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div>
 	   <input  style="width:100%" id="email" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Email')}" ovalue="{$store->get('Store Email')}" />
-	   <div id="email_Container" style="" ></div>
+	   <div id="email_Container"  ></div>
        </div>
 	   </td>
 	   <td id="email_msg" class="edit_td_alert" ></td>
@@ -628,7 +628,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	 <div>
 	   <input  style="width:100%" id="telephone" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Telephone')}" ovalue="{$store->get('Store Telephone')}" />
-	   <div id="telephone_Container" style="" ></div>
+	   <div id="telephone_Container"  ></div>
        </div>
 	   </td>
 	   <td id="telephone_msg" class="edit_td_alert" ></td>
@@ -638,7 +638,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	 <div>
 	   <input  style="width:100%" id="fax" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store Fax')}" ovalue="{$store->get('Store Fax')}" />
-	   <div id="fax_Container" style="" ></div>
+	   <div id="fax_Container"  ></div>
       </div>
 	   </td>
 	   <td id="fax_msg" class="edit_td_alert" ></td>
@@ -648,7 +648,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div  >
 	   <input  style="width:100%" id="url" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
-	   <div id="url_Container" style="" ></div>
+	   <div id="url_Container"  ></div>
        </div>
 	   </td>
 	   <td id="url_msg" class="edit_td_alert" ></td>
@@ -658,7 +658,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	<td>
 	  <div style="height:120px">
 	   <textarea style="width:100%" id="address"  changed=0 olength="{$store->get('Store Address')}"  value="{$store->get('Store Address')}"  ovalue="{$store->get('Store Address')}"  ohash="{$store->get('Product Description MD5 Hash')}" rows="6" cols="42">{$store->get('Store Address')}</textarea>
-	   <div id="address_Container" style="" ></div>
+	   <div id="address_Container"  ></div>
        </div>
 	   </td>
 	   <td id="address_msg" class="edit_td_alert" ></td>
@@ -668,7 +668,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div  >
 	   <input style="width:100%"  id="marketing_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Short Marketing Description')}" ovalue="{$store->get('Short Marketing Description')}" />
-	   <div id="marketing_description_Container" style="" ></div>
+	   <div id="marketing_description_Container"  ></div>
        </div>
 	   </td>
 	   <td id="marketing_description_msg" class="edit_td_alert" ></td>
@@ -732,7 +732,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
 	  </div>
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
 	 </div>
@@ -759,7 +759,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter3"><div class="clean_table_info"><span id="filter_name3">{$filter_name3}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value0}" size=10/><div id='f_container3'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
 	  </div>
 	  <div  id="table3"   class="data_table_container dtable btable "> </div>
 	 </div>
@@ -789,7 +789,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info2" class="clean_table_info"><span id="rtext2"></span> <span class="rtext_rpp" id="rtext_rpp2"></span> <span class="filter_msg"  id="filter_msg2"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter2"><div class="clean_table_info"><span id="filter_name2">{$filter_name2}</span>: <input style="border-bottom:none" id='f_input2' value="{$filter_value0}" size=10/><div id='f_container2'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator2"></span></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator2"></span></div></div>
 	  </div>
 	  <div  id="table2"   class="data_table_container dtable btable "> </div>
 	</div>
@@ -832,7 +832,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 	  </div>
 	  <div  id="table0"   class="data_table_container dtable btable "> </div>
 	</div>
@@ -867,7 +867,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 </div>      
 
 
-<div id="the_table1" class="data_table" style="">
+<div id="the_table1" class="data_table" >
   <span class="clean_table_title">{t}History{/t}</span>
      {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
   <div  id="table1"   class="data_table_container dtable btable "> </div>

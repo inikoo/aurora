@@ -118,7 +118,7 @@
 
 <div style="width:25em;float:left;margin-left:20px">
   <table    class="show_info_product">
-       <tbody id="info_all" style="">
+       <tbody id="info_all" >
 	 <tr >
 	  <td>{t}Active Customers{/t}:</td><td class="aright">{$store->get('Active Customers')}</td>
 	</tr>
@@ -168,7 +168,7 @@
 <div id="block_population" style="{if $view!='population'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 <div style="width:25em;float:left;margin-left:20px">
   <table    class="show_info_product">
-       <tbody id="info_all" style="">
+       <tbody id="info_all" >
 	 <tr >
 	  <td>{t}Contacts{/t}:</td><td class="aright">{$store->get('Total Customer Contacts')}</td>
 	</tr>

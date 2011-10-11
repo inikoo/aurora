@@ -16,16 +16,16 @@
 <fieldset class="field_set"> <legend class="legend_part">campaign info</legend>
 
 <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-<label class="" for="title">Name your campaign</label>
+<label  for="title">Name your campaign</label>
 <div class="field-wrapper"> <input type="text" value="" class="av-text" id="title" tabindex="1" name="content[title]" size="61" height="4"> 
 </div>
-<label class="" for="title">Message subject <span class="asterisk">*</span></label>
+<label  for="title">Message subject <span class="asterisk">*</span></label>
 <div class="field-wrapper"> <input type="text" value="{$subject}" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
-<label class="" for="title">From name  <span class="asterisk">*</span></label>
+<label  for="title">From name  <span class="asterisk">*</span></label>
 <div class="field-wrapper"> <input type="text" value="{$default_name}" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
-<label class="" for="title">Reply-to email   <span class="asterisk">*</span></label>
+<label  for="title">Reply-to email   <span class="asterisk">*</span></label>
 <div class="field-wrapper"> <input type="text" value="{$email}" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
 <div>
@@ -33,7 +33,7 @@
 <label class="inline-label" for="personalize-to">Personalize the "To:" field</label>
 </div>
 <br>
-<label class="" for="title">Specify <span class="asterisk">*</span>|MERGETAGS|<span class="asterisk">*</span> for recipient name   <span class="asterisk">*</span></label>
+<label  for="title">Specify <span class="asterisk">*</span>|MERGETAGS|<span class="asterisk">*</span> for recipient name   <span class="asterisk">*</span></label>
 <div class="field-wrapper"> <input type="text" value="" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
 

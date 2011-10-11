@@ -70,7 +70,7 @@ $sql="truncate `Inventory Audit Dimension`  ";
 mysql_query($sql);
 
 $sql="select (select handle from aw_old.liveuser_users where authuserid=aw_old.in_out.author) as user, code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where  in_out.date!='0000-00-00 00:00:00' and product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1  or aw_old.in_out.tipo=3)    order by product.id,date ";
-//print "$sql\n";
+print "$sql\n";
 $result=mysql_query($sql);
 
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

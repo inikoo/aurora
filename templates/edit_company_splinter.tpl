@@ -91,7 +91,7 @@
 	<table border=0 sclass="edit" style="margin:10px 0 0 0;padding:0" id="edit_contact_table">
 	  <tr >
 	    <input type="hidden" id="Contact_Key" value="" ovalue=""  />
-	    <td style="width:160px;" class="" >Name:</td>
+	    <td style="width:160px;"  >Name:</td>
 	    <td><input style="width:16em" id="Contact_Name" value="" onkeyup="contact_name_changed(this)"></td>
 	    <td >
 	      <table border=0 class="edit" style="xdisplay:none;position:relative;top:-6px;" >
@@ -110,7 +110,7 @@
 	  
 	  <tr>
 	    <td class="label" >{t}Salutation{/t}:</td>
-	    <td  style="" >
+	    <td   >
 	      <input id="Contact_Salutation" type="hidden" value="" ovalue="">
 	      {foreach from=$prefix item=s name=foo  }
 	      <span   onclick="update_salutation(this)"  label="{$s.txt}" style="{if $smarty.foreach.foo.first}margin:0;{else}margin-left:3px{/if};{if $s.relevance>1};display:none{/if} " class="Contact_Salutation small_button"   id="Contact_Salutation_{$s.txt}"  >{$s.txt}</span>
@@ -160,7 +160,7 @@
     
     <tr id=email_msg_mould style="display:none;"  ><td colspan="2" class="email_msg"></td></tr>
     <tr id="email_mould" class="mould" style="display:none;">
-      <td  class="" style="padding-left:10px" >{t}Email{/t}:</td>
+      <td   style="padding-left:10px" >{t}Email{/t}:</td>
       <td style="padding-left:10px">
 	<span class="email_to_delete" style="display:none;text-decoration:line-through"></span>
 	<input style="width:90%" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   onkeyup="validate_email(this);email_change()" /><br/>
@@ -195,7 +195,7 @@
       </td>
     </tr>
     <tr id="mobile_mould" class="mould" style="display:none;xbackground:red">
-      <td  class="" style="padding-left:10px" >
+      <td   style="padding-left:10px" >
 	<span id="show_description" onclick="show_details_telecom(this)" 
 	      class="show_details_telecom" telecom_type="mobile" action="Show" style="padding:0 1px;cursor:pointer">
 	  <img src='art/icons/application_put.png' alt="D"/>
@@ -225,7 +225,7 @@
     </tr>
     <tr class="title" style="height:30px">
       <td colspan=3 >{t}Contact Address & Landlines{/t}:
-	<span style=""  class="small_button" id="add_address_to_contact_button" >Add Address</span>
+	<span   class="small_button" id="add_address_to_contact_button" >Add Address</span>
       </td>
     </tr>
     <tr id="address_mould" class="mould" style="display:none;">
@@ -380,9 +380,9 @@
 		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div class="address_buttons" id="address_buttons{$address->id}">
 		  
-		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <span  style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		  <img src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <span  style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		  <img src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
 		  <div class="address_main_container"  style="display:inline;{if $number_of_addresses<2}display:none{/if}" >
 		  <input  onchange="change_main_address(this,{$address->id})" type="checkbox" class='Is_Main address_main' {if $address->is_main()}checked="checked" value="Yes" ovalue="Yes"{else}value="No" ovalue="No"{/if} /> {t}Main{/t}

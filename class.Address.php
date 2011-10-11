@@ -4961,7 +4961,7 @@ class Address extends DB_Table {
 
 
         function get_formated_principal_telephone() {
-// include_once 'class.Telecom.php';
+			include_once 'class.Telecom.php';
 
             $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                          ,prepare_mysql('Telephone')

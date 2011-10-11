@@ -3,7 +3,7 @@
 <div style="padding:0 20px">
  <input type="hidden" id="family_key" value="{$family->id}"/>
  {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
 </div>
 
@@ -226,7 +226,7 @@
 
 <div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
  
-	 <span   class="clean_table_title" style="">{t}Pages{/t}</span> 
+	 <span   class="clean_table_title" >{t}Pages{/t}</span> 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
     
    

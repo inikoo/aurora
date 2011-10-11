@@ -26,7 +26,7 @@
      <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
       
-      <div style="">
+      <div >
    <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
      
      
@@ -133,7 +133,7 @@
 *}
     <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <div style="">
+      <div >
    
 </div>
     <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  

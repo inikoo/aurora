@@ -29,9 +29,9 @@
 <div style="float:left;">
 
 	  <h2>{$country_name} [{$country_code}]</h2>
-	  <div class=""  style="width:100%;">
-	    <div class="" style="width:100%;font-size:90%"   >
-              <div class="" style="width:200px;float:left;margin-right:20px">
+	  <div   style="width:100%;">
+	    <div  style="width:100%;font-size:90%"   >
+              <div  style="width:200px;float:left;margin-right:20px">
 	
 		<table    class="show_info_product">
 		    <tr>
@@ -52,7 +52,7 @@
 
 
 	      </div>
-              <div class="" style="width:220px;float:left">
+              <div  style="width:220px;float:left">
 
 	
 

@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
 </div>
 
@@ -59,7 +59,7 @@
 	    <td  style="text-align:left">
 	      <div  style="width:15em;position:relative;top:00px" >
 		<input id="address_country" style="text-align:left;width:18em" type="text">
-		<div id="address_country_container" style="" ></div>
+		<div id="address_country_container"  ></div>
 	      </div>
 	    </td>
 	  </tr>
@@ -69,7 +69,7 @@
 <td class="label">{t}Currency{/t}:</td><td>
  <div  style="width:15em;position:relative;top:00px" >
 		<input id="currency" style="text-align:left;width:18em" type="text">
-		<div id="currency_container" style="" ></div>
+		<div id="currency_container"  ></div>
 	      </div> <input id="currency_code" value="" type="hidden" ></td>
 </tr>	  
 <tr>
@@ -93,7 +93,7 @@
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
     <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+      <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
@@ -109,7 +109,7 @@
     <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
     <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
       <div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
   </div>
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>

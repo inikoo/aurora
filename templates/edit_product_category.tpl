@@ -33,11 +33,11 @@
       
       <div id="new_category_messages" class="messages_block"></div>
 	  <table class="edit"> 
-	<tr class="first"><td style="" class="label">{t}Category Name{/t}:</td>
+	<tr class="first"><td  class="label">{t}Category Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Name')}" ovalue="{$category->get('Category Name')}">
-	      <div id="Category_Name_Container" style="" ></div>
+	      <div id="Category_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  	 <td id="Category_Name_msg" class="edit_td_alert"></td>
@@ -56,7 +56,7 @@
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 	  </div>
 	  <div  id="table0"   class="data_table_container dtable btable "> </div>
 	</div>

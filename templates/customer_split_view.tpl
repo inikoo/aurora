@@ -128,7 +128,7 @@
   <td style="text-align:center;width:50%">
     <span  class="unselectable_text button" onClick="close_merge_dialog()" >{t}Cancel{/t}</span></td>
   <td style="text-align:center;width:50%">
-    <span  onclick="merge()" id="merge_save"  class="unselectable_text button"     style="" >{t}Merge{/t}</span>
+    <span  onclick="merge()" id="merge_save"  class="unselectable_text button"      >{t}Merge{/t}</span>
     </tr>
     <tr id="merging" style="display:none"><td colspan=2 style="text-align:center">{t}Merging, please wait{/t}<td></tr>
          <tr ><td  colspan=2 id="merge_msg" colspan=2 style="text-align:center"><td></tr>

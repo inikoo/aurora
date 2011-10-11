@@ -81,11 +81,11 @@
 <input type="hidden" id="assign_picker_staff_key">
 <input type="hidden" id="assign_picker_dn_key">
 
-<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="Assign_Picker_Staff_Name" value="" ovalue="" valid="0">
-       <div id="Assign_Picker_Staff_Name_Container" style="" ></div>
+       <div id="Assign_Picker_Staff_Name_Container"  ></div>
      </div>
    </td>
    <td id="Assign_Picker_Staff_Name_msg" class="edit_td_alert"></td>
@@ -119,11 +119,11 @@
 <input type="hidden" id="pick_it_staff_key">
 <input type="hidden" id="pick_it_dn_key">
 
-<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="pick_it_Staff_Name" value="" ovalue="" valid="0">
-       <div id="pick_it_Staff_Name_Container" style="" ></div>
+       <div id="pick_it_Staff_Name_Container"  ></div>
      </div>
    </td>
    <td id="pick_it_Staff_Name_msg" class="edit_td_alert"></td>
@@ -174,11 +174,11 @@
 <input type="hidden" id="assign_packer_staff_key">
 <input type="hidden" id="assign_packer_dn_key">
 
-<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="Assign_packer_Staff_Name" value="" ovalue="" valid="0">
-       <div id="Assign_packer_Staff_Name_Container" style="" ></div>
+       <div id="Assign_packer_Staff_Name_Container"  ></div>
      </div>
    </td>
    <td id="Assign_packer_Staff_Name_msg" class="edit_td_alert"></td>
@@ -212,11 +212,11 @@
 <input type="hidden" id="pack_it_staff_key">
 <input type="hidden" id="pack_it_dn_key">
 
-<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="pack_it_Staff_Name" value="" ovalue="" valid="0">
-       <div id="pack_it_Staff_Name_Container" style="" ></div>
+       <div id="pack_it_Staff_Name_Container"  ></div>
      </div>
    </td>
    <td id="pack_it_Staff_Name_msg" class="edit_td_alert"></td>

@@ -8,7 +8,7 @@
 	     <div  style="width:15em;xposition:relative;top:00px" >
 	       <input type="hidden" id="location_warehouse_area_key" value=""/>
 	       <input width=10  id="location_area" type="text"/>
-	    <div id="location_area_container" style="" ></div>
+	    <div id="location_area_container"  ></div>
 	  </div>
 	   </td>
 	</tr>
