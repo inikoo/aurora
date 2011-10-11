@@ -310,54 +310,7 @@ class Category extends DB_Table {
 
 
 
-    function update_up_today() {
 
-        switch ($this->data['Category Subject']) {
-        case 'Invoice':
-            $this->update_invoice_category_up_today_sales();
-            break;
-            case('Supplier'):
-            $this->update_supplier_category_up_today_sales();
-            break;
-        default:
-
-            break;
-        }
-
-    }
-
-    function update_last_period() {
-
-        switch ($this->data['Category Subject']) {
-        case 'Invoice':
-            $this->update_invoice_category_last_period_sales();
-            break;
-            case('Supplier'):
-            $this->update_supplier_category_last_period_sales();
-            break;
-        default:
-
-            break;
-        }
-
-    }
-
-
-    function update_last_interval() {
-
-        switch ($this->data['Category Subject']) {
-        case 'Invoice':
-            $this->update_invoice_category_interval_sales();
-            break;
-        case('Supplier'):
-            $this->update_supplier_category_interval_sales();
-            break;
-        default:
-
-            break;
-        }
-
-    }
 
 
 
@@ -468,14 +421,6 @@ class Category extends DB_Table {
 
             }
 
-
-
-
-
-
-
-
-
         }
 
         $sql=sprintf("update `Category Dimension` set `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
@@ -490,7 +435,7 @@ class Category extends DB_Table {
 
 
 
-    function update_sales() {
+    function update_sales_old() {
         $sql="select * from `Store Dimension`";
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -501,7 +446,7 @@ class Category extends DB_Table {
 
 
 
-    function update_product_data() {
+    function update_product_data_old() {
         $sql="select * from `Store Dimension`";
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -510,7 +455,7 @@ class Category extends DB_Table {
         mysql_free_result($result);
     }
 
-    function update_sales_store($store_key) {
+    function update_sales_store_old($store_key) {
         // print_r($this->data);
 
         if ($this->data['Category Subject']!='Product')
@@ -919,7 +864,7 @@ class Category extends DB_Table {
     }
 
 
-    function update_store_product_data($store_key) {
+    function update_store_product_data_old($store_key) {
         $in_process=0;
         $public_sale=0;
         $private_sale=0;
@@ -981,7 +926,65 @@ class Category extends DB_Table {
     }
 
 
-   function update_supplier_category_up_today_sales() {
+function update_subjects_data(){
+$this->update_up_today();
+$this->update_last_period();
+$this->update_last_interval();
+}
+
+
+    function update_up_today() {
+
+        switch ($this->data['Category Subject']) {
+        case 'Invoice':
+            $this->update_invoice_category_up_today_sales();
+            break;
+        case('Supplier'):
+            $this->update_supplier_category_up_today_sales();
+            break;
+        default:
+
+            break;
+        }
+
+    }
+
+    function update_last_period() {
+
+        switch ($this->data['Category Subject']) {
+        case 'Invoice':
+            $this->update_invoice_category_last_period_sales();
+            break;
+        case('Supplier'):
+            $this->update_supplier_category_last_period_sales();
+            break;
+        default:
+
+            break;
+        }
+
+    }
+
+
+    function update_last_interval() {
+
+        switch ($this->data['Category Subject']) {
+        case 'Invoice':
+            $this->update_invoice_category_interval_sales();
+            break;
+        case('Supplier'):
+            $this->update_supplier_category_interval_sales();
+            break;
+        default:
+
+            break;
+        }
+
+    }
+
+
+
+    function update_supplier_category_up_today_sales() {
         $this->update_supplier_category_sales('Today');
         $this->update_supplier_category_sales('Week To Day');
         $this->update_supplier_category_sales('Month To Day');
@@ -997,6 +1000,7 @@ class Category extends DB_Table {
 
 
     function update_supplier_category_interval_sales() {
+    $this->update_supplier_category_sales('Total');
         $this->update_supplier_category_sales('3 Year');
         $this->update_supplier_category_sales('1 Year');
         $this->update_supplier_category_sales('6 Month');
@@ -1032,9 +1036,9 @@ class Category extends DB_Table {
     }
 
 
- function update_supplier_category_sales($interval) {
+    function update_supplier_category_sales($interval) {
 
-        
+      //  print $interval;
 
         switch ($interval) {
 
@@ -1182,18 +1186,18 @@ class Category extends DB_Table {
         }
 
 
-    
+
 
         //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
         $supplier_category_data["$db_interval Acc Cost"]=0;
         $supplier_category_data["$db_interval Acc Part Sales"]=0;
         $supplier_category_data["$db_interval Acc Profit"]=0;
-     
+
 
         $sql=sprintf("select sum(`Supplier $db_interval Acc Parts Cost`) as cost, sum(`Supplier $db_interval Acc Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
                      $this->id
-                  
+
 
                     );
         $result=mysql_query($sql);
@@ -1202,7 +1206,7 @@ class Category extends DB_Table {
             $supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
             $supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
             $supplier_category_data["$db_interval Acc Profit"]=$row["profit"];
-          
+
         }
 
         $sql=sprintf("update `Supplier Category Dimension` set
@@ -1218,27 +1222,27 @@ class Category extends DB_Table {
 
         mysql_query($sql);
 
-
+    //    print "$sql\n";
 
         if ($from_date_1yb) {
             $supplier_category_data["$db_interval Acc 1YB Cost"]=0;
             $supplier_category_data["$db_interval Acc 1YB Part Sales"]=0;
             $supplier_category_data["$db_interval Acc 1YB Profit"]=0;
-           
-               $sql=sprintf("select sum(`Supplier $db_interval Acc 1YB Parts Cost`) as cost, sum(`Supplier $db_interval Acc 1YB Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc 1YB Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-                     $this->id
-                  
 
-                    );
-        $result=mysql_query($sql);
-        
-     
-        
+            $sql=sprintf("select sum(`Supplier $db_interval Acc 1YB Parts Cost`) as cost, sum(`Supplier $db_interval Acc 1YB Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc 1YB Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
+                         $this->id
+
+
+                        );
+            $result=mysql_query($sql);
+
+
+
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                 $supplier_category_data["$db_interval Acc 1YB Cost"]=$row["cost"];
                 $supplier_category_data["$db_interval Acc 1YB Part Sales"]=$row["sold"];
                 $supplier_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
-            
+
             }
 
             $sql=sprintf("update `Supplier Category Dimension` set
@@ -1253,7 +1257,7 @@ class Category extends DB_Table {
                         );
 
             mysql_query($sql);
-        
+
         }
 
 

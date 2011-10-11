@@ -741,17 +741,22 @@ $default_state=array(
 
                                                              ),
 
-                                             'products'=>array(
+                                              'suppliers'=>array(
+                                                   'period'=>'year',
+                                                   'percentage'=>0,
+                                                   'mode'=>'',
+                                                   'avg'=>'totals',
+                                                   'view'=>'general',
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                   
 
-                                                            'order'=>'code',
-                                                            'order_dir'=>'',
-                                                            'sf'=>0,
-                                                            'nr'=>25,
-                                                            'where'=>'where true',
-                                                            'f_field'=>'code',
-                                                            'f_value'=>'','f_show'=>false,
-
-                                                        ),
+                                               )
                                          ),
 
                    'part_categories'=>array(
