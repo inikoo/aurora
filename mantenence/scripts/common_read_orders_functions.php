@@ -660,10 +660,6 @@ function create_order($data) {
 
     if (count($data_dn_transactions)>0) {
         $dn=$order->send_to_warehouse($date_order);
-    }else{
-    
-        print_r($data_dn_transactions);
-    
     }
 
 
@@ -678,6 +674,12 @@ function send_order($data,$data_dn_transactions) {
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
     global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 
+    
+    if(!isset($dn)){
+    
+    print "Exit no transactions in this invoice\n";
+    exit;
+    }
 
 
 
