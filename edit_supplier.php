@@ -51,7 +51,7 @@ if (!$supplier->id) {
 $show_details=$_SESSION['state']['supplier']['details'];
 $smarty->assign('show_details',$show_details);
 
-$general_options_list[]=array('tipo'=>'url','url'=>'supplier.php?id='.$supplier_id,'label'=>_('Exit Edit'));
+$general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'supplier.php?id='.$supplier_id,'label'=>_('Supplier').' &#8617;');
 $smarty->assign('general_options_list',$general_options_list);
 
 
@@ -61,7 +61,7 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               //$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
                'common.css',
                'button.css',
@@ -85,11 +85,12 @@ $js_files=array(
               $yui_path.'calendar/calendar-min.js',
               'js/common.js',
               'js/table_common.js',
-
+'js/search.js',
           );
 
 
-
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','supplier_products');
 
 
 $company=new Company($supplier->data['Supplier Company Key']);

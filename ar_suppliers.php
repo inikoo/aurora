@@ -1351,7 +1351,29 @@ default:
 function list_suppliers() {
     global $myconf,$user;
 
-    $conf=$_SESSION['state']['suppliers']['suppliers'];
+  if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else
+        $parent='none';
+
+    if (isset( $_REQUEST['parent_key']))
+        $parent_key=$_REQUEST['parent_key'];
+    else
+        $parent_key='';
+
+    if ($parent=='category') {
+        $conf=$_SESSION['state']['supplier_categories']['suppliers'];
+        $conf_table='supplier_categories';
+    }
+    elseif ($parent=='none') {
+        $conf=$_SESSION['state']['suppliers']['suppliers'];
+        $conf_table='suppliers';
+    }else {
+
+        exit;
+    }
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -1396,14 +1418,14 @@ function list_suppliers() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-    $_SESSION['state']['suppliers']['suppliers']['order']=$order;
-    $_SESSION['state']['suppliers']['suppliers']['order_dir']=$order_direction;
-    $_SESSION['state']['suppliers']['suppliers']['nr']=$number_results;
-    $_SESSION['state']['suppliers']['suppliers']['sf']=$start_from;
-    $_SESSION['state']['suppliers']['suppliers']['where']=$where;
-    $_SESSION['state']['suppliers']['suppliers']['f_field']=$f_field;
-    $_SESSION['state']['suppliers']['suppliers']['f_value']=$f_value;
-    $_SESSION['state']['suppliers']['suppliers']['period']=$period;
+    $_SESSION['state'][$conf_table]['suppliers']['order']=$order;
+    $_SESSION['state'][$conf_table]['suppliers']['order_dir']=$order_direction;
+    $_SESSION['state'][$conf_table]['suppliers']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['suppliers']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['suppliers']['where']=$where;
+    $_SESSION['state'][$conf_table]['suppliers']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['suppliers']['f_value']=$f_value;
+    $_SESSION['state'][$conf_table]['suppliers']['period']=$period;
 
 
     $_order=$order;
@@ -1422,6 +1444,17 @@ function list_suppliers() {
         $where='where true';
 
     }
+    
+    if($parent=='category'){
+    
+        $where.=sprintf(" and `Category Key`=%d ",$parent_key);
+    $table=' `Supplier Dimension` S left join `Category Bridge` B on (`Subject Key`=`Supplier Key`)  ' ;
+   }else{
+     $table=' `Supplier Dimension` S  ' ;
+    
+    }
+    
+    
     $wheref='';
     if ($f_field=='code'  and $f_value!='')
         $wheref.=" and `Supplier Code` like '".addslashes($f_value)."%'";
@@ -1433,7 +1466,8 @@ function list_suppliers() {
     $wheref.=" and outofstock>=$f_value  ";
 
 
-    $sql="select count(*) as total from `Supplier Dimension`    $where $wheref";
+    $sql="select count(*) as total from $table   $where $wheref";
+  //  print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -1442,7 +1476,7 @@ function list_suppliers() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Supplier Dimension` $where      ";
+        $sql="select count(*) as total from $table $where      ";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -1592,7 +1626,7 @@ function list_suppliers() {
             break;
         }
     }
-	elseif($order=='cost') {
+    elseif($order=='cost') {
 
         switch ($period) {
         case 'three_year':
@@ -1632,8 +1666,8 @@ function list_suppliers() {
             break;
         }
     }
-	
-	elseif($order=='profit_after_storing') {
+
+    elseif($order=='profit_after_storing') {
 
         switch ($period) {
         case 'three_year':
@@ -1673,8 +1707,8 @@ function list_suppliers() {
             break;
         }
     }
-	
-	elseif($order=='profit') {
+
+    elseif($order=='profit') {
 
         switch ($period) {
         case 'three_year':
@@ -1714,11 +1748,11 @@ function list_suppliers() {
             break;
         }
     }
-	//print $order;
+    //print $order;
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 
-    $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql="select *   from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 //   print $sql;
 
 
@@ -1881,10 +1915,6 @@ function list_supplier_products() {
         exit;
     }
 
-
-
-
-
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -1958,11 +1988,6 @@ function list_supplier_products() {
     $_SESSION['state'][$conf_table]['supplier_products']['where']=$where;
     $_SESSION['state'][$conf_table]['supplier_products']['f_field']=$f_field;
     $_SESSION['state'][$conf_table]['supplier_products']['f_value']=$f_value;
-
-
-
-
-
 
 
     if ($parent=='none')
@@ -2683,6 +2708,8 @@ function is_supplier_product_code($data) {
 function list_supplier_categories() {
     $conf=$_SESSION['state']['supplier_categories']['subcategories'];
     $conf2=$_SESSION['state']['supplier_categories'];
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -2777,26 +2804,33 @@ function list_supplier_categories() {
     } else
         $stores_mode=$_SESSION['state']['supplier_categories']['stores_mode'];
 
-    $_SESSION['state']['supplier_categories']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['supplier_categories']['subcategories']['order']=$order;
+    $_SESSION['state']['supplier_categories']['subcategories']['order_dir']=$order_direction;
+    $_SESSION['state']['supplier_categories']['subcategories']['nr']=$number_results;
+    $_SESSION['state']['supplier_categories']['subcategories']['sf']=$start_from;
+    $_SESSION['state']['supplier_categories']['subcategories']['where']=$where;
+    $_SESSION['state']['supplier_categories']['subcategories']['f_field']=$f_field;
+    $_SESSION['state']['supplier_categories']['subcategories']['f_value']=$f_value;
+
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
 
-    if (isset( $_REQUEST['category'])) {
-        $root_category=$_REQUEST['category'];
-        $_SESSION['state']['supplier_categories']['category']=$avg;
+    if (isset( $_REQUEST['category_key'])) {
+        $root_category=$_REQUEST['category_key'];
+        $_SESSION['state']['supplier_categories']['category_key']=$_REQUEST['category_key'];
     } else
         $root_category=$_SESSION['state']['supplier_categories']['category_key'];
 
 
 
-    $store_key=$_SESSION['state']['store']['id'];
 
-    $where=sprintf("where `Category Subject`='Supplier' and  `Category Parent Key`=%d and `Category Store Key`=%d",$root_category,$store_key);
+
+    $where=sprintf("where `Category Subject`='Supplier' and  `Category Parent Key`=%d ",$root_category);
 
 
     if ($stores_mode=='grouped')
-        $group=' group by S.`Category Key`';
+        $group=' group by C.`Category Key`';
     else
         $group='';
 
@@ -2808,7 +2842,7 @@ function list_supplier_categories() {
 
 
 
-    $sql="select count(*) as total   from `Category Dimension`   $where $wheref";
+    $sql="select count(*) as total   from `Category Dimension` C  left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`)   $where $wheref";
 
 //$sql=" describe `Category Dimension`;";
 // $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
@@ -2825,7 +2859,7 @@ function list_supplier_categories() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total  from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Supplier Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`) $where ";
+        $sql="select count(*) as total  from `Category Dimension` C  left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`)   $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2865,16 +2899,9 @@ function list_supplier_categories() {
     $_dir=$order_direction;
     $_order=$order;
 
-    if ($order=='families')
-        $order='`Product Category Families`';
-    elseif($order=='departments')
-    $order='`Product Category Departments`';
-    elseif($order=='code')
-    $order='`Product Category Code`';
-    elseif($order=='todo')
-    $order='`Product Category In Process Products`';
-    elseif($order=='discontinued')
-    $order='`Product Category In Process Products`';
+    if ($order=='subjects')
+        $order='`Category Number Subjects`';
+
     else if ($order=='profit') {
         if ($period=='all')
             $order='`Product Category Total Profit`';
@@ -2888,41 +2915,60 @@ function list_supplier_categories() {
         $order='`Product Category 1 Week Acc Profit`';
     }
     elseif($order=='sales') {
-        if ($period=='all')
-            $order='`Product Category Total Invoiced Amount`';
-        elseif($period=='year')
-        $order='`Product Category 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
-        $order='`Product Category 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
-        $order='`Product Category 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
-        $order='`Product Category 1 Week Acc Invoiced Amount`';
+    
+      switch ($period) {
+        case 'three_year':
+          $order='`3 Year Acc Part Sales`';
+            break;
+        case 'year':
+         $order='`1 Year Acc Part Sales`';
+        
+            break;
+        case 'quarter':
+          $order='`1 Quarter Acc Part Sales`';
+            break;
+
+        case 'six_month':
+            $order='`6 Month Acc Part Sales`';
+            break;
+        case 'month':
+           $order='`1 Month Acc Part Sales`';
+            break;
+        case 'ten_day':
+         $order='`10 Day Acc Part Sales`';
+            break;
+        case 'week':
+            $order='`1 Week Acc Part Sales`';
+            break;
+        case 'yeartoday':
+           $order='`Year To Day Acc Part Sales`';
+            break;
+        case 'monthtoday':
+            $order='`Month To Day Acc Part Sales`';
+            break;
+        case 'weektoday':
+             $order='`Week To Day Acc Part Sales`';
+            break;
+        default:
+        $order='`Total Acc Part Sales`';
+           
+         
+            break;
+        }
+    
+
 
     }
-    elseif($order=='name')
+    else
     $order='`Category Name`';
-    elseif($order=='active')
-    $order='`Product Category For Public Sale Products`';
-    elseif($order=='outofstock')
-    $order='`Product Category Out Of Stock Products`';
-    elseif($order=='stock_error')
-    $order='`Product Category Unknown Stock Products`';
-    elseif($order=='surplus')
-    $order='`Product Category Surplus Availability Products`';
-    elseif($order=='optimal')
-    $order='`Product Category Optimal Availability Products`';
-    elseif($order=='low')
-    $order='`Product Category Low Availability Products`';
-    elseif($order=='critical')
-    $order='`Product Category Critical Availability Products`';
+  
 
 
 
 
 
-    $sql="select S.`Category Key`, `Category Name`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Supplier Dimension` CD on (CD.`Supplier Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-    // print $sql;
+    $sql="select * from `Category Dimension` C  left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) left join `Supplier Category Dimension` SCD on (SCD.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+//   print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -2947,8 +2993,76 @@ function list_supplier_categories() {
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        //$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Name']);
-        //$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
+
+        switch ($period) {
+        case 'three_year':
+            $sales=money($row['3 Year Acc Part Sales']);
+            $profit=money($row['3 Year Acc Profit']);
+            $cost=money($row['3 Year Acc Cost']);
+            //$margin=percentage($row['3 Year Acc Margin'],1);
+            break;
+        case 'year':
+            $sales=money($row['1 Year Acc Part Sales']);
+            $profit=money($row['1 Year Acc Profit']);
+            $cost=money($row['1 Year Acc Cost']);
+            //$margin=percentage($row['1 Year Acc Margin'],1);
+            break;
+        case 'quarter':
+            $sales=money($row['1 Quarter Acc Part Sales']);
+            $profit=money($row['1 Quarter Acc Profit']);
+            $cost=money($row['1 Quarter Acc Cost']);
+            //$margin=percentage($row['1 Quarter Acc Margin'],1);
+            break;
+
+        case 'six_month':
+            $sales=money($row['6 Month Acc Part Sales']);
+            $profit=money($row['6 Month Acc Profit']);
+            $cost=money($row['6 Month Acc Cost']);
+           // $margin=percentage($row['6 Month Acc Margin'],1);
+            break;
+        case 'month':
+            $sales=money($row['1 Month Acc Part Sales']);
+            $profit=money($row['1 Month Acc Profit']);
+            $cost=money($row['1 Month Acc Cost']);
+            //$margin=percentage($row['1 Month Acc Margin'],1);
+            break;
+        case 'ten_day':
+            $sales=money($row['10 Day Acc Part Sales']);
+            $profit=money($row['10 Day Acc Profit']);
+            $cost=money($row['10 Day Acc Cost']);
+            //$margin=percentage($row['10 Day Acc Margin'],1);
+            break;
+        case 'week':
+            $sales=money($row['1 Week Acc Part Sales']);
+            $profit=money($row['1 Week Acc Profit']);
+            $cost=money($row['1 Week Acc Cost']);
+            //$margin=percentage($row['1 Week Acc Margin'],1);
+            break;
+        case 'yeartoday':
+            $sales=money($row['Year To Day Acc Part Sales']);
+            $profit=money($row['Year To Day Acc Profit']);
+            $cost=money($row['Year To Day Acc Cost']);
+            //$margin=percentage($row['Year To Day Acc Margin'],1);
+            break;
+        case 'monthtoday':
+            $sales=money($row['Month To Day Acc Part Sales']);
+            $profit=money($row['Month To Day Acc Profit']);
+            $cost=money($row['Month To Day Acc Cost']);
+            //$margin=percentage($row['Month To Day Acc Margin'],1);
+            break;
+        case 'weektoday':
+            $sales=money($row['Week To Day Acc Part Sales']);
+            $profit=money($row['Week To Day Acc Profit']);
+            $cost=money($row['Week To Day Acc Cost']);
+            //$margin=percentage($row['Week To Day Acc Margin'],1);
+            break;
+        default:
+            $sales=money($row['Total Acc Part Sales']);
+            $profit=money($row['Total Acc Profit']);
+            $cost=money($row['Total Acc Cost']);
+            //$margin=percentage($row['Total Acc Margin'],1);
+            break;
+        }
 
 
 
@@ -2960,22 +3074,24 @@ function list_supplier_categories() {
                      //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
-                     'subjects'=>number($row['Category Number Subjects'])
-
-                     /*  'departments'=>number($row['Product Category Departments']),
-                       'families'=>number($row['Product Category Families']),
-                       'active'=>number($row['Product Category For Public Sale Products']),
-                       'todo'=>number($row['Product Category In Process Products']),
-                       'discontinued'=>number($row['Product Category Discontinued Products']),
-                       'outofstock'=>number($row['Product Category Out Of Stock Products']),
-                       'stock_error'=>number($row['Product Category Unknown Stock Products']),
-                       'stock_value'=>money($row['Product Category Stock Value']),
-                       'surplus'=>number($row['Product Category Surplus Availability Products']),
-                       'optimal'=>number($row['Product Category Optimal Availability Products']),
-                       'low'=>number($row['Product Category Low Availability Products']),
-                       'critical'=>number($row['Product Category Critical Availability Products']),
-                       'sales'=>$sales,
-                       'profit'=>$profit*/
+                     'subjects'=>number($row['Category Number Subjects']),
+                     'sales'=>$sales,
+                     'profit'=>$profit,
+                     'cost'=>$cost
+                            /*  'departments'=>number($row['Product Category Departments']),
+                              'families'=>number($row['Product Category Families']),
+                              'active'=>number($row['Product Category For Public Sale Products']),
+                              'todo'=>number($row['Product Category In Process Products']),
+                              'discontinued'=>number($row['Product Category Discontinued Products']),
+                              'outofstock'=>number($row['Product Category Out Of Stock Products']),
+                              'stock_error'=>number($row['Product Category Unknown Stock Products']),
+                              'stock_value'=>money($row['Product Category Stock Value']),
+                              'surplus'=>number($row['Product Category Surplus Availability Products']),
+                              'optimal'=>number($row['Product Category Optimal Availability Products']),
+                              'low'=>number($row['Product Category Low Availability Products']),
+                              'critical'=>number($row['Product Category Critical Availability Products']),
+                              'sales'=>$sales,
+                              'profit'=>$profit*/
 
 
                  );

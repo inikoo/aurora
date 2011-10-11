@@ -35,17 +35,43 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+$sql="select * from `Supplier Dimension`";
 
-
-
-$sql="select * from `Product Family Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-    $family=new Family($row['Product Family Key']);
-    $family->update_correlated_sales_families();
-     $family->update_similar_families();
-   // print $family->id."\r";
+    $supplier=new Supplier($row['Supplier Key']);
+
+
+    $sql=sprintf("select min(`Date`) as date from  `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Supplier Key`=%d " ,
+                 $supplier->id
+
+                );
+    //print "$sql\n";
+    $result2=mysql_query($sql);
+
+
+    if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+
+      $date=$row2['date'];
+      if($date=='')
+        $date=date("Y-m-d H:i:s");
+      
+    }else{
+    $date=date("Y-m-d H:i:s");
+    }
+    
+      $sql=sprintf("update `Supplier Dimension` set `Supplier Valid From`=%s where `Supplier Key`=%d ",
+
+                     prepare_mysql($date),
+                     $supplier->id
+
+                    );
+
+        mysql_query($sql);
+        print "$sql\n";
+    
+
 }
 
 

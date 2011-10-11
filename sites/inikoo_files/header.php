@@ -38,12 +38,12 @@ $found_in_links.="<br/><a href='".$_found_in['found_in_url']."'>".$_found_in['fo
 $found_in_links=preg_replace('/^\<br\\/\>/','',$found_in_links);
 
 
-$i=0;
+
 $see_also_data="";
 if(isset($see_also)){
 foreach($see_also as $key=>$value){
-$see_also_data.="<span class='see_also'><a href='".$value."'>".$key."</a></span>";
-	if($i++>1) break;
+$see_also_data.="<span class='see_also'><a href='http://".$value['see_also_url']."'>".$value['see_also_label']."</a></span>";
+
 }
 }
 /*

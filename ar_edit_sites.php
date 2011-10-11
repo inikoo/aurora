@@ -22,38 +22,59 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
-case('add_found_in_page'):
- $data=prepare_values($_REQUEST,array(
+case('add_see_also_page'):
+    $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
-                               'found_in_key'=>array('type'=>'key'),
-                               'parent_key'=>array('type'=>'key'),
+                             'see_also_key'=>array('type'=>'key')
+
+                         ));
+
+    add_see_also_page($data);
+
+
+    break;
+case('delete_see_also_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'see_also_key'=>array('type'=>'key')
+
+                         ));
+
+    delete_see_also_page($data);
+
+
+    break;
+case('add_found_in_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'found_in_key'=>array('type'=>'key')
+
                          ));
 
     add_found_in_page($data);
 
 
-break;
+    break;
 case('delete_found_in_page'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
-                               'found_in_key'=>array('type'=>'key'),
-                                'parent_key'=>array('type'=>'key'),
+                             'found_in_key'=>array('type'=>'key')
+
                          ));
 
     delete_found_in_page($data);
 
 
-break;
+    break;
 case('delete_page_store'):
 
-  $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
-                             
+
                          ));
 
     delete_page_store($data);
-break;
+    break;
 case('new_department_page'):
     $data=prepare_values($_REQUEST,array(
                              'site_key'=>array('type'=>'key'),
@@ -75,6 +96,22 @@ case('new_family_page'):
 case('edit_page_layout'):
     edit_page_layout();
     break;
+case('edit_page_html_head'):
+case('edit_page_header'):
+case('edit_page_content'):
+case('edit_page_properties'):
+    require_once 'class.Family.php';
+
+
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
+
+    edit_page($data);
+    break;
+
 case('edit_family_page_html_head'):
 case('edit_family_page_header'):
 case('edit_family_page_content'):
@@ -88,7 +125,7 @@ case('edit_family_page_properties'):
                              'id'=>array('type'=>'key')
                          ));
 
-    edit_page('family',$data);
+    edit_page($data);
     break;
 case('edit_department_page_html_head'):
 case('edit_department_page_header'):
@@ -103,7 +140,7 @@ case('edit_department_page_properties'):
                              'id'=>array('type'=>'key')
                          ));
 
-    edit_page('department',$data);
+    edit_page($data);
     break;
     break;
 case('family_page_list'):
@@ -121,7 +158,7 @@ default:
 
 
 
-function  edit_page($subject,$data) {
+function  edit_page($data) {
 
     global $editor;
 
@@ -224,19 +261,19 @@ function list_pages_for_edition() {
 
 
     $parent='site';
-$parent_key=$site_key;
- 
- 
- if ( isset($_REQUEST['parent']))
+    $parent_key=$site_key;
+
+
+    if ( isset($_REQUEST['parent']))
         $parent= $_REQUEST['parent'];
 
     if ($parent=='store')
         $parent_key=$_REQUEST['parent_key'];
     elseif ($parent=='family')
-        $parent_key=$_REQUEST['parent_key'];
+    $parent_key=$_REQUEST['parent_key'];
     elseif ($parent=='department')
-        $parent_key=$_REQUEST['parent_key'];
- 
+    $parent_key=$_REQUEST['parent_key'];
+
 
 
 
@@ -333,7 +370,7 @@ $parent_key=$site_key;
 
 
     $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
-    
+
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -394,7 +431,7 @@ $parent_key=$site_key;
         $order='`Page Section`';
 
 
-
+ $adata=array();
     $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
@@ -415,11 +452,10 @@ $parent_key=$site_key;
                      'code'=>$row['Page Code'],
                      'store_title'=>$row['Page Store Title'],
 
-                     'go_page'=>sprintf("<a href='edit_page.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key']),
+                     'go'=>sprintf("<a href='edit_page.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'],$parent,$parent_key),
 
-                     'go'=>sprintf("<a href='edit_%s.php?id=%d&block=web&page_key=%d'><img src='art/icons/page_go.png' alt='go'></a>",$parent,$parent_key,$row['Page Key']),
-                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />" 
-                     
+                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
+
                  );
     }
     mysql_free_result($res);
@@ -450,12 +486,12 @@ $parent_key=$site_key;
     echo json_encode($response);
 }
 
-function  delete_page_store($data){
+function  delete_page_store($data) {
 
-$page=new Page($data['id']);
-$page->delete();
+    $page=new Page($data['id']);
+    $page->delete();
 
-  if ($page->deleted) {
+    if ($page->deleted) {
         $response= array('state'=>200,'action'=>'deleted');
 
     } else {
@@ -466,48 +502,58 @@ $page->delete();
 
 }
 
+function add_found_in_page($data) {
 
-
-    function add_found_in_page($data){
-    
-    
     $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
     $sql=sprintf("insert into `Page Store Found In Bridge` values (%d,%d)  ",
-    $page_key,
-    $found_in_key);
-           
-            mysql_query($sql);
-            
-          
-    
+                 $page_key,
+                 $found_in_key);
 
-   $response= array('state'=>200,'action'=>'created','parent_key'=>$data['parent_key'],'page_key'=>$page_key);
-    echo json_encode($response);  
-            
-    
-    }
-    
-    
-       function delete_found_in_page($data){
-    
-    
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
+    echo json_encode($response);
+
+}
+
+
+function delete_found_in_page($data) {
+
     $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
     $sql=sprintf("delete from  `Page Store Found In Bridge` where `Page Store Key`=%d and `Page Store Found In Key`=%d   ",
-    $page_key,
-    $found_in_key);
-           
-           
-           
-            mysql_query($sql);
-            
-          
-        $response= array('state'=>200,'action'=>'deleted','parent_key'=>$data['parent_key'],'page_key'=>$page_key);
+                 $page_key,
+                 $found_in_key);
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
+    echo json_encode($response);
+    
+}
 
-  
-    echo json_encode($response);  
-            
+function add_see_also_page($data) {
+
+    $page_key=$data['id'];
+    $see_also_key=$data['see_also_key'];
+    $sql=sprintf("insert into `Page Store See Also Bridge` values (%d,%d,'Manual',null)  ",
+                 $page_key,
+                 $see_also_key);
+
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
+    echo json_encode($response);
+
+}
+
+
+function delete_see_also_page($data) {
+
+    $page_key=$data['id'];
+    $see_also_key=$data['see_also_key'];
+    $sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store Key`=%d and `Page Store See Also Key`=%d   ",
+                 $page_key,
+                 $see_also_key);
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
+    echo json_encode($response);
     
-    }
-    
+}

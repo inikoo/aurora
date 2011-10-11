@@ -1174,6 +1174,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
+            $used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
 
             create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 //print "xcaca\n";

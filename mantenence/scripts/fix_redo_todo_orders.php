@@ -26,7 +26,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=1";
+$sql="select * from `Delivery Note Dimension` where   `Delivery Note State` not in ('Dispatched','Cancelled') and   `Delivery Note Store Key`=1";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
@@ -35,7 +35,7 @@ mysql_query($sql);
 }
 
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=3";
+$sql="select * from `Delivery Note Dimension` where   `Delivery Note State` not in ('Dispatched','Cancelled')  and `Delivery Note Store Key`=3";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
@@ -43,7 +43,7 @@ $sql=sprintf("update de_orders_data.orders set last_transcribed=NULL where id=%d
 mysql_query($sql);
 }
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=5";
+$sql="select * from `Delivery Note Dimension` where   `Delivery Note State` not in ('Dispatched','Cancelled') and  `Delivery Note Store Key`=5";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
@@ -51,14 +51,14 @@ $sql=sprintf("update fr_orders_data.orders set last_transcribed=NULL where id=%d
 mysql_query($sql);
 }
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=7";
+$sql="select * from `Delivery Note Dimension` where   `Delivery Note State` not in ('Dispatched','Cancelled') and  `Delivery Note Store Key`=7";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
 $sql=sprintf("update pl_orders_data.orders set last_transcribed=NULL where id=%d",$id);
 mysql_query($sql);
 }
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=9";
+$sql="select * from `Delivery Note Dimension` where   `Delivery Note State` not in ('Dispatched','Cancelled') and  `Delivery Note Store Key`=9";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);

@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='suppliers_navigation.tpl'}
+ <input id="category_key" type="hidden" value="0"/>
 
  <div style="clear:left;">
   <h1>{t}Supplier Categories Home{/t}</h1>
@@ -11,12 +12,10 @@
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Main Categories{/t}</span>
 
+   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
 
- <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores_mode" >{$display_stores_mode_label}</span>
- <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores" >{$display_stores_label}</span>
- <span   style="float:right;margin-left:20px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
-
+ 
        
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 

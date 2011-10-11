@@ -1,129 +1,283 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
-
-
-<div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Page{/t}: <span id="title_name">{$page->get('Page Store Function')}</span> (<span id="title_code">{$page->get('Page Code')}</span>)</h1>
+<input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="page_key" value="{$page->id}"/>
+{include file='assets_navigation.tpl'}
+<div style=""> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
 </div>
 
 
 
+<div style="clear:left;margin:0 0px">
+    <h1><span class="id" id="title_code">{$page->get('Page Code')}</span>  <span style="font-size:90%;color:#777" id="title_url">{$page->get('Page URL')}</span> </h1>
+</div>
+
+
   
   <ul class="tabs" id="chooser_ul">
-    <li><span  class="item {if $edit=='properties'}selected{/if}" id="properties" > <span>{t}Properties{/t}</span></span></li>
-    <li> <span class="item {if $edit=='header'}selected{/if}"  id="header">  <span> {t}Header{/t}</span></span></li>
-    <li> <span class="item {if $edit=='footer'}selected{/if}"  id="footer">  <span> {t}Footer{/t}</span></span></li>
-    <li> <span class="item {if $edit=='content'}selected{/if}" id="content"  ><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
+      <li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"  ><span> {t}Page Properties{/t}</span></span></li>
 
-    <li> <span class="item {if $edit=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
-    <li> <span class="item {if $edit=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
-    <li> <span class="item {if $edit=='setup'}selected{/if}" id="setup"  ><span> {t}Setup{/t}</span></span></li>
+    <li><span  class="item {if $block_view=='properties'}selected{/if}" id="properties" > <span>{t}HTML Setup{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='page_header'}selected{/if}"  id="page_header">  <span> {t}Header{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='page_footer'}selected{/if}"  id="page_footer">  <span> {t}Footer{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='content'}selected{/if}" id="content"  ><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
+    <li> <span class="item {if $block_view=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
 
 	</ul>
   
- <input id="page_data" type="hidden" page_key={$page->id} />
      <div class="tabbed_container" > 
  
       
       
-  
+   <div class="edit_block" {if $block_view!="setup"}style="display:none"{/if}   id="d_setup">
+    
+    
+    
+    	   <table class="edit" border=0 id="edit_family_page"  style="width:100%;clear:both;margin-top:0px" page_key="{$page->id}"   >
+	  
+	  
+	  <tr >
+	  <td colspan=3 >
+	    
+	      <div class="general_options" style="float:right">
+		   
+		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_properties" class="state_details">{t}Save{/t}</span>
+		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_page_properties" class="state_details">{t}Reset{/t}</span>
+		   
+      </div>
+	     </td>
+	     
+	     </tr>
+
+
+<tr><td style="width:120px"  class="label">{t}Creation Method{/t}:</td>
+ <td style="width:400px">
+ <table>
+ <tr><td style="padding:0;" class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page->get('Page Store Type') =="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
+ </table>
+ </td></tr>
+ 
+ 
+
+<tr><td style="width:120px"  class="label">{t}Page Type{/t}:</td>
+ <td style="width:400px">
+ <table border=0>
+ <tr><td style="padding:0;" class="label">{t}Front Page Store{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Front Page Store"}checked="checked"{/if} ></td></tr>
+<tr><td style="padding:0;" class="label">{t}Search{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Search"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Product Description{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Product Description"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Information{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Information"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Category Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Category Catalogue"}checked="checked"{/if} ></td><td>{if $page->get('Page Store Section') =="Category Catalogue"}{$page->get('Page Parent Code')}{/if} </td></tr>
+ <tr><td style="padding:0;" class="label">{t}Family Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Family Catalogue"}checked="checked"{/if} ></td><td style="padding:0;">{if $page->get('Page Store Section') =="Family Catalogue"}<a href="family.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} </td></tr>
+ <tr><td style="padding:0;" class="label">{t}Department Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Department Catalogue"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Store Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Store Catalogue"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Registration{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Registration"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Client Section{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Client Section"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Check Out{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Check Out"}checked="checked"{/if} ></td></tr>
+
+ 
+ </table>
+ </td></tr>
+
+
+  <tr><td style="width:120px" class="label">{t}Page Code{/t}:</td>
+	     <td style="width:400px">
+		 <div   >     
+		   <input  style="width:100%" id="page_properties_page_code"   value="{$page->get('Page Code')}" ovalue="{$page->get('Page Code')}"  />
+		   
+		   <div id="page_properties_page_code_Container" style="" ></div>
+		 </div>
+	       </td><td><div style="font-size:80%;color:red" id="page_properties_page_code_msg"></div></td></tr>
+
+
+	     <tr><td width:120px class="label">{t}URL{/t}:</td>
+	     <td style="width:400px">
+		 <div   >
+		   <input style="width:100%"  id="page_properties_url"   value="{$page->get('Page URL')}" ovalue="{$page->get('Page URL')}"  />
+		   
+		   <div id="page_properties_url_Container" style="" ></div>
+		 </div>
+	       </td><td><div id="page_properties_url_msg"></div>
+      </td></tr>
+
+
+<tr><td style="width:120px"  class="label">{t}Link Title{/t}:</td>
+	     <td style="width:400px"> 
+		 <div   >
+		   <input  style="width:100%" id="page_properties_link_title"   value="{$page->get('Page Short Title')}" ovalue="{$page->get('Page Short Title')}"  />
+		   
+		   <div id="page_properties_link_title_Container" style="" ></div>
+		 </div>
+	       </td><td><div id="page_properties_link_title_msg"></div>
+      </td></tr>
+
+
+
+    
+    </table>
+    
+    
+    
+    </div>   
       
 
-    <div class="edit_block" {if $edit!="properties"}style="display:none"{/if}   id="d_properties">
-	<div class="general_options" style="float:right">
-	    <span  style="margin-right:10px;visibility:hidden"  id="save_edit_properties" class="state_details">{t}Save{/t}</span>
-	    <span style="margin-right:10px;visibility:hidden" id="reset_edit_properties" class="state_details">{t}Reset{/t}</span>
+    <div class="edit_block" {if $block_view!="properties"}style="display:none"{/if}   id="d_properties">
+	
+    <table class="edit" border=0  id="properties_edit_table" style="width:100%">
+	     <tr ><td colspan="3">
+
+<div class="general_options" style="float:right">
+	
+	    <span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_html_head" class="state_details">{t}Save{/t}</span>
+	    <span style="margin-right:10px;visibility:hidden" id="reset_edit_page_html_head" class="state_details">{t}Reset{/t}</span>
     </div>
-    <table class="edit"  id="properties_edit_table" >
-	     <tr class="title"><td colspan="2">{t}Page Properties{/t} [HTML HEAD]
-
-
 
 	     </td></tr>
 
 
       </td></tr>
-	     <tr><td class="label" style="width:200px">{t}Title{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_html_head_title"  style="width:30em" MAXLENGTH="64" value="{$page->get('Page Title')}" ovalue="{$page->get('Page Title')}"  />
-		   <div id="family_page_html_head_title_msg"></div>
-		   <div id="family_page_html_head_title_Container" style="" ></div>
+	     <tr><td class="label" style="width:120px">{t}Title{/t}:</td>
+	     <td style="width:400px">
+		 <div   >
+		   <input  id="page_html_head_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Title')}" ovalue="{$page->get('Page Title')}"  />
+		   <div id="page_html_head_title_msg"></div>
+		   <div id="page_html_head_title_Container" style="" ></div>
 		 </div>
 	       </td><td>
 		
 
       </td></tr>
 	    
-	     <tr><td class="label">{t}Keywords{/t}:</td>
-	       <td>
-		 <div  style="width:30em" >
-		   <textarea  id="family_page_html_head_keywords"  style="width:30em" MAXLENGTH="24" value="{$page_data.PageKeywords}" ovalue="{$page_data.PageKeywords}"  >{$page_data.PageKeywords}</textarea>
-		   <div id="family_page_html_head_keywords_msg"></div>
-		   <div id="family_page_html_head_keywords_Container" style="" ></div>
+	     <tr style="height:87px"><td class="label" style="width:120px">{t}Keywords{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="page_html_head_keywords"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}"  >{$page->get('Page Keywords')}</textarea>
+		   <div id="page_html_head_keywords_msg"></div>
+		   <div id="page_html_head_keywords_Container" style="" ></div>
 		 </div>
 		 
 		 
 	     </td></tr>
 	     
 	  
+	  
+	  
+	  
 	     
 	    
 	     </table>
     </div>
 
-    <div class="edit_block" {if $edit!="header"}style="display:none"{/if}   id="d_header">
-    <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_header" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_header" class="state_details">{t}Reset{/t}</span>
+    <div class="edit_block" {if $block_view!="page_header"}style="display:none"{/if}   id="d_page_header">
+   
+    <table class="edit" border=0  id="header_edit_table" style="width:100%">
+        <tr ><td colspan="3">
+         <div class="general_options" style="float:right">
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_header" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_page_header" class="state_details">{t}Reset{/t}</span>
     </div>
-    <table class="edit"  id="header_edit_table" >
-        <tr class="title"><td colspan="2">Content (Header)</td></tr>
+        </td></tr>
 
 
-	     <tr><td class="label" style="width:100px">{t}Title{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_header_store_title"  style="width:30em" MAXLENGTH="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}"  />
-		   <div id="family_page_header_store_title_msg"></div>
-		   <div id="family_page_header_store_title_Container" style="" ></div>
+	     <tr><td class="label" style="width:120px">{t}Header Title{/t}:</td>
+	     <td style="width:500px">
+		 <div  >
+		   <input  id="page_header_store_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}"  />
+		   <div id="page_header_store_title_msg"></div>
+		   <div id="page_header_store_title_Container" style="" ></div>
 		 </div>
 	       </td>
 	    
 	       
 	     </tr>
-	     <tr><td class="label">{t}Subtitle{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <input  id="family_page_header_subtitle"  style="width:30em" MAXLENGTH="64" value="{$page->get('Page Store Subtitle')}" ovalue="{$page->get('Page Store Subtitle')}"  />
-		   <div id="family_page_header_subtitle_msg"></div>
-		   <div id="family_page_header_subtitle_Container" style="" ></div>
+	     <tr style="display:none" >
+	     <td  style="width:120px" class="label">{t}Subtitle{/t}:</td><td>
+		 <div  >
+		   <input  id="page_header_subtitle"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Subtitle')}" ovalue="{$page->get('Page Store Subtitle')}"  />
+		   <div id="page_header_subtitle_msg"></div>
+		   <div id="page_header_subtitle_Container" style="" ></div>
 		 </div>
 		 
 	     </td></tr>
-	     <tr ><td class="label">{t}Slogan{/t}:</td><td>
-		 <div  style="width:15em" >
-		 <input  id="family_page_header_slogan"  style="width:30em" MAXLENGTH="64" value="{$page->get('Page Store Slogan')}" ovalue="{$page->get('Page Store Slogan')}"  />
-		 <div id="family_page_header_slogan_msg"></div>
-		 <div id="family_page_header_slogan_Container" style="" ></div>
+	     <tr style="display:none" ><td style="width:120px" class="label">{t}Slogan{/t}:</td><td>
+		 <div >
+		 <input  id="page_header_slogan"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Slogan')}" ovalue="{$page->get('Page Store Slogan')}"  />
+		 <div id="page_header_slogan_msg"></div>
+		 <div id="page_header_slogan_Container" style="" ></div>
 		 </div>
 	     </td></tr>
-	     <tr ><td class="label">{t}Short Introduction{/t}:</td><td>
-		 <div  style="width:15em" >
-		   <textarea  id="family_page_header_resume"  rows="5" style="width:30em" MAXLENGTH="64" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  />{$page->get('Page Store Resume')}</textarea>
-		   <div id="family_page_header_resume_msg"></div>
-		   <div id="family_page_header_resume_Container" style="" ></div>
+	     <tr style="display:none;height:87px"  ><td style="width:120px" class="label">{t}Short Introduction{/t}:</td><td>
+		 <div  >
+		   <textarea  id="page_header_resume"  rows="5" style="width:100%;height:80px" MAXLENGTH="64" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  />{$page->get('Page Store Resume')}</textarea>
+		   <div id="page_header_resume_msg"></div>
+		   <div id="page_header_resume_Container" style="" ></div>
 		 </div>
 	     </td></tr>
-	     
+	     <tr style="height:15px"><td colspan=3></td></tr>
+	         <tr>
+	       <td style="width:120px" class="label">{t}Found In{/t}:</td>
+	       <td style="width:500px" >
+	        <div style="float:right"  class="general_options"><span id="add_other_found_in_page" class="state_details">Add page</span></div>
+	       <table >
+	       
+		    {foreach from=$page->get_found_in() item=found_in_page}
+               <tr><td style="padding:0">{$found_in_page.found_in_label}</td>
+               <td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+             
+               </tr>
+            {/foreach}
+          
+	       </table>
+	      
+	       </td>
+	       <td></td>
+	       
 	    
+	       
+	     </tr>
+	     
+	     <tr>
+	       <td style="width:120px" class="label">{t}See Also{/t}:</td>
+	       <td  style="width:500px">
+	        <div id="see_also_type" default_cat=""   class="options" style="margin:0;float:right;padding:0">
+   <span style="margin:0px" class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</span> <span style="margin:0px" class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</span><br/><br/>
+   
+   </div>
+	        <div style="clear:right;float:right;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"  class="general_options"><span id="add_other_see_also_page" class="state_details">Add page</span></div>
+	       <table >
+	     
+		    {foreach from=$page->get_see_also() item=see_also_page}
+               <tr>
+               <td style="padding:0">{$see_also_page.see_also_label} (<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</td>
+               <td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
+               <td style="padding:0;padding-left:10px;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+               </tr>
+            {/foreach}
+       
+	       </table>
+	      
+	       </td>
+	       
+	       <td>
+  
+ </td>
+	       
+	     
+	       
+	    
+	       
+	     </tr>
 
  
     
    </table>
 	</div>
 
-    <div class="edit_block" {if $edit!="footer"}style="display:none"{/if}   id="d_footer">
+    <div class="edit_block" {if $block_view!="page_footer"}style="display:none"{/if}   id="d_page_footer">
     </div>
-    <div class="edit_block" {if $edit!="content"}style="display:none"{/if}   id="d_content">
+    <div class="edit_block" {if $block_view!="content"}style="display:none"{/if}   id="d_content">
     
     
     {if $page->get('Page Code')=='register'}
@@ -201,7 +355,7 @@
 	     <span class="state_details">Upload</span>
 	     <span class="state_details">Edit</span>
 
-         <div>   
+         </div>   
 
 
 	     </td></tr>
@@ -212,18 +366,20 @@
       </table>
     {/if}
     </div>
-    <div class="edit_block" {if $edit!="style"}style="display:none"{/if}   id="d_style">
+    <div class="edit_block" {if $block_view!="style"}style="display:none"{/if}   id="d_style">
     </div>
 
-    <div class="edit_block" {if $edit!="media"}style="display:none"{/if}   id="d_media">
+    <div class="edit_block" {if $block_view!="media"}style="display:none"{/if}   id="d_media">
     </div>
-    <div class="edit_block" {if $edit!="setup"}style="display:none"{/if}   id="d_setup">
-    </div>    
+    
 </div>
 
 
+
+
+
 <div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
-  <span class="clean_table_title">{t}History{/t}</span>
+  <span class="clean_table_title">{t}Change log{/t}</span>
   <div  id="clean_table_caption0" class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
     <div id="clean_table_filter0" class="clean_table_filter" style="display:none">
@@ -275,5 +431,13 @@
 </div>
 
 {include file='footer.tpl'}
-
+ <div id="dialog_page_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Page List{/t}</span>
+            {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
+            <div  id="table7"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
 

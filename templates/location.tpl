@@ -2,6 +2,7 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" style="padding:0">
 <div style="padding:0 20px">
+<input type="hidden" id="location_key" value="{$location->id}" />
 {include file='locations_navigation.tpl'}
 <div style="clear:left;"> 
   <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
@@ -23,6 +24,7 @@
 
 
 <div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div style="width:400px">
  <table class="show_info_product">
       <tr><td>{t}Location{/t}:</td><td style="font-weight:800">{$location->get('Location Code')}</td></tr>
       <tr><td>{t}Used for{/t}:</td><td>{$location->get('Location Mainly Used For')}</td></tr>
@@ -30,7 +32,7 @@
       <tr><td>{t}Max Weight{/t}:</td><td>{$location->get('Location Max Weight')}</td></tr>
       <tr><td>{t}Max Slots{/t}:</td><td>{$location->get('Location Max Slots')}</td></tr>
     </table>
-
+</div>
 <div id="plot" style="{if !$show_details}display:none;{/if}"></div>
 </div>     
 
@@ -38,33 +40,7 @@
 
 
  
-    <div style="float:right;padding:0;margin:0">
-      <table class="options" style="float:right;padding:0;margin:0">
-	<tr>
-	  <td  id="add_product">Add Part</td>
-	  
-	</tr>
-      </table>
-      
-      
-      <div id="manage_stock" style="display:none;clear:both;margin:0 0 20px 5px">
-	<div id="manage_stock_messages" ></div>
-	<div id="manage_stock_locations" style="width:100px;display:none;margin-bottom:30px;margin-left:2px">
-	  <input id="new_location_input" type="text">
-	  <div id="new_location_container"></div>
-	</div>
-	<div id="manage_stock_products" style="width:400px;xdisplay:none;margin-bottom:30px;margin-left:2px;">
-	  <input id="new_product_input" type="text">
-	  <div id="new_product_container">
-	    
-	  </div>
-	</div>
-	
-	<div id="manage_stock_engine"></div>
-      </div>
-    </div>
-    
-      <div id="product_messages" style="clear:both"></div>
+  
 
 
   
@@ -74,8 +50,7 @@
       
  
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
-  
-  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value1  }
+  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
   <div  id="table1" style="font-size:90%"  class="data_table_container dtable btable "> </div>
 </div>
 
@@ -85,13 +60,13 @@
 
   
   <span class="clean_table_title">{t}History{/t}</span>
-  <div  id="clean_table_caption0" class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div id="clean_table_filter0" class="clean_table_filter" style="display:none">
-      <div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-  </div>
+   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
+  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
   <div  id="table0" style="font-size:90%"  class="data_table_container dtable btable "> </div>
+
+
+
+
 
 </div>
 
@@ -106,7 +81,112 @@
 </div>
 
 
+<div id="dialog_add_part" style="padding:10px 20px">
+
+    <div id="manage_stock" style="">
+	<div id="manage_stock_messages" style="padding:5px 5px">{t}Choose the part the you want to place in this location{/t}</div>
+	
+	<div id="manage_stock_locations" style="display:none">
+	  <input id="new_location_input" type="text">
+	  <div id="new_location_container"></div>
+	</div>
+	
+	
+	<div id="manage_stock_products" style="width:300px;xdisplay:none;margin-bottom:30px;margin-left:2px;">
+	  <input id="new_product_input" type="text">
+	  <div id="new_product_container">
+	    
+	  </div>
+	</div>
+	
+	<div id="manage_stock_engine"></div>
+      </div>
+  
+    
+      <div id="product_messages" style="display:none;clear:both"></div>
+ 
+
+</div>
+
+
 
 {include file='footer.tpl'}
 
 {include file='stock_splinter.tpl'}
+
+<div id="dialog_part_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:650px">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Parts{/t}</span>
+            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+            <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+ 
+ 
+ <div id="filtermenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="filtermenu2" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu2" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},2)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+ 
+ 
