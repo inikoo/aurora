@@ -23,7 +23,7 @@ else{
 body, html, div , table{	 font-family:"Arial", sans-serif; font-size:11.0px;font-weight: bold;  }
 table {border-collapse: collapse;}
 
-#header_container{position:absolute;top:24px;width:<?php echo $width ?>px;}
+#header_container{position:absolute;top:24px;width:<?php echo $width ?>px; }
 
 
 
@@ -183,6 +183,7 @@ table.header_table{
 	
 }
  .header_table td#found_in{
+	position:absolute;
 	background-image:url('../art/found_in.png'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
@@ -193,10 +194,12 @@ table.header_table{
 }
 
 .header_table td#search{
+	position:absolute;
 	vertical-align:bottom;text-align:center;
 	width:<?php echo $header_table_search?>px;
 }
 .header_table td#see_also{
+	
 	background-image:url('../art/see_also.png'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
