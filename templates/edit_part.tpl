@@ -142,11 +142,11 @@
    <td id="Part_Unit_Type_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr class="first"><td style="" class="label">{t}Unit Description{/t}:</td>
+<tr class="first"><td  class="label">{t}Unit Description{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:540px" id="Part_Unit_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0">
-       <div id="Part_Unit_Description_Container" style="" ></div>
+       <div id="Part_Unit_Description_Container"  ></div>
      </div>
    </td>
    <td id="Part_Unit_Description_msg" class="edit_td_alert"></td>
@@ -156,7 +156,7 @@
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0">
-       <div id="Part_Gross_Weight_Container" style="" ></div>
+       <div id="Part_Gross_Weight_Container"  ></div>
      </div>
    </td>
    <td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
@@ -165,7 +165,7 @@
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0">
-       <div id="Part_Package_Volume_Container" style="" ></div>
+       <div id="Part_Package_Volume_Container"  ></div>
      </div>
    </td>
    <td id="Part_Package_Volume_msg" class="edit_td_alert"></td>
@@ -174,7 +174,7 @@
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0">
-       <div id="Part_Package_MOV_Container" style="" ></div>
+       <div id="Part_Package_MOV_Container"  ></div>
      </div>
    </td>
    <td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
@@ -183,7 +183,7 @@
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0">
-       <div id="Part_Tariff_Code_Container" style="" ></div>
+       <div id="Part_Tariff_Code_Container"  ></div>
      </div>
    </td>
    <td id="Part_Tariff_Code_msg" class="edit_td_alert"></td>
@@ -268,11 +268,11 @@
  {*Edit custom fields*}
  
  {foreach from=$show_case key=custom_field_key item=custom_field_value }
- <tr class="" id="tr_{$custom_field_value.lable}"><td style="" class="label">{$custom_field_key}:</td>
+ <tr  id="tr_{$custom_field_value.lable}"><td  class="label">{$custom_field_key}:</td>
    <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Part_{$custom_field_value.lable}" value="{$custom_field_value.value}" ovalue="{$custom_field_value.value}" valid="0">
-       <div id="Part_{$custom_field_value.lable}_Container" style="" ></div>
+       <div id="Part_{$custom_field_value.lable}_Container"  ></div>
      </div>
    </td>
    <td>

@@ -26,7 +26,7 @@
 
   <input id="department_key" type="hidden" value="0"/>
 		<input id="department" style="text-align:left;width:23em" type="text">
-		<div id="department_Container" style="" ></div>
+		<div id="department_Container"  ></div>
 	      </div>
 </td>
 </tr>

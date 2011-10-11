@@ -33,66 +33,66 @@
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Supplier_Code" value="{$supplier->get('Supplier Code')}" ovalue="{$supplier->get('Supplier Code')}" valid="0">
-	      <div id="Supplier_Code_Container" style="" ></div>
+	      <div id="Supplier_Code_Container"  ></div>
 	    </div>
 	  </td>
 	  <td id="Supplier_Code_msg" class="edit_td_alert"></td>
 	</tr>
-	<tr class="first"><td style="" class="label">{t}Company Name{/t}:</td>
+	<tr class="first"><td  class="label">{t}Company Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Supplier_Name" value="{$supplier->get('Supplier Name')}" ovalue="{$supplier->get('Supplier Name')}" valid="0">
-	      <div id="Supplier_Name_Container" style="" ></div>
+	      <div id="Supplier_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  	  <td id="Supplier_Name_msg" class="edit_td_alert"></td>
 
 	</tr>
 
- <tr class=""><td style=";width:12em" class="label" >{t}Contact Name{/t}:</td>
+ <tr ><td style=";width:12em" class="label" >{t}Contact Name{/t}:</td>
    <td  style="text-align:left;width:18em;">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Supplier_Main_Contact_Name" value="{$supplier->get('Supplier Main Contact Name')}" ovalue="{$supplier->get('Supplier Main Contact Name')}" valid="0">
-       <div id="Supplier_Main_Contact_Name_Container" style="" ></div>
+       <div id="Supplier_Main_Contact_Name_Container"  ></div>
      </div>
    </td>
    <td id="Supplier_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
  
- <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
+ <tr ><td  class="label">{t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Supplier_Main_Email" value="{$supplier->get('Supplier Main Plain Email')}" ovalue="{$supplier->get('Supplier Main Plain Email')}" valid="0">
-       <div id="Supplier_Main_Email_Container" style="" ></div>
+       <div id="Supplier_Main_Email_Container"  ></div>
      </div>
    </td>
    <td id="Supplier_Main_Email_msg" class="edit_td_alert"></td>
  </tr>
  
- <tr class=""><td style="" class="label">{t}Telephone{/t}:</td>
+ <tr ><td  class="label">{t}Telephone{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;" >
        <input style="text-align:left;width:18em" id="Supplier_Main_Telephone" value="{$supplier->get('Supplier Main XHTML Telephone')}" ovalue="{$supplier->get('Supplier Main XHTML Telephone')}" valid="0">
-       <div id="Supplier_Main_Telephone_Container" style="" ></div>
+       <div id="Supplier_Main_Telephone_Container"  ></div>
      </div>
    </td>
    <td id="Supplier_Main_Telephone_msg" class="edit_td_alert"></td>
  </tr>
  
-<tr class=""><td style="" class="label">{t}Fax{/t}:</td>
+<tr ><td  class="label">{t}Fax{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;" >
        <input style="text-align:left;width:18em" id="Supplier_Main_Fax" value="{$supplier->get('Supplier Main XHTML FAX')}" ovalue="{$supplier->get('Supplier Main XHTML FAX')}" valid="0">
-       <div id="Supplier_Main_Fax_Container" style="" ></div>
+       <div id="Supplier_Main_Fax_Container"  ></div>
      </div>
    </td>
    <td id="Supplier_Main_Fax_msg" class="edit_td_alert"></td>
  </tr>
- <tr class=""><td style="" class="label">{t}Web Page{/t}:</td>
+ <tr ><td  class="label">{t}Web Page{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;" >
        <input style="text-align:left;width:18em" id="Supplier_Main_Web_Site" value="{$supplier->get('Supplier Main Web Site')}" ovalue="{$supplier->get('Supplier Main Web Site')}" valid="0">
-       <div id="Supplier_Main_Web_Site_Container" style="" ></div>
+       <div id="Supplier_Main_Web_Site_Container"  ></div>
      </div>
    </td>
    <td id="Supplier_Main_Web_Site_msg" class="edit_td_alert"></td>
@@ -161,23 +161,23 @@
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Product_Code" value="" ovalue="" valid="0">
-	      <div id="Product_Code_Container" style="" ></div>
+	      <div id="Product_Code_Container"  ></div>
 	    </div>
 	  </td>
 	  <td id="Product_Code_msg" class="edit_td_alert"></td>
 	</tr>
-	<tr ><td style="" class="label">{t}Product Name{/t}:</td>
+	<tr ><td  class="label">{t}Product Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Product_Name" value="" ovalue="" valid="0">
-	      <div id="Product_Name_Container" style="" ></div>
+	      <div id="Product_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  	  <td id="Product_Name_msg" class="edit_td_alert"></td>
 
 	</tr>
 
-<tr><td style="" class="label">{t}Unit{/t}:</td>
+<tr><td  class="label">{t}Unit{/t}:</td>
 	  <td  style="text-align:left">
 	  <select id="Product_Unit">
 	  {foreach from=$units_list key=key item=value}
@@ -189,17 +189,17 @@
 	  	  <td id="Product_Unit_msg" class="edit_td_alert"></td>
 
 	</tr>
-<tr ><td style="" class="label">{t}Units per Case{/t}:</td>
+<tr ><td  class="label">{t}Units per Case{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:9em" id="Product_Units_Per_Case" value="1" ovalue="1" valid="0">
-	      <div id="Product_Units_Per_Case_Container" style="" ></div>
+	      <div id="Product_Units_Per_Case_Container"  ></div>
 	    </div>
 	  </td>
 	  	  <td id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
 
 	</tr>
-<tr ><td style="" class="label">{t}Price per Case{/t}:</td>
+<tr ><td  class="label">{t}Price per Case{/t}:</td>
 	  <td  style="text-align:left">
 	  <table border=0>
 	  <tr>
@@ -214,7 +214,7 @@
 	    <td style="padding:2px 0px 2px 12px">
 	     <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:9em" id="Product_Price_Per_Case" value="" ovalue="" valid="0">
-	      <div id="Product_Price_Per_Case_Container" style="" ></div>
+	      <div id="Product_Price_Per_Case_Container"  ></div>
 	    </div>
 	    </td>
 	    
@@ -224,7 +224,7 @@
 
 	</tr>
 	
-	<tr ><td style="" class="label">{t}Description{/t}:</td>
+	<tr ><td  class="label">{t}Description{/t}:</td>
 	  <td  style="text-align:left">
 	   <textarea id="Product_Description"></textarea>
 	  </td>
@@ -269,7 +269,7 @@
  
  </div>
 </div>
-<div id="the_table1" class="data_table" style="">
+<div id="the_table1" class="data_table" >
   <span class="clean_table_title">{t}History{/t}</span>
      {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
 

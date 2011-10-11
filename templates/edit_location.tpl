@@ -44,7 +44,7 @@
 		<tr><td class="label">{t}Location Code{/t}:</td><td>
 		<div>
 			<input id="Location_Code" changed=0 type='text' class='text' MAXLENGTH="16" value="{$location->get('Location Code')}" ovalue="{$location->get('Location Code')}" />
-			<div id="Location_Code_Container" style="" ></div>
+			<div id="Location_Code_Container"  ></div>
 			</div>
 			</td>
 			<td style="width:200px" id="Location_Code_msg" class="edit_td_alert"></td>
@@ -70,7 +70,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Radius" value="{$location->get('Location Radius')}" ovalue="{$location->get('Location Radius')}" valid="0">
-       <div id="Location_Radius_Container" style="" ></div>
+       <div id="Location_Radius_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Radius_msg" class="edit_td_alert"></td>
@@ -81,7 +81,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Deep" value="{$location->get('Location Deep')}" ovalue="{$location->get('Location Deep')}" valid="0">
-       <div id="Location_Deep_Container" style="" ></div>
+       <div id="Location_Deep_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Deep_msg" class="edit_td_alert"></td>
@@ -91,7 +91,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Height" value="{$location->get('Location Height')}" ovalue="{$location->get('Location Height')}" valid="0">
-       <div id="Location_Height_Container" style="" ></div>
+       <div id="Location_Height_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Height_msg" class="edit_td_alert"></td>
@@ -101,7 +101,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Width" value="{$location->get('Location Width')}" ovalue="{$location->get('Location Width')}" valid="0">
-       <div id="Location_Width_Container" style="" ></div>
+       <div id="Location_Width_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Width_msg" class="edit_td_alert"></td>
@@ -110,7 +110,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Max_Weight" value="{$location->get('Location Max Weight')}" ovalue="{$location->get('Location Max Weight')}" valid="0">
-       <div id="Location_Max_Weight_Container" style="" ></div>
+       <div id="Location_Max_Weight_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Max_Weight_msg" class="edit_td_alert"></td>
@@ -120,7 +120,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Max_Volume" value="{$location->get('Location Max Volume')}" ovalue="{$location->get('Location Max Volume')}" valid="0">
-       <div id="Location_Max_Volume_Container" style="" ></div>
+       <div id="Location_Max_Volume_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Max_Volume_msg" class="edit_td_alert"></td>
@@ -130,7 +130,7 @@
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;" id="Location_Max_Slots" value="{$location->get('Location Max Slots')}" ovalue="{$location->get('Location Max Slots')}" valid="0">
-       <div id="Location_Max_Slots_Container" style="" ></div>
+       <div id="Location_Max_Slots_Container"  ></div>
      </div>
    </td>
    <td style="width:200px" id="Location_Max_Slots_msg" class="edit_td_alert"></td>

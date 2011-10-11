@@ -65,7 +65,7 @@
 
 <div id="calendar_browser" style="padding:10px 20px 20px 15px">
 
-<div  class="xcal_menu" id="calendar_div"  style=""  >
+<div  class="xcal_menu" id="calendar_div"    >
 
       {if $up}<a class="prev" href="{$report_url}?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
 

@@ -4,7 +4,7 @@
 <div style="padding:0 20px">
 
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span>
 </div>
     <h1><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </h1>
@@ -12,7 +12,7 @@
 
 
     
-<div class="" id="block_info"  style="width:890px;position:relative">
+<div  id="block_info"  style="width:890px;position:relative">
 
 	  <div id="photo_container" style="margin-top:0px;float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
@@ -36,9 +36,9 @@
 	  </div>
 	  <div style="float:left;margin-left:20px">
 	
-	  <div class=""  style="width:100%;">
-	    <div class="" style="width:100%;font-size:90%"   >
-              <div class="" style="width:350px;float:left;margin-right:20px">
+	  <div   style="width:100%;">
+	    <div  style="width:100%;font-size:90%"   >
+              <div  style="width:350px;float:left;margin-right:20px">
 		<table    class="show_info_product">
 		<tr><td>{$product->get('Product Record Type')}</td></tr>
 		    
@@ -76,7 +76,7 @@
 		</table>
 		{/if}
 	      </div>
-              <div class="" style="width:250px;float:left">
+              <div  style="width:250px;float:left">
 
 		{if $data.sale_status=='discontinued'}
 		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >

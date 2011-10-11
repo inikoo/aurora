@@ -15,7 +15,7 @@
 	  <td>
 	    
 	    <input style="width:18em" id="Contact_Name" value="" >
-	    <div id="Contact_Name_Container" style="" ></div>
+	    <div id="Contact_Name_Container"  ></div>
 	    
 	  </td>
 	  	{if $scope=='customer'}
@@ -35,7 +35,7 @@
 	<tbody style="display:none">
 	  <tr>
 	    <td class="label" >{t}Salutation{/t}:</td>
-	    <td  style="" >
+	    <td   >
 	      <input id="Contact_Salutation" type="hidden" value="" ovalue="">
 	      {foreach from=$prefix item=s name=foo  }
 	      <span   onclick="update_salutation(this)"  label="{$s.txt}" style="{if $smarty.foreach.foo.first}margin:0;{else}margin-left:3px{/if};{if $s.relevance>1};display:none{/if} " class="Contact_Salutation small_button"   id="Contact_Salutation_{$s.txt}"  >{$s.txt}</span>
@@ -62,14 +62,14 @@
 	  <td  class="label"  >{t}Email{/t}:<img  id="{$address_identifier}email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /></td>
 	  <td >
 	    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
-	    <div id="Email_Container" style="" ></div>
+	    <div id="Email_Container"  ></div>
 	    
 	  </td>
 	</tr>
  
 
 
-	<tr id="telephone_mould" cstyle="">
+	<tr id="telephone_mould" c>
 	  <td  class="label">
 	    
 	    {t}Telephone{/t}:<img  id="{$address_identifier}telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
@@ -78,7 +78,7 @@
 	    
 	    <input  style="width:18em" class="Telecom" telecom_key=0 telecom_type="Telephone" id="Telephone" 
 		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
-	    <div id="Telephone_Container" style="" ></div>
+	    <div id="Telephone_Container"  ></div>
 	  </td >
 	  
 	</tr>	
@@ -104,7 +104,7 @@
 	  
 	  
 
-	<tr id="mobile_mould" cstyle="">
+	<tr id="mobile_mould" c>
 	  <td  class="label">
 	    
 	    {t}Mobile{/t}:
@@ -113,7 +113,7 @@
 	    
 	    <input  style="width:18em" class="Telecom" telecom_key=0 telecom_type="Mobile" id="Mobile" 
 		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
-	    <div id="Mobile_Container" style="" ></div>
+	    <div id="Mobile_Container"  ></div>
 	  </td >
 	  
 	</tr>	

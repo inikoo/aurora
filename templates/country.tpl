@@ -8,7 +8,7 @@ World>Reg
 
 
 
-<div class="" id="block_info"  style="width:100%;padding:0">
+<div  id="block_info"  style="width:100%;padding:0">
       
 
       
@@ -38,9 +38,9 @@ World>Reg
 	<div style="float:left;">
 
 	  <h2>{$country->get('Country Name')} [{$country->get('Country Code')}]</h2>
-	  <div class=""  style="width:100%;">
-	    <div class="" style="width:100%;font-size:90%"   >
-              <div class="" style="width:200px;float:left;margin-right:20px">
+	  <div   style="width:100%;">
+	    <div  style="width:100%;font-size:90%"   >
+              <div  style="width:200px;float:left;margin-right:20px">
 	
 		<table    class="show_info_product">
 		    <tr>
@@ -61,7 +61,7 @@ World>Reg
 
 
 	      </div>
-              <div class="" style="width:220px;float:left">
+              <div  style="width:220px;float:left">
 
 	
 

@@ -2,7 +2,7 @@
 <div id="bd" >
 <div>
 {include file='assets_navigation.tpl'}
-<div style=""> 
+<div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
 </div>
 
@@ -89,7 +89,7 @@
 		 value="{$family->get('Product Family Code')}" 
 		 ovalue="{$family->get('Product Family Code')}"  
 		 />
-		 <div id="code_Container" style="" ></div>
+		 <div id="code_Container"  ></div>
          </div>
 	    </td>
 	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
@@ -108,7 +108,7 @@
 		   value="{$family->get('Product Family Name')}"  
 		   ovalue="{$family->get('Product Family Name')}"  
 		   />
-		<div id="name_Container" style="" ></div>
+		<div id="name_Container"  ></div>
               </div>
 	    </td>
 	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
@@ -125,7 +125,7 @@
 		   value="{$family->get('Product Family Special Characteristic')}"  
 		   ovalue="{$family->get('Product Family Special Characteristic')}"  
 		   />
-		<div id="special_char_Container" style="" ></div>
+		<div id="special_char_Container"  ></div>
               </div>
 	    </td>
 	     <td id="special_char_msg" class="edit_td_alert" style="width:300px"></td>
@@ -141,7 +141,7 @@
 		   value="{$family->get('Product Family Description')}"  
 		   ovalue="{$family->get('Product Family Description')}"  
 		   />{$family->get('Product Family Description')}</textarea>
-		<div id="description_Container" style="" ></div>
+		<div id="description_Container"  ></div>
               </div>
 
 	    </td>
@@ -196,7 +196,7 @@
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
-	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
 	  </div>
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
 	 </div>
@@ -276,7 +276,7 @@
 		 value="{$family->get_next_product_code()}" 
 		 ovalue=""  
 		 />
-		 <div id="product_code_Container" style="" ></div>
+		 <div id="product_code_Container"  ></div>
          </div>
 	    </td>
 	     <td id="product_code_msg" class="edit_td_alert" style="width:300px"></td>
@@ -296,7 +296,7 @@
 		   value=""  
 		   ovalue=""  
 		   />
-		<div id="product_name_Container" style="" ></div>
+		<div id="product_name_Container"  ></div>
               </div>
 	    </td>
 	     <td id="product_name_msg" class="edit_td_alert" style="width:300px"></td>
@@ -316,7 +316,7 @@
 		   value=""  
 		   ovalue=""  
 		   />
-		<div id="product_special_char_Container" style="" ></div>
+		<div id="product_special_char_Container"  ></div>
               </div>
 	    </td>
 	     <td id="product_special_char_msg" class="edit_td_alert" style="width:300px"></td>
@@ -339,7 +339,7 @@
 		   value="1"  
 		   ovalue="1"  
 		   />
-		<div id="product_units_Container" style="" ></div>
+		<div id="product_units_Container"  ></div>
               </div>
 	    </td>
 	     <td id="product_units_msg" class="edit_td_alert" style="width:300px"></td>
@@ -361,7 +361,7 @@
 		   value=""  
 		   ovalue=""  
 		   />
-		<div id="product_price_Container" style="" ></div>
+		<div id="product_price_Container"  ></div>
               </div>
 	    </td>
 	     <td id="product_price_msg" class="edit_td_alert" style="width:300px"></td>
@@ -383,7 +383,7 @@
 		   value=""  
 		   ovalue=""  
 		   />
-		<div id="product_retail_price_Container" style="" ></div>
+		<div id="product_retail_price_Container"  ></div>
               </div>
 	    </td>
 	     <td id="product_retail_price_msg" class="edit_td_alert" style="width:300px"></td>
@@ -527,7 +527,7 @@
   </div>
 </div>
 
-	<div id="dialog_new_part"  class=""  style="display:none;padding:10px;">
+	<div id="dialog_new_part"    style="display:none;padding:10px;">
 		<h2>New Part</h2>
 		    <div class="general_options" style="float:right">
 
@@ -543,7 +543,7 @@
 		      <td  style="text-align:left">
 			<div  style="width:15em;position:relative;top:00px" >
 			  <input id="supplier" style="text-align:left;width:18em" type="text">
-			  <div id="supplier_container" style="" ></div>
+			  <div id="supplier_container"  ></div>
 			</div>
 		      </td>
 		    </tr>

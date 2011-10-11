@@ -1,3 +1,14 @@
+function validate_general(branch,items,query) {
+
+   //alert(branch+' :: '+items+' -- '+query)
+    if (validate_scope_metadata[branch]['type']=='new') {  
+        validate_general_new(branch,items,query)
+    } else {
+        validate_general_edit(branch,items,query)
+    }
+}
+
+
 function isPositiveInteger(val) {
     if (val==null) {
         return false;
@@ -139,15 +150,15 @@ var save_option_table=function(args) {
 }
 
 
-function option_selected(branch,item){
+function option_selected(branch,items){
 
-    var data= validate_scope_data[branch][item];
+    var data= validate_scope_data[branch][items];
 select=Dom.get(data.name);
 
  if(select.value==select.getAttribute('ovalue')){
-    validate_scope_data[branch][item].changed=false;
+    validate_scope_data[branch][items].changed=false;
  }else{
-     validate_scope_data[branch][item].changed=true;
+     validate_scope_data[branch][items].changed=true;
 
  }
 
@@ -293,7 +304,7 @@ var onCellClick = function(oArgs) {
                         } else if (r.state == 200 && r.action=='discontinued') {
 
                             var data = record.getData();
-                            data['delete']=r.delete;
+                            //data['delete']=r.delete;
                             data['delete_type']=r.delete_type;
                             this.updateRow(recordIndex,data);
                         } else {
@@ -398,9 +409,9 @@ function validate_scope(branch) {
 
 function is_valid_scope(branch){
  var valid=true;
-  for (item in validate_scope_data[branch]) {
-  //alert(branch +' '+item+' '+validate_scope_data[branch][item].name+' '+validate_scope_data[branch][item].validated) 
-        if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  ){
+  for (items in validate_scope_data[branch]) {
+  //alert(branch +' '+items+' '+validate_scope_data[branch][items].name+' '+validate_scope_data[branch][items].validated) 
+        if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  ){
             valid=false;
             break;
           }  
@@ -413,12 +424,12 @@ function validate_scope_edit(branch) {
   var errors=false;
   var changed=false;
 
-    for (item in validate_scope_data[branch]) {
+    for (items in validate_scope_data[branch]) {
     
-    //   alert(branch +' xxx item:  '+item+' Dom id:   '+validate_scope_data[branch][item].name) 
-        if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
+    //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
+        if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  )
             errors=true;
-        if (validate_scope_data[branch][item].changed==true)
+        if (validate_scope_data[branch][items].changed==true)
             changed=true;
             
         //    alert(errors+' '+changed)
@@ -457,9 +468,9 @@ function validate_scope_new(branch) {
 
     var changed=false;
     var errors=false;
-    for (item in validate_scope_data[branch]) {
-        if (validate_scope_data[branch][item].required==true && validate_scope_data[branch][item].validated==false) {
-             //alert(branch+' , '+item+" error")
+    for (items in validate_scope_data[branch]) {
+        if (validate_scope_data[branch][items].required==true && validate_scope_data[branch][items].validated==false) {
+             //alert(branch+' , '+items+" error")
             errors=true;
         }
     }
@@ -472,20 +483,12 @@ function validate_scope_new(branch) {
 
 }
 
-function validate_general(branch,item,query) {
-  // alert(branch+' :: '+item+' -- '+query)
-    if (validate_scope_metadata[branch]['type']=='new') {  
-        validate_general_new(branch,item,query)
-    } else {
-        validate_general_edit(branch,item,query)
-	
-    }
-}
 
 
 
-function ar_validation(branch,item,query) {
-    var data= validate_scope_data[branch][item];
+
+function ar_validation(branch,items,query) {
+    var data= validate_scope_data[branch][items];
     var request=data.ar_request+query;
   //alert(request)
    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
@@ -494,10 +497,10 @@ function ar_validation(branch,item,query) {
         if (r.state==200) {
             if (r.found==1) {
                 Dom.get(data.name+'_msg').innerHTML=r.msg;
-                validate_scope_data[branch][item].validated=false;
+                validate_scope_data[branch][items].validated=false;
             } else {
                 
-                client_validation(branch,item,query)
+                client_validation(branch,items,query)
             }
             validate_scope(branch);
         } else{
@@ -552,8 +555,8 @@ function numeric_validation(type,query) {
     return valid;
 }
 
-function client_validation(branch,item,query) {
-    var data= validate_scope_data[branch][item];
+function client_validation(branch,items,query) {
+    var data= validate_scope_data[branch][items];
     
     if(Dom.get(data.name+'_msg')==undefined)
     message_div=false;
@@ -561,7 +564,7 @@ function client_validation(branch,item,query) {
     message_div=true;
     
     if(message_div)Dom.get(data.name+'_msg').innerHTML='';
-    validate_scope_data[branch][item].validated=true;
+    validate_scope_data[branch][items].validated=true;
     var valid=true;
     for (validator_index in data.validation) {
 
@@ -580,7 +583,7 @@ function client_validation(branch,item,query) {
               }
           }
     if (!valid) {
-        validate_scope_data[branch][item].validated=false;
+        validate_scope_data[branch][items].validated=false;
 
         if(message_div)Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
     }
@@ -588,42 +591,47 @@ function client_validation(branch,item,query) {
 }
 
 
-function validate_general_new(branch,item,query) {
+function validate_general_new(branch,items,query) {
 	
-    var data= validate_scope_data[branch][item];
+    var data= validate_scope_data[branch][items];
     if (''!=trim(query.toLowerCase())    ) {
-        validate_scope_data[branch][item].changed=true;
+        validate_scope_data[branch][items].changed=true;
 
         if (data.ar=='find') {
 
-            ar_validation(branch,item,query)
+            ar_validation(branch,items,query)
             return;
         } else {
-            client_validation(branch,item,query)
+            client_validation(branch,items,query)
         }
     } else {
-        validate_scope_data[branch][item].validated=false;
-        validate_scope_data[branch][item].changed=false;
+        validate_scope_data[branch][items].validated=false;
+        validate_scope_data[branch][items].changed=false;
     }
     validate_scope(branch);
 }
 
-function validate_general_edit(branch,item,query) {
-//alert(branch+' I:'+item+' q:'+query);
-    var data= validate_scope_data[branch][item];
+function validate_general_edit(branch,items,query) {
+//return;
+//alert(branch+' I:'+items+' q:'+query);
+
+//return;
+
+    var data= validate_scope_data[branch][items];
+
 
     var old_value=Dom.get(data.name).getAttribute('ovalue');
     if (old_value!=trim(query) ) {
 
 
         if (old_value.toLowerCase()!=trim(query.toLowerCase())    ) {
-            validate_scope_data[branch][item].changed=true;
+            validate_scope_data[branch][items].changed=true;
 
             if (data.ar=='find') {
-                 ar_validation(branch,item,query)
+                 ar_validation(branch,items,query)
             }
             else {
-                client_validation(branch,item,query)
+                client_validation(branch,items,query)
 
             }
 
@@ -631,14 +639,14 @@ function validate_general_edit(branch,item,query) {
 
 
         } else {
-            validate_scope_data[branch][item].validated=true;
-            validate_scope_data[branch][item].changed=true;
+            validate_scope_data[branch][items].validated=true;
+            validate_scope_data[branch][items].changed=true;
             validate_scope(branch);
 
         }
     } else {
-        validate_scope_data[branch][item].validated=true;
-        validate_scope_data[branch][item].changed=false;
+        validate_scope_data[branch][items].validated=true;
+        validate_scope_data[branch][items].changed=false;
         validate_scope(branch);
     }
 
@@ -646,30 +654,30 @@ function validate_general_edit(branch,item,query) {
 }
 function reset_edit_general(branch) {
     //alert(branch)
-    for (item in validate_scope_data[branch]) {
-        //alert(validate_scope_data[branch][item].name)
-        var item_input=Dom.get(validate_scope_data[branch][item].name);
+    for (items in validate_scope_data[branch]) {
+        //alert(validate_scope_data[branch][items].name)
+        var item_input=Dom.get(validate_scope_data[branch][items].name);
 
      
         item_input.value=item_input.getAttribute('ovalue');
         
-        validate_scope_data[branch][item].changed=false;
-        validate_scope_data[branch][item].validated=true;
-       // alert(validate_scope_data[branch][item].name+'_msg')
-        Dom.get(validate_scope_data[branch][item].name+'_msg').innerHTML='';
+        validate_scope_data[branch][items].changed=false;
+        validate_scope_data[branch][items].validated=true;
+       // alert(validate_scope_data[branch][items].name+'_msg')
+        Dom.get(validate_scope_data[branch][items].name+'_msg').innerHTML='';
     }
     validate_scope(branch);
 };
 
-
+/*
 function cancel_new_general(branch) {
 
-    for (item in validate_scope_data[branch]) {
-        //alert(validate_scope_data[branch][item].name)
-        var item_input=Dom.get(validate_scope_data[branch][item].name);
-        //alert(validate_scope_data[branch][item].name)
-        if (validate_scope_data[branch][item].default!=undefined) {
-            if (validate_scope_data[branch][item].type=='select') {
+    for (items in validate_scope_data[branch]) {
+        //alert(validate_scope_data[branch][items].name)
+        var item_input=Dom.get(validate_scope_data[branch][items].name);
+        //alert(validate_scope_data[branch][items].name)
+        if (validate_scope_data[branch][items].default!=undefined) {
+            if (validate_scope_data[branch][items].type=='select') {
 
                 for ( i in item_input.options) {
                    // alert(item_input.options[i].defaultSelected+' '+item_input.options[i].value)
@@ -680,16 +688,16 @@ function cancel_new_general(branch) {
 
                 }
             } else {
-                item_input.value=validate_scope_data[branch][item].default;
+                item_input.value=validate_scope_data[branch][items].default;
             }
         } else {
             item_input.value='';
         }
 
-        validate_scope_data[branch][item].changed=false;
-        validate_scope_data[branch][item].validated=false;
-        if (Dom.get(validate_scope_data[branch][item].name+'_msg')!=undefined) {
-            Dom.get(validate_scope_data[branch][item].name+'_msg').innerHTML='';
+        validate_scope_data[branch][items].changed=false;
+        validate_scope_data[branch][items].validated=false;
+        if (Dom.get(validate_scope_data[branch][items].name+'_msg')!=undefined) {
+            Dom.get(validate_scope_data[branch][items].name+'_msg').innerHTML='';
         }
     }
     Dom.addClass('save_new_'+branch,'disabled');
@@ -702,7 +710,7 @@ function cancel_new_general(branch) {
     Dom.setStyle('new_'+branch+'_dialog','display','none');
 
 };
-
+*/
 function post_item_updated_actions(branch,r) {
     return true;
 }
@@ -716,23 +724,23 @@ function save_edit_general(branch) {
 
 //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
-    for (item in validate_scope_data[branch]) {
+    for (items in validate_scope_data[branch]) {
 
-        if (validate_scope_data[branch][item].changed && validate_scope_data[branch][item].validated) {
-            var item_input=Dom.get(validate_scope_data[branch][item].name);
+        if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
+            var item_input=Dom.get(validate_scope_data[branch][items].name);
 
 
 
 
             var updated_items=0;
 
-            if (validate_scope_data[branch][item].dbname!=undefined) {
-                item_name=validate_scope_data[branch][item].dbname;
+            if (validate_scope_data[branch][items].dbname!=undefined) {
+                item_name=validate_scope_data[branch][items].dbname;
             } else {
-                item_name=item;
+                item_name=items;
             }
 
-            var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&okey='+item+'&key=' + item_name+ '&newvalue=' +
+            var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&okey='+items+'&key=' + item_name+ '&newvalue=' +
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
@@ -788,26 +796,26 @@ function save_edit_general_bulk(branch) {
 
  //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;
-    for (item in validate_scope_data[branch]) {
+    for (items in validate_scope_data[branch]) {
 
-        if (validate_scope_data[branch][item].changed && validate_scope_data[branch][item].validated) {
-            var item_input=Dom.get(validate_scope_data[branch][item].name);
+        if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
+            var item_input=Dom.get(validate_scope_data[branch][items].name);
             var updated_items=0;
 
-            if (validate_scope_data[branch][item].dbname!=undefined) {
-                item_name=validate_scope_data[branch][item].dbname;
+            if (validate_scope_data[branch][items].dbname!=undefined) {
+                item_name=validate_scope_data[branch][items].dbname;
             } else {
-                item_name=item;
+                item_name=items;
             }
            
-           // alert(item)
-            data_to_update[item_name]={'okey':item,'value':item_input.value}
+           // alert(items)
+            data_to_update[item_name]={'okey':items,'value':item_input.value}
         }
     }
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request);return;
+alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
  // alert(o.responseText);
@@ -867,12 +875,12 @@ return;
     operation='create';
     var values=new Object();
 
-    for (item in validate_scope_data[branch]) {
+    for (items in validate_scope_data[branch]) {
         //
-        var item_input=Dom.get(validate_scope_data[branch][item].name);
+        var item_input=Dom.get(validate_scope_data[branch][items].name);
 
-//alert(validate_scope_data[branch][item].dbname+' --- '+item_input.value)
-        values[validate_scope_data[branch][item].dbname]=item_input.value;
+//alert(validate_scope_data[branch][items].dbname+' --- '+item_input.value)
+        values[validate_scope_data[branch][items].dbname]=item_input.value;
     }
 
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];

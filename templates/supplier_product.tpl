@@ -11,7 +11,7 @@
   <h1><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </h1>
   
 
-<div class="" id="block_info"  style="width:900px">
+<div  id="block_info"  style="width:900px">
 
     <div id="photo_container" style="float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
@@ -88,7 +88,7 @@
 
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
-    <div class="" style="width:280px;float:left;margin-right:20px">
+    <div  style="width:280px;float:left;margin-right:20px">
 
  <table  class="show_info_product">
 		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$supplier_product->get('Formated Weight')}</td></tr>

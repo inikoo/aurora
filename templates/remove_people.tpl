@@ -25,7 +25,7 @@
 	<div id="block_email" style="{if $view!='email'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
 
-  		<span   class="clean_table_title" style="">{t}Email Campaigns{/t}</span>
+  		<span   class="clean_table_title" >{t}Email Campaigns{/t}</span>
 
 
   		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>

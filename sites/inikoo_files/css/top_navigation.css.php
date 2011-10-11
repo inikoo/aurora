@@ -4,7 +4,7 @@ $width=$_REQUEST['width'];
 ?>
 
 #top_navigator{height:24px;background:black;text-align:right;padding:0px;font-size:12px;font-family:"Arial";color:#ddd;visibility:hidden;
-width:<?php echo $width ?>px;vertical-align:bottom;position:relative;z-index:1000;
+width:<?php echo $width ?>px;vertical-align:bottom;position:absolute;z-index:1000;
 }
 
 

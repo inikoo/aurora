@@ -24,7 +24,7 @@
            </div>	
     </div>
     
-    	<div class="clean_table_controls" style="" >
+    	<div class="clean_table_controls"  >
         
         	<div>
             	<span  style="margin:0 5px" id="paginator{$table_id}"></span>

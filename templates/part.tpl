@@ -13,7 +13,7 @@
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 
-<div class="" id="block_info"  style="margin-top:10px;width:900px;">
+<div  id="block_info"  style="margin-top:10px;width:900px;">
 
   <div id="photo_container" style="float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
@@ -132,7 +132,7 @@
    
  
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1   }
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
 <div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
  <div id="block_history" class="block data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
@@ -171,7 +171,7 @@
    
  
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0   no_filter=1   }
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
  <div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">

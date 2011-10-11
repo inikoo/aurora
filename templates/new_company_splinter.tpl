@@ -17,11 +17,11 @@
 <input type="hidden" value="{$store_key}" id="Store_Key"/>
 {/if}
 	{if $scope=='supplier'}
-	<tr class="first"><td style="" class="label">{t}Supplier Code{/t}:</td>
+	<tr class="first"><td  class="label">{t}Supplier Code{/t}:</td>
 	  <td  style="text-align:left">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Supplier_Code" value="" ovalue="" valid="0">
-	      <div id="Supplier_Code_Container" style="" ></div>
+	      <div id="Supplier_Code_Container"  ></div>
 	    </div>
 	  </td>
 	  <td></td>
@@ -32,9 +32,9 @@
 	<tr class="first">
 	<td style="width:120px" class="label">{t}Company Name{/t}:</td>
 	  <td  style="text-align:left;width:350px">
-	    <div  style="" >
+	    <div   >
 	      <input style="text-align:left;" id="Company_Name" value="" ovalue="" valid="0">
-	      <div id="Company_Name_Container" style="" ></div>
+	      <div id="Company_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -48,7 +48,7 @@
 	  <td>
 	    <div>
 	    <input id="Contact_Name" value="" style="width:100%" />
-	    <div id="Contact_Name_Container" style="" ></div>
+	    <div id="Contact_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  <td></td>
@@ -67,7 +67,7 @@
 	<tbody style="display:none">
 	  <tr>
 	    <td class="label" >{t}Salutation{/t}:</td>
-	    <td  style="" >
+	    <td   >
 	      <input id="Contact_Salutation" type="hidden" value="" ovalue="">
 	      {foreach from=$prefix item=s name=foo  }
 	      <span   onclick="update_salutation(this)"  label="{$s.txt}" style="{if $smarty.foreach.foo.first}margin:0;{else}margin-left:3px{/if};{if $s.relevance>1};display:none{/if} " class="Contact_Salutation small_button"   id="Contact_Salutation_{$s.txt}"  >{$s.txt}</span>
@@ -77,15 +77,15 @@
 	  
 	  <tr>
 	    <td class="label">{t}First Name(s){/t}:</td>
-	    <td   ><input  onkeyup="name_component_change();"  onblur="" style=""  name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
+	    <td   ><input  onkeyup="name_component_change();"  onblur=""   name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
 	  </tr>
 	  <tr>
 	    <td class="label">{t}Surname(s){/t}:</td>
-	    <td   ><input  onkeyup="name_component_change();"  onblur="" style=""  name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
+	    <td   ><input  onkeyup="name_component_change();"  onblur=""   name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
 	  </tr>
 	  <tr style="display:none">
 	    <td class="label">{t}Suffix(s){/t}:</td>
-	    <td   ><input  onkeyup="name_component_change();"  onblur="" style=""  name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
+	    <td   ><input  onkeyup="name_component_change();"  onblur=""   name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
 	  </tr>
 	  
 	</tbody>
@@ -96,7 +96,7 @@
 	  <td >
 	    <div>
 	    <input style="width:100%" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
-	    <div id="Email_Container" style="" ></div>
+	    <div id="Email_Container"  ></div>
 	    </div>
 	  </td>
 	</tr>
@@ -112,7 +112,7 @@
 	    <div>
 	    <input  style="width:100%" class="Telecom" telecom_key=0 telecom_type="Telephone" id="Telephone" 
 		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
-	    <div id="Telephone_Container" style="" ></div>
+	    <div id="Telephone_Container"  ></div>
 	    </div>
 	  </td >
 	  

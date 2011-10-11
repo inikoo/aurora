@@ -12,5 +12,14 @@ $footer=<<<EOD
 </div>
 </div>
 EOD;
+$footer_=<<<EOD
+<div id="footer">
+
+<table class="footer_table">
+<tr><td class="address">$address<br/>$telephone</td><td class="description">$footer_description</td><td>$other</td></tr>
+</table>
+
+</div>
+EOD;
 ?>
 

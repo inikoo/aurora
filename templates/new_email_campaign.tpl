@@ -22,21 +22,21 @@
 <span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
 <span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
 
-<tr class=""><td style=";width:12em" class="label" >{t}Campaign Name{/t}:</td>
+<tr ><td style=";width:12em" class="label" >{t}Campaign Name{/t}:</td>
    <td  style="text-align:left;width:18em;">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="email_campaign_name" value="" ovalue="" >
-       <div id="email_campaign_name_Container" style="" ></div>
+       <div id="email_campaign_name_Container"  ></div>
      </div>
    </td>
    <td id="email_campaign_name_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr class=""><td style=";width:12em" class="label" >{t}Campaign Objetive{/t}:</td>
+<tr ><td style=";width:12em" class="label" >{t}Campaign Objetive{/t}:</td>
    <td  style="text-align:left;width:18em;">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="email_campaign_objetive" value="" ovalue="" >
-       <div id="email_campaign_objetive_Container" style="" ></div>
+       <div id="email_campaign_objetive_Container"  ></div>
      </div>
    </td>
    <td id="email_campaign_objetive_msg" class="edit_td_alert"></td>
