@@ -1055,7 +1055,7 @@ success:function(o) {
               'code':r.data['Country Code'],
               'code2a':r.data['Country 2 Alpha Code'],
               'postal_regex':r.data['Country Postal Code Regex'],
-              'postcode_help':r.data['Country Postal Code Format'],
+              'postcode_help':r.data['Country Postal Code Format']
               
               });
               
@@ -1075,7 +1075,7 @@ var data={
     'code':record.getData('code3a'),
     'code2a':record.getData('code2a'),
     'postal_regex':record.getData('postal_regex'),
-    'postcode_help':record.getData('postcode_help'),
+    'postcode_help':record.getData('postcode_help')
     
     }
                Dom.get(tables.table100.prefix+'address_country').value= record.getData('plain_name')+ " (" + record.getData('code3a') + ") ";
