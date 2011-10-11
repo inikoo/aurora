@@ -123,7 +123,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/134868.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/122689.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1208,6 +1208,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
+            $used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
 
 
             create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
@@ -1218,7 +1219,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         //echo "Memory: ".memory_get_usage(true) . "\n";
 
 
-        // print_r($transactions);
+       
         $data['Order For']='Customer';
 
 

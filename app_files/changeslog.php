@@ -4887,8 +4887,8 @@ ADD `Supplier 1 Quarter Acc Parts Lost` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier 1 Quarter Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier 1 Quarter Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier 1 Quarter Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
-
-
+ALTER TABLE `Order Transaction Fact` ADD `Supplier Metadata` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Order Transaction Fact` CHANGE `Supplier Metadata` `Supplier Metadata` TEXT NULL DEFAULT NULL ;
 
 */
 
