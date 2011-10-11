@@ -51,7 +51,7 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
               'js/common.js',
               'js/table_common.js',
-              'search.js',
+              'js/search.js',
               'js/edit_category_common.js',
               'supplier_categories.js.php',
               'js/dropdown.js',
