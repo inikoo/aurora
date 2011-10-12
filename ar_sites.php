@@ -237,7 +237,7 @@ function list_pages() {
 
     switch ($parent) {
     case('store'):
-        $where.=sprintf(' and `Page Store Key`=%d',$parent_key);
+        $where.=sprintf(' and `Page Store Key`=%d  and  `Page Store Section`  not in ("Department Catalogue","Product Description","Family Catalogue")  ',$parent_key);
         break;
     case('site'):
         $where.=sprintf(' and `Page Site Key`=%d',$parent_key);

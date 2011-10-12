@@ -204,7 +204,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table5.filter={key:'code',value:''};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    //
 // --------------------------------------Department table ends here----------------------------------------------------------
 
 

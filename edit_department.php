@@ -103,7 +103,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
                 'js/csv_common.js',
-		 'js/dropdown.js'
+		'js/pages_common.js'
 
 		);
 
@@ -112,6 +112,7 @@ $images=$department->images_slideshow;
 $smarty->assign('images',$images);
 
 
+$smarty->assign('pages_view',$_SESSION['state']['department']['edit_pages']['view']);
 
 
   $css_files[]='css/edit.css';
@@ -235,40 +236,11 @@ $site_key=$row['Site Key'];
 
 }
 
-$sql=sprintf("select count(*) as num, `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d ",
-$department->id);
-$res=mysql_query($sql);
-if($row=mysql_fetch_assoc($res)){
-$number_of_pages=$row['num'];
-if($number_of_pages==1)
-$page_key=$row['Page Key'];
-
-}
 
 
 
-
-if( isset(  $_REQUEST['page_key']) and is_numeric($_REQUEST['page_key'])){
-
-$page_key=$_REQUEST['page_key'];
-
-}
-
-if($page_key){
-$page=new Page($page_key);
-//print_r($page);exit;
-foreach($page->data as $key=>$value){
-  $page_data[preg_replace('/\s/','',$key)]=$value;
-  
-}
-
-$smarty->assign('page_data',$page_data);
-}
 $smarty->assign('number_of_sites',$number_of_sites);
 $smarty->assign('site_key',$site_key);
-$smarty->assign('number_of_pages',$number_of_pages);
-$smarty->assign('page_key',$page_key);
-  
   
   
   

@@ -66,7 +66,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['table']['f_value']?>'};
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown); 
+	     
 
 
 	};
