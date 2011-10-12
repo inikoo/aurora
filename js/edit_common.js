@@ -815,17 +815,21 @@ function save_edit_general_bulk(branch) {
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-alert(request);//return;
+//alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
- // alert(o.responseText);
+  //alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
-            
+            count=ra.length;
+			i=0;
             for (x in ra){
-               r=ra[x]
-             
+			if(count<=i++)
+			break;
+			
+              r=ra[x];
+
              if (r.state==200) {
 
                         validate_scope_data[branch][r.key].changed=false;
@@ -839,6 +843,7 @@ success:function(o) {
 
                     } 
                     else {
+
                         validate_scope_data[branch][r.key].changed=true;
                         validate_scope_data[branch][r.key].validated=false;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;

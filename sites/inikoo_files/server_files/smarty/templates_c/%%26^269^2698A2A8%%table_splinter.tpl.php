@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-10 15:18:49
+<?php /* Smarty version 2.6.22, created on 2011-10-11 16:23:26
          compiled from table_splinter.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'table_splinter.tpl', 6, false),)), $this); ?>
@@ -28,7 +28,7 @@ smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'table_spl
 	  </div>
 	</div>	
 	</div>
-	<div class="clean_table_controls" style="" >
+	<div class="clean_table_controls"  >
 	    <div><span  style="margin:0 5px" id="paginator<?php echo $this->_tpl_vars['table_id']; ?>
 "></span></div>
 	 </div>

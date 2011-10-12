@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-10 16:39:47
+<?php /* Smarty version 2.6.22, created on 2011-10-11 16:23:26
          compiled from edit_delivery_address_splinter.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'edit_delivery_address_splinter.tpl', 4, false),)), $this); ?>
@@ -46,9 +46,9 @@ unset($_smarty_tpl_vars);
 
 		<div class="address_display"  id="delivery_address_display0"></div>
 		<div class="address_buttons" id="delivery_address_buttons0">
-		  <span class="" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
+		  <span  style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/user.png" alt="<?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contacts<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
+		  <span  style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/telephone.png" alt="<?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Telephones<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>"/>
 		  </span>
 		  <span id="delivery_set_main0" style="float:left" class="<?php if ($this->_tpl_vars['key'] == $this->_tpl_vars['customer']->get('Customer Main Delivery Address Key')): ?>hide<?php endif; ?>  delivery_set_main small_button small_button_edit"  onClick="change_main_address(0,<?php echo '{'; ?>
@@ -80,11 +80,11 @@ type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:<?php echo $th
 </div>
 		<div style="clear:both" class="address_buttons" id="delivery_address_buttons<?php echo $this->_tpl_vars['address']->id; ?>
 ">
-		  <span class="" style="float:left" id="contacts_address_button<?php echo $this->_tpl_vars['address']->id; ?>
+		  <span  style="float:left" id="contacts_address_button<?php echo $this->_tpl_vars['address']->id; ?>
 " address_id="<?php echo $this->_tpl_vars['address']->id; ?>
 " onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/user.png" alt="<?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contacts<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button<?php echo $this->_tpl_vars['address']->id; ?>
+		  <span  style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button<?php echo $this->_tpl_vars['address']->id; ?>
 " address_id="<?php echo $this->_tpl_vars['address']->id; ?>
 " onclick="contacts_address(event,this)" >
 		    <img style="display:none" src="art/icons/telephone.png" alt="<?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Telephones<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>"/>

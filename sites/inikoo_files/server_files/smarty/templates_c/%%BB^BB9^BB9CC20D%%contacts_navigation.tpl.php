@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-10 15:18:49
+<?php /* Smarty version 2.6.22, created on 2011-10-11 16:23:26
          compiled from contacts_navigation.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'contacts_navigation.tpl', 2, false),)), $this); ?>
@@ -21,8 +21,8 @@ id=<?php echo $this->_tpl_vars['prev']['id']; ?>
 
 <table class="search"  border=0 style="<?php if ($this->_tpl_vars['search_label'] == ''): ?>display:none<?php endif; ?>">
 <tr>
-<td class="label" style="" ><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Search<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
-<td class="form" style="">
+<td class="label"  ><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Search<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+<td class="form" >
 <div id="search" class="asearch_container"  style=";float:left;<?php if (! $this->_tpl_vars['search_scope']): ?>display:none<?php endif; ?>">
   <input style="width:300px" class="search" id="<?php echo $this->_tpl_vars['search_scope']; ?>
 _search" value="" state="" name="search"/>
