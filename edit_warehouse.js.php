@@ -151,7 +151,7 @@ el.innerHTML =location_type_name[oData];
 
 	  
 	  
-	  YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	  
 	
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;

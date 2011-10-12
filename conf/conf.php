@@ -741,22 +741,22 @@ $default_state=array(
 
                                                              ),
 
-                                              'suppliers'=>array(
-                                                   'period'=>'year',
-                                                   'percentage'=>0,
-                                                   'mode'=>'',
-                                                   'avg'=>'totals',
-                                                   'view'=>'general',
-                                                   'order'=>'name',
-                                                   'order_dir'=>'',
-                                                   'sf'=>0,
-                                                   'nr'=>25,
-                                                   'where'=>'where true',
-                                                   'f_field'=>'name',
-                                                   'f_value'=>'',
-                                                   
+                                             'suppliers'=>array(
+                                                             'period'=>'year',
+                                                             'percentage'=>0,
+                                                             'mode'=>'',
+                                                             'avg'=>'totals',
+                                                             'view'=>'general',
+                                                             'order'=>'name',
+                                                             'order_dir'=>'',
+                                                             'sf'=>0,
+                                                             'nr'=>25,
+                                                             'where'=>'where true',
+                                                             'f_field'=>'name',
+                                                             'f_value'=>'',
 
-                                               )
+
+                                                         )
                                          ),
 
                    'part_categories'=>array(
@@ -2228,7 +2228,23 @@ $default_state=array(
                                'plot'=>'store',
                                'edit'=>'description',
                                'id'=>1,
+                               'edit_pages'=>array(
+                                                'f_field'=>'code',
+                                                'f_value'=>'',
+                                                'f_show'=>false,
+                                                'order'=>'code',
+                                                'order_dir'=>'',
+                                                'sf'=>0,
+                                                'nr'=>50,
+                                                'view'=>'page_properties',
+                                                'elements'=>array(
+                                                               'Product Description'=>1,
+                                                               'Family Catalogue'=>1,
+                                                               'Product Catalogue'=>1,
+                                                               'Other'=>1,
 
+                                                           )
+                                            ),
                                'pages'=>array(
                                            'where'=>'where true',
                                            'f_field'=>'code',
@@ -2493,10 +2509,26 @@ $default_state=array(
 
 
                               'id'=>false,
+                              'editing'=>'general',
 
 
+                              'edit_pages'=>array(
+                                               'f_field'=>'code',
+                                               'f_value'=>'',
+                                               'f_show'=>false,
+                                               'order'=>'code',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>50,
+                                               'view'=>'page_properties',
+                                               'elements'=>array(
+                                                              'Product Description'=>1,
+                                                              'Family Catalogue'=>1,
+                                                              'Product Catalogue'=>1,
+                                                              'Other'=>1,
 
-
+                                                          )
+                                           ),
 
                               'pages'=>array(
                                           'where'=>'where true',
@@ -2636,7 +2668,23 @@ $default_state=array(
                                     'editing'=>'details',
                                     'table_type'=>'list',
 
+                                    'edit_pages'=>array(
+                                                     'f_field'=>'code',
+                                                     'f_value'=>'',
+                                                     'f_show'=>false,
+                                                     'order'=>'code',
+                                                     'order_dir'=>'',
+                                                     'sf'=>0,
+                                                     'nr'=>50,
+                                                     'view'=>'page_properties',
+                                                     'elements'=>array(
+                                                                    'Product Description'=>1,
+                                                                    'Family Catalogue'=>1,
+                                                                    'Product Catalogue'=>1,
+                                                                    'Other'=>1,
 
+                                                                )
+                                                 ),
 
                                     'families'=>array(
                                                    'where'=>'where true',
@@ -2749,31 +2797,31 @@ $default_state=array(
                                                 'sf'=>0,
                                                 'nr'=>25,
                                             ),
-                                      'pages'=>array(
-                                           'where'=>'where true',
-                                           'f_field'=>'code',
-                                           'f_value'=>'',
-                                           'f_show'=>false,
-                                           'order'=>'code',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>50,
-                                           'percentages'=>false,
-                                           'view'=>'general',
-                                           'period'=>'year',
-                                           'percentage'=>0,
-                                           'mode'=>'all',
-                                           'avg'=>'totals',
-                                           'elements'=>array(
-                                                          'Product Description'=>0,
-                                                          'Family Catalogue'=>0,
-                                                          'Product Catalogue'=>1,
-                                                          'Other'=>0,
+                                    'pages'=>array(
+                                                'where'=>'where true',
+                                                'f_field'=>'code',
+                                                'f_value'=>'',
+                                                'f_show'=>false,
+                                                'order'=>'code',
+                                                'order_dir'=>'',
+                                                'sf'=>0,
+                                                'nr'=>50,
+                                                'percentages'=>false,
+                                                'view'=>'general',
+                                                'period'=>'year',
+                                                'percentage'=>0,
+                                                'mode'=>'all',
+                                                'avg'=>'totals',
+                                                'elements'=>array(
+                                                               'Product Description'=>0,
+                                                               'Family Catalogue'=>0,
+                                                               'Product Catalogue'=>1,
+                                                               'Other'=>0,
 
-                                                      )
+                                                           )
 
 
-                                       ),
+                                            ),
 
                                 ),
                    'family'=>array(
@@ -2781,7 +2829,23 @@ $default_state=array(
 
                                 'editing'=>'details',
 
+                                'edit_pages'=>array(
+                                                 'f_field'=>'code',
+                                                 'f_value'=>'',
+                                                 'f_show'=>false,
+                                                 'order'=>'code',
+                                                 'order_dir'=>'',
+                                                 'sf'=>0,
+                                                 'nr'=>50,
+                                                 'view'=>'page_properties',
+                                                 'elements'=>array(
+                                                                'Product Description'=>1,
+                                                                'Family Catalogue'=>1,
+                                                                'Product Catalogue'=>1,
+                                                                'Other'=>1,
 
+                                                            )
+                                             ),
 
                                 'products'=>array(
                                                'percentages'=>false,
@@ -2849,31 +2913,31 @@ $default_state=array(
                                             'sf'=>0,
                                             'nr'=>25,
                                         ),
-                               'pages'=>array(
-                                           'where'=>'where true',
-                                           'f_field'=>'code',
-                                           'f_value'=>'',
-                                           'f_show'=>false,
-                                           'order'=>'code',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>50,
-                                           'percentages'=>false,
-                                           'view'=>'general',
-                                           'period'=>'year',
-                                           'percentage'=>0,
-                                           'mode'=>'all',
-                                           'avg'=>'totals',
-                                           'elements'=>array(
-                                                          'Product Description'=>0,
-                                                          'Family Catalogue'=>1,
-                                                          'Product Catalogue'=>0,
-                                                          'Other'=>0,
+                                'pages'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'code',
+                                            'f_value'=>'',
+                                            'f_show'=>false,
+                                            'order'=>'code',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>50,
+                                            'percentages'=>false,
+                                            'view'=>'general',
+                                            'period'=>'year',
+                                            'percentage'=>0,
+                                            'mode'=>'all',
+                                            'avg'=>'totals',
+                                            'elements'=>array(
+                                                           'Product Description'=>0,
+                                                           'Family Catalogue'=>1,
+                                                           'Product Catalogue'=>0,
+                                                           'Other'=>0,
 
-                                                      )
+                                                       )
 
 
-                                       ),
+                                        ),
 
                             ),
 

@@ -44,6 +44,7 @@ $create=$user->can_create('product departments');
 
 
 
+$smarty->assign('pages_view',$_SESSION['state']['store']['edit_pages']['view']);
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
@@ -63,21 +64,49 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
-
-
+$css_files=array(
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+                'css/edit.css',
+                'css/upload_files.css',
+           );
+$js_files=array(
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'uploader/uploader.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-debug.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'js/php.default.min.js',
+              'js/common.js',
+              'js/search.js',
+              'js/table_common.js',
+              'js/edit_common.js',
+              'js/csv_common.js',
+              'js/pages_common.js'
+          );
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		                $yui_path.'assets/skins/sam/autocomplete.css',
-
-		
-		 'container.css',
-		 'button.css'
+ 'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+                'css/edit.css',
+                'css/upload_files.css',
 		 );
-
 include_once('Theme.php');
-
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -90,20 +119,19 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/php.default.min.js',
 		'js/common.js',
-		'js/search.js',
 		'js/table_common.js',
+		'js/search.js',
 		
-		'js/dropdown.js'
+		'js/pages_common.js',
+		'js/edit_common.js',
+		'country_select.js.php',
+		'edit_store.js.php'
 		);
 
 
 
   $smarty->assign('edit',$_SESSION['state'][$page]['edit']);
-  $css_files[]='css/edit.css';
  
-  $js_files[]='js/edit_common.js';
-  $js_files[]='country_select.js.php';
-  $js_files[]='edit_store.js.php';
  
 
 $smarty->assign('css_files',$css_files);
@@ -160,6 +188,25 @@ $filter_menu=array(
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
+ 
+ 
+ $number_of_sites=0;
+$site_key=0;
+
+
+$sql=sprintf("select count(*) as num, `Site Key` from `Site Dimension` where `Site Store Key`=%d ",
+             $store->id);
+
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $number_of_sites=$row['num'];
+    if ($number_of_sites==1)
+        $site_key=$row['Site Key'];
+
+}
+
+$smarty->assign('number_of_sites',$number_of_sites);
+$smarty->assign('site_key',$site_key);
  
 $smarty->display('edit_store.tpl');
 

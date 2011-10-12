@@ -47,6 +47,7 @@ $_SESSION['state']['site']['id']=$site->id;
 
 $store=new Store($site->data['Site Store Key']);
 $smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
 $create=$user->can_create('sites');
 
@@ -62,7 +63,7 @@ $smarty->assign('modify',$modify);
 $general_options_list=array();
 
 //if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_site.php','label'=>_('Edit Site'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_site.php?id='.$site->id,'label'=>_('Edit Site'));
 
 
 $smarty->assign('general_options_list',$general_options_list);

@@ -133,7 +133,7 @@ this.table100.prefix='';
 
 	    this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table100.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    //
 
 };
 

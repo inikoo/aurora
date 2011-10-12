@@ -117,7 +117,7 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/csv_common.js',
-              'js/dropdown.js'
+              'js/pages_common.js'
           );
 
 
@@ -166,6 +166,7 @@ $department_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter
 $smarty->assign('department_period',$department_period);
 $smarty->assign('department_period_title',$department_period_title[$department_period]);
 
+$smarty->assign('pages_view',$_SESSION['state']['family']['edit_pages']['view']);
 
 
 
