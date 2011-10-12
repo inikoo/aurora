@@ -49,6 +49,9 @@ $store=new Store($page->data['Page Store Key']);
 $smarty->assign('store',$store);
 $site=new Site($page->data['Page Site Key']);
 $smarty->assign('site',$site);
+$store=new Store($site->data['Site Store Key']);
+$smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
 
 $smarty->assign('page',$page);
