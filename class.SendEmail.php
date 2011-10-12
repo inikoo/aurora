@@ -16,6 +16,8 @@ class SendEmail extends DB_Table{
 		$this->recipient_type='User';
 		$this->recipient_key=0;
 		$this->email_key=0;
+		$this->track=false;
+		
 		
 		if(isset($data) and $data){
 			$this->email_type=$data['email_type'];
@@ -479,7 +481,7 @@ class SendEmail extends DB_Table{
 				break;
 			}
 		break;
-		
+		case 'Amazon':
 		case 'amazon':
 		case 'AMAZON':
 			$access_key=$data['access_key'];
@@ -738,7 +740,12 @@ class SendEmail extends DB_Table{
 	
 	function update_email_dimension(){
 		
-		$sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Date`) values ('%s', %d, '%s', '%s', '%s', NOW())", $this->email_type, 0, $this->recipient_type, $this->recipient_key, $this->email_key);
+		$sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Date`) values ('%s', %d, '%s', '%s', '%s', NOW())",
+		$this->email_type,
+		0,
+		$this->recipient_type,
+		$this->recipient_key,
+		$this->email_key);
 		
 		$result=mysql_query($sql);
 		return mysql_insert_id();

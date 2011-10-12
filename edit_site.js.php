@@ -31,7 +31,7 @@ function change_block(e){
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-edit&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
 }
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -90,7 +90,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['site']['history']['order']?>",
+							    key: "<?php echo$_SESSION['state']['site']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['site']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -106,12 +106,111 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 		    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['site']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['history']['f_value']?>'};
+
+
+
+   var tableid=6; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+
+
+	    var CustomersColumnDefs = [
+				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				         ,{key:"go", label:"", width:20,action:"none"}
+				       ,{key:"code",label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				       ,{key:"store_title",label:"<?php echo _('Header Title')?>", <?php echo($_SESSION['state']['site']['edit_pages']['view']=='page_header'?'':'hidden:true,')?>width:400,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				     	  ,{key:"link_title",label:"<?php echo _('Link Title')?>", <?php echo($_SESSION['state']['site']['edit_pages']['view']=='page_properties'?'':'hidden:true,')?>width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				     	  ,{key:"url",label:"<?php echo _('URL')?>", <?php echo($_SESSION['state']['site']['edit_pages']['view']=='page_properties'?'':'hidden:true,')?>width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				     	  ,{key:"page_title",label:"<?php echo _('Browser Title')?>",<?php echo($_SESSION['state']['site']['edit_pages']['view']=='page_html_head'?'':'hidden:true,')?> width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				     	  ,{key:"page_keywords",label:"<?php echo _('Keywords')?>",<?php echo($_SESSION['state']['site']['edit_pages']['view']=='page_html_head'?'':'hidden:true,')?> width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+
+				     
+				     ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_store'}		         
+				       ];
+				       
+	 
+				       
+				       
+	    //?tipo=customers&tid=0"
+	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=site&parent_key="+Dom.get('site_key').value+"&tableid=6");
+
+//alert("ar_edit_sites.php?tipo=family_page_list&site_key="+Dom.get('site_key').value+"&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=6")
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+	
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"go","code","store_title","delete","link_title","url","page_title","page_keywords"
+
+			 ]};
+
+        this.table6 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource6
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    :<?php echo $_SESSION['state']['site']['edit_pages']['nr']?> ,containers : 'paginator6', alpartysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo $_SESSION['state']['site']['edit_pages']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['site']['edit_pages']['order_dir']?>"
+							 },
+							 dynamicData : true
+						     }
+						     );
+	    
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	    this.table6.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table6.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table6.subscribe("cellClickEvent", onCellClick);
+		    
+	    this.table6.filter={key:'<?php echo $_SESSION['state']['site']['edit_pages']['f_field']?>',value:'<?php echo $_SESSION['state']['site']['edit_pages']['f_value']?>'};
+
+
+	
+
+
+
+
+
+
+
+
 };
     });
 
 
 
 function init(){
+init_search('products_store');
+
+ ids=['page_properties','page_html_head','page_header'];
+ YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
 
 
     var ids = ["general","layout","style","sections","pages"]; 

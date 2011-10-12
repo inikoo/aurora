@@ -23,11 +23,7 @@
     <li> <span class="item {if $edit=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
     <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
   </ul>
- <div class="tabbed_container" > 
-   
-      
-      
-      
+ <div class="tabbed_container" >    
     <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
     
@@ -168,12 +164,9 @@
 	  
     </table>
     </div>
-    
-     <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
+    <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
           {include file='edit_images_splinter.tpl'}
      </div>
-    
-    
     <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>
@@ -201,33 +194,29 @@
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
 	 </div>
       </div>
-	  
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
-
-      <div class="general_options" style="float:right">
-	     <span style="margin-right:10px;"   id="new_family_page" class="state_details" >{t}Create Page{/t}</span>
-	        <span style="margin-right:10px;{if $number_of_pages<=1}display:none{/if}" " id="page_list" class="state_details"><a href="edit_family.php?id={$family->id}">{t}Page List{/t} ({$number_of_pages})</a></span>
-
-	   </div>
-	
-	
-	
+	<div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
+        <div class="general_options" style="float:right">
+	        <span style="margin-right:10px;"   id="new_family_page" class="state_details" >{t}Create Page{/t}</span>
+	    </div>
 		<input type='hidden' id="site_key" value="{$site_key}">
-				<input type='hidden' id="page_key" value="{$page_key}">
-
-
-
-<div   class="data_table" style="clear:both;" >
-	  <span class="clean_table_title">{t}Pages{/t}</span> 
-	  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-   {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
-	  <div  id="table6"  style="font-size:90%" class="data_table_container dtable btable "> </div>
-	</div>
-
-	
-
-      </div>
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
+		
+		
+        <div  class="data_table" style="clear:both;" >
+	        <span class="clean_table_title">{t}Pages{/t}</span> 
+	        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+	            <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	                <tr>
+	                    <td {if $pages_view=='page_properties'}class="selected"{/if} id="page_properties" >{t}Page Properties{/t}</td>
+	                    <td {if $pages_view=='page_html_head'}class="selected"{/if}  id="page_html_head"  >{t}HTML Head{/t}</td>
+	                    <td {if $pages_view=='page_header'}class="selected"{/if}  id="page_header"  >{t}Header{/t}</td>
+		            </tr>
+                </table>
+                {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
+	            <div  id="table6"  style="font-size:90%" class="data_table_container dtable btable "> </div>
+	        </div>
+	        
+        </div>
+        <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
       
       
       <div class="general_options" style="float:right;text-align:right">
@@ -470,12 +459,7 @@
 
 
       </div>
-
-	 
-	  
- 
- 
- </div>
+    </div>
 
 
 

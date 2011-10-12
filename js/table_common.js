@@ -41,6 +41,9 @@ return true
 var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
     //alert(oResponse.meta.RecordOffset)
   // alert(oResponse.meta.rowsPerPage)
+  
+ // alert("a")
+  
     if(oPayload!=undefined){
         oPayload.pagination = {
             rowsPerPage: parseInt(oResponse.meta.rowsPerPage)||5,
@@ -54,6 +57,9 @@ var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
 
 
 var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
+
+//alert("x")
+
     oPayload = oPayload ||  {
 	totalRecords:0,
 	pagination:{
@@ -133,6 +139,8 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 function myrenderEvent(){
+//alert("y")
+
 ostate=this.getState();
 paginator=ostate.pagination
 if(paginator.totalRecords<=paginator.rowsPerPage){
@@ -242,7 +250,7 @@ var change_rpp=function (rpp,tableid){
 
 var change_rpp_with_totals=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
-   
+     var table=tables['table'+tableid];
 
     table.get('paginator').setRowsPerPage(rpp+1)
 

@@ -34,8 +34,8 @@ if (!($user->can_view('stores')    ) ) {
 
 
 $page=new Page($page_key);
-if(!$page->id){
- header('Location: index.php');
+if (!$page->id) {
+    header('Location: index.php');
     exit;
 }
 
@@ -46,6 +46,9 @@ $store=new Store($page->data['Page Store Key']);
 $smarty->assign('store',$store);
 $site=new Site($page->data['Page Site Key']);
 $smarty->assign('site',$site);
+$store=new Store($site->data['Site Store Key']);
+$smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
 
 $smarty->assign('page',$page);
@@ -65,7 +68,7 @@ $smarty->assign('modify',$modify);
 $general_options_list=array();
 
 //if ($modify)
-    $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_page.php?id='.$page->id,'label'=>_('Edit Page'));
+$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_page.php?id='.$page->id,'label'=>_('Edit Page'));
 
 
 $smarty->assign('general_options_list',$general_options_list);
@@ -77,7 +80,7 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-              	 $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',
                'button.css',
@@ -97,7 +100,7 @@ $js_files=array(
               'js/php.default.min.js',
               'js/common.js',
               'js/table_common.js',
-	      'js/edit_common.js',
+              'js/edit_common.js',
               'js/csv_common.js',
               'js/dropdown.js'
           );

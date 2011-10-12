@@ -204,7 +204,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table5.filter={key:'code',value:''};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    //
 // --------------------------------------Department table ends here----------------------------------------------------------
 
 
@@ -621,6 +621,10 @@ var request='ar_edit_marketing.php?tipo=select_html_email_campaign&email_campaig
 function send_email_campaign(){
 
 validate_scope('email_campaign');
+
+
+Dom.setStyle('dialog_send_email_campaign_choose_when1','display','');
+Dom.setStyle('other_time_form','display','none');
 
 dialog_send_email_campaign.show();
 
