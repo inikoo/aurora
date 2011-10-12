@@ -288,31 +288,8 @@ $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family C
 $smarty->assign('view',$_SESSION['state']['family']['products']['edit_view']);
 
 
-$number_of_sites=0;
-$site_key=0;
-$number_of_pages=0;
-$page_key=0;
 
-$sql=sprintf("select count(*) as num, `Site Key` from `Site Dimension` where `Site Store Key`=%d ",
-             $family->data['Product Family Store Key']);
 
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $number_of_sites=$row['num'];
-    if ($number_of_sites==1)
-        $site_key=$row['Site Key'];
-
-}
-
-$sql=sprintf("select count(*) as num, `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d ",
-             $family->id);
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $number_of_pages=$row['num'];
-    if ($number_of_pages==1)
-        $page_key=$row['Page Key'];
-
-}
 
 $tipo_filter2='code';
 $filter_menu2=array(
@@ -337,28 +314,25 @@ $smarty->assign('filter_value7','');
 
 
 
+$number_of_sites=0;
+$site_key=0;
 
-if ( isset(  $_REQUEST['page_key']) and is_numeric($_REQUEST['page_key'])) {
 
-    $page_key=$_REQUEST['page_key'];
+$sql=sprintf("select count(*) as num, `Site Key` from `Site Dimension` where `Site Store Key`=%d ",
+             $family->data['Product Family Store Key']);
+
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+    $number_of_sites=$row['num'];
+    if ($number_of_sites==1)
+        $site_key=$row['Site Key'];
 
 }
 
-if ($page_key) {
-    $page=new Page($page_key);
-//print_r($page);exit;
-    foreach($page->data as $key=>$value) {
-        $page_data[preg_replace('/\s/','',$key)]=$value;
-
-    }
-
-    $smarty->assign('page_data',$page_data);
-    $smarty->assign('page',$page);
-}
 $smarty->assign('number_of_sites',$number_of_sites);
 $smarty->assign('site_key',$site_key);
-$smarty->assign('number_of_pages',$number_of_pages);
-$smarty->assign('page_key',$page_key);
+
+
 $elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
 $sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Family Key`=%d group by `Product Main Type`",$family->id);
 $res=mysql_query($sql);
