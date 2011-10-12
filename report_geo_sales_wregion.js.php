@@ -94,7 +94,7 @@ var link='report_geo_sales.php'
 
 	   // this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_geo_sales']['countries']['f_field']?>',value:'<?php echo $_SESSION['state']['report_geo_sales']['countries']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    //
 	
 // -----------------------------------------------Customer table starts here --------------
 	var tableid=1; // Change if you have more the 1 table

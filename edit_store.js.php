@@ -13,14 +13,6 @@ var description_errors= new Object();
 
 
 
-	
-
-
-
-
-
-
-
 var validate_scope_data={
 'store':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
@@ -247,8 +239,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",rtext:"resultset.rtext",
+		  	 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
@@ -274,7 +269,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['departments']['order']?>",
+							    key: "<?php echo$_SESSION['state']['store']['departments']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['departments']['order_dir']?>"
 								     }
 							   ,dynamicData : true
@@ -292,7 +287,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 
 
-		
+	
  var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
@@ -306,6 +301,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    //?tipo=customers&tid=0"
 	    
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=store&tableid=1");
+	    
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -330,6 +326,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"note"
 			 ,'author','date','tipo','abstract','details'
 			 ]};
+			 
+			 
+		
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource1
@@ -346,7 +345,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['history']['order']?>",
+							    key: "<?php echo$_SESSION['state']['store']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -354,7 +353,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     }
 						     
 						     );
-	    
+	    	
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -363,7 +362,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
 
-
+	
 	    var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
@@ -412,7 +411,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['charges']['order']?>",
+							    key: "<?php echo$_SESSION['state']['store']['charges']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['charges']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -479,7 +478,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['campaigns']['order']?>",
+							    key: "<?php echo$_SESSION['state']['store']['campaigns']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['campaigns']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -546,7 +545,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
+							    key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -567,73 +566,91 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-
-
-var tableid=5; // Change if you have more the 1 table
+   var tableid=6; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
-	    var CustomersColumnDefs = [
-	      {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				    ,{key:"go",label:'',width:20,}
-				      , {key:"title",label:"<?php echo _('Title')?>", width:240,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"section",label:"<?php echo _('Section')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
+
+	    var CustomersColumnDefs = [
+				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				         ,{key:"go", label:"", width:20,action:"none"}
+				       ,{key:"code",label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store_page_properties'}
+				       ,{key:"store_title",label:"<?php echo _('Header Title')?>", <?php echo($_SESSION['state']['store']['edit_pages']['view']=='page_header'?'':'hidden:true,')?>width:400,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store_page_properties'}
+				     	  ,{key:"link_title",label:"<?php echo _('Link Title')?>", <?php echo($_SESSION['state']['store']['edit_pages']['view']=='page_properties'?'':'hidden:true,')?>width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store_page_properties'}
+				     	  ,{key:"url",label:"<?php echo _('URL')?>", <?php echo($_SESSION['state']['store']['edit_pages']['view']=='page_properties'?'':'hidden:true,')?>width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store_page_properties'}
+				     	  ,{key:"page_title",label:"<?php echo _('Browser Title')?>",<?php echo($_SESSION['state']['store']['edit_pages']['view']=='page_html_head'?'':'hidden:true,')?> width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store_page_properties'}
+				     	  ,{key:"page_keywords",label:"<?php echo _('Keywords')?>",<?php echo($_SESSION['state']['store']['edit_pages']['view']=='page_html_head'?'':'hidden:true,')?> width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store_page_properties'}
+
+				     
+				     ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_store'}		         
 				       ];
-	    
-	    this.dataSource5 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=store_pages&tableid=5");
-	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource5.connXhrMode = "queueRequests";
-	    this.dataSource5.responseSchema = {
+				       
+	 
+				       
+				       
+	    //?tipo=customers&tid=0"
+	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=store&parent_key="+Dom.get('store_id').value+"&tableid=6");
+
+//alert("ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=store&parent_key="+Dom.get('store_id').value+"&tableid=6")
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
+	
 		},
 		
 		
 		fields: [
-			 "section","title","id","go"
+			 "id","go","code","store_title","delete","link_title","url","page_title","page_keywords"
+
 			 ]};
-	    
-	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource5
+
+        this.table6 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource6
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['store']['pages']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    :<?php echo $_SESSION['state']['store']['edit_pages']['nr']?> ,containers : 'paginator6', alpartysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
 								 firstPageLinkLabel :"<<",
 								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['pages']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['pages']['order_dir']?>"
+							    key: "<?php echo $_SESSION['state']['store']['edit_pages']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['store']['edit_pages']['order_dir']?>"
 							 },
 							 dynamicData : true
-							 
 						     }
-						     
 						     );
 	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	 
+	    
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
+
+	    this.table6.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table6.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table6.subscribe("cellClickEvent", onCellClick);
 		    
-		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['store']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['pages']['f_value']?>'};
+	    this.table6.filter={key:'<?php echo $_SESSION['state']['store']['edit_pages']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['edit_pages']['f_value']?>'};
 
 
-
+	  
 
 
 
@@ -675,6 +692,10 @@ function show_add_department_dialog(){
 
 
 function init(){
+
+  ids=['page_properties','page_html_head','page_header'];
+ YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
+
 
   init_search('products_store');
 
@@ -753,7 +774,7 @@ function init(){
  var formObject = document.getElementById('aForm');
  
    // the second argument is true to indicate file upload.
-   YAHOO.util.Connect.setForm(Dom.get('logo_file_upload_form'), true);
+ //  YAHOO.util.Connect.setForm(Dom.get('logo_file_upload_form'), true);
  
   
   

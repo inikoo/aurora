@@ -193,8 +193,8 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_porders.php';
      else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';    
-     else if (column.object=='family_page_properties'  )
-        ar_file='ar_edit_site.php';    
+     else if (column.object=='family_page_properties' || column.object=='store_page_properties'  || column.object=='department_page_properties'  || column.object=='site_page_properties'  )
+        ar_file='ar_edit_sites.php';    
     
     
     
@@ -207,7 +207,7 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
- //   alert(request);return;
+   // alert(ar_file+'?'+request);return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {

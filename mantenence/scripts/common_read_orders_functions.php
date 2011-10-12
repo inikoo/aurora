@@ -678,7 +678,7 @@ function send_order($data,$data_dn_transactions) {
     if(!isset($dn)){
     
     print "Exit no transactions in this invoice\n";
-    exit;
+    return;
     }
 
 

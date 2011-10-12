@@ -127,6 +127,23 @@ case('edit_family_page_properties'):
 
     edit_page($data);
     break;
+    
+    case('edit_store_page_html_head'):
+case('edit_store_page_header'):
+case('edit_store_page_content'):
+case('edit_store_page_properties'):
+    require_once 'class.Store.php';
+
+
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
+
+    edit_page($data);
+    break;
+    
 case('edit_department_page_html_head'):
 case('edit_department_page_header'):
 case('edit_department_page_content'):
@@ -146,6 +163,7 @@ case('edit_department_page_properties'):
 case('family_page_list'):
 case('department_page_list'):
 case('store_pages'):
+case('pages'):
     list_pages_for_edition();
     break;
 
@@ -167,10 +185,6 @@ function  edit_page($data) {
 
     $page=new Page($data['id']);
     $page->editor=$editor;
-
-
-
-
 
     $page->update_field_switcher($data['key'],stripslashes(urldecode($data['newvalue'])));
 
@@ -278,7 +292,7 @@ function list_pages_for_edition() {
 
 
 
-    $conf=$_SESSION['state'][$parent]['pages'];
+    $conf=$_SESSION['state'][$parent]['edit_pages'];
 
 
 
@@ -305,10 +319,7 @@ function list_pages_for_edition() {
     else
         $order_dir=$conf['order_dir'];
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+ 
 
 
     if (isset( $_REQUEST['f_field']))
@@ -329,15 +340,14 @@ function list_pages_for_edition() {
 
 
 
-    $_SESSION['state'][$parent]['pages']['order']=$order;
-    $_SESSION['state'][$parent]['pages']['order_dir']=$order_direction;
-    $_SESSION['state'][$parent]['pages']['nr']=$number_results;
-    $_SESSION['state'][$parent]['pages']['sf']=$start_from;
-    $_SESSION['state'][$parent]['pages']['where']=$where;
-    $_SESSION['state'][$parent]['pages']['f_field']=$f_field;
-    $_SESSION['state'][$parent]['pages']['f_value']=$f_value;
-    $_SESSION['state'][$parent]['pages']['parent_key']=$parent_key;
-    $_SESSION['state'][$parent]['pages']['site_key']=$site_key;
+    $_SESSION['state'][$parent]['edit_pages']['order']=$order;
+    $_SESSION['state'][$parent]['edit_pages']['order_dir']=$order_direction;
+    $_SESSION['state'][$parent]['edit_pages']['nr']=$number_results;
+    $_SESSION['state'][$parent]['edit_pages']['sf']=$start_from;
+    $_SESSION['state'][$parent]['edit_pages']['f_field']=$f_field;
+    $_SESSION['state'][$parent]['edit_pages']['f_value']=$f_value;
+    $_SESSION['state'][$parent]['edit_pages']['parent_key']=$parent_key;
+    $_SESSION['state'][$parent]['edit_pages']['site_key']=$site_key;
 
 
 
@@ -349,7 +359,7 @@ function list_pages_for_edition() {
 
     $where=sprintf(' where `Page Type`="Store" and `Page Site Key`=%d ',$site_key);
     if ($parent=='store')
-        $where.=sprintf("and `Page Store Function` in ('Front Page Store','Search','Information','Unknown','Store Catalogue') and `Page Store Key`=%d ",$parent_key);
+        $where.=sprintf("and `Page Store Section`  not in ('Department Catalogue','Product Description','Family Catalogue') and `Page Store Key`=%d ",$parent_key);
     elseif ($parent=='family')
     $where.=sprintf("and `Page Store Section`='Family Catalogue'   and `Page Parent Key`=%d ",$parent_key);
     elseif ($parent=='department')
@@ -370,7 +380,7 @@ function list_pages_for_edition() {
 
 
     $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
-
+//print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -431,7 +441,7 @@ function list_pages_for_edition() {
         $order='`Page Section`';
 
 
- $adata=array();
+    $adata=array();
     $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
@@ -451,6 +461,11 @@ function list_pages_for_edition() {
                      'section'=>$row['Page Section'],
                      'code'=>$row['Page Code'],
                      'store_title'=>$row['Page Store Title'],
+                     'link_title'=>$row['Page Short Title'],
+                     'url'=>$row['Page URL'],
+                     'page_title'=>$row['Page Title'],
+                     'page_keywords'=>$row['Page Keywords'],
+
 
                      'go'=>sprintf("<a href='edit_page.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'],$parent,$parent_key),
 
@@ -527,7 +542,7 @@ function delete_found_in_page($data) {
     mysql_query($sql);
     $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
     echo json_encode($response);
-    
+
 }
 
 function add_see_also_page($data) {
@@ -555,5 +570,5 @@ function delete_see_also_page($data) {
     mysql_query($sql);
     $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
     echo json_encode($response);
-    
+
 }

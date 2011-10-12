@@ -604,13 +604,14 @@ class Page extends DB_Table {
                 $this->update_see_also();
             }
             break;
-
+        case('code'):
         case('page_code'):
             $this->update_field('Page Code',$value,$options);
             break;
         case('url'):
             $this->update_field('Page URL',$value,$options);
             break;
+         case('page_title'):   
         case('title'):
             $this->update_field('Page Title',$value,$options);
             break;
@@ -619,6 +620,7 @@ class Page extends DB_Table {
             $this->update_field('Page Short Title',$value,$options);
             break;
         case('keywords'):
+         case('page_keywords'):
             $this->update_field('Page Keywords',$value,$options);
             break;
         case('store_title'):

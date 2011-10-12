@@ -350,7 +350,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    //
 
 // --------------------------------------Postal code table starts here--------------------------------------------------------
 //=============
@@ -450,7 +450,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    //
 
 	
 	};
