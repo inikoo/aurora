@@ -622,6 +622,10 @@ function send_email_campaign(){
 
 validate_scope('email_campaign');
 
+
+Dom.setStyle('dialog_send_email_campaign_choose_when1','display','');
+Dom.setStyle('other_time_form','display','none');
+
 dialog_send_email_campaign.show();
 
 

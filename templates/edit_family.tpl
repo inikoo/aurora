@@ -197,10 +197,10 @@
 	<div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
         <div class="general_options" style="float:right">
 	        <span style="margin-right:10px;"   id="new_family_page" class="state_details" >{t}Create Page{/t}</span>
-	        <span style="margin-right:10px;{if $number_of_pages<=1}display:none{/if}" " id="page_list" class="state_details"><a href="edit_family.php?id={$family->id}">{t}Page List{/t} ({$number_of_pages})</a></span>
 	    </div>
 		<input type='hidden' id="site_key" value="{$site_key}">
-		<input type='hidden' id="page_key" value="{$page_key}">
+		
+		
         <div  class="data_table" style="clear:both;" >
 	        <span class="clean_table_title">{t}Pages{/t}</span> 
 	        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
@@ -214,6 +214,7 @@
                 {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
 	            <div  id="table6"  style="font-size:90%" class="data_table_container dtable btable "> </div>
 	        </div>
+	        
         </div>
         <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
       
