@@ -3,6 +3,7 @@
  {include file='contacts_navigation.tpl'}
 <input type="hidden" value="{$customer->id}" id="customer_key"/>
 <input type="hidden" value="{$registered_email}" id="registered_email"/>
+<input type="hidden" value="{$store_id}" id="store_key"/>
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1><span style="color:SteelBlue">{$id}</span>, <span id="title_name">{$customer->get('Customer Name')}</span></h1>
@@ -19,12 +20,13 @@
     <li> <span class="item {if $edit=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
     <li> <span class="item {if $edit=='merge'}selected{/if}"  id="merge">  <span> {t}Merge{/t}</span></span></li>
-	{if $site_customer}
+	{if $site_customer && $no_of_sites>0}
 	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password" style="display:">  <span> {t}User Site{/t}</span></span></li>
 	{/if}
   </ul>
   
  <div class="tabbed_container" > 
+ <div class="todo">No of sites: {$no_of_sites} {t}To Do{/t}</div>
  {if $site_customer}
  <div  class="edit_block" style="{if $edit!="password"}display:none{/if};min-height:260px"  id="d_password">
  
