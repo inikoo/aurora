@@ -1026,6 +1026,7 @@ $this->update_last_interval();
 
 
     function update_invoice_category_interval_sales() {
+        $this->update_invoice_category_sales('Total');
         $this->update_invoice_category_sales('3 Year');
         $this->update_invoice_category_sales('1 Year');
         $this->update_invoice_category_sales('6 Month');
@@ -1201,7 +1202,7 @@ $this->update_last_interval();
 
                     );
         $result=mysql_query($sql);
-
+  
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
             $supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
@@ -1222,8 +1223,8 @@ $this->update_last_interval();
 
         mysql_query($sql);
 
-    //    print "$sql\n";
-
+  //     print "$sql\n";
+      
         if ($from_date_1yb) {
             $supplier_category_data["$db_interval Acc 1YB Cost"]=0;
             $supplier_category_data["$db_interval Acc 1YB Part Sales"]=0;

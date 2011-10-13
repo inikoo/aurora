@@ -36,17 +36,7 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Supplier' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-
-    $category=new Category($row['Category Key']);
-    $category->update_up_today();
-    $category->update_last_period();
-    $category->update_last_interval();
-print "Category ".$category->id."\t\t\n";
-}
 
 
 $sql="select * from `Supplier Dimension`";
@@ -60,7 +50,17 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $supplier->update_last_period_sales();
     print "Supplier ".$supplier->data['Supplier Code']."\r";
 }
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Supplier' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
+
+    $category=new Category($row['Category Key']);
+    $category->update_up_today();
+    $category->update_last_period();
+    $category->update_last_interval();
+print "Category ".$category->id."\t\t\n";
+}
 
 
 $sql="select * from `Supplier Product Dimension`";
