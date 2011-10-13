@@ -208,13 +208,19 @@ var create_address=function(options) {
 
     var value=new Object();
     items=Address_Keys;
+	count=0;
     for (i in items) {
+		if(items.length <= count++)
+			break;
         value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
     }
 
     var address_type_values=new Array();
     var elements_array=Dom.getElementsByClassName(address_prefix+'address_type', 'span');
-    for ( var i in elements_array ) {
+	count=0;
+	for ( var i in elements_array ) {
+		if(elements_array.length <= count++)
+				break;
         var element=elements_array[i];
         var label=element.getAttribute('label');
         if (Dom.hasClass(element,'selected')) {
@@ -226,7 +232,10 @@ var create_address=function(options) {
 
     var address_function_values=new Array();
     var elements_array=Dom.getElementsByClassName(address_prefix+'address_function', 'span');
+	count=0
     for ( var i in elements_array ) {
+			if(elements_array.length <= count++)
+				break;
         var element=elements_array[i];
         var label=element.getAttribute('label');
         if (Dom.hasClass(element,'selected')) {
@@ -251,9 +260,11 @@ success:function(o) {
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='created') {
 
-
+				count=0
                 var new_address_data=new Object;
                 for (i in r.updated_data) {
+						if(r.updated_data.length <= count++)
+							break;
                     var address_item_value=r.updated_data[i];
                     if (address_item_value==null)address_item_value='';
                     new_address_data[i]=address_item_value;
@@ -349,7 +360,7 @@ success:function(o) {
 
 var save_address=function(e,options) {
 
-
+//alert('xx');
     var address_prefix='';
     if (options.prefix!= undefined) {
         address_prefix=options.prefix;
@@ -376,8 +387,10 @@ var save_address=function(e,options) {
     if (Address_Items_Changes>0) {
         items=Address_Keys;
         var value=new Object()
+		count=0
         for (i in items){
-
+			if(items.length<=count++)
+				break;
     value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
 }
 
@@ -513,6 +526,7 @@ success:function(o) {
 
 
                     for (i in r.updated_data) {
+						
                         var address_item_value=r.updated_data[i];
                         if (address_item_value==null)address_item_value='';
                         Address_Data[r.key][i]=address_item_value;
@@ -617,16 +631,28 @@ function reset_address(e,prefix) {
     if(index){
     data=Address_Data[index];
     }else{
-    
+    count=0
     var data=new Object;
       for ( var i in Address_Keys ) {
+		if(data.length<=count++) 
+			break;
             data[Address_Keys[i]]='';
       }
     }
-    
+	
+	count=0;
+	for (key in data) {
+		count++;
+	}
+    len=0;
+	//alert(count)
     for (key in data) {
-        item=Dom.get(prefix+'address_'+key);
-        item.value=item.getAttribute('ovalue')
+		if(count-1<=len++) 
+			break;
+		//alert('count:' +len + prefix+'address_'+key);
+        item_=Dom.get(prefix+'address_'+key);
+		//alert(item_)
+        item_.value=item_.getAttribute('ovalue')
                    //item.setAttribute('ovalue','');
 
                    var elements_array=Dom.getElementsByClassName(prefix+'address_function', 'span');
@@ -699,6 +725,7 @@ success:function(o) {
 };
 
 
+
 function edit_address(index,address_identifier) {
 
 
@@ -730,13 +757,17 @@ function edit_address(index,address_identifier) {
     data=Address_Data[index];
 
 
-
-//alert(data['country'])
+//i=0;
+//var json_value = YAHOO.lang.JSON.stringify(data);
+//alert(json_value)
     for (key in data) {
-   
-        item=Dom.get(address_identifier+'address_'+key);
-        item.value=data[key];
-        item.setAttribute('ovalue',data[key]);
+
+   //alert(i++)
+  // alert(address_identifier+'address_'+key)
+        item_=Dom.get(address_identifier+'address_'+key);
+		//alert('after');
+        item_.value=data[key];
+        item_.setAttribute('ovalue',data[key]);
 
         if (data[key]!='') {
         if (key=='country_d2' ) {
@@ -777,7 +808,7 @@ function edit_address(index,address_identifier) {
             }
         }
 
-
+		
         if (key=='country_code') {
             update_address_labels(data[key],address_identifier);
         }
@@ -794,6 +825,7 @@ function edit_address(index,address_identifier) {
             }
         }
     }
+
 };
 
 var update_address_labels=function(country_code,prefix) {
@@ -843,6 +875,7 @@ var update_address_labels=function(country_code,prefix) {
 };
 
 var on_address_type_change=function() {
+
     Address_Type_Changes=0
                          var address_type_values=new Array();
     var elements_array=Dom.getElementsByClassName('address_type', 'span');
@@ -875,6 +908,7 @@ var on_address_type_change=function() {
 }
 
 var on_address_function_change=function() {
+
     Address_Function_Changes=0
                              var address_function_values=new Array();
     var elements_array=Dom.getElementsByClassName('address_function', 'span');
@@ -913,7 +947,7 @@ var on_address_item_change_when_creating=function() {
 
 var on_address_item_change=function(o,prefix) {
 
-
+//alert('on change');
 
     var address_prefix='';
     if (prefix!= undefined) {
@@ -922,17 +956,27 @@ var on_address_item_change=function(o,prefix) {
 
     Address_Items_Changes=0;
     var items=Address_Keys;
+//alert(YAHOO.lang.JSON.stringify(items));
+count=0
     for ( var i in items ) {
-        key=items[i];
+		if(items.length<=count++)
+			break;
+		//count++
+        key_=items[i];
+		//alert(i + ':' + key);
        //  alert(address_prefix+'address_'+key);
         // alert(i+' -> '+key +' : '+address_prefix+'address_'+key)
         // alert(key +' '+Dom.get(address_prefix+'address_'+key).value);
-        if (Dom.get(address_prefix+'address_'+key).value!=Dom.get(address_prefix+'address_'+key).getAttribute('ovalue')) {
+		//alert(Dom.get(address_prefix+'address_'+key_).value);
+		//alert(Dom.get(address_prefix+'address_'+key_).getAttribute('ovalue'));
+		//alert(key_)
+		//alert(address_prefix+'address_'+key_)
+        if (Dom.get(address_prefix+'address_'+key_).value!=Dom.get(address_prefix+'address_'+key_).getAttribute('ovalue')) {
             Address_Items_Changes++;
         }
+		
     }
-
-
+	//alert(Address_Items_Changes)
     render_after_address_item_change(address_prefix);
 
 
@@ -940,7 +984,7 @@ var on_address_item_change=function(o,prefix) {
 
 
 var render_after_address_item_change=function(prefix) {
-
+//alert('render');
     var address_prefix='';
     if (prefix!= undefined) {
         address_prefix=prefix;
@@ -957,7 +1001,7 @@ var render_after_address_item_change=function(prefix) {
         Dom.setStyle([address_prefix+'save_address_button', address_prefix+'reset_address_button'], 'visibility', 'visible');
     }
 
-
+//alert('render_end')
 
 }
 
@@ -1164,7 +1208,7 @@ dialog_country_list.show();
 function init_address(){
 dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", { visible : false,close:true,underlay: "none",draggable:false});
   dialog_country_list.render();
-   
+
 
 }
 YAHOO.util.Event.onDOMReady(init_address);
