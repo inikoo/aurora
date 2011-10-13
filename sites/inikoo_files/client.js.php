@@ -1708,6 +1708,9 @@ $custom_value['lable']
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
 	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
 	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	
+	
+	
 
 	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
 	//alert("caca")
