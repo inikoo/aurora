@@ -469,7 +469,7 @@ class SendEmail extends DB_Table {
                     foreach($image_attachment as $single_image)
                     $this->message_object->AddFilePart($single_image);
 
-                    return array('state'=>200,'msg'=>"ok");
+                    
                 } else {
 
                     $this->error=true;
@@ -777,7 +777,7 @@ class SendEmail extends DB_Table {
 
 
 
-        $code=sprintf('<br/><img src="%s/track.php?sendkey=%s">', $public_path, $this->send_key);
+        $code=sprintf('<br/>  %s/track.php?sendkey=%s <img src="%s/track.php?sendkey=%s">', $public_path, $this->send_key, $public_path, $this->send_key);
 
         return $code;
     }
