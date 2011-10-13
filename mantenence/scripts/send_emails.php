@@ -42,7 +42,7 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $email_campaign=new EmailCampaign($row['Email Campaign Key']);
     if (!$email_campaign->id)continue;
-    $email_campaign->update(array('Email Campaign Status'=>'Sending','Email Campaign Start Overdue Date'=>date('Y-m-d H:i:s',strtotime('now +2 hours +00:00'))));
+   // $email_campaign->update(array('Email Campaign Status'=>'Sending','Email Campaign Start Overdue Date'=>date('Y-m-d H:i:s',strtotime('now +2 hours +00:00'))));
     $sql=sprintf("select * from `Email Campaign Mailing List`  where `Email Campaign Key`=%d  and `Email Send Key` is null   ",$email_campaign->id);
 
     $res2=mysql_query($sql);
@@ -59,7 +59,7 @@ while ($row=mysql_fetch_assoc($res)) {
         $message_data['recipient_key']=$row2['Customer Key'];
         $message_data['email_key']=$row2['Email Key'];
 
-        // print_r($message_data);
+         print_r($message_data);
         $send_email=new SendEmail();
 
         $send_email->track=true;
