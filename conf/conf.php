@@ -246,8 +246,17 @@ $default_state=array(
                             'id'=>''),
                    'order'=>array(
                                'id'=>'',
-                               'show_all'=>false,
+                               
                                'store_key'=>0,
+
+                               'products'=>array(
+                                              'order'=>'code',
+                                              'order_dir'=>'',
+                                              'f_field'=>'code',
+                                              'f_value'=>'',
+                                              'display'=>'ordered_products'
+
+                                          ),
 
                                'post_transactions'=>array(
                                                        'operation'=>'Resend',
@@ -265,17 +274,13 @@ $default_state=array(
 
 
                                                    ),
-
+                               'ordered_products'=>array(
+                                                      'sf'=>0,
+                                                      'nr'=>500,
+                                                  ),
                                'all_products'=>array(
-                                                  'order'=>'code',
-                                                  'order_dir'=>'',
                                                   'sf'=>0,
                                                   'nr'=>25,
-                                                  'where'=>'where true',
-                                                  'f_field'=>'code',
-                                                  'f_value'=>'','f_show'=>false,
-                                                  'from'=>'',
-                                                  'to'=>''
                                               )
                            ),
 
