@@ -192,7 +192,6 @@
 	
 	<tr id="FAX_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
-	    
 	    {t}Fax{/t}:<img  id="{$address_identifier}FAX_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
 	  </td>
 	  <td>
@@ -202,7 +201,7 @@
 	    <div id="FAX_Container"  ></div>
 	    </div>
 	  </td >
-	  </tr>
+	</tr>
 	
 	
 	
