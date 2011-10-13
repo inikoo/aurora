@@ -854,7 +854,7 @@ class Order extends DB_Table {
 
 
 
-    function add_order_transaction($data,$historic=falses) {
+    function add_order_transaction($data,$historic=false) {
 
         if (!isset($data ['ship to key'])) {
             $ship_to_keys=preg_split('/,/',$this->data['Order Ship To Keys']);
@@ -886,6 +886,17 @@ class Order extends DB_Table {
             $quantity_set=false;
         }
 
+        if (array_key_exists('qty',$data)) {
+            $quantity=$data ['qty'];
+            $quantity_set=true;
+
+        } else {
+            $quantity=0;
+            $quantity_set=false;
+        }
+
+
+
         if (array_key_exists('bonus qty',$data)) {
             $bonus_quantity=$data ['bonus qty'];
             $bonus_quantity_set=true;
@@ -895,7 +906,7 @@ class Order extends DB_Table {
 
         }
 
-
+ $gross_discounts=0;
 
         if ($this->data['Order Current Dispatch State']=='In Process' and !$historic) {
 
@@ -928,27 +939,32 @@ class Order extends DB_Table {
 
                     $this->delete_transaction($row['Order Transaction Fact Key']);
                     $otf_key=0;
+                    $gross=0;
+                   
                 } else {
 
 
 
                     $product=new Product('id',$data['Product Key']);
-                    $gross=$total_quantity*$product->data['Product History Price'];
+
                     $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
-
-
+                    $gross=$quantity*$product->data['Product History Price'];
+                  
+                  
 
                     $sql = sprintf ( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
                                      $estimated_weight ,
                                      $quantity,
                                      $bonus_quantity,
                                      prepare_mysql ( $data ['date'] ),
-                                     $row['Order Transaction Gross Amount']+$data ['gross_amount'],
-                                     0,
+                                     $gross,
+                                     $gross_discounts,
                                      $row['Order Transaction Fact Key']
 
                                    );
                     mysql_query($sql);
+                    //print "$sql\n";
+
                     $otf_key=$row['Order Transaction Fact Key'];
 
 
@@ -973,7 +989,7 @@ class Order extends DB_Table {
                 $product=new Product('id',$data['Product Key']);
                 $gross=$quantity*$product->data['Product History Price'];
                 $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
-
+              
 
                 $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                                  `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
@@ -1003,7 +1019,7 @@ class Order extends DB_Table {
                                  $quantity,
                                  prepare_mysql ( $ship_to_key ),
                                  $gross,
-                                 0,
+                                 $gross_discounts,
                                  prepare_mysql ( $data ['Metadata'] ,false),
                                  prepare_mysql ( $this->data ['Order Store Key'] ),
                                  $data ['units_per_case']
@@ -1024,9 +1040,9 @@ class Order extends DB_Table {
             }
 
             $product=new Product('id',$data['Product Key']);
-            $gross=$total_quantity*$product->data['Product History Price'];
+            $gross=$quantity*$product->data['Product History Price'];
             $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
-
+            $gross_discounts=0;     
             $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                              `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
                              `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
@@ -1055,7 +1071,7 @@ class Order extends DB_Table {
                              $quantity,
                              prepare_mysql ( $ship_to_key ),
                              $gross,
-                             0,
+                             $gross_discounts,
                              prepare_mysql ( $data ['Metadata'] ,false),
                              prepare_mysql ( $this->data ['Order Store Key'] ),
                              $data ['units_per_case']
@@ -1075,7 +1091,7 @@ class Order extends DB_Table {
                              $otf_key
 
                            );
-                  //        print "$sql\n"; 
+            //        print "$sql\n";
             mysql_query($sql);
         }
 
@@ -1100,8 +1116,7 @@ class Order extends DB_Table {
         return array(
                    'updated'=>true,
                    'otf_key'=>$otf_key,
-                   'to_charge'=>money($data ['gross_amount']-$data ['discount_amount'],
-                                      $this->data['Order Currency']),
+                   'to_charge'=>money($gross-$gross_discounts,$this->data['Order Currency']),
                    'qty'=>$quantity,
                    'bonus qty'=>$bonus_quantity
                );
@@ -3583,6 +3598,15 @@ class Order extends DB_Table {
         return $number;
     }
 
+function get_number_transactions() {
+        $sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Order Key`=%d  ",$this->id);
+        $res=mysql_query($sql);
+        $number=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $number=$row['num'];
+        }
+        return $number;
+    }
 
 
     function get_post_transactions_in_process_data() {
@@ -3808,14 +3832,14 @@ class Order extends DB_Table {
             mysql_query ( $sql );
         }
 
-   if (array_key_exists('Supplier Metadata', $data)) {
+        if (array_key_exists('Supplier Metadata', $data)) {
 
             $sql = sprintf ( "update`Order Transaction Fact` set  `Supplier Metadata`=%s  where `Order Transaction Fact Key`=%d ",
                              prepare_mysql($data['Supplier Metadata']),
                              $otf_key
 
                            );
-                  //        print "$sql\n"; 
+            //        print "$sql\n";
             mysql_query($sql);
         }
 

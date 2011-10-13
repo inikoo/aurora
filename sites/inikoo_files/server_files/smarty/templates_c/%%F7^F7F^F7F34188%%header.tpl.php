@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-11 12:45:38
+<?php /* Smarty version 2.6.22, created on 2011-10-11 16:23:26
          compiled from header.tpl */ ?>
 <?php echo '<?xml'; ?>
  version="1.0" encoding="utf-8"<?php echo '?>'; ?>
@@ -30,8 +30,8 @@
         
   </head>
 
-  <body  class="">
-    <div id="" class="">
+  <body  >
+    <div id="" >
     
 
 	  

@@ -457,7 +457,7 @@
  </tr>
  
  
-<tr ><td  class="label"><img  id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onClick="change_comment(this,'fax',{$customer->get('Customer Main FAX Key')})"> {t}Contact Fax{/t}:</td>
+<tr ><td  class="label"><img  id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onClick="change_comment(this,'fax',{if $customer->get('Customer Main FAX Key') == NULL}{0}{else}{$customer->get('Customer Main FAX Key')}{/if})"> {t}Contact Fax{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">

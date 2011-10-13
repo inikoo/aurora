@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-11 16:15:33
+<?php /* Smarty version 2.6.22, created on 2011-10-12 10:05:28
          compiled from client.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'client.tpl', 14, false),)), $this); ?>
@@ -445,8 +445,9 @@ _msg" class="edit_td_alert"></span>
 
 
 
- <tr class=""><td style="" class="label"><img  id="comment_icon_telephone" src="<?php if ($this->_tpl_vars['customer']->get_principal_telecom_comment('Telephone') == ''): ?>art/icons/comment.gif<?php else: ?>art/icons/comment_filled.gif<?php endif; ?>" style="cursor:pointer;<?php if ($this->_tpl_vars['customer']->get('Customer Main Telephone Key') == ''): ?>display:none<?php endif; ?>" onClick="change_comment(this,'telephone',<?php echo $this->_tpl_vars['customer']->get('Customer Main Telephone Key'); ?>
-)"> <?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contact Telephone<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+ <tr class=""><td style="" class="label"><img  id="comment_icon_telephone" src="<?php if ($this->_tpl_vars['customer']->get_principal_telecom_comment('Telephone') == ''): ?>art/icons/comment.gif<?php else: ?>art/icons/comment_filled.gif<?php endif; ?>" style="cursor:pointer;<?php if ($this->_tpl_vars['customer']->get('Customer Main Telephone Key') == ''): ?>display:none<?php endif; ?>" onClick="change_comment(this,'telephone',<?php if ($this->_tpl_vars['customer']->get('Customer Main Telephone Key') == NULL): ?><?php echo 0; ?>
+<?php else: ?><?php echo $this->_tpl_vars['customer']->get('Customer Main Telephone Key'); ?>
+<?php endif; ?>)"> <?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contact Telephone<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Telephone" value="<?php echo $this->_tpl_vars['customer']->get('Customer Main XHTML Telephone'); ?>
@@ -502,8 +503,9 @@ _msg" class="edit_td_alert"></span>
  
  
  
-  <tr class=""><td style="" class="label"><img  id="comment_icon_mobile" src="<?php if ($this->_tpl_vars['customer']->get_principal_telecom_comment('Mobile') == ''): ?>art/icons/comment.gif<?php else: ?>art/icons/comment_filled.gif<?php endif; ?>" style="cursor:pointer;<?php if ($this->_tpl_vars['customer']->get('Customer Main Mobile Key') == ''): ?>display:none<?php endif; ?>" onClick="change_comment(this,'mobile',<?php echo $this->_tpl_vars['customer']->get('Customer Main Mobile Key'); ?>
-)"> <?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contact Mobile<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+  <tr class=""><td style="" class="label"><img  id="comment_icon_mobile" src="<?php if ($this->_tpl_vars['customer']->get_principal_telecom_comment('Mobile') == ''): ?>art/icons/comment.gif<?php else: ?>art/icons/comment_filled.gif<?php endif; ?>" style="cursor:pointer;<?php if ($this->_tpl_vars['customer']->get('Customer Main Mobile Key') == ''): ?>display:none<?php endif; ?>" onClick="change_comment(this,'mobile',<?php if ($this->_tpl_vars['customer']->get('Customer Main Mobile Key') == NULL): ?><?php echo 0; ?>
+<?php else: ?><?php echo $this->_tpl_vars['customer']->get('Customer Main Mobile Key'); ?>
+<?php endif; ?>)"> <?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contact Mobile<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Mobile" value="<?php echo $this->_tpl_vars['customer']->get('Customer Main XHTML Mobile'); ?>
@@ -560,8 +562,9 @@ _msg" class="edit_td_alert"></span>
  </tr>
  
  
-<tr class=""><td style="" class="label"><img  id="comment_icon_fax" src="<?php if ($this->_tpl_vars['customer']->get_principal_telecom_comment('FAX') == ''): ?>art/icons/comment.gif<?php else: ?>art/icons/comment_filled.gif<?php endif; ?>" style="cursor:pointer;<?php if ($this->_tpl_vars['customer']->get('Customer Main FAX Key') == ''): ?>display:none<?php endif; ?>" onClick="change_comment(this,'fax',<?php echo $this->_tpl_vars['customer']->get('Customer Main FAX Key'); ?>
-)"> <?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contact Fax<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
+<tr class=""><td style="" class="label"><img  id="comment_icon_fax" src="<?php if ($this->_tpl_vars['customer']->get_principal_telecom_comment('FAX') == ''): ?>art/icons/comment.gif<?php else: ?>art/icons/comment_filled.gif<?php endif; ?>" style="cursor:pointer;<?php if ($this->_tpl_vars['customer']->get('Customer Main FAX Key') == ''): ?>display:none<?php endif; ?>" onClick="change_comment(this,'fax',<?php if ($this->_tpl_vars['customer']->get('Customer Main FAX Key') == NULL): ?><?php echo 0; ?>
+<?php else: ?><?php echo $this->_tpl_vars['customer']->get('Customer Main FAX Key'); ?>
+<?php endif; ?>)"> <?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Contact Fax<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_FAX" value="<?php echo $this->_tpl_vars['customer']->get('Customer Main XHTML FAX'); ?>
@@ -917,7 +920,7 @@ unset($_smarty_tpl_vars);
     <tr><td colspan=2>
 	<input  id="other_field_label" value=""  /> (<span id="other_field_label_scope_name"></span>)
       </td>
-    <tr>
+    </tr>
     <tr class="buttons" style="font-size:100%;">
   <td style="text-align:center;width:50%">
     <span  class="unselectable_text button"    style="visibility:hidden;" ><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Cancel<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span></td>
@@ -948,7 +951,7 @@ unset($_smarty_tpl_vars);
     <tr><td colspan=2>
 	<input  id="comment" value=""  /> 
       </td>
-    <tr>
+    </tr>
     <tr class="buttons" style="font-size:100%;">
   <td style="text-align:center;width:50%">
     <span  class="unselectable_text button"    style="visibility:hidden;" ><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Cancel<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span></td>
@@ -958,67 +961,10 @@ unset($_smarty_tpl_vars);
 </div>
 
 
-<div id="dialog_set_password_main" style="display:none">
-Change Password
 
-<table border=0 id="change_password_form" >
-
-
-<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
-<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
-<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
-<input id="epwcp1" value="<?php echo $this->_tpl_vars['main_email']['epwcp1']; ?>
-" type="hidden"/>
-<input id="epwcp2" value="<?php echo $this->_tpl_vars['main_email']['epwcp2']; ?>
-" type="hidden"/>
-<input id="user_key" value="<?php echo $this->_tpl_vars['main_email']['user_key']; ?>
-" type="hidden"/>
-
-
-
-<tr  id="tr_change_password_buttons"  class="button space" >
-<td colspan=2><span style="display:none" id="change_password_error_no_password">Write new password</span><span style="display:none" id="change_password_error_password_not_march">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short">Password is too short</span><span>
-</span><button id="submit_change_password">Change Password</button> 
-</td></tr>
-<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo '<?php'; ?>
- echo $path <?php echo '?>'; ?>
-inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
-
-
-
-
-</table>
-</div>
  
 
-<div id="dialog_set_password_" style=display:none">
-Change Password
 
-<table border=0 id="change_password_form_" >
-
-
-<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1_"></td></tr>
-<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1_"></td></tr>
-<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2_"></td></tr>
-
-<input id="user_key_in_change_password_form" value="" type="hidden"/>
-
-
-
-<tr  id="tr_change_password_buttons_"  class="button space" >
-<td colspan=2><span style="display:none" id="change_password_error_no_password_">Write new password</span><span style="display:none" id="change_password_error_password_not_march_">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short_">Password is too short</span><span>
-</span><button id="submit_change_password_" user=<?php echo $this->_tpl_vars['email']['user_key']; ?>
->Change Password</button> 
-</td></tr>
-<tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo '<?php'; ?>
- echo $path <?php echo '?>'; ?>
-inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
-
-
-
-
-</table>
-</div>
 
 
 
