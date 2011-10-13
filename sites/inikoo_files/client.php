@@ -88,6 +88,8 @@ if (!$modify) {
 }
 */
 
+print ieversion();
+
 $store=new Store($customer->data['Customer Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);

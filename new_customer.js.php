@@ -430,5 +430,8 @@ function init(){
 	var company_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Name","Company_Name_Container", company_name_oACDS);
 	company_name_oAutoComp.minQueryLength = 0; 
 	company_name_oAutoComp.queryDelay = 0.75;
+	company_name_oAutoComp.autoHighlight = false;
+	
+
     } 
 YAHOO.util.Event.onDOMReady(init);
