@@ -42,27 +42,31 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $email_campaign=new EmailCampaign($row['Email Campaign Key']);
     if (!$email_campaign->id)continue;
-    $email_campaign->update(array('Email Campaign Status'=>'Sending','Email Campaign Start Overdue Date'=>date('Y-m-d H:i:s',strtotime('now +2 hours +00:00'))));
+   // $email_campaign->update(array('Email Campaign Status'=>'Sending','Email Campaign Start Overdue Date'=>date('Y-m-d H:i:s',strtotime('now +2 hours +00:00'))));
     $sql=sprintf("select * from `Email Campaign Mailing List`  where `Email Campaign Key`=%d  and `Email Send Key` is null   ",$email_campaign->id);
 
     $res2=mysql_query($sql);
     while ($row2=mysql_fetch_assoc($res2)) {
         $email_mailing_list_key=$row2['Email Campaign Mailing List Key'];
         $message_data=$email_campaign->get_message_data($email_mailing_list_key);
-        print_r($message_data);
-
+       
+        $message_data['method']='smtp';
+      //  $message_data['type']='smtp';
         $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Marketing';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']=($row2['Customer Key']?'Customer':'Other');
+        $message_data['recipient_key']=$row2['Customer Key'];
+        $message_data['email_key']=$row2['Email Key'];
 
-
-
+         print_r($message_data);
         $send_email=new SendEmail();
 
-        $send_email->method='smtp';
+        $send_email->track=true;
 
-        $send_email->smtp($message_data['type'], $message_data);
 
-       $send_result=$send_email->send();
-        print_r($send_result);
+        $send_result=$send_email->send($message_data);
+      //  print_r($send_result);
 
     }
 
