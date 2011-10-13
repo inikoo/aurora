@@ -40,11 +40,11 @@ function report_issue($data) {
 	
 	require("app_files/keys/bugs_key.php");
 	$to=$conection_data['email'];
-	//$to='migara@inikoo.com';
-
+//	$to='migara@inikoo.com';
+/*
 	global $message_object;
 	
-$msg="<html>
+	$msg="<html>
 					<head>
 					<title>subject</title>
 					<style type=\"text/css\"><!--
@@ -119,8 +119,35 @@ $msg="<html>
 	//$result=$send_email->retry('html');
 	
 	$result=$send_email->store_in_queue($result, $files, $data);
-		
-		
-    echo json_encode($result);
+*/
+	$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+        $message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$to;
+		$message_data['subject']=$data['values']['summary'];
+		$message_data['html']=$data['values']['description']."\n\n".$data['values']['metadata'];
+        $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Issue Reporting';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='Other';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
+
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=false;
+
+
+	$send_result=$send_email->send($message_data);		
+	//print_r($send_result);
+    echo json_encode($send_result);
 
 }
