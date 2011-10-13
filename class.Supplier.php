@@ -495,7 +495,7 @@ class supplier extends DB_Table {
 
 
     function update_up_today_sales() {
-        $this->update_sales('All');
+        $this->update_sales('Total');
         $this->update_sales('Today');
         $this->update_sales('Week To Day');
         $this->update_sales('Month To Day');
@@ -521,7 +521,7 @@ class supplier extends DB_Table {
 
     function update_sales($interval) {
         $to_date='';
-$from_date_1yb=false;
+        $from_date_1yb=false;
         switch ($interval) {
 
 
@@ -710,9 +710,9 @@ $from_date_1yb=false;
                      ($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
                     );
-                     //print "$sql\n";
+        //print "$sql\n";
         $result=mysql_query($sql);
-       
+
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data["Supplier $db_interval Acc Parts Profit"]=-1.0*$row['profit'];
