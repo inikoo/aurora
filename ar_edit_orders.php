@@ -366,19 +366,19 @@ function edit_new_order() {
 
         $product=new Product('pid',$product_pid);
 
-        $gross=$quantity*$product->data['Product Price'];
-        $estimated_weight=$quantity*$product->data['Product Gross Weight'];
+        //$gross=$quantity*$product->data['Product Price'];
+        //$estimated_weight=$quantity*$product->data['Product Gross Weight'];
 
         $data=array(
-                  'Estimated Weight'=>$estimated_weight,
+                  //'Estimated Weight'=>$estimated_weight,
                   'date'=>date('Y-m-d H:i:s'),
                   'Product Key'=>$product->data['Product Current Key'],
-                  'line_number'=>$order->get_next_line_number(),
-                  'gross_amount'=>$gross,
-                  'discount_amount'=>0,
+               
+                  //'gross_amount'=>$gross,
+                  //'discount_amount'=>0,
                   'Metadata'=>'',
                   'qty'=>$quantity,
-                  'units_per_case'=>$product->data['Product Units Per Case'],
+                  //'units_per_case'=>$product->data['Product Units Per Case'],
                   'Current Dispatching State'=>'In Process',
                   'Current Payment State'=>'Waiting Payment',
 
@@ -386,6 +386,8 @@ function edit_new_order() {
 
         $disconted_products=$order->get_discounted_products();
         $order->skip_update_after_individual_transaction=false;
+   //     print_r($data);
+        
         $transaction_data=$order->add_order_transaction($data);
         $new_disconted_products=$order->get_discounted_products();
         foreach($new_disconted_products as $key=>$value) {
@@ -437,7 +439,7 @@ function edit_new_order() {
 
                       );
 
-
+//print_r($updated_data);
 
         $response= array(
                        'state'=>200,
@@ -644,14 +646,14 @@ function transactions_to_process() {
     $filter_msg='';
     $wheref='';
     if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+        $wheref.=" and  P.`Product Code` like '".addslashes($f_value)."%'";
     elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+    $wheref.=" and  P.`Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $table   $where $wheref   ";
 
     // print_r($conf);exit;
-    // print $sql;
+ //  print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -737,8 +739,7 @@ function transactions_to_process() {
 
 
 
-    $sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-
+    $sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 // print $sql;
 
     $res = mysql_query($sql);

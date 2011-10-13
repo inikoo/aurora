@@ -4907,9 +4907,9 @@ ADD `Supplier Product 1 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
-
-
-
+ALTER TABLE `Email Send Dimension` ADD `Email Send Creation Date` DATETIME NOT NULL AFTER `Email Key` ;
+ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Type` `Email Send Recipient Type` ENUM( 'Customer', 'Supplier', 'User', 'Other', 'Staff' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Key` `Email Send Recipient Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
 */
 
 ?>

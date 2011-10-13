@@ -379,7 +379,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&family_code=");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -406,7 +406,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   this.dataSource0, {
 								      renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['products']['table']['nr']+1?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['order'][$_SESSION['state']['order']['products']['display']]['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -416,8 +416,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['products']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['products']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['order']['products']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['order']['products']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 								   }
@@ -432,8 +432,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", myonCellClick);
 	    
-	    this.table0.view='<?php echo$_SESSION['state']['products']['view']?>';
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['products']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['products']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['order']['products']['f_value']?>'};
     
     };
   });
