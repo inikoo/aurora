@@ -49,20 +49,24 @@ while ($row=mysql_fetch_assoc($res)) {
     while ($row2=mysql_fetch_assoc($res2)) {
         $email_mailing_list_key=$row2['Email Campaign Mailing List Key'];
         $message_data=$email_campaign->get_message_data($email_mailing_list_key);
-        print_r($message_data);
-
+       
+        $message_data['method']='smtp';
+      //  $message_data['type']='smtp';
         $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Marketing';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']=($row2['Customer Key']?'Customer':'Other');
+        $message_data['recipient_key']=$row2['Customer Key'];
+        $message_data['email_key']=$row2['Email Key'];
 
-
-
+        // print_r($message_data);
         $send_email=new SendEmail();
 
-        $send_email->method='smtp';
+        $send_email->track=true;
 
-        $send_email->smtp($message_data['type'], $message_data);
 
-       $send_result=$send_email->send();
-        print_r($send_result);
+        $send_result=$send_email->send($message_data);
+      //  print_r($send_result);
 
     }
 

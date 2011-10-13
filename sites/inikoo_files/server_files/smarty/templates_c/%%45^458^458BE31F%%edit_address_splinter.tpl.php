@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2011-10-10 16:39:47
+<?php /* Smarty version 2.6.22, created on 2011-10-12 15:12:53
          compiled from edit_address_splinter.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'edit_address_splinter.tpl', 9, false),array('modifier', 'lower', 'edit_address_splinter.tpl', 170, false),)), $this); ?>
@@ -76,7 +76,7 @@ address_use_contact" value="<?php echo $this->_tpl_vars['show_contact']; ?>
         <input style="text-align:left;width:100%" id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_contact" value="" ovalue="" />
         <div id="<?php echo $this->_tpl_vars['address_identifier']; ?>
-address_contact_container" style="" ></div>
+address_contact_container"  ></div>
 	</div>
     </td>
   </tr>
@@ -92,7 +92,7 @@ address_use_tel" value="<?php echo $this->_tpl_vars['show_tel']; ?>
         <input style="text-align:left;width:100%" id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_telephone" value="" ovalue="" />
         <div id="<?php echo $this->_tpl_vars['address_identifier']; ?>
-address_telephone_container" style="" ></div>
+address_telephone_container"  ></div>
 	</div>
     </td>
   </tr>
@@ -139,7 +139,7 @@ address_town" value="" ovalue="" />
       <input id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_town_code" value="" type="hidden"/>
 <div id="<?php echo $this->_tpl_vars['address_identifier']; ?>
-address_town_container" style="" ></div>
+address_town_container"  ></div>
 	      </div>
     </td>
   </tr>
@@ -156,37 +156,37 @@ address_postal_code" value="" ovalue=""  />
      <input id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_postal_code_code" value="" type="hidden"/>
         <div id="<?php echo $this->_tpl_vars['address_identifier']; ?>
-address_postal_code_container" style="" ></div>
+address_postal_code_container"  ></div>
 	      </div>
     </td>
   </tr>
     <tr id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 tr_address_country_d5" style="display:none">
-	  <td class="label" style=""><span id="label_address_country_d5"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>5rd Division<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td><td  style="text-align:left">
+	  <td class="label" ><span id="label_address_country_d5"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>5rd Division<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td><td  style="text-align:left">
 	    <div  >
 	      <input id="address_country_d5_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d5" value="" ovalue="" />
-	      <div id="address_country_d5_container" style="" ></div>
+	      <div id="address_country_d5_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
     <tr id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 tr_address_country_d4" style="display:none">
-	  <td class="label" style=""><span id="label_address_country_d4"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>4rd Division<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td><td  style="text-align:left">
-	    <div style="" >
+	  <td class="label" ><span id="label_address_country_d4"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>4rd Division<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td><td  style="text-align:left">
+	    <div  >
 	      <input id="address_country_d4_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d4" value="" ovalue="" />
-	      <div id="address_country_d4_container" style="" ></div>
+	      <div id="address_country_d4_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
     <tr id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 tr_address_country_d3" style="display:none">
-	  <td class="label" style=""><span id="label_address_country_d3"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>3rd Division<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td><td  style="text-align:left">
-	    <div  style="" >
+	  <td class="label" ><span id="label_address_country_d3"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>3rd Division<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td><td  style="text-align:left">
+	    <div   >
 	      <input id="address_country_d3_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d3" value="" ovalue="" />
-	      <div id="address_country_d3_container" style="" ></div>
+	      <div id="address_country_d3_container"  ></div>
 	    </div>
 	  </td>
 	</tr>
@@ -201,7 +201,7 @@ address_country_d2" value="" ovalue="" />
 	    	      <input id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_country_d2_code" value="" type="hidden"/>
             <div id="<?php echo $this->_tpl_vars['address_identifier']; ?>
-address_country_d2_container" style="" ></div>
+address_country_d2_container"  ></div>
 	      </div>
 	    </td>
   </tr>
@@ -212,13 +212,13 @@ tr_address_country_d1">
 	    <span id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 label_address_country_d1"><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Region<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?></span>:</td>
 	    <td  style="text-align:left">
-	     <div style="" >
+	     <div  >
 	      <input style="text-align:left;width:100%" id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_country_d1" value="" ovalue="" />
 	      <input id="<?php echo $this->_tpl_vars['address_identifier']; ?>
 address_country_d1_code" value="" type="hidden"/>
 	    <div id="<?php echo $this->_tpl_vars['address_identifier']; ?>
-address_country_d1_container" style="" ></div>
+address_country_d1_container"  ></div>
 	      </div>
 	      </td>
   </tr>
