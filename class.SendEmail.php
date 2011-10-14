@@ -698,6 +698,12 @@ class SendEmail extends DB_Table {
                 $html_msg=$data['html'];
             } else
                 $html_msg=null;
+				
+				
+			if (isset($data['bcc']) && $data['bcc']) {
+                $bcc=$data['bcc'];
+            } else
+                $bcc=null;
 
             $sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, %s, %s, %s, %s, %d, %s)	"
                          ,prepare_mysql($data['to'])
@@ -706,7 +712,7 @@ class SendEmail extends DB_Table {
                          ,prepare_mysql($data['plain'])
                          ,prepare_mysql($html_msg)
                          ,$data['email_credentials_key']
-                         ,prepare_mysql($data['bcc'])
+                         ,prepare_mysql($bcc)
                         );
 
             //print $sql;

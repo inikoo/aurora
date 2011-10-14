@@ -26,10 +26,10 @@
   </ul>
   
  <div class="tabbed_container" > 
- <div class="todo">No of sites: {$no_of_sites} {t}To Do{/t}</div>
+ 
  {if $site_customer}
  <div  class="edit_block" style="{if $edit!="password"}display:none{/if};min-height:260px"  id="d_password">
- 
+ <div class="todo">No of sites: {$no_of_sites} {t}To Do{/t}</div>
 
 
    <table class="edit" border=0  style="width:100%">

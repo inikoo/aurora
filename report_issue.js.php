@@ -38,6 +38,10 @@ success:function(o) {
 
             } else {
                 Dom.get('message_error').innerHTML=r.msg;
+				    Dom.setStyle(['sending'],'display','none');
+					Dom.get('send_from').style.display='none';
+					Dom.setStyle(['send','cancel'],'display','');
+					Dom.get('issue_send').style.display='';
             }
         }
 
