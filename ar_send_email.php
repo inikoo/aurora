@@ -40,7 +40,8 @@ function report_issue($data) {
 	
 	require("app_files/keys/bugs_key.php");
 	$to=$conection_data['email'];
-//	$to='migara@inikoo.com';
+	$to='migara@inikoo.com';
+	$files=array();
 /*
 	global $message_object;
 	
@@ -146,7 +147,9 @@ function report_issue($data) {
 	$send_email->track=false;
 
 
-	$send_result=$send_email->send($message_data);		
+	$send_result=$send_email->send($message_data);	
+
+	$send_result=$send_email->store_in_queue($send_result, $files, $message_data);	
 	//print_r($send_result);
     echo json_encode($send_result);
 
