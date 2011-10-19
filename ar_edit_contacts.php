@@ -233,6 +233,7 @@ case('edit_company'):
 case('edit_billing_data'):
 
 case('edit_customer'):
+	
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
@@ -2633,7 +2634,6 @@ function customer_edit_note($data) {
 }
 
 function edit_customer($data) {
-
     $customer=new customer($data['customer_key']);
     if (!$customer->id) {
         $response= array('state'=>400,'msg'=>'Customer not found','key'=>$data['key']);
@@ -2669,7 +2669,7 @@ function edit_customer($data) {
 
 function edit_customer_field($customer_key,$key,$value_data) {
 
-
+	//print $value_data;
 //print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
