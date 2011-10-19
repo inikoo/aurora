@@ -52,18 +52,18 @@
                     <tr><td colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_other_email{$key}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
                 {/foreach}
                 {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img id="quick_edit_main_telephone" alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td></tr>{/if}
-                {foreach from=$customer->get_other_telephones_data() item=other_tel }
-                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}"  src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                {foreach from=$customer->get_other_telephones_data() item=other_tel key=key}
+                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" id="quick_edit_other_telephone{$key}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
                 {if $customer->get('Customer Main Mobile Key')}<tr><td colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Telephone') and $customer->get('Customer Preferred Contact Number')=='Mobile'}font-weight:800{/if}" >{$customer->get('Customer Main XHTML Mobile')}</td ><td><img id="quick_edit_main_mobile" alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Mobile')}</td></tr>{/if}
-                {foreach from=$customer->get_other_mobiles_data() item=other_tel }
-                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}"  src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                {foreach from=$customer->get_other_mobiles_data() item=other_tel key=key}
+                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}"  id="quick_edit_other_mobile{$key}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
                 {if $customer->get('Customer Main FAX Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML FAX')}</td ><td><img id="quick_edit_main_fax" alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('FAX')}</td></tr>{/if}
-                {foreach from=$customer->get_other_faxes_data() item=other_tel }
-                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                {foreach from=$customer->get_other_faxes_data() item=other_tel key=key}
+                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}" id="quick_edit_other_fax{$key}" src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
 				{foreach from=$show_case key=name item=value}
@@ -732,10 +732,13 @@
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Contact Email:{/t}</td>
-	<td><input type="text" id="Customer_Main_Email" value="{$customer->get('customer main Plain Email')}" ovalue="{$customer->get('customer main Plain Email')}" valid="0">
-	<div id="Customer_Main_Email_Container"  ></div>
-		
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Email" value="{$customer->get('customer main Plain Email')}" ovalue="{$customer->get('customer main Plain Email')}" valid="0">
+		<div id="Customer_Main_Email_Container"  ></div>
+	</div>	
 	</td>
+
 	<td><div id="Customer_Main_Email_msg"></div></td>
 	<td id="Customer_Main_Email_msg" class="edit_td_alert"></td>
 	</tr>
@@ -749,12 +752,14 @@
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Other Email:{/t}</td>
-	<td><input type="text" id="Customer_Email{$key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0"/>
-	<div id="Customer_Other_Email{$key}_Container"  ></div>
-		
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Email{$key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
+	<div id="Customer_Email{$key}_Container"  ></div>
+	</div>	
 	</td>
 	<td><div id="Customer_Email{$key}_msg"></div></td>
-
+	<td id="Customer_Email{$key}_msg" class="edit_td_alert"></td>
 	</tr>
 	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_email({$key})" value="Save"/></td></tr>
 	</table>
@@ -767,9 +772,11 @@
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Telephone:{/t}</td>
-	<td><input type="text" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
-	
-		
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
+	<div id="Customer_Main_Telephone_Container"></div>
+	</div>	
 	</td>
 	<td><div id="Customer_Main_Telephone_msg"></div></td>
 	<td id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
@@ -779,13 +786,35 @@
 
 </div>
 
+{foreach from=$customer->get_other_telephones_data() item=other_telephone key=key}
+<div id="dialog_quick_edit_Customer_Telephone{$key}" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Other Telephone:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Telephone{$key}" value="{$other_telephone.number}" ovalue="{$other_telephone.number}" valid="0">
+	<div id="Customer_Main_Telephone{$key}_Container"></div>
+	</div>
+	</td>
+	<td><div id="Customer_Telephone{$key}_msg"></div></td>
+	<td id="Customer_Telephone{$key}_msg" class="edit_td_alert"></td>
+	</tr>
+	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_telephone({$key})" value="Save"></td></tr>
+	</table>
+
+</div>
+{/foreach}
+
 <div id="dialog_quick_edit_Customer_Main_Mobile" style="padding:10px">
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Mobile:{/t}</td>
-	<td><input type="text" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
-	
-		
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
+	<div id="Customer_Main_Mobile_Container"></div>
+	</div>	
 	</td>
 	<td><div id="Customer_Main_Mobile_msg"></div></td>
 	<td id="Customer_Main_Mobile_msg" class="edit_td_alert"></td>
@@ -795,13 +824,36 @@
 
 </div>
 
+{foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key}
+<div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Other Mobile:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Mobile{$key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0">
+	<div id="Customer_Mobile{$key}_Container"></div>
+	</div>
+		
+	</td>
+	<td><div id="Customer_Mobile{$key}_msg"></div></td>
+	<td id="Customer_Mobile{$key}_msg" class="edit_td_alert"></td>
+	</tr>
+	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_mobile({$key})" value="Save"></td></tr>
+	</table>
+
+</div>
+{/foreach}
+
 <div id="dialog_quick_edit_Customer_Main_Fax" style="padding:10px">
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Fax:{/t}</td>
-	<td><input type="text" id="Customer_Main_Fax" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
-	
-		
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
+	<div id="Customer_Main_FAX_Container"></div>
+	</div>	
 	</td>
 	<td><div id="Customer_Main_FAX_msg"></div></td>
 	<td id="Customer_Main_FAX_msg" class="edit_td_alert"></td>
@@ -810,6 +862,28 @@
 	</table>
 
 </div>
+
+
+{foreach from=$customer->get_other_faxes_data() item=other_fax key=key}
+<div id="dialog_quick_edit_Customer_FAX{$key}" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Other FAX:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_FAX{$key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0">
+	<div id="Customer_FAX{$key}_Container"></div>
+	</div>	
+	</td>
+	<td><div id="Customer_FAX{$key}_msg"></div></td>
+	<td id="Customer_FAX{$key}_msg" class="edit_td_alert"></td>
+	</tr>
+	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_fax({$key})" value="Save"></td></tr>
+	</table>
+
+</div>
+{/foreach}
+
 <div id="dialog_quick_edit_Customer_Main_Address" style="padding:10px">
 	<table style="margin:10px">
 		{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}

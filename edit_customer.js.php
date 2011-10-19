@@ -273,23 +273,20 @@ query=query.replace(/[^A-Z0-9]/i, "");
 
 
 function validate_customer_email(query){
-if(query==''){
-    validate_scope_data.customer.email.validated=true;
-    
- if(Dom.get(validate_scope_data.customer.email.name).getAttribute('ovalue')!=query){
-     validate_scope_data.customer.email.changed=true;
- }else{
-    validate_scope_data.customer.email.changed=false;
- }
-    
-	validate_scope('customer'); 
-    Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
-}else{
-validate_general('customer','email',unescape(query));
-
-}
-
-
+	if(query==''){
+		validate_scope_data.customer.email.validated=true;
+		
+		if(Dom.get(validate_scope_data.customer.email.name).getAttribute('ovalue')!=query){
+			validate_scope_data.customer.email.changed=true;
+		}else{
+			validate_scope_data.customer.email.changed=false;
+		}
+		
+		validate_scope('customer'); 
+		Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
+	}else{
+		validate_general('customer','email',unescape(query));
+	}
 }
 
 function validate_customer_email_other(query,id){
@@ -708,7 +705,6 @@ function reset_edit_billing_data(){
 
 
 function save_edit_customer(){
-alert('gg');
     save_edit_general_bulk('customer');
 }
 function reset_edit_customer(){

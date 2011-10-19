@@ -3654,14 +3654,12 @@ class Customer extends DB_Table {
 
         $email_keys=array();
         $result=mysql_query($sql);
-		$i=0;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($row['Email Key']!=$this->data['Customer Main Email Key'])
                 $email_keys[$row['Email Key']]= array(
                                                     'email'=>$row['Email'],
                                                     'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
-                                                    'label'=>$row['Email Description'],
-													'id'=>$i++
+                                                    'label'=>$row['Email Description']
                                                 );
         }
         return $email_keys;
