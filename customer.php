@@ -21,7 +21,7 @@ if (!$user->can_view('customers')) {
 }
 
 $modify=$user->can_edit('contacts');
-
+$smarty->assign('modify',$modify);
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
   
@@ -34,7 +34,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 $customer=new customer($customer_id);
 
 
-
+$smarty->assign('other_email_count',count($customer->get_other_emails_data()));
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
 exit;
@@ -105,6 +105,7 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
+			  'edit_address.js.php',
              
              
                'upload_common.js.php',

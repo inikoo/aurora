@@ -293,7 +293,10 @@ validate_general('customer','email',unescape(query));
 }
 
 function validate_customer_email_other(query,id){
+
+
     id=id.scope.email_id;
+
     if(query==''){
         validate_scope_data.customer['email'+id].validated=true;
         if(Dom.get(validate_scope_data.customer['email'+id].name).getAttribute('ovalue')!=query){
@@ -705,6 +708,7 @@ function reset_edit_billing_data(){
 
 
 function save_edit_customer(){
+alert('gg');
     save_edit_general_bulk('customer');
 }
 function reset_edit_customer(){
