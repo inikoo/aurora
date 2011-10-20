@@ -18,14 +18,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	
 		    var CustomersColumnDefs = [ 
 				       {key:"id", label:"",hidden:true,action:"none",isPrimaryKey:true}
-				       ,{key:"contact", label:"<?php echo _('Contact')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"email", label:"<?php echo _('Email')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						  ,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'email_campaign_recipient'}
+				       ,{key:"contact", label:"<?php echo _('Contact')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"email", label:"<?php echo _('Email')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						,{key:"status", label:"<?php echo _('Status')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+					
+					,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'email_campaign_recipient'}
 						];
 
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_marketing.php?tipo=mailing_list&type=list&email_campaign_key="+Dom.get('email_campaign_key').value);
-	  
+	//  alert("ar_edit_marketing.php?tipo=mailing_list&type=list&email_campaign_key="+Dom.get('email_campaign_key').value)
 	  this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -43,7 +46,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 'id','contact','email','delete'
+			 'id','contact','email','delete','status'
 			 
 			 ]};
 	    //__You shouls not change anything from here
@@ -84,9 +87,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
-	   this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
-	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	        this.table0.subscribe("cellClickEvent", onCellClick);      	    
+		    
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['email_campaign']['mailing_list']['f_field']?>',value:'<?php echo$_SESSION['state']['email_campaign']['mailing_list']['f_value']?>'};
 
@@ -94,13 +95,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-function close_dialog(tipo){
-    switch(tipo){
-case('export'):
- dialog_export.hide();
- break;
-    }
-};
 
 
  function init(){
@@ -108,18 +102,6 @@ case('export'):
  
   init_search('marketing_store');
 
-
-  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'customers'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
- 
  
  
 

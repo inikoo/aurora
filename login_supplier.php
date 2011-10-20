@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-
+require_once 'common_detect_agent.php';
 include_once('app_files/key.php');
 include_once('aes.php');
 include_once('set_locales.php');

@@ -52,6 +52,7 @@ $general_options_list=array();
 
 $store=new Store($email_campaign->data['Email Campaign Store Key']);
 $smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
 
 $css_files=array(
@@ -102,6 +103,8 @@ case 'Creating':
     $general_options_list=array();
     $css_files[]='css/edit.css';
     $css_files[]='css/email_campaign_in_process.css';
+         $js_files[]='js/editor_image_uploader.js';
+
     $js_files[]='js/edit_common.js';
     $js_files[]='email_campaign_in_process.js.php?email_campaign_key='.$email_campaign->id;
 	$js_files[]='js/sugar-0.9.5.min.js';
@@ -112,13 +115,28 @@ case 'Creating':
     break;
     
 case 'Ready':
- $tpl_file='email_campaign_ready.tpl';
+ $tpl_file='email_campaign.tpl';
  
  $js_files[]='js/countdown.js';
+ $js_files[]='email_campaign.js.php';
+
 $js_files[]='email_campaign_ready.js.php';
 
 break;
-    
+    case 'Sending':
+ $tpl_file='email_campaign.tpl';
+ 
+ $js_files[]='js/countdown.js';
+$js_files[]='email_campaign.js.php';
+
+break;
+    case 'Complete':
+ $tpl_file='email_campaign.tpl';
+ 
+ $js_files[]='js/countdown.js';
+$js_files[]='email_campaign.js.php';
+
+break;
 
 }
 $smarty->assign('general_options_list',$general_options_list);

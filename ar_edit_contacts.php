@@ -11,6 +11,7 @@ include_once('class.CompanyDepartment.php');
 include_once('class.Staff.php');
 include_once('class.CustomField.php');
 require_once 'class.SendEmail.php';
+require_once 'common_detect_agent.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');

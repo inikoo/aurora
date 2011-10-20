@@ -20,9 +20,11 @@
 
 <div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}200px{/if};float:right;margin-bottom:10px" class="right_box">
   <div class="general_options">
+  
     {foreach from=$general_options_list item=options }
+   
     {if $options.tipo=="url"}
-    <span {if $options.class}class="{$options.class}"{/if} onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+  <span {if $options.class}class="{$options.class}"{/if} onclick="window.location.href='{$options.url}'" >{$options.label}</span>
     {else}
     <span  {if $options.class}class="{$options.class}"{/if} id="{$options.id}" state="{$options.state}">{$options.label}</span>
     {/if}

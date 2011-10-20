@@ -4910,6 +4910,67 @@ ADD `Supplier Product 1 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 ALTER TABLE `Email Send Dimension` ADD `Email Send Creation Date` DATETIME NOT NULL AFTER `Email Key` ;
 ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Type` `Email Send Recipient Type` ENUM( 'Customer', 'Supplier', 'User', 'Other', 'Staff' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
 ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Key` `Email Send Recipient Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+
+ALTER TABLE `Email Send Read Fact` ADD `Agent Type` ENUM( 'Browser', 'Bot', 'Email Reader', 'Other' ) NOT NULL ,ADD `OS` VARCHAR( 64 ) NOT NULL ,ADD `Browser` VARCHAR( 64 ) NOT NULL ;
+ALTER TABLE `Email Send Read Fact` ADD `IP` VARCHAR( 16 ) NOT NULL AFTER `Email Send Read Date` ;
+ALTER TABLE `Email Send Read Fact` CHANGE `Agent Type` `Agent Type` ENUM( 'Browser', 'Bot', 'Email Reader', 'Other', 'Unknown' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Send Read Fact` DROP `Agent Type` ;
+ALTER TABLE `Email Send Dimension` ADD `Email Send Type Parent Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Email Send Type Key` ,ADD INDEX ( `Email Send Type Parent Key` ) ;
+
+ALTER TABLE `Order Dimension` DROP `Order Original Lines` , DROP `Order Current Lines` ;
+ALTER TABLE `Order Dimension` ADD `Order Number Items` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Order Type` ;
+ALTER TABLE `Order Transaction Deal Bridge` CHANGE `Product Key` `Product Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Order Transaction Fact` CHANGE `Current Dispatching State` `Current Dispatching State` ENUM( 'In Process by Customer', 'Submitted by Customer', 'In Process', 'Ready to Pick', 'Picking', 'Ready to Pack', 'Ready to Ship', 'Dispatched', 'Unknown', 'Packing', 'Cancelled', 'No Picked Due Out of Stock', 'No Picked Due No Authorised', 'No Picked Due Not Found', 'No Picked Due Other', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Store Dimension` ADD `Store Active Email Reminders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Newsletters` ;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Type` `Email Campaign Type` ENUM( 'Newsletter', 'Marketing', 'Reminder' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Marketing';
+
+ALTER TABLE `Email Campaign Scope Bridge` CHANGE `Email Campaign Scope` `Email Campaign Scope` ENUM( 'Product', 'Family', 'Department', 'Store', 'Campaign', 'Deal', 'Store Page', 'External Link' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+CREATE TABLE `Email Link Dimension` (
+`Email Link Dimension Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
+`Email Link URL` VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( `Email Link Dimension Key` )
+) ENGINE = MYISAM;
+
+
+ALTER TABLE `Email Campaign Scope Bridge` CHANGE `Email Campaign Scope Linked` `Email Campaign Scope Link Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,CHANGE `Email Campaign Scope Visited` `Email Campaign Scope Link Clicks` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
+CREATE TABLE `Email Link Click Fact` (
+  `Email Link Key` int(10) unsigned NOT NULL,
+  `Email Link Click Date` datetime NOT NULL,
+  `IP` varchar(16) NOT NULL,
+  `OS` varchar(64) NOT NULL,
+  `Browser` varchar(64) NOT NULL,
+  KEY `Email Link Key` (`Email Link Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `Email Campaign Scope Bridge` ADD `Email Campaign Scope Name` VARCHAR( 256 ) NOT NULL AFTER `Email Campaign Scope Key` ;
+ALTER TABLE `Email Campaign Scope Bridge` ADD `Email Campaign Scope Type` ENUM( 'Context', 'Link' ) NOT NULL DEFAULT 'Context' AFTER `Email Campaign Key` ,ADD INDEX ( `Email Campaign Scope Type` ) ;
+ALTER TABLE `Invoice Dimension` ADD INDEX ( `Invoice Customer Key` ) ;
+
+ALTER TABLE `Email Campaign Scope Bridge` DROP INDEX `Email Campaign Key` ,ADD INDEX `Email Campaign Key` ( `Email Campaign Key` ) ;
+RENAME TABLE `Email Campaign Scope Bridge` TO `Email Campaign Objetive Dimension` ;
+
+ALTER TABLE `Email Campaign Objetive Dimension` ADD `Email Campaign Objetive Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST 
+
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Type` `Email Campaign Objetive Type` ENUM( 'Context', 'Link' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Context';
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Key` `Email Campaign Objetive Parent Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope` `Email Campaign Objetive Parent` ENUM( 'Product', 'Family', 'Department', 'Store', 'Campaign', 'Deal', 'Store Page', 'External Link' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Name` `Email Campaign Objetive Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Link Key` `Email Campaign Objetive Link Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Link Clicks` `Email Campaign Objetive Link Clicks` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Link Key` `Email Campaign Objetive Links` MEDIUMINT UNSIGNED NULL DEFAULT '0';
+
+CREATE TABLE `dw`.`Email Campaign Objetive Link Bridge` (
+`Email Campaign Objetive Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Link Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Email Campaign Objetive Key` , `Email Link Key` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Link Clicks` `Email Campaign Objetive Links Clicks` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Email Campaign Objetive Dimension` ADD `Email Campaign Objetive Term` ENUM( 'Order', 'Buy', 'Visit' ) NOT NULL , ADD `Email Campaign Objetive Term Metadata` VARCHAR( 1028 ) NOT NULL ;
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Term` `Email Campaign Objetive Term` ENUM( 'Order', 'Buy', 'Visit', 'Use' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 */
 
 ?>

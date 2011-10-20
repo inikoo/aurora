@@ -4293,13 +4293,7 @@ class Customer extends DB_Table {
 
 
     function get_ship_to($date=false) {
-        /*
-        if($date){
-        $this->get_ship_to_historic($date);
-        return;
-        }
-        */
-
+      
         if (!$date) {
             $date=date("Y-m-d H:i:s");
         }
@@ -4502,7 +4496,7 @@ class Customer extends DB_Table {
         date_default_timezone_set('GMT') ;
 
 
-        switch ($_SESSION ['lang']) {
+        switch ($_SESSION ['text_locale_code'].'_'.$_SESSION ['text_locale_country_code']) {
         default :
             $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
             if ($order->data['Order Original Data MIME Type']='application/inikoo') {
