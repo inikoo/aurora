@@ -2,7 +2,6 @@
 include_once('common.php');
 
 
-
 if(isset($_REQUEST['t']) and $_REQUEST['t']=='feature'){
 $type='feature';
 

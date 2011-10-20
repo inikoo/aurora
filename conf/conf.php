@@ -2591,8 +2591,17 @@ $default_state=array(
                                                            'sf'=>0,
                                                            'nr'=>25,
                                                            'view'=>'general'
+                                                       ),
+ 'objetives'=>array(
+                                                           'f_field'=>'email',
+                                                           'f_value'=>'',
+                                                           'f_show'=>false,
+                                                           'order'=>'name',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'view'=>'general'
                                                        )
-
 
                                     ),
 

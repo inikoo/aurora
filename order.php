@@ -59,19 +59,26 @@ if (isset($_REQUEST['new']) ) {
                 'User Key'=>$user->id
             );
 
-    $order_data=array('type'=>'system'
-                             ,'Customer Key'=>$customer->id
-                                             ,'Order Original Data MIME Type'=>'application/inikoo'
-                                                                              ,'Order Type'=>'Order'
-                                                                                            ,'editor'=>$editor
+    $order_data=array(
 
-                     );
+                    'Customer Key'=>$customer->id,
+                    'Order Original Data MIME Type'=>'application/inikoo',
+                    'Order Type'=>'Order',
+                    'editor'=>$editor
+
+                );
+
+
     $order=new Order('new',$order_data);
 //exit;
     if ($order->error)
         exit('error');
 
-    $_SESSION['state']['order']['show_all']=true;
+
+    $ship_to=$customer->get_ship_to();
+    $order-> update_ship_to($ship_to->id);
+
+
     header('Location: order.php?id='.$order->id);
     exit;
 
@@ -105,17 +112,17 @@ $customer=new Customer($order->get('order customer key'));
 
 $store=new Store($order->data['Order Store Key']);
 $smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
 if (isset($_REQUEST['pick_aid'])) {
     $js_files[]='order_pick_aid.js.php';
     $template='order_pick_aid.tpl';
 } else {
 
-
     switch ($order->get('Order Current Dispatch State')) {
 
     case('In Process'):
-
+  case('Ready to Pick'):
         $js_files[]='js/edit_common.js';
 
 
@@ -135,13 +142,17 @@ if (isset($_REQUEST['pick_aid'])) {
         $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 
 
-        if ($order->get_number_transactions()) {
+        if ($order->data['Order Number Items']) {
             $products_display_type='ordered_products';
 
         } else {
-            $products_display_type='ordered_products';
+            $products_display_type='all_products';
 
         }
+
+        $_SESSION['state']['order']['products']['display']=$products_display_type;
+
+        $products_display_type=$_SESSION['state']['order']['products']['display'];
 
         $smarty->assign('products_display_type',$products_display_type);
 
@@ -149,8 +160,10 @@ if (isset($_REQUEST['pick_aid'])) {
 
 
         $tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+
+
         $smarty->assign('filter',$tipo_filter);
-        $smarty->assign('filter_value',$_SESSION['order']['products']['products']['f_value']);
+        $smarty->assign('filter_value',$_SESSION['state']['order']['products']['f_value']);
         $filter_menu=array(
             'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
             'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
@@ -164,13 +177,11 @@ if (isset($_REQUEST['pick_aid'])) {
         $paginator_menu=array(10,25,50,100);
         $smarty->assign('paginator_menu0',$paginator_menu);
 
+        $smarty->assign('search_label',_('Products'));
+        $smarty->assign('search_scope','products');
 
+ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-
-        break;
-    case('Ready to Pick'):
-        $js_files[]='order_in_warehouse.js.php?order_key='.$order_id;
-        $template='order_in_warehouse.tpl';
         break;
     case('Dispatched'):
 
@@ -217,7 +228,6 @@ if (isset($_REQUEST['pick_aid'])) {
     }
 }
 $smarty->assign('general_options_list',$general_options_list);
-
 
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);

@@ -2,6 +2,8 @@
 require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.EmailCampaign.php';
+require_once 'class.Page.php';
+require_once 'common_natural_language.php';
 
 
 
@@ -13,13 +15,45 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('delete_email_campaign_objetive'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+
+                         ));
+    delete_email_campaign_objetive($data);
+    break;
+
+    break;
+
+case('add_email_campaign_objective'):
+    $data=prepare_values($_REQUEST,array(
+                             'email_campaign_key'=>array('type'=>'key'),
+                             'parent'=>array('type'=>'string'),
+                             'parent_key'=>array('type'=>'key'),
+                         ));
+    add_email_campaign_objective($data);
+    break;
+
+
+case('email_campaign_objetives'):
+    email_campaign_objetives();
+    break;
+case('delete_email_campaign_recipient'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+
+                         ));
+    delete_email_campaign_recipient($data);
+    break;
+
 case('set_email_campaign_as_ready'):
-   $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'email_campaign_key'=>array('type'=>'key'),
                              'start_sending_in'=>array('type'=>'numeric')
                          ));
     set_email_campaign_as_ready($data);
-break;
+    break;
 case('mailing_list'):
 
     mailing_list();
@@ -195,6 +229,66 @@ function delete_email_campaign($data) {
     }
     echo json_encode($response);
 }
+
+
+function delete_email_campaign_objetive($data) {
+
+    $sql=sprintf('delete from `Email Campaign Objetive Dimension` where `Email Campaign Objetive Key`=%d  ',
+                 $data['id']);
+
+    mysql_query($sql);
+    $response= array('state'=>200,'action'=>'deleted');
+
+
+
+    echo json_encode($response);
+}
+
+function delete_email_campaign_recipient($data) {
+    $mailing_list_key=$data['id'];
+
+    $sql=sprintf("select `Email Campaign Key` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d",
+                 $mailing_list_key
+                );
+    $res=mysql_query($sql);
+
+
+    if ($row=mysql_fetch_assoc($res)) {
+
+        $email_campaign=new EmailCampaign($row['Email Campaign Key']);
+        $email_campaign->delete_email_address($mailing_list_key);
+
+        if ($email_campaign->updated) {
+
+            $response= array(
+                           'state'=>200,
+                           'action'=>'deleted'
+                       );
+        } else {
+
+
+
+            $response= array(
+                           'state'=>400,
+                           'action'=>'no change',
+                           'msg'=>$email_campaign->msg
+                       );
+        }
+
+    } else {
+        $response= array(
+                       'state'=>400,
+                       'action'=>'error',
+                       'msg'=>'email recipient not exist'
+                   );
+    }
+
+
+
+    echo json_encode($response);
+}
+
+
 
 function add_email_address_manually($data) {
 
@@ -556,19 +650,23 @@ function mailing_list() {
     else
         $order='`Email Address`';
 
-    $sql="select *  from `Email Campaign Mailing List`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select *  from `Email Campaign Mailing List` L left join `Email Send Dimension` S  on (S.`Email Send Key`=L.`Email Send Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 //print $sql;
     $res = mysql_query($sql);
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $status='';
+        if (!$row['Email Send Key']) {
+            $status='<span style="color:#aaa">'._('Ready to send').'</span>';
 
-
+        }
 
 
         $adata[]=array(
-                     'id'=>$row['Email Campaign Key'],
+                     'id'=>$row['Email Campaign Mailing List Key'],
                      'contact'=>$row['Email Contact Name'],
                      'email'=>$row['Email Address'],
+                     'status'=>$status,
                      'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
 
 
@@ -600,11 +698,11 @@ function mailing_list() {
 }
 
 
-function set_email_campaign_as_ready($data){
+function set_email_campaign_as_ready($data) {
 
-$email_campaign=new EmailCampaign($data['email_campaign_key']);
-$email_campaign->set_as_ready($data['start_sending_in']);
- if (!$email_campaign->error) {
+    $email_campaign=new EmailCampaign($data['email_campaign_key']);
+    $email_campaign->set_as_ready($data['start_sending_in']);
+    if (!$email_campaign->error) {
         $response= array(
                        'state'=>200,
                        'action'=>'ready'
@@ -613,7 +711,256 @@ $email_campaign->set_as_ready($data['start_sending_in']);
 
         $response= array('state'=>400,'msg'=>'can not add image');
     }
-  echo json_encode($response);
+    echo json_encode($response);
+}
+
+
+
+function email_campaign_objetives() {
+    $conf=$_SESSION['state']['email_campaign']['objetives'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['email_campaign_key'])) {
+        $email_campaign_key=$_REQUEST['email_campaign_key'];
+        $_SESSION['state']['email_campaign']['id']=$email_campaign_key;
+    } else {
+        $email_campaign_key=$_SESSION['state']['email_campaign']['id'];
+    }
+
+    $filter_msg='';
+
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    $_SESSION['state']['email_campaign']['objetives']['order']=$order;
+    $_SESSION['state']['email_campaign']['objetives']['order_dir']=$order_dir;
+    $_SESSION['state']['email_campaign']['objetives']['nr']=$number_results;
+    $_SESSION['state']['email_campaign']['objetives']['sf']=$start_from;
+    $_SESSION['state']['email_campaign']['objetives']['f_field']=$f_field;
+    $_SESSION['state']['email_campaign']['objetives']['f_value']=$f_value;
+
+
+    $where=sprintf(" where  `Email Campaign Key`=%d",$email_campaign_key);
+
+
+
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+    $sql="select count(*) as total from `Email Campaign Objetive Dimension`     $where $wheref";
+
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total  from `Email Campaign Objetive Dimension`    $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $filtered=$row['total']-$total;
+            $total_records=$row['total'];
+        }
+        mysql_free_result($result);
+    }
+
+    $rtext=sprintf(ngettext("%d objetive", "%d objetives", $total_records), $total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp='('._('Showing all').')';
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    $order='`Email Campaign Objetive Name`';
+
+    $sql="select *  from `Email Campaign Objetive Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
+    $res = mysql_query($sql);
+    $adata=array();
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        switch ($row['Email Campaign Objetive Type']) {
+        case 'Context':
+            $type='<img src="art/icons/text_dropcaps.png"   style="height:14px" title="'.('Context').'"   alt="'.('Context').'"  />';
+            $delete="<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />";
+            break;
+        case 'Link':
+            $type='<img src="art/icons/link.png"   style="height:14px" title="'.('Link').'"   alt="'.('Link').'"  />';
+            $delete="";
+            break;
+
+        default:
+            $type='';
+            $delete="";
+            break;
+        }
+
+        switch ($row['Email Campaign Objetive Parent']) {
+        case 'department':
+            $parent=_('Department');
+            break;
+        case 'family':
+            $parent=_('Family');
+            break;
+        case 'product':
+            $parent=_('Product');
+            break;
+        default:
+            $parent=$row['Email Campaign Objetive Parent'];
+            break;
+        }
+
+        $link='';
+
+
+
+        switch ($row['Email Campaign Objetive Term']) {
+        case 'Order':
+
+            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $time=seconds_to_string($metadata[2]);
+            $objetive=_('Order').' ('.$time.')';
+
+            break;
+        case 'Buy':
+
+            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $time=seconds_to_string($metadata[2]);
+            $objetive=_('Buy').' ('.$time.')';
+
+            break;
+        case 'Use':
+
+            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $time=seconds_to_string($metadata[0]);
+            $objetive=_('Use').' ('.$time.')';
+
+            break;
+
+        case 'Visit':
+
+            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $time=seconds_to_string($metadata[0]);
+            $objetive=_('Visit').' ('.$time.')';
+
+            break;
+
+        default:
+            $objetive='';
+        }
+
+
+        $adata[]=array(
+                     'id'=>$row['Email Campaign Objetive Key'],
+
+                     'name'=>$row['Email Campaign Objetive Name'],
+                     'objetive'=>$objetive,
+                     'parent'=>$parent,
+                     'link'=>$link,
+                     'type'=>$type,
+
+                     'delete'=>$delete
+                 );
+    }
+    mysql_free_result($res);
+    $response=array('resultset'=>
+                                array(
+
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'total_records'=>$total,
+                                    'records_offset'=>$start_from,
+                                    'records_perpage'=>$number_results,
+
+
+
+                                )
+                   );
+
+    echo json_encode($response);
+
+
+}
+
+
+function add_email_campaign_objective($data) {
+
+    include_once('class.Department.php');
+
+    $email_campaign=new EmailCampaign($data['email_campaign_key']);
+
+    $objetive_data=array(
+                       'Email Campaign Objetive Parent'=>$data['parent'],
+                       'Email Campaign Objetive Parent Key'=>$data['parent_key'],
+                       'Email Campaign Objetive Type'=>'Context'
+
+
+                   );
+
+    $email_campaign->add_objetive($objetive_data);
+
+    $response= array(
+                   'state'=>200,
+                   'action'=>'changed'
+               );
+    echo json_encode($response);
+
+
 }
 
 ?>
