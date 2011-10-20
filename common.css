@@ -300,12 +300,7 @@ table.but_edit{clear:both;float:right}
 
 
 
-.but td{font-weight:600;font-size:85%;text-align:center;padding:3px 3px;cursor:pointer}
-.but td.ok{background:#81c44b;border:1px solid #67ae2e;color:#f6f6f6}
-.but td.ok:hover{background:#98ea56;color:#444}
-.but td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
-.but td.nook{background:#d24242;border:1px solid #ba1111;color:#f6f6f6}
-.but td.nook:hover{background:#ea6565;color:#444}
+
 
 
 
@@ -461,24 +456,11 @@ table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border
 table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
 
 
-span.but{color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
 
-span.xxxselected { background:#7296e1;color:#fff ;border:1px solid navy}
-span.xxxselected:hover { background:#7296e1;color:#fff ;border:1px solid navy}
-span.but:hover {border:1px solid #aaa; color:#999;}
-
-
-span.but_disabled{cursor:normal;background:#fff;color:#777}
-span.but_unselected{cursor:normal;background:#fff;color:#777}
 span.small{font-size:80%}
 
 
 
-.unselectable_text{
-   -moz-user-select: none;
-   -khtml-user-select: none;
-   user-select: none;
-}
 
 .inbox ,.inbox_form{padding:0;margin:0 auto;}
 .inbox tr {border-left:1px solid #777;border-right:1px solid #777; }
