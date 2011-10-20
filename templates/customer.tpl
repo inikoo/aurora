@@ -19,23 +19,28 @@
   
 <input type="hidden" id="modify" value="{$modify}"/>
 <input type="hidden" id="other_email_count" value="{$other_email_count}"/>
-    
-<table class="quick_button" style="clear:both;float:right;margin-top:0px;">
-    <tr><td  ><a href="customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012" target="_blank">{t}Print Address{/t}</a></td></tr>
+  
+<div class="buttons">  
+<table class="" style="clear:both;float:right;margin-top:0px;">
 
-    <tr><td  id="note">{t}Quick Note{/t}</td></tr>
-    <tr id="new_sticky_note_tr" ><td id="new_sticky_note">{t}Sticky Note{/t}</td></tr>
-    <tr id="sticky_note_bis_tr" ><td id="sticky_note_bis">{t}Sticky Note{/t}</td></tr>
+    <tr><td  ><a href="customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012" target="_blank"><img src="/images/icons/textfield_key.png" alt=""/> {t}Print Address{/t}</a></td></tr>
 
-    <tr><td  id="attach">{t}Attach File{/t}</td></tr>
-    <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
-    <tr {if $user->id!=1}style="display:none"{/if}  ><td id="take_order">{t}Take Order{/t}</td></tr>
-    <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
-    <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
-    <tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
-    <tr style="display:none"><td id="others" >{t}Other{/t}</td></tr>
-    <tr><td id="make_order">QO Data</td></tr>
+    <tr><td  id="note"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Quick Note{/t}</a></td></tr>
+    <tr id="new_sticky_note_tr" ><td id="new_sticky_note"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Sticky Note{/t}</a></td></tr>
+    <tr id="sticky_note_bis_tr" ><td id="sticky_note_bis"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Sticky Note{/t}</a></td></tr>
+
+    <tr><td  id="attach"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Attach File{/t}</a></td></tr>
+    <tr style="display:none"><td  id="link"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Link File{/t}</a></td></tr>
+    <tr {if $user->id!=1}style="display:none"{/if}  ><td id="take_order"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Take Order{/t}</a></td></tr>
+    <tr style="display:none"><td  id="long_note"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Long Note{/t}</a></td></tr>
+    <tr style="display:none"><td id="call" ><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Call{/t}</a></td></tr>
+    <tr style="display:none"><td  id="email" ><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Email{/t}</a></td></tr>
+    <tr style="display:none"><td id="others" ><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Other{/t}</a></td></tr>
+    <tr><td id="make_order"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>QO Data</a></td></tr>
+
 </table>
+</div>
+
        
 
      
