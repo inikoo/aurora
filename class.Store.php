@@ -357,12 +357,25 @@ class Store extends DB_Table {
     }
 
 
-    /*
-      Method: load
-      Obtiene registros de las tablas Product Dimension, Product Family Dimension, Product Department Dimension, y actualiza datos de Store Dimension, de acuerdo a la categoria indicada.
-    */
-    // JFA
+   
+   
+   function get_products_for_sale(){
+   $products_for_sale=0;
+   $sql=sprintf("select count(*) as number from `Product Dimension` where `Product Store Key`=%d and `Product Record Type`='Normal'     and `Product Main Type` in ('Private','Sale')",
+   $this->id
+   );
 
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_assoc($res)){
+    $products_for_sale=$row['number'];
+   }
+   return $products_for_sale;
+   }
+   
+ function get_formated_products_for_sale(){
+
+ return number($this->get_products_for_sale());
+}
 
     function load($tipo,$args=false) {
         switch ($tipo) {
@@ -1272,6 +1285,16 @@ function update_children_data(){
                     );
 
     }
+
+function update_newsletter_data(){
+
+}
+
+function update_email_reminder_data(){
+
+}
+
+
 
     function create_site($data) {
 

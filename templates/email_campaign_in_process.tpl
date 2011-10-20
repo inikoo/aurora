@@ -60,17 +60,22 @@
  </tr>
 <tbody >
 
-<tr class="last"><td  class="label" >{t}Campaign Objetive{/t}:</td>
+<tr><td  class="label" >{t}Campaign Objetive{/t}:</td>
    <td  style="text-align:left;">
-     <div   >
+      <div>
        <input style="text-align:left;width:100%" id="email_campaign_objetive" value="{$email_campaign->get('Email Campaign Objective')|escape}" ovalue="{$email_campaign->get('Email Campaign Objective')|escape}" >
-       <div id="email_campaign_objetive_Container"  ></div>
+       <div id="email_campaign_objetive_Container"  >
+       </div>
      </div>
    </td>
    <td id="email_campaign_objetive_msg" class="edit_td_alert"></td>
  </tr>
  
-<tr class="last">
+<tr>
+
+<tr class="last" style="height:10px"><td colspan=3></td></tr>
+
+
 <td  class="label" >{t}Recipients{/t}:</td>
 <td ><span id="recipients_preview">{$email_campaign->get('Email Campaign Recipients Preview')}</span></td>
 <td>
@@ -84,29 +89,42 @@
 
 </td>
 </tr>
-<tr class="last" style="height:40px">
-<td  class="label" >{t}Advertising Object{/t}:</td>
-<td >
+<tr class="last" style="height:10px"><td colspan=3></td></tr>
 
-     <div   >
-       <input style="text-align:left;width:100%" id="email_campaign_scope" value="{$email_campaign->get('Email Campaign Scope')|escape}" ovalue="{$email_campaign->get('Email Campaign Scope')|escape}" >
-       <div id="email_campaign_scope_Container"  ></div>
-     </div>
- 
-   <div id="email_campaign_scope_msg" class="edit_td_alert"></div>
-</td>
-<td>
+
+<tr id="add_objetive_tr" >
+<td  class="label" >{t}Objetives{/t}:</td>
+<td colspan=2>
+
+
 <div class="general_options" >
 	
-	<span  style="margin-left:0px;;float:none"   id="department" class="state_details">{t}Department{/t}</span>
-	<span style="margin-left:20px;float:none" id="family" class="state_details">{t}Family{/t}</span>
-		<span style="margin-left:20px;float:none" id="product" class="state_details">{t}Product{/t}</span>
-	<span style="margin-left:20px;float:none" id="offer" class="state_details">{t}Offer{/t}</span>
+	<span  style="margin-left:0px;;float:none"   id="department" class="state_details">{t}Add Department{/t}</span>
+	<span style="margin-left:20px;float:none" id="family" class="state_details">{t}Add Family{/t}</span>
+		<span style="margin-left:20px;float:none" id="product" class="state_details">{t}Add Product{/t}</span>
+	<span style="margin-left:20px;float:none" id="offer" class="state_details">{t}Add Offer{/t}</span>
 
       </div>
 
 </td>
+
+
+
 </tr>
+
+
+
+<tr>
+<td ></td>
+<td colspan=2>
+
+<div style="width:100%>
+{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 no_filter=1}
+<div  id="table9"   class="data_table_container dtable btable" style="font-size:80%"> </div>
+</div>
+</td>
+</tr>
+<tr class="last" style="height:10px"><td colspan=3></td></tr>
 
 <input type="hidden" value="{$current_content_key}" id="current_email_contact_key">
 
@@ -166,8 +184,8 @@
 <tr>
 <td>{t}Template{/t}</td>
 <td colspan=2>
-<div class="general_options" >
-<span    style="float:none;margin:0px">{t}Choose Template{/t}</span>
+<div class="buttons">
+<button >{t}Choose Template{/t}</button>
 </div>
 </td>
 </tr>
@@ -191,8 +209,10 @@
 <tr>
 <td></td>
 <td colspan=2>
+  <form onsubmit="return false;">
 
 <textarea id="html_email_editor" ovalue="{$email_campaign->get_content_html($current_content_key)|escape}" rows="20" cols="75">{$email_campaign->get_content_html($current_content_key)|escape}</textarea>
+</form>
 </td>
 </tr>
 
@@ -234,7 +254,7 @@
 
 </div>
 
-<div id="dialog_add_email_address">
+<div id="dialog_add_email_address" style="padding-top:10px">
   <div id="note_msg"></div>
   <div style="display:none" id="new_add_email_address_manually_invalid_msg">{t}Fill the form properly{/t}</div>
   <table style="padding:10px;margin:10px" border=0 >
@@ -266,8 +286,10 @@
    <td></td>
    <td colspan="2">
    <div class="general_options" style="padding:10px;float:right">
-	<span  style="margin-right:10px;" class="disabled"  id="save_new_add_email_address_manually" class="state_details">{t}Add{/t}</span>
-	<span style="margin-right:10px;" id="cancel_new_add_email_address_manually" class="state_details">{t}Cancel{/t}</span>
+   
+   
+	<button  style="margin-right:10px;" class="disabled"  id="save_new_add_email_address_manually" class="state_details">{t}Add{/t}</button>
+	<button style="margin-right:10px;" id="cancel_new_add_email_address_manually" class="state_details">{t}Cancel{/t}</button>
 </div>
     </td>
     </tr>

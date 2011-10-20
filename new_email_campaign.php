@@ -83,6 +83,7 @@ $smarty->assign('general_options_list',$general_options_list);
     }
 
     $smarty->assign('store',$store);
+    $smarty->assign('store_key',$store->id);
     $smarty->assign('parent','marketing');
     $smarty->assign('title', _('New Email Campaign'));
     $smarty->assign('css_files',$css_files);

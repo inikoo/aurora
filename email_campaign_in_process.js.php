@@ -16,43 +16,86 @@ var validate_scope_data;
 var validate_scope_metadata;
 var dialog_preview_text_email;
 var dialog_send_email_campaign;
+var dialog_department_list;
 
 function select_department(oArgs){
-    var product_ordered_or=Dom.get('email_campaign_scope').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+'d('+tables.table5.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
-    Dom.get('email_campaign_scope').value=product_ordered_or;
-    dialog_department_list.hide();
-    hide_filter(true,5);
-     validate_general('email_campaign','scope', Dom.get('email_campaign_scope').value);
-
+    parent_key=tables.table5.getRecord(oArgs.target).getData('key')
+    var request='ar_edit_marketing.php?tipo=add_email_campaign_objective&email_campaign_key='+Dom.get('email_campaign_key').value+'&parent=Department&parent_key='+parent_key;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+                table_id=9
+                var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);       
+                dialog_department_list.hide();
+                hide_filter(true,5)
+		    }else{
+		   
+	        }
+	    }
+    });
 }
 
 function select_family(oArgs){
-    var product_ordered_or=Dom.get('email_campaign_scope').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+'f('+tables.table6.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
-    Dom.get('email_campaign_scope').value=product_ordered_or;
-    dialog_family_list.hide();
-    hide_filter(true,6)
+    parent_key=tables.table6.getRecord(oArgs.target).getData('key')
+    var request='ar_edit_marketing.php?tipo=add_email_campaign_objective&email_campaign_key='+Dom.get('email_campaign_key').value+'&parent=Family&parent_key='+parent_key;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+                table_id=9
+                var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);       
+                dialog_family_list.hide();
+                hide_filter(true,6)
+		    }else{
+		   
+	        }
+	    }
+    });
 }
 function select_product(oArgs){
-    var product_ordered_or=Dom.get('email_campaign_scope').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+tables.table7.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('email_campaign_scope').value=product_ordered_or;
-    dialog_product_list.hide();
-    hide_filter(true,7)
+    parent_key=tables.table7.getRecord(oArgs.target).getData('pid')
+    var request='ar_edit_marketing.php?tipo=add_email_campaign_objective&email_campaign_key='+Dom.get('email_campaign_key').value+'&parent=Product&parent_key='+parent_key;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+                table_id=9
+                var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);       
+                dialog_product_list.hide();
+                hide_filter(true,7)
+		    }else{
+		   
+	        }
+	    }
+    }); 
 }
 function select_offer(oArgs){
-    var product_ordered_or=Dom.get('email_campaign_scope').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+'o('+tables.table8.getRecord(oArgs.target).getData('id').replace(/<.*?>/g, '')+')';
-
-    Dom.get('email_campaign_scope').value=product_ordered_or;
-    dialog_product_list.hide();
-    hide_filter(true,8)
+    parent_key=tables.table8.getRecord(oArgs.target).getData('pid')
+    var request='ar_edit_marketing.php?tipo=add_email_campaign_objective&email_campaign_key='+Dom.get('email_campaign_key').value+'&parent=Deal&parent_key='+parent_key;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+                table_id=9
+                var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);       
+                dialog_offer_list.hide();
+                hide_filter(true,8)
+		    }else{
+		   
+	        }
+	    }
+    }); 
 }
+
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -60,6 +103,85 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	     //START OF THE TABLE =========================================================================================================================
 		var store_key=Dom.get('store_id').value;
+
+
+
+
+	 var tableid=9; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+	    				       {key:"id", label:"",hidden:true,action:"none",isPrimaryKey:true}
+			,{key:"type",label:"", width:12,className:"aleft"}
+
+	                       ,{key:"parent", label:"<?php echo _('Type')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+                    ,{key:"name", label:"<?php echo _('Name')?>",width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			              , {key:"objetive", label:"<?php echo _('Objetive')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'email_campaign_objetive'}
+			  			];
+			       
+		this.dataSource9 = new YAHOO.util.DataSource("ar_edit_marketing.php?tipo=email_campaign_objetives&email_campaign_key="+Dom.get('email_campaign_key').value+"&tableid="+tableid+"&sf=0");
+	 this.dataSource9.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource9.connXhrMode = "queueRequests";
+	    	    this.dataSource9.table_id=tableid;
+
+	    this.dataSource9.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "description","name","id","type","delete","objetive",'link','id','parent'
+			 ]};
+
+	    this.table9 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource9
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator9', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info9'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "name",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table9.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table9.doBeforeSortColumn = mydoBeforeSortColumn;
+	  this.table9.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table9.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table9.subscribe("cellClickEvent", onCellClick);      	    
+     
+
+
+	    this.table9.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table9.filter={key:'code',value:''};
+
 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -158,7 +280,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "code","name"
+			 "code","name",'key'
 			 ]};
 
 	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -204,11 +326,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table5.filter={key:'code',value:''};
-	    //
-// --------------------------------------Department table ends here----------------------------------------------------------
-
-
-// --------------------------------------Family table starts here--------------------------------------------------------
    var tableid=6; 
 	    var tableDivEL="table"+tableid;
 
@@ -239,7 +356,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "code",'name'
+			 "code",'name','key'
 			 ]};
 
 	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -289,7 +406,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                     {key:"code", label:"<?php echo _('Code')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                    ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			  			];
-			       
+			      
 		this.dataSource7 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=product_list&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource7.connXhrMode = "queueRequests";
@@ -310,7 +427,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "code","name"
+			 "code","name","pid"
 			 ]};
 
 	    this.table7 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -422,6 +539,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	
+
+
 	
 	
 	};
@@ -732,7 +851,12 @@ switch ( branch ) {
 			case 'name':
 				Dom.get('h1_email_campaign_name').innerHTML=newvalue;
 				break;
-			
+			case 'content_html_text':
+				table_id=9
+                var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);       
+				break;
 			
 		};
 		break;
@@ -873,16 +997,16 @@ function init(){
 	            'name':'email_campaign_objetive',
 	            'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('invalid_email_campaign_objetive').innerHTML}]
 	            },
-	 'scope':{
-	            'dbname':'Email Campaign Scope',
-	            'changed':false,
-	            'validated':true,
-	            'required':false,
-	            'group':1,
-	            'type':'item',
-	            'name':'email_campaign_scope',
-	            'validation':[{'regexp':"^([a-z0-9\\-]+|(d|f|c)\\([a-z0-9\\-]+\\))(,([0-9a-z\\-]+|(d|f|c|o)\\([a-z0-9\\-\\_]+\\)))*$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
-	            },  
+//	 'scope':{
+//	            'dbname':'Email Campaign Scope',
+//	            'changed':false,
+//	            'validated':true,
+//	            'required':false,
+//	            'group':1,
+//	            'type':'item',
+//	            'name':'email_campaign_scope',
+//	            'validation':[{'regexp':"^([a-z0-9\\-]+|(d|f|c)\\([a-z0-9\\-]+\\))(,([0-9a-z\\-]+|(d|f|c|o)\\([a-z0-9\\-\\_]+\\)))*$",'invalid_msg':Dom.get('invalid_email_campaign_scope').innerHTML}]
+//	            },  
 	  'subject':{
 	            'dbname':'Email Campaign Subject',
 	            'changed':false,
@@ -973,7 +1097,7 @@ validate_scope_metadata={
 
  
 
-    dialog_add_email_address = new YAHOO.widget.Dialog("dialog_add_email_address", {context:["add_email_address_manually","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    dialog_add_email_address = new YAHOO.widget.Dialog("dialog_add_email_address", {context:["add_email_address_manually","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_add_email_address.render();
     Event.addListener("add_email_address_manually", "click", dialog_add_email_address.show,dialog_add_email_address , true);
 
@@ -1005,12 +1129,13 @@ validate_scope_metadata={
     email_campaign_objetive_oAutoComp.minQueryLength = 0; 
     email_campaign_objetive_oAutoComp.queryDelay = 0.1;
     
-      var email_campaign_scope_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_scope);
+    /*
+    var email_campaign_scope_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_scope);
     email_campaign_scope_oACDS.queryMatchContains = true;
     var email_campaign_scope_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_scope","email_campaign_scope_Container", email_campaign_scope_oACDS);
     email_campaign_scope_oAutoComp.minQueryLength = 0; 
     email_campaign_scope_oAutoComp.queryDelay = 0.1;
-    
+    */
     var add_email_address_oACDS = new YAHOO.util.FunctionDataSource(validate_add_email_address_manually);
     add_email_address_oACDS.queryMatchContains = true;
     var add_email_address_oAutoComp = new YAHOO.widget.AutoComplete("add_email_address","add_email_address_Container", add_email_address_oACDS);
@@ -1044,9 +1169,11 @@ validate_scope_metadata={
     Event.addListener('reset_edit_email_campaign', "click", reset_edit_email_campaign);
     Event.addListener('save_edit_email_campaign', "click", save_edit_email_campaign);
  
-     dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_department_list.render();
-    Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);
+     dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", { visible : false,close:true,underlay: "none",draggable:false});
+    dialog_department_list.render()
+    
+    ;
+    Event.addListener("department", "click", show_dialog_department_list);
 
     dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_family_list.render();
@@ -1140,6 +1267,9 @@ validate_scope_metadata={
             this.addClass('editor-hidden');
         }, this, true);
     }, EmailHTMLEditor, true);
+        yuiImgUploader(EmailHTMLEditor, 'html_email_editor', 'ar_upload_file_from_editor.php','image');
+
+    
     EmailHTMLEditor.render();
  
     
@@ -1147,9 +1277,35 @@ validate_scope_metadata={
       Event.addListener("next_preview", "click", next_preview);
 
 
+      Event.addListener("show_add_object_manually", "click", show_add_object_manually);
 
     
 
 }
+
+
+function  show_dialog_department_list(){
+
+ var pos = Dom.getXY('department');
+ pos[0]=pos[0]-300
+ Dom.setXY('dialog_department_list', pos);
+ dialog_department_list.show();
+
+}
+
+function show_add_object_manually(){
+
+Dom.setStyle(['objetives_second_label','show_add_object_manually'],'visibility','hidden')
+Dom.get('email_campaign_scope').value='';
+
+Dom.setStyle('add_objetive_tr','display','')
+
+}
+
+function hide_add_object_manually(){
+
+Dom.setStyle('objetives_second_label','visibility','hidden')
+}
+
 
 Event.onDOMReady(init);

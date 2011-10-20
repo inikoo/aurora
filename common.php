@@ -9,6 +9,7 @@ if (DEBUG) {
 require_once 'app_files/db/dns.php';
 
 require_once 'common_functions.php';
+require_once 'common_detect_agent.php';
 require_once "class.Session.php";
 require_once "aes.php";
 

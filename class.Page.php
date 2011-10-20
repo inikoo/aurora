@@ -73,6 +73,8 @@ class Page extends DB_Table {
         else {
             $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
         }
+        
+        
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->id=$this->data['Page Key'];
@@ -84,8 +86,6 @@ class Page extends DB_Table {
                 if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)) {
                     foreach($row as $key=>$value) {
                         $this->data[$key]=$value;
-
-
                     }
 
                     if ($this->data['Page Store Logo Data']!='')
