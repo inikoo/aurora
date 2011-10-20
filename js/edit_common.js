@@ -763,7 +763,7 @@ function save_edit_general(branch) {
 	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
 	   }
 	   
-	 //alert(request)
+//alert(request)
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
 			//alert(o.responseText);
@@ -826,7 +826,7 @@ var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonifi
 //alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-  //alert(o.responseText);
+  alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
@@ -846,7 +846,8 @@ success:function(o) {
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
 						//alert('dialog_quick_edit_'+validate_scope_data[branch][r.key].name)
-						Dom.setStyle('dialog_quick_edit_'+validate_scope_data[branch][r.key].name,'display','none')
+						Dom.setStyle('dialog_quick_edit_'+validate_scope_data[branch][r.key].name,'visibility','false')
+						//dialog_quick_edit_'+validate_scope_data[branch][r.key].name.show=false;
                         post_item_updated_actions(branch,r);
 
 

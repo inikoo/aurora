@@ -32,6 +32,8 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
+print $customer->get('Customer Type');
+$smarty->assign('customer_type',$customer->get('Customer Type'));
 
 
 $smarty->assign('other_email_count',count($customer->get_other_emails_data()));
@@ -108,7 +110,7 @@ $js_files=array(
 			'edit_address.js.php',
 			'edit_delivery_address_common.js.php',
 			'upload_common.js.php',
-			'customer.js.php?customer_key='.$customer->id,
+			'customer.js.php?customer_key='.$customer->id.'&customer_type='.$customer->get('Customer Type'),
 			'js/validate_telecom.js',
 			'js/aes.js',
 			'js/sha256.js',

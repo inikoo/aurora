@@ -9,7 +9,7 @@
 </div>
 
 <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1 style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
+    <h1 id="customer_name_heading" style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
      
       
     </h1> 
@@ -51,24 +51,24 @@
         {if $customer->get('Customer Main Address Key')}<td class="button" id="quick_edit_main_address" valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
         <td  valign="top">
             <table border=0 style="padding:0">
-                {if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ><td><img id="quick_edit_name" alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td></tr>{/if}
-                {if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_email" src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
+                {if $customer->get('Customer Main Contact Key')}<tr><td id="main_name" colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ><td><img id="quick_edit_name" alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td></tr>{/if}
+                {if $customer->get('Customer Main Email Key')}<tr><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_email" src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
-                    <tr><td colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_other_email{$key}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
+                    <tr><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_other_email{$key}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
                 {/foreach}
-                {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img id="quick_edit_main_telephone" alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td></tr>{/if}
+                {if $customer->get('Customer Main Telephone Key')}<tr><td id="main_telephone" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img id="quick_edit_main_telephone" alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td></tr>{/if}
                 {foreach from=$customer->get_other_telephones_data() item=other_tel key=key}
-                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" id="quick_edit_other_telephone{$key}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                    <tr><td id="telephone{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" id="quick_edit_other_telephone{$key}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
-                {if $customer->get('Customer Main Mobile Key')}<tr><td colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Telephone') and $customer->get('Customer Preferred Contact Number')=='Mobile'}font-weight:800{/if}" >{$customer->get('Customer Main XHTML Mobile')}</td ><td><img id="quick_edit_main_mobile" alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Mobile')}</td></tr>{/if}
+                {if $customer->get('Customer Main Mobile Key')}<tr><td id="main_mobile" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Telephone') and $customer->get('Customer Preferred Contact Number')=='Mobile'}font-weight:800{/if}" >{$customer->get('Customer Main XHTML Mobile')}</td ><td><img id="quick_edit_main_mobile" alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Mobile')}</td></tr>{/if}
                 {foreach from=$customer->get_other_mobiles_data() item=other_tel key=key}
-                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}"  id="quick_edit_other_mobile{$key}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                    <tr><td id="mobile{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}"  id="quick_edit_other_mobile{$key}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
-                {if $customer->get('Customer Main FAX Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML FAX')}</td ><td><img id="quick_edit_main_fax" alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('FAX')}</td></tr>{/if}
+                {if $customer->get('Customer Main FAX Key')}<tr><td id="main_fax" colspan=2 class="aright">{$customer->get('Customer Main XHTML FAX')}</td ><td><img id="quick_edit_main_fax" alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('FAX')}</td></tr>{/if}
                 {foreach from=$customer->get_other_faxes_data() item=other_tel key=key}
-                    <tr><td colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}" id="quick_edit_other_fax{$key}" src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                    <tr><td id="fax{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}" id="quick_edit_other_fax{$key}" src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
                 {/foreach}
 
 				{foreach from=$show_case key=name item=value}
@@ -299,17 +299,17 @@
 		  {/if}
 		  <tr style="border-top:1px solid #ccc">
 		  
-		      <td>{t}Contact Name{/t}:</td><td>{$customer->get('Customer Main Contact Name')}</td>
+		      <td>{t}Contact Name{/t}:</td><td id="contact_name_id">{$customer->get('Customer Main Contact Name')}</td>
 		    </tr>
 		   <tr>
-		      <td>{t}Contact Email{/t}:</td><td>{$customer->get('Customer Main XHTML Email')}</td>
+		      <td>{t}Contact Email{/t}:</td><td id="contact_email_id">{$customer->get('Customer Main XHTML Email')}</td>
 		    </tr>
 		  <tr>
-		      <td>{t}Contact Telephone{/t}:</td><td>{$customer->get('Customer Main XHTML Telephone')}</td>
+		      <td>{t}Contact Telephone{/t}:</td><td id="contact_telephone_id">{$customer->get('Customer Main XHTML Telephone')}</td>
 		    </tr>
 		  
 		  <tr>
-		      <td>{t}Contact Fax{/t}:</td><td>{$customer->get('Customer Main XHTML FAX')}</td>
+		      <td>{t}Contact Fax{/t}:</td><td id="contact_fax_id" >{$customer->get('Customer Main XHTML FAX')}</td>
 		    </tr>
 		  
 
@@ -530,7 +530,7 @@
   </td>
     
   <td style="text-align:center;width:50%">
-  <button type="submit" class="negative" onClick="close_dialog('sticky_note')"><img src="art/icons/cross.png" alt=""/>Cancel</button>
+  <button type="submit" class="negative" onClick="close_dialog('sticky_note')"><img src="/art/icons/cross.png" alt=""/>Cancel</button>
 </td></tr>
 	</div>
 </table>
@@ -729,9 +729,11 @@
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Contact Name:{/t}</td>
-	<td><input type="text" id="Customer_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
 	<div id="Customer_Name_Container"  ></div>
-		
+	</div>	
 	</td>
 	<td><div id="Customer_Name_msg"></div></td>
 	<td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
@@ -743,6 +745,10 @@
 
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+		<td colspan=2><div id="Customer_Main_Email_msg"></div></td>
+	<td  colspan=2 id="Customer_Main_Email_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Contact Email:{/t}</td>
 	<td>
@@ -752,8 +758,7 @@
 	</div>	
 	</td>
 
-	<td><div id="Customer_Main_Email_msg"></div></td>
-	<td id="Customer_Main_Email_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" id="save_quick_edit_email" value="Save"></td></tr>
 	</table>
@@ -858,7 +863,7 @@
 </div>
 {/foreach}
 
-<div id="dialog_quick_edit_Customer_Main_Fax" style="padding:10px">
+<div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
 	<table style="margin:10px">
 	<tr>
 	<td>{t}Fax:{/t}</td>
