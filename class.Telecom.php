@@ -1440,7 +1440,7 @@ class Telecom extends DB_Table {
 
         }
 
-        function remove_from_parent($parent,$parent_key,$type) {
+        function remove_from_parent($parent,$parent_key,$type='') {
 
             $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d and `Subject Type`=%s and `Subject Key`=%d  ",
                          $this->id,

@@ -794,7 +794,7 @@
 	<td>
 	<div style="width:200px">
 	<input type="text" id="Customer_Telephone{$key}" value="{$other_telephone.number}" ovalue="{$other_telephone.number}" valid="0">
-	<div id="Customer_Main_Telephone{$key}_Container"></div>
+	<div id="Customer_Telephone{$key}_Container"></div>
 	</div>
 	</td>
 	<td><div id="Customer_Telephone{$key}_msg"></div></td>
@@ -884,11 +884,16 @@
 </div>
 {/foreach}
 
-<div id="dialog_quick_edit_Customer_Main_Address" style="padding:10px">
-	<table style="margin:10px">
-		{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}
-	</table>
 
+
+<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;min-height:300px">
+
+<table border=0 style="margin:10px; width:100%">
+{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}
+</table>
+<div style="display:none" id='contact_current_address' ></div>
+<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
 </div>
+
 {include file='footer.tpl'}
 
