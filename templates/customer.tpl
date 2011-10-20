@@ -445,12 +445,15 @@
     <tr><td colspan=2>
 	<textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea>
       </td>
-    <tr>
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
+    </tr>
+	<tr class="buttons" style="font-size:100%">
+		<td style="text-align:center;width:50%">
+			<span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Canceddl{/t}</span>
+		</td>
+		<td style="text-align:center;width:50%">
+			<span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span>
+		</td>
+	</tr>
 </table>
 </div>
 
@@ -476,7 +479,7 @@
     <tr>
     <tr class="buttons" style="font-size:100%">
   <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('edit_note')" >{t}Cancel{/t}</span></td>
+    <span  class="unselectable_text button" onClick="close_dialog('edit_note')" >{t}Canddcel{/t}</span></td>
   <td style="text-align:center;width:50%">
     <span  onclick="save('edit_note')" id="edit_note_save"  class="unselectable_text button"      >{t}Save{/t}</span></td></tr>
 </table>
@@ -505,7 +508,7 @@
     <tr>
     <tr class="buttons" style="font-size:100%">
   <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('new_sticky_note')" >{t}Cancel{/t}</span></td>
+    <span  class="unselectable_text button" onClick="close_dialog('new_sticky_note')" >{t}Cddancel{/t}</span></td>
   <td style="text-align:center;width:50%">
     <span  onclick="save('new_sticky_note')" id="new_sticky_note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
 </table>
@@ -520,11 +523,16 @@
 	<textarea style="width:260px;height:125px" id="sticky_note_input"  onkeyup="change(event,this,'sticky_note')">{$customer->get('Customer Sticky Note')}</textarea>
       </td>
     <tr>
+	<div class="buttons">
     <tr class="buttons" style="font-size:100%">
   <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('sticky_note')" >{t}Cancel{/t}</span></td>
+  <button type="submit" class="positive" onClick="save('sticky_note')"><img src="art/icons/tick.png" alt=""/>Save</button>
+  </td>
+    
   <td style="text-align:center;width:50%">
-    <span  onclick="save('sticky_note')" id="sticky_note_save"  class="unselectable_text button"      >{t}Save{/t}</span></td></tr>
+  <button type="submit" class="negative" onClick="close_dialog('sticky_note')"><img src="art/icons/cross.png" alt=""/>Cancel</button>
+</td></tr>
+	</div>
 </table>
 </div>
 

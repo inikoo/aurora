@@ -321,6 +321,7 @@ success:function(o) {
                 if(r.state==200){
                 if (r.action=='updated') {
                
+			  Dom.setStyle('dialog_quick_edit_Customer_Main_Address','display','none')
               
                // window.location.reload( false );
 
