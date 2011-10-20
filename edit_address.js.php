@@ -360,7 +360,7 @@ success:function(o) {
 
 var save_address=function(e,options) {
 
-//alert('xx');
+
     var address_prefix='';
     if (options.prefix!= undefined) {
         address_prefix=options.prefix;
@@ -1194,6 +1194,9 @@ var countries_highlightMatch = function(full, snippet, matchindex) {
 
 
 function show_countries_list(o,prefix){
+alert(prefix);
+
+//alert(tables.table100.prefix);return;
 tables.table100.prefix=prefix
   var y=(Dom.getY(o))-160
     var x=(Dom.getX(o))-25

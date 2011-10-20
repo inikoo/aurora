@@ -576,13 +576,13 @@ class SendEmail extends DB_Table {
 
 
         $send_result=$this->smtp($data);
-<<<<<<< HEAD
 
-=======
+
+
         //print "---\n";
         //print_r($send_result);
         //print "===\n";
->>>>>>> 8dc9465085bee8854242bbd69045c73198642e1b
+
         if ($send_result['state']==200) {
             $sql=sprintf("update `Email Send Dimension` set `Email Send Date`=%s where `Email Send Key`=%d",
                          prepare_mysql(date('Y-m-d H:i:s',strtotime('now +0:00'))),
