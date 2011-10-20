@@ -28,6 +28,23 @@ $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
+global $version, $version_flag;
+$version = ieversion();
+
+if($version_flag==0){
+	if($version<=6){
+		$version_flag=1;
+		header('Location: browser.php');
+	}
+	else{
+		//print $version;
+	}
+}
+else{
+	$version_flag=0;
+}
+
+//print $version;
 
 $user_log_key=0;
 $found_in=array();
@@ -648,7 +665,13 @@ function update_page_key_visit_log($page_key) {
     mysql_query($sql);
 }
 
-
+function ieversion() {
+  $match=preg_match('/MSIE ([0-9]\.[0-9])/',$_SERVER['HTTP_USER_AGENT'],$reg);
+  if($match==0)
+    return 200;
+  else
+    return floatval($reg[1]);
+}
 
 
 

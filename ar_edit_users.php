@@ -1176,6 +1176,36 @@ function create_user($data){
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 
+			$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+        $message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$handle;
+		$message_data['subject']=$welcome_email_subject;
+		$message_data['html']=$welcome_email_html;
+        $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Registration';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='User';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+		$message_data['plain']=$welcome_email_plain;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
+
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=true;
+
+
+	$send_result=$send_email->send($message_data);	
+			
+/*
 			$data=array('email_type'=>'Registration',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user->id);
@@ -1197,10 +1227,12 @@ function create_user($data){
 			$send_email->smtp('HTML', $data);
 			$result=$send_email->send();
 			}
-
+*/
 			$_val=array('customer_key'=>$customer_key,
 				'store_key'=>$site_key,
 				'url'=>$url,
+				'site_key'=>$site->id,
+				'store_key'=>$store->id,
 				'email'=>$handle
 				);
 			$response=forgot_password($_val);
@@ -1226,6 +1258,7 @@ function forgot_password($data){
 	global $secret_key,$public_url;
 	$key=$data['customer_key'];
 	$store_key=$data['store_key'];
+	$site_key=$data['site_key'];
 	$url=$data['url'];
 	$login_handle=$data['email'];
 	
@@ -1286,13 +1319,15 @@ function forgot_password($data){
                       Thank you";
 
 $files=array();	
+
+/*
 		$data=array('email_type'=>'Password Reminder',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user_key);
 				  
 		$send_email=new SendEmail($data);
 		
-		$html_message=$send_email->track_sent_email($html_message);
+		//$html_message=$send_email->track_sent_email($html_message);
 		
         $to=$login_handle;
         $data=array(
@@ -1313,15 +1348,44 @@ $files=array();
         //$send_email=new SendEmail();
         $send_email->smtp('plain', $data);
         $result=$send_email->send();
+*/
 
+			$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+        $message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$login_handle;
+		$message_data['subject']='Reset your password';
+		$message_data['html']=$html_message;
+        $message_data['email_credentials_key']=$email_credential_key;
+        $message_data['email_matter']='Forgot Password';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='User';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+		$message_data['plain']=$plain_message;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
+
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=true;
+
+
+	$send_result=$send_email->send($message_data);	
 		//print_r($result);
 		
-        if ($result['msg']=='ok') {
+        if ($send_result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             return $response;
 
         } else {
-            print_r($result);
+            print_r($send_result);
             $response=array('state'=>200,'result'=>'error '.join(' ',$result));
             return $response;
         }

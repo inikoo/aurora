@@ -78,7 +78,9 @@ case('forgot_password'):
                              'customer_key'=>array('type'=>'key'),
 							 'store_key'=>array('type'=>'key'),
 							 'email'=>array('type'=>'string'),
-							 'url'=>array('type'=>'string')
+							 'url'=>array('type'=>'string'),
+							 'site_key'=>array('type'=>'key')
+							 
                          ));
     forgot_password($data);
 
@@ -4050,8 +4052,15 @@ function forgot_password($data){
 	global $secret_key,$public_url;
 	$key=$data['customer_key'];
 	$store_key=$data['store_key'];
-	$url=$data['url'];
+	//$url=$data['url'];
 	$login_handle=$data['email'];
+	
+	$sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d and `Site Store Key`=%d", $data['site_key'], $data['store_key']);
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result))
+		$url=$row['Site URL'];
+	else
+		$url='';
 	
 	
 	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
@@ -4111,7 +4120,40 @@ function forgot_password($data){
                       Thank you";
 
 $files=array();	
+$to=$login_handle;
+	$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+        $message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$to;
+		$message_data['subject']='Reset your password';
+		$message_data['html']=$html_message;
+        $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Password Reminder';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='User';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+		$message_data['plain']=$plain_message;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
 
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=true;
+
+
+	$send_result=$send_email->send($message_data);	
+	//print_r($send_result);
+
+
+	
+/*	
 		$data=array('email_type'=>'Password Reminder',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user->id);
@@ -4147,15 +4189,15 @@ $files=array();
         $result=$send_email->send();
 
 		//print_r($result);
-		
-        if ($result['msg']=='ok') {
+*/		
+        if ($send_result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);
             exit;
 
         } else {
-            print_r($result);
-            $response=array('state'=>200,'result'=>'error '.join(' ',$result));
+            print_r($send_result);
+            $response=array('state'=>200,'result'=>'error '.join(' ',$send_result));
             echo json_encode($response);
             exit;
         }
@@ -4166,5 +4208,7 @@ $files=array();
         echo json_encode($response);
         exit;
     }
+
+
 }
 ?>

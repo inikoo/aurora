@@ -632,6 +632,7 @@ function init(){
 	Town_DS.responseSchema = {resultsList : "data",fields : ["name"]};
 	Town_DS.maxCacheEntries = 10;
 	var Town_AC = new YAHOO.widget.AutoComplete("address_town", "address_town_container", Town_DS); 
+	Town_AC.autoHighlight = false;
 	Town_AC.generateRequest = function(sQuery) 
 	    {
 
