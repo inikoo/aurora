@@ -11,27 +11,33 @@
 <h1>{t}Email Campaign{/t}: <span id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></h1>
 
 
-<div class="top_row" >
+<div class="margin-bottom:10px" >
 <div  style="padding:10px;float:left" id="edit_email_campaign_msg">
-</div>
-<div class="general_options" style="padding:10px;float:right">
-	<span  style="margin-right:10px;" class="{if !$email_campaign->ready_to_send()}disabled{/if}"  id="send_email_campaign" class="state_details">{t}Send{/t}</span>
-		<span  style="margin-right:10px;" class="{if !$email_campaign->ready_to_send()}disabled{/if}"   id="preview_email_campaign" class="state_details">{t}Preview{/t}</span>
-	
-	<span style="margin-right:10px;" id="save_and_exit_edit_email_campaign" class="state_details">{t}Continue Later{/t}</span>
-		<span style="margin-right:10px;" id="delete_email_campaign" class="state_details">{t}Delete{/t}</span>
-
-<span style="margin-right:20px;visibility:hidden" id="save_edit_email_campaign" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_email_campaign" class="state_details">{t}Reset{/t}</span>
-</div>
 <span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
 <span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
 <span style="display:none" id="invalid_email_campaign_recipients">{t}Please add recipients{/t}</span>
 <span style="display:none" id="invalid_email_campaign_scope">{t}Invalid Scope Syntax{/t}</span>
 <span style="display:none" id="invalid_email_campaign_subjects">{t}Please add email subject{/t}</span>
 <span style="display:none" id="invalid_email_campaign_contents">{t}Email content is empty{/t}</span>
+</div>
+</div>
 
-<table class="edit" style="clear:both;width:890px" border=0  >
+<div class="buttons" style="width:100%;">
+
+		<button id="delete_email_campaign" class="negative">{t}Delete{/t}</button>
+		<button  class="{if !$email_campaign->ready_to_send()}disabled{/if}"   id="preview_email_campaign" >{t}Preview{/t}</button>
+
+	<button   class="{if !$email_campaign->ready_to_send()}disabled{/if}"  id="send_email_campaign" class="positive">{t}Send{/t}</button>
+<button style="margin-right:20px;visibility:hidden" id="save_edit_email_campaign" class="state_details">{t}Save{/t}</button>
+	<button style="margin-right:10px;visibility:hidden" id="reset_edit_email_campaign" class="state_details">{t}Reset{/t}</button>
+	<div style="clear:both"></div>
+</div>
+
+
+
+
+
+<table class="edit" style="clear:both;width:100%;margin-top:10px" border=0  >
 <input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
 <input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 
@@ -264,7 +270,7 @@
    <tr >
    <td  class="label" >{t}Email Address{/t}:</td>
    <td  style="text-align:left">
-     <div  style="position:relative;top:00px" >
+     <div  >
        <input style="text-align:left" id="add_email_address" value="" ovalue="" >
        <div id="add_email_address_Container"  ></div>
      </div>
@@ -274,22 +280,22 @@
     <tr >
     <td class="label" >{t}Contact Name{/t}:</td>
    <td  style="text-align:left">
-     <div  style="position:relative;top:00px" >
-       <input style="text-align:left;" id="add_email_contact_name" value="" ovalue="" >
+     <div   >
+       <input style="text-align:left;width:100%" id="add_email_contact_name" value="" ovalue="" >
        <div id="add_email_contact_name_Container"  ></div>
      </div>
    </td>
    <td id="add_email_contact_name_msg" class="edit_td_alert"></td>
  </tr>
  <tr><td colspan="3" class="error" style="display:none" id="new_add_email_address_manually_dialog_msg"></td></tr>
-    <tr class="buttons" style="font-size:100%">
-   <td></td>
-   <td colspan="2">
-   <div class="general_options" style="padding:10px;float:right">
+    <tr >
+ 
+   <td colspan="3">
+   <div class="buttons" style="padding:10px;float:right">
+   	<button  id="cancel_new_add_email_address_manually" class="negative">{t}Cancel{/t}</button>
+
    
-   
-	<button  style="margin-right:10px;" class="disabled"  id="save_new_add_email_address_manually" class="state_details">{t}Add{/t}</button>
-	<button style="margin-right:10px;" id="cancel_new_add_email_address_manually" class="state_details">{t}Cancel{/t}</button>
+	<button  class="disabled positive"  id="save_new_add_email_address_manually" class="state_details">{t}Add{/t}</button>
 </div>
     </td>
     </tr>
