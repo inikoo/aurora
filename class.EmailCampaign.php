@@ -239,7 +239,19 @@ class EmailCampaign extends DB_Table {
             $email_content_key=mysql_insert_id();
             $this->get_data('id',$this->id);
             $store=new Store($this->data['Email Campaign Store Key']);
-            $store->update_email_campaign_data();
+            switch ($this->data['Email Campaign Type']) {
+            case 'Marketing':
+                $store->update_email_campaign_data();
+                break;
+            case('Newsletter'):
+                $store->update_newsletter_data();
+                break;
+            case('Reminder'):
+                $store->update_email_reminder_data();
+                break;
+            }
+
+
 
         } else {
             $this->error=true;
@@ -249,6 +261,131 @@ class EmailCampaign extends DB_Table {
 
 
     }
+
+
+
+    function add_objetive($scope_data) {
+
+        $scope_data['Email Campaign Key']=$this->id;
+
+        switch ($scope_data['Email Campaign Objetive Parent']) {
+        case 'Department':
+            $parent=new Department($scope_data['Email Campaign Objetive Parent Key']);
+            $parent_key=$parent->id;
+            $parent_name=$parent->data['Product Department Name'];
+            $term='Order';
+            $term_metadata='0;;432000';
+            break;
+        case 'Family':
+            $parent=new Family($scope_data['Email Campaign Objetive Parent Key']);
+            $parent_key=$parent->id;
+            $parent_name='<b>'.$parent->data['Product Family Code'].'</b>, '.$parent->data['Product Family Name'];
+            $term='Order';
+            $term_metadata='0;;432000';
+            break;
+        case 'Store':
+            $parent=new Store($scope_data['Email Campaign Objetive Parent Key']);
+            $parent_key=$parent->id;
+            $parent_name=$parent->data['Product Store Name'];
+            $term='Order';
+            $term_metadata='0;;432000';
+            break;
+        case 'Product':
+            $parent=new Product('pid',$scope_data['Email Campaign Objetive Parent Key']);
+            $parent_key=$parent->pid;
+            $parent_name='<b>'.$parent->data['Product Code'].'</b>, '.$parent->data['Product Name'];
+            $term='Order';
+            $term_metadata='0;;432000';
+            break;
+        case 'Deal':
+            $parent=new Deal($scope_data['Email Campaign Objetive Parent Key']);
+            $parent_key=$parent->pid;
+            $parent_name=$parent->data['Deal Name'];
+            $term='Use';
+            $term_metadata='432000';
+            break;
+        case 'External Link':
+            $parent_key=0;
+            $parent_name=$scope_data['Email Campaign Objetive Parent Name'];
+            $term='Visit';
+            $term_metadata='432000';
+            break;
+
+        default:
+            return;
+            break;
+        }
+
+        $found=false;
+
+        if ($scope_data['Email Campaign Objetive Parent']!='External Link') {
+
+
+            $sql=sprintf("select `Email Campaign Objetive Key` from `Email Campaign Objetive Dimension` where `Email Campaign Key`=%d  and `Email Campaign Objetive Parent`=%s  and  `Email Campaign Objetive Parent Key`=%d ",
+                         $this->id,
+                         prepare_mysql($scope_data['Email Campaign Objetive Parent']),
+                         $parent_key
+                        );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                $found=$row['Email Campaign Objetive Key'];
+
+            }
+
+        }
+        if ($found) {
+            if ($scope_data['Email Campaign Objetive Type']=='Link') {
+                $sql=sprintf("update `Email Campaign Objetive Dimension` set `Email Campaign Objetive Type`='Link'  where `Email Campaign Key`=%d ",
+                             $found
+                            );
+
+            }
+
+        } else {
+            $sql=sprintf("insert into `Email Campaign Objetive Dimension` (`Email Campaign Key`,`Email Campaign Objetive Type`,`Email Campaign Objetive Parent`,`Email Campaign Objetive Parent Key`,`Email Campaign Objetive Name`,`Email Campaign Objetive Links`,`Email Campaign Objetive Links Clicks`,`Email Campaign Objetive Term`,`Email Campaign Objetive Term Metadata`)  values (%d,%s,%s,%d,%s,0,0,%s,%s)  ",
+                         $this->id,
+                         prepare_mysql($scope_data['Email Campaign Objetive Type']),
+                         prepare_mysql($scope_data['Email Campaign Objetive Parent']),
+
+                         $parent_key,
+                         prepare_mysql($parent_name),
+                         prepare_mysql($term),
+                         prepare_mysql($term_metadata)
+
+                        );
+            mysql_query($sql);
+
+        }
+
+
+
+        //     print $sql;
+
+    }
+
+
+
+
+    function delete_email_address($email_address_key){
+    
+    
+       $sql=sprintf("delete from  `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
+                     $email_address_key,
+                     $this->id
+                    );
+        $res=mysql_query($sql);
+        
+        if(mysql_affected_rows()){
+            $this->updated=true;
+              $this->update_number_emails();
+            $this->update_recipients_preview();
+        }else{
+            $this->msg='can not delete recipient';
+        
+        }
+        
+    }
+
 
     function add_email_address_manually($data) {
         $data['Email Address']=_trim($data['Email Address']);
@@ -657,12 +794,12 @@ class EmailCampaign extends DB_Table {
             case 'Plain':
                 $plain=   nl2br($this->content_data[$email_content_key]['plain']);
                 $html= '';
-              break;
+                break;
             case 'HTML':
-                 $plain=   nl2br($this->content_data[$email_content_key]['plain']);
+                $plain=   nl2br($this->content_data[$email_content_key]['plain']);
                 $html=   nl2br($this->content_data[$email_content_key]['html']);
                 break;
-           case 'HTML Template':
+            case 'HTML Template':
                 $plain=   nl2br($this->content_data[$email_content_key]['plain']);
                 $html=  $this->get_html_template_body($email_content_key);
 
@@ -683,16 +820,18 @@ class EmailCampaign extends DB_Table {
                 }
             }
             $subject=$this->get_subject($email_content_key);
+            $ok=true;
         } else {
             $plain= 'Error recipient not associated with mailing list';
             $html= 'Error recipient not associated with mailing list';
-            $type='Plain';
+            $type=false;
             $subject='';
+            $ok=false;
         }
 
 
 
-        return array('subject'=>$subject,'plain'=>$plain,'html'=>$html,'type'=>$type,'to'=>$to);
+        return array('ok'=>$ok,'subject'=>$subject,'plain'=>$plain,'html'=>$html,'type'=>$type,'to'=>$to);
     }
     function get_content_text($email_content_key) {
         $content_text='';
@@ -829,6 +968,9 @@ class EmailCampaign extends DB_Table {
     }
 
     function update_content_html($value,$email_content_key) {
+
+
+
         $sql=sprintf("update `Email Content Dimension` set `Email Content HTML`=%s where `Email Content Key`=%d",
                      prepare_mysql($value),
                      $email_content_key
@@ -837,9 +979,150 @@ class EmailCampaign extends DB_Table {
 
 
         if (mysql_affected_rows()>0) {
+
+
+            $this->update_links($email_content_key);
+
+
             $this->updated=true;
             $this->new_value=$this->get_content_html($email_content_key);
         }
+    }
+
+
+    function update_links($email_content_key) {
+
+
+
+        $html=$this->get_content_html($email_content_key);
+        $links=array();
+        $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
+        if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
+            foreach($matches as $match) {
+
+                $url=preg_replace("/^https?\:\/\//",'',$match[2]);
+                $link_label=$match[3];
+
+                $links[$url]=$link_label;
+
+
+
+            }
+        }
+
+
+
+        $sql=sprintf("delete from `Email Campaign Objetive Dimension` where `Email Campaign Objetive Type`='Link' and `Email Campaign Key`=%d ",
+                     $this->id
+                    );
+        mysql_query($sql);
+
+       
+        foreach($links as $url=>$link_data) {
+ $alternative_urls=array();
+            $page=new Page('url',$url);
+
+            if (!$page->id or  $page->data['Page Type']!='Store' or $page->data['Page Store Key']!=$this->data['Email Campaign Store Key'] ) {
+
+                $add_www=false;
+                $remove_www=false;
+                if (preg_match('/^www\./i',$url)) {
+                    $remove_www=true;
+                    $alternative_urls[]=preg_replace('/^www\./i','',$url);
+
+                } else {
+                    $add_www=true;
+                    $alternative_urls[]='www.'.$url;
+
+                }
+
+
+
+
+                if (preg_match('/\/$/i',$url)) {
+                    $alternative_urls[]=$url.'index.html';
+                    $alternative_urls[]=$url.'index.php';
+                }
+                elseif(preg_match('/index\.(php|html|asp)$/i',$url)) {
+                    $alternative_urls[]=preg_replace('/index\.(php|html|asp)$/i','',$url);
+                }
+                else {
+                    $alternative_urls[]=$url.'/index.html';
+                    $alternative_urls[]=$url.'/index.php';
+
+                }
+
+                foreach($alternative_urls as $value) {
+                    if ($add_www) {
+                        $alternative_urls[]='www.'.$value;
+                    }
+                    elseif($remove_www) {
+                        $alternative_urls[]=preg_replace('/^www\./i','',$value);
+                    }
+                }
+
+
+
+            }
+            foreach ($alternative_urls as $item) {
+                $page=new Page('url',$item);
+                if ($page->id and  $page->data['Page Type']=='Store' and $page->data['Page Store Key']==$this->data['Email Campaign Store Key']   ) {
+                    break;
+                }
+
+            }
+
+            $parent_name='';
+            if ($page->id and  $page->data['Page Type']=='Store' and $page->data['Page Store Key']==$this->data['Email Campaign Store Key']   ) {
+
+                switch ($page->data['Page Store Section']) {
+                case 'Department Catalogue':
+                    $parent='Department';
+                    $parent_key=$page->data['Page Parent Key'];
+
+                    break;
+                case 'Family Catalogue':
+                    $parent='Family';
+                    $parent_key=$page->data['Page Parent Key'];
+
+                    break;
+                case 'Product Description':
+                    $parent='Product';
+                    $parent_key=$page->data['Page Parent Key'];
+
+                    break;
+
+                    $parent='Store';
+                    $parent_key=$this->data['Email Campaign Store Key'];
+
+                default:
+
+                    break;
+                }
+
+
+            } else {
+                $parent='External Link';
+                $parent_key=0;
+                $parent_name=$url;
+            }
+            
+            unset($page);
+            
+            $objetive_data=array(
+                               'Email Campaign Objetive Parent'=>$parent,
+                               'Email Campaign Objetive Parent Key'=>$parent_key,
+                               'Email Campaign Objetive Parent Name'=>$parent_name,
+                               'Email Campaign Objetive Type'=>'Link'
+
+                           );
+      //      print_r($objetive_data);
+            $this->add_objetive($objetive_data);
+
+
+
+        }
+
     }
 
 
@@ -891,6 +1174,21 @@ class EmailCampaign extends DB_Table {
                      $this->id);
         mysql_query($sql);
     }
+
+    function update_send_emails() {
+        $this->data['Number of Read Emails']=0;
+        $sql=sprintf("select count(*) as number from `Email Send Dimension` where `Email Send Dimension` is not null  and  `Email Send Type`='Marketing' and `Email Send Type Parent Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->data['Number of Read Emails']=$row['number'];
+        }
+        $sql=sprintf("update `Email Campaign Dimension` set `Number of Read Emails`=%d where `Email Campaign Key`=%d",
+                     $this->data['Number of Read Emails'],
+                     $this->id);
+        mysql_query($sql);
+    }
+
+
     function update_recipients_preview() {
         $this->data['Email Campaign Recipients Preview']='';
         $sql=sprintf("select `Email Address` from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
@@ -958,32 +1256,32 @@ class EmailCampaign extends DB_Table {
 
 
     }
-    
-    function set_as_ready($lag_seconds){
-    
-		if($this->data['Email Campaign Status']=='Sending'){
-			$this->error=true;
-			$this->msg=_('Campaign already sending emails');
-			return;
-		}
-		 if($this->data['Email Campaign Status']=='Complete'){
-			$this->error=true;
-			$this->msg=_('Campaign already send');
-			return;
-		}
-		
-		$this->data['Email Campaign Status']='Ready';
-		$this->data['Email Campaign Start Overdue Date']=date("Y-m-d H:i:s",strtotime(sprintf('now +%d seconds ',$lag_seconds)));
-		$sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ",
-		prepare_mysql($this->data['Email Campaign Start Overdue Date'])
-		
-		);
-		
-		//print $sql;
-		mysql_query($sql);
-    
+
+    function set_as_ready($lag_seconds) {
+
+        if ($this->data['Email Campaign Status']=='Sending') {
+            $this->error=true;
+            $this->msg=_('Campaign already sending emails');
+            return;
+        }
+        if ($this->data['Email Campaign Status']=='Complete') {
+            $this->error=true;
+            $this->msg=_('Campaign already send');
+            return;
+        }
+
+        $this->data['Email Campaign Status']='Ready';
+        $this->data['Email Campaign Start Overdue Date']=date("Y-m-d H:i:s",strtotime(sprintf('now +%d seconds ',$lag_seconds)));
+        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ",
+                     prepare_mysql($this->data['Email Campaign Start Overdue Date'])
+
+                    );
+
+        //print $sql;
+        mysql_query($sql);
+
     }
-    
-    
+
+
 }
 ?>

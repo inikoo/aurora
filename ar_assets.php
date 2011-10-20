@@ -7531,7 +7531,7 @@ function list_marketing_per_store() {
 
 
 
-    $sql="select `Store Newsletters`,`Store Email Campaigns`,`Store Name`,`Store Code`,`Store Key` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Active Email Reminders`,`Store Newsletters`,`Store Email Campaigns`,`Store Name`,`Store Code`,`Store Key` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -7546,7 +7546,8 @@ function list_marketing_per_store() {
                      'code'=>$code,
                      'name'=>$name,
                      'ecampaigns'=>number($row['Store Email Campaigns']) ,
-                     'newsletters'=>number($row['Store Newsletters'])
+                     'newsletters'=>number($row['Store Newsletters']),
+                     'active_reminderss'=>number($row['Store Active Email Reminders'])
 
 
                  );

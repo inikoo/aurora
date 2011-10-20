@@ -90,8 +90,6 @@ color:red;
 
 
 
-#rmenu #edit_buttons .yui-button {margin:5px 0;}
-
 
 
 
@@ -302,12 +300,7 @@ table.but_edit{clear:both;float:right}
 
 
 
-.but td{font-weight:600;font-size:85%;text-align:center;padding:3px 3px;cursor:pointer}
-.but td.ok{background:#81c44b;border:1px solid #67ae2e;color:#f6f6f6}
-.but td.ok:hover{background:#98ea56;color:#444}
-.but td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
-.but td.nook{background:#d24242;border:1px solid #ba1111;color:#f6f6f6}
-.but td.nook:hover{background:#ea6565;color:#444}
+
 
 
 
@@ -324,14 +317,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
 .options tr.title td:hover{color:#555}
 
-span.save,span.reset,span.undo,span.multiple,span.new,span.button ,span.small_button {margin-left:5px;border:1px solid #aaa;color:#aaa;text-align:center;padding:1px 6px 1px 6px;cursor:pointer;font-weight:800}
-span.button:hover{color:#777;} 
 
-span.small_button {;padding:0px 3px 0px 3px;font-weight:200;font-size:80%;color:#333;}
-span.small_button.selected{background:#7296e1;border:2px solid #7296e1;color:#f6f6f6}
-
-span.multiple {padding-left:25px;background:  url("art/icons/application_cascade.png") no-repeat;background-position:2px 1.5px }
-span.new {padding-left:20px;background:  url("art/icons/new.png") no-repeat;background-position:2px 1.5px }
 
 
 
@@ -347,10 +333,6 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 
 
 
-
-
-.edit_button td,td.editx{background:#dc4f58;border:1px solid #b52b34;color:#f4cdd0;}
-.edit_button td:hover,td.editx:hover{background:#dc4f58;border:1px solid #b52b34;color:#f4cdd0;}
 
 .show_options{color:#aaa;padding:0 5px 0 0;position:relative;bottom:0px;font-weight:800}
 .show_options span{background:#33518d;margin-right:7px;cursor:pointer;border:1px solid #758fc4;padding:0px 3px;font-weight:800}
@@ -474,24 +456,11 @@ table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border
 table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
 
 
-span.but{color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
 
-span.xxxselected { background:#7296e1;color:#fff ;border:1px solid navy}
-span.xxxselected:hover { background:#7296e1;color:#fff ;border:1px solid navy}
-span.but:hover {border:1px solid #aaa; color:#999;}
-
-
-span.but_disabled{cursor:normal;background:#fff;color:#777}
-span.but_unselected{cursor:normal;background:#fff;color:#777}
 span.small{font-size:80%}
 
 
 
-.unselectable_text{
-   -moz-user-select: none;
-   -khtml-user-select: none;
-   user-select: none;
-}
 
 .inbox ,.inbox_form{padding:0;margin:0 auto;}
 .inbox tr {border-left:1px solid #777;border-right:1px solid #777; }
@@ -499,12 +468,9 @@ span.small{font-size:80%}
 .inbox tr.bottom  td { vertical-align:top; }
 .inbox tr.tabs { border:none ;border-bottom:1px solid #777;height:30px;vertical-align:bottom}
 .inbox tr.tabs td { vertical-align:bottom;padding:0 10px;margin:0 }
-.inbox_form tr.buttons,.inbox tr.buttons,.edit tr.buttons { border:none ;height:30px}
-.inbox_form tr.buttons,.inbox tr.buttons td, .edit tr.buttons td{ vertical-align:bottom }
 
  span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#aaa ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer;position}
 span.tab.selected{ text-decoration:none;border:1px solid #777;color:#000;border-bottom:1px solid white}
-.inbox_form  span.button,.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
 
 
 #d_config table.tipo {height:8em;font-size:100%;font-weight:600;}
@@ -514,11 +480,6 @@ span.tab.selected{ text-decoration:none;border:1px solid #777;color:#000;border-
 
 #d_config table.tipo td.selected {background:#daf8bb;cursor:pointer;color:#555; width:100px;border: 1px solid #ccc;text-align:center;vertical-align:middle }
 
-
-.list_of_buttons{float:right;padding:0px 0px 0px 10px;;width:250px}
-.list_of_buttons div{padding:2.5px 5px;border:1px solid #ccc;margin:3px 5px;cursor:pointer;width:100px;float:left}
-
-.button{ cursor:pointer }
 
 .like_a{cursor:pointer;}
 .like_a:hover{text-decoration:underline}
@@ -658,11 +619,7 @@ position:relative;top:1px;
 
 .diff_ins{color:green}
 
-.quick_button{font-size:90%}
-.quick_button td{text-align:center;color:#fff;padding:1px 10px;background:#334556;font-weight:100;border:2px solid #fff;cursor:pointer}
-.quick_button td a{color:#fff;text-decoration: none;}
 
-.quick_button td:hover{background:#131536;}
 
 .table_type {margin-top:.6em}
 
@@ -689,7 +646,6 @@ position:relative;top:1px;
 }
 
 
-.edit_mini_button{cursor:pointer}
 
 .splinter_cell{float:left;width:450px;margin-right:18px;border:1px solid #e7e7e7;padding:5px;position:relative;left:15px;margin-bottom:10px}
 .splinter_cell.double{width:930px}
@@ -730,3 +686,7 @@ div.todo {;padding:20px}
 .web_offline{color:grey;}
 .web_out_of_stock{color:red}
 .web_discontinued{color:brown}
+
+
+
+

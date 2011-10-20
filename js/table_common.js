@@ -220,7 +220,7 @@ var mygetTerms =function (query) {
 
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-  //alert(request)
+ 
   datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 

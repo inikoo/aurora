@@ -910,7 +910,7 @@ function product_list() {
 
 
     $adata=array();
-    $sql="select  `Product Name`,`Product Code` from `Product Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+    $sql="select  `Product Name`,`Product Code`,`Product ID` from `Product Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
     $res=mysql_query($sql);
@@ -918,7 +918,7 @@ function product_list() {
     while ($row=mysql_fetch_array($res)) {
 
         $adata[]=array(
-
+                        'pid'=>$row['Product ID'],
                      'name'=>$row['Product Name'] ,
                      'code'=>$row['Product Code'],
 
@@ -1579,7 +1579,8 @@ function deal_list() {
 
                      'name'=>$row['Deal Name'],
                      'description'=>'',
-                     'id'=>$row['Deal Key']
+                     'id'=>$row['Deal Key'],
+                     'key'=>$row['Deal Key']
                    //  'code'=>$row['Product Department Code'],
 
 

@@ -1,6 +1,11 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='marketing_navigation.tpl'}
+<div> 
+  <span class="branch">{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {t}New Email Campaign{/t}</span>
+</div>
+
+
 <div style="clear:left;margin:0 0px">
     <h1 style="margin-bottom:20px">{t}New Email Campaign{/t}</h1>
 

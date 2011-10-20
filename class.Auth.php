@@ -11,7 +11,6 @@
  Version 2.0
 */
 
-
 class Auth {
     private $user_parent_key=false;
 

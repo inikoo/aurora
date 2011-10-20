@@ -12,6 +12,7 @@
 
  Version 2.0
 */
+require_once 'common_detect_agent.php';
 require_once 'common.php';
 require_once 'class.User.php';
 require_once 'class.Staff.php';

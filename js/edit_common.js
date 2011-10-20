@@ -247,7 +247,6 @@ scope:this
     );
 };
 var onCellClick = function(oArgs) {
-
     var target = oArgs.target,
     column = this.getColumn(target),
     record = this.getRecord(target);
@@ -262,7 +261,6 @@ var onCellClick = function(oArgs) {
         if (record.getData('delete')!='') {
 
             var delete_type=record.getData('delete_type');
-
 
 
 
@@ -283,6 +281,8 @@ var onCellClick = function(oArgs) {
      		         ar_file='ar_edit_sites.php';    
                 else if (column.object=='order_list' || column.object=='invoice_list'|| column.object=='dn_list')
      		         ar_file='ar_edit_orders.php';
+     		        else if (column.object=='email_campaign_recipient' || column.object=='email_campaign_objetive')
+     		         ar_file='ar_edit_marketing.php';         
      		   else
                     ar_file='ar_edit_assets.php';
 
@@ -294,7 +294,7 @@ var onCellClick = function(oArgs) {
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                   //  alert(o.responseText);
+                     alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -674,7 +674,7 @@ function reset_edit_general(branch) {
     validate_scope(branch);
 };
 
-/*
+
 function cancel_new_general(branch) {
 
     for (items in validate_scope_data[branch]) {
@@ -715,7 +715,9 @@ function cancel_new_general(branch) {
     Dom.setStyle('new_'+branch+'_dialog','display','none');
 
 };
-*/
+
+
+
 function post_item_updated_actions(branch,r) {
     return true;
 }
@@ -764,7 +766,7 @@ function save_edit_general(branch) {
 	 //alert(request)
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-			//	alert(o.responseText);
+			//alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
                         validate_scope_data[branch][r.key].changed=false;
@@ -773,7 +775,6 @@ function save_edit_general(branch) {
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                        
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
-
                         post_item_updated_actions(branch,r);
 
 
