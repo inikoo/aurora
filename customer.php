@@ -100,16 +100,25 @@ $js_files=array(
               $yui_path.'calendar/calendar-min.js',
               $yui_path.'uploader/uploader-min.js',
               
-              'external_libs/ampie/ampie/swfobject.js',
-              'js/common.js',
-              'js/table_common.js',
-              'js/search.js',
-              'js/edit_common.js',
-			  'edit_address.js.php',
-             
-             
-               'upload_common.js.php',
-                'customer.js.php?customer_key='.$customer->id,
+			'external_libs/ampie/ampie/swfobject.js',
+			'js/common.js',
+			'js/table_common.js',
+			'js/search.js',
+			'js/edit_common.js',
+			'edit_address.js.php',
+			'edit_delivery_address_common.js.php',
+			'upload_common.js.php',
+			'customer.js.php?customer_key='.$customer->id,
+			'js/validate_telecom.js',
+			'js/aes.js',
+			'js/sha256.js',
+			//printf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id),
+			//printf('edit_contact.js.php?id=%d&scope=Customer&scope_key=%d',$contact->id,$customer->id),
+			'address_data.js.php?tipo=customer&id='.$customer->id,
+			'edit_contact_from_parent.js.php',
+			'edit_contact_telecom.js.php',
+			'edit_contact_name.js.php',
+			'edit_contact_email.js.php'
           );
           
           

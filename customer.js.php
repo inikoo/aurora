@@ -896,32 +896,36 @@ function take_order(){
 
 
 function save_quick_edit_name(){
-	alert('validate name');
+	//alert('validate name');
 	validate_customer_name();
     save_edit_general_bulk('customer');
 	//Dom.setStyle('dialog_quick_edit_'+field_name,'display','none')
-	//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 
 function save_quick_edit_email(){
-	alert('validate email');
+	//alert('validate email');
 	//validate_customer_email();
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 function save_quick_edit_telephone(){
-	alert('telephone');
+	//alert('telephone');
 	//validate_customer_telephone();
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 function save_quick_edit_mobile(){
-	alert('mobile');
+	//alert('mobile');
 	//validate_customer_mobile();
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 function save_quick_edit_fax(){
-	alert('fax');
+	//alert('fax');
 	//validate_customer_fax();
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 
 
@@ -931,24 +935,27 @@ function save_quick_edit_other_email(email_key){
 	//alert(query);
 	//validate_customer_email_other(email_key);
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 
 
 function save_quick_edit_other_telephone(telephone_key){
 
-	alert('other_telephone');
+	//alert('other_telephone');
 	//alert(query);
 	//validate_customer_telephone_other(telephone_key);
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 
 
 function save_quick_edit_other_mobile(mobile_key){
 
-	alert('other_mobile');
+	//alert('other_mobile');
 	//alert(query);
 	//validate_customer_mobile_other(mobile_key);
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 
 function validate_customer_mobile_other(query,id){
@@ -970,10 +977,11 @@ function validate_customer_mobile_other(query,id){
 
 function save_quick_edit_other_fax(fax_key){
 
-	alert('other_fax');
+	//alert('other_fax');
 	//alert(query);
 	//validate_customer_fax_other(fax_key);
     save_edit_general_bulk('customer');
+	window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
 
 function validate_customer_fax_other(query,id){
@@ -1205,6 +1213,11 @@ dialog_export.render();
                 Dom.setStyle('new_sticky_note_tr','display','none');
             }
 
+			
+
+	
+			
+			
 /*
 dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_long_note.render();
@@ -1433,6 +1446,27 @@ $mobile_key
     customer_fax_oAutoComp.minQueryLength = 0; 
     customer_fax_oAutoComp.queryDelay = 0.1;
 	
+	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
+	
+	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
+	
+	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
+	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	 
+	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
+	//alert("caca")
+	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
+	
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+    Countries_AC.suffix='contact_';
+    Countries_AC.prefix='contact_';
+	Countries_AC.resultTypeList = false;
+	Countries_AC.formatResult = countries_format_results;
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
 /*
 var other_email_count=Dom.get('other_email_count').value;
@@ -1448,8 +1482,8 @@ for(i=0; i<other_email_count; i++)
 }
 
 function validate_customer_name(query){
-alert('query')
-alert(query)
+//alert('query')
+//alert(query)
  validate_general('customer','name',unescape(query));
 }
 
