@@ -197,13 +197,14 @@ function forget_password(o, email){
 
 
     Dom.setXY('password_msg', pos);
-	
+	var store_key=Dom.get('store_key').value;
+    var site_key=1;//Dom.get('site_key').value;
 //email=this.getAttribute('email')
 var url ='http://'+ window.location.host + window.location.pathname;
-var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_id + '&url='+url + '&email='+email
+var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_key + '&url='+url + '&email='+email + '&site_key='+site_key
 Dom.get('password_msg').innerHTML='Sending';
 Dom.get('password_msg').style.display='';
-	            //alert(request);	
+	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){
@@ -1390,7 +1391,7 @@ password='xxxxxxxxxxxxxx';
 var request='ar_edit_users.php?tipo=create_user&values=' + json_value 
 Dom.get('register_msg').innerHTML="Registering in the system"
 				Dom.get('register_msg').style.display='';
-	          //  alert(request);	
+	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 				
 	            success:function(o){
