@@ -895,5 +895,16 @@
 <div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
 </div>
 
+<div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Country List{/t}</span>
+            
+            {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100}
+            <div  id="table100"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
+
 {include file='footer.tpl'}
 
