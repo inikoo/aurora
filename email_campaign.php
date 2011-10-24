@@ -124,7 +124,7 @@ case 'Creating':
 
 
     $color_schemes=array();
-    $sql=sprintf("select * from `Email Template Color Scheme Dimension` limit 100");
+    $sql=sprintf("select * from `Email Template Color Scheme Dimension` where `Store Key`=%d  limit 100",$store->id);
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $color_scheme=array();
