@@ -12,6 +12,7 @@ print "var customer_key=$customer_key;";
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_cancel,dialog_edit_shipping;
+var change_staff_discount;
 YAHOO.namespace ("invoice"); 
 
 var edit_delivery_address;

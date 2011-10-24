@@ -11,6 +11,14 @@ var dialog_new_sticky_note;
 var dialog_sticky_note;
 var dialog_export;
 var dialog_link;
+var dialog_attach;
+var dialog_make_order;
+var dialog_quick_edit_Customer_Name;
+var dialog_quick_edit_Customer_Main_Email;
+var dialog_quick_edit_Customer_Main_Address;
+var dialog_quick_edit_Customer_Main_Telephone;
+var dialog_quick_edit_Customer_Main_Mobile;
+var dialog_quick_edit_Customer_Main_FAX;
 var customer_key=<?php echo $_REQUEST['customer_key']  ?>;
 var customer_type="<?php echo $_REQUEST['customer_type']  ?>";
 var dialog_edit_note;
@@ -51,38 +59,43 @@ var onCellClick = function(oArgs) {
  Dom.setX('dialog_edit_note', x)
     Dom.setY('dialog_edit_note', y)
 dialog_edit_note.show();
-    
     break;
     case 'delete':
         if (record.getData('delete')!='') {
 
             if(record.getData('can_delete')){
-
+			//window.confirm('Are you ?');
             var delete_type=record.getData('delete_type');
-            if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
-               
-
-
-
-  
+            
+			
+			
+			if (window.confirm('Are you sure, you want to '+delete_type+' this row?')) {
+			
                 YAHOO.util.Connect.asyncRequest(
+				
                     'GET',
+					
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
+				
                 success: function (o) {
+				
                    //  alert(o.responseText);
+				   
                         var r = YAHOO.lang.JSON.parse(o.responseText);
+						
                         if (r.state == 200 && r.action=='deleted') {
 
                             this.deleteRow(target);
 
-
                         } else if (r.state == 200 && r.action=='discontinued') {
 
                             var data = record.getData();
-                            data['delete']=r.delete;
+							
+                            data['delete']=r.delete_;
+							
+							
                             data['delete_type']=r.delete_type;
                             this.updateRow(recordIndex,data);
-
 
 
                         } else {
@@ -97,11 +110,8 @@ scope:this
                 );
             }
             }else{
-            
-            
-      
-               
-            
+
+			
             if(record.getData('strikethrough')=='Yes')
             var action='unstrikethrough_';
             else
@@ -118,7 +128,7 @@ scope:this
                         
                           var data = record.getData();
                             data['strikethrough']=r.strikethrough;
-                    data['delete']=r.delete;
+                    data['delete']=r.delete_;
                     
                     //data['delete_type']=r.delete_type;
                             this.updateRow(recordIndex,data);
@@ -1355,14 +1365,19 @@ dialog_new_sticky_note.render();
 dialog_sticky_note = new YAHOO.widget.Dialog("dialog_sticky_note", {context:["sticky_note","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_sticky_note.render();
 
-dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_attach.render();
 
 dialog_link = new YAHOO.widget.Dialog("dialog_link", {context:["link","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_link.render();
 
+//IE bug
+
+
+dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_attach.render();
+
 dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_make_order.render();
+
 
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 Event.addListener("new_sticky_note", "click", dialog_new_sticky_note.show,dialog_new_sticky_note , true);
@@ -1394,7 +1409,7 @@ dialog_export.render();
 			
 
 	
-			
+	
 			
 /*
 dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:true,underlay: "none",draggable:false});
@@ -1421,8 +1436,13 @@ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
 var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
  oAutoComp2.minQueryLength = 0; 
 
- 
+
+
+
+
 if(Dom.get('modify').value == 1){ 
+//IE bug
+
 //Start Quick Edit
 dialog_quick_edit_Customer_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Name", {context:["quick_edit_name","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Name.render();
@@ -1436,6 +1456,8 @@ dialog_quick_edit_Customer_Main_Mobile = new YAHOO.widget.Dialog("dialog_quick_e
 dialog_quick_edit_Customer_Main_Mobile.render();
 dialog_quick_edit_Customer_Main_FAX = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_FAX", {context:["quick_edit_main_fax","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_FAX.render();
+
+
 <?php
 	foreach($customer->get_other_emails_data() as $key=>$value){
 		printf('dialog_quick_edit_Customer_Email%d = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Email%d", {context:["quick_edit_other_email%d","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});', $key, $key, $key);
@@ -1495,7 +1517,7 @@ Event.addListener('quick_edit_main_fax', "dblclick", dialog_quick_edit_Customer_
 	foreach($customer->get_other_faxes_data() as $key=>$value)
 	printf("Event.addListener('quick_edit_other_fax%d', \"dblclick\", dialog_quick_edit_Customer_FAX%d.show,dialog_quick_edit_Customer_FAX%d , true);", $key, $key, $key);	
 ?>
-
+	
 /*
 	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
@@ -1629,7 +1651,7 @@ $mobile_key
     var customer_fax_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_FAX","Customer_Main_FAX_Container", customer_fax_oACDS);
     customer_fax_oAutoComp.minQueryLength = 0; 
     customer_fax_oAutoComp.queryDelay = 0.1;
-	
+
 	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
 	
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 

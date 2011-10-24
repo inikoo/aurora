@@ -681,7 +681,7 @@ function cancel_new_general(branch) {
         //alert(validate_scope_data[branch][items].name)
         var item_input=Dom.get(validate_scope_data[branch][items].name);
         //alert(validate_scope_data[branch][items].name)
-        if (validate_scope_data[branch][items].default!=undefined) {
+        if (validate_scope_data[branch][items].default_!=undefined) {
             if (validate_scope_data[branch][items].type=='select') {
 
                 for ( i in item_input.options) {
@@ -693,7 +693,7 @@ function cancel_new_general(branch) {
 
                 }
             } else {
-                item_input.value=validate_scope_data[branch][items].default;
+                item_input.value=validate_scope_data[branch][items].default_;
             }
         } else {
             item_input.value='';
