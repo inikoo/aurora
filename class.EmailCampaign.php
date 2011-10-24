@@ -366,24 +366,24 @@ class EmailCampaign extends DB_Table {
 
 
 
-    function delete_email_address($email_address_key){
-    
-    
-       $sql=sprintf("delete from  `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
+    function delete_email_address($email_address_key) {
+
+
+        $sql=sprintf("delete from  `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
                      $email_address_key,
                      $this->id
                     );
         $res=mysql_query($sql);
-        
-        if(mysql_affected_rows()){
+
+        if (mysql_affected_rows()) {
             $this->updated=true;
-              $this->update_number_emails();
+            $this->update_number_emails();
             $this->update_recipients_preview();
-        }else{
+        } else {
             $this->msg='can not delete recipient';
-        
+
         }
-        
+
     }
 
 
@@ -641,7 +641,7 @@ class EmailCampaign extends DB_Table {
         $content_keys=$this->get_content_data_keys();
         $email_contents_array=array();
         if (count($content_keys)==1) {
-            $sql=sprintf("select `Email Content Type`,`Email Content Subject`,`Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Source`,`Email Content Metadata` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
+            $sql=sprintf("select `Email Content Color Scheme Key`,`Email Content Template Type`,`Email Content Type`,`Email Content Subject`,`Email Content Type`,`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Source`,`Email Content Metadata` from  `Email Content Dimension`  where `Email Content Key`=%d",array_pop($content_keys));
             $res=mysql_query($sql);
             if ($row=mysql_fetch_assoc($res)) {
 
@@ -659,8 +659,26 @@ class EmailCampaign extends DB_Table {
                             );
                 }
 
+
+
+                $color_scheme=array();
+                $sql=sprintf("select * from `Email Template Color Scheme Dimension` where `Email Template Color Scheme Key`=%d ",$row['Email Content Color Scheme Key']);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+
+                    foreach($row2 as $key=>$value) {
+                        $color_scheme[preg_replace('/ /','_',$key)]=$value;
+                    }
+
+                }
+
+
                 $email_contents_array[$row['Email Content Key']]=array(
                             'type'=>$row['Email Content Type'],
+                            'template_type'=>$row['Email Content Template Type'],
+                            'color_scheme'=>$color_scheme,
+
+
                             'subject'=>$row['Email Content Subject'],
                             'plain'=>$row['Email Content Text'],
                             'html'=>$row['Email Content HTML'],
@@ -843,6 +861,40 @@ class EmailCampaign extends DB_Table {
         }
         return $content_text;
     }
+
+
+    function get_template_type($email_content_key) {
+
+        $template_type='';
+        $sql=sprintf("select `Email Content Template Type` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $template_type= $row['Email Content Template Type'];
+        }
+        return $template_type;
+
+    }
+
+
+
+
+   function get_color_scheme($email_content_key) {
+
+        $color_scheme='';
+        $sql=sprintf("select `Email Content Color Scheme Key` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $color_scheme= $row['Email Content Color Scheme Key'];
+        }
+        return $color_scheme;
+
+    }
+
+
     function get_content_html($email_content_key) {
         $content_html='';
         $sql=sprintf("select `Email Content HTML` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
@@ -1017,9 +1069,9 @@ class EmailCampaign extends DB_Table {
                     );
         mysql_query($sql);
 
-       
+
         foreach($links as $url=>$link_data) {
- $alternative_urls=array();
+            $alternative_urls=array();
             $page=new Page('url',$url);
 
             if (!$page->id or  $page->data['Page Type']!='Store' or $page->data['Page Store Key']!=$this->data['Email Campaign Store Key'] ) {
@@ -1106,9 +1158,9 @@ class EmailCampaign extends DB_Table {
                 $parent_key=0;
                 $parent_name=$url;
             }
-            
+
             unset($page);
-            
+
             $objetive_data=array(
                                'Email Campaign Objetive Parent'=>$parent,
                                'Email Campaign Objetive Parent Key'=>$parent_key,
@@ -1116,7 +1168,7 @@ class EmailCampaign extends DB_Table {
                                'Email Campaign Objetive Type'=>'Link'
 
                            );
-      //      print_r($objetive_data);
+            //      print_r($objetive_data);
             $this->add_objetive($objetive_data);
 
 
@@ -1202,9 +1254,9 @@ class EmailCampaign extends DB_Table {
         }
         $num_emails_not_previewed=$this->data['Number of Emails']-$num_previews_emails;
         if ($num_emails_not_previewed>0) {
-            $this->data['Email Campaign Recipients Preview'].=", ... $num_emails_not_previewed "._('more').' (<a href="email_campaign_mailing_list.php?id='.$this->id.'">'._('View all').'</a>)';
+            $this->data['Email Campaign Recipients Preview'].=", ... $num_emails_not_previewed "._('more');
         } else {
-            $this->data['Email Campaign Recipients Preview'].=' (<a href="email_campaign_mailing_list.php?id='.$this->id.'">'._('Manage Recipients').'</a>)';
+            $this->data['Email Campaign Recipients Preview'];
 
         }
 
@@ -1238,6 +1290,35 @@ class EmailCampaign extends DB_Table {
 
         }
     }
+
+
+    function update_content($email_content_key,$key,$value) {
+
+        $valid_keys=array('Email Content Type','Email Content Template Type');
+        if (in_array($key,$valid_keys)) {
+
+
+            $sql=sprintf("update `Email Content Dimension` set `%s`=%s  where `Email Content Key`=%d ",
+                         $key,
+                         prepare_mysql($value),
+                         $email_content_key
+                        );
+            mysql_query($sql);
+            if (mysql_affected_rows()) {
+                $this->updated=true;
+                $this->new_value=$value;
+            }
+
+        }
+
+
+
+
+
+
+    }
+
+
     function update_paragraph($email_content_key,$paragraph_key,$data) {
 
 

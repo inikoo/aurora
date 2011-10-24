@@ -687,6 +687,15 @@ div.todo {;padding:20px}
 .web_out_of_stock{color:red}
 .web_discontinued{color:brown}
 
-
+ .swatch {
+  float: left;
+ background-image:url('art/swatch_16.png');
+ background-repeat:no-repeat;
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 0 6px 0px 0;
+  color:green
+}
 
 

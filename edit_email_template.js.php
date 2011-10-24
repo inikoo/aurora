@@ -54,7 +54,6 @@ print "paragraph_index={ $paragraph_index };";
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_edit_paragraph;
-var dialog_change_header_image;
 var myEditor;
 
 function edit_paragraph(o,paragraph_key){
@@ -144,14 +143,9 @@ var request='ar_edit_marketing.php?tipo=delete_email_paragraph&values='+ jsonifi
 
 
 
-function change_header_image(){
-
-dialog_change_header_image.show()
-}
 
 function init(){
 
- YAHOO.util.Event.addListener('editableImg1', "click",change_header_image)
 
 
 var dd  = new Object
@@ -225,8 +219,6 @@ new YAHOO.util.DDTarget("target"+targets[x]);
 dialog_edit_paragraph = new YAHOO.widget.Dialog("dialog_edit_paragraph", {fixedcenter : true, visible : false,close:true,underlay: "none",draggable:true});
 dialog_edit_paragraph.render();
 
-dialog_change_header_image = new YAHOO.widget.Dialog("dialog_change_header_image", {fixedcenter : true, visible : false,close:true,underlay: "none",draggable:true});
-dialog_change_header_image.render();
 
 
 

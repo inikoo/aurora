@@ -107,12 +107,51 @@ $smarty->assign('email_content_key',$email_content_key);
 $smarty->assign('edit',$edit);
 $store=new Store($email_campaign->data['Email Campaign Store Key']);
 $smarty->assign('email_campaign',$email_campaign);
-$smarty->assign('header_src',$email_content_data['header_src']);
+
+
+
 $smarty->assign('paragraphs',$email_content_data['paragraphs']);
+
+if (isset($_REQUEST['color_scheme_key']) and is_numeric($_REQUEST['color_scheme_key'])) {
+    $color_scheme=array();
+    $sql=sprintf("select * from `Email Template Color Scheme Dimension` where `Email Template Color Scheme Key`=%d ",
+                 $_REQUEST['color_scheme_key']);
+    $res2=mysql_query($sql);
+    if ($row2=mysql_fetch_assoc($res2)) {
+
+        foreach($row2 as $key=>$value) {
+            $color_scheme[preg_replace('/ /','_',$key)]=$value;
+        }
+
+    }
+} else {
+
+    $color_scheme=$email_content_data['color_scheme'];
+}
+
+$smarty->assign('color_scheme',$color_scheme);
+$header_src=$email_content_data['header_src'];
+if (!$header_src) {
+    $header_src=$color_scheme['Header_Image_Source'];
+}
+
+$smarty->assign('header_src',$header_src);
+
+
+
 $smarty->assign('store',$store);
 
+switch ($email_content_data['template_type']) {
+case 'Basic':
+    $output = $smarty->fetch('email_basic.tpl');
+    break;
+default:
+    $output='';
+    break;
+}
 
-$output = $smarty->fetch('email_basic.tpl');
+
+
 if (preg_match_all('/\%[a-z]+\%/',$output,$matches)) {
     foreach($matches[0] as $match) {
         $output=preg_replace('/'.$match.'/',$customer->get(preg_replace('/\%/','',$match)),$output);
