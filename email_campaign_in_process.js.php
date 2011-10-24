@@ -1170,9 +1170,7 @@ validate_scope_metadata={
     Event.addListener('save_edit_email_campaign', "click", save_edit_email_campaign);
  
      dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", { visible : false,close:true,underlay: "none",draggable:false});
-    dialog_department_list.render()
-    
-    ;
+    dialog_department_list.render();
     Event.addListener("department", "click", show_dialog_department_list);
 
     dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
@@ -1326,10 +1324,155 @@ validate_scope_metadata={
                   Event.addListener("save_color", "click", save_color);
 
 
+                  Event.addListener("reset_default_color_scheme_values", "click", reset_default_color_scheme_values);
+
+
+                  Event.addListener("new_color_scheme", "click", new_color_scheme);
+
+                  Event.addListener("delete_scheme", "click", delete_scheme);
+
+
+
+}
+
+
+function delete_scheme(){
+//todo, display standard dialog (are you sure? [No] [Yes])
+
+save_delete_scheme()
+
+}
+
+
+function save_delete_scheme(){
+
+	var color_scheme_key=Dom.get('color_edit_scheme_key').value;
+	
+	var request='ar_edit_marketing.php?tipo=delete_color_scheme&color_scheme_key='+color_scheme_key
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+	
+            	
+	
+		}else{
+		  
+	    }
+	    }
+	    });
+
+
+}
+
+
+function new_color_scheme(){
+
+
+	var request='ar_edit_marketing.php?tipo=new_color_scheme&kbase_color_scheme_key=0&store_key='+Dom.get('store_key').value
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+	
+            	
+	
+		}else{
+		  
+	    }
+	    }
+	    });
+
+
+}
+
+function save_color_scheme_use_this(color_scheme_key){
+
+var email_campaign_key=Dom.get('email_campaign_key').value;
+	var email_content_key=Dom.get('email_content_key').value;
+	var request='ar_edit_marketing.php?tipo=edit_email_content&email_campaign_key='+email_campaign_key+'&email_content_key='+email_content_key+'&key=Email Content Color Scheme Key&value='+color_scheme_key;
+//alert(request)
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+	//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+             
+    Dom.setStyle(["color_scheme_in_use_"+r.old_value,"color_scheme_use_this_"+r.new_value],'display','none')
+                        Dom.setStyle(["color_scheme_in_use_"+r.new_value,"color_scheme_use_this_"+r.old_value],'display','')
+
+       
+                
+            
+		}else{
+		  
+	    }
+	    }
+	    });
+	
+
+
+}
+
+
+function reset_default_color_scheme_values(){
+
+	var color_scheme_key=Dom.get('color_edit_scheme_key').value;
+
+	var request='ar_edit_marketing.php?tipo=reset_color_scheme&color_scheme_key='+color_scheme_key;
+//alert(request)
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+  
+              Dom.get('color_scheme_kbase_modified_'+r.color_scheme_key).value='No';
+              
+              
+              
+              for (x in r.color_scheme_data){
+                Dom.setStyle('color_scheme_'+x+'_'+r.color_scheme_key,'background-color',r.color_scheme_data.x)
+                Dom.get('color_scheme_'+x+'_'+r.color_scheme_key).setAttribute('alt',r.color_scheme_data.x)
+              }
+              
+              
+             
+             
+              
+              
+              
+              
+              
+              
+              
+              
+
+  color_scheme_view_details(r.color_scheme_key)
+		}else{
+		  
+	    }
+	    }
+	    });
+
 }
 
 function close_edit_color_dialog(){
 dialog_edit_color.hide();
+}
+
+function close_color_scheme_view_details(color_scheme_key){
+color_scheme_rows=Dom.getElementsByClassName('color_scheme', 'tr', 'color_schemes');
+
+Dom.setStyle(color_scheme_rows,'display','');
+
+
+Dom.setStyle('color_scheme_view_details_'+color_scheme_key,'display','');
+
+
+Dom.setStyle(['color_scheme_details','close_color_scheme_view_details_'+color_scheme_key],'display','none');
+
+
 }
 
 
@@ -1423,6 +1566,16 @@ function save_color(){
 		 Dom.get('template_email_iframe').contentDocument.location.reload(true);
             Dom.setStyle('color_scheme_'+r.element,'background-color','#'+r.color)
             Dom.get('color_scheme_'+r.element,'background-color').setAttribute('alt','#'+r.color)
+            
+            
+            Dom.get('color_scheme_kbase_modified_'+r.color_scheme_key).value=r.kbase_modified;
+            if(r.kbase_modified=='Yes'){
+Dom.setStyle('reset_default_color_scheme_values','display','')
+}else{
+Dom.setStyle('reset_default_color_scheme_values','display','none')
+}
+            
+            
 		dialog_edit_color.hide();
 		}else{
 		  
@@ -1476,6 +1629,12 @@ Dom.setStyle('objetives_second_label','visibility','hidden')
 function color_scheme_view_details(color_scheme_key){
 Dom.get('color_edit_scheme_key').value=color_scheme_key;
 Dom.get('template_email_iframe').src="email_template.php?email_campaign_key="+Dom.get('email_campaign_key').value+"&email_content_key="+Dom.get('email_content_key').value+"&color_scheme_key="+color_scheme_key
+
+if(Dom.get('color_scheme_kbase_modified_'+color_scheme_key).value=='Yes'){
+Dom.setStyle('reset_default_color_scheme_values','display','')
+}else{
+Dom.setStyle('reset_default_color_scheme_values','display','none')
+}
 
 color_scheme_rows=Dom.getElementsByClassName('color_scheme', 'tr', 'color_schemes');
 Dom.setStyle(color_scheme_rows,'display','none');

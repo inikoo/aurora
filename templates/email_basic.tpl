@@ -14,9 +14,6 @@
 
 <STYLE>
 
- a { color:#{/literal}{$color_scheme.Link_Container}{literal} }
-.footer a{ color:#{/literal}{$color_scheme.Link_Footer}{literal} }
-.header a{ color:#{/literal}{$color_scheme.Link_Header}{literal} }
 
  .target.over {color:#000;border:1px solid #777;font-weight:800}
 .target {border:1px solid #ccc;padding:0 20px;color:#777;text-align:center}
@@ -28,6 +25,15 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 {/literal}
 
 {/if}
+{literal}
+<STYLE>
+
+ a { color:#{/literal}{$color_scheme.Link_Container}{literal} }
+.footer a{ color:#{/literal}{$color_scheme.Link_Footer}{literal} }
+.header a{ color:#{/literal}{$color_scheme.Link_Header}{literal} }
+
+</STYLE>
+{/literal}
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" bgcolor='#{$color_scheme.Background_Body}' class="yui-skin-sam" >
 
 

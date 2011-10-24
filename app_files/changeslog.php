@@ -4962,7 +4962,7 @@ ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Lin
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Scope Link Clicks` `Email Campaign Objetive Link Clicks` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Link Key` `Email Campaign Objetive Links` MEDIUMINT UNSIGNED NULL DEFAULT '0';
 
-CREATE TABLE `dw`.`Email Campaign Objetive Link Bridge` (
+CREATE TABLE `Email Campaign Objetive Link Bridge` (
 `Email Campaign Objetive Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Email Link Key` MEDIUMINT UNSIGNED NOT NULL ,
 PRIMARY KEY ( `Email Campaign Objetive Key` , `Email Link Key` )
@@ -4997,6 +4997,8 @@ ALTER TABLE `Email Template Color Scheme Dimension` ADD `H1` VARCHAR( 6 ) NOT NU
 ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Key` MEDIUMINT NOT NULL DEFAULT '1' AFTER `Email Content Template Type` ;
 ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Source` `Email Content Header Image Source` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
 ALTER TABLE `Email Template Color Scheme Dimension` ADD `Kbase Key` MEDIUMINT NULL DEFAULT NULL ,ADD `Kbase Modifed` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+ALTER TABLE `Email Template Color Scheme Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Color Scheme Name` ,ADD INDEX ( `Store Key` ); 
+ALTER TABLE `Email Template Color Scheme Dimension` CHANGE `Text Header` `Text Header` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FFFFFF';
 
 */
 
