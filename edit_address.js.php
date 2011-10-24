@@ -316,12 +316,13 @@ hide_new_delivery_address();
 //alert(request);
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-           //  alert(o.responseText)
+            // alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
                 if(r.state==200){
                 if (r.action=='updated') {
-               
-			  Dom.setStyle('dialog_quick_edit_Customer_Main_Address','display','none')
+					branch='address';
+					post_item_updated_actions(branch,r)
+			  //Dom.setStyle('dialog_quick_edit_Customer_Main_Address','display','none')
               
                // window.location.reload( false );
 

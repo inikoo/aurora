@@ -985,63 +985,90 @@ function take_order(){
 
 
 function post_item_updated_actions(branch,r){
-alert(r.key);
+//alert(r.key);
 
 	if(r.key=='name'){
+		dialog_quick_edit_Customer_Name.hide();
 		Dom.get('main_name').innerHTML=r.newvalue;
 		Dom.get('Customer_Name').innerHTML=r.newvalue;
 		Dom.get('contact_name_id').innerHTML=r.newvalue;
+		Dom.get('Customer_Name_msg').innerHTML='';
 		
 		if(customer_type=='Person')
 			Dom.get('customer_name_heading').innerHTML=r.newvalue;
 	}
 	if(r.key=='mobile'){
+		dialog_quick_edit_Customer_Main_Mobile.hide();
 		Dom.get('main_mobile').innerHTML=r.newvalue;
 		Dom.get('Customer_Mobile').innerHTML=r.newvalue;
+		Dom.get('Customer_Main_Mobile_msg').innerHTML='';
 	}
 	else if(r.key=='email'){
+		dialog_quick_edit_Customer_Main_Email.hide();
 		Dom.get('main_email').innerHTML='<a href="mailto:'+r.newvalue+'">'+r.newvalue+'</a>';
 		Dom.get('Customer_Main_Email').innerHTML=r.newvalue;
 		Dom.get('contact_email_id').innerHTML='<a href="mailto:'+r.newvalue+'">'+r.newvalue+'</a>';
+		Dom.get('Customer_Main_Email_msg').innerHTML='';
+		
 	}
 	else if(r.key.match(/email/gi)){
-
 		var email_id=r.key.split('email');
 		Dom.get(r.key).innerHTML='<a href="mailto:'+r.newvalue+'">'+r.newvalue+'</a>';
 		Dom.get('Customer_Email'+email_id[1]).innerHTML=r.newvalue;
+		eval('dialog_quick_edit_Customer_Email'+email_id[1]).hide();
+		Dom.get('Customer_Email'+email_id[1]+'_msg').innerHTML='';
 	}
 	else if(r.key=='telephone'){
-
+		dialog_quick_edit_Customer_Main_Telephone.hide();
 		Dom.get('main_telephone').innerHTML=r.newvalue;
 		Dom.get('Customer_Main_Telephone').innerHTML=r.newvalue;
 		Dom.get('contact_telephone_id').innerHTML=r.newvalue;
+		Dom.get('Customer_Main_Telephone_msg').innerHTML='';
+		
 	}
 	else if(r.key=='fax'){
-
+		dialog_quick_edit_Customer_Main_FAX.hide();
 		Dom.get('main_fax').innerHTML=r.newvalue;
 		Dom.get('Customer_Main_FAX').innerHTML=r.newvalue;
 		Dom.get('contact_fax_id').innerHTML=r.newvalue;
+		Dom.get('Customer_Main_FAX_msg').innerHTML='';
+		
 	}
 	else if(r.key.match(/telephone/gi)){
 
 		var telephone_id=r.key.split('telephone');
 		Dom.get(r.key).innerHTML=r.newvalue;
 		Dom.get('Customer_Telephone'+telephone_id[1]).innerHTML=r.newvalue;
+		eval('dialog_quick_edit_Customer_Telephone'+telephone_id[1]).hide();
+		Dom.get('Customer_Telephone'+telephone_id[1]+'_msg').innerHTML='';
+		
 	}
 	else if(r.key.match(/fax/gi)){
 
 		var fax_id=r.key.split('fax');
 		Dom.get(r.key).innerHTML=r.newvalue;
 		Dom.get('Customer_FAX'+fax_id[1]).innerHTML=r.newvalue;
+		eval('dialog_quick_edit_Customer_FAX'+fax_id[1]).hide();
+		Dom.get('Customer_FAX'+fax_id[1]+'_msg').innerHTML='';
+		
 	}
 	else if(r.key.match(/mobile/gi)){
 
 		var mobile_id=r.key.split('mobile');
 		Dom.get(r.key).innerHTML=r.newvalue;
 		Dom.get('Customer_Mobile'+mobile_id[1]).innerHTML=r.newvalue;
+		eval('dialog_quick_edit_Customer_Mobile'+mobile_id[1]).hide();
+		Dom.get('Customer_Mobile'+mobile_id[1]+'_msg').innerHTML='';
+		
 	}
-	else
-		alert('non');
+	else if(branch=='address'){
+		dialog_quick_edit_Customer_Main_Address.hide();
+		Dom.get('quick_edit_main_address').innerHTML=r.xhtml_address;
+		if(r.is_main_delivery=='Yes')
+			Dom.get('main_delivery_address').innerHTML=r.xhtml_address;
+	}
+	//else
+		//alert('non');
 }
 
 function save_quick_edit_name(){

@@ -329,7 +329,7 @@
 <table    class="show_info_product">
 
 		   <tr >
-		  		      <td>{t}Delivery Address{/t}:</td><td>{$customer->get('Customer XHTML Main Delivery Address')}</td>
+		  		      <td>{t}Delivery Address{/t}:</td><td id="main_delivery_address">{$customer->get('Customer XHTML Main Delivery Address')}</td>
 
 		    </tr>
 		</table>
@@ -727,6 +727,10 @@
 
 <div id="dialog_quick_edit_Customer_Name" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td colspan=2><div id="Customer_Name_msg"></div></td>
+	<td  colspan=2 id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Contact Name:{/t}</td>
 	<td>
@@ -735,8 +739,7 @@
 	<div id="Customer_Name_Container"  ></div>
 	</div>	
 	</td>
-	<td><div id="Customer_Name_msg"></div></td>
-	<td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" id="save_quick_edit_name" value="Save"></td></tr>
 	</table>
@@ -768,6 +771,10 @@
 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
 <div id="dialog_quick_edit_Customer_Email{$key}" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_Email{$key}_msg"></div></td>
+	
+	</tr>
 	<tr>
 	<td>{t}Other Email:{/t}</td>
 	<td>
@@ -776,8 +783,7 @@
 	<div id="Customer_Email{$key}_Container"  ></div>
 	</div>	
 	</td>
-	<td><div id="Customer_Email{$key}_msg"></div></td>
-	<td id="Customer_Email{$key}_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_email({$key})" value="Save"/></td></tr>
 	</table>
@@ -788,6 +794,10 @@
 
 <div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_Main_Telephone_msg"></div></td>
+	<td   colspan=2 id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Telephone:{/t}</td>
 	<td>
@@ -796,8 +806,7 @@
 	<div id="Customer_Main_Telephone_Container"></div>
 	</div>	
 	</td>
-	<td><div id="Customer_Main_Telephone_msg"></div></td>
-	<td id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" id="save_quick_edit_telephone" value="Save"></td></tr>
 	</table>
@@ -807,6 +816,10 @@
 {foreach from=$customer->get_other_telephones_data() item=other_telephone key=key}
 <div id="dialog_quick_edit_Customer_Telephone{$key}" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_Telephone{$key}_msg"></div></td>
+	<td   colspan=2 id="Customer_Telephone{$key}_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Other Telephone:{/t}</td>
 	<td>
@@ -815,8 +828,7 @@
 	<div id="Customer_Telephone{$key}_Container"></div>
 	</div>
 	</td>
-	<td><div id="Customer_Telephone{$key}_msg"></div></td>
-	<td id="Customer_Telephone{$key}_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_telephone({$key})" value="Save"></td></tr>
 	</table>
@@ -826,6 +838,10 @@
 
 <div id="dialog_quick_edit_Customer_Main_Mobile" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_Main_Mobile_msg"></div></td>
+	<td   colspan=2 id="Customer_Main_Mobile_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Mobile:{/t}</td>
 	<td>
@@ -834,8 +850,7 @@
 	<div id="Customer_Main_Mobile_Container"></div>
 	</div>	
 	</td>
-	<td><div id="Customer_Main_Mobile_msg"></div></td>
-	<td id="Customer_Main_Mobile_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" id="save_quick_edit_mobile" value="Save"></td></tr>
 	</table>
@@ -845,6 +860,10 @@
 {foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key}
 <div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_Mobile{$key}_msg"></div></td>
+	<td  colspan=2  id="Customer_Mobile{$key}_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Other Mobile:{/t}</td>
 	<td>
@@ -854,8 +873,7 @@
 	</div>
 		
 	</td>
-	<td><div id="Customer_Mobile{$key}_msg"></div></td>
-	<td id="Customer_Mobile{$key}_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_mobile({$key})" value="Save"></td></tr>
 	</table>
@@ -865,6 +883,10 @@
 
 <div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_Main_FAX_msg"></div></td>
+	<td   colspan=2 id="Customer_Main_FAX_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Fax:{/t}</td>
 	<td>
@@ -873,8 +895,7 @@
 	<div id="Customer_Main_FAX_Container"></div>
 	</div>	
 	</td>
-	<td><div id="Customer_Main_FAX_msg"></div></td>
-	<td id="Customer_Main_FAX_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" id="save_quick_edit_fax" value="Save"></td></tr>
 	</table>
@@ -885,6 +906,10 @@
 {foreach from=$customer->get_other_faxes_data() item=other_fax key=key}
 <div id="dialog_quick_edit_Customer_FAX{$key}" style="padding:10px">
 	<table style="margin:10px">
+	<tr colspan=2>
+	<td  colspan=2 ><div id="Customer_FAX{$key}_msg"></div></td>
+	<td  colspan=2  id="Customer_FAX{$key}_msg" class="edit_td_alert"></td>
+	</tr>
 	<tr>
 	<td>{t}Other FAX:{/t}</td>
 	<td>
@@ -893,8 +918,7 @@
 	<div id="Customer_FAX{$key}_Container"></div>
 	</div>	
 	</td>
-	<td><div id="Customer_FAX{$key}_msg"></div></td>
-	<td id="Customer_FAX{$key}_msg" class="edit_td_alert"></td>
+
 	</tr>
 	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_fax({$key})" value="Save"></td></tr>
 	</table>
