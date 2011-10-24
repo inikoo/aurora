@@ -15,7 +15,31 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('delete_color_scheme'):
+    $data=prepare_values($_REQUEST,array(
+                             'color_scheme_key'=>array('type'=>'key'),
+                          
+                         ));
+    delete_color_scheme($data);
 
+    break;
+
+case('new_color_scheme'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                             'kbase_color_scheme_key'=>array('type'=>'numeric'),
+                         ));
+    new_color_scheme($data);
+
+    break;
+case('reset_color_scheme'):
+    $data=prepare_values($_REQUEST,array(
+                             'color_scheme_key'=>array('type'=>'key'),
+
+                         ));
+    reset_color_scheme($data);
+
+    break;
 case('edit_color_scheme'):
 
     $data=prepare_values($_REQUEST,array(
@@ -518,7 +542,7 @@ function edit_email_content($data) {
     if ($email_campaign->updated) {
 
 
-        $response= array('state'=>200,'key'=>$data['key'],'new_value'=>$email_campaign->new_value);
+        $response= array('state'=>200,'key'=>$data['key'],'new_value'=>$email_campaign->new_value,'old_value'=>$email_campaign->old_value);
 
     } else {
         $response= array('state'=>400,'msg'=>'no change');
@@ -1021,12 +1045,6 @@ function add_email_campaign_objective($data) {
 }
 
 
-
-$data=prepare_values($_REQUEST,array(
-                         'color_scheme_key'=>array('type'=>'key'),
-                         'color_element'=>array('type'=>'string'),
-                         'color'=>array('type'=>'string'),
-                     ));
 function edit_color_scheme($data) {
 
     $field=addslashes(preg_replace('/_/',' ',$data['color_element']));
@@ -1057,10 +1075,10 @@ function edit_color_scheme($data) {
             if ($row2=mysql_fetch_assoc($res2)) {
 
                 foreach($row2 as $element=>$kbase_value) {
-                    if ($row[$element]!=$row2[$element]){
+                    if ($row[$element]!=$row2[$element]) {
                         $kbase_modified='Yes';
                         break;
-                        }
+                    }
                 }
 
 
@@ -1070,19 +1088,20 @@ function edit_color_scheme($data) {
         }
 
 
-      $sql=sprintf("update `Email Template Color Scheme Dimension` set `Kbase Modifed`=%s where `Email Template Color Scheme Key`=%d",
-                 prepare_mysql($kbase_modified),
-                 $data['color_scheme_key']
+        $sql=sprintf("update `Email Template Color Scheme Dimension` set `Kbase Modifed`=%s where `Email Template Color Scheme Key`=%d",
+                     prepare_mysql($kbase_modified),
+                     $data['color_scheme_key']
 
-                );
-mysql_query($sql);
+                    );
+        mysql_query($sql);
 
         $response= array(
                        'state'=>200,
                        'action'=>'changed',
                        'color'=>$data['color'],
                        'kbase_modified'=>$kbase_modified,
-                       'element'=>$data['color_element']
+                       'element'=>$data['color_element'],
+                       'color_scheme_key'=>$data['color_scheme_key']
                    );
 
     } else {
@@ -1095,5 +1114,120 @@ mysql_query($sql);
 
     echo json_encode($response);
 }
+
+
+function reset_color_scheme($data) {
+
+
+    $sql=sprintf("select * from `Email Template Color Scheme Dimension` where  `Email Template Color Scheme Key`=%d",
+                 $data['color_scheme_key']
+                );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+        $sql=sprintf("select `Background Body`,`Background Header`,`Background Footer`,`Background Container`,`Text Header`,`Text Container`,`Text Footer`,`Link Header`,`Link Container`,`Link Footer`,`H1`,`H2` from  kbase.`Email Template Color Scheme Dimension` where `Email Template Color Scheme Key`=%d",
+                     $row['Kbase Key']
+                    );
+        $res2=mysql_query($sql);
+        //print $sql;
+        if ($row2=mysql_fetch_assoc($res2)) {
+            $color_scheme_data=array();
+            $sql_data='';
+            foreach($row2 as $element=>$kbase_value) {
+                $sql_data.=sprintf (',`%s`=%s',$element,prepare_mysql($kbase_value));
+                $color_scheme_data[preg_replace('/ /','_',$element)]=$kbase_value;
+            }
+            $sql=sprintf("update `Email Template Color Scheme Dimension`  set  `Kbase Modifed`='No' %s where `Email Template Color Scheme Key`=%d ",
+                         $sql_data,
+                         $data['color_scheme_key']
+                        );
+            mysql_query($sql);
+
+            $response= array(
+                           'state'=>200,
+                           'action'=>'changed',
+                           'color_scheme_key'=>$data['color_scheme_key'],
+                           'color_scheme_data'=>$color_scheme_data
+                       );
+
+        } else {
+            $response= array(
+                           'state'=>200,
+                           'action'=>'nochange'
+                       );
+
+        }
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'action'=>'nochange'
+                   );
+
+    }
+
+
+    echo json_encode($response);
+
+
+}
+
+
+function new_color_scheme($data) {
+
+
+    $sql=sprintf("insert into `Email Template Color Scheme Dimension`      (`Store Key`) values (%d) ",
+                 $data['store_key']
+                );
+    mysql_query($sql);
+    $id=mysql_insert_id();
+    if($id){
+    $name='CS'.$id;
+
+    $sql=sprintf("update `Email Template Color Scheme Dimension` set `Email Template Color Scheme Name`=%s  where `Email Template Color Scheme Key`=%d",
+                 prepare_mysql($name),
+                 $id
+                );
+    mysql_query($sql);
+       $response= array(
+                       'state'=>200,
+                       'action'=>'created'
+                   );
+               
+}else{
+  $response= array(
+                       'state'=>400,
+                       'msg'=>mysql_error()
+                   );
+
+}
+
+ echo json_encode($response);     
+
+}
+
+function delete_color_scheme($data){
+
+ $sql=sprintf("delete from `Email Template Color Scheme Dimension`  where `Email Template Color Scheme Key`=%d",
+           
+                 $data['color_scheme_key']
+                );
+    mysql_query($sql);
+    
+    if(mysql_affected_rows()){
+      $response= array(
+                       'state'=>200,
+                       'action'=>'deleted'
+                   );
+    }else{
+      $response= array(
+                       'state'=>400,
+                       'action'=>'nochange'
+                   );
+    }
+     echo json_encode($response);     
+
+
+}
+
 
 ?>

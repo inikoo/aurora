@@ -3,6 +3,8 @@
 {include file='marketing_navigation.tpl'}
 <input type="hidden" id="email_content_key" value="{$current_content_key}"/>
 <input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
+<input type="hidden" id="store_key" value="{$email_campaign->get('Email Campaign Store Key')}">
+
 <input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 
 
@@ -268,6 +270,8 @@
 <td></td>
 <td colspan=2>
 <div class="buttons">
+<button id="new_color_scheme" ><img src="art/icons/add.png" alt=""/> {t}Scheme{/t}</button>
+
 <button id="close_change_template_color_scheme" ><img src="art/icons/arrow_left.png" alt=""/> {t}Go back to Edit Email{/t}</button>
 
 </div>
@@ -281,6 +285,7 @@
 <td style="padding:2px 0;width:120px">{$color_scheme.Email_Template_Color_Scheme_Name}</td>
 <td>
 
+<input type="hidden" id="color_scheme_kbase_modified_{$color_scheme.Email_Template_Color_Scheme_Key}"  value="{$color_scheme.Kbase_Modifed}" >
 <span id="color_scheme_Background_Body_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Body};" alt="{$color_scheme.Background_Body}" title="{t}Background{/t}"></span>
 <span id="color_scheme_Background_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Header};" alt="{$color_scheme.Background_Header}" title="{t}Background Header{/t}"></span>
 <span id="color_scheme_Text_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Text_Header};" alt="{$color_scheme.Text_Header}" title="{t}Text Header{/t}"></span>
@@ -299,10 +304,10 @@
 </td>
 <td>
 <div class="buttons">
-<button  style="width:100px;{if $current_color_scheme!=$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_in_use_{$color_scheme.Email_Template_Color_Scheme_Key}" class="selected">{t}Selected{/t}<img  class="selected" src="art/icons/accept.png"/></button>
-<button style="width:100px;{if $current_color_scheme==$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_use_this_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="color_scheme_use_this({$color_scheme.Email_Template_Color_Scheme_Key})" >{t}Use this{/t}</button>
+<button style="width:100px;{if $current_color_scheme!=$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_in_use_{$color_scheme.Email_Template_Color_Scheme_Key}" class="selected">{t}Selected{/t}<img  class="selected" src="art/icons/accept.png"/></button>
+<button style="width:100px;{if $current_color_scheme==$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_use_this_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="save_color_scheme_use_this({$color_scheme.Email_Template_Color_Scheme_Key})" >{t}Use this{/t}</button>
 <button id="color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">{t}View Details{/t}</button>
-<button id="close_color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="close_color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">Go Back</button>
+<button style="display:none" id="close_color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="close_color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">Go Back</button>
 
 </div>
 </td>
@@ -316,7 +321,7 @@
 <td style="padding:0px" colspan="3">
 
 <iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:600px;height:100px;float:right" >
-<p>Your browser does not support iframes.</p>
+<p>{t}Your browser does not support iframes{/t}.</p>
 </iframe>
 <table style="width:150px;margin-top:10px;font-size:90%">
 <tr><td>{t}Canvas{/t}</td></tr>
@@ -339,6 +344,18 @@
 <tr><td><span id="color_scheme_Background_Footer" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Background_Footer};" alt="{$color_scheme.Background_Footer}" title="{t}Footer Background{/t}"></span> {t}Background{/t}</td></tr>
 <tr><td><span id="color_scheme_Text_Footer" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Text_Footer};" alt="{$color_scheme.Text_Footer}" title="{t}Text Footer{/t}"></span> {t}Text{/t}</td></tr>
 <tr><td><span id="color_scheme_Link_Footer" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Link_Footer};" alt="{$color_scheme.Link_Footer}" title="{t}Links Footer{/t}"></span> {t}Links{/t}</td></tr>
+
+<tbody>
+<tr style="height:30px"><td></td></tr>
+<tr>
+<td>
+<div class="buttons left">
+<button id="reset_default_color_scheme_values" >{t}Reset Default{/t}</button><br/>
+<button style="margin-top:10px" id="delete_scheme" class="negative" >{t}Delete Scheme{/t}</button><br/>
+
+</div>
+</td>
+</tr>
 
 </table>
 </td>
