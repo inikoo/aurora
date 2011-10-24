@@ -823,10 +823,10 @@ function save_edit_general_bulk(branch) {
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request);//return;
+//alert(request);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-  alert(o.responseText);
+  //alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
