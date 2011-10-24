@@ -17,7 +17,7 @@ var validate_scope_metadata;
 var dialog_preview_text_email;
 var dialog_send_email_campaign;
 var dialog_department_list;
-
+var dialog_edit_color;
 function select_department(oArgs){
     parent_key=tables.table5.getRecord(oArgs.target).getData('key')
     var request='ar_edit_marketing.php?tipo=add_email_campaign_objective&email_campaign_key='+Dom.get('email_campaign_key').value+'&parent=Department&parent_key='+parent_key;
@@ -1279,7 +1279,173 @@ validate_scope_metadata={
 
       Event.addListener("show_add_object_manually", "click", show_add_object_manually);
 
-    
+
+      Event.addListener("change_template_layout", "click", show_change_template_layout);
+      Event.addListener("change_template_color_scheme", "click", show_change_template_color_scheme);
+      Event.addListener("change_template_header_image", "click", show_change_template_header_image);
+      
+      
+            Event.addListener("change_template_layout_basic", "click", save_change_template_layout,'Basic');
+            Event.addListener("change_template_layout_right_column", "click", save_change_template_layout,'Right Column');
+            Event.addListener("change_template_layout_left_column", "click", save_change_template_layout,'Left Column');
+            Event.addListener("change_template_layout_postcard", "click", save_change_template_layout,'Postcard');
+
+      
+                  Event.addListener("close_change_template_layout", "click", close_change_template_layout);
+
+ color_picker = new YAHOO.widget.ColorPicker("edit_color", {
+	showhsvcontrols: true,
+	showhexcontrols: true,
+	images: {
+		PICKER_THUMB: "art/picker_thumb.png",
+		HUE_THUMB: "art/hue_thumb.png"
+	}
+});
+
+   dialog_edit_color = new YAHOO.widget.Dialog("dialog_edit_color", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_edit_color.render();
+
+
+
+                  Event.addListener("color_scheme_Background_Body", "click", show_edit_color_dialog,'Background_Body');
+                  Event.addListener("color_scheme_Background_Header", "click", show_edit_color_dialog,'Background_Header');
+                  Event.addListener("color_scheme_Text_Header", "click", show_edit_color_dialog,'Text_Header');
+                  Event.addListener("color_scheme_Link_Header", "click", show_edit_color_dialog,'Link_Header');
+                  Event.addListener("color_scheme_Background_Container", "click", show_edit_color_dialog,'Background_Container');
+                  Event.addListener("color_scheme_H1", "click", show_edit_color_dialog,'H1');
+                  Event.addListener("color_scheme_H2", "click", show_edit_color_dialog,'H2');
+                  Event.addListener("color_scheme_Text_Container", "click", show_edit_color_dialog,'Text_Container');
+                  Event.addListener("color_scheme_Link_Container", "click", show_edit_color_dialog,'Link_Container');
+                  Event.addListener("color_scheme_Background_Footer", "click", show_edit_color_dialog,'Background_Footer');
+                  Event.addListener("color_scheme_Text_Footer", "click", show_edit_color_dialog,'Text_Footer');
+                  Event.addListener("color_scheme_Link_Footer", "click", show_edit_color_dialog,'Link_Footer');
+
+
+
+                  Event.addListener("close_edit_color_dialog", "click", close_edit_color_dialog);
+                  Event.addListener("save_color", "click", save_color);
+
+
+}
+
+function close_edit_color_dialog(){
+dialog_edit_color.hide();
+}
+
+
+function show_edit_color_dialog(e,element){
+
+
+Dom.get('color_edit_element').value=element;
+
+var color = new RGBColor(Dom.getStyle(this,'background-color'));
+
+
+color_picker.setValue([color.r,color.g,color.b], false);
+ var pos = Dom.getXY(this);
+ pos[0]=pos[0]+20
+ Dom.setXY('dialog_edit_color', pos);
+dialog_edit_color.show();
+}
+
+function close_change_template_layout(){
+Dom.setStyle('change_template_layout_tr','display','none')
+Dom.setStyle(['template_editor_tr','change_template_buttons'],'display','')
+
+
+}
+
+
+function save_change_template_layout(e,value){
+
+	var email_campaign_key=Dom.get('email_campaign_key').value;
+	var email_content_key=Dom.get('email_content_key').value;
+	var request='ar_edit_marketing.php?tipo=edit_email_content&email_campaign_key='+email_campaign_key+'&email_content_key='+email_content_key+'&key=Email Content Template Type&value='+value;
+//alert(request)
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+             
+         if(r.key=='Email Content Template Type'){
+                Dom.removeClass(['change_template_layout_basic','change_template_layout_right_column','change_template_layout_left_column','change_template_layout_postcard'],'selected');
+                                Dom.setStyle(['selected_template_layout_basic','selected_template_layout_right_column','selected_template_layout_left_column','selected_template_layout_postcard'],'display','none')
+
+                if(r.new_value=='Basic'){
+                Dom.addClass('change_template_layout_basic','selected')
+                Dom.setStyle('selected_template_layout_basic','display','')
+                
+                }else if(r.new_value=='Left Column'){
+                  Dom.addClass('change_template_layout_left_column','selected')
+                Dom.setStyle('selected_template_layout_left_column','display','')
+                }else if(r.new_value=='Right Column'){
+                  Dom.addClass('change_template_layout_right_column','selected')
+                Dom.setStyle('selected_template_layout_right_column','display','')
+                }else if(r.new_value=='Postcard'){
+                  Dom.addClass('change_template_layout_postcard','selected')
+                Dom.setStyle('selected_template_layout_postcard','display','')
+                }
+                Dom.get('template_email_iframe').contentDocument.location.reload(true);
+                
+                close_change_template_layout()
+                
+                
+         
+         }
+          
+                
+            
+		}else{
+		  
+	    }
+	    }
+	    });
+	
+
+
+}
+
+
+function save_color(){
+
+
+	var color_scheme_key=Dom.get('color_edit_scheme_key').value;
+	var color_element=Dom.get('color_edit_element').value;
+	var color=  color_picker.get("hex")
+	var request='ar_edit_marketing.php?tipo=edit_color_scheme&color_scheme_key='+color_scheme_key+'&color_element='+color_element+'&color='+color;
+
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		 Dom.get('template_email_iframe').contentDocument.location.reload(true);
+            Dom.setStyle('color_scheme_'+r.element,'background-color','#'+r.color)
+            Dom.get('color_scheme_'+r.element,'background-color').setAttribute('alt','#'+r.color)
+		dialog_edit_color.hide();
+		}else{
+		  
+	    }
+	    }
+	    });
+
+}
+
+
+function show_change_template_layout(){
+
+Dom.setStyle(['template_editor_tr','change_template_buttons'],'display','none');
+Dom.setStyle('change_template_layout_tr','display','');
+
+}
+
+function show_change_template_color_scheme(){
+Dom.setStyle(['template_editor_tr','change_template_buttons'],'display','none');
+Dom.setStyle('change_template_color_scheme_tr','display','');
+}
+
+function show_change_template_header_image(){
 
 }
 
@@ -1305,6 +1471,34 @@ Dom.setStyle('add_objetive_tr','display','')
 function hide_add_object_manually(){
 
 Dom.setStyle('objetives_second_label','visibility','hidden')
+}
+
+function color_scheme_view_details(color_scheme_key){
+Dom.get('color_edit_scheme_key').value=color_scheme_key;
+Dom.get('template_email_iframe').src="email_template.php?email_campaign_key="+Dom.get('email_campaign_key').value+"&email_content_key="+Dom.get('email_content_key').value+"&color_scheme_key="+color_scheme_key
+
+color_scheme_rows=Dom.getElementsByClassName('color_scheme', 'tr', 'color_schemes');
+Dom.setStyle(color_scheme_rows,'display','none');
+Dom.setStyle('color_scheme_view_details_'+color_scheme_key,'display','none');
+
+Dom.setStyle(['color_scheme_details','color_scheme_tr_'+color_scheme_key,'close_color_scheme_view_details_'+color_scheme_key],'display','');
+
+
+Dom.setStyle('color_scheme_Background_Body','background-color',Dom.getStyle('color_scheme_Background_Body_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Background_Header','background-color',Dom.getStyle('color_scheme_Background_Header_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Background_Container','background-color',Dom.getStyle('color_scheme_Background_Container_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Background_Footer','background-color',Dom.getStyle('color_scheme_Background_Footer_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Text_Header','background-color',Dom.getStyle('color_scheme_Text_Header_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Link_Header','background-color',Dom.getStyle('color_scheme_Link_Header_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Text_Footer','background-color',Dom.getStyle('color_scheme_Text_Footer_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Link_Footer','background-color',Dom.getStyle('color_scheme_Link_Footer_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Text_Container','background-color',Dom.getStyle('color_scheme_Text_Container_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_Link_Container','background-color',Dom.getStyle('color_scheme_Link_Container_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_H1','background-color',Dom.getStyle('color_scheme_H1_'+color_scheme_key, 'background-color'))
+Dom.setStyle('color_scheme_H2','background-color',Dom.getStyle('color_scheme_H2_'+color_scheme_key, 'background-color'))
+
+
+
 }
 
 

@@ -1,6 +1,11 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='marketing_navigation.tpl'}
+<input type="hidden" id="email_content_key" value="{$current_content_key}"/>
+<input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
+<input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
+
+
 <div> 
   <span class="branch">{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {$email_campaign->get('Email Campaign Name')}</span>
 </div>
@@ -23,13 +28,17 @@
 </div>
 
 <div class="buttons" style="width:100%;">
-
-		<button id="delete_email_campaign" class="negative">{t}Delete{/t}</button>
+	<button   class="{if !$email_campaign->ready_to_send()}disabled{/if} positive"  id="send_email_campaign">{t}Send{/t}</button>
 		<button  class="{if !$email_campaign->ready_to_send()}disabled{/if}"   id="preview_email_campaign" >{t}Preview{/t}</button>
 
-	<button   class="{if !$email_campaign->ready_to_send()}disabled{/if}"  id="send_email_campaign" class="positive">{t}Send{/t}</button>
-<button style="margin-right:20px;visibility:hidden" id="save_edit_email_campaign" class="state_details">{t}Save{/t}</button>
-	<button style="margin-right:10px;visibility:hidden" id="reset_edit_email_campaign" class="state_details">{t}Reset{/t}</button>
+			<button style="margin-left:20px" id="delete_email_campaign" class="negative">{t}Delete{/t}</button>
+
+	
+	
+	
+<button style="visibility:hidden" id="save_edit_email_campaign" class="positive">{t}Save{/t}</button>
+	<button style="visibility:hidden" id="reset_edit_email_campaign" >{t}Reset{/t}</button>
+
 	<div style="clear:both"></div>
 </div>
 
@@ -38,8 +47,6 @@
 
 
 <table class="edit" style="clear:both;width:100%;margin-top:10px" border=0  >
-<input type="hidden" id="store_id" value="{$email_campaign->get('Email Campaign Store Key')}">
-<input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 
 <tr class="top">
 <td style="width:130px" class="label">{t}Store:{/t}</td>
@@ -85,9 +92,12 @@
 <td  class="label" >{t}Recipients{/t}:</td>
 <td ><span id="recipients_preview">{$email_campaign->get('Email Campaign Recipients Preview')}</span></td>
 <td>
-    <div class="general_options" >
-		<span style="margin-left:0px;;float:none" id="add_email_address_manually" class="state_details">{t}Add manually{/t}</span>
-	    <span  style="margin-left:20px;float:none"  id="add_email_address_from_customer_list" class="state_details">{t}Add from Customer List{/t}</span>
+    <div class="buttons" >
+
+		<button id="add_email_address_manually" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Custom{/t}</button>
+	    <button   id="add_email_address_from_customer_list" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}From List{/t}</button>
+	        		<a id="add_email_address_manually" href="email_campaign_mailing_list.php?id={$email_campaign->id}">{t}Edit{/t}</a>
+
 	    </div>
     <div id="recipients_preview_msg" style="visibility:hidden;position:relative;left:-10px;padding:5px 0 0 0;border:1px solid #ccc;font-size:80%">
     
@@ -103,12 +113,12 @@
 <td colspan=2>
 
 
-<div class="general_options" >
+<div class="buttons" >
 	
-	<span  style="margin-left:0px;;float:none"   id="department" class="state_details">{t}Add Department{/t}</span>
-	<span style="margin-left:20px;float:none" id="family" class="state_details">{t}Add Family{/t}</span>
-		<span style="margin-left:20px;float:none" id="product" class="state_details">{t}Add Product{/t}</span>
-	<span style="margin-left:20px;float:none" id="offer" class="state_details">{t}Add Offer{/t}</span>
+	<button  id="department"><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Department{/t}</button>
+	<button id="family" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Family{/t}</button>
+		<button id="product"><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Product{/t}</button>
+	<button id="offer"><img src="art/icons/add.png" alt="{t}Add{/t}"/>  {t}Offer{/t}</button>
 
       </div>
 
@@ -147,14 +157,17 @@
  </tr>
 
 <tr>
+<tr class="last" style="height:15px"><td colspan=3></td></tr>
 
 
 <tr  style="height:40px">
 <td  class="label" >{t}Type of Email{/t}:</td>
-<td colspan=2 ><div style="margin-top:7px;font-size:100%">
-<span  style="margin-right:10px;margin-left:0"  id="select_text_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" >{t}Text Email{/t}</span>
-<span style="margin-right:10px;" id="select_html_from_template_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" >{t}Template Email{/t}</span>
-<span  id="select_html_email" class="small_button {if $email_campaign->get('Email Campaign Content Type')=='HTML'}selected{/if}" >{t}HTML Email{/t}</span>
+<td colspan=2 >
+
+<div class="buttons left">
+<button  id="select_text_email" class="{if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" ><img src="art/icons/script.png" alt=""/> {t}Text Email{/t}</button>
+<button  id="select_html_from_template_email" class="{if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" ><img src="art/icons/layout.png" alt=""/> {t}Template Email{/t}{if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}<img class="selected" src="art/icons/accept.png"/>{/if}</button>
+<button  id="select_html_email" class="{if $email_campaign->get('Email Campaign Content Type')=='HTML'}selected{/if}" ><img src="art/icons/html.png" alt=""/> {t}HTML Email{/t}</button>
 
 </div>
 
@@ -171,7 +184,7 @@
 
 
 <tr id="tr_content" style="{if $current_content_key!=$current_content_key}display:none{/if}">
-<td class="label" >{t}Content{/t}:<br/><div id="email_campaign_content_text_msg" class="edit_td_alert"></div>
+<td class="label" ><div id="email_campaign_content_text_msg" class="edit_td_alert"></div>
     <div id="html_email_editor_msg" class="edit_td_alert"></div></td>
    <td  colspan=2 style="text-align:">
    <div  style="top:00px;width:600px;margin:0px;height:260px" >                                                     
@@ -187,26 +200,175 @@
 </tbody>
 <tbody id="html_email_from_template_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML Template'}display:none{/if}">
 
-<tr>
-<td>{t}Template{/t}</td>
+<tr id="change_template_buttons">
+<td></td>
 <td colspan=2>
-<div class="buttons">
-<button >{t}Choose Template{/t}</button>
+<div class="buttons left">
+<button id="change_template_layout" ><img  src="art/icons/images.png" alt=""/> {t}Template Layout{/t}</button>
+<button id="change_template_color_scheme" ><img src="art/icons/color_swatch.png" alt=""/> {t}Color Scheme{/t}</button>
+<button id="change_template_header_image"><img  src="art/icons/layout_header.png" alt=""/> {t}Header Image{/t}</button>
+
+
+
 </div>
 </td>
 </tr>
 
-<tr>
+<tr style="display:none" id="change_template_layout_tr">
 <td></td>
-<td colspan="2">
+<td colspan=2>
+<div class="buttons">
+<button id="close_change_template_layout" ><img src="art/icons/arrow_left.png" alt=""/> {t}Go back to Edit Email{/t}</button>
 
-<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?edit=1&email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 style="width:700px;height:100px" >
+</div>
+
+
+
+<p>
+{t}Choose which template layout you want to use{/t}. 
+</p>
+<div style="padding:10px 0">
+
+<div style="float:left;text-align:center" class="buttons left">
+<img  src="art/basic.gif" alt="{t}Basic{/t}" title="{t}Basic{/t}" />
+<br/>
+<button style="float:none;margin:5px auto" id="change_template_layout_basic"  {if $current_template_type=='Basic'}class="selected"{/if}  > {t}Basic{/t}<img id="selected_template_layout_basic" style="{if $current_template_type!='Basic'}display:none{/if}" class="selected" src="art/icons/accept.png"/></button>
+</div>
+
+
+<div style="margin-left:15px;float:left;text-align:center" class="buttons left">
+<img src="art/right_column.gif" alt="{t}Right Column{/t}" title="{t}Right Column{/t}" />
+<br/>
+<button style="float:none;margin:5px auto" id="change_template_layout_right_column" {if $current_template_type=='Right Column'}class="selected"{/if}> {t}Right Column{/t}<img id="selected_template_layout_right_column" style="{if $current_template_type!='Right Column'}display:none{/if}" class="selected" src="art/icons/accept.png"/></button>
+</div>
+
+
+<div style="margin-left:15px;float:left;text-align:center" class="buttons left">
+<img src="art/left_column.gif" alt="{t}Left Column{/t}" title="{t}Left Column{/t}" />
+<br/>
+<button style="float:none;margin:5px auto" id="change_template_layout_left_column" {if $current_template_type=='Left Column'}class="selected"{/if}> {t}Left Column{/t}<img id="selected_template_layout_left_column" style="{if $current_template_type!='Left Column'}display:none{/if}" class="selected" src="art/icons/accept.png"/></button>
+</div>
+
+<div style="margin-left:15px;float:left;text-align:center" class="buttons left">
+
+<img  src="art/postcard.gif" alt="{t}Postcard{/t}" title="{t}Postcard{/t}" />
+<br/>
+<button style="float:none;margin:5px auto" id="change_template_layout_postcard" {if $current_template_type=='Postcard'}class="selected"{/if}> {t}Postcard{/t}<img id="selected_template_layout_postcard" {if $current_template_type!='Postcard'}style="display:none"{/if} class="selected" src="art/icons/accept.png"/></button>
+</div>
+
+</div>
+
+</td>
+</tr>
+
+
+
+
+<tr style="xdisplay:none" id="change_template_color_scheme_tr">
+<td></td>
+<td colspan=2>
+<div class="buttons">
+<button id="close_change_template_color_scheme" ><img src="art/icons/arrow_left.png" alt=""/> {t}Go back to Edit Email{/t}</button>
+
+</div>
+<p>
+{t}Choose color scheme for your email{/t}. 
+</p>
+
+<table  id="color_schemes" class="color_scheme" border=1 style="width:100%">
+{foreach from=$color_schemes item=color_scheme }
+<tr class="color_scheme" id="color_scheme_tr_{$color_scheme.Email_Template_Color_Scheme_Key}">
+<td style="padding:2px 0;width:120px">{$color_scheme.Email_Template_Color_Scheme_Name}</td>
+<td>
+
+<span id="color_scheme_Background_Body_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Body};" alt="{$color_scheme.Background_Body}" title="{t}Background{/t}"></span>
+<span id="color_scheme_Background_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Header};" alt="{$color_scheme.Background_Header}" title="{t}Background Header{/t}"></span>
+<span id="color_scheme_Text_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Text_Header};" alt="{$color_scheme.Text_Header}" title="{t}Text Header{/t}"></span>
+<span id="color_scheme_Link_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Link_Header};" alt="{$color_scheme.Link_Header}" title="{t}Links Header{/t}"></span>
+
+<span id="color_scheme_Background_Container_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Container};" alt="{$color_scheme.Background_Container}" title="{t}Background Container{/t}"></span>
+<span id="color_scheme_H1_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.H1};" alt="{$color_scheme.H1}" title="{t}Titles{/t}"></span>
+<span id="color_scheme_H2_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.H2};" alt="{$color_scheme.H2}" title="{t}Subtitles{/t}"></span>
+<span id="color_scheme_Text_Container_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Text_Container};" alt="{$color_scheme.Text_Container}" title="{t}Text{/t}"></span>
+<span id="color_scheme_Link_Container_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Link_Container};" alt="{$color_scheme.Link_Container}" title="{t}Links{/t}"></span>
+
+<span id="color_scheme_Background_Footer_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Footer};" alt="{$color_scheme.Background_Footer}" title="{t}Footer{/t}"></span>
+<span id="color_scheme_Text_Footer_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Text_Footer};" alt="{$color_scheme.Text_Footer}" title="{t}Text Footer{/t}"></span>
+<span id="color_scheme_Link_Footer_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Link_Footer};" alt="{$color_scheme.Link_Footer}" title="{t}Links Footer{/t}"></span>
+
+</td>
+<td>
+<div class="buttons">
+<button  style="width:100px;{if $current_color_scheme!=$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_in_use_{$color_scheme.Email_Template_Color_Scheme_Key}" class="selected">{t}Selected{/t}<img  class="selected" src="art/icons/accept.png"/></button>
+<button style="width:100px;{if $current_color_scheme==$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_use_this_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="color_scheme_use_this({$color_scheme.Email_Template_Color_Scheme_Key})" >{t}Use this{/t}</button>
+<button id="color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">{t}View Details{/t}</button>
+<button id="close_color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="close_color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">Go Back</button>
+
+</div>
+</td>
+
+
+</tr>
+{/foreach}
+<tr id="color_scheme_details">
+  <input type="hidden" id="color_edit_scheme_key" value=""/>
+
+<td style="padding:0px" colspan="3">
+
+<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:600px;height:100px;float:right" >
+<p>Your browser does not support iframes.</p>
+</iframe>
+<table style="width:150px;margin-top:10px;font-size:90%">
+<tr><td>{t}Canvas{/t}</td></tr>
+<tr><td><span id="color_scheme_Background_Body" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Background_Body};" alt="{$color_scheme.Background_Body}" title="{t}Canvas Background{/t}"></span> {t}Background{/t}</td></tr>
+<tr style="height:10px"><td></td></tr>
+<tr><td>{t}Header{/t}</td></tr>
+<tr><td><span id="color_scheme_Background_Header" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Background_Header};" alt="{$color_scheme.Background_Header}" title="{t}Header Background{/t}"></span> {t}Background{/t}</td></tr>
+<tr><td><span id="color_scheme_Text_Header" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Text_Header};" alt="{$color_scheme.Text_Header}" title="{t}Text Header{/t}"></span> {t}Text{/t}</td></tr>
+<tr><td><span id="color_scheme_Link_Header" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Link_Header};" alt="{$color_scheme.Link_Header}" title="{t}Links Header{/t}"></span> {t}Links{/t}</td></tr>
+<tr style="height:10px"><td></td></tr>
+<tr><td>{t}Body{/t}</td></tr>
+<tr><td><span id="color_scheme_Background_Container" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Background_Container};" alt="{$color_scheme.Background_Container}" title="{t}Body Background{/t}"></span> {t}Background{/t}</td></tr>
+<tr><td><span id="color_scheme_H1" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.H1};" alt="{$color_scheme.H1}" title="{t}Text Container{/t}"></span> {t}Title{/t}</td></tr>
+<tr><td><span id="color_scheme_H2" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.H2};" alt="{$color_scheme.H2}" title="{t}Links Container{/t}"></span> {t}Subtitle{/t}</td></tr>
+
+<tr><td><span id="color_scheme_Text_Container" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Text_Container};" alt="{$color_scheme.Text_Container}" title="{t}Text Container{/t}"></span> {t}Text{/t}</td></tr>
+<tr><td><span id="color_scheme_Link_Container" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Link_Container};" alt="{$color_scheme.Link_Container}" title="{t}Links Container{/t}"></span> {t}Links{/t}</td></tr>
+<tr style="height:10px"><td></td></tr>
+<tr><td>{t}Footer{/t}</td></tr>
+<tr><td><span id="color_scheme_Background_Footer" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Background_Footer};" alt="{$color_scheme.Background_Footer}" title="{t}Footer Background{/t}"></span> {t}Background{/t}</td></tr>
+<tr><td><span id="color_scheme_Text_Footer" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Text_Footer};" alt="{$color_scheme.Text_Footer}" title="{t}Text Footer{/t}"></span> {t}Text{/t}</td></tr>
+<tr><td><span id="color_scheme_Link_Footer" class="swatch" style="cursor:pointer;background-color:#{$color_scheme.Link_Footer};" alt="{$color_scheme.Link_Footer}" title="{t}Links Footer{/t}"></span> {t}Links{/t}</td></tr>
+
+</table>
+</td>
+</tr>
+
+</table>
+
+
+</td>
+
+</tr>
+
+
+
+
+
+
+<tr style="display:none" id="template_editor_tr">
+<td></td>
+<td >
+
+<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?edit=1&email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:700px;height:100px" >
 <p>Your browser does not support iframes.</p>
 </iframe>
 
 </td>
 </tr>
 
+<tr id="change_template_color_scheme_tr"></tr>
+<tr id="change_template_header_image_tr"></tr>
 
 
 </tbody>
@@ -291,11 +453,10 @@
     <tr >
  
    <td colspan="3">
-   <div class="buttons" style="padding:10px;float:right">
-   	<button  id="cancel_new_add_email_address_manually" class="negative">{t}Cancel{/t}</button>
+   <div class="buttons" >
+   	<button  class="disabled positive"  id="save_new_add_email_address_manually" >{t}Add{/t}</button>
 
-   
-	<button  class="disabled positive"  id="save_new_add_email_address_manually" class="state_details">{t}Add{/t}</button>
+   	<button  id="cancel_new_add_email_address_manually" class="negative">{t}Cancel{/t}</button>
 </div>
     </td>
     </tr>
@@ -343,6 +504,18 @@
 </table>
 </div>
 
+ <div id="dialog_edit_color" style="padding-right:10px;width:360px;height:230px">
+ <input type="hidden" id="color_edit_element" value=""/>
+
+  <div style="position:relative;top:200px" class="buttons">
+    <button id="save_color" class="positive">{t}Save{/t}</button>
+  <button id="close_edit_color_dialog" class="negative">{t}Cancel{/t}</button>
+
+ 
+ </div>
+ <div id="edit_color" style="margin-top:20px;padding-top:20px;"></div>
+
+</div>
 
 
 {include file='footer.tpl'}
@@ -380,7 +553,7 @@
 
 <tr style="xborder-bottom:1px solid #ccc;"><td style="width:60px"><span style=";margin-left:5px"><b>{t}Subject{/t}:</b></span></td><td   id="preview_subject" ></td></tr>
 <tr style="display:none" id="tr_preview_plain_body"><td colspan=2><div id="preview_plain_body" style="min-height: 200px;border:1px solid #ccc;padding:5px"></div></td></tr>
-<tr style="display:none" id="tr_preview_template_body"><td colspan=2><iframe id="preview_html_body" onLoad="changeHeight(this);" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$email_campaign->get_first_content_key()}" frameborder=0 style="width:700px;height:100px" ><p>Your browser does not support iframes.</p></iframe></td></tr>
+<tr style="display:none" id="tr_preview_template_body"><td colspan=2><iframe id="preview_html_body" onLoad="changeHeight(this);" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:700px;height:100px" ><p>Your browser does not support iframes.</p></iframe></td></tr>
 <tr style="display:none" id="tr_preview_html_body"><td colspan=2><div id="preview_html_body" style="min-height: 200px;border:1px solid #ccc;padding:5px"></div></td></tr>
 
 </table>
@@ -431,3 +604,5 @@
         </div>
     </div>
  </div>
+ 
+ 

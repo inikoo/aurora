@@ -4971,6 +4971,33 @@ PRIMARY KEY ( `Email Campaign Objetive Key` , `Email Link Key` )
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Link Clicks` `Email Campaign Objetive Links Clicks` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Email Campaign Objetive Dimension` ADD `Email Campaign Objetive Term` ENUM( 'Order', 'Buy', 'Visit' ) NOT NULL , ADD `Email Campaign Objetive Term Metadata` VARCHAR( 1028 ) NOT NULL ;
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Term` `Email Campaign Objetive Term` ENUM( 'Order', 'Buy', 'Visit', 'Use' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Template Key` `Email Content Template Type` ENUM( 'Basic', 'Left Column', 'Right Column', 'Postcard' ) NOT NULL DEFAULT 'Basic'
+
+CREATE TABLE `Email Template Color Scheme Dimension` (
+`Email Template Color Scheme Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Template Color Scheme Name` VARCHAR( 256 ) NOT NULL ,
+`Background Body` VARCHAR( 6 ) NOT NULL ,
+`Background Header` VARCHAR( 6 ) NOT NULL ,
+`Background Container` VARCHAR( 6 ) NOT NULL ,
+`Background Footer` VARCHAR( 6 ) NOT NULL
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Email Template Color Scheme Dimension` ADD `Text Header` VARCHAR( 6 ) NOT NULL DEFAULT '000000',
+ADD `Text Container` VARCHAR( 6 ) NOT NULL DEFAULT '000000',
+ADD `Text Footer` VARCHAR( 6 ) NOT NULL DEFAULT 'FFFFFF',
+ADD `Link Header` VARCHAR( 6 ) NOT NULL DEFAULT 'FFFFFF',
+ADD `Link Container` VARCHAR( 6 ) NOT NULL DEFAULT '000000',
+ADD `Link Footer` VARCHAR( 6 ) NOT NULL DEFAULT 'FFFFFF';
+
+ALTER TABLE `Email Template Color Scheme Dimension` CHANGE `Background Body` `Background Body` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FFFFFF',
+CHANGE `Background Header` `Background Header` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '000000',
+CHANGE `Background Container` `Background Container` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FFFFFF',
+CHANGE `Background Footer` `Background Footer` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '000000';
+ALTER TABLE `Email Template Color Scheme Dimension` ADD `H1` VARCHAR( 6 ) NOT NULL DEFAULT '000000',ADD `H2` VARCHAR( 6 ) NOT NULL DEFAULT '000000';
+ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Key` MEDIUMINT NOT NULL DEFAULT '1' AFTER `Email Content Template Type` ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Source` `Email Content Header Image Source` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `Email Template Color Scheme Dimension` ADD `Kbase Key` MEDIUMINT NULL DEFAULT NULL ,ADD `Kbase Modifed` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+
 */
 
 ?>

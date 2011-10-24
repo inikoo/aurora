@@ -62,6 +62,8 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/editor.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
+                              $yui_path.'assets/skins/sam/colorpicker.css',
+
                'common.css',
                'button.css',
                'container.css',
@@ -79,6 +81,11 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
               $yui_path.'editor/editor-min.js',
+              $yui_path.'slider/slider-min.js',
+              $yui_path.'colorpicker/colorpicker-min.js',
+
+              
+              
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
@@ -103,42 +110,61 @@ case 'Creating':
     $general_options_list=array();
     $css_files[]='css/edit.css';
     $css_files[]='css/email_campaign_in_process.css';
-         $js_files[]='js/editor_image_uploader.js';
+    $js_files[]='js/editor_image_uploader.js';
+    $js_files[]='js/rgbcolor.js';
 
     $js_files[]='js/edit_common.js';
     $js_files[]='email_campaign_in_process.js.php?email_campaign_key='.$email_campaign->id;
-	$js_files[]='js/sugar-0.9.5.min.js';
+    $js_files[]='js/sugar-0.9.5.min.js';
     $tpl_file='email_campaign_in_process.tpl';
+    $current_content_key=$email_campaign->get_first_content_key();
+    $smarty->assign('current_content_key',$current_content_key);
+    $smarty->assign('current_template_type',$email_campaign->get_template_type($current_content_key));
+    $smarty->assign('current_color_scheme',$email_campaign->get_color_scheme($current_content_key));
 
-    $smarty->assign('current_content_key',$email_campaign->get_first_content_key());
+
+    $color_schemes=array();
+    $sql=sprintf("select * from `Email Template Color Scheme Dimension` limit 100");
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $color_scheme=array();
+        foreach($row as $key=>$value) {
+            $color_scheme[preg_replace('/ /','_',$key)]=$value;
+        }
+        $color_schemes[]=$color_scheme;
+    }
+    $smarty->assign('color_schemes',$color_schemes);
 
     break;
-    
+
 case 'Ready':
- $tpl_file='email_campaign.tpl';
- 
- $js_files[]='js/countdown.js';
- $js_files[]='email_campaign.js.php';
+    $tpl_file='email_campaign.tpl';
 
-$js_files[]='email_campaign_ready.js.php';
+    $js_files[]='js/countdown.js';
+    $js_files[]='email_campaign.js.php';
 
-break;
-    case 'Sending':
- $tpl_file='email_campaign.tpl';
- 
- $js_files[]='js/countdown.js';
-$js_files[]='email_campaign.js.php';
+    $js_files[]='email_campaign_ready.js.php';
 
-break;
-    case 'Complete':
- $tpl_file='email_campaign.tpl';
- 
- $js_files[]='js/countdown.js';
-$js_files[]='email_campaign.js.php';
+    break;
+case 'Sending':
+    $tpl_file='email_campaign.tpl';
 
-break;
+    $js_files[]='js/countdown.js';
+    $js_files[]='email_campaign.js.php';
+
+    break;
+case 'Complete':
+    $tpl_file='email_campaign.tpl';
+
+    $js_files[]='js/countdown.js';
+    $js_files[]='email_campaign.js.php';
+
+    break;
 
 }
+
+
+
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

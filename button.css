@@ -252,20 +252,22 @@ version: 2.5.0
     border:1px solid #dedede;
     border-top:1px solid #eee;
     border-left:1px solid #eee;    font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
-    
+    font-size:85%;
+
     line-height:130%;
     text-decoration:none;
     font-weight:bold;
     color:#565656;
     cursor:pointer;
-    padding:5px 10px 6px 7px; /* Links */
+    padding:5px 10px 3px 7px; /* Links */
+}
+
+.buttons.left a, .buttons.left button{
+ float:left;
 }
 
 
-
-
 .buttons button{
-font-size:85%;
     width:auto;
     overflow:visible;
     padding:4px 10px 3px 7px; /* IE6 */
@@ -278,13 +280,18 @@ font-size:85%;
     padding:4px 10px 3px 7px; /* IE7 */
 }
 .buttons button img, .buttons a img{
-    margin:0 3px -3px 0 !important;
+    margin:0 1px -3px 0 !important;
     padding:0;
     border:none;
-    width:16px;
-    height:16px;
+    width:14px;
+    height:14px;
+    vertical-align:top;
 }
+.buttons button img.selected, .buttons a img.selected{
+    margin-right:-5px !important;
+    margin-left:5px !important;
 
+}
 
 button:hover, .buttons a:hover{
     background-color:#dff4ff;
@@ -295,7 +302,8 @@ button:hover, .buttons a:hover{
     background-color:#6299c5;
     border:1px solid #6299c5;
     color:#fff;
-}/* POSITIVE */button.positive, .buttons a.positive{
+}
+button.positive, .buttons a.positive{
     color:#529214;
 }
 .buttons a.positive:hover, button.positive:hover{
@@ -320,6 +328,24 @@ button:hover, .buttons a:hover{
     border:1px solid #d12f19;
     color:#fff;
 }
+
+button.selected, .buttons a.selected{
+    border:1px solid #6299c5;
+     background-color:#dff4ff;
+}
+.buttons a.selected:hover, button.selected:hover{
+  border:1px solid #6299c5;
+   background-color:#dff4ff;
+}
+.buttons a.selected:active{
+   border:1px solid #6299c5;
+}
+
+
+
+
+
+
 
 button.disabled{color:#ccc}
 button.disabled:hover, .buttons a.disabled:hover{
