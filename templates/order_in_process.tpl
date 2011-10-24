@@ -4,6 +4,7 @@
   <input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method"  />
   <input type="hidden" value="{$store->id}" id="store_id"  />
   <input type="hidden" value="{$order->id}" id="order_key"  />
+  <input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state"  />
 
  <input type="hidden" value="{$products_display_type}" id="products_display_type"  />
 <div > 

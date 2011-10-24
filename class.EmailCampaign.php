@@ -880,7 +880,7 @@ class EmailCampaign extends DB_Table {
 
 
 
-   function get_color_scheme($email_content_key) {
+    function get_color_scheme($email_content_key) {
 
         $color_scheme='';
         $sql=sprintf("select `Email Content Color Scheme Key` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
@@ -1294,8 +1294,20 @@ class EmailCampaign extends DB_Table {
 
     function update_content($email_content_key,$key,$value) {
 
-        $valid_keys=array('Email Content Type','Email Content Template Type');
+        $valid_keys=array('Email Content Type','Email Content Template Type','Email Content Color Scheme Key');
         if (in_array($key,$valid_keys)) {
+
+
+            $sql=sprintf("select `%s` as old_value from  `Email Content Dimension`  where `Email Content Key`=%d ",
+                 $key,
+                 $email_content_key
+                 );
+            mysql_query($sql);
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                $old_value=$row['old_value'];
+
+            }
 
 
             $sql=sprintf("update `Email Content Dimension` set `%s`=%s  where `Email Content Key`=%d ",
@@ -1307,6 +1319,7 @@ class EmailCampaign extends DB_Table {
             if (mysql_affected_rows()) {
                 $this->updated=true;
                 $this->new_value=$value;
+                $this->old_value=$old_value;
             }
 
         }
