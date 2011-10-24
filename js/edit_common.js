@@ -421,18 +421,19 @@ function is_valid_scope(branch){
 
 
 function validate_scope_edit(branch) {
+//alert('validate scope edit')
   var errors=false;
   var changed=false;
 
     for (items in validate_scope_data[branch]) {
     
-    //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
+       //alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
         if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][items].changed==true)
             changed=true;
             
-        //    alert(errors+' '+changed)
+            //alert(errors+' '+changed)
     }
 
 
@@ -621,10 +622,13 @@ function validate_general_edit(branch,items,query) {
 
 
     var old_value=Dom.get(data.name).getAttribute('ovalue');
+	//alert('old val:' + old_value)
+	//alert('old val:' + trim(query))
     if (old_value!=trim(query) ) {
-
-
+		//alert('in')
+		
         if (old_value.toLowerCase()!=trim(query.toLowerCase())    ) {
+			//alert('old val neq query')
             validate_scope_data[branch][items].changed=true;
 
             if (data.ar=='find') {
@@ -639,6 +643,7 @@ function validate_general_edit(branch,items,query) {
 
 
         } else {
+			//alert('old val eq query')
             validate_scope_data[branch][items].validated=true;
             validate_scope_data[branch][items].changed=true;
             validate_scope(branch);
@@ -727,10 +732,10 @@ function save_edit_general(branch) {
 //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
     for (items in validate_scope_data[branch]) {
-
+		
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input=Dom.get(validate_scope_data[branch][items].name);
-
+			
 
 
 
@@ -758,7 +763,7 @@ function save_edit_general(branch) {
 	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
 	   }
 	   
-	// alert(request)
+//alert(request)
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
 			//alert(o.responseText);
@@ -800,7 +805,9 @@ function save_edit_general_bulk(branch) {
     for (items in validate_scope_data[branch]) {
 
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
+			//alert('in');
             var item_input=Dom.get(validate_scope_data[branch][items].name);
+			Dom.get(validate_scope_data[branch][items].name+'_msg').innerHTML='<img src="art/loading.gif"/>';
             var updated_items=0;
 
             if (validate_scope_data[branch][items].dbname!=undefined) {
@@ -816,7 +823,7 @@ function save_edit_general_bulk(branch) {
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request);//return;
+//alert(request);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
   //alert(o.responseText);
@@ -838,7 +845,9 @@ success:function(o) {
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
-
+						//alert('dialog_quick_edit_'+validate_scope_data[branch][r.key].name)
+						Dom.setStyle('dialog_quick_edit_'+validate_scope_data[branch][r.key].name,'visibility','false')
+						//dialog_quick_edit_'+validate_scope_data[branch][r.key].name.show=false;
                         post_item_updated_actions(branch,r);
 
 
