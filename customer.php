@@ -21,7 +21,7 @@ if (!$user->can_view('customers')) {
 }
 
 $modify=$user->can_edit('contacts');
-
+$smarty->assign('modify',$modify);
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
   
@@ -32,9 +32,11 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
+//print $customer->get('Customer Type');
+$smarty->assign('customer_type',$customer->get('Customer Type'));
 
 
-
+$smarty->assign('other_email_count',count($customer->get_other_emails_data()));
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
 exit;
@@ -100,15 +102,25 @@ $js_files=array(
               $yui_path.'calendar/calendar-min.js',
               $yui_path.'uploader/uploader-min.js',
               
-              'external_libs/ampie/ampie/swfobject.js',
-              'js/common.js',
-              'js/table_common.js',
-              'js/search.js',
-              'js/edit_common.js',
-             
-             
-               'upload_common.js.php',
-                'customer.js.php?customer_key='.$customer->id,
+			'external_libs/ampie/ampie/swfobject.js',
+			'js/common.js',
+			'js/table_common.js',
+			'js/search.js',
+			'js/edit_common.js',
+			'edit_address.js.php',
+			'edit_delivery_address_common.js.php',
+			'upload_common.js.php',
+			'customer.js.php?customer_key='.$customer->id.'&customer_type='.$customer->get('Customer Type'),
+			'js/validate_telecom.js',
+			'js/aes.js',
+			'js/sha256.js',
+			//printf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id),
+			//printf('edit_contact.js.php?id=%d&scope=Customer&scope_key=%d',$contact->id,$customer->id),
+			'address_data.js.php?tipo=customer&id='.$customer->id,
+			'edit_contact_from_parent.js.php',
+			'edit_contact_telecom.js.php',
+			'edit_contact_name.js.php',
+			'edit_contact_email.js.php'
           );
           
           

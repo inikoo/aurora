@@ -32,9 +32,9 @@
 
 </div>
 </div>
-<div id="send_from">
-<div id="message_error" style="padding:10px;"></div>
 
+<div id="message_error" style="padding:10px;"></div>
+<div id="send_from">
 <table class="edit">
 <input type="hidden" id="metadata" value="{$metadata}"/>
 <input type="hidden" id="type" value="{$type}"/>

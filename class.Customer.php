@@ -3660,7 +3660,6 @@ class Customer extends DB_Table {
                                                     'email'=>$row['Email'],
                                                     'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
                                                     'label'=>$row['Email Description']
-
                                                 );
         }
         return $email_keys;
