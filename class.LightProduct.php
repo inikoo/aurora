@@ -154,7 +154,7 @@ class LightProduct {
                 $_form=sprintf('<input type="hidden" id="order_id%d" value="%d">
                                <input type="hidden" id="pid%d" value="%d">
 							   <input type="hidden" id="old_qty%d" value="%d">
-							   <input class="order" type="text" size="1" class="qty" id="qty%d" value="1">
+							   <input class="order" type="text" size="1" class="qty" id="qty%d" value="%s">
                                <button class="button" onClick="order_single_product(%d)" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" >Submit</button>
 							   <span id="loading%d"></span>'
 							  ,$this->id
@@ -164,6 +164,7 @@ class LightProduct {
 							  ,$this->id
 							  ,$old_qty
 							  ,$this->id
+							  ,($old_qty>0?$old_qty:'')
 							  ,$this->id
 							  ,"Submit"
 							  ,$this->id

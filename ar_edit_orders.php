@@ -246,6 +246,13 @@ case('use_calculated_shipping'):
 
     use_calculated_shipping($data);
     break;
+case('update_order'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'order_key'=>array('type'=>'key')
+                         ));				 
+	update_order($data);
+	break;
 default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
     echo json_encode($response);
@@ -489,8 +496,11 @@ function edit_new_order() {
                           'order_total'=>$order->get('Total Amount'),
                           'ordered_products_number'=>$order->get('Number Items'),
                       );
-
+$_SESSION['basket']['total']=$updated_data['order_total'];
+$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
 //print_r($updated_data);
+//print "total: ".$_SESSION['basket']['total'];
+//print " qty: ".$_SESSION['basket']['items'];
 
         $response= array(
                        'state'=>200,
@@ -2447,4 +2457,28 @@ function import_transactions_mals_e($_data) {
 
 
 }
+
+function update_order($data){
+	$order_key=$data['order_key'];
+	$order=new Order($order_key);
+        $updated_data=array(
+
+                          'order_total'=>$order->get('Total Amount'),
+                          'ordered_products_number'=>$order->get('Number Items'),
+                      );
+$_SESSION['basket']['total']=$updated_data['order_total'];
+$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
+//print_r($updated_data);
+//print "total: ".$_SESSION['basket']['total'];
+//print " qty: ".$_SESSION['basket']['items'];
+
+        $response= array(
+                       'state'=>200,
+                       'data'=>$updated_data
+
+                   );
+
+    echo json_encode($response);
+}
+
 ?>
