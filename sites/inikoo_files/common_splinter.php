@@ -6,7 +6,7 @@ require_once 'conf/dns.php';
 require_once("conf/checkout.php");
 require_once 'common_functions.php';
 require_once 'common_store_functions.php';
-
+require_once 'common_detect_agent.php';
 
 require_once 'ar_show_products.php';
 
@@ -73,7 +73,9 @@ $session = new Session($max_session_time,1,100);
 
 //print_r($_COOKIE);
 //exit;
+$_SESSION ['text_locale_code']='';
 
+$_SESSION ['text_locale_country_code']='';
 
 
 $public_url=$myconf['public_url'];
@@ -125,6 +127,7 @@ if (file_exists($store_code.'/labels.php')) {
 } else {
     require_once 'conf/labels.php';
 }
+
 
 
 
@@ -295,6 +298,7 @@ if ($logged_in ) {
 
 log_visit($session->id,$user_log_key);
 
+
 /*
 if(isset($user))
 print_r($user);	
@@ -318,17 +322,17 @@ function get_sk() {
 
 function show_product($code) {
 
-    global $logged_in, $ecommerce_url, $username, $method,$store_key;
+    global $logged_in, $ecommerce_url, $username, $method,$store_key, $user;
     $product=new LightProduct($code, $store_key);
 
     if (!$product->match)
         return;
 
 
-    $data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method);
+    $data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method, 'user'=>$user);
 
     if ($logged_in) {
-        print $product->get_full_order_form('ecommerce', $data);
+        print $product->get_full_order_form('custom', $data);
 
     } else {
 
@@ -341,7 +345,7 @@ function show_product($code) {
 
 
 function show_products($code,$options=false) {
-    global $logged_in,$ecommerce_url_multi, $username, $method,$store_key;
+    global $logged_in,$ecommerce_url_multi, $username, $method,$store_key, $user, $path;
 
 	if(isset($options['rrp'])){
 		switch($options['rrp']){
@@ -420,7 +424,7 @@ function show_products($code,$options=false) {
         $product=new LightFamily($family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
-            echo $product->get_product_in_family_with_order_form($data, $header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
+            echo $product->get_product_in_family_with_order_form($data, $header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
             return;
         } else {
             $options=array();
@@ -443,7 +447,8 @@ function show_products($code,$options=false) {
 
 
     if ($logged_in) {
-        echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options);
+		
+        echo $product->get_product_list_with_order_form($header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
     } else {
         echo $product->get_product_list_no_price($header, $options);
         return;

@@ -144,7 +144,7 @@ var myonCellClick = function(oArgs) {
 
  var ar_file='ar_edit_orders.php';
 	request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
-//alert(request)
+alert(request)
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
@@ -836,3 +836,4 @@ function close_change_discount_dialog(){
 	change_staff_discount.hide();
 
     }
+

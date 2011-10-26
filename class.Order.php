@@ -725,7 +725,7 @@ class Order extends DB_Table {
                              $gross_discounts,
                              prepare_mysql ( $data ['Metadata'] ,false),
                              prepare_mysql ( $this->data ['Order Store Key'] ),
-                             $data ['units_per_case']
+                             (isset($data ['units_per_case'])?$data ['units_per_case']:'')
 
                            );
             if (! mysql_query ( $sql ))
