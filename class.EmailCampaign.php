@@ -204,9 +204,9 @@ class EmailCampaign extends DB_Table {
 
 
             $paragraph_data=array(
-                                array('title'=>'Donec eleifend nunc ut libero fringilla posuere','subtitle'=>'Duis mauris massa','content'=>'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium sapien nec augue dictum tincidunt. Phasellus in vulputate nibh. Morbi ac odio lorem. Suspendisse ut nibh vel nibh malesuada ullamcorper vitae sed magna. Aliquam erat volutpat.'),
-                                array('title'=>'Nullam interdum posuere ultricies','subtitle'=>'In sagittis augue tellus','content'=>'Morbi porttitor posuere venenatis. Aliquam tincidunt scelerisque porttitor. Vivamus vulputate tortor ut augue eleifend semper. Curabitur venenatis placerat porta. Aliquam semper magna vitae libero porttitor vulputate.'),
-                                array('title'=>'Pellentesque sed sapien','subtitle'=>'Aliquam urna dui','content'=>'Quisque in purus eu purus malesuada porttitor. Proin sed arcu nisi. Ut in enim arcu. Cras consectetur commodo dolor, id tempus tortor imperdiet quis. Donec iaculis interdum congue. Nullam ultrices hendrerit lectus, vitae lobortis magna sagittis et.')
+                                array('type'=>'Main','title'=>'Donec eleifend nunc ut libero fringilla posuere','subtitle'=>'Duis mauris massa','content'=>'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium sapien nec augue dictum tincidunt. Phasellus in vulputate nibh. Morbi ac odio lorem. Suspendisse ut nibh vel nibh malesuada ullamcorper vitae sed magna. Aliquam erat volutpat.'),
+                                array('type'=>'Main','title'=>'Nullam interdum posuere ultricies','subtitle'=>'In sagittis augue tellus','content'=>'Morbi porttitor posuere venenatis. Aliquam tincidunt scelerisque porttitor. Vivamus vulputate tortor ut augue eleifend semper. Curabitur venenatis placerat porta. Aliquam semper magna vitae libero porttitor vulputate.'),
+                                array('type'=>'Side','title'=>'Pellentesque sed sapien','subtitle'=>'Aliquam urna dui','content'=>'Quisque in purus eu purus malesuada porttitor. Proin sed arcu nisi. Ut in enim arcu. Cras consectetur commodo dolor, id tempus tortor imperdiet quis. Donec iaculis interdum congue. Nullam ultrices hendrerit lectus, vitae lobortis magna sagittis et.')
 
                             );
 
@@ -933,36 +933,62 @@ class EmailCampaign extends DB_Table {
         return mysql_affected_rows();
 
     }
-    function move_paragraph_to_the_end($email_content_key,$paragraph_key) {
-        $sql=sprintf("select `Email Paragraph Key`,`Paragraph Order` from `Email Content Paragraph Dimension` where `Email Content Key`=%d order by `Paragraph Order` desc limit 1",$email_content_key);
+    function move_paragraph_to_the_end($email_content_key,$paragraph_key,$paragraph_type='Main',$change_original=true) {
+        $sql=sprintf("select `Email Paragraph Key`,`Paragraph Order` from `Email Content Paragraph Dimension` where `Email Content Key`=%d and `Paragraph Type`=%s order by `Paragraph Order` desc limit 1",
+                     $email_content_key,
+                     prepare_mysql($paragraph_type)
+
+                    );
+
         $res=mysql_query($sql);
         $last_order_index=1;
+        $last_paragraph_key=0;
         if ($row=mysql_fetch_assoc($res)) {
             $last_order_index=$row['Paragraph Order']+1;
             $last_paragraph_key=$row['Email Paragraph Key'];
         }
         if ($last_paragraph_key!=$paragraph_key) {
 
-            $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Order`=%d where `Email Paragraph Key`=%d ",$last_order_index,$paragraph_key);
+            $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Order`=%d , `Paragraph Type`=%s where `Email Paragraph Key`=%d ",
+                         $last_order_index,
+                         prepare_mysql($paragraph_type),
+                         $paragraph_key);
 
             mysql_query($sql);
+           
             if (mysql_affected_rows()) {
                 $this->updated;
             }
+            if($change_original){
+              $sql=sprintf("update `Email Content Paragraph Dimension`  set  `Paragraph Original Type`=%s where `Email Paragraph Key`=%d ",
+                         prepare_mysql($paragraph_type),
+                         $paragraph_key);
 
+            mysql_query($sql);
+}
         }
 
 
     }
-    function move_paragraph_before_target($email_content_key,$paragraph_key,$target_key) {
+    function move_paragraph_before_target($email_content_key,$paragraph_key,$target_key,$paragraph_type,$change_original=true) {
 
 
         if ($target_key==0) {
 
-            return $this->move_paragraph_to_the_end($email_content_key,$paragraph_key);
+            return $this->move_paragraph_to_the_end($email_content_key,$paragraph_key,$paragraph_type,$change_original);
         }
 
-        $sql=sprintf("select `Email Paragraph Key`,`Paragraph Order` from `Email Content Paragraph Dimension` where `Email Content Key`=%d order by `Paragraph Order`",$email_content_key);
+        $sql=sprintf("select `Paragraph Type` from `Email Content Paragraph Dimension` where `Email Content Key`=%d  and `Email Paragraph Key`=%d   ",
+                     $email_content_key,
+                     $target_key
+                    );
+        $res=mysql_query($sql);
+
+        $paragraph_type='Main';
+        if ($row=mysql_fetch_assoc($res)) {
+            $paragraph_type=$row['Paragraph Type'];
+        }
+
         $res=mysql_query($sql);
         $current_order=array();
         $i=1;
@@ -970,25 +996,54 @@ class EmailCampaign extends DB_Table {
 
         $new_order=array();
         while ($row=mysql_fetch_assoc($res)) {
-            $current_order[$row['Email Paragraph Key']]=$j++;
-            if ($row['Email Paragraph Key']==$paragraph_key) {
-                continue;
+
+
+            $sql=sprintf("select `Email Paragraph Key`,`Paragraph Order` from `Email Content Paragraph Dimension` where `Email Content Key`=%d and `Paragraph Type`=%s order by `Paragraph Order`",
+                         $email_content_key,
+                         prepare_mysql($paragraph_type)
+
+                        );
+
+            $res=mysql_query($sql);
+            $current_order=array();
+            $i=1;
+            $j=1;
+
+            $new_order=array();
+            while ($row=mysql_fetch_assoc($res)) {
+                $current_order[$row['Email Paragraph Key']]=$j++;
+                if ($row['Email Paragraph Key']==$paragraph_key) {
+                    continue;
+                }
+                if ($row['Email Paragraph Key']==$target_key) {
+                    $new_order[$paragraph_key]=$i++;
+                }
+                $new_order[$row['Email Paragraph Key']]=$i++;
+
+
             }
-            if ($row['Email Paragraph Key']==$target_key) {
-                $new_order[$paragraph_key]=$i++;
+            foreach($new_order as $_paragraph_key=>$paragraph_order) {
+                $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Type`=%s , `Paragraph Order`=%d where `Email Paragraph Key`=%d ",
+                             
+                             prepare_mysql($paragraph_type),
+                             $paragraph_order,
+                             $_paragraph_key);
+                mysql_query($sql);
+                if($change_original){
+                  $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Original Type`=%s , `Paragraph Order`=%d where `Email Paragraph Key`=%d ",
+                            
+                             prepare_mysql($paragraph_type),
+                             $paragraph_order,
+                             $_paragraph_key);
+                mysql_query($sql);
+                }
+                
+                
+                
             }
-            $new_order[$row['Email Paragraph Key']]=$i++;
 
 
         }
-        foreach($new_order as $_paragraph_key=>$paragraph_order) {
-            $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Order`=%d where `Email Paragraph Key`=%d ",$paragraph_order,$_paragraph_key);
-            mysql_query($sql);
-
-        }
-
-
-
     }
     function update_subject($value,$email_content_key) {
 
@@ -1299,9 +1354,9 @@ class EmailCampaign extends DB_Table {
 
 
             $sql=sprintf("select `%s` as old_value from  `Email Content Dimension`  where `Email Content Key`=%d ",
-                 $key,
-                 $email_content_key
-                 );
+                         $key,
+                         $email_content_key
+                        );
             mysql_query($sql);
             $res=mysql_query($sql);
             if ($row=mysql_fetch_assoc($res)) {
@@ -1317,6 +1372,44 @@ class EmailCampaign extends DB_Table {
                         );
             mysql_query($sql);
             if (mysql_affected_rows()) {
+
+                if ($key=='Email Content Template Type') {
+
+                    if ($value=='Basic' or $value=='Postcard') {
+
+                        $sql=sprintf("select `Email Paragraph Key` from  `Email Content Paragraph Dimension`  where `Paragraph Type`='Side' and `Email Content Key`=%d ",
+
+                                     $email_content_key
+                                    );
+                        mysql_query($sql);
+                        $res=mysql_query($sql);
+                       // print $sql;
+                        while ($row=mysql_fetch_assoc($res)) {
+                            $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Type`='Main' where `Email Paragraph Key=%d ",$row['Email Paragraph Key']);
+                            mysql_query($sql);
+                          //  print $sql;
+                            $this->move_paragraph_to_the_end($email_content_key,$row['Email Paragraph Key'],'Main',$change_original=false);
+                        }
+
+
+
+                    } else {
+                        $sql=sprintf("select `Email Paragraph Key` from  `Email Content Paragraph Dimension`  where `Paragraph Original Type`='Side' and `Paragraph Type`='Main' and `Email Content Key`=%d ",
+                                     $email_content_key
+                                    );
+                        mysql_query($sql);
+                        $res=mysql_query($sql);
+                        while ($row=mysql_fetch_assoc($res)) {
+                            $sql=sprintf("update `Email Content Paragraph Dimension`  set `Paragraph Type`='Side' where `Email Paragraph Key=%d ",$row['Email Paragraph Key']);
+                            mysql_query($sql);
+                            $this->move_paragraph_to_the_end($email_content_key,$row['Email Paragraph Key'],'Side',$change_original=false);
+                        }
+
+                    }
+
+                }
+
+
                 $this->updated=true;
                 $this->new_value=$value;
                 $this->old_value=$old_value;
@@ -1327,13 +1420,12 @@ class EmailCampaign extends DB_Table {
 
 
 
-
+ 
 
     }
 
 
     function update_paragraph($email_content_key,$paragraph_key,$data) {
-
 
 
         $sql=sprintf("update `Email Content Paragraph Dimension` set `Paragraph Title`=%s,`Paragraph Subtitle`=%s,`Paragraph Content`=%s where `Email Paragraph Key`=%d ",
@@ -1342,7 +1434,7 @@ class EmailCampaign extends DB_Table {
                      prepare_mysql($data['content']),
                      $paragraph_key);
         mysql_query($sql);
-
+//print_r($sql);
         if (mysql_affected_rows()) {
             $this->updated=true;
         }

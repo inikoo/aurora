@@ -51,7 +51,7 @@
 <table class="edit" style="clear:both;width:100%;margin-top:10px" border=0  >
 
 <tr class="top">
-<td style="width:130px" class="label">{t}Store:{/t}</td>
+<td style="width:80px" class="label">{t}Store:{/t}</td>
 <td  >
 {$store->get('Store Name')}
 </td>
@@ -64,7 +64,7 @@
 <input id="email_campaign_contents" type='hidden' value='{$email_campaign->get('Email Campaign Contents')|escape}' ovalue='{$email_campaign->get('Email Campaign Contents')|escape}'/>
 
 <tr >
-<td class="label" >{t}Campaign Name{/t}:</td>
+<td class="label" >{t}Name{/t}:</td>
    <td  style="text-align:left;">
      <div   >
        <input style="text-align:left;width:100%" id="email_campaign_name" value="{$email_campaign->get('Email Campaign Name')|escape}" ovalue="{$email_campaign->get('Email Campaign Name')|escape}" >
@@ -75,7 +75,7 @@
  </tr>
 <tbody >
 
-<tr><td  class="label" >{t}Campaign Objetive{/t}:</td>
+<tr><td  class="label" >{t}Objetive{/t}:</td>
    <td  style="text-align:left;">
       <div>
        <input style="text-align:left;width:100%" id="email_campaign_objetive" value="{$email_campaign->get('Email Campaign Objective')|escape}" ovalue="{$email_campaign->get('Email Campaign Objective')|escape}" >
@@ -162,8 +162,8 @@
 <tr class="last" style="height:15px"><td colspan=3></td></tr>
 
 
-<tr  style="height:40px">
-<td  class="label" >{t}Type of Email{/t}:</td>
+<tr  style="display:none" style="height:40px">
+<td  class="label" >{t}Type{/t}:</td>
 <td colspan=2 >
 
 <div class="buttons left">
@@ -202,13 +202,20 @@
 </tbody>
 <tbody id="html_email_from_template_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML Template'}display:none{/if}">
 
-<tr id="change_template_buttons">
-<td></td>
-<td colspan=2>
-<div class="buttons left">
-<button id="change_template_layout" ><img  src="art/icons/images.png" alt=""/> {t}Template Layout{/t}</button>
-<button id="change_template_color_scheme" ><img src="art/icons/color_swatch.png" alt=""/> {t}Color Scheme{/t}</button>
-<button id="change_template_header_image"><img  src="art/icons/layout_header.png" alt=""/> {t}Header Image{/t}</button>
+<tr>
+
+<td colspan=3  ><h2>{t}Template Email{/t}</h2></td>
+</tr>
+
+<tr id="change_template_buttons_tr">
+
+<td colspan=3 style="border-bottom:1px solid #eee;border-top:1px solid #ccc;">
+<div class="buttons left" id="change_template_buttons">
+<button class="selected change_template_buttons" id="change_template_content" ><img  src="art/icons/email_edit.png" alt=""/> {t}Edit Content{/t}</button>
+
+<button class="change_template_buttons" id="change_template_layout" ><img  src="art/icons/images.png" alt=""/> {t}Template Layout{/t}</button>
+<button class="change_template_buttons" id="change_template_color_scheme" ><img src="art/icons/color_swatch.png" alt=""/> {t}Color Scheme{/t}</button>
+<button class="change_template_buttons" id="change_template_header_image"><img  src="art/icons/layout_header.png" alt=""/> {t}Header Image{/t}</button>
 
 
 
@@ -216,17 +223,26 @@
 </td>
 </tr>
 
+
+
+<tr style="display:none" id="change_template_header_image_tr">
+<td colspan=3>
+<div class="buttons">
+<button  id="new_template_header_image" ><img src="art/icons/add.png" alt="{t}New Header Image{/t}" title="{t}New Header Image{/t}"/> {t}Header Image{/t}</button>
+
+</div>
+</td>
+</tr>
+
+
 <tr style="display:none" id="change_template_layout_tr">
 <td></td>
 <td colspan=2>
-<div class="buttons">
-<button id="close_change_template_layout" ><img src="art/icons/arrow_left.png" alt=""/> {t}Go back to Edit Email{/t}</button>
-
-</div>
 
 
 
-<p>
+
+<p style="display:none">
 {t}Choose which template layout you want to use{/t}. 
 </p>
 <div style="padding:10px 0">
@@ -265,62 +281,38 @@
 
 
 
-
 <tr style="xdisplay:none" id="change_template_color_scheme_tr">
-<td></td>
-<td colspan=2>
-<div class="buttons">
-<button id="new_color_scheme" ><img src="art/icons/add.png" alt=""/> {t}Scheme{/t}</button>
 
-<button id="close_change_template_color_scheme" ><img src="art/icons/arrow_left.png" alt=""/> {t}Go back to Edit Email{/t}</button>
+<td colspan=3>
+
+<div class="buttons">
+<button  id="new_color_scheme" ><img src="art/icons/add.png" alt="{t}New Color Schema{/t}" title="{t}New Color Schema{/t}"/> {t}Color Scheme{/t}</button>
+<button style="display:none" id="close_color_scheme_view_details" ><img src="art/icons/text_list_bullets.png" alt="{t}Color Scheme List{/t}"  title="{t}Color Scheme List{/t}" /> {t}Color Scheme List{/t}</button>
 
 </div>
-<p>
-{t}Choose color scheme for your email{/t}. 
-</p>
+<div id="color_schemes" class="data_table"  style="margin-top:10px;clear:both">
+<span id="table_title" class="clean_table_title">{t}Color Schemes{/t}</span> 
+     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
 
-<table  id="color_schemes" class="color_scheme" border=1 style="width:100%">
-{foreach from=$color_schemes item=color_scheme }
-<tr class="color_scheme" id="color_scheme_tr_{$color_scheme.Email_Template_Color_Scheme_Key}">
-<td style="padding:2px 0;width:120px">{$color_scheme.Email_Template_Color_Scheme_Name}</td>
-<td>
-
-<input type="hidden" id="color_scheme_kbase_modified_{$color_scheme.Email_Template_Color_Scheme_Key}"  value="{$color_scheme.Kbase_Modifed}" >
-<span id="color_scheme_Background_Body_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Body};" alt="{$color_scheme.Background_Body}" title="{t}Background{/t}"></span>
-<span id="color_scheme_Background_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Header};" alt="{$color_scheme.Background_Header}" title="{t}Background Header{/t}"></span>
-<span id="color_scheme_Text_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Text_Header};" alt="{$color_scheme.Text_Header}" title="{t}Text Header{/t}"></span>
-<span id="color_scheme_Link_Header_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Link_Header};" alt="{$color_scheme.Link_Header}" title="{t}Links Header{/t}"></span>
-
-<span id="color_scheme_Background_Container_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Container};" alt="{$color_scheme.Background_Container}" title="{t}Background Container{/t}"></span>
-<span id="color_scheme_H1_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.H1};" alt="{$color_scheme.H1}" title="{t}Titles{/t}"></span>
-<span id="color_scheme_H2_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.H2};" alt="{$color_scheme.H2}" title="{t}Subtitles{/t}"></span>
-<span id="color_scheme_Text_Container_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Text_Container};" alt="{$color_scheme.Text_Container}" title="{t}Text{/t}"></span>
-<span id="color_scheme_Link_Container_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Link_Container};" alt="{$color_scheme.Link_Container}" title="{t}Links{/t}"></span>
-
-<span id="color_scheme_Background_Footer_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Background_Footer};" alt="{$color_scheme.Background_Footer}" title="{t}Footer{/t}"></span>
-<span id="color_scheme_Text_Footer_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="background-color:#{$color_scheme.Text_Footer};" alt="{$color_scheme.Text_Footer}" title="{t}Text Footer{/t}"></span>
-<span id="color_scheme_Link_Footer_{$color_scheme.Email_Template_Color_Scheme_Key}" class="swatch" style="display:none;background-color:#{$color_scheme.Link_Footer};" alt="{$color_scheme.Link_Footer}" title="{t}Links Footer{/t}"></span>
-
-</td>
-<td>
-<div class="buttons">
-<button style="width:100px;{if $current_color_scheme!=$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_in_use_{$color_scheme.Email_Template_Color_Scheme_Key}" class="selected">{t}Selected{/t}<img  class="selected" src="art/icons/accept.png"/></button>
-<button style="width:100px;{if $current_color_scheme==$color_scheme.Email_Template_Color_Scheme_Key}display:none{/if}" id="color_scheme_use_this_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="save_color_scheme_use_this({$color_scheme.Email_Template_Color_Scheme_Key})" >{t}Use this{/t}</button>
-<button id="color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">{t}View Details{/t}</button>
-<button style="display:none" id="close_color_scheme_view_details_{$color_scheme.Email_Template_Color_Scheme_Key}" onClick="close_color_scheme_view_details({$color_scheme.Email_Template_Color_Scheme_Key})">Go Back</button>
-
+{include file='table_splinter.tpl' table_id=10 filter_name=$filter_name10 filter_value=$filter_value10 no_filter=1}
+<div  id="table10"   class="data_table_container dtable btable" style="font-size:80%"> </div>
 </div>
-</td>
+
+<table id="color_scheme_details" class="color_scheme" border=0 style="width:100%;display:none">
+<tr><td  colspan=3>
+<h2 style="width:100%;padding-left:10px "id="color_scheme_details_name"></h2>
+</td></tr>
 
 
-</tr>
-{/foreach}
-<tr id="color_scheme_details">
+
+
+
+<tr>
   <input type="hidden" id="color_edit_scheme_key" value=""/>
 
 <td style="padding:0px" colspan="3">
 
-<iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:600px;height:100px;float:right" >
+<iframe onLoad="changeHeight(this);" id="color_scheme_template_email_iframe" src="email_template.php?email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:750px;height:100px;float:right" >
 <p>{t}Your browser does not support iframes{/t}.</p>
 </iframe>
 <table style="width:150px;margin-top:10px;font-size:90%">
@@ -373,9 +365,10 @@
 
 
 
-<tr style="display:none" id="template_editor_tr">
+
+<tr  id="template_editor_tr">
 <td></td>
-<td >
+<td colspan=2>
 
 <iframe onLoad="changeHeight(this);" id="template_email_iframe" src="email_template.php?edit=1&email_campaign_key={$email_campaign->id}&email_content_key={$current_content_key}" frameborder=0 style="width:700px;height:100px" >
 <p>Your browser does not support iframes.</p>
@@ -384,8 +377,6 @@
 </td>
 </tr>
 
-<tr id="change_template_color_scheme_tr"></tr>
-<tr id="change_template_header_image_tr"></tr>
 
 
 </tbody>
@@ -521,18 +512,7 @@
 </table>
 </div>
 
- <div id="dialog_edit_color" style="padding-right:10px;width:360px;height:230px">
- <input type="hidden" id="color_edit_element" value=""/>
 
-  <div style="position:relative;top:200px" class="buttons">
-    <button id="save_color" class="positive">{t}Save{/t}</button>
-  <button id="close_edit_color_dialog" class="negative">{t}Cancel{/t}</button>
-
- 
- </div>
- <div id="edit_color" style="margin-top:20px;padding-top:20px;"></div>
-
-</div>
 
 
 {include file='footer.tpl'}
@@ -622,4 +602,15 @@
     </div>
  </div>
  
+  <div id="dialog_edit_color" style="padding-right:10px;width:360px;height:230px">
+ <input type="hidden" id="color_edit_element" value=""/>
+
+  <div style="position:relative;top:200px" class="buttons">
+    <button id="save_color" class="positive">{t}Save{/t}</button>
+  <button id="close_edit_color_dialog" class="negative">{t}Cancel{/t}</button>
+
  
+ </div>
+ <div id="edit_color" style="margin-top:20px;padding-top:20px;"></div>
+
+</div>
