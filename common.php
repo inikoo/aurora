@@ -9,12 +9,15 @@ if (DEBUG) {
 require_once 'app_files/db/dns.php';
 
 require_once 'common_functions.php';
+
 require_once 'common_detect_agent.php';
+
 require_once "class.Session.php";
 require_once "aes.php";
 
 require_once "class.Auth.php";
 require_once "class.User.php";
+
 $external_DB_link=false;
 
 if (isset($connect_to_external) and isset($external_dns_user)) {

@@ -539,6 +539,89 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	
+//----------------------------------------------------------------------------------------------------------------
+
+
+
+
+        var tableid=10; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+	    				    {key:"id", label:"",hidden:true,action:"none",isPrimaryKey:true}
+	    				    ,{key:"name", label:"<?php echo _('Name')?>",width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"palette", label:"<?php echo _('Palette')?>",width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"used",label:"<?php echo _('In Use')?>", width:40,className:"aright"}
+
+			                ,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'email_campaign_objetive'}
+			  			];
+			       
+		this.dataSource10 = new YAHOO.util.DataSource("ar_edit_marketing.php?tipo=color_schemes&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&sf=0");
+
+	 this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource10.connXhrMode = "queueRequests";
+	    	    this.dataSource10.table_id=tableid;
+
+	    this.dataSource10.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
+		},
+		
+		
+		fields: [
+			 "id","name","palette","delete","used"
+			 ]};
+
+	    this.table10 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource10
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator10', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info10'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "name",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table10.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table10.doBeforeSortColumn = mydoBeforeSortColumn;
+	  this.table10.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table10.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table10.subscribe("cellClickEvent", onCellClick);      	    
+     
+
+
+	    this.table10.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table10.filter={key:'code',value:''};
+
+
+
+
+
+
+
 
 
 	
@@ -813,10 +896,10 @@ function start_send(lap_seconds){
 var email_campaign_key=Dom.get('email_campaign_key').value;
 
 var request='ar_edit_marketing.php?tipo=set_email_campaign_as_ready&email_campaign_key='+email_campaign_key+'&start_sending_in='+lap_seconds;
-alert(request);
+//alert(request);
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
 //alert("email_campaign.php?id="+Dom.get('email_campaign_key').value);return;
@@ -1277,6 +1360,7 @@ validate_scope_metadata={
 
       Event.addListener("show_add_object_manually", "click", show_add_object_manually);
 
+      Event.addListener("change_template_content", "click", show_change_template_content);
 
       Event.addListener("change_template_layout", "click", show_change_template_layout);
       Event.addListener("change_template_color_scheme", "click", show_change_template_color_scheme);
@@ -1289,7 +1373,6 @@ validate_scope_metadata={
             Event.addListener("change_template_layout_postcard", "click", save_change_template_layout,'Postcard');
 
       
-                  Event.addListener("close_change_template_layout", "click", close_change_template_layout);
 
  color_picker = new YAHOO.widget.ColorPicker("edit_color", {
 	showhsvcontrols: true,
@@ -1330,6 +1413,8 @@ validate_scope_metadata={
                   Event.addListener("new_color_scheme", "click", new_color_scheme);
 
                   Event.addListener("delete_scheme", "click", delete_scheme);
+                  Event.addListener("close_color_scheme_view_details", "click", close_color_scheme_view_details);
+
 
 
 
@@ -1348,7 +1433,7 @@ function save_delete_scheme(){
 
 	var color_scheme_key=Dom.get('color_edit_scheme_key').value;
 	
-	var request='ar_edit_marketing.php?tipo=delete_color_scheme&color_scheme_key='+color_scheme_key
+	var request='ar_edit_marketing.php?tipo=delete_color_scheme&color_scheme_key='+color_scheme_key+'&store_key='+Dom.get('store_key').value
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
@@ -1448,7 +1533,7 @@ function reset_default_color_scheme_values(){
               
               
 
-  color_scheme_view_details(r.color_scheme_key)
+  show_color_scheme_view_details(r.color_scheme_key)
 		}else{
 		  
 	    }
@@ -1461,7 +1546,11 @@ function close_edit_color_dialog(){
 dialog_edit_color.hide();
 }
 
-function close_color_scheme_view_details(color_scheme_key){
+function close_color_scheme_view_details(){
+
+	var color_scheme_key=Dom.get('color_edit_scheme_key').value;
+
+
 color_scheme_rows=Dom.getElementsByClassName('color_scheme', 'tr', 'color_schemes');
 
 Dom.setStyle(color_scheme_rows,'display','');
@@ -1491,12 +1580,7 @@ color_picker.setValue([color.r,color.g,color.b], false);
 dialog_edit_color.show();
 }
 
-function close_change_template_layout(){
-Dom.setStyle('change_template_layout_tr','display','none')
-Dom.setStyle(['template_editor_tr','change_template_buttons'],'display','')
 
-
-}
 
 
 function save_change_template_layout(e,value){
@@ -1507,7 +1591,7 @@ function save_change_template_layout(e,value){
 //alert(request)
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-//	alert(o.responseText)
+	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
              
@@ -1531,7 +1615,8 @@ function save_change_template_layout(e,value){
                 }
                 Dom.get('template_email_iframe').contentDocument.location.reload(true);
                 
-                close_change_template_layout()
+
+
                 
                 
          
@@ -1563,7 +1648,9 @@ function save_color(){
 //	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
-		 Dom.get('template_email_iframe').contentDocument.location.reload(true);
+		 Dom.get('color_scheme_template_email_iframe').contentDocument.location.reload(true);
+		 		 Dom.get('template_email_iframe').contentDocument.location.reload(true);
+
             Dom.setStyle('color_scheme_'+r.element,'background-color','#'+r.color)
             Dom.get('color_scheme_'+r.element,'background-color').setAttribute('alt','#'+r.color)
             
@@ -1585,21 +1672,47 @@ Dom.setStyle('reset_default_color_scheme_values','display','none')
 
 }
 
+function show_change_template_content(){
+
+change_template_buttons=Dom.getElementsByClassName('change_template_buttons', 'button', 'change_template_buttons');
+Dom.removeClass(change_template_buttons,'selected')
+Dom.addClass('change_template_content','selected')
+
+Dom.setStyle(['change_template_layout_tr','change_template_color_scheme_tr','change_template_header_image_tr'],'display','none');
+Dom.setStyle('template_editor_tr','display','');
+                changeHeight(Dom.get('template_email_iframe'))
+
+}
+
 
 function show_change_template_layout(){
 
-Dom.setStyle(['template_editor_tr','change_template_buttons'],'display','none');
+change_template_buttons=Dom.getElementsByClassName('change_template_buttons', 'button', 'change_template_buttons');
+Dom.removeClass(change_template_buttons,'selected')
+Dom.addClass('change_template_layout','selected')
+
+Dom.setStyle(['template_editor_tr','change_template_color_scheme_tr','change_template_header_image_tr'],'display','none');
 Dom.setStyle('change_template_layout_tr','display','');
 
 }
 
 function show_change_template_color_scheme(){
-Dom.setStyle(['template_editor_tr','change_template_buttons'],'display','none');
+
+change_template_buttons=Dom.getElementsByClassName('change_template_buttons', 'button', 'change_template_buttons');
+Dom.removeClass(change_template_buttons,'selected')
+Dom.addClass('change_template_color_scheme','selected')
+
+Dom.setStyle(['template_editor_tr','change_template_layout_tr','change_template_header_image_tr'],'display','none');
 Dom.setStyle('change_template_color_scheme_tr','display','');
 }
 
 function show_change_template_header_image(){
+change_template_buttons=Dom.getElementsByClassName('change_template_buttons', 'button', 'change_template_buttons');
+Dom.removeClass(change_template_buttons,'selected')
+Dom.addClass('change_template_header_image','selected')
 
+Dom.setStyle(['template_editor_tr','change_template_layout_tr','change_template_color_scheme_tr'],'display','none');
+Dom.setStyle('change_template_header_image_tr','display','');
 }
 
 
@@ -1626,37 +1739,49 @@ function hide_add_object_manually(){
 Dom.setStyle('objetives_second_label','visibility','hidden')
 }
 
-function color_scheme_view_details(color_scheme_key){
-Dom.get('color_edit_scheme_key').value=color_scheme_key;
-Dom.get('template_email_iframe').src="email_template.php?email_campaign_key="+Dom.get('email_campaign_key').value+"&email_content_key="+Dom.get('email_content_key').value+"&color_scheme_key="+color_scheme_key
+function show_color_scheme_view_details(color_scheme_key,data,name){
 
-if(Dom.get('color_scheme_kbase_modified_'+color_scheme_key).value=='Yes'){
+data=data.split(';')
+
+Dom.get('color_edit_scheme_key').value=color_scheme_key;
+Dom.get('color_scheme_template_email_iframe').src="email_template.php?email_campaign_key="+Dom.get('email_campaign_key').value+"&email_content_key="+Dom.get('email_content_key').value+"&color_scheme_key="+color_scheme_key
+
+if(data[0]=='Yes'){
 Dom.setStyle('reset_default_color_scheme_values','display','')
 }else{
 Dom.setStyle('reset_default_color_scheme_values','display','none')
 }
 
-color_scheme_rows=Dom.getElementsByClassName('color_scheme', 'tr', 'color_schemes');
-Dom.setStyle(color_scheme_rows,'display','none');
-Dom.setStyle('color_scheme_view_details_'+color_scheme_key,'display','none');
+Dom.get('color_scheme_details_name').innerHTML=name;
 
-Dom.setStyle(['color_scheme_details','color_scheme_tr_'+color_scheme_key,'close_color_scheme_view_details_'+color_scheme_key],'display','');
+Dom.setStyle('color_schemes','display','none');
+Dom.setStyle(['color_scheme_details','close_color_scheme_view_details'],'display','');
 
+//color_scheme_rows=Dom.getElementsByClassName('color_scheme', 'tr', 'color_schemes');
+//Dom.setStyle(color_scheme_rows,'display','none');
+//Dom.setStyle('color_scheme_view_details_'+color_scheme_key,'display','none');
 
-Dom.setStyle('color_scheme_Background_Body','background-color',Dom.getStyle('color_scheme_Background_Body_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Background_Header','background-color',Dom.getStyle('color_scheme_Background_Header_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Background_Container','background-color',Dom.getStyle('color_scheme_Background_Container_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Background_Footer','background-color',Dom.getStyle('color_scheme_Background_Footer_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Text_Header','background-color',Dom.getStyle('color_scheme_Text_Header_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Link_Header','background-color',Dom.getStyle('color_scheme_Link_Header_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Text_Footer','background-color',Dom.getStyle('color_scheme_Text_Footer_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Link_Footer','background-color',Dom.getStyle('color_scheme_Link_Footer_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Text_Container','background-color',Dom.getStyle('color_scheme_Text_Container_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_Link_Container','background-color',Dom.getStyle('color_scheme_Link_Container_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_H1','background-color',Dom.getStyle('color_scheme_H1_'+color_scheme_key, 'background-color'))
-Dom.setStyle('color_scheme_H2','background-color',Dom.getStyle('color_scheme_H2_'+color_scheme_key, 'background-color'))
+//Dom.setStyle(['close_color_scheme_view_details','color_scheme_details','color_scheme_tr_'+color_scheme_key,'close_color_scheme_view_details_'+color_scheme_key],'display','');
+//Dom.setStyle(['close_color_scheme_view_details','color_scheme_details','close_color_scheme_view_details_'+color_scheme_key],'display','');
+
+Dom.setStyle('color_scheme_details_name','background-color','#'+data[2])
+Dom.setStyle('color_scheme_details_name','color','#'+data[5])
 
 
+Dom.setStyle('color_scheme_Background_Body','background-color','#'+data[1])
+Dom.setStyle('color_scheme_Background_Header','background-color','#'+data[2])
+Dom.setStyle('color_scheme_Background_Container','background-color','#'+data[3])
+Dom.setStyle('color_scheme_Background_Footer','background-color','#'+data[4])
+Dom.setStyle('color_scheme_Text_Header','background-color','#'+data[5])
+Dom.setStyle('color_scheme_Link_Header','background-color','#'+data[6])
+Dom.setStyle('color_scheme_Text_Footer','background-color','#'+data[7])
+Dom.setStyle('color_scheme_Link_Footer','background-color','#'+data[8])
+Dom.setStyle('color_scheme_Text_Container','background-color','#'+data[9])
+Dom.setStyle('color_scheme_Link_Container','background-color','#'+data[10])
+Dom.setStyle('color_scheme_H1','background-color','#'+data[11])
+Dom.setStyle('color_scheme_H2','background-color','#'+data[12])
+
+ changeHeight(Dom.get('color_scheme_template_email_iframe'))
 
 }
 

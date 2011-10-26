@@ -47,14 +47,16 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 <table class="header" width="600" cellpadding="0" cellspacing="0">
 
 <tr>
-<td style="background-color:#{$color_scheme.Background_Header};border-bottom:1px solid #{$color_scheme.Background_Container};text-align:center;" align="center"><span style="font-size:10px;color:#{$color_scheme.Text_Header};line-height:200%;font-family:verdana;text-decoration:none;">Email not displaying correctly? <a href="*|ARCHIVE|*" style="font-size:10px;color:#{$color_scheme.Link_Header};line-height:200%;font-family:verdana;text-decoration:none;">View it in your browser.</a></span></td>
+<td style="background-color:#{$color_scheme.Background_Header};border-bottom:0px solid #{$color_scheme.Background_Container};text-align:center;" align="center"><span style="font-size:10px;color:#{$color_scheme.Text_Header};line-height:200%;font-family:verdana;text-decoration:none;">Email not displaying correctly? <a href="*|ARCHIVE|*" style="font-size:10px;color:#{$color_scheme.Link_Header};line-height:200%;font-family:verdana;text-decoration:none;">View it in your browser.</a></span></td>
 </tr>
  
 <tr>
-<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:10px solid #{$color_scheme.Background_Container};"><center><IMG   SRC="{$header_src}" BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
+<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:6px solid #{$color_scheme.Background_Container};"><center><IMG   SRC="{$header_src}" BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
 </tr>
 
-
+<tr>
+<td style="background-color:#FFFFFF;border-top:0px solid #FFFFFF;border-bottom:0px solid #333333;"><center><a href="#"><img src="art/email_headers/dark_wood.jpg" width="600"  border="0" alt="Lorem ipsum"></a></center></td>
+</tr>
 </table>
 
 
