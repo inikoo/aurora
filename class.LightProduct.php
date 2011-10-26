@@ -63,7 +63,10 @@ class LightProduct {
             $this->user_id=$data['username'];
             $this->method=$data['method'];
             break;
-
+		case 'custom':
+			$this->method='sc';
+			$this->user=$data['user'];
+			break;
         default:
             break;
         }
@@ -129,7 +132,44 @@ class LightProduct {
                                ,$this->data['Product Price']
                                ,$this->get('Order Msg')
                               );
-            } else {
+            }
+			else if ($this->method=='sc') {
+				$order_exist=false;
+				//print $this->user->get('User Parent Key');
+				$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
+				$result=mysql_query($sql);
+				if($row=mysql_fetch_array($result))
+					$order_exist=true;
+				
+				$order_key=$row['Order Key'];
+				$sql=sprintf("select * from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d", $row['Order Key'], $this->id);
+				//print $sql;
+				$result=mysql_query($sql);
+				if($row=mysql_fetch_array($result))
+					$old_qty=$row['Order Quantity'];
+				else
+					$old_qty=0;
+				//print ($this->data['Product Current Key']);
+				
+                $_form=sprintf('<input type="hidden" id="order_id%d" value="%d">
+                               <input type="hidden" id="pid%d" value="%d">
+							   <input type="hidden" id="old_qty%d" value="%d">
+							   <input class="order" type="text" size="1" class="qty" id="qty%d" value="1">
+                               <button class="button" onClick="order_single_product(%d)" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" >Submit</button>
+							   <span id="loading%d"></span>'
+							  ,$this->id
+							  ,$order_key
+							  ,$this->id
+							  ,$this->id
+							  ,$this->id
+							  ,$old_qty
+							  ,$this->id
+							  ,$this->id
+							  ,"Submit"
+							  ,$this->id
+                              );
+            }
+			else {
                 $_form=sprintf('<input type="hidden" name="action" value="%s">
                                <input type="hidden" name="userid" value="%s">
                                <input type="hidden" name="product" value="%s %sx %s">

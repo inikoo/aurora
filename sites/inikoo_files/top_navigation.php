@@ -1,6 +1,6 @@
 <?php
-global $width, $path;
-
+global $width, $path, $order_exist, $order_key;
+include_once('class.Order.php');
 if($path=="../../"){
 	$path_id=2;
     $path_menu='../';
@@ -22,18 +22,68 @@ if($path=="../../"){
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/element/element-min.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/common.js"></script>
 
+
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/sha256.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/aes.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/login.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/basket.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/top_navigation.js"></script>
-
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/update_customer_cart.js.php?path=<?php echo $path_id ?>"></script>
 <?php 
 //print_r($_COOKIE);
 
 
 //echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
-if($logged_in){?>
+if($logged_in){
+
+global $width, $path, $order_exist, $order_key;
+$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $user->get('User Parent Key'));
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result)){
+	$order_exist=true;
+	$order_key=$row['Order Key'];
+}
+else{
+	//$order_exist=false;
+    date_default_timezone_set('UTC');
+
+	$customer_=new Customer($user->get('User Parent Key'));
+	if (!$customer_->id)
+		$customer_=new Customer('create anonymous');
+
+    $editor=array(
+                'Author Name'=>$user->data['User Alias'],
+                'Author Alias'=>$user->data['User Alias'],
+                'Author Type'=>$user->data['User Type'],
+                'Author Key'=>$user->data['User Parent Key'],
+                'User Key'=>$user->id
+            );
+
+    $order_data=array(
+
+                    'Customer Key'=>$customer_->id,
+                    'Order Original Data MIME Type'=>'application/inikoo',
+                    'Order Type'=>'Order',
+                    'editor'=>$editor
+
+                );
+
+    $order=new Order('new',$order_data);
+
+//exit;
+    if ($order->error)
+        exit('error');
+
+
+    //$ship_to=$customer_->get_ship_to();
+
+    //$order-> update_ship_to($ship_to->id);
+}
+
+
+?>
+<input type="hidden" value="<?php echo $order_exist?>" id="order_exist">
+<input type="hidden" value="<?php echo $order_key?>" id="order_key">
 <input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>"></script>
@@ -80,6 +130,7 @@ if($logged_in){?>
 <?php if($logged_in){?>
 <div id="dialog_actions"    class="dialog logged"  >
 <table border=0 style="margin-top:20px;">
+<tr><td><span id="track_order" class="link">Track Order</span></td></tr>
 <tr><td><span id="show_user_profile" class="link">User Profile</span></td></tr>
 <tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
 <tr class="button space"><td><button id="hide_actions_dialog" >Close</button></td></tr>
