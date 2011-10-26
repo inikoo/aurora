@@ -18,14 +18,15 @@ $sql=sprintf("select * from `Image Dimension` where `Image Key`=%d",$id);
 $result = mysql_query($sql);
 if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
-
+//print_r($row);
+ 
  header('Content-type: image/jpeg');
   header('Content-Disposition: inline; filename='.$row['Image Original Filename']);
   //readfile($row['Attachment Filename']);
 // echo  $row['Image Data'];  
-//  echo  $row['Image Small Data'] ;
+ // var_dump(  $row) ;
 
-exit;
+//exit;
 
 if($size=='original'){
     echo $row['Image Data'];

@@ -201,9 +201,7 @@ else {
     return false;
 }
 }
-    
-
-    function get_user_os($useragent){        
+function get_user_os($useragent){        
         $useragent = strtolower($useragent);
         
         //check for (aaargh) most popular first        
@@ -281,4 +279,3 @@ else {
 
 
 ?>
-
