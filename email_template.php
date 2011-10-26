@@ -132,6 +132,10 @@ if (isset($_REQUEST['color_scheme_key']) and is_numeric($_REQUEST['color_scheme_
 $smarty->assign('color_scheme',$color_scheme);
 $header_src=$email_content_data['header_src'];
 if (!$header_src) {
+if($email_content_data['template_type']=='Postcard')
+    $header_src=$color_scheme['Header_Slim_Image_Source'];
+
+else
     $header_src=$color_scheme['Header_Image_Source'];
 }
 
@@ -144,6 +148,15 @@ $smarty->assign('store',$store);
 switch ($email_content_data['template_type']) {
 case 'Basic':
     $output = $smarty->fetch('email_basic.tpl');
+    break;
+case 'Left Column':
+    $output = $smarty->fetch('email_left_column.tpl');
+    break;
+case 'Right Column':
+    $output = $smarty->fetch('email_right_column.tpl');
+    break;
+case 'Postcard':
+    $output = $smarty->fetch('email_postcard.tpl');
     break;
 default:
     $output='';
