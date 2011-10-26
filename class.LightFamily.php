@@ -428,8 +428,8 @@ class LightFamily {
 														   <input type="hidden" id="old_qty%d" value="%d">
 															<td class="code">%s</td>
 															<td class="price">%s</td>
-															<td class="input"><input  id="qty%s"  type="text" value="1" class="%s"  %s ></td>
-															<td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" /></td>
+															<td class="input"><input  id="qty%s"  type="text" value="%s" class="%s"  %s ></td>
+															<td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" style="display:%s"/></td>
 															<td class="description">%s %s</td><td class="rrp">%s</td>
 															<td><span id="loading%d"></span></td>
 															</tr>'."\n",
@@ -441,11 +441,11 @@ class LightFamily {
 												   $row['Product Code'],
 												   $price,
 												  
-												   $row['Product ID'],
+												   $row['Product ID'],($old_qty>0?$old_qty:''),
 													 $class_state,
 													 ($class_state!=''?' readonly="readonly" ':''),
 													 $path,
-													$row['Product ID'], 
+													$row['Product ID'], ($class_state!=''?' none ':''),
 												   $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
 												   $state,
 												   $rrp,
@@ -1218,8 +1218,8 @@ class LightFamily {
 									   <input type="hidden" id="old_qty%d" value="%d">
 										<td class="code">%s</td>
 										<td class="price">%s</td>
-										<td class="input"><input  id="qty%s"  type="text" value="1" class="%s"  %s ></td>
-										<td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" /></td>
+										<td class="input"><input  id="qty%s"  type="text" value="%s" class="%s"  %s ></td>
+										<td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" style="display:%s"/></td>
 										<td class="description">%s %s</td><td class="rrp">%s</td>
 										<td><span id="loading%d"></span></td>
 										</tr>'."\n",
@@ -1231,11 +1231,11 @@ class LightFamily {
 							   $row['Product Code'],
 							   $price,
 							  
-							   $row['Product ID'],
+							   $row['Product ID'],($old_qty>0?$old_qty:''),
 								 $class_state,
 								 ($class_state!=''?' readonly="readonly" ':''),
 								 $path,
-								$row['Product ID'], 
+								$row['Product ID'], ($class_state!=''?' none ':''),
 							   $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
 							   $state,
 							   $rrp,
