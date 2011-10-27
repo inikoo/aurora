@@ -156,7 +156,7 @@ var myonCellClick = function(oArgs) {
 
 						    Dom.get(x).innerHTML=r.data[x];
 						}
-
+						Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
 						if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='';
 						    Dom.get('tr_order_items_discounts').style.display='';
@@ -301,7 +301,7 @@ var CellEdit = function (callback, newValue) {
 
 						    Dom.get(x).innerHTML=r.data[x];
 						}
-					      
+					      Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
 if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='';
 						}else{
@@ -837,3 +837,7 @@ function close_change_discount_dialog(){
 
     }
 
+function checkout(){
+	var items=Dom.get('ordered_products_number').value;
+	alert(items);
+}

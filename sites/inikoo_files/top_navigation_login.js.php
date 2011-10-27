@@ -127,9 +127,10 @@ function track_order(){
 order_exist=Dom.get('order_exist').value;
 order_key=Dom.get('order_key').value;
 
-if(!order_exist){
+if(order_key==0){
 
-     var request=path+'inikoo_files/order.php?new=1&customer_key='+customer_key; 
+     //var request=path+'inikoo_files/order.php?new=1&customer_key='+customer_key; 
+	 alert('No ItemsOrdered'); return;
 
 }
 else{

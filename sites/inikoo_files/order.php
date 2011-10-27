@@ -31,6 +31,7 @@ $_SESSION['state']['order']['products']['f_field']='id';
 $_SESSION['state']['order']['products']['f_value']='';
 $_SESSION['state']['order']['all_products']['nr']=25;
 $_SESSION['state']['order']['ordered_products']['nr']=25;
+
 $modify=$user->can_edit('orders');
 
 
@@ -178,8 +179,8 @@ if (isset($_REQUEST['pick_aid'])) {
             $products_display_type='ordered_products';
 
         } else {
-            $products_display_type='all_products';
-
+            //$products_display_type='all_products';
+			$products_display_type='ordered_products';
         }
 
         $_SESSION['state']['order']['products']['display']=$products_display_type;
@@ -265,7 +266,7 @@ $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);
 $smarty->assign('user',$user);
 
-
+$smarty->assign('path',$path);
 $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
