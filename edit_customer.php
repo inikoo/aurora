@@ -44,7 +44,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
-//print_r($customer);
+print_r($customer);
 
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');

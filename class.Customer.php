@@ -94,6 +94,20 @@ class Customer extends DB_Table {
 			return array(true, $row);
 	}
 	
+	function number_of_user_logins(){
+		list($is_user, $row)=$this->is_user_customer($this->id);
+		if($is_user){
+			$sql=sprintf("select * from `User Log Dimension` where `User Key`=%d", $row['User Key']);
+			$result=mysql_query($sql);
+			if($num=mysql_num_rows($result))
+				return $num;
+			else 
+				return 0;
+		}
+		else
+			return 0;
+	}
+	
     function prepare_force_create($data) {
 
         if (array_key_exists('Customer Main Plain Email',$data)) {

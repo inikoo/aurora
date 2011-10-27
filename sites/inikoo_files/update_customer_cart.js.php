@@ -14,6 +14,7 @@ elseif($_REQUEST['path']=='3')
 
 
 function init(){
+//if(Dom.get('order_key').value!=0)
 doTimer();
 ids=['order_single_product34107'];
 Event.addListener(ids, "click", order_single_product);
@@ -43,6 +44,7 @@ if (!timer_is_on)
 
 function update_cart_stat(){
 order_key=Dom.get('order_key').value;
+
 var ar_file=path+'inikoo_files/ar_edit_orders.php';
 	request='tipo=update_order&order_key='+order_key;
 //alert(request)
@@ -53,6 +55,7 @@ var ar_file=path+'inikoo_files/ar_edit_orders.php';
 					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
+						
 						for(x in r.data){
 							Dom.get('basket_total').innerHTML=r.data['order_total'];
 							Dom.get('basket_items').innerHTML=r.data['ordered_products_number'];
@@ -90,20 +93,21 @@ if(isNaN(parseInt(Dom.get('qty'+pid).value))){
 
 	var old_qty=Dom.get('old_qty'+pid).value;
 	var new_qty=parseInt(Dom.get('qty'+pid).value) + parseInt(old_qty);
+	var user_key=Dom.get('user_key').value;
 	//alert(pid+' ' + order_id+ ' ' + qty);
 	//alert(new_qty);
 	
 
 	
  var ar_file=path+'inikoo_files/ar_edit_orders.php';
-	request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue=0&pid='+ pid;
+	request='tipo=is_order_exist&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue=0&pid='+ pid+'&user_key='+user_key;
 	//request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue=1&oldvalue=0&pid='+ pid;
-//alert(request)
+alert(request)
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					    alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -112,6 +116,8 @@ if(isNaN(parseInt(Dom.get('qty'+pid).value))){
 							Dom.get('loading'+pid).innerHTML='<img src="'+path+'inikoo_files/art/icons/accept.png"/>';
 							Dom.get('basket_total').innerHTML=r.data['order_total'];
 							Dom.get('basket_items').innerHTML=r.data['ordered_products_number'];
+							Dom.get('order_key').value=r.key;
+							
 							//alert('ok');
 						    //Dom.get(x).innerHTML=r.data[x];
 						}

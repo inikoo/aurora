@@ -2,7 +2,7 @@
 require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
-
+require_once 'class.User.php';
 
 
 
@@ -212,6 +212,9 @@ case('send_to_warehouse'):
 case('edit_new_order'):
     edit_new_order();
     break;
+case('is_order_exist'):
+	is_order_exist();
+	break;
 case('edit_new_post_order'):
     $data=prepare_values($_REQUEST,array(
                              'order_key'=>array('type'=>'key'),
@@ -247,11 +250,8 @@ case('use_calculated_shipping'):
     use_calculated_shipping($data);
     break;
 case('update_order'):
-
-    $data=prepare_values($_REQUEST,array(
-                             'order_key'=>array('type'=>'key')
-                         ));				 
-	update_order($data);
+						 
+	update_order();
 	break;
 default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -421,6 +421,65 @@ function set_order_shipping($data) {
 
 }
 
+function is_order_exist(){
+	$order_key=$_REQUEST['id'];
+
+    $product_pid=$_REQUEST['pid'];
+    $quantity=$_REQUEST['newvalue'];
+	$user_key=$_REQUEST['user_key'];
+	$user=new User($user_key);
+	
+	if($order_key==0){
+		$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $user->get('User Parent Key'));
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result)){
+			$order_exist=true;
+			$order_key=$row['Order Key'];
+		}
+		else{
+			//$order_exist=false;
+			date_default_timezone_set('UTC');
+
+			$customer_=new Customer($user->get('User Parent Key'));
+			if (!$customer_->id)
+				$customer_=new Customer('create anonymous');
+
+			$editor=array(
+						'Author Name'=>$user->data['User Alias'],
+						'Author Alias'=>$user->data['User Alias'],
+						'Author Type'=>$user->data['User Type'],
+						'Author Key'=>$user->data['User Parent Key'],
+						'User Key'=>$user->id
+					);
+
+			$order_data=array(
+
+							'Customer Key'=>$customer_->id,
+							'Order Original Data MIME Type'=>'application/inikoo',
+							'Order Type'=>'Order',
+							'editor'=>$editor
+
+						);
+
+			$order=new Order('new',$order_data);
+			$order_key=$order->id;
+			$order_exist=true;
+		//exit;
+			if ($order->error)
+				exit('error');
+
+
+			//$ship_to=$customer_->get_ship_to();
+
+			//$order-> update_ship_to($ship_to->id);
+		}
+		$_REQUEST['id']=$order_key;
+		
+	}
+	
+	edit_new_order();
+}
+
 function edit_new_order() {
 
     $order_key=$_REQUEST['id'];
@@ -506,7 +565,7 @@ $_SESSION['basket']['items']=$updated_data['ordered_products_number'];
                        'state'=>200,
                        'quantity'=>$transaction_data['qty'],
                        'description'=>$product->data['Product XHTML Short Description'],
-                       'key'=>$_REQUEST['key'],
+                       'key'=>$_REQUEST['id'],
                        'data'=>$updated_data,
                        'to_charge'=>$transaction_data['to_charge'],
                        'discount_data'=>$adata,
@@ -514,7 +573,7 @@ $_SESSION['basket']['items']=$updated_data['ordered_products_number'];
                        'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
                    );
     } else
-        $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
+        $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
     echo json_encode($response);
 
 }
@@ -2458,8 +2517,17 @@ function import_transactions_mals_e($_data) {
 
 }
 
-function update_order($data){
-	$order_key=$data['order_key'];
+function update_order(){
+	$order_key=$_REQUEST['order_key'];
+	
+	if($order_key==0){
+		$response= array(
+						   'state'=>200
+					   );
+
+		echo json_encode($response);
+		exit;
+	}
 	$order=new Order($order_key);
         $updated_data=array(
 
