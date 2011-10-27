@@ -5,6 +5,7 @@
   <input type="hidden" value="{$store->id}" id="store_id"  />
   <input type="hidden" value="{$order->id}" id="order_key"  />
   <input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state"  />
+  <input type="hidden" value="{$order->get('Order Number Items')}" id="ordered_products_number"  />
 
  <input type="hidden" value="{$products_display_type}" id="products_display_type"  />
 <div > 
@@ -125,7 +126,6 @@
 
   <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
-                    <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products"  id="all_products"    >{t}Products for sale{/t} (<span id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span>
 
             <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products"  id="ordered_products"  >{t}Ordered Products{/t} (<span id="ordered_products_number">{$order->get('Number Items')}</span>)</span>
  
@@ -172,7 +172,10 @@
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0" style="font-size:90%"  class="data_table_container dtable btable "> </div>
 </div>
-      
+<div>
+<button onClick="checkout()" style="align:right; margin-left:20px">Checkout</button>
+<img src="{$path}inikoo_files/art/icons/btn_xpressCheckout.gif" align="left" style="margin-right:7px; align=:right">
+</div>      
       
     </div>
     {if $items_out_of_stock}
@@ -181,6 +184,8 @@
       <div  id="table1" class="dtable btable" style="margin-bottom:0"></div>
     </div>
     {/if}
+
+
 
 
 <div id="rppmenu0" class="yuimenu">

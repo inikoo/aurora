@@ -551,8 +551,36 @@ $formated_url=preg_replace('/^http\:\\/\\//','',$url);
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
-					  
-		
+		$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+				
+		   
+				$message_data['method']='smtp';
+				$message_data['type']='html';
+				$message_data['to']=$login_handle;
+				$message_data['subject']='Reset your password';
+				$message_data['html']=$html_message;
+				$message_data['email_credentials_key']=1;
+				$message_data['email_matter']='Password Reminder';
+				$message_data['email_matter_key']=$email_mailing_list_key;
+				$message_data['email_matter_parent_key']=$email_mailing_list_key;
+				$message_data['recipient_type']='User';
+				$message_data['recipient_key']=0;
+				$message_data['email_key']=0;
+				$message_data['plain']=$plain_message;
+				if(isset($message_data['plain']) && $message_data['plain']){
+					$message_data['plain']=$message_data['plain'];
+				}
+				else
+					$message_data['plain']=null;
+
+			 //print_r($message_data);
+			$send_email=new SendEmail();
+
+			$send_email->track=true;
+
+
+			$result=$send_email->send($message_data);	
+/*		
 		$data=array('email_type'=>'Password Reminder',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user->id);
@@ -585,7 +613,7 @@ $files=array();
         $result=$send_email->send();
 
 		//print_r($result);
-		
+*/		
         if ($result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);

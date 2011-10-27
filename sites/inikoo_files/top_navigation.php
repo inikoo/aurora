@@ -124,6 +124,38 @@ if(true){
 
 ?>
 
+<div id="dialog_forgot_password"    class="dialog" >
+<h2>Forgotten password</h2>
+<table>
+<tbody id="forgot_password_form">
+<tr><td  class="label" style="text-align:right;width:120px">Email: </td><td><input id="forgot_password_handle"></td></tr>
+
+
+<tr >
+<td class="label" style="text-align:left;width:120px">
+<img id="captcha2"  src="<?php echo $path ?>inikoo_files/art/x.png" alt="CAPTCHA Image" />
+<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '<?php echo $path ?>inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
+</td>
+<td style="vertical-align:top">
+<span style="font-size:10px">input the letters shown on the left</span><br/>
+<input type="text" id="captcha_code2" name="captcha_code"  style="width:50%" />
+</td>
+</tr>
+
+</tbody>
+<tr class="button space">
+
+<td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
+</tr>
+<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
+<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has been send to you with instructions on how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
+<tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
+<tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>
+
+</table>
+</div>
+
+
 <div id="dialog_change_password"    class="dialog logged" style="<?php if( $authentication_type=='masterkey') print "display:block";?>"  >
 <h2><?php if( $authentication_type=='masterkey'){print "Reset your password";}else{print "Change Password";}?></h2>
 
@@ -637,36 +669,7 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 
-<div id="dialog_forgot_password"    class="dialog" >
-<h2>Forgotten password</h2>
-<table>
-<tbody id="forgot_password_form">
-<tr><td  class="label" style="text-align:right;width:120px">Email: </td><td><input id="forgot_password_handle"></td></tr>
 
-
-<tr >
-<td class="label" style="text-align:left;width:120px">
-<img id="captcha2"  src="<?php echo $path ?>inikoo_files/art/x.png" alt="CAPTCHA Image" />
-<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '<?php echo $path ?>inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
-</td>
-<td style="vertical-align:top">
-<span style="font-size:10px">input the letters shown on the left</span><br/>
-<input type="text" id="captcha_code2" name="captcha_code"  style="width:50%" />
-</td>
-</tr>
-
-</tbody>
-<tr class="button space">
-
-<td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
-</tr>
-<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
-<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has been send to you with instructions on how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
-<tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
-<tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>
-
-</table>
-</div>
 <?php 
 
 }
