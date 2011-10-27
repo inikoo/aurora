@@ -43,47 +43,13 @@ if($row=mysql_fetch_array($result)){
 	$order_exist=true;
 	$order_key=$row['Order Key'];
 }
-else{
-	//$order_exist=false;
-    date_default_timezone_set('UTC');
-
-	$customer_=new Customer($user->get('User Parent Key'));
-	if (!$customer_->id)
-		$customer_=new Customer('create anonymous');
-
-    $editor=array(
-                'Author Name'=>$user->data['User Alias'],
-                'Author Alias'=>$user->data['User Alias'],
-                'Author Type'=>$user->data['User Type'],
-                'Author Key'=>$user->data['User Parent Key'],
-                'User Key'=>$user->id
-            );
-
-    $order_data=array(
-
-                    'Customer Key'=>$customer_->id,
-                    'Order Original Data MIME Type'=>'application/inikoo',
-                    'Order Type'=>'Order',
-                    'editor'=>$editor
-
-                );
-
-    $order=new Order('new',$order_data);
-
-//exit;
-    if ($order->error)
-        exit('error');
-
-
-    //$ship_to=$customer_->get_ship_to();
-
-    //$order-> update_ship_to($ship_to->id);
-}
+else
+	$order_key=0;
 
 
 ?>
-<input type="hidden" value="<?php echo $order_exist?>" id="order_exist">
-<input type="hidden" value="<?php echo $order_key?>" id="order_key">
+<input type="hidden" value="" id="order_exist">
+<input type="hidden" value="<?php echo $order_key ?>" id="order_key">
 <input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>"></script>
@@ -140,6 +106,24 @@ else{
 
 
 
+
+
+
+
+
+<?php }else{
+
+?>
+
+
+
+
+<?php 
+if(true){
+
+
+?>
+
 <div id="dialog_change_password"    class="dialog logged" style="<?php if( $authentication_type=='masterkey') print "display:block";?>"  >
 <h2><?php if( $authentication_type=='masterkey'){print "Reset your password";}else{print "Change Password";}?></h2>
 
@@ -185,10 +169,6 @@ Your password has been changed.
 
 
 
-<?php }else{
-
-?>
-
 <div id="dialog_login"    class="dialog"   >
 <input type="hidden" value="<?php echo $St?>" id="ep">
 <h2>Login</h2>
@@ -207,6 +187,9 @@ Your password has been changed.
 
 </table>
 </div>
+
+
+
 <div id="dialog_email_in_db"    class="dialog"    style="xdisplay:block">
 <h2>Email already in our Database</h2>
 
@@ -241,6 +224,8 @@ Your password has been changed.
 
 </table>
 </div>
+
+
 <div id="dialog_register"    class="dialog"    style="z-index:20000; position:relative;">
 <h2>Registration</h2>
 <table>
@@ -641,7 +626,9 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 </table>
 </div>
-
+<?php
+}
+?>
 
 
 

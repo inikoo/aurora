@@ -104,15 +104,15 @@ Dom.setStyle('tr_register_part_2_buttons','display','none');
 Dom.setStyle('tr_register_part_2_wait','display','');
 
      var request=path+'inikoo_files/ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
- //alert(request);
+ alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	
-	//	alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.action='logged_in'){
-		       window.location ='http://'+ window.location.host + window.location.pathname+'?welcome=1';
+				window.location ='http://'+ window.location.host + window.location.pathname+'?welcome=1';
 
 		       }
 		    
@@ -346,10 +346,10 @@ function login(){
 //Dom.get('login_password').value='';
     //Dom.get('loginform').submit();
      var request=path+'inikoo_files/ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
-     //alert(request);
+     alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			
@@ -626,7 +626,6 @@ error=true;
 }else{
 Dom.removeClass('register_contact_name','error');
 }
-
 if(!error)
 register()
 }

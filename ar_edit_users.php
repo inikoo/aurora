@@ -1187,6 +1187,7 @@ function create_user($data){
         $message_data['email_credentials_key']=1;
         $message_data['email_matter']='Registration';
         $message_data['email_matter_key']=$email_mailing_list_key;
+		$message_data['email_matter_parent_key']=$email_mailing_list_key;
         $message_data['recipient_type']='User';
         $message_data['recipient_key']=0;
         $message_data['email_key']=0;
@@ -1204,7 +1205,7 @@ function create_user($data){
 
 
 	$send_result=$send_email->send($message_data);	
-			
+	print_r($send_result);exit;		
 /*
 			$data=array('email_type'=>'Registration',
 				  'recipient_type'=>'User',

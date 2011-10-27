@@ -232,7 +232,11 @@
 <span id="save_delete_customer"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
 <p id="deleting" style="display:none;">{t}Deleting customer, wait please{/t}</p>
 </div>
-<span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes'}display:none{/if}">{t}Delete Customer{/t}</span>
+<span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}display:none{/if}">{t}Delete Customer{/t}</span>
+<span>{if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}{t}You can't delete the customer.{/t}{/if}</span>
+<span>{if $customer->get('Customer With Orders')=='Yes'} customer has placed {$customer->get('Customer Orders')} orders{/if}</span>
+<span>{if $customer->get('Customer With Orders')=='Yes' && $customer->number_of_user_logins()>0} and {/if}</span>
+<span>{if $customer->number_of_user_logins()>0}customer has logged in to the sites {$customer->number_of_user_logins()} time(s){/if}</span>
 
 </td>
 <td>
