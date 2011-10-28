@@ -1,5 +1,6 @@
 <?php
 include_once('common.php');
+	
 $order_key=0;
 if(isset($_REQUEST['order_key']) )
     $order_key=$_REQUEST['order_key'];
@@ -9,6 +10,8 @@ if(isset($_REQUEST['customer_key']) )
     $customer_key=$_REQUEST['customer_key'];
 print "var customer_key=$customer_key;";
 ?>
+
+
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_cancel,dialog_edit_shipping;
@@ -838,6 +841,9 @@ function close_change_discount_dialog(){
     }
 
 function checkout(){
+	var path=Dom.get('path').value;
 	var items=Dom.get('ordered_products_number').value;
-	alert(items);
+	//alert(items);
+	var request=path+'inikoo_files/checkout.php';
+	window.location =request;
 }

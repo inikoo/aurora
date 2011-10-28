@@ -5468,5 +5468,16 @@ class Customer extends DB_Table {
 		
 	}
 
+	function get_order_key(){
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Key` DESC", $this->id);
+		//print $sql;
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result)){
+			return $row['Order Key'];
+		}
+		else
+			return -1;
+	}
+	
 }
 ?>

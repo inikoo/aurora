@@ -265,7 +265,6 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);
 $smarty->assign('user',$user);
-
 $smarty->assign('path',$path);
 $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
