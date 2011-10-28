@@ -6,7 +6,8 @@
   <input type="hidden" value="{$order->id}" id="order_key"  />
   <input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state"  />
   <input type="hidden" value="{$order->get('Order Number Items')}" id="ordered_products_number"  />
-
+  <input type="hidden" value="{$path}" id="path"  />
+  
  <input type="hidden" value="{$products_display_type}" id="products_display_type"  />
 <div > 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span>
@@ -298,8 +299,8 @@
   </table>
   </div>
 </div>
-<div  id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
-<div style="text-align:right;margin-bottom:15px"><span onClick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span></div>
+<div  id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;position:relative;" id="edit_address_dialog">
+<div style="text-align:right;margin-bottom:15px;margin-top:30px"><span onClick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span></div>
  {include file='edit_delivery_address_splinter.tpl'}
 </div>
 {include file='footer.tpl'}
