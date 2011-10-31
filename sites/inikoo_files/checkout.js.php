@@ -10,8 +10,28 @@ Event.addListener("payment_option", "click", payment_option);
 
 }
 
+function getCheckedValue(radioObj) {
+	if(!radioObj)
+		return "not radio obj";
+	var radioLength = radioObj.length;
+	if(radioLength == undefined)
+		if(radioObj.checked)
+			return radioObj.value;
+		else
+			return "middle";
+	for(var i = 0; i < radioLength; i++) {
+		if(radioObj[i].checked) {
+			return radioObj[i].value;
+		}
+	}
+	return "not selected";
+}
 
 function payment_option(){
+
+alert(getCheckedValue(Dom.get('payment_type')));
+alert('rr');return;
+
 	//order_key=Dom.get('order_key').value;
 
 var ar_file=path+'inikoo_files/ar_edit_orders.php';

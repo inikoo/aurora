@@ -71,14 +71,17 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$result1=mysql_query($sql);
 	if($row1=mysql_fetch_array($result1, MYSQL_ASSOC)){
 		$name=$row1['Product Code']." ".$row1['Product Name'];
+		$price=$row1['Product Price'];
 	}
 	
 	
 	$items[]=array('product_name'=>$name
-					,'total'=>$row['Order Transaction Gross Amount']);
+					,'total'=>$row['Order Transaction Gross Amount']
+					,'price'=>$price
+					,'qty'=>$row['Order Quantity']);
 }
 
-print_r($items);
+//print_r($items);
 
 $smarty->assign('items',$items);
 
