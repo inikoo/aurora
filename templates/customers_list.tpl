@@ -35,6 +35,8 @@
 
 </div>
 
+</div>
+
 <div id="dialog_export">
 	<div id="export_msg"></div>
 	  <table style="padding:10px;margin:20px 10px 10px 10px" >

@@ -595,9 +595,11 @@ position:relative;top:1px;
 
 .messages_block{padding:10px}
 
-.branch {margin-top:10px;clear:left;font-style:italic; color:#666;font-size:85%}
+.branch {clear:left;font-style:italic; color:#666;font-size:90%}
 .branch span{cursor:pointer}
 .branch span.selected{font-weight:800;color:#555}
+
+
 .product_info_sales_options{cursor:pointer}
 
 .block_list{width:800px}

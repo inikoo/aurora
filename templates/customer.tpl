@@ -11,15 +11,12 @@
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
 
-<div class="buttons"  style="float:left" {if !$parent_list}style="display:none"{/if} >
 
+<img onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="float:left;height:22px;cursor:pointer{if !$parent_list}display:none{/if};position:relative;top:2px" />
 
-<button title="{$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Next{/t}</button>
-<button  title="{$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Prev{/t}</button>
-</div>
+<img   title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};;position:relative;top:2px"/ >
 
-<div class="buttons">
-
+<div class="buttons" style="float:right">
 
 
 <button  onclick="window.location='edit_customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>
