@@ -76,7 +76,12 @@ case('new_list'):
     new_orders_list($data);
     break;
 
-
+case('cc_payment'):
+    $data=prepare_values($_REQUEST,array(
+                             'json_values'=>array('type'=>'json array'),
+                         ));
+    cc_payment($data);
+    break;
 
 case('new__invoice_list'):
     if (!$user->can_view('orders'))
@@ -2548,5 +2553,56 @@ $_SESSION['basket']['items']=$updated_data['ordered_products_number'];
 
     echo json_encode($response);
 }
+
+function cc_payment($data){
+	$data=$data['json_values'];
+	require_once 'paypal/DoDirectPayment.php';
+	
+	
+	//print $data['firstName'];exit;
+	//print_r($data);	exit;
+	// Set request-specific fields.
+	$paymentType = urlencode('Authorization');				// or 'Sale'
+	$firstName = urlencode($data['firstName']);
+	$lastName = urlencode($data['lastName']);
+	$creditCardType = urlencode($data['CCType']);
+	$creditCardNumber = urlencode($data['CCNo']);
+	$expDateMonth = $data['CCExpiresMonth'];
+	// Month must be padded with leading zero
+	$padDateMonth = urlencode(str_pad($expDateMonth, 2, '0', STR_PAD_LEFT));
+
+	$expDateYear = urlencode($data['CCExpiresYear']);
+	$cvv2Number = urlencode($data['CVV2']);
+	$address1 = urlencode($data['address1']);
+	$address2 = urlencode($data['address2']);
+	$city = urlencode($data['city']);
+	$state = urlencode($data['state']);
+	$zip = urlencode($data['zip']);
+	$country = urlencode($data['country']);				// US or other valid country code
+	$amount = urlencode('10');
+	$currencyID = urlencode('GBP');							// or other currency ('GBP', 'EUR', 'JPY', 'CAD', 'AUD')
+
+	// Add request-specific fields to the request string.
+	$nvpStr =	"&PAYMENTACTION=$paymentType&AMT=$amount&CREDITCARDTYPE=$creditCardType&ACCT=$creditCardNumber".
+				"&EXPDATE=$padDateMonth$expDateYear&CVV2=$cvv2Number&FIRSTNAME=$firstName&LASTNAME=$lastName".
+				"&STREET=$address1&CITY=$city&STATE=$state&ZIP=$zip&COUNTRYCODE=$country&CURRENCYCODE=$currencyID";
+
+	// Execute the API operation; see the PPHttpPost function above.
+	$httpParsedResponseAr = PPHttpPost('DoDirectPayment', $nvpStr);
+
+	
+	if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
+//		exit('Direct Payment Completed Successfully: '.print_r($httpParsedResponseAr, true));
+		$httpParsedResponseAr['state']=200;
+	} else  {
+		//exit('DoDirectPayment failed: ' . print_r($httpParsedResponseAr, true));
+		$httpParsedResponseAr['state']=400;
+	}
+	
+	$response=$httpParsedResponseAr;
+	
+	echo json_encode($response);
+}
+
 
 ?>
