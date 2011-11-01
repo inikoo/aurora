@@ -109,6 +109,7 @@ $js_files=array(
             
                    'edit_address.js.php',
               'edit_delivery_address_common.js.php',
+			  'edit_billing_address_common.js.php',
               'js/edit_common.js',
               'js/validate_telecom.js',
 			  'js/aes.js',
