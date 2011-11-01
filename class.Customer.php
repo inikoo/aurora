@@ -3481,7 +3481,21 @@ class Customer extends DB_Table {
         return $address_keys;
 
     }
+	
+    function get_billing_address_objects() {
 
+
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_keys[$row['Address Key']]= new Address($row['Address Key']);
+        }
+        return $address_keys;
+
+    }
 
 
 
@@ -4414,6 +4428,21 @@ class Customer extends DB_Table {
 
     }
 
+    function display_billing_address($tipo='xhtml') {
+        switch ($tipo) {
+
+        case 'xhtml':
+            $address=new address($this->data['Customer Billing Address Key']);
+            return $address->display('xhtml');
+            break;
+        default:
+            $address=new address($this->data['Customer Billing Address Key']);
+            return $address->get($tipo);
+            break;
+        }
+
+    }
+	
     function display_contact_address($tipo='xhtml') {
         switch ($tipo) {
         case 'label':

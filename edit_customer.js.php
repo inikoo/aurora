@@ -257,8 +257,8 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-   var ids = ["details","company","delivery","categories","communications","merge", "password"]; 
-    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications","d_merge", "d_password"]; 
+   var ids = ["details","company","delivery","categories","communications","merge", "password", "billing"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications","d_merge", "d_password", "d_billing"]; 
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
@@ -269,8 +269,8 @@ Dom.addClass(this,'selected');
 }
 
 function change_to_delivery_block(){
- var ids = ["details","company","delivery","categories","communications", "password"]; 
-    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications", "d_password"]; 
+ var ids = ["details","company","delivery","categories","communications", "password", "billing"]; 
+    var block_ids = ["d_details","d_company","d_delivery","d_categories","d_communications", "d_password", "d_billing"]; 
 
 
 Dom.setStyle(block_ids,'display','none');
@@ -1128,14 +1128,14 @@ function display_new_billing_address(){
     Dom.setStyle('new_billing_address_table','display','')
 }
 
-
+/*
 function display_edit_billing_address(){
 address_id=Dom.get('show_edit_billing_address').getAttribute('address_key');
     edit_address(address_id,'billing_')
     Dom.setStyle(['new_billing_address_table','set_contact_address_as_billing'],'display','')
     Dom.setStyle(['show_edit_billing_address','billing_address','billing_tr_address_type','billing_tr_address_function'],'display','none')
 }
-
+*/
 function hide_billing_address_form(){
 address_prefix='billing_';
  if (Dom.get(address_prefix+'address_key').value==0) {
@@ -1586,7 +1586,7 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
-    var ids = ["details","company","delivery","categories","communications","merge", "password"]; 
+    var ids = ["details","company","delivery","categories","communications","merge", "password", "billing"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener( "delivery2",  "click",change_to_delivery_block);
     
