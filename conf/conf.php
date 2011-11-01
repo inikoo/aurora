@@ -1606,28 +1606,33 @@ $default_state=array(
                                                                 'last_orders'=>true,
                                                                 'orders'=>true,
                                                                 'status'=>true
-                                                                         /* 'surplus'=>false,
-                                                                          'ok'=>false,
-                                                                          'low'=>false,
-                                                                          'critical'=>false,
-                                                                          'gone'=>false,
-                                                                          'unknown'=>false,
-                                                                          'sales_all'=>false,
-                                                                          'sales_1y'=>false,
-                                                                          'sales_1q'=>false,
-                                                                          'sales_1m'=>false,
-                                                                          'sales_1w'=>false,
-                                                                          'profit_all'=>false,
-                                                                          'profit_1y'=>false,
-                                                                          'profit_1q'=>false,
-                                                                          'profit_1m'=>false,
-                                                                          'profit_1w'=>false */
-
-
                                                             )
+                                                       ),
+                      
+                           'edit_table'=>array(
+                                               'order'=>'name',
+                                               'order_dir'=>'desc',
+                                               'sf'=>0,
+                                               'nr'=>25,
 
-                                           ),
-                                   'advanced_search'=>array(
+
+                                               'where'=>'',
+                                               'f_field'=>'customer name',
+                                               'f_value'=>'',
+
+                                               'csv_export'=>array(
+                                                                'id'=>true,
+                                                                'name'=>true,
+                                                                'location'=>true,
+                                                                'last_orders'=>true,
+                                                                'orders'=>true,
+                                                                'status'=>true
+                                                            )
+                                                       ),
+                      
+                      
+                      
+                      'advanced_search'=>array(
                                                          'order'=>'name',
                                                          'order_dir'=>'',
                                                          'sf'=>0,

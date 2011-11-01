@@ -7,10 +7,40 @@
 </div>
 
 
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+
+<div class="buttons" style="float:right">
+
+
+<button  id="new_customer"><img src="art/icons/add.png" alt=""> {t}Customer{/t}</button>
+
+<button  onclick="window.location='edit_customers.php?store={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button>
+<button  onclick="window.location='customer_store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
+
+
+
+
+</div>
+
+
+<div class="buttons" style="float:left">
+
+<button  onclick="window.location='customers_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+<button  onclick="window.location='customers_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
+<button  onclick="window.location='customer_categories.php?id=0&store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
+
+
+
+</div>
+
+
+<div style="clear:both"></div>
+</div>
+
 <div id="no_details_title"  style="margin-bottom:10px;">
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
 </div>
-<div style="margin-bottom:10px;margin-top:20px;background:red">
+<div style="margin-bottom:10px;margin-top:10px;background:red">
 
 
 <div style="width:400px;float:left">

@@ -9,16 +9,17 @@
 
 
 
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Customer List{/t}: {$customer_list_name}</h1>
-  </div>
 
 
  <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Customers List{/t}</span>
-      
+      <div>
+      <span class="clean_table_title">{t}Customers List{/t} <span class="id">{$customer_list_name}</span></span>
+      <div class="buttons">
+      <button onclick="window.location='edit_customers.php?list_key={$customer_list_id}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers{/t}</button>
+      <div style="clear:both"></div>
+      </div>
  
-  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+  <div style="clear:both;margin:2px 0 0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
 	  <td {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
