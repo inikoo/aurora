@@ -160,7 +160,7 @@ $smarty->assign('search_scope','customers');
 $smarty->assign('store', $store);
 
 if (isset($_REQUEST['p'])) {
-
+  $smarty->assign('parent_list',$_REQUEST['p']);
     if ($_REQUEST['p']=='cs') {
 
         $order=$_SESSION['state']['customers']['table']['order'];
@@ -277,7 +277,8 @@ if ($modify) {
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
 
 }
-$smarty->assign('general_options_list',$general_options_list);
+$general_options_list=array();
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 

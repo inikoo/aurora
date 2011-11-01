@@ -252,8 +252,7 @@ var onCellClick = function(oArgs) {
     record = this.getRecord(target);
 
     var recordIndex = this.getRecordIndex(record);
-
-
+  //var  datatable = this.getDataTable();
     switch (column.action) {
    
    
@@ -261,7 +260,8 @@ var onCellClick = function(oArgs) {
         if (record.getData('delete')!='') {
 
             var delete_type=record.getData('delete_type');
-
+if(delete_type== undefined)
+    delete_type='delete';
 
 
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
@@ -281,24 +281,34 @@ var onCellClick = function(oArgs) {
      		         ar_file='ar_edit_sites.php';    
                 else if (column.object=='order_list' || column.object=='invoice_list'|| column.object=='dn_list')
      		         ar_file='ar_edit_orders.php';
-     		        else if (column.object=='email_campaign_recipient' || column.object=='email_campaign_objetive')
+     		        else if (column.object=='email_campaign_recipient' || column.object=='email_campaign_objetive'  || column.object=='color_scheme'     || column.object=='template_header_image'     || column.object=='template_postcard' )
      		         ar_file='ar_edit_marketing.php';         
      		   else
                     ar_file='ar_edit_assets.php';
 
 
 
-          	//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+          //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 //return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                     alert(o.responseText);
+                    alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
                             this.deleteRow(target);
+
+
+ 
+                var table=this;
+                var datasource=this.getDataSource();
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+ 
+                    post_delete_actions(column.object);
+ 
+//alert(datatable)
 
 
                         } else if (r.state == 200 && r.action=='discontinued') {
@@ -320,13 +330,25 @@ scope:this
             }
         }
         break;
-
+case 'dialog':
+show_cell_dialog(this,oArgs);
+break;
     default:
 
         this.onEventShowCellEditor(oArgs);
         break;
     }
 };
+
+
+
+function show_cell_dialog(){
+}
+
+function post_delete_actions(column){
+
+}
+
 var highlightEditableCell = function(oArgs) {
 
     var target = oArgs.target;
@@ -352,6 +374,10 @@ var highlightEditableCell = function(oArgs) {
 
         this.highlightCell(target);
         break;
+    case('dialog'):
+     this.highlightCell(target);
+    
+    break;    
     default:
 
         if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable") ) {
@@ -427,7 +453,7 @@ function validate_scope_edit(branch) {
 
     for (items in validate_scope_data[branch]) {
     
-       //alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
+    //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
         if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][items].changed==true)
@@ -729,7 +755,6 @@ function save_edit_general(branch) {
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
 
-//alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
     for (items in validate_scope_data[branch]) {
 		
@@ -766,7 +791,7 @@ function save_edit_general(branch) {
 //alert(request)
             YAHOO.util.Connect.asyncRequest('POST',request , {
             success:function(o) {
-			//alert(o.responseText);
+			alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
                         validate_scope_data[branch][r.key].changed=false;
@@ -907,10 +932,10 @@ return;
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	//alert(request);
+//	alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
- //alert(o.responseText);
+// alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if(r.msg!=undefined){

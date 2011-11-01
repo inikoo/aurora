@@ -8,50 +8,71 @@
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span>
 </div>
 
-<div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1 id="customer_name_heading" style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
-     
-      
-    </h1> 
 
-{if $customer->get('Customer Tax Number')!=''}<h2 style="padding:0">{$customer->get('Customer Tax Number')}</h2>{/if}    
-  </div>
-  
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+
+<div class="buttons" {if !$parent_list}style="display:none"{/if} >
+
+
+<button title="{$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Next{/t}</button>
+<button style="margin-left:10px" title="{$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Prev{/t}</button>
+</div>
+
+<div class="buttons" style="float:left">
+
+
+
+<button  onclick="window.location='edit_customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>
+
+<button  onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')" ><img src="art/icons/printer.png" alt=""> {t}Address{/t}</button>
+<button style="display:none" id="sticky_note_bis">{t}Sticky Note{/t}</button>
+<button {if $customer->get('Sticky Note')}style="display:none"{/if} id="new_sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
+<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button>
+
+
+<button id="note" ><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button>
+<button id="attach" ><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
+<button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button>
+
+
+</div>
+
+
+<div style="clear:both"></div>
+</div>
+
+
 <input type="hidden" id="modify" value="{$modify}"/>
 <input type="hidden" id="other_email_count" value="{$other_email_count}"/>
   
-<div class="buttons">  
-<table class="" style="clear:both;float:right;margin-top:0px;">
 
-    <tr><td  ><a href="customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012" target="_blank"><img src="/images/icons/textfield_key.png" alt=""/> {t}Print Address{/t}</a></td></tr>
-
-    <tr><td  id="note"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Quick Note{/t}</a></td></tr>
-    <tr id="new_sticky_note_tr" ><td id="new_sticky_note"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Sticky Note{/t}</a></td></tr>
-    <tr id="sticky_note_bis_tr" ><td id="sticky_note_bis"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Sticky Note{/t}</a></td></tr>
-
-    <tr><td  id="attach"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Attach File{/t}</a></td></tr>
-    <tr style="display:none"><td  id="link"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Link File{/t}</a></td></tr>
-    <tr {if $user->id!=1}style="display:none"{/if}  ><td id="take_order"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Take Order{/t}</a></td></tr>
-    <tr style="display:none"><td  id="long_note"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Long Note{/t}</a></td></tr>
-    <tr style="display:none"><td id="call" ><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Call{/t}</a></td></tr>
-    <tr style="display:none"><td  id="email" ><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Email{/t}</a></td></tr>
-    <tr style="display:none"><td id="others" ><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>{t}Other{/t}</a></td></tr>
-    <tr><td id="make_order"><a href="#" class=""><img src="/images/icons/textfield_key.png" alt=""/>QO Data</a></td></tr>
-
-</table>
-</div>
 
        
 
      
-<div  style="width:490px;float:left" >    
-     
+<div  style="width:520px;float:left;padding-top:0px" >    
+     <h1  style="padding-bottom:0px"><span  style="color:SteelBlue">{$id}</span> <span id="customer_name_heading" style="padding:2px 7px;border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')" ><span id="customer_name">{$customer->get('Customer Name')}</span> <img onMouseover="Dom.setStyle('customer_name_heading','border-color','#ccc')"  onMouseout="Dom.setStyle('customer_name_heading','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span></h1>
 <table id="customer_data" border=0 style="width:100%">
     <tr>
-        {if $customer->get('Customer Main Address Key')}<td class="button" id="quick_edit_main_address" valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
+        {if $customer->get('Customer Main Address Key')}
+            <td id="main_address_td" style="border:1px dotted #fff"  onMouseover="Dom.setStyle('quick_edit_main_address','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_address','visibility','hidden')">
+            <img onMouseover="Dom.setStyle('main_address_td','border-color','#ccc')"  onMouseout="Dom.setStyle('main_address_td','border-color','#fff')" id="quick_edit_main_address" style="float:right;cursor:pointer;visibility:hidden" src="art/icons/edit.gif">
+
+            <div  id="main_address" >{$customer->get('Customer Main XHTML Address')}</div>
+            </td>
+            {/if}
         <td  valign="top">
             <table border=0 style="padding:0">
-                {if $customer->get('Customer Main Contact Key')}<tr><td id="main_name" colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ><td><img id="quick_edit_name" alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td></tr>{/if}
+                            {if $customer->get('Customer Tax Number')}<tr><td id="main_name" colspan=2  class="aright">{$customer->get('Customer Tax Number')}</td ><td><img id="quick_edit_name" alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td></tr>{/if}
+
+            
+                {if $customer->get('Customer Main Contact Key')}
+                <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
+                    <td id="main_contact_name" colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td >
+                    <td><img  alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td>
+                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                </tr>
+                {/if}
                 {if $customer->get('Customer Main Email Key')}<tr><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_email" src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
                     <tr><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_other_email{$key}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
@@ -130,7 +151,7 @@
     
     
 </table>
-<div id="overviews" style="border-top:1px solid #eee;width:800px">
+<div id="overviews" style="width:800px">
 
 <div id="orders_overview" style="float:left;;margin-right:40px;width:300px" >
   <h2 style="font-size:120% ">{t}Contact Overview{/t}</h2>
@@ -189,7 +210,7 @@
 </div>
 </div>
 
-<div id="sticky_note_div" class="sticky_note" style="width:270px">
+<div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px">
 <img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
 <div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 </div>
@@ -280,50 +301,16 @@
 </div>
 
 <h2 style="clear:both">{t}Contact Details{/t}</h2>
-<div style="float:both;width:450px">
-<table    class="show_info_product">
-  <tr>
-		    <td>{t}Customer Type{/t}:</td><td>{$customer->get('Customer Type')}</td>
-		    </tr>
-		    
-		    {if $customer->get('Customer Type')=='Company'}
-		    <tr>
-		      <td>{t}Company Name{/t}:</td><td>{$customer->get('Customer Name')}</td>
-		    </tr>
-		     <tr>
-		      <td>{t}Company Tax Number{/t}:</td><td>{$customer->get('Customer Tax Number')}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Company Registration Number{/t}:</td><td>{$customer->get('Customer Registration Number')}</td>
-		    </tr>
-		  {/if}
-		  <tr style="border-top:1px solid #ccc">
-		  
-		      <td>{t}Contact Name{/t}:</td><td id="contact_name_id">{$customer->get('Customer Main Contact Name')}</td>
-		    </tr>
-		   <tr>
-		      <td>{t}Contact Email{/t}:</td><td id="contact_email_id">{$customer->get('Customer Main XHTML Email')}</td>
-		    </tr>
-		  <tr>
-		      <td>{t}Contact Telephone{/t}:</td><td id="contact_telephone_id">{$customer->get('Customer Main XHTML Telephone')}</td>
-		    </tr>
-		  
-		  <tr>
-		      <td>{t}Contact Fax{/t}:</td><td id="contact_fax_id" >{$customer->get('Customer Main XHTML FAX')}</td>
-		    </tr>
-		  
 
-		</table>
-</div>
 
-<div class="contact_cards" style="display:none" >
+<div class="contact_cards" style="xdisplay:none" >
 {foreach from=$customer->get_contact_cards() item=card}
 {$card}
 {/foreach}
 </div>
 
 
-<h2 style="clear:both">{t}Delivery Details{/t}</h2>
+<h2 style="clear:both">{t}Delivery Address{/t}</h2>
 
 <div style="float:left;width:450px">
 <table    class="show_info_product">
@@ -432,26 +419,35 @@
   </div>
 </div> 
 
-<div id="dialog_note">
+<div id="dialog_note" style="padding:20px 20px 10px 20px">
   <div id="note_msg"></div>
-  <table style="padding:10px;margin:10px" >
-  <tr id="note_type" class="options_list" prefix="note_type_" value="deletable">
-  <td  id="note_type_permanent" onclick="radio_changed(this)" name="permanent" >{t}Permanent{/t}
-  </td>
-  <td class="selected" id="note_type_deletable" onclick="radio_changed(this)" name="deletable" >{t}Deletable{/t}
+  <table  >
+  <tr>
+  <td >
+  <div class="buttons"  id="note_type"  prefix="note_type_" value="deletable">
+    <button  id="note_type_permanent" onclick="radio_changed(this)" name="permanent">{t}Permanent{/t}</button>
+    <button class="selected" id="note_type_deletable" onclick="radio_changed(this)" name="deletable">{t}Deletable{/t}</button>
+  </div>
+  
   </td>
   </tr>
   
-    <tr><td colspan=2>
+ 
+  </tr>
+  
+    <tr><td >
 	<textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea>
       </td>
     </tr>
-	<tr class="buttons" style="font-size:100%">
-		<td style="text-align:center;width:50%">
-			<span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Canceddl{/t}</span>
-		</td>
-		<td style="text-align:center;width:50%">
-			<span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span>
+	<tr >
+	<td>
+	<div class="buttons">
+		<button  onclick="save('note')" id="note_save"  class="positive disabled"   >{t}Save{/t}</span>
+
+	<button  onClick="close_dialog('note')"  class="negative">{t}Cancel{/t}</button>
+
+	</div>
+	
 		</td>
 	</tr>
 </table>
@@ -498,110 +494,78 @@
 
 
 
-<div id="dialog_new_sticky_note">
+<div id="dialog_new_sticky_note" style="padding:20px 20px 0px 20px">
   <div id="new_sticky_note_msg"></div>
-  <table style="padding:10px;margin:10px" >
+  <table >
  
-    <tr><td colspan=2>
-	<textarea style="width:200px;height:100px" id="new_sticky_note_input" onkeyup="change(event,this,'new_sticky_note')"></textarea>
-      </td>
     <tr>
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('new_sticky_note')" >{t}Cddancel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('new_sticky_note')" id="new_sticky_note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t}</span></td></tr>
+    <td>
+	<textarea style="width:200px;height:100px" id="new_sticky_note_input" onkeyup="change(event,this,'new_sticky_note')"></textarea>
+    </td>
+    <tr>
+    <td>
+    <div class="buttons">
+        <button  onclick="save('new_sticky_note')" id="new_sticky_note_save"  class="positive disabled"     >{t}Save{/t}</button>
+
+     <button class="negative" onClick="close_dialog('new_sticky_note')" >{t}Cancel{/t}</button>
+    </div>
+    </td>
+    </tr>
+   
 </table>
 </div>
 
-<div id="dialog_sticky_note">
+<div id="dialog_sticky_note" style="padding:20px 20px 0px 20px">
   <div id="sticky_note_msg"></div>
-  <table style="padding:10px;margin:10px" >
+  <table>
  
-    <tr><td colspan=2>
+    <tr><td>
     
 	<textarea style="width:260px;height:125px" id="sticky_note_input"  onkeyup="change(event,this,'sticky_note')">{$customer->get('Customer Sticky Note')}</textarea>
       </td>
     <tr>
+    <td>
 	<div class="buttons">
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-  <button type="submit" class="positive" onClick="save('sticky_note')"><img src="art/icons/tick.png" alt=""/>Save</button>
-  </td>
-    
-  <td style="text-align:center;width:50%">
-  <button type="submit" class="negative" onClick="close_dialog('sticky_note')"><img src="/art/icons/cross.png" alt=""/>Cancel</button>
+        <button class="positive" onClick="save('sticky_note')">{t}Save{/t}</button>
+        <button class="negative" onClick="close_dialog('sticky_note')">{t}Cancel{/t}</button>
+</div>
 </td></tr>
-	</div>
-</table>
-</div>
-
-
-<div id="dialog_link">
-  <div id="link_msg"></div>
-  <table >
-     <tr><td colspan=2>
-
-	  {t}Link Note{/t}:<br/> <input type="text" id="link_note"/>
-
-    </td><tr>
-    <tr><td colspan=2>
-	<form action="upload.php" enctype="multipart/form-data" method="post" id="link_form">
-
-
-	  <input type="file" name="testFile" id="link_file" />
-
-	</form>
-    </td><tr>
 	
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="state_details" onClick="close_dialog('link')" >{t}Cancel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('link')" id="upload_link"  class="state_details"     xstyle="visibility:hidden;" >{t}Upload{/t}</span></td></tr>
 </table>
 </div>
 
-<div id="dialog_attach">
+
+
+
+<div id="dialog_attach" style="padding:20px 20px 0px 20px">
   <div id="attach_msg"></div>
   
 <input type="hidden" value='customer' id='attachment_scope'>
 <input type="hidden" value='{$customer->id}' id='attachment_scope_key'>
 <table>
-<tr><td>{t}Comment{/t}</td><td><input  value='' id='attachment_caption'></td>
+<form enctype="multipart/form-data" method="post" id="upload_attach_form">
+<input type="hidden" name="attach_customer_key" value="{$customer->id}" />
+ <tr><td>{t}File{/t}:</td><td><input id="upload_attach_file" style="border:1px solid #ddd;" type="file" name="attach"/></td></tr>
+
+<tr><td>{t}Caption{/t}</td><td><input style="width:100%" value='' id='attachment_caption' name="caption"></td>
+</form>
+ <tr><td colspan=2>
+  <div class="buttons">
+<button class="positive"   onClick="save('attach')" >{t}Upload{/t}</button>
+<button   onClick="close_dialog('attach')" class="negative" >{t}Cancel{/t}</button><br/>
+
+</div>
+  </td></tr>
 </table>
-<div>
-	<div id="fileProgress" style="border: black 1px solid; width:300px; height:40px;float:left">
-		<div id="fileName" style="text-align:center; margin:5px; font-size:15px; width:290px; height:25px; overflow:hidden"></div>
-		<div id="progressBar" style="width:300px;height:5px;background-color:#CCCCCC"></div>
-	</div>
-<div id="uploaderUI" style="width:70px;height:16px;margin-left:5px;float:left;cursor:pointer"></div>
-<div class="uploadButton" style="float:left"><a class="rolloverButton disabled" href="#" onClick="upload(); return false;"></a></div>
-<div class="clearButton" style="float:left"><a class="rolloverButton disabled" href="#" onClick="handleClearFiles(); return false;"></a></div>
+
+
 </div>
 
 
 </div>
 
-{*}
-<div id="dialog_long_note">
-  <div id="long_note_msg"></div>
-  <table >
 
-    <tr><td colspan=2>
-	<textarea id="long_note_input"></textarea>
-      </td>
-    <tr>
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('long_note')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('long_note')" id="long_note_save"  class="unselectable_text button"   >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
-</table>
-</div>
-{*}
-
-<div id="dialog_make_order">
+<div id="dialog_make_order" style="padding:20px 20px 0px 20px">
   <div id="long_note_msg"></div>
 
   <table >
@@ -663,14 +627,17 @@
 	<textarea id="make_order_special_instructions"></textarea>
       </td>
     <tr>
-    <tr class="buttons" style="font-size:100%">
+    <tr>
+      <td colspan=2>
+    <div class="buttons">
+        <button  onclick="make_order()" id="make_order_save"  class="positive"   >{t}Export{/t}</button>
+    	<button  class="negative" onClick="close_dialog('make_order')" >{t}Cancel{/t}</button>
+
+
+    </div>  
+</td>
       
-      
-      
-      <td style="text-align:center;width:50%">
-	<span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span></td>
-      <td style="text-align:center;width:50%">
-	<span  onclick="make_order()" id="make_order_save"  class="unselectable_text state_details"   >{t}Export{/t}</span></td></tr>
+     
   </table>
 </div>
 
@@ -725,23 +692,52 @@
   </div>
 </div>
 
-<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+
+<div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td colspan=2><div id="Customer_Name_msg"></div></td>
-	<td  colspan=2 id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
-	</tr>
 	<tr>
 	<td>{t}Contact Name:{/t}</td>
 	<td>
-	<div style="width:200px">
-	<input type="text" id="Customer_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
+	<div style="width:220px">
+	<input type="text" id="Customer_Main_Contact_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0">
+	<div id="Customer_Main_Contact_Name_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span  id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></span>
+	<button class="positive" id="save_quick_edit_main_contact_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_main_contact_name">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+
+<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{t}Customer Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0">
 	<div id="Customer_Name_Container"  ></div>
 	</div>	
 	</td>
 
 	</tr>
-	<tr><td></td><td><input type="button" id="save_quick_edit_name" value="Save"></td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Name_msg" ></span>
+	<button class="positive" id="save_quick_edit_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
 	</table>
 
 </div>
@@ -928,7 +924,7 @@
 
 
 
-<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;min-height:300px">
+<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;">
 
 <table border=0 style="margin:10px; width:100%">
 {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}

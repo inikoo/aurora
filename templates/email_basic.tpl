@@ -51,7 +51,7 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 </tr>
  
 <tr>
-<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:10px solid #{$color_scheme.Background_Container};"><center><IMG   SRC="{$header_src}" BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
+<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:10px solid #{$color_scheme.Background_Container};"><center><IMG {if $edit}style="cursor:pointer" title="{t}Click to change image{/t}"{else}title="{$store->get('Store Name')}" {/if}     id="header_image" WIDTH=600 SRC="{$header_src}" BORDER="0"   alt="{$store->get('Store Name')}" align="center"></center></td>
 </tr>
 
 
@@ -64,7 +64,7 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 
 <tr>
 <td bgcolor="#{$color_scheme.Background_Container}" valign="top" style="font-size:12px;color:#{$color_scheme.Text_Container};line-height:150%;font-family:trebuchet ms;">
-<div>
+<div style="margin-bottom:10px">
 %greeting%
 </div>
 
@@ -78,14 +78,14 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 <div onClick="delete_paragraph({$paragraph_key})" onmouseout="Dom.setStyle('delete_paragraph{$paragraph_key}','display','none')"   onmouseover="Dom.setStyle('delete_paragraph{$paragraph_key}','display','')"  id="delete_paragraph{$paragraph_key}" style="cursor:pointer;float:right;padding:2px 10px;border:1px solid #ccc;display:none">{t}Delete{/t} <img style="vertical-align:text-bottom;" src="art/icons/cross.png"/></div>
 <div onClick="edit_paragraph(this,{$paragraph_key})" onmouseout="Dom.setStyle('delete_paragraph{$paragraph_key}','display','none')"   onmouseover="Dom.setStyle('delete_paragraph{$paragraph_key}','display','')"  id="paragraph{$paragraph_key}"  class="email_paragraph" >
 {/if}
-<p>
+<div style="margin-bottom:10px">
 <input type="hidden" id="paragraph_type{$paragraph_key}" value="Main">
-<span style="font-size:20px;font-weight:bold;color:#{$color_scheme.H1};font-family:arial;line-height:110%;" id="paragraph_title{$paragraph_key}">{$paragraph.title}</span><br>
-<span style="font-size:11px;font-weight:normal;color:#{$color_scheme.H2};font-style:italic;font-family:arial;" id="paragraph_subtitle{$paragraph_key}">{$paragraph.subtitle}</span><br>
-<span style="color:#{$color_scheme.Text_Content};"  id="paragraph_content{$paragraph_key}" >
+<h1 style="font-size:20px;font-weight:bold;color:#{$color_scheme.H1};font-family:arial;line-height:110%;margin:0px" id="paragraph_title{$paragraph_key}">{$paragraph.title}</h1>
+<h2 style="font-size:11px;font-weight:normal;color:#{$color_scheme.H2};font-style:italic;font-family:arial;margin:0px" id="paragraph_subtitle{$paragraph_key}">{$paragraph.subtitle}</h2>
+<p style="color:#{$color_scheme.Text_Content};margin:0px"  id="paragraph_content{$paragraph_key}" >
 {$paragraph.content}
-</span>
 </p>
+</div>
 {if $edit}</div>{/if}
 
 {/if}
@@ -170,8 +170,13 @@ Copyright (C) {$smarty.now|date_format:'%Y'} {$store->get('Store Name')} All rig
 
 
     <tr class="buttons" style="height:60px;font-size:100%;dispay:block;margin-top:20px">
-<td>
-    <span   onclick="save_paragraph()" id="save_paragraph"  class="unselectable_text button"    >{t}Save{/t}</span></td></tr>
+<td colspan=2>
+<div class="buttons">
+<button class="positive" id="save_paragraph"  onclick="save_paragraph()" >{t}Save{/t}</button>
+<button class="negative" id="close_edit_paragraph"  onclick="close_edit_paragraph()" >{t}Cancel{/t}</button>
+    
+    </td></tr>
+</div>
 </td>
 </table>
 </div>

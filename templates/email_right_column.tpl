@@ -49,7 +49,7 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 </tr>
  
 <tr>
-<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:10px solid #{$color_scheme.Background_Container};"><center><IMG   SRC="{$header_src}" BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
+<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:10px solid #{$color_scheme.Background_Container};"><center><IMG    id="header_image" WIDTH=600 SRC="{$header_src}" BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
 </tr>
 
 

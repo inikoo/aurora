@@ -54,6 +54,7 @@ function yuiImgUploader(rte, editor_name, upload_url, upload_image_name) {
                                YAHOO.util.Connect.setForm ( img_elem.form, true, true );
                                
                               
+                              
                                var c=YAHOO.util.Connect.asyncRequest(
                                'POST', upload_url, {
                                    upload:function(r){

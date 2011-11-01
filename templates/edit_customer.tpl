@@ -1,12 +1,36 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='contacts_navigation.tpl'}
+ <div> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span>
+</div>
+ 
 <input type="hidden" value="{$customer->id}" id="customer_key"/>
 <input type="hidden" value="{$registered_email}" id="registered_email"/>
 <input type="hidden" value="{$store_id}" id="store_key"/>
 
+
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+
+<div class="buttons" {if !$parent_list}style="display:none"{/if} >
+
+    <h1 style="float:left;padding-top:0px"><span style="color:SteelBlue">{$id}</span> <span id="title_name">{$customer->get('Customer Name')}</span></h1>
+
+<button title="{$next.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Next{/t}</button>
+<button style="margin-left:20px" title="{$prev.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Prev{/t}</button>
+</div>
+
+
+<div class="buttons" style="float:right">
+<button style="margin-left:20px" title="{$next.name}" onclick="window.location='customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+</div>
+
+<div style="clear:both"></div>
+</div>
+
+
+
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1><span style="color:SteelBlue">{$id}</span>, <span id="title_name">{$customer->get('Customer Name')}</span></h1>
   </div>
 
 <div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">{$recent_merges}</div>

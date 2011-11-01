@@ -179,10 +179,11 @@
        
     </tr>  
 <tr {if $hide_buttons==true}style="display:none"{/if}>
-  <td colspan=2 style="text-align:right">
-  <div class="buttons">
-  <button type="submit" class="negative"close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
-  <button address_key="" type="submit" class="positive" style="visibility:hidden;margin-right:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button>
+  <td colspan=2 >
+  <div class="buttons" style="margin-top:10px">
+    <button address_key="" class="positive" style="visibility:hidden;margin-right:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button>
+
+  <button  class="negative" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
   </div>
   </td>
   </tr>
