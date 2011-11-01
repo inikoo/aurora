@@ -1380,6 +1380,45 @@ function update_main_address() {
             return;
 
         }
+        elseif ($type=='billing') {
+            $subject_object->update_principal_billing_address($address_key);
+            if ($subject_object->error) {
+                $response=array('state'=>400,'msg'=>$subject_object->msg);
+
+            }
+            elseif($subject_object->updated) {
+
+                if ( ($subject_object->get('Customer Billing Address Link')=='Contact') or ( $subject_object->get('Customer Billing Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+                    $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+
+                }
+                elseif($subject_object->get('Customer Billing Address Link')=='Billing') {
+                    $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+                }
+                else {
+                    $address_comment=$subject_object->billing_address_xhtml();
+                }
+
+                $response=array(
+                              'state'=>200
+                                      ,'action'=>'changed'
+                                                ,'new_main_address'=>$subject_object->display_billing_address('xhtml')
+                                                                    ,'new_main_address_bis'=>$address_comment
+
+                                                                                            ,'new_main_delivery_address_key'=>$subject_object->data['Customer Main Delivery Address Key']
+
+                          );
+
+            }
+            else {
+                $response=array('state'=>200,'action'=>'no_change','msg'=>_('Nothing to change'));
+
+
+            }
+            echo json_encode($response);
+            return;
+
+        }
 
     }
 

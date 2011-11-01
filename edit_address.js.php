@@ -66,6 +66,7 @@ function cancel_edit_address(prefix) {
 function change_main_address(address_key,options) {
 
     var request='ar_edit_contacts.php?tipo=set_main_address&value=' +address_key+'&key='+options.type+'&subject='+options.Subject+'&subject_key='+options.subject_key;
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
             // alert(o.responseText);
@@ -159,11 +160,11 @@ var create_address=function(options) {
 
 
     var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-  
+//alert(request)  
   
   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-         //   	alert(o.responseText);
+            //alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='created') {
 
@@ -239,6 +240,60 @@ success:function(o) {
               }
               
               }else if(address_prefix=='billing_'){
+
+                var new_address_container = Dom.get(address_prefix+'address_container0').cloneNode(true);
+                new_address_container.id = address_prefix+'address_container'+r.address_key;
+                Dom.setStyle(new_address_container, 'display', '');
+                
+                
+                
+                
+                  display_element=Dom.getElementsByClassName(address_prefix+'address_tel_label' ,'span',  new_address_container);
+                display_element[0].id = address_prefix+'address_tel_label'+r.address_key;
+                display_element=Dom.getElementsByClassName(address_prefix+'address_tel' ,'span',  new_address_container);
+                Dom.setAttribute(display_element[0],'id',address_prefix+'address_tel'+r.address_key);
+                
+             
+           
+                                
+                      
+                display_element=Dom.getElementsByClassName('address_display' ,'div',  new_address_container);
+                
+                
+                
+                display_element[0].innerHTML=r.xhtml_address;
+                display_element[0].id = address_prefix+'address_display'+r.address_key;
+                display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
+                display_element[0].id = address_prefix+'address_buttons'+r.address_key;
+
+                display_element=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
+
+                display_element[0].id = address_prefix+'set_main'+r.address_key;
+                display_element[1].id = address_prefix+'delete_address_button'+r.address_key;
+                display_element[2].id = address_prefix+'edit_address_button'+r.address_key;
+
+                display_element[0].setAttribute('onClick',"change_main_address("+r.address_key+",{type:'billing',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                display_element[1].setAttribute('onCLick',"delete_address("+r.address_key+",{type:'billing',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                display_element[2].setAttribute('onCLick',"display_edit_billing_address("+r.address_key+",'"+address_prefix+"')");
+
+
+                Dom.get(address_prefix+'address_showcase').appendChild();
+
+
+
+                if (Dom.get(address_prefix+"reset_address_button").getAttribute('close_if_reset')=='Yes') {
+                    Dom.get(address_prefix+'address_form').style.display='none';
+                    Dom.get(address_prefix+"reset_address_button").style.visibility='visible';
+
+                }
+
+     
+              if(r.updated_data.telephone!=''){
+              Dom.setStyle(address_prefix+'address_tel_label'+r.address_key,'visibility','visible');
+              Dom.get(address_prefix+'address_tel'+r.address_key).innerHTML=r.updated_data.telephone;
+              }
+              
+              }else if(address_prefix=='xbilling_'){
               
               Dom.get('billing_address').innerHTML=r.xhtml_address;
               Dom.get('show_edit_billing_address').setAttribute('address_key',r.address_key)
@@ -266,8 +321,6 @@ success:function(o) {
 
 
 var save_address=function(e,options) {
-
-
     var address_prefix='';
     if (options.prefix!= undefined) {
         address_prefix=options.prefix;
@@ -279,7 +332,6 @@ var save_address=function(e,options) {
 //alert(Dom.get(address_prefix+'address_key').value)
 
     if (Dom.get(address_prefix+'address_key').value==0) {
-   
          create_address(options);
         
     
@@ -312,8 +364,10 @@ var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+
 if(address_prefix=='delivery_'){
 hide_new_delivery_address();
 }
-
-//alert(request);
+if(address_prefix=='billing_'){
+hide_new_billing_address();
+}
+alert(request);
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
             // alert(o.responseText)

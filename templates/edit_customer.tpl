@@ -40,6 +40,7 @@
  {if $customer_type=='Company'}
     <li> <span class="item {if $edit=='company'}selected{/if}" style="display:none"  id="company">  <span> {t}Company Details{/t}</span></span></li>
  {/if}
+ <li> <span class="item {if $edit=='billing'}selected{/if}"  id="billing">  <span> {t}Billing Information{/t}</span></span></li>
  <li> <span class="item {if $edit=='delivery'}selected{/if}"  id="delivery">  <span> {t}Delivery Options{/t}</span></span></li>
     <li> <span class="item {if $edit=='categories'}selected{/if}"  id="categories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Communications{/t}</span></span></li>
@@ -128,6 +129,82 @@
    </table>
    
    </div>
+   
+   
+<div  class="edit_block" style="{if $edit!="billing"}display:none{/if};min-height:260px"  id="d_billing">
+     	  <div class="buttons" style="float:right">
+		  <button style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="state_details">{t}Reset{/t}</button>
+	        <button  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="state_details">{t}Save{/t}</button>
+	       
+      </div>
+
+ <div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
+     <div style="border-bottom:1px solid #777;margin-bottom:7px">
+     
+       {t}Billing Information{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
+     
+     </div>
+     
+
+       <table border=0>
+       
+       
+       <tr >
+ <td  class="label">{t}Tax Number{/t}:</td>
+   <td  style="text-align:left;width:280px">
+     <div   >
+       <input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
+       <div id="Customer_Tax_Number_Container"  ></div>
+     </div>
+   </td>
+   <td id="Customer_Tax_Number_msg"  class="edit_td_alert"></td>
+ </tr>
+       
+       
+	
+     <tr  style="{if $customer->get('Customer Type')!='Company'}display:none{/if}"><td class="lavel">{t}Fiscal Name{/t}:</td>
+        <td style="text-align:left;">
+     <div   >
+       <input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
+       <div id="Customer_Fiscal_Name_Container"  ></div>
+     </div>
+   </td>
+   </tr>
+
+
+{if $hq_country=='ES'}
+<tr>
+<td>RE:</td>
+<td>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+      <span class="{if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</span><br/><br/>
+   </div>
+<td>
+</tr>
+{else}
+<tr style="display:none">
+<td>{t}Tax Code{/t}:</td><td>
+<select id="tax_code">
+  {foreach from=$tax_codes item=sub_cat key=sub_cat_key name=foo2  }
+    
+        <option {if $customer->get('Customer Tax Category Code')==$sub_cat.code }selected="selected"{/if} value="{$sub_cat.code}">{$sub_cat.name}</option>
+    {/foreach}
+</select></td>
+</tr>
+{/if}
+      
+      
+     </table>
+     
+       
+
+       
+       
+   </div>
+   
+ {include file='edit_billing_information_splinter.tpl'}   
+</div>   
+   
    
 <div  class="edit_block" style="{if $edit!="communications"}display:none{/if};min-height:260px"  id="d_communications">
     
@@ -564,108 +641,7 @@
      <div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
    </div>
 
- <div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
-     <div style="border-bottom:1px solid #777;margin-bottom:7px">
-     
-       {t}Billing Information{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
-     
-     </div>
-     
-     
-       <table border=0>
-       
-       
-       <tr >
- <td  class="label">{t}Tax Number{/t}:</td>
-   <td  style="text-align:left;width:280px">
-     <div   >
-       <input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
-       <div id="Customer_Tax_Number_Container"  ></div>
-     </div>
-   </td>
-   <td id="Customer_Tax_Number_msg"  class="edit_td_alert"></td>
- </tr>
-       
-       
-	
-     <tr  style="{if $customer->get('Customer Type')!='Company'}display:none{/if}"><td class="lavel">{t}Fiscal Name{/t}:</td>
-        <td style="text-align:left;">
-     <div   >
-       <input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
-       <div id="Customer_Fiscal_Name_Container"  ></div>
-     </div>
-   </td>
-   </tr><tr> <td id="Customer_Fiscal_Name_msg" class="edit_td_alert"></td>
-   <td><span  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="state_details">{t}Reset{/t}</span></td>
-   
-   
-  
-     
-     </tr>
 
-
-{if $hq_country=='ES'}
-<tr>
-<td>RE:</td>
-<td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-      <span class="{if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</span><br/><br/>
-   </div>
-<td>
-</tr>
-{else}
-<tr style="display:none">
-<td>{t}Tax Code{/t}:</td><td>
-<select id="tax_code">
-  {foreach from=$tax_codes item=sub_cat key=sub_cat_key name=foo2  }
-    
-        <option {if $customer->get('Customer Tax Category Code')==$sub_cat.code }selected="selected"{/if} value="{$sub_cat.code}">{$sub_cat.name}</option>
-    {/foreach}
-</select></td>
-</tr>
-{/if}
-      
-      
-     </table>
-     
-       
-       <div id="billing_address_block" style="margin-bottom:10px">
-       <table style="width:100%" border=0>
-       <tr style="border-bottom:1px solid #777">
-       <td>{t}Billing Address{/t}:</td>
-       <td class="aright">
-       <span style="font-size:90%;display:none" id="set_contact_address_as_billing"  class="edit aright state_details">{t}Use contact address{/t}</span>
-
-       <span style="font-size:90%;{if ($customer->get('Customer Billing Address Link')!='Contact')}display:none{/if}" id="show_new_billing_address"  same_as_contact="{if ($customer->get('Customer Billing Address Link')=='Contact')}1{else}0{/if}"  class="edit aright state_details">{t}Set up different address{/t}</span>
-       <span style="font-size:90%;{if ($customer->get('Customer Billing Address Link')=='Contact')}display:none{/if}" id="show_edit_billing_address"  same_as_contact="{if ($customer->get('Customer Billing Address Link')=='Contact')}1{else}0{/if}"  address_key="{$customer->get('Customer Billing Address Key')}" class="edit aright state_details">{t}Edit address{/t}</span>
-
-       </td>
-       </tr>
-       <tr >
-       <td colspan=2 id="billing_address">
-        
-            {if ($customer->get('Customer Billing Address Link')=='Contact')}
-   <span style="font-weight:600">{t}Same as contact address{/t}</span> 
-   {else}
-   {$customer->billing_address_xhtml()}
-   {/if}
-   
-       </td>
-       </tr>
-      
-      
-      
-       </table> 
-      
-        <table id="new_billing_address_table" border=0 style="width:100%;display:none">
-       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='billing_' address_type='Shop' show_tel=false show_contact=false  address_function='Billing'  hide_type=true hide_description=true show_form=false  show_components=false }
-     </table>
-      
-</div>
-       
-       
-   </div>
  
  <div id="customer_delivery_address" style="display:none;float:left;xborder:1px solid #ddd;width:400px;">
      <div style="border-bottom:1px solid #777;margin-bottom:5px">
