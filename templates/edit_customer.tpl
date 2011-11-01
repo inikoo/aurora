@@ -132,10 +132,12 @@
    
    
 <div  class="edit_block" style="{if $edit!="billing"}display:none{/if};min-height:260px"  id="d_billing">
-     	  <div class="general_options" style="float:right">
-	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="state_details">{t}Save{/t}</span>
-	       <span style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="state_details">{t}Reset{/t}</span>
+     	  <div class="buttons" style="float:right">
+		  <button style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="state_details">{t}Reset{/t}</button>
+	        <button  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="state_details">{t}Save{/t}</button>
+	       
       </div>
+
  <div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
      <div style="border-bottom:1px solid #777;margin-bottom:7px">
      
