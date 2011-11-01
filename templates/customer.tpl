@@ -71,23 +71,23 @@
                     <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
                 </tr>
                 {/if}
-                {if $customer->get('Customer Main Email Key')}<tr><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_email" src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
+                {if $customer->get('Customer Main Email Key')}<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')"><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td><td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
-                    <tr><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_other_email{$key}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
+                    <tr id="other_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')"><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td><td><img onMouseover="Dom.setStyle('other_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_email_tr','border-color','#fff')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
                 {/foreach}
-                {if $customer->get('Customer Main Telephone Key')}<tr><td id="main_telephone" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img id="quick_edit_main_telephone" alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td></tr>{/if}
+                {if $customer->get('Customer Main Telephone Key')}<tr id="main_telephone_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_telephone','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_telephone','visibility','hidden')"><td id="main_telephone" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td><td><img onMouseover="Dom.setStyle('main_telephone_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_telephone_tr','border-color','#fff')" id="quick_edit_main_telephone" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_telephones_data() item=other_tel key=key}
-                    <tr><td id="telephone{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" id="quick_edit_other_telephone{$key}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                   <tr id="other_telephone_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_telephone{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_telephone{$key}','visibility','hidden')"><td id="telephone{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Telephone{/t}" title="{t}Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td><td><img onMouseover="Dom.setStyle('other_telephone_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_telephone_tr','border-color','#fff')" id="quick_edit_other_telephone{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
                 {/foreach}
 
-                {if $customer->get('Customer Main Mobile Key')}<tr><td id="main_mobile" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Telephone') and $customer->get('Customer Preferred Contact Number')=='Mobile'}font-weight:800{/if}" >{$customer->get('Customer Main XHTML Mobile')}</td ><td><img id="quick_edit_main_mobile" alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Mobile')}</td></tr>{/if}
+                {if $customer->get('Customer Main Mobile Key')}<tr id="main_mobile_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_mobile','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_mobile','visibility','hidden')"><td id="main_mobile" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Telephone') and $customer->get('Customer Preferred Contact Number')=='Mobile'}font-weight:800{/if}" >{$customer->get('Customer Main XHTML Mobile')}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Mobile')}</td><td><img onMouseover="Dom.setStyle('main_mobile_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_mobile_tr','border-color','#fff')" id="quick_edit_main_mobile" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_mobiles_data() item=other_tel key=key}
-                    <tr><td id="mobile{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}"  id="quick_edit_other_mobile{$key}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                    <tr id="other_mobile_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_mobile{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_mobile{$key}','visibility','hidden')"><td id="mobile{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Mobile{/t}" title="{t}Mobile{/t}" src="art/icons/phone.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td><td><img onMouseover="Dom.setStyle('other_mobile_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_mobile_tr','border-color','#fff')" id="quick_edit_other_mobile{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
                 {/foreach}
 
-                {if $customer->get('Customer Main FAX Key')}<tr><td id="main_fax" colspan=2 class="aright">{$customer->get('Customer Main XHTML FAX')}</td ><td><img id="quick_edit_main_fax" alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('FAX')}</td></tr>{/if}
+                {if $customer->get('Customer Main FAX Key')}<tr id="main_fax_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_fax','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_fax','visibility','hidden')"><td id="main_fax" colspan=2 class="aright">{$customer->get('Customer Main XHTML FAX')}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('FAX')}</td><td><img onMouseover="Dom.setStyle('main_fax_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_fax_tr','border-color','#fff')" id="quick_edit_main_fax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_faxes_data() item=other_tel key=key}
-                    <tr><td id="fax{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}" id="quick_edit_other_fax{$key}" src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td></tr>
+                    <tr id="other_fax_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_fax{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_fax{$key}','visibility','hidden')"><td id="fax{$key}" colspan=2   class="aright">{$other_tel.xhtml}</td ><td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td><td style="color:#777;font-size:80%">{$other_tel.label}</td><td><img onMouseover="Dom.setStyle('other_fax_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_fax_tr','border-color','#fff')" id="quick_edit_other_fax{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
                 {/foreach}
 
 				{foreach from=$show_case key=name item=value}
@@ -742,10 +742,7 @@
 
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-		<td colspan=2><div id="Customer_Main_Email_msg"></div></td>
-	<td  colspan=2 id="Customer_Main_Email_msg" class="edit_td_alert"></td>
-	</tr>
+	
 	<tr>
 	<td>{t}Contact Email:{/t}</td>
 	<td>
@@ -754,10 +751,16 @@
 		<div id="Customer_Main_Email_Container"  ></div>
 	</div>	
 	</td>
-
-
 	</tr>
-	<tr><td></td><td><input type="button" id="save_quick_edit_email" value="Save"></td></tr>
+	
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Email_msg" ></span>
+	<button class="positive" id="save_quick_edit_email">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
 	</table>
 
 </div>
@@ -765,10 +768,6 @@
 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
 <div id="dialog_quick_edit_Customer_Email{$key}" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Email{$key}_msg"></div></td>
-	
-	</tr>
 	<tr>
 	<td>{t}Other Email:{/t}</td>
 	<td>
@@ -776,10 +775,15 @@
 	<input type="text" id="Customer_Email{$key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
 	<div id="Customer_Email{$key}_Container"  ></div>
 	</div>	
+	</td></tr>
+	<tr><td  colspan=2 >
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Email{$key}_msg" ></span>
+	<button class="positive" onclick="save_quick_edit_other_email({$key})">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_email{$key}">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
-	</tr>
-	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_email({$key})" value="Save"/></td></tr>
+	</tr>	
 	</table>
 
 </div>
@@ -788,10 +792,6 @@
 
 <div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Main_Telephone_msg"></div></td>
-	<td   colspan=2 id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
-	</tr>
 	<tr>
 	<td>{t}Telephone:{/t}</td>
 	<td>
@@ -799,10 +799,15 @@
 	<input type="text" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
 	<div id="Customer_Main_Telephone_Container"></div>
 	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Telephone_msg" ></span>
+	<button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
 	</tr>
-	<tr><td></td><td><input type="button" id="save_quick_edit_telephone" value="Save"></td></tr>
 	</table>
 
 </div>
@@ -810,10 +815,7 @@
 {foreach from=$customer->get_other_telephones_data() item=other_telephone key=key}
 <div id="dialog_quick_edit_Customer_Telephone{$key}" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Telephone{$key}_msg"></div></td>
-	<td   colspan=2 id="Customer_Telephone{$key}_msg" class="edit_td_alert"></td>
-	</tr>
+
 	<tr>
 	<td>{t}Other Telephone:{/t}</td>
 	<td>
@@ -821,21 +823,23 @@
 	<input type="text" id="Customer_Telephone{$key}" value="{$other_telephone.number}" ovalue="{$other_telephone.number}" valid="0">
 	<div id="Customer_Telephone{$key}_Container"></div>
 	</div>
+	</td></tr>
+	<tr><td colspan=2>
+		<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Telephone{$key}_msg" ></span>
+	<button class="positive" onclick="save_quick_edit_other_telephone({$key})">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_telephone{$key}">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
 	</tr>
-	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_telephone({$key})" value="Save"></td></tr>
 	</table>
-
 </div>
 {/foreach}
 
 <div id="dialog_quick_edit_Customer_Main_Mobile" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Main_Mobile_msg"></div></td>
-	<td   colspan=2 id="Customer_Main_Mobile_msg" class="edit_td_alert"></td>
-	</tr>
+
+	
 	<tr>
 	<td>{t}Mobile:{/t}</td>
 	<td>
@@ -843,10 +847,15 @@
 	<input type="text" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
 	<div id="Customer_Main_Mobile_Container"></div>
 	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Mobile_msg" ></span>
+	<button class="positive" id="save_quick_edit_mobile">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_mobile">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
 	</tr>
-	<tr><td></td><td><input type="button" id="save_quick_edit_mobile" value="Save"></td></tr>
 	</table>
 
 </div>
@@ -854,10 +863,7 @@
 {foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key}
 <div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Mobile{$key}_msg"></div></td>
-	<td  colspan=2  id="Customer_Mobile{$key}_msg" class="edit_td_alert"></td>
-	</tr>
+
 	<tr>
 	<td>{t}Other Mobile:{/t}</td>
 	<td>
@@ -865,11 +871,16 @@
 	<input type="text" id="Customer_Mobile{$key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0">
 	<div id="Customer_Mobile{$key}_Container"></div>
 	</div>
-		
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Mobile{$key}_msg" ></span>
+	<button class="positive" onclick="save_quick_edit_other_mobile({$key})">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_other_mobile{$key}">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
 	</tr>
-	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_mobile({$key})" value="Save"></td></tr>
+
 	</table>
 
 </div>
@@ -877,10 +888,7 @@
 
 <div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Main_FAX_msg"></div></td>
-	<td   colspan=2 id="Customer_Main_FAX_msg" class="edit_td_alert"></td>
-	</tr>
+
 	<tr>
 	<td>{t}Fax:{/t}</td>
 	<td>
@@ -888,10 +896,15 @@
 	<input type="text" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0">
 	<div id="Customer_Main_FAX_Container"></div>
 	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_FAX_msg" ></span>
+	<button class="positive" id="save_quick_edit_fax">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_fax">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
 	</tr>
-	<tr><td></td><td><input type="button" id="save_quick_edit_fax" value="Save"></td></tr>
 	</table>
 
 </div>
@@ -900,10 +913,7 @@
 {foreach from=$customer->get_other_faxes_data() item=other_fax key=key}
 <div id="dialog_quick_edit_Customer_FAX{$key}" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_FAX{$key}_msg"></div></td>
-	<td  colspan=2  id="Customer_FAX{$key}_msg" class="edit_td_alert"></td>
-	</tr>
+
 	<tr>
 	<td>{t}Other FAX:{/t}</td>
 	<td>
@@ -911,10 +921,16 @@
 	<input type="text" id="Customer_FAX{$key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0">
 	<div id="Customer_FAX{$key}_Container"></div>
 	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_FAX{$key}_msg" ></span>
+	<button class="positive" onclick="save_quick_edit_other_fax({$key})">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_other_fax{$key}">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
 	</tr>
-	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_fax({$key})" value="Save"></td></tr>
+	
 	</table>
 
 </div>
