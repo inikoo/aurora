@@ -5,6 +5,7 @@ include_once('common.php');
      var Dom   = YAHOO.util.Dom;
 
 var dialog_delete_all;
+var interval_instance;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -166,7 +167,21 @@ var request='ar_edit_contacts.php?tipo=delete_all_customers_in_store&store_key='
 Dom.setStyle('delete_all_tbody','display','none');
 Dom.setStyle('deleting_all','display','');
 
+table_id=0
+ var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
 
+
+
+
+
+        var myCallback = {
+            success: table.onDataReturnInitializeTable,
+            
+            scope:table
+          
+        };
+        interval_instance=datasource.setInterval(10000, null, myCallback);
 
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -178,7 +193,15 @@ Dom.setStyle('deleting_all','display','');
 		    if (r.state==200) {
                 Dom.setStyle('delete_all_tbody','display','');
 Dom.setStyle('deleting_all','display','none');
+table_id=0
+ var table=tables['table'+table_id];
+                var datasource=tables['dataSource'+table_id];
+                datasource.clearInterval ( interval_instance ) 
+                datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+
+
                 dialog_delete_all.hide();
+                
                 
 		    }else
 			Dom.get('delete_all_msg').innerHTML=r.msg;
