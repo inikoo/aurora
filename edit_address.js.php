@@ -160,11 +160,11 @@ var create_address=function(options) {
 
 
     var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-alert(request)  
+//alert(request)  
   
   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            alert(o.responseText);
+            //alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='created') {
 
@@ -277,7 +277,7 @@ success:function(o) {
                 display_element[2].setAttribute('onCLick',"display_edit_billing_address("+r.address_key+",'"+address_prefix+"')");
 
 
-                Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
+                Dom.get(address_prefix+'address_showcase').appendChild();
 
 
 
