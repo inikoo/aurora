@@ -5002,7 +5002,30 @@ ALTER TABLE `Email Template Color Scheme Dimension` CHANGE `Text Header` `Text H
 ALTER TABLE `Email Content Paragraph Dimension` ADD `Paragraph Original Type` ENUM( 'Main', 'Side' ) NOT NULL DEFAULT 'Main' AFTER `Paragraph Type` ;
 ALTER TABLE `Email Template Color Scheme Dimension` ADD `Header Slim Image Source` VARCHAR( 256 ) NOT NULL AFTER `Header Image Source` ;
 
+ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Historic Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Email Content Color Scheme Key` ;
+ALTER TABLE `Email Template Header Image Dimension` CHANGE `Email Template Header Image Name` `Email Template Header Image Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Source` `Email Content Header Image Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Email Template Header' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Email Template Header', 'Email Template Postcard', 'Email Image' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Email Template Header', 'Store Email Postcard', 'Email Image' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Template Header Image Dimension` ADD INDEX ( `Image Key` ) ;
 
+CREATE TABLE `Email Template Postcard Dimension` (
+`Email Template Postcard Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Template Postcard Name` VARCHAR( 256 ) NOT NULL ,
+`Store Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Image Key` MEDIUMINT UNSIGNED NOT NULL
+) ENGINE = MYISAM ;
+
+
+ALTER TABLE `Email Template Color Scheme Dimension` ADD `Postcard Image Source` VARCHAR( 256 ) NOT NULL AFTER `Header Slim Image Source` ;
+ALTER TABLE `Email Content Dimension` ADD `Email Content Template Postcard Key` MEDIUMINT UNSIGNED NOT NULL 
+ALTER TABLE `Email Campaign Dimension` DROP `Email Campaign Objective` ;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Content Type` `Email Campaign Content Type` ENUM( 'HTML', 'Multi HTML', 'Plain', 'HTML Template', 'Multi Plain', 'Multi HTML Template', 'Multi Mixed', 'Unknown' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Attachment Bridge` CHANGE `Attachment Key` `Attachment Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
+ALTER TABLE `Attachment Bridge` CHANGE `Subject Key` `Subject Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes'
 */
 
 ?>

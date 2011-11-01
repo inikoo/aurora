@@ -260,6 +260,7 @@ version: 2.5.0
     color:#565656;
     cursor:pointer;
     padding:5px 10px 3px 7px; /* Links */
+     text-decoration:none;
 }
 
 .buttons.left a, .buttons.left button{
@@ -297,8 +298,10 @@ button:hover, .buttons a:hover{
     background-color:#dff4ff;
     border:1px solid #c2e1ef;
     color:#336699;
+     text-decoration:none;
 }
 .buttons a:active{
+   
     background-color:#6299c5;
     border:1px solid #6299c5;
     color:#fff;

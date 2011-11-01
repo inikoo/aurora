@@ -51,11 +51,11 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 </tr>
  
 <tr>
-<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:6px solid #{$color_scheme.Background_Container};"><center><IMG   SRC="{$header_src}" BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
+<td   style="color:#{$color_scheme.Text_Header};background-color:#{$color_scheme.Background_Header};border-bottom:6px solid #{$color_scheme.Background_Container};"><center><IMG  id="header_image"  SRC="{$header_src}" WIDTH=600 BORDER="0" title="{$store->get('Store Name')}"  alt="{$store->get('Store Name')}" align="center"></center></td>
 </tr>
 
 <tr>
-<td style="background-color:#FFFFFF;border-top:0px solid #FFFFFF;border-bottom:0px solid #333333;"><center><a href="#"><img src="art/email_headers/dark_wood.jpg" width="600"  border="0" alt="Lorem ipsum"></a></center></td>
+<td style="background-color:#FFFFFF;border-top:0px solid #FFFFFF;border-bottom:0px solid #333333;"><center><a href="#"><img src="{$postcard_src}" width="600"  border="0" alt=""></a></center></td>
 </tr>
 </table>
 

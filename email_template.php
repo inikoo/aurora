@@ -130,14 +130,35 @@ if (isset($_REQUEST['color_scheme_key']) and is_numeric($_REQUEST['color_scheme_
 }
 
 $smarty->assign('color_scheme',$color_scheme);
-$header_src=$email_content_data['header_src'];
-if (!$header_src) {
-if($email_content_data['template_type']=='Postcard')
-    $header_src=$color_scheme['Header_Slim_Image_Source'];
+if (!$email_content_data['header_image_key']) {
+    if ($email_content_data['template_type']=='Postcard')
+        $header_src=$color_scheme['Header_Slim_Image_Source'];
 
-else
-    $header_src=$color_scheme['Header_Image_Source'];
+    else
+        $header_src=$color_scheme['Header_Image_Source'];
+} else {
+    $header_src='image.php?id='.$email_content_data['header_image_key'];
+
+
 }
+
+if ($email_content_data['template_type']=='Postcard') {
+
+if (!$email_content_data['postcard_image_key']) {
+
+        $postcard_src=$color_scheme['Postcard_Image_Source'];
+} else {
+    $postcard_src='image.php?id='.$email_content_data['postcard_image_key'];
+
+
+}
+
+$smarty->assign('postcard_src',$postcard_src);
+
+}
+
+
+
 
 $smarty->assign('header_src',$header_src);
 

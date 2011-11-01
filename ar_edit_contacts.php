@@ -22,19 +22,22 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('upload_attachment_to_customer'):
+    upload_attachment_to_customer();
+    break;
 
 case('strikethrough_customer_history'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
                          ));
     strikethrough_customer_history($data);
-break;
+    break;
 case('unstrikethrough_customer_history'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
                          ));
     unstrikethrough_customer_history($data);
-break;
+    break;
 
 case('add_attachment'):
     $data=prepare_values($_REQUEST,array(
@@ -72,15 +75,15 @@ case('set_contact_address_as_billing'):
 
 
     break;
-	
+
 case('forgot_password'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
-							 'store_key'=>array('type'=>'key'),
-							 'email'=>array('type'=>'string'),
-							 'url'=>array('type'=>'string'),
-							 'site_key'=>array('type'=>'key')
-							 
+                             'store_key'=>array('type'=>'key'),
+                             'email'=>array('type'=>'string'),
+                             'url'=>array('type'=>'string'),
+                             'site_key'=>array('type'=>'key')
+
                          ));
     forgot_password($data);
 
@@ -234,7 +237,7 @@ case('edit_company'):
 case('edit_billing_data'):
 
 case('edit_customer'):
-	
+
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
@@ -854,13 +857,13 @@ function edit_address_main_telephone($number,$address_key) {
 
     $address=new Address($address_key);
     if (!$address->id) {
-       return -2;
+        return -2;
         //$response=array('state'=>400,'msg'=>"Address not found $address_key");
         //echo json_encode($response);
         //exit;
-        
-        
-        
+
+
+
     }
     $telecom_key=$address->get_principal_telecom_key('Telephone');
 
@@ -876,11 +879,11 @@ function edit_address_main_telephone($number,$address_key) {
     $telephone_data['Telecom Type']='Telephone';
     $proposed_telephone=new Telecom("find complete country code ".$address->data['Address Country Code'],$telephone_data);
     if ($proposed_telephone->found) {
-        
+
         return -1;
-       // $response=array('state'=>400,'msg'=>'Telephone found in another address');
-       // echo json_encode($response);
-       // exit;
+        // $response=array('state'=>400,'msg'=>'Telephone found in another address');
+        // echo json_encode($response);
+        // exit;
     }
     if (!$telecom_key) {
         $telephone=new Telecom("find complete create country code ".$address->data['Address Country Code'],$telephone_data);
@@ -2005,7 +2008,7 @@ function strikethrough_customer_history($data) {
     $history_key=$data['key'];
     $sql=sprintf("update `Customer History Bridge` set  `Strikethrough`='Yes'   where `History Key`=%d ",$history_key);
     mysql_query($sql);
-  //  print $sql;
+    //  print $sql;
     $response=array('state'=>200,'strikethrough'=>'Yes','delete'=>'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />');
     echo json_encode($response);
 }
@@ -2670,7 +2673,7 @@ function edit_customer($data) {
 
 function edit_customer_field($customer_key,$key,$value_data) {
 
-	//print $value_data;
+    //print $value_data;
 //print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
@@ -2744,31 +2747,36 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_email_deleted=true;
         }
 
-    }elseif (preg_match('/^email_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^email_label\d+$/i',$key)) {
         $email_id=preg_replace('/^email_label/','',$key);
         $customer->update_other_email_label($email_id,$the_new_value);
         $other_label=true;
         $other_label_scope='email';
         $other_label_scope_key=$email_id;
-    }elseif (preg_match('/^telephone_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^telephone_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^telephone_label/','',$key);
         $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='telephone';
         $other_label_scope_key=$telecom_id;
-    }elseif (preg_match('/^mobile_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^mobile_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^mobile_label/','',$key);
         $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='mobile';
         $other_label_scope_key=$telecom_id;
-    }elseif (preg_match('/^fax_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^fax_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^fax_label/','',$key);
         $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='fax';
         $other_label_scope_key=$telecom_id;
-    }elseif (preg_match('/^telephone\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^telephone\d+$/i',$key)) {
         $telephone_id=preg_replace('/^telephone/','',$key);
         $customer->update_other_telephone($telephone_id,$the_new_value);
 
@@ -2776,7 +2784,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_telephone_deleted=true;
         }
 
-    }elseif (preg_match('/^fax\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^fax\d+$/i',$key)) {
         $fax_id=preg_replace('/^fax/','',$key);
         $customer->update_other_fax($fax_id,$the_new_value);
 
@@ -2784,7 +2793,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_fax_deleted=true;
         }
 
-    }elseif (preg_match('/^mobile\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^mobile\d+$/i',$key)) {
 
 
         $mobile_id=preg_replace('/^mobile/','',$key);
@@ -2795,18 +2805,23 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
         }
 
-    }elseif ($key=='Customer Fiscal Name') {
+    }
+    elseif ($key=='Customer Fiscal Name') {
         $customer->update_fiscal_name($the_new_value );
-    }elseif ($key=='Customer Tax Number') {
+    }
+    elseif ($key=='Customer Tax Number') {
         $customer->update_tax_number($the_new_value);
-    }elseif ($key=='Customer Registration Number') {
+    }
+    elseif ($key=='Customer Registration Number') {
         $customer->update_registration_number($the_new_value);
-    }elseif (preg_match('/^custom_field_customer/i',$key)) {
+    }
+    elseif (preg_match('/^custom_field_customer/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
-		//print $key;
+        //print $key;
         $customer->update_custom_fields($key, $the_new_value);
-		
-    }else {
+
+    }
+    else {
         $customer->update(array($key=>$the_new_value));
     }
 
@@ -2823,50 +2838,50 @@ function edit_customer_field($customer_key,$key,$value_data) {
     elseif($key=='Add Other Mobile') {
         $other_mobile_added=true;
     }
-    
 
 
 
 
 
-if ($customer->updated) {
 
-    if ($other_email_deleted) {
-        $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
-    }
-    elseif ($other_mobile_deleted) {
-        $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id);
-    }
-    elseif ($other_fax_deleted) {
-        $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id);
-    }
-    elseif ($other_telephone_deleted) {
-        $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id);
-    }
-    elseif($other_email_added) {
-        $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'new_email_key'=>$customer->new_email_key);
-    }
-    elseif($other_telephone_added) {
-        $response= array('state'=>200,'action'=>'other_telephone_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-    elseif($other_fax_added) {
-        $response= array('state'=>200,'action'=>'other_fax_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-    elseif($other_mobile_added) {
-        $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-    elseif($other_label) {
-        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
-    }
-    else {
+    if ($customer->updated) {
 
-        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-} else {
+        if ($other_email_deleted) {
+            $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
+        }
+        elseif ($other_mobile_deleted) {
+            $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id);
+        }
+        elseif ($other_fax_deleted) {
+            $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id);
+        }
+        elseif ($other_telephone_deleted) {
+            $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id);
+        }
+        elseif($other_email_added) {
+            $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'new_email_key'=>$customer->new_email_key);
+        }
+        elseif($other_telephone_added) {
+            $response= array('state'=>200,'action'=>'other_telephone_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+        }
+        elseif($other_fax_added) {
+            $response= array('state'=>200,'action'=>'other_fax_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+        }
+        elseif($other_mobile_added) {
+            $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+        }
+        elseif($other_label) {
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
+        }
+        else {
 
-    $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
-}
-return $response;
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
+        }
+    } else {
+
+        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
+    }
+    return $response;
 
 }
 // --------------------------------------------------------------------------------------------------------------
@@ -3966,42 +3981,41 @@ function create_custom_field($data) {
 
 }
 
-function create_email_field($data){
-	$info=$data['values'];
-	//print_r($info);
-	$sql=sprintf("select * from `Email Credentials` where `Store Key`=%d and `Email Address`='%s'", $data['parent_key'], $info['Email Address']);
-	//print $sql;
-	$result=mysql_query($sql);
-	if(mysql_fetch_array($result)){
-		$response=array(
-		  'state'=>450,
-		  'msg'=>'Email Exist'
+function create_email_field($data) {
+    $info=$data['values'];
+    //print_r($info);
+    $sql=sprintf("select * from `Email Credentials` where `Store Key`=%d and `Email Address`='%s'", $data['parent_key'], $info['Email Address']);
+    //print $sql;
+    $result=mysql_query($sql);
+    if (mysql_fetch_array($result)) {
+        $response=array(
+                      'state'=>450,
+                      'msg'=>'Email Exist'
 
-		);
-	}
-	else{
-		$sql=sprintf("insert into `Email Credentials` (`Store Key`,`Store Scope`,`Email Address`,`Password`,`Incoming Mail Server`,`Outgoing Mail Sever`) values (%d, '%s', '%s', '%s', '%s', '%s')"
-		,$data['parent_key']
-		,$data['parent']
-		,$info['Email Address']
-		,$info['Password']
-		,$info['Incoming Mail Server']
-		,$info['Outgoing Mail Server']
-		);
-		
-		if(mysql_query($sql)){
-		    $response=array(
-                  'state'=>200,
-                  'msg'=>'Email Added'
-              );
-    
-			
-		}
-		//print $sql;
-		
-	}
-	echo json_encode($response);
-	
+                  );
+    } else {
+        $sql=sprintf("insert into `Email Credentials` (`Store Key`,`Store Scope`,`Email Address`,`Password`,`Incoming Mail Server`,`Outgoing Mail Sever`) values (%d, '%s', '%s', '%s', '%s', '%s')"
+                     ,$data['parent_key']
+                     ,$data['parent']
+                     ,$info['Email Address']
+                     ,$info['Password']
+                     ,$info['Incoming Mail Server']
+                     ,$info['Outgoing Mail Server']
+                    );
+
+        if (mysql_query($sql)) {
+            $response=array(
+                          'state'=>200,
+                          'msg'=>'Email Added'
+                      );
+
+
+        }
+        //print $sql;
+
+    }
+    echo json_encode($response);
+
 }
 
 
@@ -4018,7 +4032,7 @@ function add_attachment_to_customer_history($data) {
     $customer=new Customer($data['scope_key']);
     $customer->editor=$editor;
     $msg=
-    $updated=false;
+        $updated=false;
     foreach($data['files_data'] as $file_data) {
         $_data=array(
                    'Filename'=>$file_data['filename_with_path'],
@@ -4029,7 +4043,7 @@ function add_attachment_to_customer_history($data) {
         $customer->add_attachment($_data);
         if ($customer->updated) {
             $updated=$customer->updated;
-        }else{
+        } else {
             $msg=$customer->msg;
         }
 
@@ -4047,40 +4061,40 @@ function add_attachment_to_customer_history($data) {
     echo json_encode($response);
 }
 
-function forgot_password($data){
-	//print_r($data);exit;
-	global $secret_key,$public_url;
-	$key=$data['customer_key'];
-	$store_key=$data['store_key'];
-	//$url=$data['url'];
-	$login_handle=$data['email'];
-	
-	$sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d and `Site Store Key`=%d", $data['site_key'], $data['store_key']);
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result))
-		$url=$row['Site URL'];
-	else
-		$url='';
-	
-	
-	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result)){
-		$user_key=$row['User Key'];
-	}
-	
-	//print $user_key;
-	if ($user_key) {
+function forgot_password($data) {
+    //print_r($data);exit;
+    global $secret_key,$public_url;
+    $key=$data['customer_key'];
+    $store_key=$data['store_key'];
+    //$url=$data['url'];
+    $login_handle=$data['email'];
+
+    $sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d and `Site Store Key`=%d", $data['site_key'], $data['store_key']);
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result))
+        $url=$row['Site URL'];
+    else
+        $url='';
+
+
+    $sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result)) {
+        $user_key=$row['User Key'];
+    }
+
+    //print $user_key;
+    if ($user_key) {
 
 
         $user=new User($user_key);
         $customer=new Customer($user->data['User Parent Key']);
 
-		$store=new Store($store_key);
+        $store=new Store($store_key);
 
         $email_credential_key=$store->get_email_credential_key('Site Registration');
 
-		//print $email_credential_key=1;
+        //print $email_credential_key=1;
 //print_r($store);
         $signature_name='';
         $signature_company='';
@@ -4119,77 +4133,76 @@ function forgot_password($data){
                       <br><br>
                       Thank you";
 
-$files=array();	
-$to=$login_handle;
-	$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
-   
+        $files=array();
+        $to=$login_handle;
+        $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+        //$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+
         $message_data['method']='smtp';
-		$message_data['type']='html';
-		$message_data['to']=$to;
-		$message_data['subject']='Reset your password';
-		$message_data['html']=$html_message;
+        $message_data['type']='html';
+        $message_data['to']=$to;
+        $message_data['subject']='Reset your password';
+        $message_data['html']=$html_message;
         $message_data['email_credentials_key']=1;
         $message_data['email_matter']='Password Reminder';
         $message_data['email_matter_key']=$email_mailing_list_key;
         $message_data['recipient_type']='User';
         $message_data['recipient_key']=0;
         $message_data['email_key']=0;
-		$message_data['plain']=$plain_message;
-		if(isset($message_data['plain']) && $message_data['plain']){
-			$message_data['plain']=$message_data['plain'];
-		}
-		else
-			$message_data['plain']=null;
+        $message_data['plain']=$plain_message;
+        if (isset($message_data['plain']) && $message_data['plain']) {
+            $message_data['plain']=$message_data['plain'];
+        } else
+            $message_data['plain']=null;
 
-	 //print_r($message_data);
-	$send_email=new SendEmail();
+        //print_r($message_data);
+        $send_email=new SendEmail();
 
-	$send_email->track=true;
-
-
-	$send_result=$send_email->send($message_data);	
-	//print_r($send_result);
+        $send_email->track=true;
 
 
-	
-/*	
-		$data=array('email_type'=>'Password Reminder',
-				  'recipient_type'=>'User',
-				  'recipient_key'=>$user->id);
-				  
-		$send_email=new SendEmail($data);
-		
-		$html_message=$send_email->track_sent_email($html_message);
-		
-		$access_key='AKIAJGTHT6POHWCQQNRQ';
-		$secret_key='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';
+        $send_result=$send_email->send($message_data);
+        //print_r($send_result);
 
-        $to=$login_handle;
-        $data=array(
-				  'type'=>'HTML',
-                  'subject'=>'Reset your password',
-                  'plain'=>$plain_message,
-                  'email_credentials_key'=>$email_credential_key,
-                  'to'=>$to,
-                  'html'=>$html_message,
-				  'attachement'=>$files,
-				  'access_key'=>$access_key,
-				  'secret_key'=>$secret_key
-              );
-		if(isset($data['plain']) && $data['plain']){
-			$data['plain']=$data['plain'];
-		}
-		else
-			$data['plain']=null;
-			
-        //$send_email=new SendEmail();
-		//$send_email->set_method('amazon');
-        $send_email->smtp('html', $data);
-        $result=$send_email->send();
 
-		//print_r($result);
-*/		
+
+        /*
+        		$data=array('email_type'=>'Password Reminder',
+        				  'recipient_type'=>'User',
+        				  'recipient_key'=>$user->id);
+
+        		$send_email=new SendEmail($data);
+
+        		$html_message=$send_email->track_sent_email($html_message);
+
+        		$access_key='AKIAJGTHT6POHWCQQNRQ';
+        		$secret_key='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';
+
+                $to=$login_handle;
+                $data=array(
+        				  'type'=>'HTML',
+                          'subject'=>'Reset your password',
+                          'plain'=>$plain_message,
+                          'email_credentials_key'=>$email_credential_key,
+                          'to'=>$to,
+                          'html'=>$html_message,
+        				  'attachement'=>$files,
+        				  'access_key'=>$access_key,
+        				  'secret_key'=>$secret_key
+                      );
+        		if(isset($data['plain']) && $data['plain']){
+        			$data['plain']=$data['plain'];
+        		}
+        		else
+        			$data['plain']=null;
+
+                //$send_email=new SendEmail();
+        		//$send_email->set_method('amazon');
+                $send_email->smtp('html', $data);
+                $result=$send_email->send();
+
+        		//print_r($result);
+        */
         if ($send_result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);
@@ -4211,4 +4224,54 @@ $to=$login_handle;
 
 
 }
+
+
+function upload_attachment_to_customer() {
+    global $editor;
+    if (isset($_FILES['attach']['tmp_name'])) {
+
+
+        print_r($_FILES['attach']);
+       print_r($_REQUEST);
+       // return;
+       $file_data=$_FILES['attach'];
+$caption=$_REQUEST['caption'];
+$customer_key=$_REQUEST['attach_customer_key'];
+
+        $customer=new Customer($customer_key);
+        $customer->editor=$editor;
+
+        $updated=false;
+
+        $_data=array(
+                   'Filename'=>$file_data['tmp_name'],
+                   'Attachment Caption'=>$caption,
+                   'Attachment MIME Type'=>$file_data['type'],
+                   'Attachment File Original Name'=>$file_data['name']
+               );
+        $customer->add_attachment($_data);
+        if ($customer->updated) {
+            $updated=$customer->updated;
+        } else {
+            $msg=$customer->msg;
+        }
+
+
+
+
+    }
+
+
+    if ($updated) {
+        $response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
+
+    } else {
+        $response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+    }
+
+    echo json_encode($response);
+
+}
+
+
 ?>

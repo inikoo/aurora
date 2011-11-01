@@ -174,7 +174,7 @@ class Attachment extends DB_Table {
 
 
         $sql=sprintf("insert into `Attachment Dimension` %s %s",$keys,$values);
-        //print "$sql\n";
+      //  print "$sql\n";
         // exit;
         if (mysql_query($sql)) {
             $this->id= mysql_insert_id();

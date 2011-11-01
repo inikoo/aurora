@@ -158,6 +158,11 @@ dialog_edit_paragraph.show();
 
 }
 
+function close_edit_paragraph(){
+dialog_edit_paragraph.hide();
+}
+
+
 function save_paragraph(){
  myEditor.saveHTML();
 
@@ -173,18 +178,20 @@ function save_paragraph(){
  }
 
 
-alert(Dom.get('paragraph_content').value)
+//alert(Dom.get('paragraph_content').value)
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 
 
 var request='ar_edit_marketing.php?tipo=edit_email_paragraph&values='+ jsonificated_values
-alert(request)
+//alert(request)
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		     location.reload();
+		window.parent.update_objects_table();
+
+		    location.reload();
 		    
 		}
 	    });        
@@ -210,7 +217,7 @@ var request='ar_edit_marketing.php?tipo=delete_email_paragraph&values='+ jsonifi
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+	//	alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		     location.reload();
 		    
@@ -378,7 +385,7 @@ dialog_edit_paragraph.render();
 
 
   var myConfig = {
-            height: '400px',
+            height: '300px',
             width: '460px',
             animate: true,
             dompath: true,
@@ -416,7 +423,20 @@ dialog_edit_paragraph.render();
   myEditor = new YAHOO.widget.Editor('paragraph_content', myConfig); 
     myEditor.render(); 
     
- 
+                    Event.addListener("header_image", "click", edit_header_image);
+
 
 }
 YAHOO.util.Event.onDOMReady(init);
+function edit_header_image(){
+
+parent.document.getElementById('template_editor_tr').style.display = 'none'; 
+parent.document.getElementById('change_template_header_image_tr').style.display = ''; 
+
+button_edit=parent.document.getElementById('change_template_content')
+Dom.removeClass(button_edit,'selected')
+
+button_header=parent.document.getElementById('change_template_header_image')
+Dom.addClass(button_header,'selected')
+
+}
