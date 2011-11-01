@@ -103,7 +103,7 @@ if ($modify) {
 }
 
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 

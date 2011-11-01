@@ -41,7 +41,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers_address_label.pdf.
 $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('options_box_width','450px');
 
@@ -62,7 +62,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
               // 'common.css',
                'container.css',
-              // 'table.css'
+               'button.css'
            );
 include_once('Theme.php');
 $js_files=array(

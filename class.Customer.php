@@ -5093,7 +5093,7 @@ class Customer extends DB_Table {
     }
 
     function delete($note='',$customer_id_prefix='') {
-
+$this->deleted=false;
         $deleted_company_keys=array();
 
         $address_to_delete=array();

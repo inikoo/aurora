@@ -4,7 +4,7 @@ include_once('common.php');
    var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
 
-
+var dialog_delete_all;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -22,7 +22,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	                    {key:"customer_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
 			    ,{key:"go", label:"", width:20,action:"none"}
 
-			    ,{key:"name", label:"<?php echo _('Customer Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'customer'}
+			    ,{key:"name", label:"<?php echo _('Customer Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'customer_field'}
 			    
 //			    ,{key:"contact_name", label:"<?php echo _('Contact Name')?>",<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'customer'}
 //				       ,{key:"email", label:"<?php echo _('Email')?>",<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'customer'}
@@ -42,7 +42,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_contacts.php?tipo=edit_customers");
+	    
+	    request="ar_edit_contacts.php?tipo=edit_customers"
+	    if(Dom.get('list_key').value){
+	    request=request+'&list_key='+Dom.get('list_key').value;
+	    }
+	    
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -80,7 +86,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['edit_table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -93,8 +99,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['customers']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['customers']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['customers']['edit_table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customers']['edit_table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -114,14 +120,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 	    this.table0.view='<?php echo$_SESSION['state']['customers']['view']?>';
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['edit_table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['edit_table']['f_value']?>'};
 
 	      //YAHOO.util.Event.addListener('f_input', "keyup",FilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 
 	    
 	    //	    var Dom   = YAHOO.util.Dom;
 	    //alert(Dom.get('f_input'));
-
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
 	};
@@ -138,7 +143,54 @@ function init(){
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
+ 
+ 
+ 
+dialog_delete_all = new YAHOO.widget.Dialog("dialog_delete_all", {context:["delete_all","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_delete_all.render();
+Event.addListener('delete_all', "click", dialog_delete_all.show,dialog_delete_all , true);
+Event.addListener('close_delete_all', "click", dialog_delete_all.hide,dialog_delete_all , true);
+Event.addListener('save_delete_all', "click", save_delete_all);
+
+
 }
+
+function save_delete_all(){
+
+if(Dom.get('list_key').value){
+var request='ar_edit_contacts.php?tipo=delete_all_customers_in_list&list_key='+Dom.get('list_key').value+'&store_key='+Dom.get('store_key').value
+}else{
+var request='ar_edit_contacts.php?tipo=delete_all_customers_in_store&store_key='+Dom.get('store_key').value
+}
+
+Dom.setStyle('delete_all_tbody','display','none');
+Dom.setStyle('deleting_all','display','');
+
+
+
+
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+//		alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		 
+		    
+		    if (r.state==200) {
+                Dom.setStyle('delete_all_tbody','display','');
+Dom.setStyle('deleting_all','display','none');
+                dialog_delete_all.hide();
+                
+		    }else
+			Dom.get('delete_all_msg').innerHTML=r.msg;
+	
+		}
+	    });        
+	
+
+
+
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 YAHOO.util.Event.onContentReady("rppmenu0", function () {

@@ -22,6 +22,23 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('delete_all_customers_in_list'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'list_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+                         ));
+
+    delete_all_customers_in_list($data);
+    break;
+case('delete_all_customers_in_store'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+
+    delete_all_customers_in_store($data);
+    break;
 case('upload_attachment_to_customer'):
     upload_attachment_to_customer();
     break;
@@ -234,7 +251,30 @@ case('edit_delivery_address'):
 case('edit_company'):
     edit_company();
     break;
+case('edit_customer_field'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+
+                             'key'=>array('type'=>'string')
+
+                         ));
+
+    $response=edit_customer_field($data['customer_key'],$data['key'],array('value'=>$data['newvalue'],'okey'=>$data['key']));
+    echo json_encode($response);
+    break;
 case('edit_billing_data'):
+
+
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    edit_customer($data);
+    break;
+
 
 case('edit_customer'):
 
@@ -2660,7 +2700,7 @@ function edit_customer($data) {
     }
 
 
-
+//print_r($values);
     $responses=array();
     foreach($values as $key=>$values_data) {
         $responses[]=edit_customer_field($customer->id,$key,$values_data);
@@ -2738,6 +2778,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
         $key=$key_dic[$key];
 
     $the_new_value=_trim($value_data['value']);
+
+
 
     if (preg_match('/^email\d+$/i',$key)) {
         $email_id=preg_replace('/^email/','',$key);
@@ -2822,6 +2864,11 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
     }
     else {
+        //  print "$customer_key,$key,$value_data ***";
+
+
+        //    print "$key  $the_new_value";
+
         $customer->update(array($key=>$the_new_value));
     }
 
@@ -2919,7 +2966,7 @@ function list_customers() {
 
     global $myconf;
 
-    $conf=$_SESSION['state']['customers']['table'];
+    $conf=$_SESSION['state']['customers']['edit_table'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -2964,36 +3011,68 @@ function list_customers() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    //$_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-    $_SESSION['state']['customers']['table']['order']=$order;
-    $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['customers']['table']['nr']=$number_results;
-    $_SESSION['state']['customers']['table']['sf']=$start_from;
-    $_SESSION['state']['customers']['table']['where']=$where;
-    $_SESSION['state']['customers']['table']['f_field']=$f_field;
-    $_SESSION['state']['customers']['table']['f_value']=$f_value;
+    //$_SESSION['state']['customers']['edit_table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['customers']['edit_table']['order']=$order;
+    $_SESSION['state']['customers']['edit_table']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['edit_table']['nr']=$number_results;
+    $_SESSION['state']['customers']['edit_table']['sf']=$start_from;
+    $_SESSION['state']['customers']['edit_table']['where']=$where;
+    $_SESSION['state']['customers']['edit_table']['f_field']=$f_field;
+    $_SESSION['state']['customers']['edit_table']['f_value']=$f_value;
 
 
     $filter_msg='';
     $wheref='';
-    $where='where true ';
+    $where='where true';
+    $table='`Customer Dimension` C ';
+    $where_type='';
+
+    if (isset($_REQUEST['list_key'])) {
+
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+
+        $res=mysql_query($sql);
+        if ($customer_list_data=mysql_fetch_assoc($res)) {
+            $awhere=false;
+            if ($customer_list_data['List Type']=='Static') {
+                $table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+
+            } else {// Dynamic by DEFAULT
+
+
+
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
+
+                $raw_data=json_decode($tmp, true);
+
+                $raw_data['store_key']=$store;
+                list($where,$table)=customers_awhere($raw_data);
+
+
+
+
+            }
+
+        } else {
+            exit("error");
+        }
+    } else {
+        $where_type='';
+    }
+
 
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);
     }
-
-
-
-
 
     if (($f_field=='customer name'     )  and $f_value!='') {
         $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
     }
     elseif(($f_field=='postcode'     )  and $f_value!='') {
         $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-
-
-
     }
     else if ($f_field=='id'  )
         $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
@@ -3011,19 +3090,14 @@ function list_customers() {
         $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
 
 
-
-
-
-
-    $sql="select count(*) as total from `Customer Dimension`  $where $wheref";
+    $sql="select count(*) as total from $table   $where $wheref $where_type";
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total_without_filters from `Customer Dimension`  $where ";
+        $sql="select count(*) as total_without_filters from $table   $where $wheref $where_type";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3038,7 +3112,7 @@ function list_customers() {
     }
     mysql_free_result($res);
 
-    $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
+    $rtext=$total_records." ".ngettext('customer','customers',$total_records);
     if ($total_records>$number_results)
         $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
@@ -3136,7 +3210,7 @@ function list_customers() {
     elseif($order=='activity')
     $order='`Customer Type by Activity`';
 
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from $table   $where $wheref $where_type  order by $order $order_direction limit $start_from,$number_results";
 
     $adata=array();
 
@@ -3145,19 +3219,12 @@ function list_customers() {
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
-
-
-
         $adata[]=array(
 
                      'customer_key'=>$data['Customer Key'],
                      'name'=>$data['Customer Name'],
-
-
                      'email'=>$data['Customer Main Plain Email'],
                      'telephone'=>$data['Customer Main XHTML Telephone'],
-
                      'contact_name'=>$data['Customer Main Contact Name'],
                      'address'=>$data['Customer Main Location'],
                      'town'=>$data['Customer Main Town'],
@@ -4232,11 +4299,11 @@ function upload_attachment_to_customer() {
 
 
         print_r($_FILES['attach']);
-       print_r($_REQUEST);
-       // return;
-       $file_data=$_FILES['attach'];
-$caption=$_REQUEST['caption'];
-$customer_key=$_REQUEST['attach_customer_key'];
+        print_r($_REQUEST);
+        // return;
+        $file_data=$_FILES['attach'];
+        $caption=$_REQUEST['caption'];
+        $customer_key=$_REQUEST['attach_customer_key'];
 
         $customer=new Customer($customer_key);
         $customer->editor=$editor;
@@ -4270,6 +4337,112 @@ $customer_key=$_REQUEST['attach_customer_key'];
     }
 
     echo json_encode($response);
+
+}
+
+
+function delete_all_customers_in_list($data) {
+
+    global $editor,$myconf;
+    $list_key=$data['list_key'];
+    $store_key=$data['store_key'];
+
+    $wheref='';
+    $where='where true';
+    $table='`Customer Dimension` C ';
+    $where_type='';
+
+
+    $conf=$_SESSION['state']['customers']['edit_table'];
+
+    $f_field=$conf['f_field'];
+
+    $f_value=$conf['f_value'];
+
+    $deleted_customers=0;
+    $total_customers=0;
+
+    $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$list_key);
+
+    $res=mysql_query($sql);
+    if ($customer_list_data=mysql_fetch_assoc($res)) {
+        $awhere=false;
+        if ($customer_list_data['List Type']=='Static') {
+            $table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+            $where_type=sprintf(' and `List Key`=%d ',$list_key);
+        } else {
+            $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+            $tmp=preg_replace('/\\\\\"/','"',$tmp);
+            $tmp=preg_replace('/\'/',"\'",$tmp);
+            $raw_data=json_decode($tmp, true);
+            $raw_data['store_key']=$store;
+            list($where,$table)=customers_awhere($raw_data);
+        }
+
+
+        if (is_numeric($store_key)) {
+            $where.=sprintf(' and `Customer Store Key`=%d ',$store_key);
+        }
+
+        if (($f_field=='customer name'     )  and $f_value!='') {
+            $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+        }
+        elseif(($f_field=='postcode'     )  and $f_value!='') {
+            $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+        }
+        else if ($f_field=='id'  )
+            $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+        else if ($f_field=='maxdesde' and is_numeric($f_value) )
+            $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+        else if ($f_field=='mindesde' and is_numeric($f_value) )
+            $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+        else if ($f_field=='max' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Orders`<=".$f_value."    ";
+        else if ($f_field=='min' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Orders`>=".$f_value."    ";
+        else if ($f_field=='maxvalue' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+        else if ($f_field=='minvalue' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+
+
+        $sql="select C.`Customer Key` from $table   $where $wheref $where_type";
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $customer=new Customer($row['Customer Key']);
+            $customer->editor=$editor;
+            if ($customer->id) {
+                $customer->delete('',$myconf['customer_id_prefix']);
+
+                $total_customers++;
+                if ($customer->deleted) {
+                    $deleted_customers++;
+                }
+            }
+        }
+        $response= array('state'=>200,'number_deleted'=>$deleted_customers,'number_customers'=>$total_customers);
+        echo json_encode($response);
+        return;
+
+
+    } else {
+        $response= array('state'=>400,'msg'=>'List not found');
+        echo json_encode($response);
+        return;
+
+    }
+
+}
+
+
+
+
+
+
+
+function delete_all_customers_in_store() {
+
 
 }
 

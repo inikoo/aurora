@@ -11,28 +11,29 @@
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
 
-<div class="buttons" {if !$parent_list}style="display:none"{/if} >
+<div class="buttons"  style="float:left" {if !$parent_list}style="display:none"{/if} >
 
 
 <button title="{$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Next{/t}</button>
-<button style="margin-left:10px" title="{$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Prev{/t}</button>
+<button  title="{$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Prev{/t}</button>
 </div>
 
-<div class="buttons" style="float:left">
+<div class="buttons">
 
 
 
 <button  onclick="window.location='edit_customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>
 
-<button  onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')" ><img src="art/icons/printer.png" alt=""> {t}Address{/t}</button>
-<button style="display:none" id="sticky_note_bis">{t}Sticky Note{/t}</button>
-<button {if $customer->get('Sticky Note')}style="display:none"{/if} id="new_sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
-<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button>
 
 
 <button id="note" ><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button>
 <button id="attach" ><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
 <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button>
+<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button>
+
+<button  onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')" ><img src="art/icons/printer.png" alt=""> {t}Address{/t}</button>
+<button style="display:none" id="sticky_note_bis">{t}Sticky Note{/t}</button>
+<button {if $customer->get('Sticky Note')}style="display:none"{/if} id="new_sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
 
 
 </div>
