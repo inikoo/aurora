@@ -4,7 +4,7 @@
 include_once('common.php');
 include_once('class.Customer.php');
 ?>
-    var Dom   = YAHOO.util.Dom;
+var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_note;
 var dialog_new_sticky_note;
@@ -1528,26 +1528,29 @@ Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Mai
 
 
 <?php
-	foreach($customer->get_other_emails_data() as $key=>$value)
-	printf("Event.addListener('quick_edit_other_email%d', \"dblclick\", dialog_quick_edit_Customer_Email%d.show,dialog_quick_edit_Customer_Email%d , true);", $key, $key, $key);	
+	foreach($customer->get_other_emails_data() as $key=>$value){
+	printf("Event.addListener('quick_edit_other_email%d', \"click\", dialog_quick_edit_Customer_Email%d.show,dialog_quick_edit_Customer_Email%d , true);", $key, $key, $key);	
+	printf("Event.addListener('close_quick_edit_email%d', \"click\", dialog_quick_edit_Customer_Email%d.hide,dialog_quick_edit_Customer_Email%d , true);", $key, $key, $key);	
+	//Event.addListener('close_quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email.hide,dialog_quick_edit_Customer_Main_Email , true);
+	}
 ?>
 
 <?php
 
 	foreach($customer->get_other_telephones_data() as $key=>$value)
-	printf("Event.addListener('quick_edit_other_telephone%d', \"dblclick\", dialog_quick_edit_Customer_Telephone%d.show,dialog_quick_edit_Customer_Telephone%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_telephone%d', \"click\", dialog_quick_edit_Customer_Telephone%d.show,dialog_quick_edit_Customer_Telephone%d , true);", $key, $key, $key);	
 ?>
 
 <?php
 
 	foreach($customer->get_other_mobiles_data() as $key=>$value)
-	printf("Event.addListener('quick_edit_other_mobile%d', \"dblclick\", dialog_quick_edit_Customer_Mobile%d.show,dialog_quick_edit_Customer_Mobile%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_mobile%d', \"click\", dialog_quick_edit_Customer_Mobile%d.show,dialog_quick_edit_Customer_Mobile%d , true);", $key, $key, $key);	
 ?>
 
 <?php
 
 	foreach($customer->get_other_faxes_data() as $key=>$value)
-	printf("Event.addListener('quick_edit_other_fax%d', \"dblclick\", dialog_quick_edit_Customer_FAX%d.show,dialog_quick_edit_Customer_FAX%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_fax%d', \"click\", dialog_quick_edit_Customer_FAX%d.show,dialog_quick_edit_Customer_FAX%d , true);", $key, $key, $key);	
 ?>
 	
 /*
@@ -1579,6 +1582,8 @@ Event.addListener('save_quick_edit_name', "click", save_quick_edit_name, true);
 Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_Name.hide,dialog_quick_edit_Customer_Name , true);
 
 Event.addListener('save_quick_edit_email', "click", save_quick_edit_email, true);
+Event.addListener('close_quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email.hide,dialog_quick_edit_Customer_Main_Email , true);
+
 Event.addListener('save_quick_edit_telephone', "click", save_quick_edit_telephone, true);
 Event.addListener('save_quick_edit_mobile', "click", save_quick_edit_mobile, true);
 Event.addListener('save_quick_edit_fax', "click", save_quick_edit_fax, true);
@@ -1612,6 +1617,8 @@ $email_key,
 $email_key,$email_key,
 $email_key
 );
+
+
 }
 ?>
 

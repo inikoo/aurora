@@ -74,9 +74,9 @@
                     <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
                 </tr>
                 {/if}
-                {if $customer->get('Customer Main Email Key')}<tr><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_email" src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td></tr>{/if}
+                {if $customer->get('Customer Main Email Key')}<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')"><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td><td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
-                    <tr><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"  id="quick_edit_other_email{$key}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td></tr>
+                    <tr id="other_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')"><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td><td><img onMouseover="Dom.setStyle('other_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_email_tr','border-color','#fff')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
                 {/foreach}
                 {if $customer->get('Customer Main Telephone Key')}<tr><td id="main_telephone" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img id="quick_edit_main_telephone" alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td></tr>{/if}
                 {foreach from=$customer->get_other_telephones_data() item=other_tel key=key}
@@ -745,10 +745,7 @@
 
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-		<td colspan=2><div id="Customer_Main_Email_msg"></div></td>
-	<td  colspan=2 id="Customer_Main_Email_msg" class="edit_td_alert"></td>
-	</tr>
+	
 	<tr>
 	<td>{t}Contact Email:{/t}</td>
 	<td>
@@ -757,10 +754,16 @@
 		<div id="Customer_Main_Email_Container"  ></div>
 	</div>	
 	</td>
-
-
 	</tr>
-	<tr><td></td><td><input type="button" id="save_quick_edit_email" value="Save"></td></tr>
+	
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Email_msg" ></span>
+	<button class="positive" id="save_quick_edit_email">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
 	</table>
 
 </div>
@@ -768,10 +771,6 @@
 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
 <div id="dialog_quick_edit_Customer_Email{$key}" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Email{$key}_msg"></div></td>
-	
-	</tr>
 	<tr>
 	<td>{t}Other Email:{/t}</td>
 	<td>
@@ -779,10 +778,15 @@
 	<input type="text" id="Customer_Email{$key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
 	<div id="Customer_Email{$key}_Container"  ></div>
 	</div>	
+	</td></tr>
+	<tr><td  colspan=2 >
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Email{$key}_msg" ></span>
+	<button class="positive" onclick="save_quick_edit_other_email({$key})">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_email{$key}">{t}Cancel{/t}</button>
+	</div>
 	</td>
-
-	</tr>
-	<tr><td></td><td><input type="button" onclick="save_quick_edit_other_email({$key})" value="Save"/></td></tr>
+	</tr>	
 	</table>
 
 </div>
@@ -791,10 +795,6 @@
 
 <div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
 	<table style="margin:10px">
-	<tr colspan=2>
-	<td  colspan=2 ><div id="Customer_Main_Telephone_msg"></div></td>
-	<td   colspan=2 id="Customer_Main_Telephone_msg" class="edit_td_alert"></td>
-	</tr>
 	<tr>
 	<td>{t}Telephone:{/t}</td>
 	<td>
@@ -802,8 +802,14 @@
 	<input type="text" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
 	<div id="Customer_Main_Telephone_Container"></div>
 	</div>	
-	</td>
-
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Telephone_msg" ></span>
+	<button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button>
+	<button class="negative" id="">{t}Cancel{/t}</button>
+	</div>
+	
 	</tr>
 	<tr><td></td><td><input type="button" id="save_quick_edit_telephone" value="Save"></td></tr>
 	</table>
