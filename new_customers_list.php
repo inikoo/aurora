@@ -33,6 +33,7 @@ $css_files=array(
 
                'common.css',
                'container.css',
+               'button.css',
                'table.css'
            );
 include_once('Theme.php');
@@ -251,7 +252,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Go back').' &#8617;');
 
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('options_box_width','550px');
 
 

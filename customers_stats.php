@@ -1,9 +1,5 @@
 <?php
 /*
- File: customers.php 
-
- UI customers page
-
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
@@ -44,7 +40,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 		 $css_files=array(
@@ -91,74 +87,6 @@ $smarty->assign('js_files',$js_files);
 
 
 
-
-
-//$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
-
-
-
-
-// $home_country='United Kingdom';
-// $home_informal_name=_('the UK');
-
-
-// $sql="select sum(total_net+total_net_nd) as total_net from customer    ";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $total_net=$row['total_net'];
-//  }
-// $sql="select sum(total_net+total_net_nd) as total_net from customer  left join contact on (contact_id=contact.id) left join address on (main_address=address.id) where country!='$home_country'";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $export_total_net=$row['total_net'];
-//  }
-
-// //print "$total_net $export_total_net";
-
-
-// $total_net_80p=.8*$total_net;
-
-// $sql="select (total_net+total_net_nd) as total_net from customer order by (total_net+total_net_nd) desc";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-
-// $top_customers=1;$_total_net=0;
-
-// while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $_total_net+=$row['total_net'];
-//   if($_total_net>$total_net_80p){
-//     break;
-//   }
-//   $top_customers++;
-
-//  }
-
-// $overview_text=translate("%1\$s customers (%2\$s%\) are responsable for 80%% of the sales.",$top_customers,percentage($top_customers,$total_customers));
-// $smarty->assign('top_text',$overview_text);
-
-
-
-// $export_customers=0;
-// $sql="select count(*) as export_customers from customer left join contact on (contact_id=contact.id) left join address on (main_address=address.id) where   contact_id>0 and (num_invoices+num_invoices_nd)>0 and country!='$home_country'";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// $new_customers=0;
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $export_customers=$row['export_customers'];
-//  }
-// $domestic_customers=$total_customers-$export_customers;
-
-// $percentage_domestic=percentage($domestic_customers,$total_customers);
-// $countries=0;
-// $sql="select count(*) as countries from customer left join contact on (contact_id=contact.id) left join address on (main_address=address.id) where country!='$home_country' group by country";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// $countries=mysql_num_rows($result);
-
-// $continents=0;
-// 		      $sql="select country,continent from customer left join contact on (contact_id=contact.id) left join address on (main_address=address.id) left join list_country on (list_country.name=country) where country!='United Kingdom' group by continent";
-
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// $continents=mysql_num_rows($result);
-
-// $export_text=translate("%1\$s are based in $home_informal_name, the other %2\$s customers (%3\$s%\ of sales)  are distributed over %4\$s countries and %5\$s continents.",$percentage_domestic,$export_customers,percentage($export_total_net,$total_net),$countries,$continents);
  $smarty->assign('view',$_SESSION['state']['customers']['stats_view']);
 
 

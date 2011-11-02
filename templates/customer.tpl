@@ -10,33 +10,22 @@
 
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-
-
-<img onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="float:left;height:22px;cursor:pointer{if !$parent_list}display:none{/if};position:relative;top:2px" />
-
-<img   title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};;position:relative;top:2px"/ >
-
-<div class="buttons" style="float:right">
-
-
-<button  onclick="window.location='edit_customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>
-
-
-
-<button id="note" ><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button>
-<button id="attach" ><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
-<button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button>
-<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button>
-
-<button  onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')" ><img src="art/icons/printer.png" alt=""> {t}Address{/t}</button>
-<button style="display:none" id="sticky_note_bis">{t}Sticky Note{/t}</button>
-<button {if $customer->get('Sticky Note')}style="display:none"{/if} id="new_sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
-
-
-</div>
-
-
-<div style="clear:both"></div>
+    <img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="margin-right:10px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" />
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+    <img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px"/ >
+    <div class="buttons" style="float:right">
+        <button  onclick="window.location='edit_customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>
+        <button id="note" ><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button>
+        <button id="attach" ><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
+        <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button>
+        <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button>
+        <button  onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')" ><img src="art/icons/printer.png" alt=""> {t}Address{/t}</button>
+        <button style="display:none" id="sticky_note_bis">{t}Sticky Note{/t}</button>
+        <button {if $customer->get('Sticky Note')}style="display:none"{/if} id="new_sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 
