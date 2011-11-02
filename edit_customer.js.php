@@ -71,7 +71,8 @@ var Dom   = YAHOO.util.Dom;
 var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 var dialog_other_field_label;
 var dialog_comment;
-
+var dialog_set_password_main;
+var dialog_set_password_;
 //  	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
 
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
@@ -1192,7 +1193,7 @@ reset_address(false,'billing_')
 
 
 function change_comment(o,type,key){
-
+alert('type:'+type+' key:'+key)
  var pos = Dom.getXY(o);
  
 
@@ -1287,7 +1288,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 function save_comment(){
 
-
+alert(Dom.get('comment_scope').value);return;
 
 var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').value;
 
@@ -1298,7 +1299,7 @@ var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').va
 
 
 var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
-
+alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	//	alert(o.responseText)

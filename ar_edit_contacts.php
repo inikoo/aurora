@@ -263,6 +263,8 @@ case('edit_customer_field'):
     $response=edit_customer_field($data['customer_key'],$data['key'],array('value'=>$data['newvalue'],'okey'=>$data['key']));
     echo json_encode($response);
     break;
+	
+case('edit_billing_quick'):
 case('edit_billing_data'):
 
 
@@ -275,7 +277,7 @@ case('edit_billing_data'):
     edit_customer($data);
     break;
 
-
+case('edit_customer_quick'):
 case('edit_customer'):
 
     $data=prepare_values($_REQUEST,array(
