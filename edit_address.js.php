@@ -276,8 +276,8 @@ success:function(o) {
                 display_element[1].setAttribute('onCLick',"delete_address("+r.address_key+",{type:'billing',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
                 display_element[2].setAttribute('onCLick',"display_edit_billing_address("+r.address_key+",'"+address_prefix+"')");
 
-
-                Dom.get(address_prefix+'address_showcase').appendChild();
+				//alert(address_prefix+'address_showcase');
+                Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
 
 
 

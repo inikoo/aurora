@@ -34,7 +34,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 $customer=new customer($customer_id);
 //print $customer->get('Customer Type');
 $smarty->assign('customer_type',$customer->get('Customer Type'));
-
+//print_r($customer);
 
 $smarty->assign('other_email_count',count($customer->get_other_emails_data()));
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){

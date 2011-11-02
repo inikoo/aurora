@@ -844,6 +844,16 @@ function save_edit_general_bulk(branch) {
            // alert(items)
             data_to_update[item_name]={'okey':items,'value':item_input.value}
         }
+		else if(!validate_scope_data[branch][items].changed){
+			if(branch=='customer_quick' || branch=='billing_quick'){
+				eval('dialog_quick_edit_'+validate_scope_data[branch][items].name).hide();
+			}
+		}
+		
+		if(branch=='customer_quick' || branch=='billing_quick'){
+			//change_comment();
+			//save_comment();
+		}
     }
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
@@ -851,7 +861,7 @@ var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonifi
 //alert(request);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-  //alert(o.responseText);
+  alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
@@ -870,19 +880,20 @@ success:function(o) {
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
-						//alert('dialog_quick_edit_'+validate_scope_data[branch][r.key].name)
-						Dom.setStyle('dialog_quick_edit_'+validate_scope_data[branch][r.key].name,'visibility','false')
-						//dialog_quick_edit_'+validate_scope_data[branch][r.key].name.show=false;
+
+						
+						//alert(branch)
                         post_item_updated_actions(branch,r);
 
 
                     } 
                     else {
-
+						//alert(branch)
+						
                         validate_scope_data[branch][r.key].changed=true;
                         validate_scope_data[branch][r.key].validated=false;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;
-
+						post_item_updated_actions(branch,r);
                     }
                     
              

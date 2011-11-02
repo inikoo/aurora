@@ -50,7 +50,7 @@
             {/if}
         <td  valign="top">
             <table border=0 style="padding:0">
-                            {if $customer->get('Customer Tax Number')}<tr><td id="main_name" colspan=2  class="aright">{$customer->get('Customer Tax Number')}</td ><td><img id="quick_edit_name" alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td></tr>{/if}
+                            {if $customer->get('Customer Tax Number')}<tr id="tax_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_tax','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')"><td id="main_name" colspan=2  class="aright">{$customer->get('Customer Tax Number')}</td ><td><img id="quick_edit_name" alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td><td  ><img onMouseover="Dom.setStyle('tax_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('tax_tr','border-color','#fff')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
 
             
                 {if $customer->get('Customer Main Contact Key')}
@@ -60,7 +60,7 @@
                     <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
                 </tr>
                 {/if}
-                {if $customer->get('Customer Main Email Key')}<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')"><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td><td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
+                {if $customer->get('Customer Main Email Key')}<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')"><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td id="email_label{$customer->get('Customer Main Email Key')}"style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td><td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
                     <tr id="other_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')"><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td style="color:#777;font-size:80%">{$other_email.label}</td><td><img onMouseover="Dom.setStyle('other_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_email_tr','border-color','#fff')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
                 {/foreach}
@@ -679,6 +679,30 @@
   </div>
 </div>
 
+<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
+<input type="hidden" value="" id="Customer_Fiscal_Name">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Contact Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
+	<div id="Customer_Tax_Number_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span  id="Customer_Tax_Number_msg" class="edit_td_alert"></span>
+	<button class="positive" id="save_quick_edit_tax_number">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_tax_number">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
 
 <div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
 	<table style="margin:10px">
@@ -732,6 +756,18 @@
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
 	
+	
+	{if $customer->get_principal_email_comment()}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Email_comment" value="{$customer->get_principal_email_comment()}" ovalue="{$customer->get_principal_email_comment()}" valid="0">
+		<div id="Customer_Main_Email_comment_Container"  ></div>
+	</div>	
+	</td>
+	</tr>
+	{/if}
 	<tr>
 	<td>{t}Contact Email:{/t}</td>
 	<td>
@@ -757,6 +793,17 @@
 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
 <div id="dialog_quick_edit_Customer_Email{$key}" style="padding:10px">
 	<table style="margin:10px">
+	{if $other_email.label}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Email{$key}_comment" value="{$other_email.label}" ovalue="{$other_email.label}" valid="0">
+	<div id="Customer_Email{$key}_comment_Container"  ></div>
+	</div>	
+	</td></tr>
+	{/if}
+	
 	<tr>
 	<td>{t}Other Email:{/t}</td>
 	<td>
@@ -781,6 +828,16 @@
 
 <div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
 	<table style="margin:10px">
+	{if $customer->get_principal_telecom_comment('Telephone')}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Telephone_comment" value="{$customer->get_principal_telecom_comment('Telephone')}" ovalue="{$customer->get_principal_telecom_comment('Telephone')}" valid="0">
+	<div id="Customer_Main_Telephone_comment_Container"></div>
+	</div>	
+	</td></tr>
+	{/if}
 	<tr>
 	<td>{t}Telephone:{/t}</td>
 	<td>
@@ -804,7 +861,16 @@
 {foreach from=$customer->get_other_telephones_data() item=other_telephone key=key}
 <div id="dialog_quick_edit_Customer_Telephone{$key}" style="padding:10px">
 	<table style="margin:10px">
-
+	{if $other_tel.label}
+	<tr>
+	<td>{t}Other Telephone:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Telephone{$key}_comment" value="{$other_tel.label}" ovalue="{$other_tel.label}" valid="0">
+	<div id="Customer_Telephone{$key}_comment_Container"></div>
+	</div>
+	</td></tr>
+	{/if}
 	<tr>
 	<td>{t}Other Telephone:{/t}</td>
 	<td>
@@ -828,7 +894,16 @@
 <div id="dialog_quick_edit_Customer_Main_Mobile" style="padding:10px">
 	<table style="margin:10px">
 
-	
+	{if $customer->get_principal_telecom_comment('Mobile')}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Mobile_comment" value="{$customer->get_principal_telecom_comment('Mobile')}" ovalue="{$customer->get_principal_telecom_comment('Mobile')}" valid="0">
+	<div id="Customer_Main_Mobile_comment_Container"></div>
+	</div>	
+	</td></tr>
+	{/if}
 	<tr>
 	<td>{t}Mobile:{/t}</td>
 	<td>
@@ -852,7 +927,17 @@
 {foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key}
 <div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
 	<table style="margin:10px">
-
+	{if $other_mobile.label}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Mobile{$key}_comment" value="{$other_mobile.label}" ovalue="{$other_mobile.label}" valid="0">
+	<div id="Customer_Mobile{$key}_comment_Container"></div>
+	</div>
+	</td></tr>
+	{/if}
+	
 	<tr>
 	<td>{t}Other Mobile:{/t}</td>
 	<td>
@@ -877,7 +962,17 @@
 
 <div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
 	<table style="margin:10px">
-
+	{if $customer->get_principal_telecom_comment('FAX')}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_FAX_comment" value="{$customer->get_principal_telecom_comment('FAX')}" ovalue="{$customer->get_principal_telecom_comment('FAX')}" valid="0">
+	<div id="Customer_Main_FAX_comment_Container"></div>
+	</div>	
+	</td></tr>
+	{/if}
+	
 	<tr>
 	<td>{t}Fax:{/t}</td>
 	<td>
@@ -903,6 +998,17 @@
 <div id="dialog_quick_edit_Customer_FAX{$key}" style="padding:10px">
 	<table style="margin:10px">
 
+	{if $other_fax.label}
+	<tr>
+	<td>{t}Comment:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_FAX{$key}_comment" value="{$other_fax.label}" ovalue="{$other_fax.label}" valid="0">
+	<div id="Customer_FAX{$key}_comment_Container"></div>
+	</div>	
+	</td></tr>
+	{/if}
+	
 	<tr>
 	<td>{t}Other FAX:{/t}</td>
 	<td>
@@ -947,5 +1053,20 @@
     </div>
  </div>
 
+ <div id="dialog_comment">
+  <div id="comment_msg"></div>
+    <input type="hidden" value="" id="comment_scope"/>
+
+  <input type="hidden" value="" id="comment_scope_key"/>
+  <input type="hidden" value="" id="comment"/>
+  
+  
+    <input type="hidden" value="{$customer->get_principal_telecom_comment('Telephone')}" id="comment_telephone"/>
+        <input type="hidden" value="{$customer->get_principal_telecom_comment('FAX')}" id="comment_fax"/>
+    <input type="hidden" value="{$customer->get_principal_telecom_comment('Mobile')}" id="comment_mobile"/>
+    <input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email"/>
+
+</div>
+ 
 {include file='footer.tpl'}
 
