@@ -1,5 +1,6 @@
 <?php
 include_once('class.Category.php');
+include_once('class.Store.php');
 
 include_once('common.php');
 include_once('assets_header_functions.php');

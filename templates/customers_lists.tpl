@@ -9,7 +9,9 @@
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:15px">
 
-
+  <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
 
 
 <div class="buttons">

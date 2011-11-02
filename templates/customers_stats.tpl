@@ -5,7 +5,17 @@
 <div> 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Statistics{/t}</span>
 </div>
-<h2 style="clear:left">{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
+ <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+ 
+    <div style="clear:both"></div>
+</div>
+
+
+
+<h2 style="clear:left">{t}Customers Statistics{/t} <span class="id">{$store->get('Store Code')}</span></h2>
 
 
 </div>

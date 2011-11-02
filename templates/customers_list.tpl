@@ -5,19 +5,26 @@
 <div> 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; {$customer_list_name}</span>
 </div>
+ <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+  <div class="buttons">
+      <button onclick="window.location='edit_customers.php?list_key={$customer_list_id}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers{/t}</button>
+     
+      </div>
+    <div style="clear:both"></div>
+</div>
 
 
 
 
 
 
- <div id="the_table" class="data_table" style="clear:both">
+ <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <div>
       <span class="clean_table_title">{t}Customers List{/t} <span class="id">{$customer_list_name}</span></span>
-      <div class="buttons">
-      <button onclick="window.location='edit_customers.php?list_key={$customer_list_id}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers{/t}</button>
-      <div style="clear:both"></div>
-      </div>
+    
  
   <div style="clear:both;margin:2px 0 0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >

@@ -1,23 +1,34 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
-
-
-
-      <h2 style="clear:left">{t}New Customers List{/t} ({$store->get('Store Code')})</h2>
-      
-      
-<div style="clear:both;border:1px solid #ccc;padding:20px;width:870px">
 <input type="hidden" id="store_id" value="{$store->id}">
 <input type="hidden" id="auto" value="{if $auto==1}1{else}0{/if}">
 {foreach from=$v_calpop key=key item=item}
 <input type="hidden" id="v_calpop" cat={$key} value={$item}>
 {/foreach}
-
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
-      <table >
-	<form>
-		<tr><td colspan="2"><b>{t}Contacts who...{/t}</b></td></tr>
+
+<div> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; {t}New List{/t}</span>
+</div>
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+  <div class="buttons">
+      <button class="negative" onclick="window.location='customers_lists.php?store={$store->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Close{/t}</button>
+     
+      </div>
+    <div style="clear:both"></div>
+</div>
+
+
+<h1 >{t}New Customers List{/t} <span class="id">{$store->get('Store Code')}</span></h1>
+<table >
+
+	<tr>
+	<td colspan="2"><b>{t}Contacts who...{/t}</b></td>
+	</tr>
       <tr>
         <td>{t}Register between{/t}:</td>
         <td>
@@ -124,7 +135,7 @@
         </td>
       </tr>
      
-	 <br/>
+	
 	 <tr><td colspan="2"><b>{t}Customer Stats{/t}</b></td></tr>
 	 
 	<tr>
@@ -207,32 +218,23 @@
       </tr>
 	  
       </table>
-      </form>
-       </table>
-</div> 
-<div style="padding:20px;width:890px;xtext-align:right">
+<div style="border-top:1px solid #ccc">
 <div id="save_dialog" style="width:600px;float:left;visibility:hidden">
  <div id="the_div" style="xdisplay:none;">    
 	{t}Enter list name{/t} : <input type="text" name="list_name" id="list_name"> &nbsp;&nbsp;{t}Select List Type{/t} : <input type="radio" name="type" checked="checked" id="static" value="Static">&nbsp;{t}Static{/t} &nbsp;&nbsp;<input type="radio" name="type"  id="dynamic" value="Dynamic">&nbsp;{t}Dynamic{/t}
       </div>
 <div id="save_list_msg"></div>
 </div>
-<div style="float:left">
-      <span  style="display:none;margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="save_list"  >{t}Save List{/t}</span>
-      <span  style="display:none;margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="modify_search" >{t}Redo List{/t}</span>
-      <span  style="margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="submit_search">{t}Create List{/t}</span>
+<div class="buttons">
+      <button  style="display:none;" id="save_list"  >{t}Save List{/t}</button>
+      <button  style="display:none;" id="modify_search" >{t}Redo List{/t}</button>
+      <button  id="submit_search">{t}Create List{/t}</button>
 </div>
 </div>
-
-
-
-
-    <div style="padding:30px 40px;display:none" id="searching">
+<div style="padding:30px 40px;display:none" id="searching">
 	{t}Search in progress{/t} <img style="margin-left:20px;position:relative;top:5px "src="art/progressbar.gif"/>
     </div>
-
-    
-    <div id="the_table" class="data_table" style="margin-top:20px;clear:both;{if $auto==0}display:none{/if}" >
+<div id="the_table" class="data_table" style="margin-top:20px;clear:both;{if $auto==0}display:none{/if}" >
     <span class="clean_table_title">Customers List</span>
  <div id="table_type">
          <a  style="float:right"  class="table_type state_details"  href="customers_lists_csv.php" >{t}Export (CSV){/t}</a>
@@ -267,19 +269,9 @@
 
 
 </div>		
-
-    </div>
-
-<div id="rppmenu0" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
-      {/foreach}
-    </ul>
-  </div>
 </div>
+
+
 
 
 
@@ -371,6 +363,16 @@
     </div>
  </div>
  
+ <div id="rppmenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
  
    <div id="filtermenu3" class="yuimenu">
   <div class="bd">
@@ -414,7 +416,6 @@
     </ul>
   </div>
 </div>
-
   <div id="filtermenu5" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">

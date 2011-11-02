@@ -164,7 +164,7 @@ $smarty->assign('store_id',$store->id);
 
 
 $smarty->assign('subject','Customer');
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
 $smarty->assign('store_id',$store_id);
 $smarty->assign('options_box_width','600px');
