@@ -30,12 +30,10 @@
 
 
 
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-  </div>
 
 <div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">{$recent_merges}</div>
 
-  <ul class="tabs" id="chooser_ul" style="clear:both">
+<ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Customer Details{/t}</span></span></li>
  {if $customer_type=='Company'}
     <li> <span class="item {if $edit=='company'}selected{/if}" style="display:none"  id="company">  <span> {t}Company Details{/t}</span></span></li>
@@ -49,8 +47,7 @@
 	<li> <span class="item {if $edit=='password'}selected{/if}"  id="password" style="display:">  <span> {t}User Site{/t}</span></span></li>
 	{/if}
   </ul>
-  
- <div class="tabbed_container" > 
+<div class="tabbed_container" > 
  
  {if $site_customer}
  <div  class="edit_block" style="{if $edit!="password"}display:none{/if};min-height:260px"  id="d_password">
@@ -396,7 +393,8 @@
 		    <span class="radio{if $customer_type=='Person'} selected{/if}"  id="radio_shelf_type_{$customer_type}" radio_value="{$customer_type}">{t}Person{/t}</span> 
 
 		 </div>
-
+</td>
+</tr>
 
 
 		 
@@ -420,10 +418,6 @@
    </td>
    <td id="Customer_Registration_Number_msg"  class="edit_td_alert"></td>
  </tr>
- 
- 
- 
-
  <tr ><td  class="label" >{t}Contact Name{/t}:</td>
    <td  style="text-align:left;">
      <div   >
@@ -434,8 +428,6 @@
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
 
-
- 
  <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}xxx{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
@@ -452,7 +444,10 @@
 
 
  {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
-  <tr  id="tr_other_email{$other_email_key}"><td  class="label">{if $other_email_login_handle[$other_email.email] == $other_email.email}xxx{/if}<img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:<span></td>
+  <tr  id="tr_other_email{$other_email_key}">
+  <td  class="label">
+  {if $other_email_login_handle[$other_email.email] == $other_email.email}xxx{/if}<img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span>
+  </td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0">
@@ -462,6 +457,7 @@
    <td>
    <span id="Customer_Email{$other_email_key}_msg" class="edit_td_alert"></span>
    </td>
+ 
  </tr>
 {/foreach}
 
@@ -495,7 +491,9 @@
  
  
   {foreach from=$customer->get_other_telephones_data() key=other_telephone_key item=other_telephone }
- <tr  id="tr_other_telephone{$other_telephone_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',{$other_telephone_key})">  <span id="tr_other_telephone_label{$other_telephone_key}">{if $other_telephone.label==''}{t}Other Telephone{/t}{else}{$other_telephone.label} (Telephone){/if}:<span></td>
+ <tr  id="tr_other_telephone{$other_telephone_key}">
+ <td  class="label">
+ <img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',{$other_telephone_key})">  <span id="tr_other_telephone_label{$other_telephone_key}">{if $other_telephone.label==''}{t}Other Telephone{/t}{else}{$other_telephone.label} (Telephone){/if}:</span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Telephone{$other_telephone_key}" value="{$other_telephone.xhtml}" ovalue="{$other_telephone.xhtml}" valid="0">
@@ -540,7 +538,7 @@
  
  
    {foreach from=$customer->get_other_mobiles_data() key=other_mobile_key item=other_mobile }
- <tr  id="tr_other_mobile{$other_mobile_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'mobile',{$other_mobile_key})">  <span id="tr_other_mobile_label{$other_mobile_key}">{if $other_mobile.label==''}{t}Other Mobile{/t}{else}{$other_mobile.label} (Mobile){/if}:<span></td>
+ <tr  id="tr_other_mobile{$other_mobile_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'mobile',{$other_mobile_key})">  <span id="tr_other_mobile_label{$other_mobile_key}">{if $other_mobile.label==''}{t}Other Mobile{/t}{else}{$other_mobile.label} (Mobile){/if}:</span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Mobile{$other_mobile_key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0">
@@ -578,7 +576,7 @@
  </tr>
 
  {foreach from=$customer->get_other_faxes_data() key=other_fax_key item=other_fax }
- <tr  id="tr_other_fax{$other_fax_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'fax',{$other_fax_key})">  <span id="tr_other_fax_label{$other_fax_key}">{if $other_fax.label==''}{t}Other Fax{/t}{else}{$other_fax.label} (Fax){/if}:<span></td>
+ <tr  id="tr_other_fax{$other_fax_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'fax',{$other_fax_key})">  <span id="tr_other_fax_label{$other_fax_key}">{if $other_fax.label==''}{t}Other Fax{/t}{else}{$other_fax.label} (Fax){/if}:</span></td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_FAX{$other_fax_key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0">

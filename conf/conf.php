@@ -2506,7 +2506,9 @@ $default_state=array(
 
 
 
-
+'preferences'=>array(
+                'view'=>'color'
+),
 
                    'site'=>array(
 

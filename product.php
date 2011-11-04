@@ -1,14 +1,14 @@
 <?php
 /*
- File: product.php 
+ File: product.php
 
  UI product page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Inikoo 
- 
+
+ Copyright (c) 2009, Inikoo
+
  Version 2.0
 */
 include_once('common.php');
@@ -21,52 +21,55 @@ $smarty->assign('page',$page);
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-
-		
-		 'container.css',
-		 'button.css'
-		 );
-include_once('Theme.php');
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-debug.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/php.default.min.js',
-		'js/common.js',
-		'js/table_common.js',
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-debug.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'js/php.default.min.js',
+              'js/common.js',
+              'js/table_common.js',
 
-		'js/dropdown.js'
-		);
-
-
+              'js/dropdown.js'
+          );
 
 
-if(isset($_REQUEST['code'])){
-  $mode='code';
-  $tag=$_REQUEST['code'];
- }elseif(isset($_REQUEST['pid'])){
-  $mode='pid';
-  $tag=$_REQUEST['pid'];
-  
- 
-  
-  
- }elseif(isset($_REQUEST['key'])){
-  $mode='key';
-  $tag=$_REQUEST['key'];
-  }else{
-  $tag=$_SESSION['state']['product']['tag'];
-  $mode=$_SESSION['state']['product']['mode'];
- }
+
+
+if (isset($_REQUEST['code'])) {
+    $mode='code';
+    $tag=$_REQUEST['code'];
+}
+elseif(isset($_REQUEST['pid'])) {
+    $mode='pid';
+    $tag=$_REQUEST['pid'];
+
+
+
+
+}
+elseif(isset($_REQUEST['key'])) {
+    $mode='key';
+    $tag=$_REQUEST['key'];
+}
+else {
+    $tag=$_SESSION['state']['product']['tag'];
+    $mode=$_SESSION['state']['product']['mode'];
+}
 $_SESSION['state']['product']['tag']=$tag;
 $_SESSION['state']['product']['mode']=$mode;
 
@@ -74,64 +77,67 @@ $_SESSION['state']['product']['orders']['mode']=$mode;
 $_SESSION['state']['product']['customers']['mode']=$mode;
 
 
-if($mode=='pid'){
- if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
-  header('Location: edit_product.php?pid='.$tag);
-  exit();
-  }
+if ($mode=='pid') {
+    if (isset($_REQUEST['edit']) and $_REQUEST['edit']) {
+        header('Location: edit_product.php?pid='.$tag);
+        exit();
+    }
 
-}elseif($mode=='code'){
-  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s  and `Product Store Key` in (%s)   ;"
-	       ,prepare_mysql($tag)
-	       ,join(',',$user->stores)
-	       );
+}
+elseif($mode=='code') {
+    $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s  and `Product Store Key` in (%s)   ;"
+                 ,prepare_mysql($tag)
+                 ,join(',',$user->stores)
+                );
 
-  $result=mysql_query($sql);
-  //print $sql;
-  
-  if(mysql_num_rows($result)>1){
-    $_SESSION['state']['product']['server']['tag']=$tag;
-    $js_files[]= 'js/search.js';
-   // $js_files[]='product.js.php'; 
-    $js_files[]='product_server.js.php'; 
-    $smarty->assign('css_files',$css_files);
-    $smarty->assign('js_files',$js_files);
-    $smarty->assign('code',$tag);
-    
-    
-    $smarty->assign('search_label',_('Products'));
-    $smarty->assign('search_scope','products');
-    $smarty->display('product_server.tpl');
-     mysql_free_result($result);
-    exit;
-  }elseif(mysql_num_rows($result)==0){
-  
-  header('Location: index.php');
-   exit;
-  
-  }else{
-  
-  
-  
-  $row=mysql_fetch_array($result, MYSQL_ASSOC);
-  mysql_free_result($result);
-     $tag=$row['Product ID'];
-     $mode='pid';
-     $_SESSION['state']['product']['tag']=$tag;
-     $_SESSION['state']['product']['mode']=$mode;
-  
-  }
-  
-} 
-    
-   
+    $result=mysql_query($sql);
+    //print $sql;
+
+    if (mysql_num_rows($result)>1) {
+        $_SESSION['state']['product']['server']['tag']=$tag;
+        $js_files[]= 'js/search.js';
+        // $js_files[]='product.js.php';
+        $js_files[]='product_server.js.php';
+        $smarty->assign('css_files',$css_files);
+        $smarty->assign('js_files',$js_files);
+        $smarty->assign('code',$tag);
+
+
+        $smarty->assign('search_label',_('Products'));
+        $smarty->assign('search_scope','products');
+        $smarty->display('product_server.tpl');
+        mysql_free_result($result);
+        exit;
+    }
+    elseif(mysql_num_rows($result)==0) {
+
+        header('Location: index.php');
+        exit;
+
+    }
+    else {
+
+
+
+        $row=mysql_fetch_array($result, MYSQL_ASSOC);
+        mysql_free_result($result);
+        $tag=$row['Product ID'];
+        $mode='pid';
+        $_SESSION['state']['product']['tag']=$tag;
+        $_SESSION['state']['product']['mode']=$mode;
+
+    }
+
+}
+
+
 
 $product= new product($mode,$tag);
 
-if($user->data['User Type']=='Supplier'){
-$data=array_pop($product->get_part_list());
-header('Location: part.php?id='.$data['Part SKU']);
-exit;
+if ($user->data['User Type']=='Supplier') {
+    $data=array_pop($product->get_part_list());
+    header('Location: part.php?id='.$data['Part SKU']);
+    exit;
 }
 
 
@@ -196,8 +202,8 @@ $smarty->assign('store_id',$store->id);
 
 $display=$_SESSION['state']['product']['display'];
 
-if($product->data['Product First Sold Date']==''){
- // dont display_plot
+if ($product->data['Product First Sold Date']=='') {
+// dont display_plot
 
 }
 
@@ -211,22 +217,22 @@ $smarty->assign('data',$product->data);
 get_header_info($user,$smarty);
 
 $general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
+if ($modify)
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
 $smarty->assign('general_options_list',$general_options_list);
 
 $web_status_error=false;
 $web_status_error_title='';
- if($product->get('Product Web Configuration')=='Online For Sale'){
-   if(!($product->get('Product Availability')>0)){
-     $web_status_error=true;
-     $web_status_error_title=_('This product is out of stock');
-   }
-  }else{
-   if($product->get('Product Availability')>0){
-       $web_status_error=true;
-       $web_status_error_title=_('This product is not for sale on the webpage');
-   }
+if ($product->get('Product Web Configuration')=='Online For Sale') {
+    if (!($product->get('Product Availability')>0)) {
+        $web_status_error=true;
+        $web_status_error_title=_('This product is out of stock');
+    }
+} else {
+    if ($product->get('Product Availability')>0) {
+        $web_status_error=true;
+        $web_status_error_title=_('This product is not for sale on the webpage');
+    }
 }
 
 $smarty->assign('web_status_error',$web_status_error);
@@ -289,31 +295,30 @@ $smarty->assign('filter_value0',$_SESSION['state']['product']['customers']['f_va
 $sql=sprintf("select * from `Product Page Bridge` where `Product ID`=%d", $product->pid);
 //print $sql;
 $result=mysql_query($sql);
-if($row=mysql_fetch_array($result)){
-	$page_key=$row['Page Key'];
-	$type=$row['Type'];
-	
-	$sql=sprintf("select `Page URL` from `Page Dimension` where `Page Key`=%d", $page_key);
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result))
-		$url=$row['Page URL'];
-	
-	$web_site=array('url'=>$url, 'type'=>$type, 'available'=>true);
-	
-}
-else
-	$web_site=array('available'=>false);
-	
-$smarty->assign('web_site',$web_site);	
+if ($row=mysql_fetch_array($result)) {
+    $page_key=$row['Page Key'];
+    $type=$row['Type'];
+
+    $sql=sprintf("select `Page URL` from `Page Dimension` where `Page Key`=%d", $page_key);
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result))
+        $url=$row['Page URL'];
+
+    $web_site=array('url'=>$url, 'type'=>$type, 'available'=>true);
+
+} else
+    $web_site=array('available'=>false);
+
+$smarty->assign('web_site',$web_site);
 
 $filter_menu=array(
-		   'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
-		   'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
-		   'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                 'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+                 'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
 
-		   
-		   );
-		   
+
+             );
+
 
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);

@@ -33,10 +33,10 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
-if($store->id){
-$_SESSION['state']['customers']['store']=$store->id;
-}else{
- header('Location: index.php?error=store_not_found');
+if ($store->id) {
+    $_SESSION['state']['customers']['store']=$store->id;
+} else {
+    header('Location: index.php?error=store_not_found');
     exit();
 }
 
@@ -49,36 +49,36 @@ $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 $modify=$user->can_edit('customers');
 
-if(preg_match('/es_es/i',  $lc_messages_locale)){
+if (preg_match('/es_es/i',  $lc_messages_locale)) {
 
-$overview_text=sprintf("Tenemos %s contactos de los cuales %s son contactos activos. La semana pasada adquirimos %s nuevos clientes. Ellos representan un %s de todos los contactos activos."
- ,$store->get('Contacts')
-			 ,$store->get('Active Contacts')
-			 ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
-			  ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
-);
-}else{
-$s='';
-if($store->data['Store Total Users'])
-	$s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->get('Active Contacts')));
+    $overview_text=sprintf("Tenemos %s contactos de los cuales %s son contactos activos. La semana pasada adquirimos %s nuevos clientes. Ellos representan un %s de todos los contactos activos."
+                           ,$store->get('Contacts')
+                           ,$store->get('Active Contacts')
+                           ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
+                           ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
+                          );
+} else {
+    $s='';
+    if ($store->data['Store Total Users'])
+        $s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->get('Active Contacts')));
 
-$overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
-			 $store->get('Contacts')
-			 ,$store->get('Active Contacts')
-			 ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
+    $overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
+                           $store->get('Contacts')
+                           ,$store->get('Active Contacts')
+                           ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
 
-			 ,$store->get('New Contacts')
-		       ,ngettext('customer','customers',$store->data['Store New Contacts'])
-		       ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
-			   ,$s
-		       )
-;
+                           ,$store->get('New Contacts')
+                           ,ngettext('customer','customers',$store->data['Store New Contacts'])
+                           ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
+                           ,$s
+                          )
+                   ;
 }
 
- $smarty->assign('overview_text',$overview_text);
- 
- 
- 
+$smarty->assign('overview_text',$overview_text);
+
+
+
 
 
 
@@ -97,7 +97,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'
 //$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 if ($modify) {
-	$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'customer_store_configuration.php','label'=>_('Customer Store Configuration'));
+    $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'customer_store_configuration.php','label'=>_('Customer Store Configuration'));
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit'));
     $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_customer','label'=>_('Add'));
 }
@@ -117,14 +117,14 @@ $smarty->assign('search_scope','customers');
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-             
+               'common.css',
+               'container.css',
                'button.css',
-               'container.css'
+               'table.css',
+               'theme.css.php'
+
            );
-include_once('Theme.php');
 
 $js_files=array(
               $yui_path.'utilities/utilities.js',

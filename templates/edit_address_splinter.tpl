@@ -88,7 +88,7 @@
     </td>
   </tr>
     <tr id="{$address_identifier}tr_address_postal_code">
-    <td    id="{$address_identifier}label_address_postal_code"     class="label" >{t}Postal Code{/t}:<img  id="{$address_identifier}address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+    <td    id="{$address_identifier}label_address_postal_code"     class="label" ><img  id="{$address_identifier}address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Postal Code{/t}:
     </td>
     <td  style="text-align:left">
     <div >

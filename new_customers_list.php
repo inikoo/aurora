@@ -21,22 +21,22 @@ if (! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
     exit;
 }
 
+
 $store=new Store($store_id);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-                              $yui_path.'assets/skins/sam/autocomplete.css',
-
+               $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',
                'button.css',
-               'table.css'
+               'table.css',
+
+               'theme.css.php'
            );
-include_once('Theme.php');
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -80,17 +80,22 @@ $smarty->assign('have_options',$have_options);
 
 
 $customer_stat=array();
-$customer_stat=array('losing'=>array('name'=>_('Losing')));
 
 if(isset($_REQUEST['active']) && $_REQUEST['active']==1)
 	  $customer_stat['active']=array('name'=>_('Active'),'selected'=>true);
 else
 	  $customer_stat['active']=array('name'=>_('Active'));
+
+
+$customer_stat['losing']=array('name'=>_('Losing Activity'));
+
 	  
 if(isset($_REQUEST['lost']) && $_REQUEST['lost']==1)  
 		$customer_stat['lost']=array('name'=>_('Lost'),'selected'=>true);
 else
 		$customer_stat['lost']=array('name'=>_('Lost'));
+
+
 
 
 $smarty->assign('customer_stat',$customer_stat);

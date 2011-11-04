@@ -145,7 +145,9 @@ case('export'):
 	 csvMenu.subscribe("show", csvMenu.focus);
    
  YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+
+
+dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_export.render();
 Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
  

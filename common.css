@@ -1,4 +1,3 @@
-html{background-color:#fff;background-image:url('art/bg/flowers.jpg');background-repeat:no-repeat;}
 body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 td {text-align:left}
 
@@ -39,51 +38,25 @@ span.nav2 span.selected {color:yellow;font-weight:400;border:none;background:non
 
 span.onright {float:right}
 
-#hd{height:3.46em;background:#3b5998 url("art/headerbg.png") bottom left repeat-x;color:#fff;}
-#hd h1{padding:0 15px;font-size:167%;float:left;position:relative;top:10px;}
-	#hd a{color:#fff;text-decoration:none}
 
-	#hd a:hover{text-decoration:underline}	       
-#hd #navsite ul {padding: 0 15px 0px 0;list-style: none;}
-#hd #navsite li {
-		float: right;
-		background: transparent url("art/header_menu2.png") 100%  no-repeat!important;
-                background: none;	
-		padding: 0 5px 0px 0;
-		margin: 0 5px 0px 0;
-	}
-	#hd #navsite ul a {
-	       
-	    	float: left;
-		display: block;
-		padding: 2px 4px 5px 8px;
-		background: transparent url("art/header_menu.png") 0%  no-repeat!important;
-		background:none;
-		font-weight: bold;
-		outline: none;
-		text-decoration: none;
-	}
-	#hd #navsite ul li:hover {	background: transparent url("art/header_menu2h.png") 100%  no-repeat!important;background:none }
-	#hd #navsite ul li:hover a { text-decoration:none;		background: transparent url("art/header_menuh.png") 0%  no-repeat!important;background:none}
-	#hd .selected li, #hd .selected:hover   {
-background:transparent url("art/header_menu2s.png") 100%  no-repeat !important;
-background:none;
-}
-	#hd .selected a, #hd .selected:hover  a{
-background: transparent url("art/header_menus.png") 0%  no-repeat!important;
-background:none;
-color:#ff0 !important;
-color:red;
-}	
+#hd .top_navigation{background:#444;color:#FFF;border-bottom:1px solid #393939}
+#hd .top_navigation a{color:#FFF}
+#hd .menu{padding:6px 20px 5px 5px;}
+#hd {border-bottom:2px solid #444}
+#hd span{margin:0 0px}
+
+#hd #top_navigation_timezone{float:left;font-size:65%;margin-left:16px;}
+#hd #top_navigation_right_block{float:right;font-size:77%;margin:0px 0px 2px 0;padding:0px}
+#hd #top_navigation_preferences{margin-right:20px;height:12px;margin-left:20px}
 
 .yuimenu{background:white;border:1px solid #999;padding:5px 10px}
 #yui-main{clear:both}
 
-#hd span{margin:0 0px}
+
 #bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 20px 40px 20px;height:auto !important;height:490px;}
 
 #footer{ font-size:77%;text-align:center;margin-top:5px;color:#777;margin-bottom:100px}
-
+#footer .adv{color:#ff5113}
 .bd labelc { display:block;float:left;width:30%;clear:left; }
 
 .clear{ clear:both; margin:10px 0 }
@@ -502,7 +475,6 @@ span.tab.selected{ text-decoration:none;border:1px solid #777;color:#000;border-
 
 
 span.link{cursor:pointer}
-.top_navigation span.selected{color:yellow;border:none;background:#6d84b4}
 
 
 .filter_name{cursor:pointer}

@@ -220,6 +220,7 @@ dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {context:["
 dialog_new_customer.render();
 Event.addListener("new_customer", "click", dialog_new_customer.show,dialog_new_customer , true);
 
+Event.addListener("close_dialog_new_customer", "click", dialog_new_customer.hide,dialog_new_customer , true);
 
  
 }

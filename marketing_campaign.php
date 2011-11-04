@@ -37,9 +37,9 @@ $css_files=array(
 		 'container.css',
 		 'table.css',
 		 'css/marketing_menu.css',
-		 'css/marketing_campaigns.css'
+		 'css/marketing_campaigns.css',
+          'themes.css.php'  
 		 );
-include_once('Theme.php');
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',

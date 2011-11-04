@@ -26,11 +26,11 @@
 
 
 
-<input type="hidden" id="store_id" value="{$store->id}">
+<input type="hidden" id="store_id" value="{$store->id}"/>
 
     
     <div id="the_table" class="data_table" style="margin-top:0px;clear:both;" >
-    <span class="clean_table_title">{t}Customers Lists{/t}</span>
+    <span class="clean_table_title">{t}Customers Lists{/t} </span>
 
 
 

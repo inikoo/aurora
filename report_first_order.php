@@ -17,7 +17,7 @@ $css_files=array(
 
 		 );
 
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 
 
 $js_files=array(

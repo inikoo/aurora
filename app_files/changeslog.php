@@ -5026,6 +5026,23 @@ ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Content Type` `Ema
 ALTER TABLE `Attachment Bridge` CHANGE `Attachment Key` `Attachment Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Attachment Bridge` CHANGE `Subject Key` `Subject Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes'
+ALTER TABLE `User Dimension` CHANGE `User Themes` `User Theme Key` SMALLINT UNSIGNED NULL DEFAULT NULL ,CHANGE `User Theme Background Status` `User Theme Background Key` SMALLINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Theme Dimension` CHANGE `Theme Css` `Theme CSS` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Theme Dimension` CHANGE `Theme CSS` `Theme CSS` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Theme Dimension` CHANGE `Theme CSS` `Theme CSS Buttons` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Theme Dimension` ADD `Theme CSS Header` TEXT NOT NULL ,ADD `Theme CSS Tables` TEXT NOT NULL ;
+
+CREATE TABLE `Theme Background Dimension` (
+`Theme Background Key` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Theme Background Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Header CSS` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`Background CSS` TEXT NOT NULL ,
+`Footer CSS` TEXT NOT NULL
+) ENGINE = MYISAM ;
+
+
+
+
 */
 
 ?>
