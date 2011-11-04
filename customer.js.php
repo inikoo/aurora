@@ -23,7 +23,7 @@ var dialog_quick_edit_Customer_Main_FAX;
 var customer_key=<?php echo $_REQUEST['customer_key']  ?>;
 var customer_type="<?php echo $_REQUEST['customer_type']  ?>";
 var dialog_edit_note;
-
+var list_of_dialogs;
 
 
 <?php
@@ -1013,27 +1013,126 @@ function take_order(){
 
 }
 
+function post_comment_update_other(r){
+	if(r.scope=='email'){
+		//alert('comment_update_other_email')
+		//alert(r.key);
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			eval('dialog_quick_edit_Customer_Email'+r.scope_key).hide();
+			Dom.get('Customer_Email'+r.scope_key+'_msg').innerHTML='';
+			Dom.get('Customer_Email'+r.scope_key+'_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_Email'+r.scope_key+'_msg').innerHTML='comment_failure';
+		}
+		
+	}
+	if(r.scope=='telephone'){
+		//alert('comment_update tele');
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			eval('dialog_quick_edit_Customer_Telephone'+r.scope_key).hide();
+			Dom.get('Customer_Telephone'+r.scope_key+'_msg').innerHTML='';
+			Dom.get('Customer_Telephone'+r.scope_key+'_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_Telephone'+r.scope_key+'_msg').innerHTML='comment_failure';
+		}
+		
+	}	
+	if(r.scope=='mobile'){
+		//alert('comment_update mob');
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			eval('dialog_quick_edit_Customer_Mobile'+r.scope_key).hide();
+			Dom.get('Customer_Mobile'+r.scope_key+'_msg').innerHTML='';
+			Dom.get('Customer_Mobile'+r.scope_key+'_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_Mobile'+r.scope_key+'_msg').innerHTML='comment_failure';
+		}
+		
+	}
+	if(r.scope=='fax'){
+		//alert('comment_update fax');
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			eval('dialog_quick_edit_Customer_FAX'+r.scope_key).hide();
+			Dom.get('Customer_FAX'+r.scope_key+'_msg').innerHTML='';
+			Dom.get('Customer_FAX'+r.scope_key+'_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_FAX'+r.scope_key+'_msg').innerHTML='comment_failure';
+		}
+		
+	}
+
+}
+
 function post_comment_update(r){
 	if(r.scope=='email'){
-		alert('comment_update')
+		//alert('comment_update')
 
 		Dom.get(r.key).innerHTML=r.newvalue;
 		if(r.state==200){
 			dialog_quick_edit_Customer_Main_Email.hide();
 			Dom.get('Customer_Main_Email_msg').innerHTML='';
+			//alert(r.newvalue)
+			Dom.get('Customer_Main_Email_comment').setAttribute('ovalue',r.newvalue);
+			
 		}
 		else{
 			Dom.get('Customer_Main_Email_msg').innerHTML='comment_failure';
 		}
 		
+	}
+	if(r.scope=='telephone'){
+		//alert('comment_update tele');
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			dialog_quick_edit_Customer_Main_Email.hide();
+			Dom.get('Customer_Main_Telephone_msg').innerHTML='';
+			Dom.get('Customer_Main_Telephone_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_Main_Telephone_msg').innerHTML='comment_failure';
+		}
+		
 	}	
+	if(r.scope=='mobile'){
+		//alert('comment_update mob');
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			dialog_quick_edit_Customer_Main_Mobile.hide();
+			Dom.get('Customer_Main_Mobile_msg').innerHTML='';
+			Dom.get('Customer_Main_Mobile_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_Main_Mobile_msg').innerHTML='comment_failure';
+		}
+		
+	}
+	if(r.scope=='fax'){
+		//alert('comment_update fax');
+		Dom.get(r.key).innerHTML=r.newvalue;
+		if(r.state==200){
+			dialog_quick_edit_Customer_Main_FAX.hide();
+			Dom.get('Customer_Main_FAX_msg').innerHTML='';
+			Dom.get('Customer_Main_FAX_comment').setAttribute('ovalue',r.newvalue);
+		}
+		else{
+			Dom.get('Customer_Main_FAX_msg').innerHTML='comment_failure';
+		}
+		
+	}
+
 }
 
 function post_item_updated_actions(branch,r){
 //alert(branch);
 if(branch=='customer_quick' || branch=='billing_quick'){
 eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
-
 }
 	if(r.key=='tax_number'){
 		Dom.get('Customer_Tax_Number').value=r.newvalue;
@@ -1074,13 +1173,18 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 		}	
 	}
 	if(r.key=='mobile'){
+		//alert('in_mob')
+		change_comment('mobile', <?php echo $customer->get('Customer Main Mobile Key')?>);
+		save_comment();
+		if(r.state!=200) return;
+		
 		dialog_quick_edit_Customer_Main_Mobile.hide();
 		Dom.get('main_mobile').innerHTML=r.newvalue;
 		//Dom.get('Customer_Mobile').innerHTML=r.newvalue;
 		Dom.get('Customer_Main_Mobile_msg').innerHTML='';
 	}
 	else if(r.key=='email'){
-		alert('in_email')
+		//alert('in_email')
 		change_comment('email', <?php echo $customer->get('Customer Main Email Key')?>);
 		save_comment();
 		//Dom.get('main_email_comment').innerHTML=r.newvalue;
@@ -1094,12 +1198,23 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	}
 	else if(r.key.match(/email/gi)){
 		var email_id=r.key.split('email');
+		
+		//alert('other_email: '+email_id[1]);
+		change_other_comment('email', email_id[1]);
+		save_comment_other();
+		if(r.state!=200) return;
+	
+		
 		Dom.get(r.key).innerHTML='<a href="mailto:'+r.newvalue+'">'+r.newvalue+'</a>';
 		//Dom.get('Customer_Email'+email_id[1]).innerHTML=r.newvalue;
 		eval('dialog_quick_edit_Customer_Email'+email_id[1]).hide();
 		Dom.get('Customer_Email'+email_id[1]+'_msg').innerHTML='';
 	}
 	else if(r.key=='telephone'){
+		change_comment('telephone', <?php echo $customer->get('Customer Main Telephone Key')?>);
+		save_comment();
+		if(r.state!=200) return;
+		
 		dialog_quick_edit_Customer_Main_Telephone.hide();
 		Dom.get('main_telephone').innerHTML=r.newvalue;
 		//Dom.get('Customer_Main_Telephone').innerHTML=r.newvalue;
@@ -1108,6 +1223,11 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 		
 	}
 	else if(r.key=='fax'){
+		//alert('in fax')
+		change_comment('fax', <?php echo $customer->get('Customer Main FAX Key')?>);
+		save_comment();
+		if(r.state!=200) return;
+		
 		dialog_quick_edit_Customer_Main_FAX.hide();
 		Dom.get('main_fax').innerHTML=r.newvalue;
 		//Dom.get('Customer_Main_FAX').innerHTML=r.newvalue;
@@ -1118,6 +1238,11 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	else if(r.key.match(/telephone/gi)){
 
 		var telephone_id=r.key.split('telephone');
+		
+		change_other_comment('telephone', telephone_id[1]);
+		save_comment_other();
+		if(r.state!=200) return;
+		
 		Dom.get(r.key).innerHTML=r.newvalue;
 		//Dom.get('Customer_Telephone'+telephone_id[1]).innerHTML=r.newvalue;
 		eval('dialog_quick_edit_Customer_Telephone'+telephone_id[1]).hide();
@@ -1127,6 +1252,11 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	else if(r.key.match(/fax/gi)){
 
 		var fax_id=r.key.split('fax');
+		
+		change_other_comment('fax', fax_id[1]);
+		save_comment_other();
+		if(r.state!=200) return;
+		
 		Dom.get(r.key).innerHTML=r.newvalue;
 		//Dom.get('Customer_FAX'+fax_id[1]).innerHTML=r.newvalue;
 		eval('dialog_quick_edit_Customer_FAX'+fax_id[1]).hide();
@@ -1134,8 +1264,12 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 		
 	}
 	else if(r.key.match(/mobile/gi)){
-
 		var mobile_id=r.key.split('mobile');
+		change_other_comment('mobile', mobile_id[1]);
+		save_comment_other();
+		if(r.state!=200) return;
+		
+
 		Dom.get(r.key).innerHTML=r.newvalue;
 		//Dom.get('Customer_Mobile'+mobile_id[1]).innerHTML=r.newvalue;
 		eval('dialog_quick_edit_Customer_Mobile'+mobile_id[1]).hide();
@@ -1162,52 +1296,31 @@ function save_quick_edit_name(){
 
 function save_comment(){
 
-alert('xx');
-
 var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').value;
 
  var data_to_update=new Object;
  data_to_update[tipo]={'okey':tipo,'value':Dom.get('comment').value}
  //data_to_update[tipo]={'okey':tipo,'value':'test val'}
-alert('new val:' +Dom.get("comment").value)
+//alert('new val:' +Dom.get("comment").value)
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 
 
 var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
-alert(request);
+//alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		    var ra =  YAHOO.lang.JSON.parse(o.responseText);
 		      for (x in ra){
                r=ra[x]
 		    
 		    if (r.state==200) {
-		    	/*		
-				dialog_comment.hide()
-
-				if(r.scope=='email'){
-					Dom.get('comment_email').value=r.newvalue;
-				}else if(r.scope=='telephone'){
-					Dom.get('comment_telephone').value=r.newvalue;
-				}else if(r.scope=='mobile'){
-					Dom.get('comment_mobile').value=r.newvalue;
-				}else if(r.scope=='fax'){
-					Dom.get('comment_fax').value=r.newvalue;
-				}
-
-				if(r.newvalue==''){
-					Dom.get('comment_icon_'+r.scope).src='art/icons/comment.gif';
-				}else{
-					Dom.get('comment_icon_'+r.scope).src='art/icons/comment_filled.gif';
-				}
-*/
-				alert('ok');
+				//alert('ok');
 				post_comment_update(r);
-		    }else
-				alert('not');
-				//Dom.get('comment_msg').innerHTML=r.msg;
+		    }else{}
+				//alert('not');
+				//post_comment_update(r);
 		}
 		}
 	    });        
@@ -1215,8 +1328,62 @@ alert(request);
 
 }
 
+function save_comment_other(){
+
+var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').value;
+
+ var data_to_update=new Object;
+ data_to_update[tipo]={'okey':tipo,'value':Dom.get('comment').value}
+ //data_to_update[tipo]={'okey':tipo,'value':'test val'}
+//alert('new val:' +Dom.get("comment").value)
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+
+var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
+//alert(request);
+
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		//alert(o.responseText)
+		    var ra =  YAHOO.lang.JSON.parse(o.responseText);
+		      for (x in ra){
+               r=ra[x]
+		    
+		    if (r.state==200) {
+				//alert('ok');
+				post_comment_update_other(r);
+		    }else{}
+				//alert('not');
+				//post_comment_update_other(r);
+		}
+		}
+	    });        
+	
+
+}
+
+function change_other_comment(type,key){
+ //alert('type:'+type+' key:'+key)
+ Dom.get('comment_scope_key').value=key;
+ Dom.get('comment_scope').value=type;
+
+ if(type=='email'){
+    //Dom.get('comment').value=Dom.get(['Customer_Email'+key+'_comment']).value;
+	Dom.get('comment').value=Dom.get('Customer_Email'+key+'_comment').value;
+	//Dom.get('comment').value=Dom.get('Customer_Email46524_comment').value;
+ }else if(type=='telephone'){
+    Dom.get('comment').value=Dom.get('Customer_Telephone'+key+'_comment').value;
+ }else if(type=='mobile'){
+    Dom.get('comment').value=Dom.get('Customer_Mobile'+key+'_comment').value;
+ }else if(type=='fax'){
+    Dom.get('comment').value=Dom.get('Customer_FAX'+key+'_comment').value;
+ }
+
+ //alert('comment value: '+ Dom.get('comment').value);
+}
+
 function change_comment(type,key){
- alert('type:'+type+' key:'+key)
+ //alert('type:'+type+' key:'+key)
  Dom.get('comment_scope_key').value=key;
  Dom.get('comment_scope').value=type;
 
@@ -1230,6 +1397,7 @@ function change_comment(type,key){
     Dom.get('comment').value=Dom.get('Customer_Main_FAX_comment').value;
  }
 
+ //alert('comment value: '+ Dom.get('comment').value);
 }
 
 function save_quick_edit_main_contact_name(){
@@ -1414,9 +1582,13 @@ request=request+'&'+ids[i]+'=0'
 
 
 }
-/*
-function validate_customer_email_other(id, query){
-	
+
+
+function validate_customer_email_other(query,id){
+//alert('query:'+query + ' id:'+id )
+
+
+
     if(query==''){
         validate_scope_data.customer_quick['email'+id].validated=true;
         if(Dom.get(validate_scope_data.customer_quick['email'+id].name).getAttribute('ovalue')!=query){
@@ -1431,29 +1603,71 @@ function validate_customer_email_other(id, query){
         validate_general('customer_quick','email'+id,unescape(query));
     }
 }
-*/
 
-function validate_customer_email_other(query,id){
+function validate_customer_email_other_comment(query,id){
+	id=id.scope.email_id;
+	if(Dom.get(validate_scope_data.customer_quick['email'+id].name).getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick['email'+id].changed=true;
+	}else{
+		validate_scope_data.customer_quick['email'+id].changed=false;
+	}
+	//alert(validate_scope_data.customer_quick['email'+id].changed)
+}
 
 
-    id=id.scope.email_id;
+function validate_customer_telephone_other_comment(query,id){
+	id=id.scope.telephone_id;
+	if(Dom.get(validate_scope_data.customer_quick['telephone'+id].name).getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick['telephone'+id].changed=true;
+	}else{
+		validate_scope_data.customer_quick['telephone'+id].changed=false;
+	}
+	//alert(validate_scope_data.customer_quick['telephone'+id].changed)
+}
 
-    if(query==''){
-        validate_scope_data.customer_quick['email'+id].validated=true;
-        if(Dom.get(validate_scope_data.customer_quick['email'+id].name).getAttribute('ovalue')!=query){
-            validate_scope_data.customer_quick['email'+id].changed=true;
-        }else{
-            validate_scope_data.customer_quick['email'+id].changed=false;
-        }
-        validate_scope('customer_quick'); 
-        Dom.get(validate_scope_data.customer_quick['email'+id].name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
-     
-    }else{
-        validate_general('customer_quick','email'+id,unescape(query));
-    }
+function validate_customer_fax_other_comment(query,id){
+	id=id.scope.fax_id;
+	if(Dom.get(validate_scope_data.customer_quick['fax'+id].name).getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick['fax'+id].changed=true;
+	}else{
+		validate_scope_data.customer_quick['fax'+id].changed=false;
+	}
+	//alert(validate_scope_data.customer_quick['fax'+id].changed)
+}
+
+function validate_customer_mobile_other_comment(query,id){
+	id=id.scope.mobile_id;
+	if(Dom.get(validate_scope_data.customer_quick['mobile'+id].name).getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick['mobile'+id].changed=true;
+	}else{
+		validate_scope_data.customer_quick['mobile'+id].changed=false;
+	}
+	//alert(validate_scope_data.customer_quick['mobile'+id].changed)
 }
 
 function init(){
+
+list_of_dialogs=["dialog_quick_edit_Customer_Name", 
+"dialog_quick_edit_Customer_Name",
+"dialog_quick_edit_Customer_Main_Address",
+"dialog_quick_edit_Customer_Tax_Number",
+"dialog_quick_edit_Customer_Main_Contact_Name",
+"dialog_quick_edit_Customer_Main_Email",
+"dialog_quick_edit_Customer_Main_Telephone",
+"dialog_quick_edit_Customer_Main_Mobile",
+"dialog_quick_edit_Customer_Main_FAX"
+<?php
+foreach($customer->get_other_emails_data() as $key=>$value)
+	printf(",\"dialog_quick_edit_Customer_Email%d\"",$key);
+foreach($customer->get_other_telephones_data() as $key=>$value)
+	printf(",\"dialog_quick_edit_Customer_Telephone%d\"",$key);
+foreach($customer->get_other_mobiles_data() as $key=>$value)
+	printf(",\"dialog_quick_edit_Customer_Mobile%d\"",$key);
+foreach($customer->get_other_faxes_data() as $key=>$value)
+	printf(",\"dialog_quick_edit_Customer_FAX%d\"",$key);
+?>
+
+];
 
 
 Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'], "click",change_elements);
@@ -1644,16 +1858,16 @@ Event.addListener('quick_edit_name_edit', "click", show_edit_name);
 Event.addListener('quick_edit_tax', "click", show_edit_tax);
 
 
-Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email.show,dialog_quick_edit_Customer_Main_Email , true);
-Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer_Main_Address.show,dialog_quick_edit_Customer_Main_Address , true);
-Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Customer_Main_Telephone.show,dialog_quick_edit_Customer_Main_Telephone , true);
-Event.addListener('quick_edit_main_mobile', "click", dialog_quick_edit_Customer_Main_Mobile.show,dialog_quick_edit_Customer_Main_Mobile , true);
-Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Main_FAX.show,dialog_quick_edit_Customer_Main_FAX , true);
+Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email_);
+Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer_Main_Address_);
+Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Customer_Main_Telephone_);
+Event.addListener('quick_edit_main_mobile', "click", dialog_quick_edit_Customer_Main_Mobile_);
+Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Main_FAX_);
 
 
 <?php
 	foreach($customer->get_other_emails_data() as $key=>$value){
-	printf("Event.addListener('quick_edit_other_email%d', \"click\", dialog_quick_edit_Customer_Email%d.show,dialog_quick_edit_Customer_Email%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_email%d', \"click\", dialog_quick_edit_Customer_Email%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_email%d', \"click\", dialog_quick_edit_Customer_Email%d.hide,dialog_quick_edit_Customer_Email%d , true);", $key, $key, $key);	
 	//Event.addListener('close_quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email.hide,dialog_quick_edit_Customer_Main_Email , true);
 	}
@@ -1662,7 +1876,7 @@ Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Mai
 <?php
 
 	foreach($customer->get_other_telephones_data() as $key=>$value){
-	printf("Event.addListener('quick_edit_other_telephone%d', \"click\", dialog_quick_edit_Customer_Telephone%d.show,dialog_quick_edit_Customer_Telephone%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_telephone%d', \"click\", dialog_quick_edit_Customer_Telephone%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_telephone%d', \"click\", dialog_quick_edit_Customer_Telephone%d.hide,dialog_quick_edit_Customer_Telephone%d , true);", $key, $key, $key);	
 	}
 ?>
@@ -1670,7 +1884,7 @@ Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Mai
 <?php
 
 	foreach($customer->get_other_mobiles_data() as $key=>$value){
-	printf("Event.addListener('quick_edit_other_mobile%d', \"click\", dialog_quick_edit_Customer_Mobile%d.show,dialog_quick_edit_Customer_Mobile%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_mobile%d', \"click\", dialog_quick_edit_Customer_Mobile%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_other_mobile%d', \"click\", dialog_quick_edit_Customer_Mobile%d.hide,dialog_quick_edit_Customer_Mobile%d , true);", $key, $key, $key);	
 	}
 ?>
@@ -1678,7 +1892,7 @@ Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Mai
 <?php
 
 	foreach($customer->get_other_faxes_data() as $key=>$value){
-	printf("Event.addListener('quick_edit_other_fax%d', \"click\", dialog_quick_edit_Customer_FAX%d.show,dialog_quick_edit_Customer_FAX%d , true);", $key, $key, $key);	
+	printf("Event.addListener('quick_edit_other_fax%d', \"click\", dialog_quick_edit_Customer_FAX%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_other_fax%d', \"click\", dialog_quick_edit_Customer_FAX%d.hide,dialog_quick_edit_Customer_FAX%d , true);", $key, $key, $key);	
 	}
 ?>
@@ -1763,13 +1977,35 @@ $email_key,$email_key,
 $email_key
 );
 
-
+printf("var customer_email%d_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email_other_comment);\ncustomer_email%d_oACDS.queryMatchContains = true;\nvar customer_email%d_oAutoComp = new YAHOO.widget.AutoComplete('Customer_Email%d_comment','Customer_Email%d_comment_Container', customer_email%d_oACDS);\ncustomer_email%d_oAutoComp.minQueryLength = 0;\ncustomer_email%d_oAutoComp.queryDelay = 0.1;\ncustomer_email%d_oAutoComp.email_id =%d;",
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,
+$email_key,$email_key,
+$email_key
+);
 }
 ?>
 
 <?php
 foreach($customer->get_other_telephones_data()  as $telephone_key=>$telephone  ){
 printf("var customer_telephone%d_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone_other);\ncustomer_telephone%d_oACDS.queryMatchContains = true;\nvar customer_telephone%d_oAutoComp = new YAHOO.widget.AutoComplete('Customer_Telephone%d','Customer_Telephone%d_Container', customer_telephone%d_oACDS);\ncustomer_telephone%d_oAutoComp.minQueryLength = 0;\ncustomer_telephone%d_oAutoComp.queryDelay = 0.1;;\ncustomer_telephone%d_oAutoComp.telephone_id =%d;",
+$telephone_key,
+$telephone_key,
+$telephone_key,
+$telephone_key,
+$telephone_key,
+$telephone_key,
+$telephone_key,
+$telephone_key,$telephone_key,
+$telephone_key
+);
+
+printf("var customer_telephone%d_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone_other_comment);\ncustomer_telephone%d_oACDS.queryMatchContains = true;\nvar customer_telephone%d_oAutoComp = new YAHOO.widget.AutoComplete('Customer_Telephone%d_comment','Customer_Telephone%d_comment_Container', customer_telephone%d_oACDS);\ncustomer_telephone%d_oAutoComp.minQueryLength = 0;\ncustomer_telephone%d_oAutoComp.queryDelay = 0.1;;\ncustomer_telephone%d_oAutoComp.telephone_id =%d;",
 $telephone_key,
 $telephone_key,
 $telephone_key,
@@ -1797,6 +2033,18 @@ $fax_key,
 $fax_key,$fax_key,
 $fax_key
 );
+
+printf("var customer_fax%d_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_fax_other_comment);\ncustomer_fax%d_oACDS.queryMatchContains = true;\nvar customer_fax%d_oAutoComp = new YAHOO.widget.AutoComplete('Customer_FAX%d_comment','Customer_FAX%d_comment_Container', customer_fax%d_oACDS);\ncustomer_fax%d_oAutoComp.minQueryLength = 0;\ncustomer_fax%d_oAutoComp.queryDelay = 0.1;;\ncustomer_fax%d_oAutoComp.fax_id =%d;",
+$fax_key,
+$fax_key,
+$fax_key,
+$fax_key,
+$fax_key,
+$fax_key,
+$fax_key,
+$fax_key,$fax_key,
+$fax_key
+);
 }
 ?>
 
@@ -1813,6 +2061,19 @@ $mobile_key,
 $mobile_key,$mobile_key,
 $mobile_key
 );
+
+printf("var customer_mobile%d_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_mobile_other_comment);\ncustomer_mobile%d_oACDS.queryMatchContains = true;\nvar customer_mobile%d_oAutoComp = new YAHOO.widget.AutoComplete('Customer_Mobile%d_comment','Customer_Mobile%d_comment_Container', customer_mobile%d_oACDS);\ncustomer_mobile%d_oAutoComp.minQueryLength = 0;\ncustomer_mobile%d_oAutoComp.queryDelay = 0.1;;\ncustomer_mobile%d_oAutoComp.mobile_id =%d;",
+$mobile_key,
+$mobile_key,
+$mobile_key,
+$mobile_key,
+$mobile_key,
+$mobile_key,
+$mobile_key,
+$mobile_key,$mobile_key,
+$mobile_key
+);
+
 }
 ?>
 
@@ -1840,10 +2101,23 @@ $mobile_key
     var customer_telephone_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Telephone","Customer_Main_Telephone_Container", customer_telephone_oACDS);
     customer_telephone_oAutoComp.minQueryLength = 0; 
     customer_telephone_oAutoComp.queryDelay = 0.1;
+
+    var customer_telephone_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone_comment);
+    customer_telephone_oACDS.queryMatchContains = true;
+    var customer_telephone_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Telephone_comment","Customer_Main_Telephone_comment_Container", customer_telephone_oACDS);
+    customer_telephone_oAutoComp.minQueryLength = 0; 
+    customer_telephone_oAutoComp.queryDelay = 0.1;
 	
     var customer_mobile_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_mobile);
     customer_mobile_oACDS.queryMatchContains = true;
     var customer_mobile_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Mobile","Customer_Main_Mobile_Container", customer_mobile_oACDS);
+    customer_mobile_oAutoComp.minQueryLength = 0; 
+    customer_mobile_oAutoComp.queryDelay = 0.1;
+	
+	
+    var customer_mobile_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_mobile_comment);
+    customer_mobile_oACDS.queryMatchContains = true;
+    var customer_mobile_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Mobile_comment","Customer_Main_Mobile_comment_Container", customer_mobile_oACDS);
     customer_mobile_oAutoComp.minQueryLength = 0; 
     customer_mobile_oAutoComp.queryDelay = 0.1;
 	
@@ -1853,6 +2127,13 @@ $mobile_key
     customer_fax_oAutoComp.minQueryLength = 0; 
     customer_fax_oAutoComp.queryDelay = 0.1;
 
+	
+	var customer_fax_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_fax_comment);
+    customer_fax_oACDS.queryMatchContains = true;
+    var customer_fax_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_FAX_comment","Customer_Main_FAX_comment_Container", customer_fax_oACDS);
+    customer_fax_oAutoComp.minQueryLength = 0; 
+    customer_fax_oAutoComp.queryDelay = 0.1;
+	
 	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
 	
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
@@ -1887,24 +2168,78 @@ for(i=0; i<other_email_count; i++)
 
 
 }
-
+function hide_all_dialogs(){
+	for(x in list_of_dialogs)
+		eval(list_of_dialogs[x]).hide();
+		//alert(list_of_dialogs[x])
+}
 
 function show_edit_main_contact_name(){
 Dom.get('Customer_Main_Contact_Name').value=Dom.get('Customer_Main_Contact_Name').getAttribute('ovalue')
+hide_all_dialogs();
 dialog_quick_edit_Customer_Main_Contact_Name.show();
 }
 
 
 function show_edit_tax(){
-Dom.get('Customer_Main_Contact_Name').value=Dom.get('Customer_Main_Contact_Name').getAttribute('ovalue')
+hide_all_dialogs();
+Dom.get('Customer_Tax_Number').value=Dom.get('Customer_Tax_Number').getAttribute('ovalue')
 dialog_quick_edit_Customer_Tax_Number.show();
 }
 
 function show_edit_name(){
+hide_all_dialogs();
 Dom.get('Customer_Name').value=Dom.get('Customer_Name').getAttribute('ovalue')
 dialog_quick_edit_Customer_Name.show();
 }
 
+function dialog_quick_edit_Customer_Main_Email_(){
+	Dom.get('Customer_Main_Email').value=Dom.get('Customer_Main_Email').getAttribute('ovalue');
+	<?php if($customer->get_principal_email_comment()) ?>
+	Dom.get('Customer_Main_Email_comment').value=Dom.get('Customer_Main_Email_comment').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Email.show();
+}
+function dialog_quick_edit_Customer_Main_Address_(){
+
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Address.show();
+}
+function dialog_quick_edit_Customer_Main_Telephone_(){
+	Dom.get('Customer_Main_Telephone').value=Dom.get('Customer_Main_Telephone').getAttribute('ovalue');
+	<?php if($customer->get_principal_telecom_comment('Telephone')) ?>
+	Dom.get('Customer_Main_Telephone_comment').value=Dom.get('Customer_Main_Telephone_comment').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Telephone.show();
+}
+function dialog_quick_edit_Customer_Main_Mobile_(){
+	Dom.get('Customer_Main_Mobile').value=Dom.get('Customer_Main_Mobile').getAttribute('ovalue');
+	<?php if($customer->get_principal_telecom_comment('Mobile')) ?>
+	Dom.get('Customer_Main_Mobile_comment').value=Dom.get('Customer_Main_Mobile_comment').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Mobile.show();
+}
+function dialog_quick_edit_Customer_Main_FAX_(){
+	Dom.get('Customer_Main_FAX').value=Dom.get('Customer_Main_FAX').getAttribute('ovalue');
+	<?php if($customer->get_principal_telecom_comment('FAX')) ?>
+	Dom.get('Customer_Main_FAX_comment').value=Dom.get('Customer_Main_FAX_comment').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_FAX.show();
+}
+<?php
+foreach($customer->get_other_emails_data() as $key=>$value){
+	printf("function dialog_quick_edit_Customer_Email%d_(){hide_all_dialogs();Dom.get('Customer_Email%d').value=Dom.get('Customer_Email%d').getAttribute('ovalue');%sdialog_quick_edit_Customer_Email%d.show();}\n", $key, $key, $key, (($value['label'])?"Dom.get('Customer_Email".$key."_comment').value=Dom.get('Customer_Email".$key."_comment').getAttribute('ovalue');":''),$key);
+}
+foreach($customer->get_other_telephones_data() as $key=>$value){
+	printf("function dialog_quick_edit_Customer_Telephone%d_(){hide_all_dialogs();Dom.get('Customer_Telephone%d').value=Dom.get('Customer_Telephone%d').getAttribute('ovalue');%sdialog_quick_edit_Customer_Telephone%d.show();}\n", $key, $key, $key, (($value['label'])?"Dom.get('Customer_Telephone".$key."_comment').value=Dom.get('Customer_Telephone".$key."_comment').getAttribute('ovalue');":''), $key);
+}
+foreach($customer->get_other_mobiles_data() as $key=>$value){
+	printf("function dialog_quick_edit_Customer_Mobile%d_(){hide_all_dialogs();Dom.get('Customer_Mobile%d').value=Dom.get('Customer_Mobile%d').getAttribute('ovalue');%sdialog_quick_edit_Customer_Mobile%d.show();}\n", $key, $key, $key, (($value['label'])?"Dom.get('Customer_Mobile".$key."_comment').value=Dom.get('Customer_Mobile".$key."_comment').getAttribute('ovalue');":''), $key);
+}
+foreach($customer->get_other_faxes_data() as $key=>$value){
+	printf("function dialog_quick_edit_Customer_FAX%d_(){hide_all_dialogs();Dom.get('Customer_FAX%d').value=Dom.get('Customer_FAX%d').getAttribute('ovalue');%sdialog_quick_edit_Customer_FAX%d.show();}\n", $key, $key, $key, (($value['label'])?"Dom.get('Customer_FAX".$key."_comment').value=Dom.get('Customer_FAX".$key."_comment').getAttribute('ovalue');":''), $key);
+}
+?>
 function validate_customer_name(query){
  validate_general('customer_quick','name',unescape(query));
 }
@@ -1918,12 +2253,11 @@ function validate_customer_tax_number(query){
 }
 
 function validate_email_comment(query){
- if(Dom.get('comment').getAttribute('ovalue')!=query){
+alert(query)
+ //if(Dom.get('Customer_Main_Email_comment').getAttribute('ovalue')!=query){
      validate_scope_data.customer_quick.email.changed=true;
- }else{
-    validate_scope_data.customer_quick.email.changed=false;
- }	
- alert(validate_scope_data.customer_quick.email.changed)
+ //}
+
 }
 
 function validate_customer_email(query){
@@ -1956,6 +2290,34 @@ function validate_customer_telephone(query){
     }
 }
 
+function validate_customer_telephone_comment(query){
+	if(Dom.get('Customer_Main_Telephone_comment').getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick.telephone.changed=true;
+	}else{
+		validate_scope_data.customer_quick.telephone.changed=false;
+	}
+	//alert(validate_scope_data.customer_quick.telephone.changed)
+}
+
+
+function validate_customer_mobile_comment(query){
+	if(Dom.get('Customer_Main_Mobile_comment').getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick.mobile.changed=true;
+	}else{
+		validate_scope_data.customer_quick.mobile.changed=false;
+	}
+	//alert(validate_scope_data.customer_quick.mobile.changed)
+}
+
+function validate_customer_fax_comment(query){
+	if(Dom.get('Customer_Main_FAX_comment').getAttribute('ovalue')!=query){
+		validate_scope_data.customer_quick.fax.changed=true;
+	}else{
+		validate_scope_data.customer_quick.fax.changed=false;
+	}
+	//alert(validate_scope_data.customer_quick.fax.changed)
+}
+
 function validate_customer_mobile(query){
     validate_general('customer_quick','mobile',unescape(query));
     if(query==''){
@@ -1964,6 +2326,7 @@ function validate_customer_mobile(query){
 	    Dom.get(validate_scope_data.customer_quick.mobile.name+'_msg').innerHTML='<?php echo _('This operation will remove the mobile')?>';
     }
 }
+
 
 function validate_customer_fax(query){
     validate_general('customer_quick','fax',unescape(query));

@@ -828,9 +828,7 @@ function save_edit_general_bulk(branch) {
  //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;
     for (items in validate_scope_data[branch]) {
-
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
-			//alert('in');
             var item_input=Dom.get(validate_scope_data[branch][items].name);
 			Dom.get(validate_scope_data[branch][items].name+'_msg').innerHTML='<img src="art/loading.gif"/>';
             var updated_items=0;
@@ -840,13 +838,14 @@ function save_edit_general_bulk(branch) {
             } else {
                 item_name=items;
             }
-           
-           // alert(items)
+          
             data_to_update[item_name]={'okey':items,'value':item_input.value}
         }
 		else if(!validate_scope_data[branch][items].changed){
 			if(branch=='customer_quick' || branch=='billing_quick'){
-				eval('dialog_quick_edit_'+validate_scope_data[branch][items].name).hide();
+				//eval('dialog_quick_edit_'+validate_scope_data[branch][items].name).hide();
+				//data_to_update['a']={'okey':'a','value':'a'};
+				//alert('else if')
 			}
 		}
 		
@@ -858,7 +857,9 @@ function save_edit_general_bulk(branch) {
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request);return;
+
+
+//alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
   alert(o.responseText);
@@ -880,16 +881,12 @@ success:function(o) {
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
-
-						
-						//alert(branch)
+						//display_add_other(r);
                         post_item_updated_actions(branch,r);
 
 
                     } 
                     else {
-						//alert(branch)
-						
                         validate_scope_data[branch][r.key].changed=true;
                         validate_scope_data[branch][r.key].validated=false;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;
@@ -908,6 +905,16 @@ validate_scope_edit(branch)
    
 }
 
+function display_add_other(r){
+	switch(r.key){
+		case 'other_telephone': 
+		case 'other_mobile':
+		case 'other_fax':
+		Dom.setStyle('display_add_'+r.key,'display','')
+		break;
+		default: break;
+	}
+}
 
 function save_new_general(branch) {
 
