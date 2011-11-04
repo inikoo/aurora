@@ -1193,7 +1193,7 @@ reset_address(false,'billing_')
 
 
 function change_comment(o,type,key){
-alert('type:'+type+' key:'+key)
+
  var pos = Dom.getXY(o);
  
 
@@ -1288,10 +1288,10 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 function save_comment(){
 
-alert(Dom.get('comment_scope').value);return;
+//alert(Dom.get('comment_scope').value);return;
 
 var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').value;
-
+//alert(tipo);
  var data_to_update=new Object;
  data_to_update[tipo]={'okey':tipo,'value':Dom.get("comment").value}
 
@@ -1299,7 +1299,7 @@ var tipo=Dom.get('comment_scope').value+'_label'+Dom.get('comment_scope_key').va
 
 
 var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
-alert(request);
+//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	//	alert(o.responseText)
@@ -1353,7 +1353,7 @@ function save_other_field_label(){
 
 
 var tipo=Dom.get('other_field_label_scope').value+'_label'+Dom.get('other_field_label_scope_key').value;
-
+//alert(tipo)
  var data_to_update=new Object;
  data_to_update[tipo]={'okey':tipo,'value':Dom.get("other_field_label").value}
 

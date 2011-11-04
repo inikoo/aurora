@@ -2932,7 +2932,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
 
 
-    if ($customer->updated) {
+    if (!$customer->error ) {
 
         if ($other_email_deleted) {
             $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
