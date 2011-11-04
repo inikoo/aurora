@@ -42,15 +42,15 @@ $smarty->assign('view',$_SESSION['state']['warehouse_area']['view']);
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 $yui_path.'container/assets/skins/sam/container.css',
-		 'common.css',
-		 'button.css',
-		 'table.css',
-		 'css/dropdown.css'
+	     $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
 		 );
 
 

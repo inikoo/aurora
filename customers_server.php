@@ -23,15 +23,13 @@ $smarty->assign('box_layout','yui-t0');
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-               $yui_path.'build/assets/skins/sam/skin.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-              
-               'container.css'
+                'common.css',
+               'button.css',
+                'table.css',
+                'theme.css.php'
            );
 
-include_once('Theme.php');
 
 
 $js_files=array(
@@ -44,6 +42,7 @@ $js_files=array(
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               'js/common.js',
+            
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js','js/csv_common.js',

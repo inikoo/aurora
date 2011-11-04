@@ -45,21 +45,17 @@ $smarty->assign('parts_view',$_SESSION['state']['warehouse']['parts']['view']);
 $smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
 $smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
-
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		  $yui_path.'assets/skins/sam/autocomplete.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 
-		 'button.css',
-		 'container.css'
-		 );
-
-include_once('Theme.php');
-
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',

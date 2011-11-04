@@ -10,7 +10,7 @@
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
   <div class="buttons">
-      <button onclick="window.location='edit_customers.php?list_key={$customer_list_id}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers{/t}</button>
+      <button onclick="window.location='edit_customers.php?list_key={$customer_list_id}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers in List{/t}</button>
      
       </div>
     <div style="clear:both"></div>
@@ -23,7 +23,7 @@
 
  <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <div>
-      <span class="clean_table_title">{t}Customers List{/t} <span class="id">{$customer_list_name}</span></span>
+      <span class="clean_table_title">{t}Customers List{/t} <span class="id">{$customer_list_name}</span> <img id="export_data"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     
  
   <div style="clear:both;margin:2px 0 0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

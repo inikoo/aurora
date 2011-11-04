@@ -508,13 +508,15 @@ Dom.get('found_email_other_store_customer_key').value=0;
 function change_allow(o,key,value){
 
 Dom.get(key).value=value;
-Dom.removeClass(Dom.getElementsByClassName('option', 'span', o.parentNode ),'selected');
+Dom.removeClass(Dom.getElementsByClassName('option', 'button', o.parentNode ),'selected');
 Dom.addClass(o,'selected');
 
 
 }
 
 function init(){
+
+  init_search('customers_store');
     
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_customer);
       	YAHOO.util.Event.addListener(['cancel_add_'+Subject], "click",cancel_new_company);

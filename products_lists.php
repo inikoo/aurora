@@ -43,7 +43,7 @@ $css_files=array(
                'css/marketing_menu.css',
                'css/marketing_campaigns.css'
            );
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',

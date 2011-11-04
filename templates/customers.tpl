@@ -70,16 +70,7 @@
 <div style="clear:both"></div>
 
 
-	<!-- added code by kallol for demo only -->
-	<div id="dialog_export">
-	<div id="export_msg"></div>
-	  <table style="padding:10px;margin:20px 10px 10px 10px" >
-	 <tr><td><a href="export_data.php?subject=customers&subject_key={$store_id}&source=db">{t}Export Data (using last map){/t}</a></td></tr>
-	 <tr><td><a href="export_data_maps.php?subject=customers&subject_key={$store_id}&source=db">{t}Export from another map{/t}</a></td></tr>
-	 <tr><td><a href="export_wizard.php?subject=customers&subject_key={$store_id}">{t}Export Wizard (new map){/t}</a></td></tr>
-	</table>
-	</div>
-	<!-- up to this -->
+
 
     <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
@@ -145,17 +136,16 @@
 
 
 
-<div id="dialog_new_customer" style="padding:10px">
+<div id="dialog_new_customer" style="padding:20px 20px 10px 20px ">
   <div id="new_customer_msg"></div>
-  {t}Create new Customer{/t}:
-  <table style="margin:10px">
-    <tr>
-        <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer()" >{t}Manually{/t}</span></td>
-           <td > <span class="unselectable_text state_details" onClick="new_customer_from_file()" >{t}Import from file{/t}</span></td>
-
-   </tr>
   
-  </table>
+  <div class="buttons">
+  <button  class="positive"  onClick="new_customer()" >{t}Manually{/t}</button>
+  <button  class="positive" onClick="new_customer_from_file()" >{t}Import from file{/t}</button>
+    <button class="negative" id="close_dialog_new_customer" >{t}Cancel{/t}</button>
+
+  </div>
+
 </div>
 
 {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="customers-csv_export0" export_options=$csv_export_options0 }

@@ -32,12 +32,24 @@
       <tr>
         <td>{t}Register between{/t}:</td>
         <td>
-            <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="customer_first_contacted_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
-            <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="customer_first_contacted_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <input style="height:18px" id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="customer_first_contacted_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input style="height:18px"  id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="customer_first_contacted_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
             <div id="customer_first_contacted_from_Container" style="position:absolute;display:none; z-index:2"></div>
             <div id="customer_first_contacted_to_Container" style="display:none; z-index:2;position:absolute"></div>
         </td>        
       </tr>
+      <tr>
+		<td>{t}which are{/t}:
+		<td>
+			<div id="customers_which_options" default_cat=""   class="buttons small left" >
+			{foreach from=$customer_stat item=cat3 key=cat_key name=foo3}
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_customers_which(this)" id="customers_which_{$cat_key}"  parent="customers_which_" cat="{$cat_key}"  >{$cat3.name}</button>
+			{/foreach}
+			</div>
+		</td>
+	</tr>
+      
+      
      <tr>
         <td>{t}based in (location){/t}:</td>
         <td>
@@ -57,9 +69,9 @@
     <tr>
         <td>{t}have{/t}: <span style="cursor:pointer" id="show_dont_have">&#8623;</span></td>
         <td>
-   <div id="have_options" default_cat=""   class="options" style="margin:5px 0">
+   <div id="have_options" default_cat=""   class="buttons small left" >
      {foreach from=$have_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="have_{$cat_key}"  parent="have_" cat="{$cat_key}"  >{$cat3.name}</span>
+     <button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="have_{$cat_key}"  parent="have_" cat="{$cat_key}"  >{$cat3.name}</button>
      {/foreach}
     </div>
         </td>
@@ -69,9 +81,9 @@
      <tr style="display:none" id='tr_dont_have'>
         <td>{t}don't have{/t}:</td>
         <td>
-         <div id="dont_have_options" default_cat=""   class="options" style="margin:5px 0">
+         <div id="dont_have_options" default_cat=""   class="buttons small left" style="margin:5px 0">
      {foreach from=$have_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="dont_have_{$cat_key}" parent="dont_have_"  cat="{$cat_key}" >{$cat3.name}</span>
+     <button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="dont_have_{$cat_key}" parent="dont_have_"  cat="{$cat_key}" >{$cat3.name}</button>
      {/foreach}
     </div>    
         </td>
@@ -82,9 +94,9 @@
      <tr>
         <td>{t}wish to receive{/t}: <span style="cursor:pointer" id="show_dont_wish_to_receive">&#8623;</span></td>
         <td>
-         <div id="allow_options" default_cat=""   class="options" style="margin:5px 0">
+         <div id="allow_options" default_cat=""   class="buttons small left">
      {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}margin-left:20px{/if}"onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_"  cat="{$cat_key}" >{$cat3.name}</span>
+     <button  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}margin-left:20px{/if}"onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_"  cat="{$cat_key}" >{$cat3.name}</button>
      {/foreach}
     </div>    
         </td>
@@ -128,58 +140,39 @@
       <tr>
         <td>{t}during this period{/t}:</td>
         <td>
-            <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_ordered_or_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
-            <input id="v_calpop2" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_ordered_or_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <input style="height:18px"  id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_ordered_or_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input style="height:18px"  id="v_calpop2" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_ordered_or_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
             <div id="product_ordered_or_from_Container" style="position:absolute;display:none; z-index:2"></div>
             <div id="product_ordered_or_to_Container" style="display:none; z-index:2;position:absolute"></div>
         </td>
       </tr>
      
 	
-	 <tr><td colspan="2"><b>{t}Customer Stats{/t}</b></td></tr>
-	 
-	<tr>
-		<td>{t}customers which are{/t}:
-		<td>
-			<div id="customers_which_options" default_cat=""   class="options" style="margin:5px 0">
-			{foreach from=$customer_stat item=cat3 key=cat_key name=foo3}
-			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_customers_which(this)" id="customers_which_{$cat_key}"  parent="customers_which_" cat="{$cat_key}"  >{$cat3.name}</span>
-			{/foreach}
-			</div>
-		</td>
-	</tr>
-{*
-	<tr style="display:none" id='tr_not_customers_which'>
-		<td>{t}not customers which are{/t}:</td>
-		<td>
-			<div id="not_customers_which_options" default_cat=""   class="options" style="margin:5px 0">
-			{foreach from=$customer_stat item=cat3 key=cat_key name=foo3}
-			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_customers_which(this)" id="not_customers_which_{$cat_key}" parent="not_customers_which_"  cat="{$cat_key}" >{$cat3.name}</span>
-			{/foreach}
-			</div>    
-		</td>
-	</tr>
-  *}  
+
   	  <tr id="lost_customer_title" style="display:none"><td colspan="2"><b>{t}Lost Customers{/t}</b></td></tr>
       <tr id="lost_customer"style="display:none">
         <td>{t}Register between{/t}:</td>
         <td>
-            <input id="v_calpop5" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="lost_customer_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><span class="calpop">&rarr;</span> 
-			<input id="v_calpop6" type="text" class="calpop" size="11" maxlength="10" name="to" value=""/><img   id="lost_customer_to" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <input style="height:18px" id="v_calpop5" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="lost_customer_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><span class="calpop">&rarr;</span> 
+			<input style="height:18px" id="v_calpop6" type="text" class="calpop" size="11" maxlength="10" name="to" value=""/><img   id="lost_customer_to" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
             <div id="lost_customer_from_Container" style="position:absolute;display:none; z-index:2"></div>
 			<div id="lost_customer_to_Container" style="position:absolute;display:none; z-index:2"></div>
         </td>        
       </tr>
 	  
 	  <tr><td colspan="2"><b>{t}Customers with Order{/t}</b></td></tr>
-      <tr>
+      <tr >
         <td>{t}Number of Orders{/t}:</td>
-		<td>
-            <input id="number_of_orders_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="c" style="display:none">&rarr;</span> 
-			<input style="display:none" id="number_of_orders_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
-			<div id="order_condition_option" default_cat=""   class="options" style="margin:5px 0">
+		<td >
+           
+			
+			<div id="order_condition_option" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+			<input style="height:18px" id="number_of_orders_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="c" style="display:none">&rarr;</span> 
+			<input style="display:none;height:18px" id="number_of_orders_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+			</div>
 			{foreach from=$condition item=cat3 key=cat_key name=foo3}
-			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_order_condition(this)" id="order_condition_{$cat_key}" parent="order_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_order_condition(this)" id="order_condition_{$cat_key}" parent="order_condition_"  cat="{$cat_key}" >{$cat3.name}</button>
 			{/foreach}
 			</div>  
 		</td>
@@ -190,11 +183,15 @@
       <tr>
         <td>{t}Number of Invoices{/t}:</td>
 		<td>
-            <input id="number_of_invoices_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="a" style="display:none">&rarr;</span> 
-			<input style="display:none" id="number_of_invoices_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
-			<div id="invoice_condition_option" default_cat=""   class="options" style="margin:5px 0">
+            
+			
+			<div id="invoice_condition_option" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+			<input style="height:18px" id="number_of_invoices_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="a" style="display:none">&rarr;</span> 
+			<input style="display:none;height:18px" id="number_of_invoices_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+			</div>
 			{foreach from=$condition item=cat3 key=cat_key name=foo3}
-			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_invoice_condition(this)" id="invoice_condition_{$cat_key}" parent="invoice_condition_"  cat="{$cat_key}" >{$cat3.name}</span>
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_invoice_condition(this)" id="invoice_condition_{$cat_key}" parent="invoice_condition_"  cat="{$cat_key}" >{$cat3.name}</button>
 			{/foreach}
 			</div>  
 		</td>
@@ -206,11 +203,14 @@
       <tr>
         <td>{t}Sales{/t}:</td>
 		<td>
-            <input id="sales_lower" type="text" class="text" size="5" maxlength="10" name="after" value=""/><span id="b" style="display:none">&rarr;</span> 
-			<input style="display:none" id="sales_upper" type="text" class="text" size="5" maxlength="10" name="after" value=""/>
-			<div id="sales_option" default_cat=""   class="options" style="margin:5px 0">
+          
+			<div id="sales_option" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+						  <input  style="height:18px" id="sales_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="b" style="display:none">&rarr;</span> 
+			<input style="display:none;height:18px" id="sales_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+</div>
 			{foreach from=$condition item=cat3 key=cat_key name=foo3}
-			<span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_sales_condition(this)" id="sales_condition_{$cat_key}" parent="sales_condition_"  cat="sales_{$cat_key}" >{$cat3.name}</span>
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_sales_condition(this)" id="sales_condition_{$cat_key}" parent="sales_condition_"  cat="sales_{$cat_key}" >{$cat3.name}</button>
 			{/foreach}
 			</div>  
 		</td>
@@ -218,14 +218,17 @@
       </tr>
 	  
       </table>
-<div style="border-top:1px solid #ccc">
+<div style="border-top:1px solid #ccc;padding-top:5px">
 <div id="save_dialog" style="width:600px;float:left;visibility:hidden">
  <div id="the_div" style="xdisplay:none;">    
 	{t}Enter list name{/t} : <input type="text" name="list_name" id="list_name"> &nbsp;&nbsp;{t}Select List Type{/t} : <input type="radio" name="type" checked="checked" id="static" value="Static">&nbsp;{t}Static{/t} &nbsp;&nbsp;<input type="radio" name="type"  id="dynamic" value="Dynamic">&nbsp;{t}Dynamic{/t}
       </div>
-<div id="save_list_msg"></div>
+<div id="save_list_msg" class="error" style="margin-bottom:10px"></div>
 </div>
-<div class="buttons">
+<div id="saving_the_list" style="display:none;float:right"><img src="art/loading.gif"> {t}Saving the list{/t}.</div>
+
+<div id="save_buttons" class="buttons">
+
       <button  style="display:none;" id="save_list"  >{t}Save List{/t}</button>
       <button  style="display:none;" id="modify_search" >{t}Redo List{/t}</button>
       <button  id="submit_search">{t}Create List{/t}</button>

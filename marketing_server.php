@@ -20,17 +20,18 @@ if (!$user->can_view('customers')) {
 
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+             $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'build/assets/skins/sam/skin.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-              
-               'container.css'
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
            );
 
 
-include_once('Theme.php');
 
 
 $js_files=array(

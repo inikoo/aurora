@@ -1,18 +1,27 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0 20px">
-<h1>{t}Adding new customer{/t} ({$store->get('Store Code')})</h1>
+{include file='contacts_navigation.tpl'}
 
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-    {if $options.tipo=="url"}
-    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-    {else}
-    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-    {/if}
-    {/foreach}
-  </div>
+<div> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Adding Customer{/t}</span>
 </div>
+
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
+
+  <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+
+
+<div class="buttons">
+<button  class="negative" onclick="window.location='customers.php?store={$store->id}'" >{t}Cancel{/t}</button>
+</div>
+
+<div style="clear:both"></div>
+</div>
+
+<h1 style="clear:both">{t}Adding new customer{/t}, <span class="id">{$store->get('Store Code')}</span></h1>
+
 
 <div id="yui-main" >
     
@@ -34,7 +43,15 @@
       <input type="hidden" value="{$customer_type}" id="Customer_Type"/>
 	<tbody id="company_section">
       <tr class="title" >
-      <td colspan=3><div><div style="float:right;font-weight:100;color:#777;font-size:95%;cursor:pointer;position:relative;top:3px;right:-6px"><span onClick="customer_is_a_person()">{t}Not a company{/t}</div><div>{t}Company Info{/t}</div></div></td>
+      <td colspan>
+        {t}Company Info{/t}
+    </td>
+    <td colspan=2>
+      <div class="buttons small">
+        <button onClick="customer_is_a_person()">{t}Set as a person{/t}</button>
+        <div>
+  
+      </td>
       </tr>
       
   
@@ -73,17 +90,28 @@
 	  </td>
 	  <td style="width:70px"></td>
 	</tr>
-	
+	 <tr style="height:10px"><td colspan=3></td></tr>
 	 </tbody>
 	 
-	 <tr class="title" style="height:30px">
-            <td colspan=3><div><div id="set_as_company" onClick="customer_is_a_company()" style="{if $customer_type=='Company'}display:none;{/if}float:right;font-weight:100;color:#777;font-size:95%;cursor:pointer;position:relative;top:3px;right:-6px"><span>{t}Is a company{/t}</div><div>{t}Contact Info{/t}</div></div></td>
+	 
+	
+	 
+	 <tr class="title" >
+            <td >
+            {t}Contact Info{/t}
+            </td>
+            <td colspan=2>
+              <div class="buttons small">
+        <button {if $customer_type=='Company'} style="display:none;"{/if} id="set_as_company" onClick="customer_is_a_company()">{t}Set as a company{/t}</button>
+        <div>
+            </td>
+            
 
       </tr>
 	<tr  >
 	  
 	  <td class="label">{t}Contact Name{/t}:</td>
-	  <td>
+	  <td style="text-align:left;width:350px">
 	    <div>
 	    <input id="Contact_Name" value="" style="width:100%" />
 	    <div id="Contact_Name_Container"  ></div>
@@ -130,7 +158,7 @@
 	 
       
 	<tr id="email_mould"   style="{if $scope=='corporation'}display:none{/if}"  >
-	  <td  class="label"  >{t}Email{/t}:<img  id="{$address_identifier}email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /></td>
+	  <td  class="label"  ><img  id="{$address_identifier}email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Email{/t}:</td>
 	  <td >
 	    <div>
 	    <input style="width:100%" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
@@ -144,7 +172,7 @@
  	<tr id="telephone_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
 	    
-	    {t}Telephone{/t}:<img  id="{$address_identifier}telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+	    <img  id="{$address_identifier}telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Telephone{/t}:
 	  </td>
 	  <td>
 	    <div>
@@ -179,7 +207,7 @@
 	<tr id="mobile_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
 	    
-	    {t}Mobile{/t}:<img  id="{$address_identifier}mobile_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+	   <img  id="{$address_identifier}mobile_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Mobile{/t}:
 	  </td>
 	  <td>
 	    <div>
@@ -192,7 +220,7 @@
 	
 	<tr id="FAX_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
-	    {t}Fax{/t}:<img  id="{$address_identifier}FAX_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+	    <img  id="{$address_identifier}FAX_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Fax{/t}:
 	  </td>
 	  <td>
 	    <div>
@@ -245,32 +273,39 @@ hide_buttons=1
 
 
 	 <tr>
- <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
+ <td class="label" style="width:200px;font-size:90%">{t}Send Newsletter{/t}:</td>
  <input type="hidden" value="Yes" id="allow_newsletter"  />
  <input type="hidden" value="Yes" id="allow_marketing_email"  />
  <input type="hidden" value="Yes" id="allow_marketing_postal"  />
 
  <td>
-   <div  class="options" style="margin:0">
-   <span class="option selected" onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</span> 
-   <span class="option" onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</span>
+ <div  class="buttons small left" >
+   <button class="option selected " onclick="change_allow(this,'allow_newsletter','Yes')" >{t}Yes{/t}</button> 
+   <button class="option " onclick="change_allow(this,'allow_newsletter','No')" >{t}No{/t}</button>
    </div>
+ 
+ 
+  
  </td>
  </tr>
   <tr>
- <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
+ <td class="label" style="width:200px;font-size:90%">{t}Send Marketing Emails{/t}:</td>
  <td>
-   <div class="options" style="margin:0">
-   <span class="option selected" onclick="change_allow(this,'allow_marketing_email','Yes')" >{t}Yes{/t}</span> <span class="option" onclick="change_allow(this,'allow_marketing_email','No')" >{t}No{/t}</span>
+   <div  class="buttons small left" >
+   <button class="option selected " onclick="change_allow(this,'allow_marketing_email','Yes')" >{t}Yes{/t}</button> 
+   <button class="option " onclick="change_allow(this,'allow_marketing_email','No')" >{t}No{/t}</button>
    </div>
+ 
+
  </td>
  </tr>
 	
  <tr>
- <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
+ <td class="label" style="width:200px;font-size:90%">{t}Send Marketing Post{/t}:</td>
  <td>
-   <div  class="options" style="margin:0">
-   <span class="option selected" onclick="change_allow(this,'allow_marketing_postal','Yes')" >{t}Yes{/t}</span> <span class="option" onclick="change_allow(this,'allow_marketing_postal','No')" >{t}No{/t}</span><br/><br/>
+   <div  class="buttons small left" >
+   <button class="option selected " onclick="change_allow(this,'allow_marketing_postal','Yes')" >{t}Yes{/t}</button> 
+   <button class="option " onclick="change_allow(this,'allow_marketing_postal','No')" >{t}No{/t}</button>
    </div>
  </td>
  </tr>	
@@ -290,16 +325,24 @@ hide_buttons=1
 	
 
 
+
+<tr>
+<td colspan=3>
+<div class="buttons">
+<div style="float:right;display:none" id="creating_message"><img src="art/loading.gif" alt=""/> {t}Creating Contact{/t}</div>
+<button class="disabled positive" id="save_new_Customer">{t}Save{/t}</button>
+<button class="negative" id="cancel_add_Customer">{t}Cancel{/t}</button>
+
+</div>
+</td>
+</tr>
+
  
     </table>
-      <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
-	<tr>
-		<td   id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
 
-	  <td  class="disabled" id="save_new_Customer">{t}Save{/t}</td>
-	  <td  id="cancel_add_Customer" ">{t}Cancel{/t}</td>
-	</tr>
+    
       </table>
+
       <div id="Customer_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has been found with the similar details{/t}.
 	<table style="margin:10px 0">

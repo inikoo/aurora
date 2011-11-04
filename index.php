@@ -17,9 +17,9 @@
 include_once('common.php');
 
 
-if($user->data['User Type']=='Supplier'){
-  header('Location: suppliers_index.php');
-        exit;
+if ($user->data['User Type']=='Supplier') {
+    header('Location: suppliers_index.php');
+    exit;
 }
 
 
@@ -59,17 +59,19 @@ $smarty->assign('search_options_list',$search_options_list);
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               'button.css',
+               'common.css',
                'container.css',
-
+               'button.css',
+               'table.css',
+               'css/index.css',
+               'theme.css.php'
 
            );
-		   
-   
 
-include_once('Theme.php');
+
+
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',
@@ -125,61 +127,61 @@ $js_files=array(
 
 
 $splinters_data=array(
-               'messages'=>array(
-                              'title'=>_('Display Board'),
-                              'index'=>200,
-                              'php'=>'splinter_messages.php',
-                              'tpl'=>'splinter_messages.tpl',
-                              'js'=>'splinter_messages.js.php'
-                          ),
-               'top_customers'=>array(
-                                   'title'=>_('Top Customers'),
-                                   'index'=>201,
-                                   'php'=>'splinter_top_customers.php',
-                                   'tpl'=>'splinter_top_customers.tpl',
-                                   'js'=>'js/splinter_top_customers.js',
-                                   'order'=>$_SESSION['state']['home']['splinters']['top_customers']['order'],
-                                   'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
-
+                    'messages'=>array(
+                                   'title'=>_('Display Board'),
+                                   'index'=>200,
+                                   'php'=>'splinter_messages.php',
+                                   'tpl'=>'splinter_messages.tpl',
+                                   'js'=>'splinter_messages.js.php'
                                ),
+                    'top_customers'=>array(
+                                        'title'=>_('Top Customers'),
+                                        'index'=>201,
+                                        'php'=>'splinter_top_customers.php',
+                                        'tpl'=>'splinter_top_customers.tpl',
+                                        'js'=>'js/splinter_top_customers.js',
+                                        'order'=>$_SESSION['state']['home']['splinters']['top_customers']['order'],
+                                        'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
+
+                                    ),
 
 
-               'sales'=>array(
-                           'title'=>_('Sales Overview'),
-                           'index'=>203,
-                           'php'=>'splinter_sales.php',
-                           'tpl'=>'splinter_sales.tpl',
-                           'js'=>'js/splinter_sales.js',
-                             'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
-                                  'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
+                    'sales'=>array(
+                                'title'=>_('Sales Overview'),
+                                'index'=>203,
+                                'php'=>'splinter_sales.php',
+                                'tpl'=>'splinter_sales.tpl',
+                                'js'=>'js/splinter_sales.js',
+                                'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
+                                'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
 
-                       ),
-
-
+                            ),
 
 
 
-               'top_products'=>array(
-                                  'title'=>_('Top Products'),
-                                  'index'=>202,
-                                  'php'=>'splinter_top_products.php',
-                                  'tpl'=>'splinter_top_products.tpl',
-                                  'js'=>'js/splinter_top_products.js',
-                                  'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
-                                  'nr'=>$_SESSION['state']['home']['splinters']['top_products']['nr'],
-                                   'type'=> $_SESSION['state']['home']['splinters']['top_products']['type']
 
-                              ),
 
-           );
-           
-         $splinters=array();  
-           foreach($myconf['splinters'] as $splinter_name){
-           if(array_key_exists($splinter_name,$splinters_data))
-           $splinters[$splinter_name]=$splinters_data[$splinter_name];
-           }
-          //exit; 
-      //print_r($splinters)     ;
+                    'top_products'=>array(
+                                       'title'=>_('Top Products'),
+                                       'index'=>202,
+                                       'php'=>'splinter_top_products.php',
+                                       'tpl'=>'splinter_top_products.tpl',
+                                       'js'=>'js/splinter_top_products.js',
+                                       'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
+                                       'nr'=>$_SESSION['state']['home']['splinters']['top_products']['nr'],
+                                       'type'=> $_SESSION['state']['home']['splinters']['top_products']['type']
+
+                                   ),
+
+                );
+
+$splinters=array();
+foreach($myconf['splinters'] as $splinter_name) {
+    if (array_key_exists($splinter_name,$splinters_data))
+        $splinters[$splinter_name]=$splinters_data[$splinter_name];
+}
+//exit;
+//print_r($splinters)     ;
 
 foreach($splinters as $splinter_name=>$splinter) {
 
@@ -201,25 +203,25 @@ foreach($splinters as $splinter_name=>$splinter) {
 $valid_sales=true;
 $sql = "select * from `Invoice Dimension`";
 $result = mysql_query($sql);
-if(!$row=mysql_fetch_array($result))
-	$valid_sales=false;
-	
+if (!$row=mysql_fetch_array($result))
+    $valid_sales=false;
+
 $smarty->assign('valid_sales',$valid_sales);
 
 $valid_customers=true;
 $sql = "select * from `Product Dimension`";
 $result = mysql_query($sql);
-if(!$row=mysql_fetch_array($result))
-	$valid_customers=false;
-	
+if (!$row=mysql_fetch_array($result))
+    $valid_customers=false;
+
 $smarty->assign('valid_customers',$valid_customers);
 
 $valid_products=true;
 $sql = "select * from `Customer Dimension`";
 $result = mysql_query($sql);
-if(!$row=mysql_fetch_array($result))
-	$valid_products=false;
-	
+if (!$row=mysql_fetch_array($result))
+    $valid_products=false;
+
 $smarty->assign('valid_products',$valid_products);
 //print_r($_SESSION['state']['orders']['invoices']);
 

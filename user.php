@@ -16,32 +16,17 @@ include_once('common.php');
 include_once('class.User.php');
 
 
-
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               //$yui_path.'datatable/assets/skins/sam/datatable.css',
-               //$yui_path.'container/assets/skins/sam/container.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'build/assets/skins/sam/skin.css',
-
-               'css/edit.css'
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
            );
-
-
-if ($common) {
-    array_push($css_files, 'themes_css/'.$common);
-    array_push($css_files, 'themes_css/'.$row['Themes css4']);
-    array_push($css_files, 'themes_css/'.$row['Themes css2']);
-    array_push($css_files, 'themes_css/'.$row['Themes css3']);
-}
-
-else {
-    array_push($css_files, 'common.css');
-    array_push($css_files, 'css/dropdown.css');
-    array_push($css_files, 'css/index.css');
-    array_push($css_files, 'table.css');
-}
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',

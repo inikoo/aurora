@@ -390,6 +390,12 @@ class User extends DB_Table {
         case('User Alias'):
             $this->update_field('User Alias',$data['value']);
             break;
+          case('User Theme Key'):
+        case('User Theme Background Key'):
+
+            $this->update_field($tipo,$data['value']);
+            break;   
+            
         }
 
 

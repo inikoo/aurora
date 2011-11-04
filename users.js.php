@@ -56,6 +56,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=home-di
 
 
 function init(){
+ init_search('users');
 
 // var panes=Dom.getElementsByClassName('splinter_buttons', 'li', 'buttons');
 //for (var j = 0; j < panes.length; j++) {

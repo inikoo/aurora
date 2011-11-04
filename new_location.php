@@ -25,7 +25,7 @@ $css_files=array(
 		 'container.css'
 		 );
 
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 
 $general_options_list=array();
 

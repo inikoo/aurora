@@ -38,7 +38,8 @@ function save_search_list(){
 	
 	var request="ar_edit_contacts.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
 	
-	
+	Dom.setStyle(['save_buttons','save_dialog'],'display','none')
+	Dom.setStyle('saving_the_list','display','')
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		  // alert(o.responseText);
@@ -212,7 +213,7 @@ function checkbox_changed_invoice_condition(o){
 			return;
 		}else{
 			hide_invoice();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='equal'){
@@ -220,7 +221,7 @@ function checkbox_changed_invoice_condition(o){
 			return;
 		}else{
 			hide_invoice();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='more'){
@@ -228,7 +229,7 @@ function checkbox_changed_invoice_condition(o){
 			return;
 		}else{
 			hide_invoice();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='between'){
@@ -237,7 +238,7 @@ function checkbox_changed_invoice_condition(o){
 		if(Dom.hasClass(o,'selected')){
 			return;
 		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'invoice_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}
@@ -252,15 +253,16 @@ function checkbox_changed_order_condition(o){
 			return;
 		}else{
 			hide_order();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='equal'){
 		if(Dom.hasClass(o,'selected')){
 			return;
 		}else{
+		
 			hide_order();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='more'){
@@ -268,7 +270,7 @@ function checkbox_changed_order_condition(o){
 			return;
 		}else{
 			hide_order();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='between'){
@@ -277,7 +279,7 @@ function checkbox_changed_order_condition(o){
 		if(Dom.hasClass(o,'selected')){
 			return;
 		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'order_condition_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}
@@ -293,7 +295,7 @@ function checkbox_changed_sales_condition(o){
 			return;
 		}else{
 			hide_sales();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='sales_equal'){
@@ -301,7 +303,7 @@ function checkbox_changed_sales_condition(o){
 			return;
 		}else{
 			hide_sales();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='sales_more'){
@@ -309,7 +311,7 @@ function checkbox_changed_sales_condition(o){
 			return;
 		}else{
 			hide_sales();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}else if(cat=='sales_between'){
@@ -318,7 +320,7 @@ function checkbox_changed_sales_condition(o){
 		if(Dom.hasClass(o,'selected')){
 			return;
 		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'sales_option'),'selected');
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}
@@ -486,7 +488,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['list']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -499,15 +501,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['customers']['list']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['customers']['list']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['customers']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customers']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
 								  }
 								   
 								 );
-	    
+//	    alert("<?php echo$_SESSION['state']['customers']['list']['order']?>")
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -518,8 +520,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
 
-
-var tableid=1;
+	var tableid=1;
+	
 		      var tableDivEL="table"+tableid;
 		      
 		      var ColumnDefs = [
@@ -1142,7 +1144,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-alert(request)
+//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
