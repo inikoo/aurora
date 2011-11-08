@@ -4316,7 +4316,7 @@ function forgot_password($data) {
             exit;
 
         } else {
-            print_r($send_result);
+            //print_r($send_result);
             $response=array('state'=>200,'result'=>'error '.join(' ',$send_result));
             echo json_encode($response);
             exit;
@@ -4338,8 +4338,8 @@ function upload_attachment_to_customer() {
     if (isset($_FILES['attach']['tmp_name'])) {
 
 
-        print_r($_FILES['attach']);
-        print_r($_REQUEST);
+        //print_r($_FILES['attach']);
+        //print_r($_REQUEST);
         // return;
         $file_data=$_FILES['attach'];
         $caption=$_REQUEST['caption'];

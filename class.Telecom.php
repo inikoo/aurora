@@ -1268,7 +1268,7 @@ class Telecom extends DB_Table {
 
         function update_field_switcher($field,$value,$options='') {
 
-              print "XXX $field,$value\n";
+              //print "XXX $field,$value\n";
             // sass();
             if ($field=='Telecom Plain Number')
                 $options.=' no history';
@@ -1497,9 +1497,7 @@ class Telecom extends DB_Table {
 
 
             if (($parent=='Contact' or  $parent=='Customer' ) and $type=='Mobile' and $principal_affected) {
-				print "\ntype".$type;
-				print "\naffected".$principal_affected;
-				print "\nparent".$parent;
+
 				
                 $mobiles=$parent_object->get_mobiles();
 				//print_r($mobiles);
@@ -1510,23 +1508,19 @@ class Telecom extends DB_Table {
             }
 			
 			elseif ($type=='Telephone' and $principal_affected){
-				print "\ntype".$type;
-				print "\naffected".$principal_affected;
-				print "\nparent".$parent;
+
 				
 				$telephones=$parent_object->get_telephones();
-				print_r($telephones);
+				//print_r($telephones);
 				foreach($telephones as $telephone) {
                     $parent_object->update_principal_telephone($telephone->id);
                     break;
                 }
 			}
 			elseif ($type=='FAX' and $principal_affected){
-				print "\ntype".$type;
-				print "\naffected".$principal_affected;
-				print "\nparent".$parent;
+
 				$faxes=$parent_object->get_faxes();
-				print_r($faxes);
+				//print_r($faxes);
 				foreach($faxes as $fax) {
                     $parent_object->update_principal_faxes($fax->id);
                     break;

@@ -4856,6 +4856,7 @@ class Address extends DB_Table {
             if (!array_key_exists($telecom_key,$telecom_keys)) {
                 $this->create_telecom_bridge($telecom_key,$type);
             }
+			$this->updated_data['telecom_key']=$telecom_key;
         }
 
 
@@ -5043,8 +5044,8 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                 $this->data["Address Main $type Key"]=$telecom->id;
                 mysql_query($sql);
 
-                $this->update_parents_principal_telecom_keys($type,array('Contact','Company'));
-                $telecom->update_parents(array('Contact','Company'));
+                $this->update_parents_principal_telecom_keys($type);
+                $telecom->update_parents();
 
             }
 
@@ -5126,7 +5127,7 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                                  ,$telecom_key
                                  ,$parent_object->id
                                 );
-                    //   print "$sql\n";
+                       print "$sql\n";
                     mysql_query($sql);
 
                 }
@@ -5162,6 +5163,7 @@ $this->update_principal_telecom($telecom_key,'Telephone');
 
                 $this->updated=$telephone->updated;
                 $this->new_value=$telephone->display('xhtml');
+				$this->updated_data['telecom_key']=$telephone->id;
                 return $telephone->id;
             }
         }
@@ -5177,6 +5179,7 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                 $fax->update_number($value,$this->data['Address Country Code']);
                 $this->updated=$fax->updated;
                 $this->new_value=$fax->display('xhtml');
+				$this->updated_data['telecom_key']=$fax->id;
                 return $fax->id;
             }
         }
