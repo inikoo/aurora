@@ -3108,9 +3108,14 @@ class Contact extends DB_Table {
 
                 if ($value=='') {
                     $telecom=new Telecom($main_mobile_key);
+					//print_r($telecom);
                     $telecom->delete();
 
                     $this->updated=$telecom->deleted;
+					if ($this->updated) {
+						$this->get_data('id',$this->id);
+						$this->new_value='';
+					}
                 } else {
 
 
@@ -3133,10 +3138,7 @@ class Contact extends DB_Table {
             }
 //print_r($mobile);
             //
-            if ($this->updated) {
-                $this->get_data('id',$this->id);
-                $this->new_value=$this->data['Contact Main XHTML Mobile'];
-            }
+
 
             break;
 
@@ -4371,7 +4373,21 @@ class Contact extends DB_Table {
 
     }
 
+	function get_telephones(){
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+        $mobiles=array();
+        $result=mysql_query($sql);
+		//print $sql;
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $mobile= new Telecom($row['Telecom Key']);
+            $mobile->set_scope('Contact',$this->id);
+            $mobiles[]= $mobile;
+            $mobile->data['Mobile Is Main']=$row['Is Main'];
 
+        }
+        //$this->number_mobiles=count($mobiles);
+        return $mobiles;
+	}
 
 
 
