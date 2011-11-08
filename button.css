@@ -243,7 +243,6 @@ version: 2.5.0
 
 
 
-
 .buttons a, .buttons button{
     display:block;
     float:right;
@@ -267,8 +266,16 @@ version: 2.5.0
 .buttons.small a, .buttons.small button{
 font-size:80%;
  font-weight:normal;
- padding:1px 3px 1px 3px; /* Links */
+ padding:0px 3px 0px 3px; /* Links */
 
+}
+
+div.clusters{margin:3px 0 5px 0}
+div.cluster{float:left;margin-right:20px}
+.buttons.cluster a, .buttons.cluster button{
+
+ padding:0px 0px 0px 0px; /* Links */
+margin:0 3px 0 0;
 }
 
 .buttons.left a, .buttons.left button{

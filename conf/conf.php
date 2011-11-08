@@ -246,7 +246,7 @@ $default_state=array(
                             'id'=>''),
                    'order'=>array(
                                'id'=>'',
-                               
+
                                'store_key'=>0,
 
                                'products'=>array(
@@ -1252,7 +1252,20 @@ $default_state=array(
                                                    )
                                        ),
 
-
+                   'campaigns'=>array(
+                                   'view'=>'campaigns',
+                                   'campaigns'=>array(
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'elements'=>array()
+                                               )
+                               ),
 
                    'warehouse'=>array(
                                    'id'=>1,
@@ -1607,32 +1620,32 @@ $default_state=array(
                                                                 'orders'=>true,
                                                                 'status'=>true
                                                             )
-                                                       ),
-                      
-                           'edit_table'=>array(
-                                               'order'=>'name',
-                                               'order_dir'=>'desc',
-                                               'sf'=>0,
-                                               'nr'=>25,
+                                           ),
+
+                                   'edit_table'=>array(
+                                                    'order'=>'name',
+                                                    'order_dir'=>'desc',
+                                                    'sf'=>0,
+                                                    'nr'=>25,
 
 
-                                               'where'=>'',
-                                               'f_field'=>'customer name',
-                                               'f_value'=>'',
+                                                    'where'=>'',
+                                                    'f_field'=>'customer name',
+                                                    'f_value'=>'',
 
-                                               'csv_export'=>array(
-                                                                'id'=>true,
-                                                                'name'=>true,
-                                                                'location'=>true,
-                                                                'last_orders'=>true,
-                                                                'orders'=>true,
-                                                                'status'=>true
-                                                            )
-                                                       ),
-                      
-                      
-                      
-                      'advanced_search'=>array(
+                                                    'csv_export'=>array(
+                                                                     'id'=>true,
+                                                                     'name'=>true,
+                                                                     'location'=>true,
+                                                                     'last_orders'=>true,
+                                                                     'orders'=>true,
+                                                                     'status'=>true
+                                                                 )
+                                                ),
+
+
+
+                                   'advanced_search'=>array(
                                                          'order'=>'name',
                                                          'order_dir'=>'',
                                                          'sf'=>0,
@@ -2506,9 +2519,9 @@ $default_state=array(
 
 
 
-'preferences'=>array(
-                'view'=>'color'
-),
+                   'preferences'=>array(
+                                     'view'=>'color'
+                                 ),
 
                    'site'=>array(
 
@@ -2599,16 +2612,16 @@ $default_state=array(
                                                            'nr'=>25,
                                                            'view'=>'general'
                                                        ),
- 'objetives'=>array(
-                                                           'f_field'=>'email',
-                                                           'f_value'=>'',
-                                                           'f_show'=>false,
-                                                           'order'=>'name',
-                                                           'order_dir'=>'',
-                                                           'sf'=>0,
-                                                           'nr'=>25,
-                                                           'view'=>'general'
-                                                       )
+                                        'objetives'=>array(
+                                                        'f_field'=>'email',
+                                                        'f_value'=>'',
+                                                        'f_show'=>false,
+                                                        'order'=>'name',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'view'=>'general'
+                                                    )
 
                                     ),
 

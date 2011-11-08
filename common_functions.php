@@ -860,7 +860,9 @@ function customers_awhere($awhere) {
                     'sales_upper'=>'',
                     'sales_option'=>array(),
                     'store_key'=>false,
-                    'order_option'=>array()
+                    'order_option'=>array(),
+                    'order_time_units_since_last_order_qty'=>false,
+                    'order_time_units_since_last_order_units'=>false
                 );
 
     //  $awhere=json_decode($awhere,TRUE);
@@ -1072,6 +1074,23 @@ function customers_awhere($awhere) {
         $where.="and ($customers_which_where)";
     }
 
+//print_r($where_data);
+if($where_data['order_time_units_since_last_order_qty']>0){
+
+switch ($where_data['order_time_units_since_last_order_units']) {
+    case 'days':
+       $where.=sprintf(' and Date(`Customer Last Order Date`)=DATE(DATE_SUB(NOW(), INTERVAL %d day)) ',$where_data['order_time_units_since_last_order_qty']);
+        break;
+    default:
+    
+        break;
+}
+
+}
+    
+
+
+
     $invoice_option_where='';
     foreach($where_data['invoice_option'] as $invoice_option) {
         switch ($invoice_option) {
@@ -1114,7 +1133,17 @@ function customers_awhere($awhere) {
             break;
         }
     }
+    
+    
+    
+
+    
     $order_option_where=preg_replace('/^\s*and/','',$order_option_where);
+
+
+
+
+
 
     if ($order_option_where!='') {
         $where.="and ($order_option_where)";
@@ -1140,6 +1169,10 @@ function customers_awhere($awhere) {
         }
     }
     $sales_option_where=preg_replace('/^\s*and/','',$sales_option_where);
+
+
+
+
 
     if ($sales_option_where!='') {
         $where.="and ($sales_option_where)";

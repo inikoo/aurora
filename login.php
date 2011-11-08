@@ -23,10 +23,12 @@ $St=AESEncryptCtr($Sk,SKEY, 256);
 //print AESDecryptCtr($St,SKEY,256);
 //print($St);
 $css_files=array(
-		 $yui_path.'xreset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 'common.css',
-		 'login.css'
+		 'button.css',
+		// 'login.css',
+		 'css/theme_1.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',

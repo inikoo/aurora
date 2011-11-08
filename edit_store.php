@@ -60,7 +60,7 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store_id,'label'=>_('Exit Edit'));
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 

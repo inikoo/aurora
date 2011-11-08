@@ -24,14 +24,22 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-case('change_theme'):
 
+case('change_theme'):
     $data=prepare_values($_REQUEST,array(
                              'theme_key'=>array('type'=>'theme'),
                              'user_key'=>array('type'=>'theme'),
                          ));
 
     change_theme($data);
+    break;
+case('change_background_theme'):
+    $data=prepare_values($_REQUEST,array(
+                             'background_theme_key'=>array('type'=>'theme'),
+                             'user_key'=>array('type'=>'theme'),
+                         ));
+
+    change_background_theme($data);
     break;
 
 
@@ -41,7 +49,18 @@ default:
     echo json_encode($response);
 }
 
-
+function change_background_theme($data) {
+    $_user=new User($data['user_key']);
+    $_user->update('User Theme Background Key',array('value'=>$data['background_theme_key']));
+    
+    if($_user->updated){
+       $response= array('state'=>200,'newvalue'=>$_user->data['User Theme Background Key'],'key'=>'change_background_theme');
+    }else{
+       $response= array('state'=>400,'key'=>'no_change');
+    }
+    
+   echo json_encode($response);
+}
 
 function change_theme($data) {
     $_user=new User($data['user_key']);

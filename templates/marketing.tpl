@@ -17,13 +17,12 @@
 </div>
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 
-    <li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Stats{/t}</span></span></li>
+    <li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Overview{/t}</span></span></li>
     <li> <span class="item {if $view=='newsletter'}selected{/if}"  id="newsletter">  <span> {t}eNewsletters{/t}</span></span></li>
-    <li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Email Campaigns{/t}</span></span></li>
-    <li> <span class="item {if $view=='web_internal'}selected{/if}"  id="web_internal">  <span> {t}Site Campaigns{/t}</span></span></li>
-    <li> <span class="item {if $view=='web'}selected{/if}"  id="web">  <span> {t}Internet Campaigns{/t}</span></span></li>
-    <li> <span class="item {if $view=='other'}selected{/if}"  id="other">  <span> {t}Other Media Campaigns{/t}</span></span></li>
-        <li> <span class="item {if $view=='follow'}selected{/if}"  id="follow">  <span> {t}Follow-up's{/t}</span></span></li>
+    <li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Marketing Email{/t}</span></span></li>
+    <li> <span class="item {if $view=='web_internal'}selected{/if}"  id="web_internal">  <span> {t}Campaigns{/t}</span></span></li>
+  
+        <li> <span class="item {if $view=='follow'}selected{/if}"  id="follow">  <span> {t}Remainders{/t}</span></span></li>
 
 </ul>
  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>

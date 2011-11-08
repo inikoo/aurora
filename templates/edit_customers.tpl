@@ -16,19 +16,23 @@
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
 
-  <h1 style="float:left;padding-top:0px">{t}Editing Customers{/t} <span class="id">{if $customer_list_id}{$customer_list_name}{else}{$store->get('Store Code')}{/if}</span></h1>
 
+<div class="buttons left" style="float:left">
 
+<button style="margin-left:0px"  onclick="window.location='{if $customer_list_id}customers_list.php?id={$customer_list_id}{else}customers.php?store={$store->id}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+</div>
 
 
 <div class="buttons" style="float:right">
 <button id="delete_all" class="negative" style="margin-left:20px"><img src="art/icons/cross.png" alt=""/> {t}Delete All Customers{/t}</button>
 
-<button style="margin-left:20px"  onclick="window.location='{if $customer_list_id}customers_list.php?id={$customer_list_id}{else}customers.php?store={$store->id}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
 </div>
 
 <div style="clear:both"></div>
 </div>
+
+
+  <h1 style="float:left;padding-top:0px">{t}Editing Customers{/t} <span class="id">{if $customer_list_id}{$customer_list_name}{else}{$store->get('Store Code')}{/if}</span></h1>
 
 
 <div style="clear:left;margin:0 0px">

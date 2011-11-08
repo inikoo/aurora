@@ -439,8 +439,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	store_id=Dom.get('store_id').value;
     //var request='&sf=0&store_id='+store_id+'&where=' +awhere;
 					 
-					 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&sf=0&store_id="+store_id+'&where=' +awhere);
+		request="ar_contacts.php?tipo=customers&sf=0&store_id="+store_id+'&where=' +awhere
+		//alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.table_id=tableid;
 
@@ -1086,6 +1087,14 @@ not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customer
     }
 	
 
+
+order_time_units_since_last_order_qty=parseFloat(Dom.get('order_time_units_since_last_order_qty').value);
+order_time_units_since_last_order_units=Dom.get('order_time_units_since_last_order_unit').value;
+if(!order_time_units_since_last_order_qty>0){
+    order_time_units_since_last_order_qty=-1;
+  
+}
+
     var data={ 
     dont_have:dont_have_array,
     have:have_array,
@@ -1115,7 +1124,9 @@ not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customer
 	number_of_orders_upper:Dom.get('number_of_orders_upper').value,
 	number_of_orders_lower:Dom.get('number_of_orders_lower').value,
 	sales_lower:Dom.get('sales_lower').value,
-	sales_upper:Dom.get('sales_upper').value
+	sales_upper:Dom.get('sales_upper').value,
+	order_time_units_since_last_order_qty:order_time_units_since_last_order_qty,
+	order_time_units_since_last_order_units:order_time_units_since_last_order_units
     }
 
     return YAHOO.lang.JSON.stringify(data);
@@ -1325,6 +1336,10 @@ YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, 
 YAHOO.util.Event.addListener("lost_customer_from", "click", cal5.show, cal5, true);
 YAHOO.util.Event.addListener("lost_customer_to", "click", cal6.show, cal6, true);
 
+
+YAHOO.util.Event.addListener("order_time_units_since_last_order_qty", "keyup", validate_order_time_units_since_last_order);
+
+
 if(Dom.get('auto').value=='1'){
 	Dom.setStyle('save_dialog','visibility','visible');
 	Dom.setStyle('save_list','display','');
@@ -1338,7 +1353,17 @@ set_values();
 
 YAHOO.util.Event.onDOMReady(init);
 
+function validate_order_time_units_since_last_order(){
+var qty=parseFloat(this.value)
+unit=Dom.get('order_time_units_since_last_order_unit').value;
+if(qty>0){
+    
+    Dom.addClass('order_time_units_since_last_order_'+unit,'selected')
+}else{
+Dom.removeClass('order_time_units_since_last_order_'+unit,'selected')
+}
 
+}
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });

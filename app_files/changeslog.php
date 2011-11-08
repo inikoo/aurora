@@ -5040,8 +5040,12 @@ CREATE TABLE `Theme Background Dimension` (
 `Footer CSS` TEXT NOT NULL
 ) ENGINE = MYISAM ;
 
-
-
+ALTER TABLE `Theme Dimension` ADD `Theme CSS Top Navigation` TEXT NOT NULL ;
+CREATE TABLE `dw`.`Theme Background Bridge` (
+`Theme Key` MEDIUMINT NOT NULL ,
+`Theme Background Key` MEDIUMINT NOT NULL ,
+PRIMARY KEY ( `Theme Key` , `Theme Background Key` )
+) ENGINE = MYISAM ;
 
 */
 

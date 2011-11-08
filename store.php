@@ -79,7 +79,7 @@ if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
  $general_options_list[]=array('tipo'=>'url','url'=>'products_lists.php?store='.$store->id,'label'=>_('Products Lists'));
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 

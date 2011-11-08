@@ -1,17 +1,35 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
+<div  class="branch"> 
+  <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
 </div>
+
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+
+
+<div class="buttons left" style="float:left">
+
+<button style="margin-left:0px"  onclick="window.location='{if $customer_list_id}customers_list.php?id={$customer_list_id}{else}customers.php?store={$store->id}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+</div>
+
+
+<div class="buttons" style="float:right">
+
+</div>
+
+<div style="clear:both"></div>
+</div>
+
+
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Store{/t}: <span id="title_name">{$store->get('Store Name')}</span> (<span id="title_code">{$store->get('Store Code')}</span>)</h1>
+    <h1>{t}Editing Store{/t}: <span class="id" id="title_name">{$store->get('Store Name')}</span> <span class="id" id="title_code">({$store->get('Store Code')})</span></h1>
 </div>
   <div id="msg_div"></div>
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-    <li> <span class="item {if $edit=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Campaings{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $edit=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Deal Templates{/t}</span></span></li>
     <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Deals{/t}</span></span></li>
 
     <li> <span class="item {if $edit=='charges'}selected{/if}"  id="charges">  <span> {t}Charges{/t}</span></span></li>
@@ -237,7 +255,15 @@
       </div>
        <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 	
+   <div class="buttons">
+	   	   <button  id="add_deal"><img src="art/icons/add.png" alt=""> {t}Add Deal{/t}</button>
+	   	   <button  id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button>
 
+
+	      <button  style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button>
+	      <button  style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button>
+	  </div>
+	
 
 	 <div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>
@@ -245,53 +271,62 @@
 
 
 	   <table class="edit" >
-	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td>
+	     </tr>
 	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
 	 
-	 <div   class="data_table" sxtyle="margin:25px 10px;">
-	   <span class="clean_table_title">{t}Deals{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_deal">Add Deal</td>
-	      <td  style="display:none" id="save_new_deal">Save New Deal</td>
-	      <td  style="display:none" id="cancel_add_deal">Cancel</td>
-	    </tr>
-	  </table>
-	  <div  class="clean_table_caption"  style="clear:both;">
-	    <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
-	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
-	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
-	  </div>
+	
+	 
+	 <div   class="data_table" style="clear:both">
+	  
+	  
+	  
+	  
+	  <span class="clean_table_title">{t}Deals{/t}</span>
+	   
+	          <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+
+	   
+	
+	   	  
+{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4  }
+
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
+
+
 	 </div>
       </div>
        <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="campaigns"}display:none{/if}"  id="d_campaigns">
+       
+         <div class="buttons">
+	   <button  id="add_campaign"><img src="art/icons/add.png" alt=""> {t}Add Template{/t}</td>
+	   	   	   <button  id="close_edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Store Deals{/t}</button>
+
+	      <button  style="display:none" class="positive" id="save_new_campaign">{t}Save New Template{/t}</button>
+	      <button  style="display:none" class="negative" id="cancel_add_campaign">{t}Cancel{/t}</button>
+	  </div>
+       
 	 <div  class="new_item_dialog"  id="new_campaign_dialog" style="display:none">
 	   <div id="new_campaign_messages" class="messages_block"></div>
 	   <table class="edit" >
-	     <tr><td>{t}Campaign Name{/t}:</td><td><input  id="new_campaign_name" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
-	     <tr><td>{t}Campaign Description{/t}:</td><td><input   id="new_campaign_description" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
+	     <tr><td>{t}Template Name{/t}:</td><td><input  id="new_campaign_name" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Template Description{/t}:</td><td><input   id="new_campaign_description" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
 	 
-	 <div   class="data_table" sxtyle="margin:25px 10px;">
-	   <span class="clean_table_title">{t}Campaigns{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_campaign">Add Campaign</td>
-	      <td  style="display:none" id="save_new_campaign">Save New Campaign</td>
-	      <td  style="display:none" id="cancel_add_campaign">Cancel</td>
-	    </tr>
-	  </table>
-	  <div  class="clean_table_caption"  style="clear:both;">
-	    <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
-	    <div class="clean_table_filter" style="display:none" id="clean_table_filter3"><div class="clean_table_info"><span id="filter_name3">{$filter_name3}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value0}" size=10/><div id='f_container3'></div></div></div>
-	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
-	  </div>
+	 <div   class="data_table" style="clear:both">
+	   <span class="clean_table_title">{t}Deal Templates{/t}</span>
+	   	          <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+
+	
+	  
+	
+	{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
+
 	  <div  id="table3"   class="data_table_container dtable btable "> </div>
 	 </div>
     
@@ -425,5 +460,16 @@
     </ul>
   </div>
 </div>
+
+<div id="dialog_edit_campaign" style="20px 10px 10px 10px">
+<table class="edit">
+<tr>
+<td class="label">{t}Name{/t}</td>
+</tr>
+
+</table>
+
+</div>
+
 
 {include file='footer.tpl'}
