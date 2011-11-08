@@ -1199,13 +1199,12 @@ class Telecom extends DB_Table {
 
 
         public function update($data,$options='') {
-
+			
             if ($data['Telecom Number']=='') {
                 $this->error=true;
                 $this->msg=_('Wrong telephone number');
                 return false;
             }
-
 
             $old_plain=$this->display('plain');
             $old_xhtml=$this->display('xhtml');
@@ -1219,9 +1218,9 @@ class Telecom extends DB_Table {
             $base_data=$this->base_data();
             foreach($data as $key=>$value) {
 
-                //   print "** $key,$value <- ".$this->data[$key]."  \n";
-                if ( array_key_exists($key,$this->data) and   strcmp($value,$this->data[$key])   and $key!='Telecom Plain Number') {
-                    //       print "**to change  $key,$value <- ".$this->data[$key]."  \n";
+                  // print "** $key,$value <- ".$this->data[$key]."  \n";
+                if ( array_key_exists($key,$this->data) and strcmp($value,$this->data[$key]) and $key!='Telecom Plain Number') {
+                           //print "**to change  $key,$value <- ".$this->data[$key]."  \n";
                     $this->update_field_switcher($key,strval($value),$options);
                 }
 
@@ -1262,14 +1261,14 @@ class Telecom extends DB_Table {
             }
 
             $data=$this->parse_inputed_number($value,$country_code);
-            	//print_r($data);
+            
             // exit;
             $this->update($data);
         }
 
         function update_field_switcher($field,$value,$options='') {
 
-            //  print "XXX $field,$value\n";
+              print "XXX $field,$value\n";
             // sass();
             if ($field=='Telecom Plain Number')
                 $options.=' no history';
@@ -1498,15 +1497,42 @@ class Telecom extends DB_Table {
 
 
             if (($parent=='Contact' or  $parent=='Customer' ) and $type=='Mobile' and $principal_affected) {
+				print "\ntype".$type;
+				print "\naffected".$principal_affected;
+				print "\nparent".$parent;
+				
                 $mobiles=$parent_object->get_mobiles();
+				//print_r($mobiles);
                 foreach($mobiles as $mobile) {
                     $parent_object->update_principal_mobil($mobile->id);
                     break;
                 }
             }
-
-
-
+			
+			elseif ($type=='Telephone' and $principal_affected){
+				print "\ntype".$type;
+				print "\naffected".$principal_affected;
+				print "\nparent".$parent;
+				
+				$telephones=$parent_object->get_telephones();
+				print_r($telephones);
+				foreach($telephones as $telephone) {
+                    $parent_object->update_principal_telephone($telephone->id);
+                    break;
+                }
+			}
+			elseif ($type=='FAX' and $principal_affected){
+				print "\ntype".$type;
+				print "\naffected".$principal_affected;
+				print "\nparent".$parent;
+				$faxes=$parent_object->get_faxes();
+				print_r($faxes);
+				foreach($faxes as $fax) {
+                    $parent_object->update_principal_faxes($fax->id);
+                    break;
+                }				
+				
+			}
 
         }
 

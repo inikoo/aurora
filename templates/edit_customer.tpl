@@ -495,6 +495,7 @@
  
  
   {foreach from=$customer->get_other_telephones_data() key=other_telephone_key item=other_telephone }
+  
  <tr  id="tr_other_telephone{$other_telephone_key}"><td  class="label"><img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'telephone',{$other_telephone_key})">  <span id="tr_other_telephone_label{$other_telephone_key}">{if $other_telephone.label==''}{t}Other Telephone{/t}{else}{$other_telephone.label} (Telephone){/if}:<span></td>
    <td  style="text-align:left">
      <div   >
@@ -523,7 +524,7 @@
  
   <tr ><td  class="label"><img  id="comment_icon_mobile" src="{if $customer->get_principal_telecom_comment('Mobile')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Mobile Key')==''}display:none{/if}" onClick="change_comment(this,'mobile',{$customer->get('Customer Main Mobile Key')})"> {t}Contact Mobile{/t}:</td>
    <td  style="text-align:left">
-     <div   >
+     <div>
        <input style="text-align:left;width:100%" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0">
        <div id="Customer_Main_Mobile_Container"  ></div>
      </div>

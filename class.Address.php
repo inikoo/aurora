@@ -4989,7 +4989,7 @@ class Address extends DB_Table {
             $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                          ,prepare_mysql($type)
                          ,$this->id );
-            // print $sql;
+             //print $sql;
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 $main_telecom_key=$row['Telecom Key'];
@@ -5012,7 +5012,10 @@ class Address extends DB_Table {
             }
 
         }
+function update_principal_telephone($telecom_key) {
+$this->update_principal_telecom($telecom_key,'Telephone');
 
+}
         function update_principal_telecom($telecom_key,$type) {
 
             if (preg_match('/^$(Telephone|FAX)/i',$type) ) {
@@ -5040,14 +5043,17 @@ class Address extends DB_Table {
                 $this->data["Address Main $type Key"]=$telecom->id;
                 mysql_query($sql);
 
-                $this->update_parents_principal_telecom_keys($type);
-                $telecom->update_parents();
+                $this->update_parents_principal_telecom_keys($type,array('Contact','Company'));
+                $telecom->update_parents(array('Contact','Company'));
 
             }
 
         }
 
-        function update_parents_principal_telecom_keys($type) {
+        function update_parents_principal_telecom_keys($type,$parents=false) {
+		if(!is_array($parents))
+		$parents=array('Contact','Company','Customer','Supplier');
+		
             if (preg_match('/^$(Telephone|FAX)/i',$type) ) {
                 $type='Telephone';
             }
@@ -5057,7 +5063,7 @@ class Address extends DB_Table {
             if (!$telecom_key)
                 return;
 
-            $parents=array('Contact','Company','Customer','Supplier');
+            
             foreach($parents as $parent) {
                 $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
                 //print "$sql\n";
@@ -5149,9 +5155,9 @@ class Address extends DB_Table {
                 $this->msg="No principal telephone\n";
                 return 0;
             } else {
-
+				
                 $telephone=new Telecom($telephone_key);
-
+				
                 $telephone->update_number($value,$this->data['Address Country Code']);
 
                 $this->updated=$telephone->updated;
