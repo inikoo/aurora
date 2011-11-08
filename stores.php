@@ -54,7 +54,7 @@ if ($modify) {
 
     $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Add Store'));
 }
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 if (isset($_REQUEST['edit'])){

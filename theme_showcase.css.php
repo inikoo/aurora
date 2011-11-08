@@ -13,5 +13,14 @@ $header=$row['Theme CSS Header'];
     print $header;
 }
 
+$sql=sprintf("select * from `Theme Background Dimension` ");
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$header=$row['Background CSS'];
+    $header=preg_replace('/html\{/','div.theme_background_'.$row['Theme Background Key'].'{',$header);
+    print $header;
+}
+
    
 ?>

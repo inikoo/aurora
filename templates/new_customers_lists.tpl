@@ -179,6 +179,21 @@
      
       </tr>
 	  
+	  <tr>
+	  <td>{t}Last order placed{/t}:</td>
+	  	<td >
+			<div id="order_time_units_since_last_order" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+			<input style="height:18px" id="order_time_units_since_last_order_qty" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+			<input type="hidden" value="days" id="order_time_units_since_last_order_unit"/>
+			</div>
+		
+			<button  class="catbox"  id="order_time_units_since_last_order_days" parent="order_time_units_since_last_order_"  >{t}Days ago{/t}</button>
+			
+			</div>  
+				</td>
+	  </tr>
+	  
 	  <tr><td colspan="2"><b>{t}Customers with Invoice{/t}</b></td></tr>
       <tr>
         <td>{t}Number of Invoices{/t}:</td>

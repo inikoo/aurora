@@ -6698,11 +6698,26 @@ function list_campaigns() {
             $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Name']);
         }
         $deals.='</ul>';
+        
+
+$used=0;
+      
+        if(!$row['Campaign Expiration Date'] ){
+          $duration=_('Permanent');
+        }else{
+            if(!$row['Campaign Begin Date']){
+            $duration=strftime("%a %e %b %y", $row['Campaign Begin Date']." +00:00").' - ';
+            }
+         $duration.=strftime("%a %e %b %y", $row['Campaign Expiration Date']." +00:00");
+        }
+
+
+
         $adata[]=array(
                      'name'=>$row['Campaign Name'],
-                     'description'=>$row['Campaign Description'].$deals
-
-
+                     'description'=>$row['Campaign Description'].$deals,
+                     'duration'=>$duration,
+                     'used'=>$used   
                  );
     }
     mysql_free_result($res);

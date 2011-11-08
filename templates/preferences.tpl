@@ -21,18 +21,26 @@
 
 
 <div class="buttons left">
-{foreach  from=$themes item=theme}
-<div class="theme_{$theme.key}" style="float:left;padding:10px 20px;margin-right:10px">
-
-<button onClick="change_theme({$theme.key})" class="theme_{$theme.key}">{$theme.name}</button>
-
-</div>
-
-{/foreach}
-<div style="clear:both"></div>
+    {foreach  from=$themes item=theme}
+        <div class="theme_{$theme.key}" style="border:1px solid #ccc;float:left;padding:10px 20px;margin-right:10px;width:90px">
+            <button onClick="change_theme({$theme.key})" class="theme_{$theme.key}">{$theme.name}</button>
+        </div>
+    {/foreach}
+    <div style="clear:both"></div>
 </div>
 
 <h2 style="margin-top:20px;clear:both">{t}Backgrounds{/t}</h2>
+<div class="buttons left" style="margin-top:10px">
+    {foreach  from=$backgrounds item=background}
+    <div style="width:90px;text-align:right;float:left;margin-right:10px;width:130px">
+        <div onClick="change_background_theme({$background.key})" class="theme_background_{$background.key}" style="border:1px solid #ccc;width:100%;height:80px;cursor:pointer">
+        </div>
+        <span>{$background.name}</span>
+        </div>
+    {/foreach}
+    <div style="clear:both"></div>
+</div>
+
 
 
 <div style="clear:both"></div>

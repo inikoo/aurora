@@ -436,8 +436,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var CustomersColumnDefs = [
 				       {key:"name",label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"description",label:"<?php echo _('Description')?>", width:400,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"from",label:"<?php echo _('Valid From')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  //     ,{key:"from",label:"<?php echo _('Valid From')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //   ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
 	    
@@ -776,11 +776,27 @@ function init(){
    // the second argument is true to indicate file upload.
  //  YAHOO.util.Connect.setForm(Dom.get('logo_file_upload_form'), true);
  
-  
-  
+
+   YAHOO.util.Event.addListener('edit_deals_templates', "click",edit_deal_templates)
+   YAHOO.util.Event.addListener('close_edit_deals_templates', "click",close_edit_deals_templates)
+
   
 
 }
+
+function edit_deal_templates(){
+
+Dom.setStyle('d_campaigns','display','')
+Dom.setStyle('d_discounts','display','none')
+
+}
+
+function close_edit_deals_templates(){
+Dom.setStyle('d_campaigns','display','none')
+Dom.setStyle('d_discounts','display','')
+
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 

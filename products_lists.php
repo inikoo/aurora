@@ -1,4 +1,16 @@
 <?php
+/*
+ File: store.php 
+
+ UI store page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2011, Inikoo 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 include_once('class.Store.php');
 if (!$user->can_view('stores') or count($user->stores)==0 ) {
@@ -76,7 +88,7 @@ $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_products
      $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store->id,'label'=>_('Store'));
   
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 

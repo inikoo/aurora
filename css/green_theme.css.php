@@ -64,47 +64,33 @@ div.cHead div.loaderror {
       /*---------------------------------themetable---------------------------------------------------------------*/
 
 
-.data_table_container {width:100%;clear:both;border-top:1px solid #BACC93;border-bottom:1px solid #BACC93;margin-bottom:2px;padding-bottom:1px;}
-
-
+.data_table_container {border-top:1px solid #BACC93;border-bottom:1px solid #BACC93;}
 .clean_table_add_items:hover { background:#edf3ff; }
 .clean_table_info span.selected { background:#7296e1;color:white }
-
-
-.kaktus .yui-dt-hd table{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
-
-.kaktus .yui-dt-scrollable .yui-dt-hd{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
-.kaktus .yui-dt-scrollable .yui-dt-bd{border-left:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
-
-.kaktus .yui-dt th{border-bottom:1px solid #BACC93}
-.kaktus .yui-dt-data tr{border-top:1px solid #BACC93}
-.kaktus tr.yui-dt-even{background-color:#f8efdd;}
-
-.kaktus tr.yui-dt-even td.yui-dt-asc   ,.kaktus tr.yui-dt-even td.yui-dt-desc{background-color:#f8efdd;}
-.btable caption,.tablecaption  {background:orange;color:black;height:13.85em;padding:2px 0px 0px 3px;width:100%;font-size:93%;margin-top:10px;;border-bottom:1px solid #BACC93}
-.kaktus .with_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #BACC93;border-bottom:none;background:#fff}
-.kaktus tr.yui-dt-last{border-bottom:1px solid #BACC93}
-.kaktus .with_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid #BACC93;border-bottom:none;background:#fff}
-.kaktus .with_total tr.yui-dt-last  {border-top:1px solid #BACC93;border-bottom:none;background:#fff}
-
-.kaktus .with_total  .yui-dt-data  tr.yui-dt-last  {border-top:1px solid #BACC93;border-bottom:none;background:#fff}
-.kaktus .yui-dt th {
+.inikoo .yui-dt-hd table{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.inikoo .yui-dt-scrollable .yui-dt-hd{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.inikoo .yui-dt-scrollable .yui-dt-bd{border-left:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.inikoo .yui-dt th{border-bottom:1px solid #BACC93}
+.inikoo .yui-dt-data tr{border-top:1px solid #BACC93}
+.inikoo tr.yui-dt-even{background-color:#f8efdd;}
+.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#f8efdd;}
+.btable caption,.tablecaption  {background:orange;color:black;border-bottom:1px solid #BACC93}
+.inikoo .with_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #BACC93;border-bottom:none;background:#fff}
+.inikoo tr.yui-dt-last{border-bottom:1px solid #BACC93}
+.inikoo .with_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid #BACC93;border-bottom:none;background:#fff}
+.inikoo .with_total tr.yui-dt-last  {border-top:1px solid #BACC93;border-bottom:none;background:#fff}
+.inikoo .with_total  .yui-dt-data  tr.yui-dt-last  {border-top:1px solid #BACC93;border-bottom:none;background:#fff}
+.inikoo .yui-dt th {
     border-bottom: 1px solid #A3B972;
 }
-inikoo .yui-dt th {
-    border-bottom: 1px solid #A3B972;
-}
+
 .inikoo .yui-dt th{border-bottom:1px solid #A3B972}
 .inikoo tr.yui-dt-last{border-bottom:1px solid #A3B972}
 .inikoo .xwith_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid #A3B972;border-bottom:none;background:#fff}
-
-.inikoo .xwith_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid #A3B972;border-bottom:none;background:#fff}
-.xinikoo .with_total tbody.yui-td-data tr.yui-dt-last  {border-top:4px solid #A3B972;border-bottom:none;background:#fff}
 .inikoo .with_total  .yui-dt-data  tr.yui-dt-last  {border-top:1px solid #A3B972;border-bottom:none;background:#fff}
 .inikoo tr.yui-dt-even{background-color:#dde6c9;}
 .inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#dde6c9;}
-.inikoo .yui-dt-data tr {
-    border-top: 1px solid #bacc93;}
+.inikoo .yui-dt-data tr {border-top: 1px solid #bacc93;}
 /*---------------------------------theme index---------------------------------------------------------------*/
 
 

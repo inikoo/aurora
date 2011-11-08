@@ -567,7 +567,7 @@ position:relative;top:1px;
 
 .messages_block{padding:10px}
 
-.branch {clear:left;font-style:italic; color:#666;font-size:90%}
+.branch {clear:left;font-style:italic; color:#666;font-size:90%;width:540px;padding-top:5px}
 .branch span{cursor:pointer}
 .branch span.selected{font-weight:800;color:#555}
 

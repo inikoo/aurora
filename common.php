@@ -287,7 +287,7 @@ if ($user->can_view('stores')) {
     if (count($user->stores)==1) {
         $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
     } else
-        $nav_menu[] = array(_('Stores'), 'stores.php','products');
+        $nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
 if ($user->can_view('orders')) {

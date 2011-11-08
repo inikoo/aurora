@@ -52,7 +52,6 @@ $js_files=array(
 
 
 
-
 $smarty->assign('view',$_SESSION['state']['preferences']['view']);
 
 $theme=array();
@@ -65,10 +64,12 @@ $smarty->assign('themes',$themes);
 
 
 $backgrounds=array();
-$sql=sprintf("select * from `Theme Dimension`");
+$sql=sprintf("select * from `Theme Background Dimension`  TB left join `Theme Background Bridge` B on (TB.`Theme Background Key`=B.`Theme Background Key`) where `Theme Key`=%d order by `Theme Background Name`",
+$user->data['User Theme Key']
+);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-    $backgrounds[]=array('name'=>$row['Theme Name'],'key'=>$row['Theme Key']);
+    $backgrounds[]=array('name'=>$row['Theme Background Name'],'key'=>$row['Theme Background Key']);
 }
 $smarty->assign('backgrounds',$backgrounds);
 

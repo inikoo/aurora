@@ -1,7 +1,7 @@
 
     var onmySubmit =function(){
     
-    
+
     
 	var input_login=document.getElementById("_login_");
 	var input_pwd=document.getElementById("_passwd_");
@@ -42,9 +42,10 @@ function init() {
 
 
     YAHOO.util.Dom.get("_login_").focus();
-  
-    var oPushButton1 = new YAHOO.widget.Button("login_go"); 
-    oPushButton1.on("click", onmySubmit); 
+      YAHOO.util.Event.addListener('login_button', "click", onmySubmit);
+
+  //  var oPushButton1 = new YAHOO.widget.Button("login_button"); 
+  //  oPushButton1.on("click", onmySubmit); 
     
 
 
