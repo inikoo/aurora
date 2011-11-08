@@ -859,7 +859,7 @@ function save_edit_general_bulk(branch) {
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
 
 
-//alert(request);//return;
+alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
   alert(o.responseText);
@@ -881,7 +881,7 @@ success:function(o) {
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
-						//display_add_other(r);
+						display_add_other(r);
                         post_item_updated_actions(branch,r);
 
 
@@ -907,12 +907,43 @@ validate_scope_edit(branch)
 
 function display_add_other(r){
 	switch(r.key){
-		case 'other_telephone': 
-		case 'other_mobile':
-		case 'other_fax':
-		Dom.setStyle('display_add_'+r.key,'display','')
+		case 'telephone': 
+		case 'mobile':
+		case 'fax':
+		Dom.setStyle('display_add_other_'+r.key,'display','')
 		break;
 		default: break;
+	}
+
+	if(r.action.match(/deleted/gi)){
+		if(r.key.match(/email/gi)){
+			var email_id=r.key.split('email');
+			Dom.setStyle('tr_other_email'+email_id[1],'display','none');
+			
+		}
+		else if(r.key.match(/telephone/gi)){
+
+			var telephone_id=r.key.split('telephone');
+			
+			Dom.setStyle('tr_other_telephone'+telephone_id[1],'display','none');
+			
+		}
+		else if(r.key.match(/fax/gi)){
+
+			var fax_id=r.key.split('fax');
+			Dom.setStyle('tr_other_fax'+fax_id[1],'display','none');
+			
+			
+		}
+		else if(r.key.match(/mobile/gi)){
+			var mobile_id=r.key.split('mobile');
+			Dom.setStyle('tr_other_mobile'+mobile_id[1],'display','none');
+			
+		}
+		
+	}
+	if(r.action.match(/updated/gi)){
+		window.location.reload();
 	}
 }
 

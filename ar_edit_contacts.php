@@ -2740,7 +2740,6 @@ function edit_customer($data) {
 
     }
 
-
 //print_r($values);
     $responses=array();
     foreach($values as $key=>$values_data) {
@@ -2755,7 +2754,7 @@ function edit_customer($data) {
 function edit_customer_field($customer_key,$key,$value_data) {
 
     //print $value_data;
-//print "$customer_key,$key,$value_data ***";
+	//print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
@@ -2962,13 +2961,13 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
         }
         else {
-
             $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
         }
     } else {
 
         $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
     }
+	
     return $response;
 
 }
