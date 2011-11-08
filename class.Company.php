@@ -963,7 +963,7 @@ class Company extends DB_Table {
 
     protected function update_field_switcher($field,$value,$options='') {
 
-
+		
 
 
         switch ($field) {
@@ -1011,8 +1011,9 @@ class Company extends DB_Table {
 
 
             $address->editor=$this->editor;
-            if ($value=='') {
+            if ($value=='') {	
                 if ($telecom_key=$address->get_principal_telecom_key($type)) {
+					//print $telecom_key;
                     $telecom=new Telecom($telecom_key);
                     $telecom->delete();
                     if ($telecom->deleted) {
@@ -1021,9 +1022,7 @@ class Company extends DB_Table {
                     }
                 }
             } else {
-            
-            //print $type;
-            
+
                 if ($address->get_principal_telecom_key($type)) {
                     $address->update_principal_telecom_number($value,$type);
                 } else {
@@ -1993,8 +1992,49 @@ class Company extends DB_Table {
         }
         return $card;
     }
+	
+    function get_work_telephones($company_key=false) {
+        $telephones=array();
+        $in_company='';
+        if ($company_key)
+            $in_company=sprintf(" and `Auxiliary Key`=%s",$company_key);
+        $sql=sprintf('select * from `Telecom Bridge` TB  left join `Telecom Dimension` T on T.`Telecom Key`=TB.`Telecom Key`  where `Subject Key`=%d and `Telecom Type`="Work Telephone"  and `Subject Type`="Contact" %s order by `Is Main` desc ',$this->id,$in_company);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $tel=new Telecom('id',$row['Telecom Key']);
 
+            $telephones[]=array(
+                              'id'=>$row['Telecom Key']
+                                   ,'type'=>$row['Telecom Type']
+                                           ,'country_code'=>$row['Telecom Country Telephone Code']
+                                                           ,'national_access_code'=>$row['Telecom National Access Code']
+                                                                                   ,'area_code'=>$row['Telecom Area Code']
+                                                                                                ,'number'=>$row['Telecom Number']
+                                                                                                          ,'extension'=>$row['Telecom Extension']
+                                                                                                                       ,'formated_number'=>$tel->display('formated')
 
+                          );
+        }
+        return $telephones;
+    }
+
+	function get_telephones(){
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Company' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+        $mobiles=array();
+        $result=mysql_query($sql);
+		//print $sql;
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $mobile= new Telecom($row['Telecom Key']);
+            $mobile->set_scope('Contact',$this->id);
+            $mobiles[]= $mobile;
+            $mobile->data['Mobile Is Main']=$row['Is Main'];
+
+        }
+        //$this->number_mobiles=count($mobiles);
+        return $mobiles;
+	}
+	
+	
     function get_customer_keys($args='') {
         $sql=sprintf("select `Subject Key` as `Customer Key` from `Company Bridge` where `Subject Type`='Customer' and `Company Key`=%d  ",$this->id);
 

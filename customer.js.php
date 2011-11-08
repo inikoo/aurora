@@ -1174,7 +1174,7 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	}
 	if(r.key=='mobile'){
 		//alert('in_mob')
-		change_comment('mobile', <?php echo $customer->get('Customer Main Mobile Key')?>);
+		change_comment('mobile', <?php echo (($customer->get('Customer Main Mobile Key'))?$customer->get('Customer Main Mobile Key'):'0')?>);
 		save_comment();
 		if(r.state!=200) return;
 		
@@ -1185,7 +1185,7 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	}
 	else if(r.key=='email'){
 		//alert('in_email')
-		change_comment('email', <?php echo $customer->get('Customer Main Email Key')?>);
+		change_comment('email', <?php echo (($customer->get('Customer Main Email Key'))?$customer->get('Customer Main Email Key'):'0')?>);
 		save_comment();
 		//Dom.get('main_email_comment').innerHTML=r.newvalue;
 		if(r.state!=200) return;
@@ -1211,7 +1211,7 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 		Dom.get('Customer_Email'+email_id[1]+'_msg').innerHTML='';
 	}
 	else if(r.key=='telephone'){
-		change_comment('telephone', <?php echo $customer->get('Customer Main Telephone Key')?>);
+		change_comment('telephone', <?php echo (($customer->get('Customer Main Telephone Key'))?$customer->get('Customer Main Telephone Key'):'0')?>);
 		save_comment();
 		if(r.state!=200) return;
 		
@@ -1224,7 +1224,7 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	}
 	else if(r.key=='fax'){
 		//alert('in fax')
-		change_comment('fax', <?php echo $customer->get('Customer Main FAX Key')?>);
+		change_comment('fax', <?php echo (($customer->get('Customer Main FAX Key'))?$customer->get('Customer Main FAX Key'):'0')?>);
 		save_comment();
 		if(r.state!=200) return;
 		
