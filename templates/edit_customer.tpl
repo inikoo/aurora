@@ -428,7 +428,7 @@
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
 
- <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}xxx{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+ <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
