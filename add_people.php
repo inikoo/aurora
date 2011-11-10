@@ -185,5 +185,7 @@ $smarty->display('add_people.tpl');
 
 
 
+
+
 ?>
 

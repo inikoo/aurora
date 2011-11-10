@@ -2195,8 +2195,9 @@ dialog_quick_edit_Customer_Name.show();
 
 function dialog_quick_edit_Customer_Main_Email_(){
 	Dom.get('Customer_Main_Email').value=Dom.get('Customer_Main_Email').getAttribute('ovalue');
-	<?php if($customer->get_principal_email_comment()) ?>
+	<?php if($customer->get_principal_email_comment()){ ?>
 	Dom.get('Customer_Main_Email_comment').value=Dom.get('Customer_Main_Email_comment').getAttribute('ovalue');
+	<?php }?>
 	hide_all_dialogs();
 	dialog_quick_edit_Customer_Main_Email.show();
 }
@@ -2207,22 +2208,25 @@ function dialog_quick_edit_Customer_Main_Address_(){
 }
 function dialog_quick_edit_Customer_Main_Telephone_(){
 	Dom.get('Customer_Main_Telephone').value=Dom.get('Customer_Main_Telephone').getAttribute('ovalue');
-	<?php if($customer->get_principal_telecom_comment('Telephone')) ?>
+	<?php if($customer->get_principal_telecom_comment('Telephone')) {?>
 	Dom.get('Customer_Main_Telephone_comment').value=Dom.get('Customer_Main_Telephone_comment').getAttribute('ovalue');
+	<?php }?>
 	hide_all_dialogs();
 	dialog_quick_edit_Customer_Main_Telephone.show();
 }
 function dialog_quick_edit_Customer_Main_Mobile_(){
 	Dom.get('Customer_Main_Mobile').value=Dom.get('Customer_Main_Mobile').getAttribute('ovalue');
-	<?php if($customer->get_principal_telecom_comment('Mobile')) ?>
+	<?php if($customer->get_principal_telecom_comment('Mobile')) {?>
 	Dom.get('Customer_Main_Mobile_comment').value=Dom.get('Customer_Main_Mobile_comment').getAttribute('ovalue');
+	<?php }?>
 	hide_all_dialogs();
 	dialog_quick_edit_Customer_Main_Mobile.show();
 }
 function dialog_quick_edit_Customer_Main_FAX_(){
 	Dom.get('Customer_Main_FAX').value=Dom.get('Customer_Main_FAX').getAttribute('ovalue');
-	<?php if($customer->get_principal_telecom_comment('FAX')) ?>
+	<?php if($customer->get_principal_telecom_comment('FAX')) {?>
 	Dom.get('Customer_Main_FAX_comment').value=Dom.get('Customer_Main_FAX_comment').getAttribute('ovalue');
+	<?php }?>
 	hide_all_dialogs();
 	dialog_quick_edit_Customer_Main_FAX.show();
 }

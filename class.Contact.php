@@ -2737,7 +2737,7 @@ class Contact extends DB_Table {
     private function create_anonymous($raw_data,$options='') {
         global $myconf;
 
-        print "shit\n";
+
         if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
 
@@ -3025,7 +3025,8 @@ class Contact extends DB_Table {
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;
                     $telephone_data['Telecom Type']=$type;
-                    $telephone=new Telecom("find in contact create country code ".$address->data['Address Country Code'],$telephone_data);
+                    //$telephone=new Telecom("find in contact create country code ".$address->data['Address Country Code'],$telephone_data);
+					$telephone=new Telecom('new',$telephone_data);
                     $address->associate_telecom($telephone->id,$type);
                 }
                 $this->updated=$address->updated;
@@ -3083,8 +3084,8 @@ class Contact extends DB_Table {
             $mobile_data['editor']=$this->editor;
             $mobile_data['Telecom Raw Number']=$value;
             $mobile_data['Telecom Type']='Mobile';
-            $mobile=new Telecom("find in contact $options create country code ".$this->data['Contact Main Country Code'],$mobile_data);
-
+            //$mobile=new Telecom("find in contact $options create country code ".$this->data['Contact Main Country Code'],$mobile_data);
+			$mobile=new Telecom('new',$mobile_data);
             if ($mobile->id) {
 					$this->associate_mobile($mobile->id);
                 $this->other_mobile_key=$mobile->id;
@@ -3257,7 +3258,8 @@ class Contact extends DB_Table {
                 $mobile_data['editor']=$this->editor;
                 $mobile_data['Telecom Raw Number']=$value;
                 $mobile_data['Telecom Type']='Mobile';
-                $mobile=new Telecom("find in contact $options create country code ".$this->data['Contact Main Country Code'],$mobile_data);
+                //$mobile=new Telecom("find in contact $options create country code ".$this->data['Contact Main Country Code'],$mobile_data);
+				$mobile=new Telecom('new',$mobile_data);
                 if ($mobile->id) {
                     $this->associate_mobile($mobile->id);
                 }
