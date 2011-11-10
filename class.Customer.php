@@ -26,6 +26,7 @@ class Customer extends DB_Table {
     var $ship_to=array();
     var $fuzzy=false;
     var $tax_number_read=false;
+	var $warning_messages=array();
     function __construct($arg1=false,$arg2=false) {
 
         $this->table_name='Customer';
@@ -1147,9 +1148,10 @@ class Customer extends DB_Table {
 
 
     function update_field_switcher($field,$value,$options='') {
+	
 
-     
         
+		
         if (is_string($value))
             $value=_trim($value);
 
@@ -1191,6 +1193,7 @@ class Customer extends DB_Table {
             break;
         case('Customer Main Plain Telephone'):
         case('Customer Main Plain FAX'):
+		
             if ($field=='Customer Main Plain Telephone')
                 $type='Telephone';
             else
@@ -1200,16 +1203,17 @@ class Customer extends DB_Table {
             $telephone_data['editor']=$this->editor;
             $telephone_data['Telecom Raw Number']=$value;
             $telephone_data['Telecom Type']=$type;
-            $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-			
-            if ($proposed_telephone->id) {
-                $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
+            $telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+			//$telephone=new Telecom('new',$telephone_data);
+            if ($telephone->id) {
+                $customers_with_this_telephone=$telephone->get_customer_keys();
 
                 if (in_array($this->id,$customers_with_this_telephone)) {
                     $this->msg=_('The customer already has this number');
-                    $this->error=true;
+                    //$this->error=true;
 
-                    return;
+                    //return;
+					$this->warning_messages[]=$this->msg;
                 }
             }
 
@@ -1250,15 +1254,16 @@ class Customer extends DB_Table {
             $telephone_data['Telecom Raw Number']=$value;
             $telephone_data['Telecom Type']=$type;
             $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-
+			//$proposed_telephone=new Telecom('new',$telephone_data);
             if ($proposed_telephone->id) {
                 $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
                 if (in_array($this->id,$customers_with_this_telephone)) {
                     $this->msg=_('The customer already has this number');
-                    $this->error=true;
+                    //$this->error=true;
 
-                    return;
+                    //return;
+					$this->warning_messages[]=$this->msg;
                 }
             }
             $contact=new Contact($this->data['Customer Main Contact Key']);
@@ -1639,16 +1644,17 @@ class Customer extends DB_Table {
         $telephone_data['Telecom Raw Number']=$value;
         $telephone_data['Telecom Type']=$type;
         $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-
+		//$proposed_telephone=new Telecom('new',$telephone_data);
 
         if ($proposed_telephone->id) {
             $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
             if (in_array($this->id,$customers_with_this_telephone)) {
                 $this->msg=_('The customer already has this number');
-                $this->error=true;
+                //$this->error=true;
 
-                return;
+               // return;
+			   $this->warning_messages[]=$this->msg;
             }
             unset($customers_with_this_telephone[$this->id]);
 
@@ -1664,9 +1670,9 @@ class Customer extends DB_Table {
                     else
                         $this->msg=_('Fax could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
 
-                    $this->error=true;
+                    //$this->error=true;
 
-                    return;
+                   // return;
                 }
 
             }

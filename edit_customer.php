@@ -15,6 +15,7 @@
 include_once('common.php');
 include_once('class.Customer.php');
 include_once('class.Category.php');
+include_once('duplicate_warning.php');
 
 if (!$user->can_view('customers')) {
     header('Location: index.php');
@@ -439,9 +440,10 @@ $smarty->assign('main_email_warnings',$main_email_warnings);
 $smarty->assign('main_email_warning',$main_email_warning);
 
 
-
+/*
 $main_telephone_warning=false;
 $main_telephone_warnings='';
+$main_telephone_warning_data=array();
 if ($customer->data['Customer Main Telephone Key']) {
     $main_telephone= new Telecom($customer->data['Customer Main Telephone Key']);
     $main_telephone_parents=$main_telephone->get_parent_keys();
@@ -449,18 +451,53 @@ if ($customer->data['Customer Main Telephone Key']) {
 
         if (($_value['Subject Type']=='Customer' and $_value['Subject Key']!=$customer->id)or $_value['Subject Type']=='Supplier') {
         $main_telephone_warning=true;
-        
-        }
+		
+		switch($_value['Subject Type']){
+		case 'Customer':
+			$subject=new Customer($_value['Subject Key']);
+			$_store=new Store($subject->data['Customer Store Key']);
+			  $main_telephone_warning.=sprintf(", %s (%s) <a href=\"customer.php?id=%d\">%s</a> %s",_('Customer'),$store->data['Store Code'],$subject->id, $subject->get_formated_id(),$subject->data['Customer Name']);
+			
+			$subject_type=_('Customer').' '.$_store->data['Store Code'].'';
+		break;
+		case 'Supplier':
+			$subject=new Supplier($_value['Subject Key']);
+			
+			$main_telephone_warning.=sprintf(", %s <a href=\"supplier.php?id=%d\">%s</a>",_('Supplier'),$subject->id,$subject->data['Customer Name']);
+			  
+			$subject_type=_('Supplier');
+		break;
+		}
+		
+     
+		}
     }
 }
-if($main_telephone_warning){
-$main_telephone_warning='<img style="cursor:pointer" title="Other Customers/Supplier has this telephone" src="art/icons/error.png" alt="warning"/>';
-}
-$smarty->assign('main_telephone_warnings',$main_telephone_warnings);
+*/
+$main_telephone_warning=check_duplicates($customer);
 $smarty->assign('main_telephone_warning',$main_telephone_warning);
+$smarty->assign('main_telephone_warning_key',$customer->get('Customer Main Telephone Key'));
 
+$main_mobile_warning=check_duplicates($customer, 'Mobile');
+$smarty->assign('main_mobile_warning',$main_mobile_warning);
+$smarty->assign('main_mobile_warning_key',$customer->get('Customer Main Mobile Key'));
+
+$main_fax_warning=check_duplicates($customer, 'FAX');
+$smarty->assign('main_fax_warning',$main_fax_warning);
+$smarty->assign('main_fax_warning_key',$customer->get('Customer Main FAX Key'));
+
+$other_telephone_warning=check_duplicates($customer, 'other_telephone');
+$smarty->assign('other_telephone_warning',$other_telephone_warning);
+
+$other_mobile_warning=check_duplicates($customer, 'other_mobile');
+$smarty->assign('other_mobile_warning',$other_mobile_warning);
+
+$other_fax_warning=check_duplicates($customer, 'other_fax');
+$smarty->assign('other_fax_warning',$other_fax_warning);
 //$smarty->assign('delivery_addresses',$delivery_addresses);
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
+
+
 
 $correlation_msg='';
  $msg='';

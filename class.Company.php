@@ -963,7 +963,7 @@ class Company extends DB_Table {
 
     protected function update_field_switcher($field,$value,$options='') {
 
-		
+
 
 
         switch ($field) {
@@ -1002,7 +1002,6 @@ class Company extends DB_Table {
 
         case('Company Main Plain FAX'):
         case('Company Main Plain Telephone'):
-
             if ($field=='Company Main Plain Telephone')
                 $type='Telephone';
             else
@@ -1012,7 +1011,10 @@ class Company extends DB_Table {
 
             $address->editor=$this->editor;
             if ($value=='') {	
-                if ($telecom_key=$address->get_principal_telecom_key($type)) {
+			
+				$telecom_key=$address->get_principal_telecom_key($type);
+              
+				if ($telecom_key) {
 					//print $telecom_key;
                     $telecom=new Telecom($telecom_key);
                     $telecom->delete();
@@ -1022,21 +1024,26 @@ class Company extends DB_Table {
                     }
 					$this->updated_data['telecom_key']=$telecom->id;
                 }
+				
+				
+				
             } else {
 
                 if ($address->get_principal_telecom_key($type)) {
                     $address->update_principal_telecom_number($value,$type);
                 } else {
+
                     $telephone_data=array();
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;
                     $telephone_data['Telecom Type']=$type;
-                    $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
-                 
-                  
-				   $address->associate_telecom($telephone->id,$type);
+                   // $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
+
+					$telephone=new Telecom('new',$telephone_data);
+//print_r($telephone);             
+					$address->associate_telecom($telephone->id,$type);
 						
-				   }
+				}
                 $this->updated=$address->updated;
                 if ($this->updated) {
 					$this->updated_data['telecom_key']=$address->updated_data['telecom_key'];
