@@ -62,7 +62,7 @@ class LightFamily {
     }
 
 
-	function get_product_in_family_with_order_form($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false, $user, $path) {
+	function get_product_in_family_with_order_form($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false, $user=false, $path=false) {
 
 		
 		if(isset($options['order_by']))
