@@ -428,7 +428,7 @@
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
 
- <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}xxx{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+ <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
@@ -484,7 +484,7 @@
    </td>
    <td>
     <span id="display_add_other_telephone" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main XHTML Telephone')==''}display:none{/if}">{t}Add other Telephone{/t}</span>
-    <span id="Customer_Main_Telephone_msg" class="edit_td_alert">{$main_telephone_warning}</span>
+    <span id="Customer_Main_Telephone_msg" class="edit_td_alert">{$main_telephone_warning.$main_telephone_warning_key}</span>
    </td>
  </tr>
  
@@ -503,7 +503,7 @@
      </div>
    </td>
    <td>
-   <span id="Customer_Telephone{$other_telephone_key}_msg" class="edit_td_alert"></span>
+   <span id="Customer_Telephone{$other_telephone_key}_msg" class="edit_td_alert">{$other_telephone_warning.$other_telephone_key}</span>
    </td>
  </tr>
 {/foreach}
@@ -532,7 +532,7 @@
    
       <td>
     <span id="display_add_other_mobile" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main XHTML Mobile')==''}display:none{/if}">{t}Add other Mobile{/t}</span>
-    <span id="Customer_Main_Mobile_msg" class="edit_td_alert">{$main_mobile_warning}</span>
+    <span id="Customer_Main_Mobile_msg" class="edit_td_alert">{$main_mobile_warning.$main_mobile_warning_key}</span>
    </td>
    
  </tr>
@@ -548,7 +548,7 @@
      </div>
    </td>
    <td>
-   <span id="Customer_Mobile{$other_mobile_key}_msg" class="edit_td_alert"></span>
+   <span id="Customer_Mobile{$other_mobile_key}_msg" class="edit_td_alert">{$other_mobile_warning.$other_mobile_key}</span>
    </td>
  </tr>
 {/foreach}
@@ -573,7 +573,7 @@
    </td>
    <td>
 <span id="display_add_other_fax" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main XHTML FAX')==''}display:none{/if}">{t}Add other Fax{/t}</span>
-    <span id="Customer_Main_FAX_msg" class="edit_td_alert">{$main_fax_warning}</span>
+    <span id="Customer_Main_FAX_msg" class="edit_td_alert">{$main_fax_warning.$main_fax_warning_key}</span>
    </td>
  </tr>
 
@@ -586,7 +586,7 @@
      </div>
    </td>
    <td>
-   <span id="Customer_FAX{$other_fax_key}_msg" class="edit_td_alert"></span>
+   <span id="Customer_FAX{$other_fax_key}_msg" class="edit_td_alert">{$other_fax_warning.$other_fax_key}</span>
    </td>
  </tr>
 {/foreach}
