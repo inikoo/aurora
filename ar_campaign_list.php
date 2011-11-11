@@ -100,7 +100,7 @@ function campaign_list() {
 
 
   
-    $sql="select count(*) as total from `Email Campaign Dimension`";
+    $sql="select count(*) as total from `Email Deal Dimension`";
 
 
     $res=mysql_query($sql);
@@ -108,7 +108,7 @@ function campaign_list() {
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total from `Email Campaign Dimension`";
+        $sql="select count(*) as total from `Email Deal Dimension`";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -161,7 +161,7 @@ function campaign_list() {
     else
         $order='`Staff Name`';
 
-    $sql="select * from `Email Campaign Dimension` E left join `Email Send Dimension` ES on (E.`Email Campaign Key`=ES.`Email Send Type Key`) ";
+    $sql="select * from `Email Deal Dimension` E left join `Email Send Dimension` ES on (E.`Email Deal Key`=ES.`Email Send Type Key`) ";
     //print $sql;
     $adata=array();
     $res=mysql_query($sql);
@@ -174,8 +174,8 @@ function campaign_list() {
         $area='';
         $position=$data['position'];
         $adata[]=array(
-		     'check_option'=>'<input type="checkbox" name="mail_list[]" value="'.$data['Email Campaign Key'].'">',
-                     'name'=>$data['Email Campaign Name'],
+		     'check_option'=>'<input type="checkbox" name="mail_list[]" value="'.$data['Email Deal Key'].'">',
+                     'name'=>$data['Email Deal Name'],
 		     'creationdate'=>strftime("%e %b %y %H:%M", strtotime($data['Campaign Creation Date'])),
                      'sendemail'=>$data['Number of Emails'],
                      'emailread'=>$data['Number of Read Emails'],

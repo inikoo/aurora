@@ -1,7 +1,7 @@
 <?php
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
-include_once('../../class.Campaign.php');
+include_once('../../class.Deal.php');
 include_once('../../class.Charge.php');
 
 include_once('../../class.Family.php');
@@ -58,9 +58,9 @@ $count=0;
 $store=new Store("code","IT");
 $store_key=$store->id;
 
-$gold_camp=new Campaign('code','IT.GR');
-$vol_camp=new Campaign('code','IT.Vol');
-$bogof_camp=new Campaign('code','IT.BOGOF');
+$gold_camp=new Deal('code','IT.GR');
+$vol_camp=new Deal('code','IT.Vol');
+$bogof_camp=new Deal('code','IT.BOGOF');
 $fam_promo=$fam_promo=new Family('code','Promo_IT',$store_key);
 $fam_promo_key=$fam_promo->id;
 
@@ -178,17 +178,17 @@ foreach($__cols as $cols) {
 
             //	print "************".$current_promotion."\n";
             $deals[]=array(
-                         'Deal Name'=>'Gold Reward'
-                                     ,'Deal Allowance Description'=>$allowance
+                         'Deal Metadata Name'=>'Gold Reward'
+                                     ,'Deal Metadata Allowance Description'=>$allowance
 
                      );
 
             $deals[]=array(
-                         'Deal Name'=>'Family Volume Discount'
+                         'Deal Metadata Name'=>'Family Volume Discount'
 
-                                     ,'Deal Allowance Description'=>$allowance
+                                     ,'Deal Metadata Allowance Description'=>$allowance
 
-                                                                   ,'Deal Terms Description'=>'beim kauf von '.$terms
+                                                                   ,'Deal Metadata Terms Description'=>'beim kauf von '.$terms
 
                      );
 
@@ -350,14 +350,14 @@ foreach($__cols as $cols) {
 
             $deal_data['Store Key']=$store_key;
 
-            if (preg_match('/Family Volume/i',$deal_data['Deal Name'])) {
+            if (preg_match('/Family Volume/i',$deal_data['Deal Metadata Name'])) {
 
                 $data=array(
-                          'Deal Allowance Target Key'=>$family->id,
-                          'Deal Trigger Key'=>$family->id,
+                          'Deal Metadata Allowance Target Key'=>$family->id,
+                          'Deal Metadata Trigger Key'=>$family->id,
 
-                          'Deal Allowance Description'=>$deal_data['Deal Allowance Description'],
-                          'Deal Terms Description'=>$deal_data['Deal Terms Description']
+                          'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description'],
+                          'Deal Metadata Terms Description'=>$deal_data['Deal Metadata Terms Description']
 
                       );
 
@@ -367,23 +367,23 @@ foreach($__cols as $cols) {
             }
 
 
-            if (preg_match('/Gold/i',$deal_data['Deal Name'])) {
+            if (preg_match('/Gold/i',$deal_data['Deal Metadata Name'])) {
 
                 $data=array(
-                          'Deal Trigger Key'=>$family->id,
-                          'Deal Allowance Target Key'=>$family->id,
-                          'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
+                          'Deal Metadata Trigger Key'=>$family->id,
+                          'Deal Metadata Allowance Target Key'=>$family->id,
+                          'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
                       );
 
                 $gold_camp->create_deal('[Product Family Code] Goldprämie',$data);
 
             }
 
-            if (preg_match('/bogof/i',$deal_data['Deal Name'])) {
+            if (preg_match('/bogof/i',$deal_data['Deal Metadata Name'])) {
                 $data=array(
-                          'Deal Trigger Key'=>$family->id,
-                          'Deal Allowance Target Key'=>$family->id,
-                          'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
+                          'Deal Metadata Trigger Key'=>$family->id,
+                          'Deal Metadata Allowance Target Key'=>$family->id,
+                          'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
                       );
 
                 $bogof_camp->create_deal('[Product Family Code] BOGOF',$data);

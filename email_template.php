@@ -55,7 +55,7 @@ if (!$email_campaign->id) {
 
 if ( isset($_REQUEST['email_mailing_list_key']) and is_numeric($_REQUEST['email_mailing_list_key'])) {
     $email_mailing_list_key=$_REQUEST['email_mailing_list_key'];
-    $sql=sprintf("select * from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
+    $sql=sprintf("select * from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Deal Key`=%d",
                  $email_mailing_list_key,
                  $email_campaign->id
                 );

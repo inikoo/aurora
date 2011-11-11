@@ -19,6 +19,7 @@ if(!$invoice->id)
 
 
 $customer=new Customer($invoice->data['Invoice Customer Key']);
+$store=new Store($invoice->data['Invoice Store Key']);
 
 //print_r($invoice->data);
 
@@ -47,16 +48,20 @@ if ($invoice->data['Invoice Title']=='Invoice') {
 }
 $smarty->assign('invoice',$invoice);
 $smarty->assign('customer',$customer);
+$smarty->assign('store',$store);
 
 
 $smarty->assign('box_layout','yui-t0');
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
-		 'container.css',
-		 'table.css'
+	       $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+                'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+                'theme.css.php'
 		 );
 $js_files=array(
 

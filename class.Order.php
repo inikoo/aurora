@@ -391,6 +391,7 @@ class Order extends DB_Table {
             $customer=new Customer($this->data['Order Customer Key']);
             $customer->editor=$this->editor;
             $customer->add_history_order_cancelled($this);
+            $this->update_deals_usage();
             $this->cancelled=true;
 
         }
@@ -799,7 +800,7 @@ class Order extends DB_Table {
 
 
         foreach ( $data as $item ) {
-            $sql = sprintf ( "select * from `Deal Dimension` where `Deal Allowance Type`='Percentage Off' and  `Deal Allowance Target`='Product' and `Deal Allowance Target Key`=%d and %s BETWEEN `Deal Begin Date` and  `Deal Expiration Date` ", $item ['product_id'], prepare_mysql ( $date ) );
+            $sql = sprintf ( "select * from `Deal Metadata Dimension` where `Deal Metadata Allowance Type`='Percentage Off' and  `Deal Metadata Allowance Target`='Product' and `Deal Metadata Allowance Target Key`=%d and %s BETWEEN `Deal Metadata Begin Date` and  `Deal Metadata Expiration Date` ", $item ['product_id'], prepare_mysql ( $date ) );
 
             $result = & $this->db->query ( $sql );
             while ( $row = $result->fetchRow () ) {
@@ -902,10 +903,10 @@ class Order extends DB_Table {
         if (count ( $deal ) > 0)
             exit ('Count deal is zero');
 
-        //       $sql=sprintf("select * from `Deal Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
+        //       $sql=sprintf("select * from `Deal Metadata Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
         //       $result =& $this->db->query($sql);
         //       while($row=$result->fetchRow()){
-        // 	$deal=new Deal($row['deal key']);
+        // 	$deal=new DealMetadataMetadataMetadataMetadata($row['deal key']);
 
 
         // 	$discount_function = create_function("$data,$customer_id,$date", $row['deal metadata']);
@@ -1126,7 +1127,7 @@ class Order extends DB_Table {
 
             default:
                 return $this->data['Order Current Dispatch State'];
-                       break;
+                break;
             }
 
 
@@ -2896,15 +2897,84 @@ class Order extends DB_Table {
 
     }
 
+    function update_order_discounts() {
+        $sql=sprintf("select D.`Deal Key`,`Deal Description` from `Order Deal Bridge` B left join `Deal Dimension` D on (B.`Deal Key`=D.`Deal Key`) where `Order Key`=%d",
+                     $this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+
+            //  $deal=new Deal($row['Deal Key']);
+
+
+            $sql=sprintf("select * from `Deal Metadata Dimension` where `Deal Metadata Allowance Target` in ('Order','Shipping','Charge') and `Deal Key`=%d",
+                         $row['Deal Key']);
+            $res2=mysql_query($sql);
+            while ($row2=mysql_fetch_array($res2)) {
+                switch ($row2['Deal Metadata Allowance Target']) {
+                case 'Order':
+                    switch ($row2['Deal Metadata Allowance Type']) {
+                    case 'Credit':
+
+                        list($net,$tax_code)=preg_split('/;/',$row2['Deal Metadata Allowance']);
+                        $_tax_category=new TaxCategory('code',$tax_code);
+                        $tax=$_tax_category->data['Tax Category Rate']*$net;
+                        $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+                                     $this->id,
+                                     prepare_mysql($this->data['Order Date']),
+                                     prepare_mysql('Deal'),
+                                     $row2['Deal Metadata Key'],
+                                     prepare_mysql($row['Deal Description']),
+                                     $net,
+                                     prepare_mysql($tax_code),
+                                     $tax,
+                                     $net,
+                                     $tax,
+                                     prepare_mysql($this->data['Order Currency']),
+                                     $this->data['Order Currency Exchange'],
+                                     prepare_mysql($this->data['Order Original Metadata'])
+                                    );
+
+                        // print ("$sql\n");
+                        mysql_query($sql);
+
+
+                        $sql=sprintf("update `Order Deal Bridge` set `Used`='Yes' where `Deal Key`=%d ",$row['Deal Key']);
+                        mysql_query($sql);
+                        break;
+                    default:
+
+                        break;
+                    }
+
+
+                    break;
+                default:
+
+                    break;
+                }
+
+            }
+
+
+
+
+
+        }
+
+    }
+
     function update_discounts() {
         $this->allowance=array('Family Percentage Off'=>array());
         $this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
-        $sql=sprintf("select `Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",$this->id);
+        $sql=sprintf("select `Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",$this->id);
+
 
 
         $res_lines=mysql_query($sql);
         while ($row_lines=mysql_fetch_array($res_lines)) {
+       //     print "\n".$row_lines['Product Code']."\n";
+
 
             //  $line_number=$row_lines['Order Transaction Fact Key'];
             $product_key=$row_lines['Product Key'];
@@ -2916,18 +2986,86 @@ class Order extends DB_Table {
             $product=new Product('key',$product_key);
             $family_key=$product->data['Product Family Key'];
 
-            $sql=sprintf("select * from `Deal Dimension` where `Deal Trigger`='Family' and `Deal Trigger Key` =%d and `Deal Status`='Active'  "
+            $deals_metadata=array();
+            $discounts=0;
+
+            $sql=sprintf("select * from `Deal Metadata Dimension` DM left join `Deal Dimension` D on  (D.`Deal Key`=DM.`Deal Key`)  left join `Order Deal Bridge` B on (B.`Deal Key`=DM.`Deal Key`)  where `Deal Metadata Trigger`='Family' and `Deal Metadata Trigger Key` =%d  and `Order Key`=%d and `Deal Metadata Status`='Active' and `Deal Terms Object`='Order' ",
+                         $family_key,
+                         $this->id
+                        );
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_assoc($res)) {
+                $deals_metadata[$row['Deal Metadata Key']]=$row;
+            }
+
+//print"++++++\n";
+         //   print_r($deals_metadata);
+
+            foreach ($deals_metadata as $deal_metadata ) {
+
+                $terms_ok=true;
+
+
+
+                $this->deals['Family']['Deal']=true;
+                $this->deals['Family']['Deal Multiplicity'];
+
+
+                $this->deals['Family']['Terms']=true;
+                $this->deals['Family']['Terms Multiplicity']++;
+
+
+
+
+
+                switch ($deal_metadata['Deal Metadata Allowance Type']) {
+                case('Percentage Off'):
+                    switch ($deal_metadata['Deal Metadata Allowance Target']) {
+                    case('Family'):
+                   
+                        if ($terms_ok) {
+ 
+                            $percentage=$deal_metadata['Deal Metadata Allowance'];
+                            if (isset($this->allowance['Family Percentage Off'][$family_key])) {
+                                if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
+                                    $this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
+                            } else
+                                $this->allowance['Family Percentage Off'][$family_key]=array(
+                                            'Family Key'=>$family_key,
+                                            'Percentage Off'=>$percentage,
+                                            'Deal Metadata Key'=>$deal_metadata['Deal Metadata Key'],
+                                            'Deal Info'=>$deal_metadata['Deal Metadata Name'].' '.$deal_metadata['Deal Metadata Allowance Description']
+                                        );
+                        }
+
+                        break;
+                    }
+
+
+                    break;
+                }
+            }
+
+  //          print_r($this->allowance['Family Percentage Off']);
+//print "------------------\n";
+
+            $deals_metadata=array();
+            $sql=sprintf("select * from `Deal Metadata Dimension`    where `Deal Metadata Trigger`='Family' and `Deal Metadata Trigger Key` =%d and `Deal Metadata Status`='Active'  "
                          ,$family_key
                         );
             $res=mysql_query($sql);
-            $discounts=0;
+            while ($row=mysql_fetch_assoc($res)) {
+                $deals_metadata[$row['Deal Metadata Key']]=$row;
+            }
+
+
             // print $sql;
 
 
-            while ($row=mysql_fetch_array($res)) {
+            foreach ($deals_metadata as $deal_metadata ) {
 
                 $terms_ok=false;
-                switch ($row['Deal Terms Type']) {
+                switch ($deal_metadata['Deal Metadata Terms Type']) {
                 case('Family Quantity Ordered'):
 
 
@@ -2941,10 +3079,10 @@ class Order extends DB_Table {
                                 );
 
                     $res2=mysql_query($sql);
-                    if ($row2=mysql_fetch_array($res2)) {
-                        $qty_family=$row2['qty'];
+                    if ($deal_metadata2=mysql_fetch_array($res2)) {
+                        $qty_family=$deal_metadata2['qty'];
                     }
-                    if ($qty_family>=$row['Deal Terms Metadata']) {
+                    if ($qty_family>=$deal_metadata['Deal Metadata Terms']) {
                         $terms_ok=true;;
                         $this->deals['Family']['Terms']=true;
                     }	$this->deals['Family']['Terms Multiplicity']++;
@@ -2954,13 +3092,13 @@ class Order extends DB_Table {
                 }
 
 
-                switch ($row['Deal Allowance Type']) {
+                switch ($deal_metadata['Deal Metadata Allowance Type']) {
                 case('Percentage Off'):
-                    switch ($row['Deal Allowance Target']) {
+                    switch ($deal_metadata['Deal Metadata Allowance Target']) {
                     case('Family'):
                         if ($terms_ok) {
 
-                            $percentage=$row['Deal Allowance Metadata'];
+                            $percentage=$deal_metadata['Deal Metadata Allowance'];
                             if (isset($this->allowance['Family Percentage Off'][$family_key])) {
                                 if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
                                     $this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
@@ -2968,8 +3106,8 @@ class Order extends DB_Table {
                                 $this->allowance['Family Percentage Off'][$family_key]=array(
                                             'Family Key'=>$family_key,
                                             'Percentage Off'=>$percentage,
-                                            'Deal Key'=>$row['Deal Key'],
-                                            'Deal Info'=>$row['Deal Name'].' '.$row['Deal Allowance Description']
+                                            'Deal Metadata Key'=>$deal_metadata['Deal Metadata Key'],
+                                            'Deal Info'=>$deal_metadata['Deal Metadata Name'].' '.$deal_metadata['Deal Metadata Allowance Description']
                                         );
                         }
 
@@ -2980,28 +3118,17 @@ class Order extends DB_Table {
                     break;
                 }
             }
+
+
+            //if ($row_lines['Product Code']=='ABPX-06') {
+            //    exit;
+          //  }
+        //    print_r($this->allowance['Family Percentage Off']);
         }
-        $this->apply_allowances();
-
-    }
-
-    function get_discounted_products() {
-        $sql=sprintf('select  `Product Key` from   `Order Transaction Deal Bridge`   where `Order Key`=%d  group by `Product Key` '
-                     ,$this->id
-                    );
-        //print "$sql\n";
-        $res=mysql_query($sql);
-        $disconted_products=array();
-        while ($row=mysql_fetch_array($res)) {
-            $disconted_products[$row['Product Key']]=$row['Product Key'];
-        }
-        return $disconted_products;
-
-    }
 
 
-    function apply_allowances() {
 
+        // Applying allowances
 
         $sql=sprintf('update `Order Transaction Fact`  set  `Order Transaction Total Discount Amount`=0 where `Order Key`=%d  '
                      ,$this->id
@@ -3037,7 +3164,7 @@ class Order extends DB_Table {
                              ,$this->id
 
                              ,$row['Product Key']
-                             ,$allowance_data['Deal Key']
+                             ,$allowance_data['Deal Metadata Key']
                              ,prepare_mysql($allowance_data['Deal Info'])
                              ,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
                             );
@@ -3048,6 +3175,68 @@ class Order extends DB_Table {
 
 
 
+        }
+
+
+
+
+
+    }
+
+    function get_discounted_products() {
+        $sql=sprintf('select  `Product Key` from   `Order Transaction Deal Bridge`   where `Order Key`=%d  group by `Product Key` '
+                     ,$this->id
+                    );
+        //print "$sql\n";
+        $res=mysql_query($sql);
+        $disconted_products=array();
+        while ($row=mysql_fetch_array($res)) {
+            $disconted_products[$row['Product Key']]=$row['Product Key'];
+        }
+        return $disconted_products;
+
+    }
+
+    function update_deal_bridge_from_assets_deals() {
+
+
+        $sql=sprintf("select B.`Deal Key` from  `Order Deal Bridge` B  left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Deal Terms Object` in ('Department','Family','Product') and `Order Key`=%d",$this->id);
+// exit("$sql\n");
+        $res=mysql_query($sql);
+        $deal_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $deal_keys[]=$row['Deal Key'];
+        }
+        if (count($deal_keys)) {
+            $sql=sprintf("delete from `Order Deal Bridge` where `Deal Key` in (%s)   ",join(',',$deal_keys));
+            mysql_query($sql);
+        }
+
+        $sql=sprintf("select distinct `Deal Key` from  `Order Transaction Deal Bridge` B  left join `Deal Metadata Dimension` D on (D.`Deal Metadata Key`=B.`Deal Metadata Key`)  where`Order Key`=%d and `Deal Key`!=0",
+                     $this->id);
+
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $sql=sprintf("insert into `Order Deal Bridge` values(%d,%d,'Yes','Yes') ON DUPLICATE KEY UPDATE `Used`='Yes'",$this->id,$row['Deal Key']);
+            mysql_query($sql);
+        }
+
+
+
+
+
+
+
+    }
+
+    function update_deals_usage() {
+        $sql=sprintf("select `Deal Key` from  `Order Deal Bridge` where `Order Key`=%d",$this->id);
+// exit("$sql\n");
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $deal=new Deal($row['Deal Key']);
+            $deal->update_usage();
         }
 
     }

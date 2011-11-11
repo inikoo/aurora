@@ -103,7 +103,7 @@ if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'edit_family.php?id='.$family->id,'label'=>_('Edit Family'));
 
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $show_only=$_SESSION['state']['family']['products']['show_only'];
 $show_only_labels=array('forsale'=>_('For Sale Only'));
 

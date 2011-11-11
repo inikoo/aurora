@@ -8,34 +8,19 @@
 </div>
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-
-<div class="buttons" style="float:right">
-
-
-
-<button  onclick="window.location='edit_store.php?id={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Store{/t}</button>
-<button  onclick="window.location='store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
-
-
-
-
-</div>
-
-
-<div class="buttons" style="float:left">
-
-<button  onclick="window.location='store_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
-<button  onclick="window.location='campaigns.php?store={$store->id}'" ><img src="art/icons/money.png" alt=""> {t}Offers{/t}</button>
-
-<button  onclick="window.location='products_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
-<button  onclick="window.location='product_categories.php?id=0&store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
-
-
-
-</div>
-
-
-<div style="clear:both"></div>
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_store.php?id={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Store{/t}</button>
+        <button  onclick="window.location='store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='store_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+        <button  onclick="window.location='store_deals.php?store={$store->id}'" ><img src="art/icons/money.png" alt=""> {t}Offers{/t}</button>
+        <button  onclick="window.location='products_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
+        <button  onclick="window.location='product_categories.php?id=0&store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
+    </div>
+    <div style="clear:both"></div>
 </div>
 
  <h1>{$store->get('Store Name')} ({$store->get('Store Code')})</h1>

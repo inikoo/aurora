@@ -3293,7 +3293,7 @@ gettext("Family Char");
 gettext("Description");
 
 /* ../templates/edit_family.tpl */
-gettext("Deal Name");
+gettext("Deal Metadata Name");
 
 /* ../templates/edit_family.tpl */
 gettext("Deal Description");
@@ -3722,7 +3722,7 @@ gettext("New Campaign");
 gettext("Define Goals");
 
 /* ../templates/new_campaign.tpl */
-gettext("Campaign Name:");
+gettext("Deal Name:");
 
 /* ../templates/new_campaign.tpl */
 gettext("Campaign Objetives:");
@@ -4517,7 +4517,7 @@ gettext("Store Address");
 gettext("Short Marketing Description");
 
 /* ../templates/edit_store.tpl */
-gettext("Deal Name");
+gettext("Deal Metadata Name");
 
 /* ../templates/edit_store.tpl */
 gettext("Deal Description");
@@ -4526,10 +4526,10 @@ gettext("Deal Description");
 gettext("Deals");
 
 /* ../templates/edit_store.tpl */
-gettext("Campaign Name");
+gettext("Deal Name");
 
 /* ../templates/edit_store.tpl */
-gettext("Campaign Description");
+gettext("Deal Description");
 
 /* ../templates/edit_store.tpl */
 gettext("Campaigns");
@@ -6836,13 +6836,13 @@ gettext("Continue");
 gettext("Cancel");
 
 /* ../templates/new_email_campaign.tpl */
-gettext("Invalid Campaign Name");
+gettext("Invalid Deal Name");
 
 /* ../templates/new_email_campaign.tpl */
 gettext("Invalid Campaign Objetive");
 
 /* ../templates/new_email_campaign.tpl */
-gettext("Campaign Name");
+gettext("Deal Name");
 
 /* ../templates/new_email_campaign.tpl */
 gettext("Campaign Objetive");
@@ -14210,7 +14210,7 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/email_campaign_in_process.tpl */
-gettext("Invalid Campaign Name");
+gettext("Invalid Deal Name");
 
 /* ../templates/email_campaign_in_process.tpl */
 gettext("Invalid Campaign Objetive");
@@ -14231,7 +14231,7 @@ gettext("Email content is empty");
 gettext("Store:");
 
 /* ../templates/email_campaign_in_process.tpl */
-gettext("Campaign Name");
+gettext("Deal Name");
 
 /* ../templates/email_campaign_in_process.tpl */
 gettext("Campaign Objetive");

@@ -18,6 +18,10 @@ if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)
    exit;
 }
 $modify=$user->can_edit('warehouses');
+
+$smarty->assign('modify',$modify);
+
+
 $smarty->assign('view_parts',$user->can_view('parts'));
 get_header_info($user,$smarty);
 
@@ -34,7 +38,7 @@ $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
 
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 
@@ -77,8 +81,8 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','warehouses');
-$smarty->assign('title', _('Warehouse'));
+$smarty->assign('parent','parts');
+$smarty->assign('title', _('Inventory (Parts)'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

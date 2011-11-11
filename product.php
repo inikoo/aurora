@@ -219,7 +219,7 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 if ($modify)
     $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 $web_status_error=false;
 $web_status_error_title='';
@@ -286,12 +286,6 @@ $smarty->assign('web_status_menu',$_web_status);
 
 $smarty->assign('display',$display);
 
-
-$tipo_filter=$_SESSION['state']['product']['customers']['f_field'];
-$smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['product']['customers']['f_value']);
-
-//print_r($product);
 $sql=sprintf("select * from `Product Page Bridge` where `Product ID`=%d", $product->pid);
 //print $sql;
 $result=mysql_query($sql);
@@ -311,17 +305,34 @@ if ($row=mysql_fetch_array($result)) {
 
 $smarty->assign('web_site',$web_site);
 
+
+$tipo_filter=$_SESSION['state']['product']['customers']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['product']['customers']['f_value']);
 $filter_menu=array(
                  'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
-                 'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+              //   'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
                  'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
 
 
              );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+
+$tipo_filter=$_SESSION['state']['product']['orders']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['product']['orders']['f_value']);
+$filter_menu=array(
+                 'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number'),'label'=>_('Number')),
+              //   'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+                 'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name'),'label'=>_('Customer')),
 
 
+             );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);

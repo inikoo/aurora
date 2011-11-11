@@ -311,8 +311,6 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
-
-
 function init(){
 
 

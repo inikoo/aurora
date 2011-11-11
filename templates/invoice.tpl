@@ -1,8 +1,14 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div id="table_type" class="table_type">
- <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="pdf_invoices.php?id={$invoice->get('Invoice Key')}">PDF Invoice</a></span>
+<div  class="branch"> 
+  <span  >{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {t}Invoice{/t} {$invoice->get('Invoice Public ID')}</span>
 </div>
+
+<input type="hidden" id="invoice_key" value="{$invoice->id}"/>
+<div  class="buttons">
+ <button  id="pdf_invoice"  >PDF Invoice</button>
+</div>
+
   <div id="yui-main">
 
 

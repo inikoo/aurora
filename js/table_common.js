@@ -93,6 +93,8 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     if(oResponse.meta.rtext_rpp != undefined){
 
 	YAHOO.util.Dom.get('rtext_rpp'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext_rpp;
+    }else{
+    alert("error no rtext_rpp return properly table"+oResponse.meta.tableid)
     }
 
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg

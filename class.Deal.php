@@ -1,8 +1,8 @@
 <?php
 /*
- File: Deal.php
+ File: Campaign.php
 
- This file contains the Deal Class
+ This file contains the Campaign Class
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -26,10 +26,11 @@ class Deal extends DB_Table {
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id',$a1);
         } else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
-           $this->find($a2,'create');
+            $this->find($a2,'create');
 
-        } elseif(preg_match('/find/i',$a1))
-            $this->find($a2,$a1);
+        }
+        elseif(preg_match('/find/i',$a1))
+        $this->find($a2,$a1);
         else
             $this->get_data($a1,$a2);
 
@@ -39,16 +40,25 @@ class Deal extends DB_Table {
 
         if ($tipo=='id')
             $sql=sprintf("select * from `Deal Dimension` where `Deal Key`=%d",$tag);
-        //    elseif($tipo=='code')
-        //  $sql=sprintf("select * from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($tag));
-        // print $sql;
+        elseif($tipo=='code')
+        $sql=sprintf("select * from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($tag));
+
+
         $result=mysql_query($sql);
 
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
-            $this->calculate_deal=create_function('$transaction_data,$customer_id,$date', $this->get('Deal Metadata'));
             $this->id=$this->data['Deal Key'];
         }
+        
+     
+        
+        
     }
+    
+    
+  
+    
+    
 
     function find($raw_data,$options) {
 
@@ -74,39 +84,43 @@ class Deal extends DB_Table {
         }
 
         $data=$this->base_data();
+
+
         foreach($raw_data as $key=>$value) {
 
             if (array_key_exists($key,$data))
                 $data[$key]=$value;
 
         }
+
         $fields=array();
-        foreach($data as $key=>$value){
-        if(!($key=='Deal Begin Date' or  $key=='Deal Expiration Date' or   $key=='Deal Allowance Metadata'or   $key=='Deal Terms Metadata' or  $key=='Deal Replace Metadata' ))
-        $fields[]=$key;
+        foreach($data as $key=>$value) {
+            if (!($key=='Deal Begin Date' or  $key=='Deal Expiration Date' or $key=='Campaign Deal Metadata Terms'   ))
+                $fields[]=$key;
         }
-       
+
         $sql="select `Deal Key` from `Deal Dimension` where  true ";
-        //print_r($fields);
+        // print_r($fields);
         foreach($fields as $field) {
             $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
         }
-	//	print "$sql\n";
+        //print "$sql\n";
         $result=mysql_query($sql);
         $num_results=mysql_num_rows($result);
         if ($num_results==1) {
             $row=mysql_fetch_array($result, MYSQL_ASSOC);
             $this->found=true;
-            $this->get_data('id',$row['Deal Key']);
-           
+            $this->found_key=$row['Deal Key'];
+
         }
-        if($this->found){
-	  $this->get_data('id',$this->found);
+        if ($this->found) {
+            $this->get_data('id',$this->found_key);
         }
-        
-        if($create and !$this->found){
-        $this->create($data);
-        
+
+
+        if ($create and !$this->found) {
+            $this->create($data);
+
         }
 
 
@@ -116,34 +130,33 @@ class Deal extends DB_Table {
 
     function create($data) {
 
-      if($data['Deal Trigger Key']=='')
-	$data['Deal Trigger Key']=0;
-      // print "-----------\n";print_r($data);
-      if($data['Deal Allowance Metadata']=='' and $data['Deal Allowance Lock']=='No'){
-	//	print "xcaca";
-	$data['Deal Allowance Metadata']=Deal::parse_allowance_metadata($data['Deal Allowance Type'],$data['Deal Allowance Description']);
-      }      if($data['Deal Terms Metadata']=='' and $data['Deal Terms Lock']=='No')
-	$data['Deal Terms Metadata']=Deal::parse_term_metadata($data['Deal Terms Type'],$data['Deal Terms Description']);
-      ///   print_r($data);
-      //   exit;
+
+        if ($data['Campaign Deal Metadata Terms']=='' and $data['Campaign Deal Metadata Terms Lock']=='Yes')
+            $data['Campaign Deal Metadata Terms']=Deal::parse_term_metadata($data['Campaign Deal Metadata Terms Type'],$data['Campaign Deal Metadata Terms Description']);
+
+
         $keys='(';
         $values='values(';
         foreach($data as $key=>$value) {
             $keys.="`$key`,";
-	    if($key=='Deal Replace Metadata')
-	      $values.=prepare_mysql($value,false).",";
-	    else
-            $values.=prepare_mysql($value).",";
+            if ( $data['Campaign Deal Metadata Terms Lock']=='No'  and  $key=='Campaign Deal Metadata Terms'  )
+                $values.=prepare_mysql($value,false).",";
+            else
+                $values.=prepare_mysql($value).",";
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
+
+
+
+        // print_r($data);
         $sql=sprintf("insert into `Deal Dimension` %s %s",$keys,$values);
         // print "$sql\n";
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->get_data('id',$this->id);
         } else {
-            print "Error can not create deal  $sql\n";
+            print "Error can not create campaign  $sql\n";
             exit;
 
         }
@@ -155,410 +168,268 @@ class Deal extends DB_Table {
             return $this->data[$key];
 
         switch ($key) {
-	case('Description'):
-	case('Deal Description'):
-	  return $this->data['Deal Terms Description'].' &rArr; '.$this->data['Deal Allowance Description'];
-	  break;
+
         }
 
         return false;
     }
 
- public static function parse_allowance_metadata($allowance_type,$allowance_description){
-   $conditions=preg_split('/\s+AND\s+/',$allowance_type);
-   $metadata='';
-  
-   foreach($conditions as $condition){
-     $metadata.=';'.Deal::parse_individual_allowance_metadata($condition,$allowance_description);
-      }
-   $metadata=preg_replace('/^;/','',$metadata); 
-   // print "** $allowance_type,$allowance_description ->$metadata  \n";
-   return $metadata;
- }
+    function add_deal_schema($raw_data) {
+
+        $base_data=array(
+                       'Deal Metadata Name'=>$this->data['Deal Name'],
+                       'Deal Metadata Allowance Description'=>'',
+                       'Deal Metadata Allowance Type'=>'',
+                       'Deal Metadata Allowance Target'=>'',
+                       'Deal Metadata Allowance Lock'=>'No',
+                       'Deal Metadata Allowance'=>'',
+                       'Deal Metadata Trigger'=>'',
+                       'Deal Metadata Replace Type'=>'none',
+                       'Deal Metadata Replace'=>''
+                   );
+        foreach($raw_data as $key=>$value) {
+            if (array_key_exists($key,$base_data))
+                $base_data[$key]=$value;
+        }
+        $base_data['Deal Key']=$this->id;
+        $this->schema_found=false;
+        $fields=array();
+        foreach($base_data as $key=>$value) {
+            if (!($key=='Deal Metadata Allowance'  or  $key=='Deal Metadata Replace'  ))
+                $fields[]=$key;
+        }
+
+        $sql="select `Deal Schema Key` from `Campaign Deal Schema` where  true ";
+        // print_r($fields);
+        foreach($fields as $field) {
+            $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($base_data[$field],false));
+        }
+        //print "$sql\n";
+        $result=mysql_query($sql);
+        $num_results=mysql_num_rows($result);
+        if ($num_results==1) {
+            $row=mysql_fetch_array($result, MYSQL_ASSOC);
+            $this->schema_found=true;
 
 
- public static function parse_individual_allowance_metadata($allowance_type,$allowance_description){
-// print "$allowance_type,$allowance_description\n";
- switch($allowance_type){
-   case('Percentage Off'):
-     if (preg_match('/\d+((\.|\,)\d+)?\%/i',$allowance_description,$match)){
-       $number=preg_replace('/\,/','.',$match[0]);
-       $number=preg_replace('/\%/','',$number);
-       return 0.01* (float) $number;
-     }
-      if (preg_match('/^(|.*\s+)free(\s+.*|)$/i',$allowance_description,$match)){
-       return 1;
-     }
-     break;
- case('Get Same Free'):
- case('Get Free'):
-     $allowance_description=translate_written_number($allowance_description);
-     $number=1;
-     if(preg_match('/get \d+/i',$allowance_description,$match)){
-//            print "** $allowance_description \n";
-
-       $number=_trim(preg_replace('/[^\d]/','',$match[0]));
-       }
-     return $number;
-     break;
-   }
- }
-
-    public static function parse_term_metadata($term_description_type,$term_description){
-      
-      $conditions=preg_split('/\s+AND\s+/',$term_description_type);
-      $metadata='';
-      foreach($conditions as $condition){
-         $metadata.=';'.Deal::parse_individual_term_metadata($condition,$term_description);
-      }
-      $metadata=_trim(preg_replace('/^;/','',$metadata)); 
-      // print "------- $metadata\n";
-      
-       return $metadata;
-      }
-      
-    public static function parse_individual_term_metadata($term_description_type,$term_description){
-      //print "$term_description_type  => $term_description\n";
-      switch($term_description_type){
-      case('Family Quantity Ordered'):
-      case('Product Quantity Ordered'):
-      case('Department Quantity Ordered'):
-      case('Store Quantity Ordered'):
-	
-	//print("$term_description\n");
-	$term_description=translate_written_number($term_description);
-	
+        }
+        if (!$this->schema_found) {
 
 
-	if (preg_match('/^\d+$/i',$term_description,$match))
-	  return $term_description;
-	if (preg_match('/order \d+( or more)?/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]);
-	if (preg_match('/buy \d+/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]);
-	if (preg_match('/\d+ oder mehr/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]);
+            if ($base_data['Deal Metadata Allowance Lock']=='Yes')
+                $base_data['Deal Metadata Allowance']=Deal::parse_allowance_metadata($base_data['Deal Metadata Allowance Type'],$base_data['Deal Metadata Allowance Description']);
+            else
+                $base_data['Deal Metadata Allowance']='';
 
-	break;
-      case('Order Interval'):
-	if (preg_match('/order (within|since|every) \d+ days?/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]).' day';
-	if (preg_match('/order (within|since|every) \d+ (calendar )?months?/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]).' month';
-	if (preg_match('/order (within|since|every) \d+ weeks?/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]).' week';
-	
-	
+            //print_r($base_data);
 
-	break;
-      case('Order Number'):
-	if (preg_match('/(first|1st) (order|one)|order (for|the)? (first|1st) time/i',$term_description,$match))
-	  return 1;
-	if (preg_match('/(second|2nd) (order|one)|order (for|the)? (second|2nd) time/i',$term_description,$match))
-	  return 2;
-	if (preg_match('/(third|3nd) (order|one)|order (for|the)? (third|3nd) time/i',$term_description,$match))
-	  return 3;
-	if (preg_match('/order (number|no|\#)?\s*\d+/i',$term_description,$match))
-	  return preg_replace('/[^\d]/','',$match[0]);
+            $keys='(';
+            $values='values(';
+            foreach($base_data as $key=>$value) {
+                $keys.="`$key`,";
+                //print "-> $key=>$value \n";
+                if (
+                    ($base_data['Deal Metadata Allowance Lock']=='No'  and  $key=='Deal Metadata Allowance') or
+                    ($base_data['Deal Metadata Replace Type']=='none'  and  $key=='Deal Metadata Replace')
+                )
+                    $values.=prepare_mysql($value,false).",";
+                else
+                    $values.=prepare_mysql($value).",";
+            }
+            $keys=preg_replace('/,$/',')',$keys);
+            $values=preg_replace('/,$/',')',$values);
+            $sql=sprintf("insert into `Campaign Deal Schema` %s %s",$keys,$values);
+            if (mysql_query($sql)) {
+                $this->msg='Deal Schema Added';
+            } else {
+                print "Error can not add deal schema  $sql\n";
+                exit;
 
-	break;
-      case('Order Items Net Amount'):
-      case('Order Total Net Amount'):
-      case('Order Items Gross Amount'):
-	if (preg_match('/(less than|upto|up to)\s*(\$|\£|\€)?\d+/i',$term_description))
-	  $conditional='<';
-	if (preg_match('/(more than|over)\s*(\$|\£|\€)?\d+/i',$term_description))
-	  $conditional='>';
-	if (preg_match('/(equal|exactly)\s*(\$|\£|\€)?\d+/i',$term_description))
-	  $conditional='>';
-	list($currency,$amount)=parse_money($term_description);
-	return _trim("$conditional $currency $amount");
-		break;
-      case('Shipping Country'):	
-	$regex='/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i';
-	if( preg_match('/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i',$term_description,$match)){
-	  $country=_trim(preg_replace('/orders? (shipped |send |to be send |d(ie)spached )?to /i','',$match[0]));
-	  //$country=_trim(preg_replace('/and order/i','',$country));
+            }
 
-	  $country=_trim(preg_replace('/(and|\+|y|with) (value|customer|order).*/i','',$country));
-	 
-	  $country_code=Address::parse_country($country);
-	  return $country_code;
-	}
-
-	break;
-      }
-    }
-
-    function allowance_input_form(){
-      $input_allowance=array();
-      $allowances=preg_split('/\s+AND\s+/',$this->data['Deal Allowance Type']);
-      $metadata=preg_split('/\s+|\s+/',$this->data['Deal Allowance Metadata']);
-	foreach($allowances as $key=>$allowance){
-	  $input_allowance[]=$this->allowance_individual_input_form($allowance,$metadata[$key]);
-	}
-	return $input_allowance;
-    }
-    
-    
-      function get_thin_allowance_description($allowance=false,$metadata=false){
-        if(!$allowance)
-            $allowance=$this->data['Deal Allowance Type'];
-        if(!$metadata)
-            $metadata=$this->data['Deal Allowance Metadata'];
-            
-            $label='';
-            $value='';
-            
-               switch($allowance){
-    case('Percentage Off'):
-	$label=_('Discount');
-	$value=percentage($metadata,1);
-	break;
-
-      }
-            
-        return array($label,$value);    
-    }
-    
-    
-    function allowance_individual_input_form($allowance,$metadata){
-
-
-      $input_allowance=array();
-      $input_allowance['Value Class']='';
-  
-   list($input_allowance['Label'],$input_allowance['Value'])=$this->get_thin_allowance_description($allowance,$metadata);
-  
-
-      if($this->data['Deal Allowance Lock']=='Yes'){
-	$allowance_lock_img='<img src="art/icons/lock.png" alr="Locked"/>';
-	$allowance_lock=true;
-	$input_allowance['Value Class'].=' locked';
-      }else{
-	$allowance_lock_img='';
-       $allowance_lock=false;
-      }
-      $input_allowance['Lock Label']=$allowance_lock_img;
-      $input_allowance['Lock Value']=$allowance_lock;
-      return $input_allowance;
-    }
-
-    function terms_input_form(){
-      $input_terms=array();
-      $terms=preg_split('/\s+AND\s+/',$this->data['Deal Terms Type']);
-      $metadata=preg_split("/\;/",$this->data['Deal Terms Metadata']);
-
-      //      print $this->data['Deal Terms Type']." ->  ". $this->data['Deal Terms Metadata']."\n";
-
-      //print_r($metadata);
-      //print "-------c ----\n";
-      foreach($terms as $key=>$terms){
-	$input_terms[]=$this->terms_individual_input_form($terms,$metadata[$key]);
-      }
-	return $input_terms;
-    }
-    
-    
-    
-    function get_thin_terms_description($terms=false,$metadata=false){
-        if(!$terms)
-            $terms=$this->data['Deal Terms Type'];
-        if(!$metadata)
-            $metadata=$this->data['Deal Terms Metadata'];
-            
-            $label='';
-            $value='';
-            
-               switch($terms){
-      case('Order Interval'):
-	$label=_('If').' '._('order within');
-	$value=$metadata;
-	break;
-	 case('Family Quantity Ordered'):
-	$label=_('If').' '._('order more than');
-	$value=number($metadata);
-	break;
-      case('Shipping Country'):
-	$label=_('If').' '._('Shipping Destination');
-	
-	$country=new Country ('code',$metadata);
-	$value=$country->data['Country Name'];
-	$input_terms['Value Class']='country';
-	break;
-      case('Order Items Net Amount'):
-	$conditional='';
-	if(preg_match('/^(\>|<|=|>=|<=)\s/',$metadata,$match)){
-	    $conditional=_trim($match[0]);
-	    $metadata=preg_replace("/^$conditional/",'',$metadata);
-	  }
-
-	  $label=_trim($terms.' '.$conditional);
-	  $value=$metadata;
-	break;
-
-
-      }
-            
-        return array($label,$value);    
-    }
-    
-    function terms_individual_input_form($terms,$metadata){
-     
-      $input_terms=array();
-      $input_terms['Value Class']='';
-
-      list($input_terms['Label'],$input_terms['Value'])=$this->get_thin_terms_description($terms,$metadata);
-
-      //print "** $terms -> $metadata **\n";
-   
-      
-      if($this->data['Deal Terms Lock']=='Yes'){
-	$terms_lock_img='<img src="art/icons/lock.png" alr="Locked"/>';
-	$terms_lock=true;
-	$input_terms['Value Class'].=' locked';
-      }else{
-	$terms_lock_img='';
-       $terms_lock=false;
-	}			 
-      $input_terms['Lock Label']=$terms_lock_img;
-      $input_terms['Lock Value']=$terms_lock;
-
-      return $input_terms;
-    }
-    
-
-    function get_xhtml_status(){
-      switch($this->data['Deal Status']){
-      case('Active'):
-	return '<img src="art/icons/accept.png" />';
-	break;
-      case('Finish'):
-	return '<img src="art/icons/time_delete.png" />';
-	break;
-      case('Wating'):
-	return '<img src="art/icons/clock_go.png" />';
-	break;
-      case('Suspended'):
-	return '<img src="art/icons/stop.png" />';
-	break;
-
-
-      }
+        } else {
+            $this->msg='Deal Schema Found';
+        }
 
     }
 
-   /*Function: update_field_switcher
-   */
- function update_field_switcher($field,$value,$options=''){
+    function find_schema($arg) {
+        $schema_data=array();
+        $this->schema_found=false;
+        if (is_string($arg)) {
+            $sql=sprintf("select * from `Campaign Deal Schema` where `Deal Metadata Name`=%s",prepare_mysql($arg));
+            $res=mysql_query($sql);
+            if ($schema_data=mysql_fetch_array($res)) {
 
-   switch($field){
-   case('term'):
-     $this->update_term($value);
-     break;
-   case('allowance'):
-     $this->update_allowance($value);
-     break; 
-   default:
-     $base_data=$this->base_data();
-     if(array_key_exists($field,$base_data)) {
-       $this->update_field($field,$value,$options);
-     }
-  }
- }
-
- 
+                $this->schema_found=true;
+            }
+        }
+        elseif(is_numeric($arg)) {
+            $sql=sprintf("select * from `Campaign Deal Schema` where `Deal Schema Key`=%d",$arg);
+            $res=mysql_query($sql);
+            if ($schema_data=mysql_fetch_array($res)) {
+                $this->schema_found=true;
+            }
+        }
 
 
+        return $schema_data;
+    }
 
-    function update_term($thin_description){
-      $this->updated=false;
+    function create_deal($deal_schema,$additional_data=array()) {
+        $this->deal_created=false;
+
+        $schema_data=$this->find_schema($deal_schema);
+        if ($this->schema_found) {
+
+            $data['Deal Metadata Allowance Target']=$schema_data['Deal Metadata Allowance Target'];
+            if (array_key_exists('Deal Metadata Allowance Target Key',$additional_data))
+                $data['Deal Metadata Allowance Target Key']=$additional_data['Deal Metadata Allowance Target Key'];
+            else
+                $data['Deal Metadata Allowance Target Key']=0;
 
 
-      switch($this->data['Deal Terms Type']){
-      case('Family Quantity Ordered'):
-      case('Product Quantity Ordered'):
-	if(!is_numeric($thin_description)){
-	  $this->msg=_('Term should be numeric');
-	  return;
-	}elseif($thin_description<=0){
-	    $this->msg=_('Term should be more than zero');
-	    return;
-	  }
-	
-	$term_description="order ".number($thin_description)." or more";
+            switch ($data['Deal Metadata Allowance Target']) {
+            case('Charge'):
+                $target=new Charge($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            case('Shipping'):
+                $target=new Shipping($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            case('Family'):
+                $target=new Family($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            case('Department'):
+                $target=new Department($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            case('Store'):
+                $target=new Store($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            case('Customer'):
+                $target=new Customer($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            case('Product'):
+                $target=new Product($additional_data['Deal Metadata Allowance Target Key']);
+                break;
+            default:
+                exit("can not get target ".$data['Deal Metadata Allowance Target']."\n");
+            }
 
-      }
+            $schema_replaceable_columns=array('Deal Metadata Allowance Description','Deal Metadata Name');
+            foreach($schema_replaceable_columns as $schema_replaceable_column) {
+                if (preg_match('/\[.+\]/',$schema_data[$schema_replaceable_column],$match)) {
+                    $tag=preg_replace('/\[/','\\[',$match[0]);
+                    $tag=preg_replace('/\]/','\\]',$tag);
+                    $column=preg_replace('/(\[|\])/','',$match[0]);
+                    if ($target->get($column)!='') {
+                        $column_data=$target->get($column);
+                        $schema_data[$schema_replaceable_column]=preg_replace("/$tag/",$column_data,$schema_data[$schema_replaceable_column]);
+                    }
+                }
+            }
 
-      
-      $term_metadata=$this->parse_term_metadata(
-						    $this->data['Deal Terms Type']
-						    ,$term_description
-						    );
-      if($term_metadata!=$this->data['Deal Terms Metadata']){
 
-	$sql=sprintf("update `Deal Dimension` set `Deal Terms Description`=%s ,`Deal Terms Metadata`=%s where `Deal Key`=%d"
-	,prepare_mysql($term_description)
-	,prepare_mysql($term_metadata)
-	,$this->id
-	);
+            $data['Store Key']=$this->data['Store Key'];
 
-		mysql_query($sql);
-$this->data['Deal Terms Description']=$term_description;
-$this->data['Deal Terms Metadata']=$term_metadata;
 
-    $this->updated=true;
-  list($label,$new_thin_description)=$this->get_thin_terms_description();
-	$this->new_value=$new_thin_description;
+
+            $data['Deal Metadata Trigger']=$schema_data['Deal Metadata Trigger'];
+
+
+            $data['Campaign Deal Schema Key']=$schema_data['Deal Schema Key'];
+            if (array_key_exists('Deal Metadata Trigger Key',$additional_data) and is_numeric($additional_data['Deal Metadata Trigger Key']) ) {
+                $data['Deal Metadata Trigger Key']=$additional_data['Deal Metadata Trigger Key'];
+            } else
+                $data['Deal Metadata Trigger Key']=0;
+
+            $data['Deal Metadata Begin Date']=$this->data['Deal Begin Date'];
+            $data['Deal Metadata Expiration Date']=$this->data['Deal Expiration Date'];
+            //print_r($schema_data);
+            $data['Deal Metadata Allowance Type']=$schema_data['Deal Metadata Allowance Type'];
+            $data['Deal Metadata Name']=$schema_data['Deal Metadata Name'];
+            $data['Deal Metadata Allowance Lock']=$schema_data['Deal Metadata Allowance Lock'];
+            if ($schema_data['Deal Metadata Allowance Lock']=='Yes') {
+                $data['Deal Metadata Allowance Description']=$schema_data['Deal Metadata Allowance Description'];
+                $data['Deal Metadata Allowance']=$schema_data['Deal Metadata Allowance'];
+
+
+            } else {
+                $data['Deal Metadata Allowance Description']=$additional_data['Deal Metadata Allowance Description'];
+                $data['Deal Metadata Allowance']=Deal::parse_allowance_metadata($data['Deal Metadata Allowance Type'],$data['Deal Metadata Allowance Description']);
+
+
+            }
+            $data['Deal Metadata Terms Lock']=$this->data['Campaign Deal Metadata Terms Lock'];
+            $data['Deal Metadata Terms Type']=$this->data['Campaign Deal Metadata Terms Type'];
+
+            if ($this->data['Campaign Deal Metadata Terms Lock']=='Yes') {
+                $data['Deal Metadata Terms Description']=$this->data['Campaign Deal Metadata Terms Description'];
+                $data['Deal Metadata Terms']=$this->data['Campaign Deal Metadata Terms'];
+
+            } else {
+                $data['Deal Metadata Terms Description']=$additional_data['Deal Metadata Terms Description'];
+                $data['Deal Metadata Terms']=Deal::parse_term_metadata($data['Deal Metadata Terms Type'],$data['Deal Metadata Terms Description']);
+            }
+            //print_r($data);
+// exit;
+            $deal=new DealMetadataMetadataMetadata('find create',$data);
+
+
+        } else {
+            $this->msg='Schema not found';
+            $this->error=true;
+
+        }
 
     }
 
+    function update_usage() {
+
+        
+
+
+        $sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Applied`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+                     $this->id
+
+                    );
+        $res=mysql_query($sql);
+        $orders=0;
+        $customers=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $orders=$row['orders'];
+            $customers=$row['customers'];
+        }
+
+        $sql=sprintf("update `Deal Dimension` set `Deal Total Acc Applied Orders`=%d, `Deal Total Acc Applied Customers`=%d where `Deal Key`=%d",
+                     $orders,
+                     $customers,
+                     $this->id
+                    );
+        
+        mysql_query($sql);
+        $sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+                     $this->id
+
+                    );
+        $res=mysql_query($sql);
+        $orders=0;
+        $customers=0;
+      //  print "$sql\n";
+        if ($row=mysql_fetch_assoc($res)) {
+            $orders=$row['orders'];
+            $customers=$row['customers'];
+        }
+
+        $sql=sprintf("update `Deal Dimension` set `Deal Total Acc Used Orders`=%d, `Deal Total Acc Customers`=%d where `Deal Key`=%d",
+                     $orders,
+                     $customers,
+                     $this->id
+                    );
+         mysql_query($sql);   
+        // print $sql;
 
     }
 
-     function update_allowance($thin_description){
-      $this->updated=false;
-
-
-      switch($this->data['Deal Allowance Type']){
-      case('Percentage Off'):
-      $thin_description=preg_replace('/\s*%$/','',$thin_description);
-      
-	if(!is_numeric($thin_description)){
-	  $this->msg=_('allowance should be numeric');
-	  return;
-	}
-	    $thin_description=abs($thin_description);
-	    
-	        if($thin_description>100){
-	    $this->msg=_('allowance can not be more than 100%');
-	    return;
-	  }
-	
-	$allowance_description=number($thin_description)."%";
-
-      }
-
-      
-      $allowance_metadata=$this->parse_allowance_metadata(
-						    $this->data['Deal Allowance Type']
-						    ,$allowance_description
-						    );
-      if($allowance_metadata!=$this->data['Deal Allowance Metadata']){
-
-	$sql=sprintf("update `Deal Dimension` set `Deal Allowance Description`=%s ,`Deal Allowance Metadata`=%s where `Deal Key`=%d"
-	,prepare_mysql($allowance_description)
-	,prepare_mysql($allowance_metadata)
-	,$this->id
-	);
-	mysql_query($sql);
-	$this->updated=true;
-	$this->data['Deal Allowance Description']=$allowance_description;
-$this->data['Deal Allowance Metadata']=$allowance_metadata;
-list($label,$new_thin_description)=$this->get_thin_allowance_description();
-	$this->new_value=$new_thin_description;
-    }
-
-
-    }
 }
+
+?>

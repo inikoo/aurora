@@ -2,9 +2,25 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
-<div> 
-  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; {t}Locations{/t}</span>
+<div class="branch"> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Locations{/t}</span>
 </div>
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_warehouse.php?id={$warehouse->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='warehouse_stats.php?id={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+         <button  onclick="window.location='warehouse_map.php?id={$warehouse->id}'" ><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button>
+        <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/arrow_switch.png" alt=""> {t}Movements{/t}</button>
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+
+
 
  <div style="clear:left;margin:0 0px">
     <h1>{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</h1>
@@ -12,13 +28,13 @@
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
 
     <li> <span class="item {if $view=='locations'}selected{/if}"  id="locations">  <span> {t}Locations{/t}</span></span></li>
     <li> <span class="item {if $view=='areas'}selected{/if}"  id="areas">  <span> {t}Areas{/t}</span></span></li>
-    <li> <span class="item {if $view=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
-    <li> <span class="item {if $view=='map'}selected{/if}" id="map"  ><span>  {t}Map{/t}</span></span></li>
-     <li> <span class="item {if $view=='movements'}selected{/if}"  id="movements">  <span> {t}Movements{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $view=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $view=='map'}selected{/if}" id="map"  ><span>  {t}Map{/t}</span></span></li>
+     <li style="display:none"> <span class="item {if $view=='movements'}selected{/if}"  id="movements">  <span> {t}Movements{/t}</span></span></li>
  <li> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
