@@ -130,7 +130,7 @@ newvalue=r.newvalue;
 
 
 function change_block(e){
-        var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website","communications"]; 
+        var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","website","communications"]; 
 
 	
 	if(this.id=='pictures'  ){
@@ -143,7 +143,8 @@ function change_block(e){
 	Dom.get('d_pictures').style.display='none';
 	Dom.get('d_discounts').style.display='none';
 	Dom.get('d_description').style.display='none';
-	Dom.get('d_web').style.display='none';
+	Dom.get('d_website').style.display='none';
+
 	Dom.get('d_charges').style.display='none';
 	Dom.get('d_discounts').style.display='none';
 	Dom.get('d_campaigns').style.display='none';
@@ -367,10 +368,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"name",label:"<?php echo _('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description",label:"<?php echo _('Description')?>", width:400,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"from",label:"<?php echo _('Valid From')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"name",label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"description",label:"<?php echo _('Description')?>", width:230,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       	,{key:"editor",label:"", width:230,sortable:false}
+				       	,{key:"active",label:"", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				     
 				       ];
 	    //?tipo=customers&tid=0"
 	    
@@ -380,20 +383,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource2.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		   rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
 		fields: [
-			 "name"
-			 ,"description","from","to"
-
+			 "name","description","from","to","active","editor"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -700,7 +703,7 @@ function init(){
   init_search('products_store');
 
 
-    var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website","communications"]; 
+    var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","website","communications"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);

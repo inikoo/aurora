@@ -633,26 +633,26 @@ function edit_deal() {
 function upload_image($subject='product') {
 
 
-if (isset($_FILES['testFile']['tmp_name'])) {
- 
+    if (isset($_FILES['testFile']['tmp_name'])) {
+
         include_once('class.Image.php');
-     //   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
-       // $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
-        
-     //   print_r($_FILES);
-        
-     
-              
-          $image_data=array(
-                    'file'=>$_FILES['testFile']['tmp_name'],
-                    'source_path'=>'',
-                    'name'=>$_FILES['testFile']['name'],
-                    'caption'=>''
-                );     
-              
-       // print_r($image_data);      
-              
-              
+        //   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
+        // $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
+
+        //   print_r($_FILES);
+
+
+
+        $image_data=array(
+                        'file'=>$_FILES['testFile']['tmp_name'],
+                        'source_path'=>'',
+                        'name'=>$_FILES['testFile']['name'],
+                        'caption'=>''
+                    );
+
+        // print_r($image_data);
+
+
         $image=new Image('find',$image_data,'create');
         if (!$image->error) {
             $subject=$_REQUEST['subject'];
@@ -679,8 +679,7 @@ if (isset($_FILES['testFile']['tmp_name'])) {
             echo json_encode($response);
             return;
         }
-    } 
-    else {
+    } else {
         $response= array('state'=>400,'msg'=>'no image');
         echo json_encode($response);
         return;
@@ -1969,11 +1968,104 @@ function list_charges_for_edition() {
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
+
+
+        $input_charge=sprintf('
+        
+        						<tr style="border:none">
+        						<td >%s</td>
+								</tr>
+								<tr style="border:none">
+                              <td><input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:50px" value="%s" ovalue="%s" /> %s</td>
+                              <td>
+                              <div class="buttons small">
+                              <button id="deal_allowance_save%d" style="visibility:hidden" class="positive" onClick="deal_allowance_save(%d)">'._('Save').'</button>
+                              <button id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="negative"  onClick="deal_allowance_reset(%d)">'._('Reset').'</button>
+                              </td>'
+                              ,_('charge').":"
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+                              ,''
+                              ,'input'
+                              ,$row['Charge Metadata']
+                              ,$row['Charge Metadata']
+                              ,''
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+
+
+                             );
+
+
+
+        switch ($row['Charge Terms Type']) {
+        case 'Order Items Gross Amount':
+            $terms_components=preg_split('/;/',$row['Charge Terms Metadata']);
+            $operator=$terms_components[0];
+
+            $charge_term_amount=$terms_components[1];
+
+ switch ($operator) {
+                    case('<'):
+                       $terms_label=_('when items gross amount is less than').':';
+                        break;
+                    case('>'):
+                         $terms_label=_('when items gross amount is more than').':';
+                        break;
+                    case('<='):
+                        $terms_label=_('when items gross amount is less or equal than').':';
+                        break;
+                    case('>='):
+                      $terms_label=_('when items gross amount is more or equal than').':';
+                        break;
+                    }
+
+
+     
+            break;
+        default:
+            $terms_label=_('when').' '.$row['Charge Terms Type'];
+            break;
+        }
+
+
+        $input_term=sprintf('<tr style="border:none"> <td colspan=3 >%s</td></tr>
+                            <tr style="border:none">
+
+                            <td><input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:50px" value="%s" ovalue="%s" /> %s</td>
+                            <td colspan="2">
+                            <div class="buttons small">
+                            <button id="deal_allowance_save%d" style="visibility:hidden" class="positive" onClick="deal_allowance_save(%d)">'._('Save').'</button>
+                            <button id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="negative"  onClick="deal_allowance_reset(%d)">'._('Reset').'</button>
+                            </td></tr>'
+                            ,$terms_label
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+                            ,''
+                            ,'input'
+                            ,$charge_term_amount
+                            ,$charge_term_amount
+                            ,''
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+
+
+                           );
+
+
+
+
+
+        $editor='<table border=0 style="margin:0px">'.$input_charge.$input_term.'</table>';
         $adata[]=array(
                      'name'=>$row['Charge Name'],
                      'description'=>$row['Charge Description'].' '.$row['Charge Terms Description'],
-
-
+                     'active'=>($row['Charge Active']=='Yes'?'<img src="art/icons/accept.png" alt="Ok"/>':'<img src="accept_bw_hidden.png" alt="no"/>'),
+                     'editor'=>$editor
                  );
     }
     mysql_free_result($res);
