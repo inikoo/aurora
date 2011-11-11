@@ -30,7 +30,7 @@ tr.mould td{padding:20px 0 30px 0;}
 
 
 .input_msg {font-size:75%;width:200px}
-.edit_block{margin:0;padding:0;width:100%}
+.edit_block{margin:0;padding:0;width:100%;min-height:200px;}
 .edit_block .error{color:red}
 .new_item_dialog{margin:0 0 10px 0;padding:10px;border:1px solid #ccc}
 
