@@ -22,7 +22,7 @@ include_once('class.Invoice.php');
 
 include_once('class.DeliveryNote.php');
 include_once('class.TaxCategory.php');
-
+include_once('class.CurrencyExchange.php');
 
 
 class Order extends DB_Table {
