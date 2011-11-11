@@ -240,9 +240,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		  	 rowsPerPage:"resultset.records_perpage",
+		  	rowsPerPage:"resultset.records_perpage",
 		    RecordOffset : "resultset.records_offset", 
-		       rtext:"resultset.rtext",
+		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -368,8 +368,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"name",label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description",label:"<?php echo _('Description')?>", width:230,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    				    {key:"id", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+
+				       ,{key:"name",label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'charge' }
+				       ,{key:"description",label:"<?php echo _('Description')?>", width:230,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextareaCellEditor({asyncSubmitter: CellEdit}),object:'charge' }
 				       	,{key:"editor",label:"", width:230,sortable:false}
 				       	,{key:"active",label:"", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
@@ -396,7 +398,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "name","description","from","to","active","editor"
+			 "name","description","from","to","active","editor","id"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -426,6 +428,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+	    this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table2.subscribe("cellClickEvent", onCellClick);
 
 		    
 		    
@@ -800,6 +806,43 @@ Dom.setStyle('d_discounts','display','')
 
 }
 
+function charge_changed(key){
+Dom.setStyle(['charge_save'+key,'charge_reset'+key],'visibility','visible')
+}
+
+function charge_save(key){
+	Dom.setStyle(['charge_save'+key,'charge_reset'+key],'display','none')
+		Dom.setStyle('charge_saving','display','')
+
+	
+
+	var request='ar_edit_assets.php?tipo=edit_charge&key=charge&newvalue='+Dom.get('charge'+key).value+'&id='+key;
+alert(request)
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+				Dom.setStyle('charge_saving','display','none')
+
+		Dom.setStyle(['charge_save'+key,'charge_reset'+key],'display','')
+
+		Dom.setStyle(['charge_save'+key,'charge_reset'+key],'visibility','hidden')
+
+		}else{
+		  
+	    }
+	    }
+	    });
+
+
+}
+
+function charge_reset(key){
+Dom.get('charge'+key).value=Dom.get('charge'+key).getAttribute('ovalue');
+Dom.setStyle(['charge_save'+key,'charge_reset'+key],'visibility','hidden')
+
+}
 
 YAHOO.util.Event.onDOMReady(init);
 

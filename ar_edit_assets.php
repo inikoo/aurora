@@ -26,7 +26,14 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
-
+case('edit_charge'):
+  $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key'),
+                         ));
+edit_charge($data);
+break;
 
 case('edit_part_custom_field'):
 case('edit_part_unit'):
@@ -390,6 +397,34 @@ function delete_department() {
 
 
 }
+
+function edit_charge($data) {
+include_once('class.Charge.php');
+  global $editor;
+    $charge=new Charge($data['id']);
+  
+  
+  
+  
+    $charge->editor=$editor;
+    $translator=array(
+    'name'=>'Charge Name',
+    'description'=>'Charge Description',
+    'charge'=>'Charge Metadata',
+    );
+    $key=$translator[$data['key']];
+    
+    $charge->update(array($key=>$data['newvalue']));
+
+    if ($charge->updated) {
+        $response= array('state'=>200,'newvalue'=>$charge->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$charge->msg,'key'=>$data['key']);
+    }
+    echo json_encode($response);
+}
+
 function edit_store() {
     $store=new Store($_REQUEST['id']);
     global $editor;
@@ -1976,11 +2011,12 @@ function list_charges_for_edition() {
         						<td >%s</td>
 								</tr>
 								<tr style="border:none">
-                              <td><input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:50px" value="%s" ovalue="%s" /> %s</td>
+                              <td><input id="charge%d" onKeyUp="charge_changed(%d)" %s class="%s" style="width:50px" value="%s" ovalue="%s" /> %s</td>
                               <td>
                               <div class="buttons small">
-                              <button id="deal_allowance_save%d" style="visibility:hidden" class="positive" onClick="deal_allowance_save(%d)">'._('Save').'</button>
-                              <button id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="negative"  onClick="deal_allowance_reset(%d)">'._('Reset').'</button>
+                              <span id="charge_saving" style="float:right;display:none"><img style="height:12px"src="art/loading.gif"/>'._('Saving').'</span>
+                              <button id="charge_save%d" style="visibility:hidden" class="positive" onClick="charge_save(%d)">'._('Save').'</button>
+                              <button id="charge_reset%d" style="visibility:hidden" style="margin-left:10px "class="negative"  onClick="charge_reset(%d)">'._('Reset').'</button>
                               </td>'
                               ,_('charge').":"
                               ,$row['Charge Key']
@@ -2057,14 +2093,28 @@ function list_charges_for_edition() {
                            );
 
 
+if($row['Charge Active']=='Yes'){
+$activity_editor="<div class='buttons'>
+<button class='selected positive'>"._('Active')."</button>
+<button class='negative'>"._('Suspend')."</button>
+</div>";
+
+}else{
+$activity_editor="<div class='buttons'>
+<button class=' positive'>"._('Activate')."</button>
+<button class='selected negative'>"._('Suspended')."</button>
+</div>";
+
+}
 
 
 
         $editor='<table border=0 style="margin:0px">'.$input_charge.$input_term.'</table>';
         $adata[]=array(
+        		'id'=>	$row['Charge Key'],	
                      'name'=>$row['Charge Name'],
                      'description'=>$row['Charge Description'].' '.$row['Charge Terms Description'],
-                     'active'=>($row['Charge Active']=='Yes'?'<img src="art/icons/accept.png" alt="Ok"/>':'<img src="accept_bw_hidden.png" alt="no"/>'),
+                     'active'=>$activity_editor,
                      'editor'=>$editor
                  );
     }

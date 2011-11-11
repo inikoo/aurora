@@ -2703,7 +2703,6 @@ class Order extends DB_Table {
                 }
                 $terms_components=preg_split('/;/',$row['Charge Terms Metadata']);
                 $operator=$terms_components[0];
-                //$currency_code=$terms_components[1];
                 $amount=$terms_components[1];
                 if ($this->data[$row['Charge Terms Type']]!=0) {
                     switch ($operator) {
@@ -2716,12 +2715,10 @@ class Order extends DB_Table {
                             $apply_charge=true;
                         break;
                     case('<='):
-                    case('=<'):
                         if ($order_amount<=$amount)
                             $apply_charge=true;
                         break;
                     case('>='):
-                     case('=>'):
                         if ($order_amount>=$amount)
                             $apply_charge=true;
                         break;
