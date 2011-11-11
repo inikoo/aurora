@@ -96,7 +96,7 @@ function check_duplicates($customer, $telecom_type='Telephone', $customer_type='
 			}
 		}
 		
-	/*	
+		
 		if($main_telephone_warning){
 		foreach($main_telephone_warning as $key=>$msg){
 		
@@ -104,15 +104,23 @@ function check_duplicates($customer, $telecom_type='Telephone', $customer_type='
 			$main_telephone_warning[$key]='<img style="cursor:pointer" title="Other Customers/Supplier has this telephone" src="art/icons/error.png" alt="warning"/> '.$main_telephone_warning[$key];
 		}
 		}
-		*/
+		
 		//print_r($main_telephone_warning);
 		return $main_telephone_warning;
 	}
 }
 
+function get_all_warnings($customer){
+	$all_warnings=false;
+	$telecom_types=array('Telephone','Mobile','FAX','other_telephone','other_mobile','other_fax');
+	foreach($telecom_types as $telecom_type){
+		$all_warnings[$telecom_type]=check_duplicates($customer, $telecom_type);
+	}
+	
+	return ($all_warnings);
+}
 
 
-//print_r(check_duplicates(new Customer('70801')));
 
 
 ?>
